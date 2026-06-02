@@ -38,13 +38,13 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_color_label">ቀለም</string>
     <string name="settings_clothes_condition_label">ሁኔታ</string>
     <string name="settings_clothes_value_label_temp">ደረጃ (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">ደረጃ (%)</string>
+    <string name="settings_clothes_value_label_rain">ደረጃ (%)</string>
     <string name="settings_clothes_cond_type_temp_below">ከሚሰማ ቀዝቃዛ ሲሆን</string>
     <string name="settings_clothes_cond_type_temp_above">ከሚሰማ ሞቃት ሲሆን</string>
-    <string name="settings_clothes_cond_type_precip_above">የዝናብ ዕድል ሲጨምር</string>
+    <string name="settings_clothes_cond_type_rain_above">የዝናብ ዕድል ሲጨምር</string>
     <string name="settings_clothes_cond_temp_below">ዝቅተኛ ሙቀት %1$s ሲቀንስ</string>
     <string name="settings_clothes_cond_temp_above">ከፍተኛ ሙቀት %1$s ሲጨምር</string>
-    <string name="settings_clothes_cond_precip_above">የዝናብ ዕድል %.0f%% ሲጨምር</string>
+    <string name="settings_clothes_cond_rain_above">የዝናብ ዕድል %.0f%% ሲጨምር</string>
     <string name="settings_clothes_title">የልብስ ህጎች</string>
     <string name="settings_clothes_description">አንድ ትንበያ ከእነዚህ ደረጃዎች ካለፈ፣ ልብሱ ወደ ዕለታዊ ClothesCast ይታከላል።</string>
 

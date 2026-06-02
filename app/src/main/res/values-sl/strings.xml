@@ -32,13 +32,13 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_clothes_color_label">Barva</string>
     <string name="settings_clothes_condition_label">Pogoj</string>
     <string name="settings_clothes_value_label_temp">Prag (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Prag (%)</string>
+    <string name="settings_clothes_value_label_rain">Prag (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Ko se občuti hladneje kot</string>
     <string name="settings_clothes_cond_type_temp_above">Ko se občuti topleje kot</string>
-    <string name="settings_clothes_cond_type_precip_above">Ko je verjetnost dežja nad</string>
+    <string name="settings_clothes_cond_type_rain_above">Ko je verjetnost dežja nad</string>
     <string name="settings_clothes_cond_temp_below">ko je občutena temperatura pod %1$s</string>
     <string name="settings_clothes_cond_temp_above">ko je občutena temperatura nad %1$s</string>
-    <string name="settings_clothes_cond_precip_above">ko je verjetnost dežja nad %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">ko je verjetnost dežja nad %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Majica</string>
     <string name="today_outfit_top_sweater">Pulover</string>

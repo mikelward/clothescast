@@ -284,7 +284,7 @@ object BugReport {
         val cond = when (val c = rule.condition) {
             is ClothesRule.TemperatureBelow -> "feelsLikeMin < ${c.value}${c.unit.symbol()}"
             is ClothesRule.TemperatureAbove -> "feelsLikeMax > ${c.value}${c.unit.symbol()}"
-            is ClothesRule.PrecipitationProbabilityAbove -> "precipMaxPct > ${c.percent}"
+            is ClothesRule.RainProbabilityAbove -> "rainChance > ${c.percent}%"
         }
         return "${rule.item.itemKey} when $cond"
     }

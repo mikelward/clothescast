@@ -408,13 +408,13 @@ class OutfitSuggestionTest {
     }
 
     @Test
-    fun `precipitation-keyed t-shirt rule drives the icon without crashing the rationale`() {
-        // Settings lets a user key any garment — a top included — off
-        // precipitation. On a rainy day such a rule fires and drives the icon
+    fun `rain-keyed t-shirt rule drives the icon without crashing the rationale`() {
+        // Settings lets a user key any garment — a top included — off the
+        // chance of rain. On a rainy day such a rule fires and drives the icon
         // (TSHIRT here, beating the POLO default), but it carries no temperature
         // threshold: the rationale must skip it and fall back to a temperature
         // rule rather than throw in toFact.
-        val rules = listOf(ClothesRule(Garment.TSHIRT, ClothesRule.PrecipitationProbabilityAbove(50.0)))
+        val rules = listOf(ClothesRule(Garment.TSHIRT, ClothesRule.RainProbabilityAbove(50.0)))
         val rainy = forecast(feelsLikeMin = 12.0, feelsLikeMax = 20.0, precipMaxPct = 60.0)
 
         OutfitSuggestion.fromForecast(
@@ -500,7 +500,7 @@ class OutfitSuggestionTest {
         // when the day's precip probability crosses its threshold and the
         // condition is wet (rain).
         val umbrellaRules = listOf(
-            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(
@@ -519,7 +519,7 @@ class OutfitSuggestionTest {
         // Thunderstorm is treated as rain: it's a wet forecast the user wants an
         // umbrella for, so the carried slot fires (consistent with the prose).
         val umbrellaRules = listOf(
-            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(
@@ -538,9 +538,9 @@ class OutfitSuggestionTest {
         // The bug case: 88% chance of rain, but the peak-probability hour's
         // weather code is overcast (high probability, ~0mm accumulation), so the
         // raw daily condition is CLOUDY rather than a wet code. The umbrella must
-        // still light, matching the prose, since only snow suppresses it.
+        // still light, matching the prose, since a rain rule excludes only snow.
         val umbrellaRules = listOf(
-            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(
@@ -555,12 +555,12 @@ class OutfitSuggestionTest {
     }
 
     @Test
-    fun `a snowy day suppresses the carried umbrella even above the gate`() {
-        // The umbrella default keys off aggregate precip probability, which can
-        // clear its gate on a snowy day — but snow isn't wet-in-the-umbrella
-        // sense, so the carried slot stays null and no umbrella icon shows.
+    fun `a snowy day does not light the carried umbrella even above the gate`() {
+        // A rain rule excludes snow, so an 80% snowy day — whose probability
+        // would otherwise clear the umbrella's gate — doesn't match it, and the
+        // carried slot stays null with no umbrella icon.
         val umbrellaRules = listOf(
-            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(
@@ -580,7 +580,7 @@ class OutfitSuggestionTest {
         // leaves it null rather than promoting to a default, so no umbrella icon
         // shows when the user hasn't earned one.
         val umbrellaRules = listOf(
-            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 12.0, feelsLikeMax = 18.0, precipMaxPct = 10.0),
@@ -597,7 +597,7 @@ class OutfitSuggestionTest {
             rules = listOf(
                 ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(5.0)),
                 ClothesRule(Garment.GLOVES, ClothesRule.TemperatureBelow(4.0)),
-                ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+                ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)),
             ),
             fallbacks = emptyList(),
         )
@@ -625,7 +625,7 @@ class OutfitSuggestionTest {
         // rules picked (here the sweater) intact underneath.
         val rules = listOf(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 12.0, feelsLikeMax = 15.0, precipMaxPct = 60.0),
@@ -652,7 +652,7 @@ class OutfitSuggestionTest {
         // user's default and the rain jacket paints over it — the shell adds to
         // the outfit rather than standing in for a missing top.
         val rules = listOf(
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 18.0, feelsLikeMax = 24.0, precipMaxPct = 70.0),

@@ -31,7 +31,7 @@ class ClothesRulesSnapshotTest {
         // silently report "0" the way routing it through the °C bucket would.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == Garment.UMBRELLA) {
-                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(60.0))
+                rule.copy(condition = ClothesRule.RainProbabilityAbove(60.0))
             } else {
                 rule
             }
@@ -50,7 +50,7 @@ class ClothesRulesSnapshotTest {
         // Default 30% → 10% is a -20pp change.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == Garment.UMBRELLA) {
-                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(10.0))
+                rule.copy(condition = ClothesRule.RainProbabilityAbove(10.0))
             } else {
                 rule
             }

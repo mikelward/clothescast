@@ -64,7 +64,7 @@ fun fallbackRange(rules: List<ClothesRule>, tier: FallbackTier): FallbackRange {
             is ClothesRule.TemperatureAbove -> {
                 if (upper == null || threshold < upper) upper = threshold
             }
-            is ClothesRule.PrecipitationProbabilityAbove -> Unit
+            is ClothesRule.RainProbabilityAbove -> Unit
         }
     }
     return FallbackRange(lowerC = lower, upperC = upper)

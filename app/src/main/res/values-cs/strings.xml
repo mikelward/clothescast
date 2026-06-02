@@ -189,13 +189,13 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_clothes_color_label">Barva</string>
     <string name="settings_clothes_condition_label">Podmínka</string>
     <string name="settings_clothes_value_label_temp">Práh (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Práh (%)</string>
+    <string name="settings_clothes_value_label_rain">Práh (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Když je pocitová pod</string>
     <string name="settings_clothes_cond_type_temp_above">Když je pocitová nad</string>
-    <string name="settings_clothes_cond_type_precip_above">Když je pravděpodobnost deště nad</string>
+    <string name="settings_clothes_cond_type_rain_above">Když je pravděpodobnost deště nad</string>
     <string name="settings_clothes_cond_temp_below">když je pocitová teplota pod %1$s</string>
     <string name="settings_clothes_cond_temp_above">když je pocitová teplota nad %1$s</string>
-    <string name="settings_clothes_cond_precip_above">když je pravděpodobnost deště nad %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">když je pravděpodobnost deště nad %.0f%%</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Denní ClothesCast</string>

@@ -44,7 +44,7 @@ class FallbackRangeTest {
     @Test
     fun `precipitation rules are ignored`() {
         fallbackRange(
-            listOf(ClothesRule(Garment.SWEATER, ClothesRule.PrecipitationProbabilityAbove(30.0))),
+            listOf(ClothesRule(Garment.SWEATER, ClothesRule.RainProbabilityAbove(30.0))),
             FallbackTier.TOP,
         ) shouldBe FallbackRange(null, null)
     }

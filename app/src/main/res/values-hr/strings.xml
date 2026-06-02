@@ -48,13 +48,13 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_clothes_color_label">Boja</string>
     <string name="settings_clothes_condition_label">Uvjet</string>
     <string name="settings_clothes_value_label_temp">Prag (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Prag (%)</string>
+    <string name="settings_clothes_value_label_rain">Prag (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kada se osjeća hladnije od</string>
     <string name="settings_clothes_cond_type_temp_above">Kada se osjeća toplije od</string>
-    <string name="settings_clothes_cond_type_precip_above">Kada je vjerojatnost kiše veća od</string>
+    <string name="settings_clothes_cond_type_rain_above">Kada je vjerojatnost kiše veća od</string>
     <string name="settings_clothes_cond_temp_below">kada je osjećajna temperatura ispod %1$s</string>
     <string name="settings_clothes_cond_temp_above">kada je osjećajna temperatura iznad %1$s</string>
-    <string name="settings_clothes_cond_precip_above">kada je vjerojatnost kiše veća od %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">kada je vjerojatnost kiše veća od %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery

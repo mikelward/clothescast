@@ -893,8 +893,8 @@ private fun describeCondition(
             R.string.settings_clothes_cond_temp_above,
             formatThreshold(condition.value, condition.unit, temperatureUnit),
         )
-    is ClothesRule.PrecipitationProbabilityAbove ->
-        stringResource(R.string.settings_clothes_cond_precip_above, condition.percent)
+    is ClothesRule.RainProbabilityAbove ->
+        stringResource(R.string.settings_clothes_cond_rain_above, condition.percent)
 }
 
 /**
@@ -919,7 +919,7 @@ private fun formatThreshold(
 private enum class ConditionType(@StringRes val labelRes: Int) {
     TEMP_BELOW(R.string.settings_clothes_cond_type_temp_below),
     TEMP_ABOVE(R.string.settings_clothes_cond_type_temp_above),
-    PRECIP_ABOVE(R.string.settings_clothes_cond_type_precip_above),
+    RAIN_ABOVE(R.string.settings_clothes_cond_type_rain_above),
 }
 
 /** Maps a [Garment] enum entry to its localised display label resource. */
@@ -979,18 +979,18 @@ internal fun ClothesRuleDialog(
     val initialType = when (initial?.condition) {
         is ClothesRule.TemperatureBelow -> ConditionType.TEMP_BELOW
         is ClothesRule.TemperatureAbove -> ConditionType.TEMP_ABOVE
-        is ClothesRule.PrecipitationProbabilityAbove -> ConditionType.PRECIP_ABOVE
+        is ClothesRule.RainProbabilityAbove -> ConditionType.RAIN_ABOVE
         null -> ConditionType.TEMP_BELOW
     }
     var type by remember { mutableStateOf(initialType) }
     // A carried accessory (umbrella) is only ever named off a rain/drizzle
-    // precip clause, so a temperature-keyed umbrella rule would fire but render
-    // nothing. Restrict carried gear to the precipitation condition and force
-    // the selection there if the user picks it while a temp type was active.
+    // clause, so a temperature-keyed umbrella rule would fire but render
+    // nothing. Restrict carried gear to the rain condition and force the
+    // selection there if the user picks it while a temp type was active.
     val carried = garment.slot == Garment.Slot.CARRIED
-    val allowedTypes = if (carried) listOf(ConditionType.PRECIP_ABOVE) else ConditionType.entries.toList()
+    val allowedTypes = if (carried) listOf(ConditionType.RAIN_ABOVE) else ConditionType.entries.toList()
     LaunchedEffect(carried) {
-        if (carried && type != ConditionType.PRECIP_ABOVE) type = ConditionType.PRECIP_ABOVE
+        if (carried && type != ConditionType.RAIN_ABOVE) type = ConditionType.RAIN_ABOVE
     }
     // Pre-fill in the user's *current* display unit. A 65°F rule opened by a °C
     // user pre-fills as "18" (the saved value converted via Celsius); when the
@@ -1000,7 +1000,7 @@ internal fun ClothesRuleDialog(
     val initialValue = when (val c = initial?.condition) {
         is ClothesRule.TemperatureBelow -> c.value.fromUnit(c.unit).toUnit(temperatureUnit)
         is ClothesRule.TemperatureAbove -> c.value.fromUnit(c.unit).toUnit(temperatureUnit)
-        is ClothesRule.PrecipitationProbabilityAbove -> c.percent
+        is ClothesRule.RainProbabilityAbove -> c.percent
         null -> 18.0.toUnit(temperatureUnit)
     }
     val initialInt = initialValue.roundToInt()
@@ -1017,7 +1017,7 @@ internal fun ClothesRuleDialog(
     // rules can be any int. Disable confirm when out of range so the rule can't
     // be saved with a nonsense threshold.
     val valueValid = parsedValue != null &&
-        (type != ConditionType.PRECIP_ABOVE || parsedValue in 0..100)
+        (type != ConditionType.RAIN_ABOVE || parsedValue in 0..100)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1041,9 +1041,9 @@ internal fun ClothesRuleDialog(
                         ConditionType.TEMP_ABOVE ->
                             if (unchanged && initialCond is ClothesRule.TemperatureAbove) initialCond
                             else ClothesRule.TemperatureAbove(v, temperatureUnit)
-                        ConditionType.PRECIP_ABOVE ->
-                            if (unchanged && initialCond is ClothesRule.PrecipitationProbabilityAbove) initialCond
-                            else ClothesRule.PrecipitationProbabilityAbove(v)
+                        ConditionType.RAIN_ABOVE ->
+                            if (unchanged && initialCond is ClothesRule.RainProbabilityAbove) initialCond
+                            else ClothesRule.RainProbabilityAbove(v)
                     }
                     onConfirm(ClothesRule(garment, condition))
                 },
@@ -1092,8 +1092,8 @@ internal fun ClothesRuleDialog(
                 valueText = valueText,
                 onValueChange = { valueText = it },
                 valueValid = valueValid,
-                valueLabel = if (type == ConditionType.PRECIP_ABOVE) {
-                    stringResource(R.string.settings_clothes_value_label_precip)
+                valueLabel = if (type == ConditionType.RAIN_ABOVE) {
+                    stringResource(R.string.settings_clothes_value_label_rain)
                 } else {
                     stringResource(R.string.settings_clothes_value_label_temp, temperatureUnit.symbol())
                 },
@@ -1203,7 +1203,7 @@ internal fun ClothesRuleEditPreviewCard(
     // by a Boolean the preview wrappers in SettingsPreviews can pass.
     precip: Boolean = false,
 ) {
-    val type = if (precip) ConditionType.PRECIP_ABOVE else ConditionType.TEMP_BELOW
+    val type = if (precip) ConditionType.RAIN_ABOVE else ConditionType.TEMP_BELOW
     Surface(
         shape = MaterialTheme.shapes.extraLarge,
         tonalElevation = 6.dp,
@@ -1242,7 +1242,7 @@ internal fun ClothesRuleEditPreviewCard(
                 // Mirror [ClothesRuleDialog]'s label selection so the preview
                 // exercises the same precip-vs-temp branch the real dialog does.
                 valueLabel = if (precip) {
-                    stringResource(R.string.settings_clothes_value_label_precip)
+                    stringResource(R.string.settings_clothes_value_label_rain)
                 } else {
                     stringResource(
                         R.string.settings_clothes_value_label_temp,

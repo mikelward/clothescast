@@ -34,13 +34,13 @@ to values/strings.xml (English).
     <string name="settings_clothes_color_label">Warna</string>
     <string name="settings_clothes_condition_label">Pemicu</string>
     <string name="settings_clothes_value_label_temp">Ambang batas (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Ambang batas (%)</string>
+    <string name="settings_clothes_value_label_rain">Ambang batas (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Ketika terasa lebih dingin dari</string>
     <string name="settings_clothes_cond_type_temp_above">Ketika terasa lebih panas dari</string>
-    <string name="settings_clothes_cond_type_precip_above">Ketika kemungkinan hujan di atas</string>
+    <string name="settings_clothes_cond_type_rain_above">Ketika kemungkinan hujan di atas</string>
     <string name="settings_clothes_cond_temp_below">ketika suhu terasa di bawah %1$s</string>
     <string name="settings_clothes_cond_temp_above">ketika suhu terasa di atas %1$s</string>
-    <string name="settings_clothes_cond_precip_above">ketika kemungkinan hujan di atas %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">ketika kemungkinan hujan di atas %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Kaos</string>
     <string name="today_outfit_top_sweater">Sweater</string>

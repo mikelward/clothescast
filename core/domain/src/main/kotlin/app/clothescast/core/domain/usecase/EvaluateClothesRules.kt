@@ -5,7 +5,6 @@ import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TriggeredOutfit
-import app.clothescast.core.domain.model.isFrozenPrecipitation
 
 /**
  * Resolves the day's outfit from the forecast: the user's threshold
@@ -34,26 +33,15 @@ class EvaluateClothesRules {
         defaultTop: OutfitSuggestion.Top = OutfitSuggestion.Top.TSHIRT,
         defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     ): TriggeredOutfit {
+        // Snow no longer needs a special carried-slot gate here: a rain rule
+        // ([ClothesRule.RainProbabilityAbove]) excludes snow itself, so the
+        // umbrella default — and any user rain rule — simply doesn't match on a
+        // snowy day. That keeps the single rule-evaluation chokepoint (icon,
+        // recommendations, prose) reading from one place.
         val matched = rules.filter { it.appliesTo(forecast) }
-            // A carried accessory (the umbrella) is rain gear: it surfaces once
-            // its probability gate clears, *unless* the precipitation is frozen.
-            // The umbrella default keys off aggregate precipitation *probability*,
-            // which can clear its gate on a snowy day — and you don't umbrella
-            // snow — so gate the carried slot on snow here, at the single
-            // rule-evaluation chokepoint the icon, the recommendations, and the
-            // prose all read from. We deliberately exclude *only* snow rather
-            // than requiring a wet code ([warrantsRainAccessory]): the raw daily
-            // condition is the peak-*probability* hour's weather code, which can
-            // read "overcast" at 88% chance of rain when accumulation is ~0, and
-            // requiring a wet code there would drop the umbrella on exactly the
-            // day the prose still announces rain. See [isFrozenPrecipitation].
-            // Worn garments (tops/bottoms/gloves) are unaffected.
-            .filterNot {
-                it.item.slot == Garment.Slot.CARRIED && forecast.condition.isFrozenPrecipitation()
-            }
         // Every [ClothesRule.item] is a catalog [Garment], so each matched rule
         // claims a known slot. A slot covered by a matched rule (whether keyed
-        // on temperature or precipitation) doesn't also get its per-tier default.
+        // on temperature or rain) doesn't also get its per-tier default.
         //
         // The base top is the exception: a [Garment.Layer.OUTER] shell (the rain
         // jacket) is worn *over* a base top, not in place of one, so it doesn't

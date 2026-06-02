@@ -192,13 +192,13 @@ What is NOT overridden, by design:
     <string name="settings_clothes_color_label">Farba</string>
     <string name="settings_clothes_condition_label">Podmienka</string>
     <string name="settings_clothes_value_label_temp">Prah (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Prah (%)</string>
+    <string name="settings_clothes_value_label_rain">Prah (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Keď je pocitová pod</string>
     <string name="settings_clothes_cond_type_temp_above">Keď je pocitová nad</string>
-    <string name="settings_clothes_cond_type_precip_above">Keď je pravdepodobnosť dažďa nad</string>
+    <string name="settings_clothes_cond_type_rain_above">Keď je pravdepodobnosť dažďa nad</string>
     <string name="settings_clothes_cond_temp_below">keď je pocitová teplota pod %1$s</string>
     <string name="settings_clothes_cond_temp_above">keď je pocitová teplota nad %1$s</string>
-    <string name="settings_clothes_cond_precip_above">keď je pravdepodobnosť dažďa nad %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">keď je pravdepodobnosť dažďa nad %.0f%%</string>
 
     <!--
     Schedule screen.

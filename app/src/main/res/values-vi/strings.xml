@@ -37,13 +37,13 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_clothes_color_label">Màu</string>
     <string name="settings_clothes_condition_label">Điều kiện</string>
     <string name="settings_clothes_value_label_temp">Ngưỡng (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Ngưỡng (%)</string>
+    <string name="settings_clothes_value_label_rain">Ngưỡng (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Khi cảm giác lạnh hơn</string>
     <string name="settings_clothes_cond_type_temp_above">Khi cảm giác nóng hơn</string>
-    <string name="settings_clothes_cond_type_precip_above">Khi khả năng mưa vượt</string>
+    <string name="settings_clothes_cond_type_rain_above">Khi khả năng mưa vượt</string>
     <string name="settings_clothes_cond_temp_below">khi nhiệt độ cảm nhận thấp nhất dưới %1$s</string>
     <string name="settings_clothes_cond_temp_above">khi nhiệt độ cảm nhận cao nhất trên %1$s</string>
-    <string name="settings_clothes_cond_precip_above">khi khả năng mưa vượt %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">khi khả năng mưa vượt %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Áo phông</string>
     <string name="today_outfit_top_sweater">Áo len</string>

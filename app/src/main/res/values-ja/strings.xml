@@ -76,13 +76,13 @@ the displayed label localizes.
     <string name="settings_clothes_color_label">色</string>
     <string name="settings_clothes_condition_label">条件</string>
     <string name="settings_clothes_value_label_temp">しきい値 (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">しきい値 (%)</string>
+    <string name="settings_clothes_value_label_rain">しきい値 (%)</string>
     <string name="settings_clothes_cond_type_temp_below">体感温度が以下のとき</string>
     <string name="settings_clothes_cond_type_temp_above">体感温度が以上のとき</string>
-    <string name="settings_clothes_cond_type_precip_above">降水確率が以上のとき</string>
+    <string name="settings_clothes_cond_type_rain_above">降水確率が以上のとき</string>
     <string name="settings_clothes_cond_temp_below">最低体感温度が %1$s 未満のとき</string>
     <string name="settings_clothes_cond_temp_above">最高体感温度が %1$s を超えるとき</string>
-    <string name="settings_clothes_cond_precip_above">降水確率が %.0f%% を超えるとき</string>
+    <string name="settings_clothes_cond_rain_above">降水確率が %.0f%% を超えるとき</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery

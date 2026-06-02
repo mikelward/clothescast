@@ -50,13 +50,13 @@ default English (matching values-pl / values-uk).
     <string name="settings_clothes_color_label">Boja</string>
     <string name="settings_clothes_condition_label">Uslov</string>
     <string name="settings_clothes_value_label_temp">Prag (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Prag (%)</string>
+    <string name="settings_clothes_value_label_rain">Prag (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kada se oseća hladnije od</string>
     <string name="settings_clothes_cond_type_temp_above">Kada se oseća toplije od</string>
-    <string name="settings_clothes_cond_type_precip_above">Kada je verovatnoća kiše veća od</string>
+    <string name="settings_clothes_cond_type_rain_above">Kada je verovatnoća kiše veća od</string>
     <string name="settings_clothes_cond_temp_below">kada je osećajna temperatura ispod %1$s</string>
     <string name="settings_clothes_cond_temp_above">kada je osećajna temperatura iznad %1$s</string>
-    <string name="settings_clothes_cond_precip_above">kada je verovatnoća kiše veća od %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">kada je verovatnoća kiše veća od %.0f%%</string>
 
     <!-- Clothes settings — title + description. -->
     <string name="settings_clothes_title">Pravila odevanja</string>

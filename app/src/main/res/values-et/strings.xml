@@ -440,13 +440,13 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_clothes_color_label">Värv</string>
     <string name="settings_clothes_condition_label">Tingimus</string>
     <string name="settings_clothes_value_label_temp">Lävi (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Lävi (%)</string>
+    <string name="settings_clothes_value_label_rain">Lävi (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kui tundub külmem kui</string>
     <string name="settings_clothes_cond_type_temp_above">Kui tundub soojem kui</string>
-    <string name="settings_clothes_cond_type_precip_above">Kui vihma tõenäosus on üle</string>
+    <string name="settings_clothes_cond_type_rain_above">Kui vihma tõenäosus on üle</string>
     <string name="settings_clothes_cond_temp_below">kui tunnetatav temperatuur on alla %1$s</string>
     <string name="settings_clothes_cond_temp_above">kui tunnetatav temperatuur on üle %1$s</string>
-    <string name="settings_clothes_cond_precip_above">kui vihma tõenäosus on üle %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">kui vihma tõenäosus on üle %.0f%%</string>
 
     <string name="notification_channel_daily_insight_name">Igapäevane ClothesCast</string>
     <string name="notification_channel_daily_insight_description">Hommikune ilmakokkuvõte, millele oled tellinud.</string>

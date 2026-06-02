@@ -301,11 +301,11 @@
     <string name="settings_clothes_color_label">Ngjyra</string>
     <string name="settings_clothes_condition_label">Kushti</string>
     <string name="settings_clothes_value_label_temp">Pragu (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Pragu (%)</string>
+    <string name="settings_clothes_value_label_rain">Pragu (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kur ndihet më ftohtë se</string>
     <string name="settings_clothes_cond_type_temp_above">Kur ndihet më ngrohtë se</string>
-    <string name="settings_clothes_cond_type_precip_above">Kur mundësia e shiut është mbi</string>
+    <string name="settings_clothes_cond_type_rain_above">Kur mundësia e shiut është mbi</string>
     <string name="settings_clothes_cond_temp_below">kur temperatura e ndjeshme është nën %1$s</string>
     <string name="settings_clothes_cond_temp_above">kur temperatura e ndjeshme është mbi %1$s</string>
-    <string name="settings_clothes_cond_precip_above">kur mundësia e shiut është mbi %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">kur mundësia e shiut është mbi %.0f%%</string>
 </resources>

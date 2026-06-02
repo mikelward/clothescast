@@ -18,9 +18,12 @@ import kotlinx.serialization.Serializable
  * silently discarded rather than kept as untyped strings.
  *
  * `type` strings are intentionally non-camelCase so they're stable identifiers in JSON
- * even if class names are renamed. [unit] is nullable so JSON written by app versions
- * before unit-aware thresholds existed still deserialises (legacy = always Celsius);
- * unit is meaningless for precipitation rules and stays null there.
+ * even if class names are renamed. Rain rules write `"rain_above"`; the older
+ * `"precip_above"` token (written before the precipitation→rain rename) is still read
+ * via [TYPE_RAIN_ABOVE_LEGACY] so rules saved by earlier builds keep loading. [unit] is
+ * nullable so JSON written by app versions before unit-aware thresholds existed still
+ * deserialises (legacy = always Celsius); unit is meaningless for rain rules and stays
+ * null there.
  */
 @Serializable
 internal data class ClothesRuleDto(
@@ -37,7 +40,7 @@ internal data class ClothesRuleDto(
             condition = when (type) {
                 TYPE_TEMP_BELOW -> ClothesRule.TemperatureBelow(value, parseUnit(unit))
                 TYPE_TEMP_ABOVE -> ClothesRule.TemperatureAbove(value, parseUnit(unit))
-                TYPE_PRECIP_ABOVE -> ClothesRule.PrecipitationProbabilityAbove(value)
+                TYPE_RAIN_ABOVE, TYPE_RAIN_ABOVE_LEGACY -> ClothesRule.RainProbabilityAbove(value)
                 else -> error("Unknown clothes rule type: $type")
             },
         )
@@ -46,7 +49,14 @@ internal data class ClothesRuleDto(
     companion object {
         const val TYPE_TEMP_BELOW = "temp_below"
         const val TYPE_TEMP_ABOVE = "temp_above"
-        const val TYPE_PRECIP_ABOVE = "precip_above"
+        const val TYPE_RAIN_ABOVE = "rain_above"
+
+        /**
+         * Legacy wire token for rain rules, written before the precipitation→rain
+         * rename. Read-only: [toDomain] still accepts it so saved rules keep
+         * loading, but [toDto] always writes the current [TYPE_RAIN_ABOVE].
+         */
+        const val TYPE_RAIN_ABOVE_LEGACY = "precip_above"
 
         /** Falls back to Celsius for legacy data (`null`) or unrecognised tokens. */
         private fun parseUnit(raw: String?): TemperatureUnit =
@@ -60,6 +70,6 @@ internal fun ClothesRule.toDto(): ClothesRuleDto = when (val c = condition) {
         ClothesRuleDto(item.itemKey, ClothesRuleDto.TYPE_TEMP_BELOW, c.value, c.unit.name)
     is ClothesRule.TemperatureAbove ->
         ClothesRuleDto(item.itemKey, ClothesRuleDto.TYPE_TEMP_ABOVE, c.value, c.unit.name)
-    is ClothesRule.PrecipitationProbabilityAbove ->
-        ClothesRuleDto(item.itemKey, ClothesRuleDto.TYPE_PRECIP_ABOVE, c.percent)
+    is ClothesRule.RainProbabilityAbove ->
+        ClothesRuleDto(item.itemKey, ClothesRuleDto.TYPE_RAIN_ABOVE, c.percent)
 }

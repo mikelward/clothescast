@@ -84,7 +84,7 @@ class GarmentTest {
         // umbrella) and never displaces a top or bottom.
         val rules = listOf(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
-            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(50.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(50.0)),
         )
         Garment.layerReduce(rules) shouldBe rules
     }
@@ -102,7 +102,7 @@ class GarmentTest {
         Garment.isAccessoryKey("rain-jacket") shouldBe false
         val rules = listOf(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         Garment.layerReduce(rules) shouldBe rules
     }
@@ -115,7 +115,7 @@ class GarmentTest {
         // prose then matches the icon, which shows the shell over the base top.
         val baseAndShell = listOf(
             ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(20.0)),
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         Garment.layerReduce(baseAndShell) shouldBe baseAndShell
 
@@ -124,7 +124,7 @@ class GarmentTest {
         val baseMidShell = listOf(
             ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(20.0)),
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         Garment.layerReduce(baseMidShell) shouldBe listOf(baseMidShell[1], baseMidShell[2])
     }

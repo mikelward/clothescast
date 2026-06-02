@@ -33,13 +33,13 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_clothes_color_label">Culoare</string>
     <string name="settings_clothes_condition_label">Condiție</string>
     <string name="settings_clothes_value_label_temp">Prag (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Prag (%)</string>
+    <string name="settings_clothes_value_label_rain">Prag (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Când se simte mai rece de</string>
     <string name="settings_clothes_cond_type_temp_above">Când se simte mai cald de</string>
-    <string name="settings_clothes_cond_type_precip_above">Când probabilitatea de ploaie depășește</string>
+    <string name="settings_clothes_cond_type_rain_above">Când probabilitatea de ploaie depășește</string>
     <string name="settings_clothes_cond_temp_below">când temperatura resimțită este sub %1$s</string>
     <string name="settings_clothes_cond_temp_above">când temperatura resimțită este peste %1$s</string>
-    <string name="settings_clothes_cond_precip_above">când probabilitatea de ploaie depășește %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">când probabilitatea de ploaie depășește %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Tricou</string>
     <string name="today_outfit_top_sweater">Pulover</string>

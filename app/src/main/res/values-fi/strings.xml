@@ -59,14 +59,14 @@ displayed label localizes.
     <string name="settings_clothes_color_label">Väri</string>
     <string name="settings_clothes_condition_label">Ehto</string>
     <string name="settings_clothes_value_label_temp">Raja-arvo (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Raja-arvo (%)</string>
+    <string name="settings_clothes_value_label_rain">Raja-arvo (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kun tuntuu kylmemmältä kuin</string>
     <string name="settings_clothes_cond_type_temp_above">Kun tuntuu lämpimämmältä kuin</string>
-    <string name="settings_clothes_cond_type_precip_above">Kun sateen todennäköisyys on yli</string>
+    <string name="settings_clothes_cond_type_rain_above">Kun sateen todennäköisyys on yli</string>
 
     <string name="settings_clothes_cond_temp_below">kun tuntuva lämpötila on alle %1$s</string>
     <string name="settings_clothes_cond_temp_above">kun tuntuva lämpötila on yli %1$s</string>
-    <string name="settings_clothes_cond_precip_above">kun sateen todennäköisyys on yli %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">kun sateen todennäköisyys on yli %.0f%%</string>
 
     <string name="settings_schedule_title">Päivittäinen ClothesCast</string>
     <string name="settings_schedule_time_label">Aika</string>

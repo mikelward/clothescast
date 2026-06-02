@@ -39,6 +39,8 @@ import app.clothescast.diag.SettingsAnalyticsSnapshot
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -224,7 +226,7 @@ class SettingsRepositoryTest {
     @Test
     fun `umbrella migration appends the umbrella default to a stored list without it`() = runTest {
         // A user with a persisted rule list that predates the umbrella default
-        // gets it appended, keyed on a precipitation-probability condition.
+        // gets it appended, keyed on a rain-probability condition.
         val legacyJson = encodeRules(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
         )
@@ -235,14 +237,39 @@ class SettingsRepositoryTest {
         val rules = decodeStoredRules(result[clothesRulesKey])
         rules.map { it.item } shouldBe listOf(Garment.SWEATER, Garment.UMBRELLA)
         val umbrellaRule = rules.first { it.item == Garment.UMBRELLA }
-        (umbrellaRule.condition is ClothesRule.PrecipitationProbabilityAbove) shouldBe true
+        (umbrellaRule.condition is ClothesRule.RainProbabilityAbove) shouldBe true
+    }
+
+    @Test
+    fun `legacy precip_above wire token still decodes to a rain rule`() {
+        // The precipitation→rain rename moved the canonical on-disk token to
+        // "rain_above", but the older "precip_above" token (written by earlier
+        // builds) is still read so rules saved before the rename keep loading.
+        // Decode a hand-written legacy blob.
+        val legacy = """[{"item":"umbrella","type":"precip_above","value":30.0}]"""
+
+        val rules = decodeStoredRules(legacy)
+
+        rules.map { it.item } shouldBe listOf(Garment.UMBRELLA)
+        (rules.single().condition as ClothesRule.RainProbabilityAbove).percent shouldBe 30.0
+    }
+
+    @Test
+    fun `rain rules now write the rain_above wire token`() {
+        // New writes use the renamed token; round-trips through the read path
+        // too. Guards against accidentally reintroducing "precip_above" on write.
+        val json = encodeRules(ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)))
+
+        json shouldContain "\"type\":\"rain_above\""
+        json shouldNotContain "precip_above"
+        (decodeStoredRules(json).single().condition as ClothesRule.RainProbabilityAbove).percent shouldBe 30.0
     }
 
     @Test
     fun `umbrella migration does not duplicate an existing umbrella rule`() = runTest {
         val withUmbrella = encodeRules(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
-            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(50.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(50.0)),
         )
         val before = mutablePreferencesOf(clothesRulesKey to withUmbrella)
 
@@ -251,7 +278,7 @@ class SettingsRepositoryTest {
         val rules = decodeStoredRules(result[clothesRulesKey])
         rules.count { it.item == Garment.UMBRELLA } shouldBe 1
         // The user's customised gate survives — we don't reset it to the default.
-        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.PrecipitationProbabilityAbove)
+        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.RainProbabilityAbove)
             .percent shouldBe 50.0
     }
 
@@ -514,7 +541,7 @@ class SettingsRepositoryTest {
         val rules = listOf(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(5.0)),
             ClothesRule(Garment.SHORTS, ClothesRule.TemperatureAbove(28.5)),
-            ClothesRule(Garment.JACKET, ClothesRule.PrecipitationProbabilityAbove(40.0)),
+            ClothesRule(Garment.JACKET, ClothesRule.RainProbabilityAbove(40.0)),
         )
 
         subject.setClothesRules(rules)

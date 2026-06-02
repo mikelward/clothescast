@@ -74,13 +74,13 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_clothes_color_label">Farve</string>
     <string name="settings_clothes_condition_label">Betingelse</string>
     <string name="settings_clothes_value_label_temp">Tærskel (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Tærskel (%)</string>
+    <string name="settings_clothes_value_label_rain">Tærskel (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Når det føles koldere end</string>
     <string name="settings_clothes_cond_type_temp_above">Når det føles varmere end</string>
-    <string name="settings_clothes_cond_type_precip_above">Når regnsandsynligheden er over</string>
+    <string name="settings_clothes_cond_type_rain_above">Når regnsandsynligheden er over</string>
     <string name="settings_clothes_cond_temp_below">når den følte temperatur er under %1$s</string>
     <string name="settings_clothes_cond_temp_above">når den følte temperatur er over %1$s</string>
-    <string name="settings_clothes_cond_precip_above">når regnsandsynligheden er over %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">når regnsandsynligheden er over %.0f%%</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dagligt ClothesCast</string>

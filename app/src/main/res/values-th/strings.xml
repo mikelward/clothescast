@@ -32,13 +32,13 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_color_label">สี</string>
     <string name="settings_clothes_condition_label">เงื่อนไข</string>
     <string name="settings_clothes_value_label_temp">ค่าเกณฑ์ (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">ค่าเกณฑ์ (%)</string>
+    <string name="settings_clothes_value_label_rain">ค่าเกณฑ์ (%)</string>
     <string name="settings_clothes_cond_type_temp_below">เมื่ออากาศรู้สึกหนาวกว่า</string>
     <string name="settings_clothes_cond_type_temp_above">เมื่ออากาศรู้สึกร้อนกว่า</string>
-    <string name="settings_clothes_cond_type_precip_above">เมื่อโอกาสฝนตกเกิน</string>
+    <string name="settings_clothes_cond_type_rain_above">เมื่อโอกาสฝนตกเกิน</string>
     <string name="settings_clothes_cond_temp_below">เมื่ออุณหภูมิที่รู้สึกต่ำกว่า %1$s</string>
     <string name="settings_clothes_cond_temp_above">เมื่ออุณหภูมิที่รู้สึกสูงกว่า %1$s</string>
-    <string name="settings_clothes_cond_precip_above">เมื่อโอกาสฝนตกเกิน %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">เมื่อโอกาสฝนตกเกิน %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">เสื้อยืด</string>
     <string name="today_outfit_top_sweater">เสื้อกันหนาว</string>

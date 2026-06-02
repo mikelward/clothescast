@@ -37,7 +37,7 @@ data class ClothesRulesSnapshot(
         const val DELTA_CLAMP_C: Int = 5
 
         /**
-         * Largest absolute percentage-point delta reported for the precip-keyed
+         * Largest absolute percentage-point delta reported for the rain-keyed
          * umbrella default; beyond this saturates. Wider than [DELTA_CLAMP_C]
          * because a probability gate spans 0–100%, but still bucketed (rounded to
          * the nearest [PCT_BUCKET]) so the aggregate stays coarse.
@@ -63,12 +63,12 @@ data class ClothesRulesSnapshot(
                 val userRule = byItem[item]
                 when {
                     userRule == null -> MISSING
-                    // The umbrella default is precip-keyed (no Celsius threshold),
+                    // The umbrella default is rain-keyed (no Celsius threshold),
                     // so bucket its probability-gate delta separately — routing it
                     // through deltaBucket would always report "0" and hide every
-                    // gate customisation. See precipDeltaBucket.
-                    defaultRule.condition is ClothesRule.PrecipitationProbabilityAbove ->
-                        precipDeltaBucket(userRule, defaultRule)
+                    // gate customisation. See rainGateDeltaBucket.
+                    defaultRule.condition is ClothesRule.RainProbabilityAbove ->
+                        rainGateDeltaBucket(userRule, defaultRule)
                     else -> deltaBucket(userRule, defaultRule)
                 }
             }
@@ -93,7 +93,7 @@ data class ClothesRulesSnapshot(
 
         /**
          * Integer °C delta of [userRule] from [defaultRule], formatted as a signed
-         * bucket. Non-temperature rules (precipitation) and type-mismatch cases
+         * bucket. Non-temperature rules (rain) and type-mismatch cases
          * report `"0"` only when both thresholds are absent — otherwise the bucket
          * reflects whichever side has a temperature. Default rules in the current
          * catalog are all temperature, so the type-mismatch arm is defensive.
@@ -113,17 +113,17 @@ data class ClothesRulesSnapshot(
         }
 
         /**
-         * Signed percentage-point delta of a precip-keyed [userRule] from its
-         * precip-keyed [defaultRule] (the umbrella's rain-probability gate),
+         * Signed percentage-point delta of a rain-keyed [userRule] from its
+         * rain-keyed [defaultRule] (the umbrella's rain-probability gate),
          * rounded to the nearest [PCT_BUCKET] and clamped to ±[DELTA_CLAMP_PCT] —
          * `"0"`, `"+10"`, `"-20"`, `"+50+"` (saturated above), `"-50-"` (below).
-         * A user rule that isn't precip-keyed (shouldn't happen — the umbrella
-         * editor only writes precip conditions) reports [MISSING].
+         * A user rule that isn't rain-keyed (shouldn't happen — the umbrella
+         * editor only writes rain conditions) reports [MISSING].
          */
-        private fun precipDeltaBucket(userRule: ClothesRule, defaultRule: ClothesRule): String {
-            val defaultPct = (defaultRule.condition as? ClothesRule.PrecipitationProbabilityAbove)?.percent
+        private fun rainGateDeltaBucket(userRule: ClothesRule, defaultRule: ClothesRule): String {
+            val defaultPct = (defaultRule.condition as? ClothesRule.RainProbabilityAbove)?.percent
                 ?: return MISSING
-            val userPct = (userRule.condition as? ClothesRule.PrecipitationProbabilityAbove)?.percent
+            val userPct = (userRule.condition as? ClothesRule.RainProbabilityAbove)?.percent
                 ?: return MISSING
             val bucketed = ((userPct - defaultPct) / PCT_BUCKET).roundToInt() * PCT_BUCKET
             return when {

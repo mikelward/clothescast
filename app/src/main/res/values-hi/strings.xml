@@ -68,13 +68,13 @@ Not overridden by design:
     <string name="settings_clothes_color_label">रंग</string>
     <string name="settings_clothes_condition_label">शर्त</string>
     <string name="settings_clothes_value_label_temp">सीमा (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">सीमा (%)</string>
+    <string name="settings_clothes_value_label_rain">सीमा (%)</string>
     <string name="settings_clothes_cond_type_temp_below">जब महसूस हो उससे ठंडा</string>
     <string name="settings_clothes_cond_type_temp_above">जब महसूस हो उससे गर्म</string>
-    <string name="settings_clothes_cond_type_precip_above">जब बारिश की संभावना से अधिक</string>
+    <string name="settings_clothes_cond_type_rain_above">जब बारिश की संभावना से अधिक</string>
     <string name="settings_clothes_cond_temp_below">जब न्यूनतम महसूस तापमान %1$s से कम हो</string>
     <string name="settings_clothes_cond_temp_above">जब अधिकतम महसूस तापमान %1$s से अधिक हो</string>
-    <string name="settings_clothes_cond_precip_above">जब बारिश की संभावना %.0f%% से अधिक हो</string>
+    <string name="settings_clothes_cond_rain_above">जब बारिश की संभावना %.0f%% से अधिक हो</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">दैनिक ClothesCast</string>

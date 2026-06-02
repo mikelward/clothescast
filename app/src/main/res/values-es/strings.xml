@@ -78,13 +78,13 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_color_label">Color</string>
     <string name="settings_clothes_condition_label">Condición</string>
     <string name="settings_clothes_value_label_temp">Umbral (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Umbral (%)</string>
+    <string name="settings_clothes_value_label_rain">Umbral (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Cuando se siente menos de</string>
     <string name="settings_clothes_cond_type_temp_above">Cuando se siente más de</string>
-    <string name="settings_clothes_cond_type_precip_above">Cuando la probabilidad de lluvia supera</string>
+    <string name="settings_clothes_cond_type_rain_above">Cuando la probabilidad de lluvia supera</string>
     <string name="settings_clothes_cond_temp_below">cuando la temperatura percibida es inferior a %1$s</string>
     <string name="settings_clothes_cond_temp_above">cuando la temperatura percibida es superior a %1$s</string>
-    <string name="settings_clothes_cond_precip_above">cuando la probabilidad de lluvia supera %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">cuando la probabilidad de lluvia supera %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery

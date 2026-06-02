@@ -983,7 +983,7 @@ class GenerateDailyInsightTest {
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
-        val umbrellaOnly = listOf(ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)))
+        val umbrellaOnly = listOf(ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0)))
         val result = subject(
             location = london,
             prefs = prefs.copy(
@@ -1033,7 +1033,7 @@ class GenerateDailyInsightTest {
 
         val sweaterAndRainJacket = listOf(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val result = subject(
             location = london,

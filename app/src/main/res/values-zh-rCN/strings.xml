@@ -74,13 +74,13 @@ label localizes.
     <string name="settings_clothes_color_label">颜色</string>
     <string name="settings_clothes_condition_label">触发条件</string>
     <string name="settings_clothes_value_label_temp">阈值 (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">阈值 (%)</string>
+    <string name="settings_clothes_value_label_rain">阈值 (%)</string>
     <string name="settings_clothes_cond_type_temp_below">当体感温度低于</string>
     <string name="settings_clothes_cond_type_temp_above">当体感温度高于</string>
-    <string name="settings_clothes_cond_type_precip_above">当降水概率超过</string>
+    <string name="settings_clothes_cond_type_rain_above">当降水概率超过</string>
     <string name="settings_clothes_cond_temp_below">当最低体感温度低于 %1$s 时</string>
     <string name="settings_clothes_cond_temp_above">当最高体感温度高于 %1$s 时</string>
-    <string name="settings_clothes_cond_precip_above">当降水概率超过 %.0f%% 时</string>
+    <string name="settings_clothes_cond_rain_above">当降水概率超过 %.0f%% 时</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery

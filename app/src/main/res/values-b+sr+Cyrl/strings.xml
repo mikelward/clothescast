@@ -38,13 +38,13 @@ surfaces.
     <string name="settings_clothes_color_label">Боја</string>
     <string name="settings_clothes_condition_label">Услов</string>
     <string name="settings_clothes_value_label_temp">Праг (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Праг (%)</string>
+    <string name="settings_clothes_value_label_rain">Праг (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Када се осећа хладније од</string>
     <string name="settings_clothes_cond_type_temp_above">Када се осећа топлије од</string>
-    <string name="settings_clothes_cond_type_precip_above">Када је вероватноћа кише већа од</string>
+    <string name="settings_clothes_cond_type_rain_above">Када је вероватноћа кише већа од</string>
     <string name="settings_clothes_cond_temp_below">када је осећајна температура испод %1$s</string>
     <string name="settings_clothes_cond_temp_above">када је осећајна температура изнад %1$s</string>
-    <string name="settings_clothes_cond_precip_above">када је вероватноћа кише већа од %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">када је вероватноћа кише већа од %.0f%%</string>
 
     <!-- Clothes settings — title + description. -->
     <string name="settings_clothes_title">Правила одевања</string>

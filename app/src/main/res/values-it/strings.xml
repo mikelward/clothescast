@@ -66,13 +66,13 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_color_label">Colore</string>
     <string name="settings_clothes_condition_label">Condizione</string>
     <string name="settings_clothes_value_label_temp">Soglia (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Soglia (%)</string>
+    <string name="settings_clothes_value_label_rain">Soglia (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Quando si percepisce meno di</string>
     <string name="settings_clothes_cond_type_temp_above">Quando si percepisce più di</string>
-    <string name="settings_clothes_cond_type_precip_above">Quando la probabilità di pioggia supera</string>
+    <string name="settings_clothes_cond_type_rain_above">Quando la probabilità di pioggia supera</string>
     <string name="settings_clothes_cond_temp_below">quando la temperatura percepita è sotto %1$s</string>
     <string name="settings_clothes_cond_temp_above">quando la temperatura percepita è sopra %1$s</string>
-    <string name="settings_clothes_cond_precip_above">quando la probabilità di pioggia supera %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">quando la probabilità di pioggia supera %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery

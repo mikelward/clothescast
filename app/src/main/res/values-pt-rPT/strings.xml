@@ -99,13 +99,13 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_clothes_color_label">Cor</string>
     <string name="settings_clothes_condition_label">Condição</string>
     <string name="settings_clothes_value_label_temp">Limite (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Limite (%)</string>
+    <string name="settings_clothes_value_label_rain">Limite (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Quando a sensação térmica for inferior a</string>
     <string name="settings_clothes_cond_type_temp_above">Quando a sensação térmica for superior a</string>
-    <string name="settings_clothes_cond_type_precip_above">Quando a probabilidade de chuva ultrapassar</string>
+    <string name="settings_clothes_cond_type_rain_above">Quando a probabilidade de chuva ultrapassar</string>
     <string name="settings_clothes_cond_temp_below">quando a temperatura sentida for inferior a %1$s</string>
     <string name="settings_clothes_cond_temp_above">quando a temperatura sentida for superior a %1$s</string>
-    <string name="settings_clothes_cond_precip_above">quando a probabilidade de chuva ultrapassar %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">quando a probabilidade de chuva ultrapassar %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery

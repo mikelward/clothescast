@@ -434,13 +434,13 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_clothes_color_label">Color</string>
     <string name="settings_clothes_condition_label">Condició</string>
     <string name="settings_clothes_value_label_temp">Llindar (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Llindar (%)</string>
+    <string name="settings_clothes_value_label_rain">Llindar (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Quan se sent més fred que</string>
     <string name="settings_clothes_cond_type_temp_above">Quan se sent més càlid que</string>
-    <string name="settings_clothes_cond_type_precip_above">Quan la probabilitat de pluja supera</string>
+    <string name="settings_clothes_cond_type_rain_above">Quan la probabilitat de pluja supera</string>
     <string name="settings_clothes_cond_temp_below">quan la temperatura percebuda és inferior a %1$s</string>
     <string name="settings_clothes_cond_temp_above">quan la temperatura percebuda és superior a %1$s</string>
-    <string name="settings_clothes_cond_precip_above">quan la probabilitat de pluja supera el %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">quan la probabilitat de pluja supera el %.0f%%</string>
 
     <string name="notification_channel_daily_insight_name">ClothesCast diari</string>
     <string name="notification_channel_daily_insight_description">El resum meteorològic matinal al qual t\'has subscrit.</string>

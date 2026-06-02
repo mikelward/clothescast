@@ -32,13 +32,13 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_color_label">Kulay</string>
     <string name="settings_clothes_condition_label">Kondisyon</string>
     <string name="settings_clothes_value_label_temp">Limitasyon (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Limitasyon (%)</string>
+    <string name="settings_clothes_value_label_rain">Limitasyon (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kapag malamig nang mas mababa sa</string>
     <string name="settings_clothes_cond_type_temp_above">Kapag mainit nang higit sa</string>
-    <string name="settings_clothes_cond_type_precip_above">Kapag ang tsansa ng ulan ay higit sa</string>
+    <string name="settings_clothes_cond_type_rain_above">Kapag ang tsansa ng ulan ay higit sa</string>
     <string name="settings_clothes_cond_temp_below">kapag ang nararamdamang pinakamababang temperatura ay mas mababa sa %1$s</string>
     <string name="settings_clothes_cond_temp_above">kapag ang nararamdamang pinakamataas na temperatura ay higit sa %1$s</string>
-    <string name="settings_clothes_cond_precip_above">kapag ang tsansa ng ulan ay higit sa %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">kapag ang tsansa ng ulan ay higit sa %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_sweater">Sweater</string>

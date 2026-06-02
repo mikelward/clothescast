@@ -91,13 +91,13 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_color_label">Χρώμα</string>
     <string name="settings_clothes_condition_label">Συνθήκη</string>
     <string name="settings_clothes_value_label_temp">Όριο (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Όριο (%)</string>
+    <string name="settings_clothes_value_label_rain">Όριο (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Όταν η αισθητή θερμοκρασία είναι κάτω από</string>
     <string name="settings_clothes_cond_type_temp_above">Όταν η αισθητή θερμοκρασία είναι πάνω από</string>
-    <string name="settings_clothes_cond_type_precip_above">Όταν η πιθανότητα βροχής ξεπερνά</string>
+    <string name="settings_clothes_cond_type_rain_above">Όταν η πιθανότητα βροχής ξεπερνά</string>
     <string name="settings_clothes_cond_temp_below">όταν η ελάχιστη αισθητή θερμοκρασία είναι κάτω από %1$s</string>
     <string name="settings_clothes_cond_temp_above">όταν η μέγιστη αισθητή θερμοκρασία είναι πάνω από %1$s</string>
-    <string name="settings_clothes_cond_precip_above">όταν η πιθανότητα βροχής ξεπερνά %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">όταν η πιθανότητα βροχής ξεπερνά %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery

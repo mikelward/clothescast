@@ -113,7 +113,7 @@ class EvaluateClothesRulesTest {
         // bare "rain jacket", matching the icon (which paints the shell over the
         // default top). The bottom slot still falls back to its default too.
         val rules = listOf(
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val out = subject(
             forecast(min = 18.0, max = 24.0, precip = 70.0, condition = WeatherCondition.RAIN),
@@ -130,7 +130,7 @@ class EvaluateClothesRulesTest {
 
     @Test
     fun `explicit base-top rule survives under a rain jacket`() {
-        // A user's own base-top rule (t-shirt > 20°C) plus a rain-jacket precip
+        // A user's own base-top rule (t-shirt > 20°C) plus a rain-jacket rain
         // rule, both firing on a warm wet day. The rain jacket is a thin OUTER
         // shell that doesn't subsume the base top, so layerReduce keeps the
         // t-shirt — the prose reads "Wear a t-shirt and a rain jacket", matching
@@ -138,7 +138,7 @@ class EvaluateClothesRulesTest {
         // added since an explicit base top already covers the slot.
         val rules = listOf(
             ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(20.0)),
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val out = subject(
             forecast(min = 19.0, max = 24.0, precip = 70.0, condition = WeatherCondition.RAIN),
@@ -156,7 +156,7 @@ class EvaluateClothesRulesTest {
         // prose reads "Wear a sweater and a rain jacket".
         val rules = listOf(
             ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
-            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.RainProbabilityAbove(30.0)),
         )
         val out = subject(
             forecast(min = 11.0, max = 15.0, precip = 70.0, condition = WeatherCondition.RAIN),
@@ -168,11 +168,11 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
-    fun `snowy day above the umbrella gate suppresses the carried umbrella`() {
-        // The umbrella default keys off aggregate precip probability, so an 80%
-        // snowy day clears its gate — but snow doesn't warrant an umbrella, so
-        // the carried rule is filtered out while the worn cold-weather rules
-        // still fire. Keeps the icon, recommendations, and prose consistent.
+    fun `snowy day does not match the rain-keyed umbrella`() {
+        // A rain rule excludes snow, so an 80% snowy day — whose probability
+        // would otherwise clear the umbrella's gate — doesn't match it, while
+        // the worn cold-weather rules still fire. Keeps the icon,
+        // recommendations, and prose consistent.
         val out = subject(
             forecast(min = -2.0, max = 2.0, precip = 80.0, condition = WeatherCondition.SNOW),
             ClothesRule.DEFAULTS,
@@ -182,9 +182,25 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
-    fun `thunderstorm day above the umbrella gate keeps the carried umbrella`() {
-        // Thunderstorm is treated as rain — a wet forecast the user wants an
-        // umbrella for — so the carried rule survives the condition gate.
+    fun `snowy day does not match a worn rain rule either`() {
+        // Snow excludes *every* rain rule, not just the carried umbrella: a
+        // user's worn rain rule (here a rain-keyed jacket) also stays off a
+        // snowy day, because snow isn't rain. (A separate cold-weather sweater
+        // rule still fires on the temperature.)
+        val rainJacket = ClothesRule(Garment.JACKET, ClothesRule.RainProbabilityAbove(50.0))
+        val sweater = ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0))
+        val out = subject(
+            forecast(min = -2.0, max = 2.0, precip = 80.0, condition = WeatherCondition.SNOW),
+            listOf(rainJacket, sweater),
+        )
+        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater")
+        out.items.shouldNotContain("jacket")
+    }
+
+    @Test
+    fun `thunderstorm day matches the rain-keyed umbrella`() {
+        // Thunderstorm is rain (not frozen), so the rain rule matches and the
+        // umbrella fires.
         val out = subject(
             forecast(min = 12.0, max = 18.0, precip = 70.0, condition = WeatherCondition.THUNDERSTORM),
             ClothesRule.DEFAULTS,
@@ -193,12 +209,12 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
-    fun `high rain chance coded overcast still keeps the carried umbrella`() {
+    fun `high rain chance coded overcast still matches the rain-keyed umbrella`() {
         // The bug case: 88% chance of rain but the peak-probability hour carries
         // an "overcast" code (high probability, ~0mm accumulation), so the raw
         // daily condition is CLOUDY, not a wet code. The prose still announces
-        // the rain, so the umbrella must surface too — only frozen precip (snow)
-        // suppresses the carried slot.
+        // the rain, so the umbrella must surface too — a rain rule excludes only
+        // frozen precip (snow), not dry-coded-but-likely days.
         val out = subject(
             forecast(min = 9.0, max = 15.0, precip = 88.0, condition = WeatherCondition.CLOUDY),
             ClothesRule.DEFAULTS,

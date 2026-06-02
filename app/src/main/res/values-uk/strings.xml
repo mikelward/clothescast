@@ -82,13 +82,13 @@ only the displayed label localizes.
     <string name="settings_clothes_color_label">Колір</string>
     <string name="settings_clothes_condition_label">Умова</string>
     <string name="settings_clothes_value_label_temp">Поріг (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Поріг (%)</string>
+    <string name="settings_clothes_value_label_rain">Поріг (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Коли відчувається холодніше</string>
     <string name="settings_clothes_cond_type_temp_above">Коли відчувається тепліше</string>
-    <string name="settings_clothes_cond_type_precip_above">Коли ймовірність дощу перевищує</string>
+    <string name="settings_clothes_cond_type_rain_above">Коли ймовірність дощу перевищує</string>
     <string name="settings_clothes_cond_temp_below">коли відчувана температура нижче %1$s</string>
     <string name="settings_clothes_cond_temp_above">коли відчувана температура вище %1$s</string>
-    <string name="settings_clothes_cond_precip_above">коли ймовірність дощу перевищує %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">коли ймовірність дощу перевищує %.0f%%</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Щоденний ClothesCast</string>

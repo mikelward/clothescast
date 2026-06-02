@@ -6,8 +6,8 @@ package app.clothescast.core.domain.model
  *
  * Temperature thresholds are checked against "feels like" (apparent) values rather
  * than raw 2 m air temperature — what the user actually experiences when stepping
- * outside, factoring in wind chill and humidity. Precipitation rules check the day's
- * peak probability.
+ * outside, factoring in wind chill and humidity. Rain rules check the day's peak
+ * chance of rain — rain specifically, not snow (see [RainProbabilityAbove]).
  *
  * [item] is a typed [Garment]; the on-disk DTO stores its key as a string and
  * drops any stored rule whose key isn't in the catalog (legacy free-form items
@@ -64,8 +64,22 @@ data class ClothesRule(
             forecast.feelsLikeMaxC > value.fromUnit(unit)
     }
 
-    data class PrecipitationProbabilityAbove(val percent: Double) : Condition {
-        override fun matches(forecast: DailyForecast) = forecast.precipitationProbabilityMaxPct > percent
+    /**
+     * Rain-chance threshold: matches when the day's peak chance of rain clears
+     * [percent]. "Rain" specifically — not snow. The forecast carries a single
+     * precipitation-probability series (Open-Meteo doesn't split rain vs. snow
+     * probability), so "is it rain" is decided from the day's [condition]: the
+     * rule clears when the probability is above [percent] **and** the day isn't
+     * snowing ([isFrozenPrecipitation]). A high-probability hour the weather
+     * code happens to label overcast (88% chance, ~0 mm accumulation) still
+     * counts as rain — only frozen precipitation is excluded — so a rain rule
+     * fires on exactly the days the insight prose announces rain, and stays off
+     * a snowy day (where the snow probability would otherwise clear the gate).
+     */
+    data class RainProbabilityAbove(val percent: Double) : Condition {
+        override fun matches(forecast: DailyForecast) =
+            forecast.precipitationProbabilityMaxPct > percent &&
+                !forecast.condition.isFrozenPrecipitation()
     }
 
     companion object {
@@ -73,13 +87,15 @@ data class ClothesRule(
         // align with the `today_outfit_top_*` labels in values/strings.xml.
         // Per-language phrasers translate at format time
         // (e.g. GermanClothesPhraser maps "sweater" → "Pullover").
-        // The umbrella ships as a precip-keyed default (carried accessory):
-        // when the day's peak rain probability clears 30% we suggest bringing
+        // The umbrella ships as a rain-keyed default (carried accessory):
+        // when the day's peak chance of rain clears 30% we suggest bringing
         // one, folded into the insight's rain clause ("Rain at 3pm, bring an
-        // umbrella."). Like every default it's editable — the user can lower /
-        // raise the gate or delete the rule entirely from the clothes-rule
-        // editor. The 30% gate mirrors the POSSIBLE rain tier the morning
-        // insight already uses to mention rain at all.
+        // umbrella."). [RainProbabilityAbove] excludes snow, so the umbrella
+        // stays off a snowy day even though snow would clear the probability.
+        // Like every default it's editable — the user can lower / raise the
+        // gate or delete the rule entirely from the clothes-rule editor. The
+        // 30% gate mirrors the POSSIBLE rain tier the morning insight already
+        // uses to mention rain at all.
         // TODO(rain-accessory-variants): broaden the carried-accessory rules
         //  beyond the umbrella (rain jacket, hood, rain boots, …) once the
         //  resource strings and per-locale phrasers cover them.
@@ -89,7 +105,7 @@ data class ClothesRule(
             ClothesRule(Garment.COAT, TemperatureBelow(4.0)),
             ClothesRule(Garment.GLOVES, TemperatureBelow(4.0)),
             ClothesRule(Garment.SHORTS, TemperatureAbove(23.0)),
-            ClothesRule(Garment.UMBRELLA, PrecipitationProbabilityAbove(30.0)),
+            ClothesRule(Garment.UMBRELLA, RainProbabilityAbove(30.0)),
         )
 
         /** Sanity bounds in °C for the rationale dialog's `+1°` / `−1°` taps. Wide enough
@@ -104,11 +120,11 @@ data class ClothesRule(
 
 /**
  * The Celsius-equivalent threshold of a temperature-keyed rule, regardless of
- * which unit the user typed it in. Returns `null` for [ClothesRule.PrecipitationProbabilityAbove].
+ * which unit the user typed it in. Returns `null` for [ClothesRule.RainProbabilityAbove].
  */
 fun ClothesRule.thresholdC(): Double? = when (val c = condition) {
     is ClothesRule.TemperatureBelow -> c.value.fromUnit(c.unit)
     is ClothesRule.TemperatureAbove -> c.value.fromUnit(c.unit)
-    is ClothesRule.PrecipitationProbabilityAbove -> null
+    is ClothesRule.RainProbabilityAbove -> null
 }
 

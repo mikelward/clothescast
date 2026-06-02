@@ -64,13 +64,13 @@ is unchanged; only the displayed label localizes.
     <string name="settings_clothes_color_label">Kolor</string>
     <string name="settings_clothes_condition_label">Warunek</string>
     <string name="settings_clothes_value_label_temp">Próg (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Próg (%)</string>
+    <string name="settings_clothes_value_label_rain">Próg (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Gdy odczuwalna temperatura spada poniżej</string>
     <string name="settings_clothes_cond_type_temp_above">Gdy odczuwalna temperatura przekracza</string>
-    <string name="settings_clothes_cond_type_precip_above">Gdy prawdopodobieństwo deszczu przekracza</string>
+    <string name="settings_clothes_cond_type_rain_above">Gdy prawdopodobieństwo deszczu przekracza</string>
     <string name="settings_clothes_cond_temp_below">gdy odczuwalna temperatura spada poniżej %1$s</string>
     <string name="settings_clothes_cond_temp_above">gdy odczuwalna temperatura przekracza %1$s</string>
-    <string name="settings_clothes_cond_precip_above">gdy prawdopodobieństwo deszczu przekracza %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">gdy prawdopodobieństwo deszczu przekracza %.0f%%</string>
 
     <!--
     Schedule screen.

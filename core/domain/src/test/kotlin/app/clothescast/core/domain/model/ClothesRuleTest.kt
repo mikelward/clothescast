@@ -90,15 +90,25 @@ class ClothesRuleTest {
     }
 
     @Test
-    fun `precipitation rule uses peak probability`() {
-        val rule = ClothesRule(Garment.JACKET, ClothesRule.PrecipitationProbabilityAbove(50.0))
+    fun `rain rule uses peak chance of rain`() {
+        val rule = ClothesRule(Garment.JACKET, ClothesRule.RainProbabilityAbove(50.0))
         rule.appliesTo(forecast(min = 10.0, max = 18.0, precip = 65.0)) shouldBe true
         rule.appliesTo(forecast(min = 10.0, max = 18.0, precip = 30.0)) shouldBe false
     }
 
     @Test
-    fun `defaults cover the temperature cases plus the precip-keyed umbrella`() {
-        // The umbrella ships as a precip-keyed default (peak rain probability
+    fun `rain rule excludes snow even above the gate`() {
+        // "Rain" means rain, not snow: an 80% snowy day clears the numeric gate
+        // but isn't rain, so the rule doesn't apply. A high-chance overcast day
+        // (no wet code, but not snow) still counts as rain.
+        val rule = ClothesRule(Garment.UMBRELLA, ClothesRule.RainProbabilityAbove(30.0))
+        rule.appliesTo(forecast(min = -2.0, max = 2.0, precip = 80.0).copy(condition = WeatherCondition.SNOW)) shouldBe false
+        rule.appliesTo(forecast(min = 9.0, max = 15.0, precip = 80.0).copy(condition = WeatherCondition.CLOUDY)) shouldBe true
+    }
+
+    @Test
+    fun `defaults cover the temperature cases plus the rain-keyed umbrella`() {
+        // The umbrella ships as a rain-keyed default (peak chance of rain
         // above 30%); the temperature rules cover the cold / warm cases.
         val items = ClothesRule.DEFAULTS.map { it.item.itemKey }
         items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts", "umbrella")

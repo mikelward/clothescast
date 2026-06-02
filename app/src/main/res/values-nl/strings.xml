@@ -64,13 +64,13 @@ the displayed label localizes.
     <string name="settings_clothes_color_label">Kleur</string>
     <string name="settings_clothes_condition_label">Voorwaarde</string>
     <string name="settings_clothes_value_label_temp">Drempel (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Drempel (%)</string>
+    <string name="settings_clothes_value_label_rain">Drempel (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Wanneer het kouder voelt dan</string>
     <string name="settings_clothes_cond_type_temp_above">Wanneer het warmer voelt dan</string>
-    <string name="settings_clothes_cond_type_precip_above">Wanneer de kans op regen groter is dan</string>
+    <string name="settings_clothes_cond_type_rain_above">Wanneer de kans op regen groter is dan</string>
     <string name="settings_clothes_cond_temp_below">wanneer de gevoelstemperatuur onder %1$s ligt</string>
     <string name="settings_clothes_cond_temp_above">wanneer de gevoelstemperatuur boven %1$s ligt</string>
-    <string name="settings_clothes_cond_precip_above">wanneer de kans op regen groter is dan %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">wanneer de kans op regen groter is dan %.0f%%</string>
 
     <!--
     Schedule screen.

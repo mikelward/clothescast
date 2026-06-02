@@ -36,13 +36,13 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_clothes_color_label">Krāsa</string>
     <string name="settings_clothes_condition_label">Nosacījums</string>
     <string name="settings_clothes_value_label_temp">Slieksnis (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Slieksnis (%)</string>
+    <string name="settings_clothes_value_label_rain">Slieksnis (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kad sajūtas vēsāks nekā</string>
     <string name="settings_clothes_cond_type_temp_above">Kad sajūtas siltāks nekā</string>
-    <string name="settings_clothes_cond_type_precip_above">Kad lietus iespējamība pārsniedz</string>
+    <string name="settings_clothes_cond_type_rain_above">Kad lietus iespējamība pārsniedz</string>
     <string name="settings_clothes_cond_temp_below">kad sajustā temperatūra ir zem %1$s</string>
     <string name="settings_clothes_cond_temp_above">kad sajustā temperatūra ir virs %1$s</string>
-    <string name="settings_clothes_cond_precip_above">kad lietus iespējamība pārsniedz %.0f%%</string>
+    <string name="settings_clothes_cond_rain_above">kad lietus iespējamība pārsniedz %.0f%%</string>
     <string name="settings_clothes_title">Apģērba noteikumi</string>
     <string name="settings_clothes_description">Ja prognoze pārsniedz kādu no šiem sliekšņiem, apģērbs parādās tavā ikdienas ClothesCast.</string>
 

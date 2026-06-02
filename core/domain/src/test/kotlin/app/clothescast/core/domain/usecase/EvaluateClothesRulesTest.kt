@@ -129,6 +129,21 @@ class EvaluateClothesRulesTest {
         out.rules.map { it.item.itemKey }.shouldContain("umbrella")
     }
 
+    @Test
+    fun `high rain chance coded overcast still keeps the carried umbrella`() {
+        // The bug case: 88% chance of rain but the peak-probability hour carries
+        // an "overcast" code (high probability, ~0mm accumulation), so the raw
+        // daily condition is CLOUDY, not a wet code. The prose still announces
+        // the rain, so the umbrella must surface too — only frozen precip (snow)
+        // suppresses the carried slot.
+        val out = subject(
+            forecast(min = 9.0, max = 15.0, precip = 88.0, condition = WeatherCondition.CLOUDY),
+            ClothesRule.DEFAULTS,
+        )
+        out.rules.map { it.item.itemKey }.shouldContain("umbrella")
+        out.items.shouldContain("umbrella")
+    }
+
 
     @Test
     fun `user-selected default rules flow through to the resolved items`() {

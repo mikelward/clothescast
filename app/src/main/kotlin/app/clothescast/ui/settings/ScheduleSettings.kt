@@ -79,7 +79,10 @@ internal fun ScheduleContent(
     dailyMentionEveningEvents: Boolean,
     deliveryMode: DeliveryMode,
     tonightDeliveryMode: DeliveryMode,
-    sharedTtsAvailable: Boolean,
+    // True when speech already has a working engine (device TTS, or Gemini with
+    // a BYOK key / the shared proxy). When set, turning on "Speak" skips the
+    // jump to Voice settings — there's nothing left to configure.
+    speechConfigured: Boolean,
     // Location state, so enabling a schedule can request exactly the location
     // access an unattended scheduled run needs: foreground when no location is
     // set yet, then always-on once device location is the source.
@@ -98,6 +101,7 @@ internal fun ScheduleContent(
     // Enabling the "Speak" delivery channel jumps to the full Voice settings page
     // to pick the engine and (for Gemini) drop in a key. The page shows a "Done"
     // button that returns here — see ClothesCastNavHost wiring it to VoiceDest.
+    // Only fires when speech isn't set up yet (see [speechConfigured]).
     onSetUpSpeech: () -> Unit,
     // Gates the per-section "Play now" buttons: false while any daily / tonight
     // / play worker is active, so a preview can't start a second concurrent
@@ -220,6 +224,13 @@ internal fun ScheduleContent(
         }
     }
 
+    // Turning on "Speak" jumps to Voice settings so a first-time user can pick
+    // an engine and (for Gemini) drop in a key. But if speech is already set up,
+    // there's nothing to configure — stay put rather than bouncing them away.
+    val requestSpeechSetup: () -> Unit = {
+        if (!speechConfigured) onSetUpSpeech()
+    }
+
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
         scrollState = scrollState,
@@ -255,7 +266,7 @@ internal fun ScheduleContent(
                 onSetDeliveryMode = onSetDeliveryMode,
                 onSetMentionEveningEvents = onSetDailyMentionEveningEvents,
                 onRequestNotificationPermission = requestNotificationPermission,
-                onRequestSpeechSetup = onSetUpSpeech,
+                onRequestSpeechSetup = requestSpeechSetup,
                 onPreview = { triggerPreview(context, ForecastPeriod.TODAY) },
                 previewEnabled = previewEnabled,
             )
@@ -277,7 +288,7 @@ internal fun ScheduleContent(
                 onChange = onSetTonightSchedule,
                 onSetDeliveryMode = onSetTonightDeliveryMode,
                 onRequestNotificationPermission = requestNotificationPermission,
-                onRequestSpeechSetup = onSetUpSpeech,
+                onRequestSpeechSetup = requestSpeechSetup,
                 onPreview = { triggerPreview(context, ForecastPeriod.TONIGHT) },
                 previewEnabled = previewEnabled,
             )

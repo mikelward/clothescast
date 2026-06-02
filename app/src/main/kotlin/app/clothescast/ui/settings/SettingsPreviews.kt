@@ -127,7 +127,7 @@ private fun ScheduleContentSample() {
         dailyMentionEveningEvents = false,
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         tonightDeliveryMode = DeliveryMode.NOTIFICATION_ONLY,
-        sharedTtsAvailable = false,
+        speechConfigured = false,
         useDeviceLocation = false,
         location = null,
         padding = PaddingValues(0.dp),

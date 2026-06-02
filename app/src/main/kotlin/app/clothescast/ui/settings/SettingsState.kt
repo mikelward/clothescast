@@ -303,4 +303,17 @@ data class SettingsState(
     val castTonight: Boolean = true,
     /** When true, audio-carrying cast suppresses the phone speaker. */
     val castSkipPhoneSpeech: Boolean = true,
-)
+) {
+    /**
+     * True when enabling "Speak" delivery would already produce audio with
+     * nothing left to set up: device TTS is always available on the phone, and
+     * Gemini is usable once there's a BYOK key or the shared proxy. The Schedule
+     * screen reads this to avoid bouncing the user to Voice settings when speech
+     * is already configured — there'd be nothing for them to do there.
+     */
+    val speechConfigured: Boolean
+        get() = when (ttsEngine) {
+            TtsEngine.DEVICE -> true
+            TtsEngine.GEMINI -> apiKeyConfigured || sharedTtsAvailable
+        }
+}

@@ -45,6 +45,29 @@ fun WeatherCondition.warrantsRainAccessory(): Boolean = when (this) {
 }
 
 /**
+ * True when this condition is frozen precipitation — snow — which an umbrella
+ * doesn't shelter against.
+ *
+ * This is the carried-accessory gate the *rule engine* uses
+ * ([EvaluateClothesRules], mirrored in [OutfitSuggestion.fromForecast]), and
+ * it's deliberately the inverse-minus-snow of [warrantsRainAccessory] rather
+ * than `!warrantsRainAccessory()`. The rule engine reads the raw daily
+ * `condition` — the weather code of the day's peak-*probability* hour — which
+ * routinely under-calls the precipitation *type*: an hour can sit at 88% chance
+ * of rain yet carry an "overcast" code because its modeled accumulation is ~0
+ * (high probability, little rain). Gating the umbrella on "is the code wet"
+ * there drops it on exactly those days, even though the insight prose still
+ * announces the rain (the prose coerces a high-probability hour to RAIN via
+ * `perModelConditionAt`, then gates its "bring an umbrella" clause on
+ * [warrantsRainAccessory] against that coerced condition). The rule engine
+ * can't coerce, so it gates on "not snow" instead — the umbrella's purpose is
+ * solely to keep it off a *snowy* day (snow can clear the probability gate too,
+ * and you don't umbrella snow). Any rain-shaped or dry-coded-but-likely day
+ * keeps the umbrella, so the card and the prose agree.
+ */
+internal fun WeatherCondition.isFrozenPrecipitation(): Boolean = this == WeatherCondition.SNOW
+
+/**
  * Per-model agreement thresholds for surfacing rain, in precipitation-
  * probability percent. The user's mental model is "1 model says rain → hedge
  * it as a chance; majority of models say a lot of rain → just say rain". 30%

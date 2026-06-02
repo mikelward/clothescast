@@ -534,6 +534,27 @@ class OutfitSuggestionTest {
     }
 
     @Test
+    fun `a high rain chance coded overcast still lights the carried umbrella`() {
+        // The bug case: 88% chance of rain, but the peak-probability hour's
+        // weather code is overcast (high probability, ~0mm accumulation), so the
+        // raw daily condition is CLOUDY rather than a wet code. The umbrella must
+        // still light, matching the prose, since only snow suppresses it.
+        val umbrellaRules = listOf(
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(
+                feelsLikeMin = 9.0,
+                feelsLikeMax = 15.0,
+                precipMaxPct = 88.0,
+                condition = WeatherCondition.CLOUDY,
+            ),
+            umbrellaRules,
+        )
+        outfit.carried shouldBe OutfitSuggestion.Carried.UMBRELLA
+    }
+
+    @Test
     fun `a snowy day suppresses the carried umbrella even above the gate`() {
         // The umbrella default keys off aggregate precip probability, which can
         // clear its gate on a snowy day — but snow isn't wet-in-the-umbrella

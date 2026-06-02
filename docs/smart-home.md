@@ -152,6 +152,11 @@ forecast.
 Add the following to `configuration.yaml` (or anywhere your
 `mqtt:` block lives):
 
+<!-- raw guard: the snippets below are Home Assistant Jinja templates, not
+Jekyll Liquid. Without this guard GitHub Pages runs Liquid over them first and
+fails the build on the set/if tags. Keep everything through the matching
+endraw verbatim. -->
+{% raw %}
 ```yaml
 mqtt:
   sensor:
@@ -776,6 +781,7 @@ actions:
       media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
       media_content_type: image/jpeg
 ```
+{% endraw %}
 
 **Picker — swapping in Option B or C.** Replace the step-1 action
 with the Option B or Option C YAML from those sections. The fixed

@@ -153,11 +153,20 @@ data class ClothesClause(val items: List<String>) {
  * ("Chance of rain at 3pm.") because only a single per-model series flagged
  * the hour while others stayed dry. Defaults to LIKELY so legacy cached
  * payloads — written before the field existed — keep their original wording.
+ *
+ * [allDay] is set when LIKELY rain runs across the whole period rather than
+ * peaking at one hour — either it covers most of the window, or it falls in two
+ * or more separated spells. The formatter then drops the single-hour time
+ * phrase and says "Rain all day." (period-aware: "all night" on the night
+ * slice) so a wet-all-day forecast doesn't get undersold as a single shower.
+ * Only meaningful on the LIKELY tier; defaults to false so the POSSIBLE tier and
+ * legacy cached payloads keep naming an hour.
  */
 data class PrecipClause(
     val condition: WeatherCondition,
     val time: LocalTime,
     val likelihood: PrecipLikelihood = PrecipLikelihood.LIKELY,
+    val allDay: Boolean = false,
 )
 
 /**
@@ -208,6 +217,12 @@ data class CalendarTieInClause(val item: String)
  * LIKELY for back-compat with cached payloads written before the field
  * existed.
  *
+ * [allDay] mirrors [PrecipClause.allDay] for the evening slice: when the night's
+ * rain runs the whole window rather than peaking at one hour, the formatter
+ * drops the "at 9pm" and says "all night" ("Tonight, rain all night, bring a
+ * jacket."). Only meaningful when [rainTime] is set and [likelihood] is LIKELY;
+ * defaults to false so the POSSIBLE tier and cached payloads keep naming an hour.
+ *
  * [precipCondition] mirrors the same per-model peak's [WeatherCondition] so
  * the formatter can decide whether a wet-weather accessory mention makes
  * sense — see [warrantsRainAccessory] (umbrella for RAIN / DRIZZLE /
@@ -220,6 +235,7 @@ data class EveningEventTieInClause(
     val rainTime: LocalTime? = null,
     val likelihood: PrecipLikelihood = PrecipLikelihood.LIKELY,
     val precipCondition: WeatherCondition? = null,
+    val allDay: Boolean = false,
 )
 
 /**

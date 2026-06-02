@@ -1606,6 +1606,20 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
                 solarPeakWm2 = 800.0, sunshineMinutesAtMidday = 50.0, uvPeak = 6.5,
                 precipMmScale = 0.6,
             ),
+            // UKMO reports temperature and precipitation_mm but Open-Meteo
+            // omits `precipitation_probability_ukmo_seamless`, so its
+            // probability series is wholesale null. Modeling that here keeps
+            // the snapshots honest: UKMO draws a line on the temperature and
+            // rainfall-amount charts (and appears in their legends) but is
+            // absent from the chance-of-rain chart and its legend — the exact
+            // mismatch the chance-of-rain legend filter must respect. It also
+            // exercises the tail of MODEL_DRAW_ORDER, which the ECMWF/GFS/ICON
+            // trio never reached.
+            "ukmo_seamless" to shift(
+                deltaC = -3.0, precipDelta = 0.0, windBase = 10.0, cloudBase = 80.0,
+                solarPeakWm2 = 450.0, sunshineMinutesAtMidday = 20.0, uvPeak = 3.5,
+                precipMmScale = 1.4,
+            ).map { it.copy(precipitationProbabilityPct = null) },
             // best_match shares ECMWF's offsets so the preview reflects the
             // realistic case — Open-Meteo's "Auto" pick typically *is* one of
             // the consulted models for the region, not a wild outlier. With

@@ -204,6 +204,80 @@ automation runs, and — because the marker only advances on a genuinely
 new bundle — it won't re-fire when HA reconnects and re-reads the
 retained set.
 
+## Home Assistant — don't speak a stale forecast
+
+The `now/*` topics are **retained**, so the prose sensor always holds
+the last forecast ClothesCast published — even if that was two days ago
+because your phone was off, the app was killed, or the broker was
+unreachable. An automation that triggers on the commit marker
+(`sensor.clothescast_now_updated` state-change, above) is fresh by
+construction: it only fires when a genuinely new bundle lands. But an
+automation triggered by **time of day** ("speak the forecast at 07:01")
+reads whatever's retained — and that can be stale.
+
+ClothesCast's twice-daily worker means a current forecast is at most
+~12 hours old, so gate any time-triggered automation on the age of the
+commit marker. `sensor.clothescast_now_updated` is a `timestamp`
+device-class entity, so its state is already a timezone-aware datetime
+you can subtract from `now()`:
+
+```yaml
+triggers:
+  - trigger: time
+    at: "07:01:00"
+
+conditions:
+  # Skip if the latest forecast is more than 12 hours old — the worker
+  # refreshes roughly twice a day, so anything older means a missed run.
+  - condition: template
+    value_template: >
+      {{ has_value('sensor.clothescast_now_updated')
+         and (now() - states('sensor.clothescast_now_updated') | as_datetime).total_seconds() < 12 * 3600 }}
+
+actions:
+  - action: tts.speak
+    # … your speak / cast action here …
+```
+
+The `has_value(...)` guard covers the cold-start case where the sensor
+hasn't received a retained message yet (`unknown` / `unavailable`),
+which would otherwise throw in the `as_datetime` subtraction. Tune the
+`12 * 3600` threshold to taste — drop it lower if you'd rather stay
+silent than read a forecast from the previous run.
+
+## Home Assistant — a dashboard card with a freshness footer
+
+To put the forecast on a Lovelace dashboard *and* make staleness
+obvious at a glance, a Markdown card reads the prose sensor and appends
+a relative "generated at" footer from the commit marker. A relative age
+("Updated 2 hours ago") beats a fixed label like "Sunday's forecast":
+the `now` sensor mirrors whichever period last published, so there's no
+single day to name — and "Updated 2 days ago" is self-evidently stale in
+a way a weekday name never is.
+
+```yaml
+type: markdown
+content: >
+  {{ states('sensor.clothescast_now') }}
+
+  {% set updated = states('sensor.clothescast_now_updated') %}
+  {% if has_value('sensor.clothescast_now_updated') %}
+    {% set age = (now() - updated | as_datetime).total_seconds() %}
+    {% if age > 12 * 3600 %}
+  ⚠️ *Stale — updated {{ relative_time(updated | as_datetime) }} ago*
+    {% else %}
+  *Updated {{ relative_time(updated | as_datetime) }} ago*
+    {% endif %}
+  {% else %}
+  *No forecast received yet*
+  {% endif %}
+```
+
+`relative_time()` renders the age as a human phrase ("2 hours", "1 day")
+and the `age > 12 * 3600` branch swaps in a ⚠️ warning once the forecast
+crosses the same 12-hour line the automation above uses to stay silent —
+so the dashboard and your spoken briefing agree on what counts as stale.
+
 ## Home Assistant — outfit image on Nest Hub
 
 Alongside the prose sensor, ClothesCast publishes a PNG outfit card to

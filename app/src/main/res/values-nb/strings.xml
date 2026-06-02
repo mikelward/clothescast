@@ -74,7 +74,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_clothes_color_label">Farge</string>
     <string name="settings_clothes_condition_label">Vilkår</string>
     <string name="settings_clothes_value_label_temp">Terskel (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Terskel (%%)</string>
+    <string name="settings_clothes_value_label_precip">Terskel (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Når det føles kaldere enn</string>
     <string name="settings_clothes_cond_type_temp_above">Når det føles varmere enn</string>
     <string name="settings_clothes_cond_type_precip_above">Når regnsannsynligheten er over</string>

@@ -39,7 +39,7 @@ What is NOT overridden, by design:
     <string name="settings_clothes_color_label">Spalva</string>
     <string name="settings_clothes_condition_label">Sąlyga</string>
     <string name="settings_clothes_value_label_temp">Riba (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Riba (%%)</string>
+    <string name="settings_clothes_value_label_precip">Riba (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kai juntama šalčiau nei</string>
     <string name="settings_clothes_cond_type_temp_above">Kai juntama šilčiau nei</string>
     <string name="settings_clothes_cond_type_precip_above">Kai lietaus tikimybė viršija</string>

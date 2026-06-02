@@ -34,7 +34,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_clothes_color_label">রং</string>
     <string name="settings_clothes_condition_label">শর্ত</string>
     <string name="settings_clothes_value_label_temp">সীমা (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">সীমা (%%)</string>
+    <string name="settings_clothes_value_label_precip">সীমা (%)</string>
     <string name="settings_clothes_cond_type_temp_below">যখন অনুভব হয় তার চেয়ে ঠান্ডা</string>
     <string name="settings_clothes_cond_type_temp_above">যখন অনুভব হয় তার চেয়ে গরম</string>
     <string name="settings_clothes_cond_type_precip_above">যখন বৃষ্টির সম্ভাবনা বেশি</string>

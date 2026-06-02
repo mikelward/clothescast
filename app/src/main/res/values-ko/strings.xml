@@ -80,7 +80,7 @@ displayed label localizes.
     <string name="settings_clothes_color_label">색상</string>
     <string name="settings_clothes_condition_label">조건</string>
     <string name="settings_clothes_value_label_temp">기준값 (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">기준값 (%%)</string>
+    <string name="settings_clothes_value_label_precip">기준값 (%)</string>
     <string name="settings_clothes_cond_type_temp_below">체감 온도가 다음보다 낮을 때</string>
     <string name="settings_clothes_cond_type_temp_above">체감 온도가 다음보다 높을 때</string>
     <string name="settings_clothes_cond_type_precip_above">강수 확률이 다음보다 높을 때</string>

@@ -38,7 +38,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_clothes_color_label">اللون</string>
     <string name="settings_clothes_condition_label">الشرط</string>
     <string name="settings_clothes_value_label_temp">العتبة (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">العتبة (%%)</string>
+    <string name="settings_clothes_value_label_precip">العتبة (%)</string>
     <string name="settings_clothes_cond_type_temp_below">عندما تكون درجة الحرارة المحسوسة أقل من</string>
     <string name="settings_clothes_cond_type_temp_above">عندما تكون درجة الحرارة المحسوسة أعلى من</string>
     <string name="settings_clothes_cond_type_precip_above">عندما تكون احتمالية الأمطار أعلى من</string>

@@ -64,7 +64,7 @@ the displayed label localizes.
     <string name="settings_clothes_color_label">Kleur</string>
     <string name="settings_clothes_condition_label">Voorwaarde</string>
     <string name="settings_clothes_value_label_temp">Drempel (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Drempel (%%)</string>
+    <string name="settings_clothes_value_label_precip">Drempel (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Wanneer het kouder voelt dan</string>
     <string name="settings_clothes_cond_type_temp_above">Wanneer het warmer voelt dan</string>
     <string name="settings_clothes_cond_type_precip_above">Wanneer de kans op regen groter is dan</string>

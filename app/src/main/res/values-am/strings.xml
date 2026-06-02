@@ -38,7 +38,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_color_label">ቀለም</string>
     <string name="settings_clothes_condition_label">ሁኔታ</string>
     <string name="settings_clothes_value_label_temp">ደረጃ (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">ደረጃ (%%)</string>
+    <string name="settings_clothes_value_label_precip">ደረጃ (%)</string>
     <string name="settings_clothes_cond_type_temp_below">ከሚሰማ ቀዝቃዛ ሲሆን</string>
     <string name="settings_clothes_cond_type_temp_above">ከሚሰማ ሞቃት ሲሆን</string>
     <string name="settings_clothes_cond_type_precip_above">የዝናብ ዕድል ሲጨምር</string>

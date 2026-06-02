@@ -37,7 +37,7 @@ standard in Israeli digital communication.
     <string name="settings_clothes_color_label">צבע</string>
     <string name="settings_clothes_condition_label">תנאי</string>
     <string name="settings_clothes_value_label_temp">סף (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">סף (%%)</string>
+    <string name="settings_clothes_value_label_precip">סף (%)</string>
     <string name="settings_clothes_cond_type_temp_below">כאשר הטמפרטורה המורגשת נמוכה מ</string>
     <string name="settings_clothes_cond_type_temp_above">כאשר הטמפרטורה המורגשת גבוהה מ</string>
     <string name="settings_clothes_cond_type_precip_above">כאשר הסיכוי לגשם גבוה מ</string>

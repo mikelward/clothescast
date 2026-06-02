@@ -35,6 +35,7 @@ import app.clothescast.ui.settings.SettingsCalendarPreview
 import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsClothesRuleDialogPreview
+import app.clothescast.ui.settings.SettingsClothesRulePrecipDialogPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsDoneBarPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
@@ -660,6 +661,7 @@ class PreviewSnapshots {
     // inside a Material3 dialog loops forever under Robolectric) — so it's a
     // plain onRoot capture, not captureDialog. See ClothesRuleEditPreviewCard.
     @Test fun settings_clothes_rule_dialog() = capture { SettingsClothesRuleDialogPreview() }
+    @Test fun settings_clothes_rule_precip_dialog() = capture { SettingsClothesRulePrecipDialogPreview() }
     @Test fun settings_region() = capture { SettingsRegionPreview() }
     @Test fun settings_display() = capture { SettingsDisplayPreview() }
     @Test fun settings_voice_device() = capture { SettingsVoiceDevicePreview() }

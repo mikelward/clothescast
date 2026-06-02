@@ -34,7 +34,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_clothes_color_label">Warna</string>
     <string name="settings_clothes_condition_label">Pencetus</string>
     <string name="settings_clothes_value_label_temp">Ambang (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Ambang (%%)</string>
+    <string name="settings_clothes_value_label_precip">Ambang (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Apabila terasa lebih sejuk daripada</string>
     <string name="settings_clothes_cond_type_temp_above">Apabila terasa lebih panas daripada</string>
     <string name="settings_clothes_cond_type_precip_above">Apabila kebarangkalian hujan melebihi</string>

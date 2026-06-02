@@ -75,7 +75,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_color_label">Farbe</string>
     <string name="settings_clothes_condition_label">Auslöser</string>
     <string name="settings_clothes_value_label_temp">Schwelle (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Schwelle (%%)</string>
+    <string name="settings_clothes_value_label_precip">Schwelle (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Wenn es sich kälter anfühlt als</string>
     <string name="settings_clothes_cond_type_temp_above">Wenn es sich wärmer anfühlt als</string>
     <string name="settings_clothes_cond_type_precip_above">Wenn die Regenwahrscheinlichkeit über</string>

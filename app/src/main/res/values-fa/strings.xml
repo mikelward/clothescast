@@ -36,7 +36,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_clothes_color_label">رنگ</string>
     <string name="settings_clothes_condition_label">شرط</string>
     <string name="settings_clothes_value_label_temp">آستانه (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">آستانه (%%)</string>
+    <string name="settings_clothes_value_label_precip">آستانه (%)</string>
     <string name="settings_clothes_cond_type_temp_below">وقتی دمای احساس‌شده کمتر از</string>
     <string name="settings_clothes_cond_type_temp_above">وقتی دمای احساس‌شده بیشتر از</string>
     <string name="settings_clothes_cond_type_precip_above">وقتی احتمال بارندگی بیشتر از</string>

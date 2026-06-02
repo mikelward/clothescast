@@ -1120,7 +1120,12 @@ private fun ClothesRuleFields(
  * Edit-mode sweater rule, threshold pre-filled in °C.
  */
 @Composable
-internal fun ClothesRuleEditPreviewCard() {
+internal fun ClothesRuleEditPreviewCard(
+    // ConditionType is file-private, so the precip vs. temp variant is selected
+    // by a Boolean the preview wrappers in SettingsPreviews can pass.
+    precip: Boolean = false,
+) {
+    val type = if (precip) ConditionType.PRECIP_ABOVE else ConditionType.TEMP_BELOW
     Surface(
         shape = MaterialTheme.shapes.extraLarge,
         tonalElevation = 6.dp,
@@ -1145,21 +1150,27 @@ internal fun ClothesRuleEditPreviewCard() {
                 }
             }
             ClothesRuleFields(
-                garment = Garment.SWEATER,
+                garment = if (precip) Garment.UMBRELLA else Garment.SWEATER,
                 onGarmentChange = {},
                 swatchColor = GarmentPickerTarget.Top(OutfitSuggestion.Top.SWEATER)
                     .effectiveColor(emptyMap(), emptyMap(), emptyMap(), emptyMap()),
                 onSwatchClick = {},
                 allowedTypes = ConditionType.entries.toList(),
-                type = ConditionType.TEMP_BELOW,
+                type = type,
                 onTypeChange = {},
-                valueText = "16",
+                valueText = if (precip) "30" else "16",
                 onValueChange = {},
                 valueValid = true,
-                valueLabel = stringResource(
-                    R.string.settings_clothes_value_label_temp,
-                    TemperatureUnit.CELSIUS.symbol(),
-                ),
+                // Mirror [ClothesRuleDialog]'s label selection so the preview
+                // exercises the same precip-vs-temp branch the real dialog does.
+                valueLabel = if (precip) {
+                    stringResource(R.string.settings_clothes_value_label_precip)
+                } else {
+                    stringResource(
+                        R.string.settings_clothes_value_label_temp,
+                        TemperatureUnit.CELSIUS.symbol(),
+                    )
+                },
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),

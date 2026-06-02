@@ -3234,8 +3234,22 @@ internal fun PrecipitationCard(
                     showModelSpread = showModelSpread,
                 )
                 if (perModelHourly != null) {
+                    // Mirror the chart's per-model visibility filter (see
+                    // [PrecipitationChart]) — list only the models that
+                    // actually have a probability line plotted, not every
+                    // model in byModel. Open-Meteo omits
+                    // `precipitation_probability_<model>` for some models
+                    // (UKMO, JMA, …) even though they report temperature and
+                    // precipitation_mm, so a bare `it in byModel` filter shows
+                    // a legend chip with no corresponding line on the chart.
+                    val visibleIds = if (showModelSpread) {
+                        MODEL_DRAW_ORDER.filter { modelId ->
+                            perModelHourly.byModel[modelId]
+                                ?.any { it.precipitationProbabilityPct != null } == true
+                        }
+                    } else emptyList()
                     ModelSpreadLegend(
-                        visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                        visibleModelIds = visibleIds,
                         mainLine = MainLineLegend(
                             color = AppTheme.mainLineColor,
                             label = stringResource(R.string.today_chart_main_line_label),

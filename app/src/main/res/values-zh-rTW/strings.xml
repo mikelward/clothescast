@@ -83,7 +83,7 @@ label localises.
     <string name="settings_clothes_color_label">顏色</string>
     <string name="settings_clothes_condition_label">觸發條件</string>
     <string name="settings_clothes_value_label_temp">閾值 (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">閾值 (%%)</string>
+    <string name="settings_clothes_value_label_precip">閾值 (%)</string>
     <string name="settings_clothes_cond_type_temp_below">當體感溫度低於</string>
     <string name="settings_clothes_cond_type_temp_above">當體感溫度高於</string>
     <string name="settings_clothes_cond_type_precip_above">當降水機率超過</string>

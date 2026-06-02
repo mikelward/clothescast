@@ -32,7 +32,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_color_label">Rangi</string>
     <string name="settings_clothes_condition_label">Hali</string>
     <string name="settings_clothes_value_label_temp">Kiwango (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Kiwango (%%)</string>
+    <string name="settings_clothes_value_label_precip">Kiwango (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Inapohisi baridi zaidi ya</string>
     <string name="settings_clothes_cond_type_temp_above">Inapohisi joto zaidi ya</string>
     <string name="settings_clothes_cond_type_precip_above">Uwezekano wa mvua ni zaidi ya</string>

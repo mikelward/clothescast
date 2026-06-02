@@ -36,7 +36,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_clothes_color_label">Krāsa</string>
     <string name="settings_clothes_condition_label">Nosacījums</string>
     <string name="settings_clothes_value_label_temp">Slieksnis (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Slieksnis (%%)</string>
+    <string name="settings_clothes_value_label_precip">Slieksnis (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Kad sajūtas vēsāks nekā</string>
     <string name="settings_clothes_cond_type_temp_above">Kad sajūtas siltāks nekā</string>
     <string name="settings_clothes_cond_type_precip_above">Kad lietus iespējamība pārsniedz</string>

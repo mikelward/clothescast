@@ -59,7 +59,7 @@ displayed label localizes.
     <string name="settings_clothes_color_label">Renk</string>
     <string name="settings_clothes_condition_label">Koşul</string>
     <string name="settings_clothes_value_label_temp">Eşik (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Eşik (%%)</string>
+    <string name="settings_clothes_value_label_precip">Eşik (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Hissedilen sıcaklık şundan düşükse</string>
     <string name="settings_clothes_cond_type_temp_above">Hissedilen sıcaklık şundan yüksekse</string>
     <string name="settings_clothes_cond_type_precip_above">Yağmur ihtimali şunu aşarsa</string>

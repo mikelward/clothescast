@@ -66,7 +66,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_color_label">Colore</string>
     <string name="settings_clothes_condition_label">Condizione</string>
     <string name="settings_clothes_value_label_temp">Soglia (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Soglia (%%)</string>
+    <string name="settings_clothes_value_label_precip">Soglia (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Quando si percepisce meno di</string>
     <string name="settings_clothes_cond_type_temp_above">Quando si percepisce più di</string>
     <string name="settings_clothes_cond_type_precip_above">Quando la probabilità di pioggia supera</string>

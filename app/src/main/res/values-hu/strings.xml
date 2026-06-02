@@ -191,7 +191,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_clothes_color_label">Szín</string>
     <string name="settings_clothes_condition_label">Feltétel</string>
     <string name="settings_clothes_value_label_temp">Küszöb (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Küszöb (%%)</string>
+    <string name="settings_clothes_value_label_precip">Küszöb (%)</string>
     <string name="settings_clothes_cond_type_temp_below">Ha hidegebbnek érződik mint</string>
     <string name="settings_clothes_cond_type_temp_above">Ha melegebbnek érződik mint</string>
     <string name="settings_clothes_cond_type_precip_above">Ha az eső valószínűsége nagyobb mint</string>

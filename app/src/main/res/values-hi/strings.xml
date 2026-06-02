@@ -68,7 +68,7 @@ Not overridden by design:
     <string name="settings_clothes_color_label">रंग</string>
     <string name="settings_clothes_condition_label">शर्त</string>
     <string name="settings_clothes_value_label_temp">सीमा (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">सीमा (%%)</string>
+    <string name="settings_clothes_value_label_precip">सीमा (%)</string>
     <string name="settings_clothes_cond_type_temp_below">जब महसूस हो उससे ठंडा</string>
     <string name="settings_clothes_cond_type_temp_above">जब महसूस हो उससे गर्म</string>
     <string name="settings_clothes_cond_type_precip_above">जब बारिश की संभावना से अधिक</string>

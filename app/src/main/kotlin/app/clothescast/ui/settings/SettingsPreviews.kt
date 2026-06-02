@@ -339,6 +339,16 @@ internal fun SettingsClothesRuleDialogPreview() {
     }
 }
 
+// The precip ("Threshold (%)") variant of the rule editor — guards the rain
+// threshold label, which renders its percent sign without format args.
+@Preview(name = "Settings · Clothes rule dialog (rain)", widthDp = 360)
+@Composable
+internal fun SettingsClothesRulePrecipDialogPreview() {
+    SettingsFrame {
+        ClothesRuleEditPreviewCard(precip = true)
+    }
+}
+
 @Preview(name = "Settings · Region & Units", widthDp = 360)
 @Composable
 internal fun SettingsRegionPreview() {

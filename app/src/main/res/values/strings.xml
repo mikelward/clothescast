@@ -1065,7 +1065,7 @@
     <string name="settings_clothes_color_label">Color</string>
     <string name="settings_clothes_condition_label">Trigger</string>
     <string name="settings_clothes_value_label_temp">Threshold (%1$s)</string>
-    <string name="settings_clothes_value_label_precip">Threshold (%%)</string>
+    <string name="settings_clothes_value_label_precip">Threshold (%)</string>
     <string name="settings_clothes_cond_type_temp_below">When it feels colder than</string>
     <string name="settings_clothes_cond_type_temp_above">When it feels warmer than</string>
     <string name="settings_clothes_cond_type_precip_above">When chance of rain is above</string>

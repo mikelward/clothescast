@@ -647,6 +647,33 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `precip clause says 'all day' when rain runs the whole period`() {
+        subject.format(
+            summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), allDay = true)),
+        ) shouldBe "Today, it will be 21°. Rain all day."
+    }
+
+    @Test
+    fun `precip clause says 'all night' for an all-day night slice`() {
+        subject.format(
+            summary(
+                period = ForecastPeriod.TONIGHT,
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(21, 0), allDay = true),
+            ),
+        ) shouldBe "Tonight, it will be 21°. Rain all night."
+    }
+
+    @Test
+    fun `all-day precip still appends a carried umbrella`() {
+        subject.format(
+            summary(
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), allDay = true),
+                carriedAccessories = listOf("umbrella"),
+            ),
+        ) shouldBe "Today, it will be 21°. Rain all day, bring an umbrella."
+    }
+
+    @Test
     fun `precip clause hedges with 'Chance of rain' when likelihood is POSSIBLE`() {
         subject.format(
             summary(
@@ -935,6 +962,50 @@ class InsightFormatterTest {
             ),
         )
         out shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
+    }
+
+    @Test
+    fun `evening event tie-in says 'all night' for bare all-day rain`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    allDay = true,
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Tonight, rain all night."
+    }
+
+    @Test
+    fun `evening event tie-in keeps the hour for all-day rain on the POSSIBLE tier`() {
+        // all-night is LIKELY-only — a single-model chance still names its hour.
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.POSSIBLE,
+                    allDay = true,
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm."
+    }
+
+    @Test
+    fun `evening event tie-in folds all-night rain ahead of the items`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket"),
+                    rainTime = LocalTime.of(21, 0),
+                    allDay = true,
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Tonight, rain all night, bring a jacket."
     }
 
     @Test

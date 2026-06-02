@@ -55,4 +55,15 @@ fun WeatherCondition.warrantsRainAccessory(): Boolean = when (this) {
 object PrecipProbability {
     const val POSSIBLE_THRESHOLD: Double = 30.0
     const val LIKELY_THRESHOLD: Double = 50.0
+
+    /**
+     * Fraction of a period's reported hours that must clear [LIKELY_THRESHOLD]
+     * before the insight stops naming a single peak hour ("Rain at 4pm.") and
+     * says the rain runs the whole window ("Rain all day."). 0.6 = a clear
+     * majority of the hours are wet, so a single time would undersell it — the
+     * exact case where the chart shows rain ≥ 50% across nearly every hour.
+     * Pairs with a separate "two or more separated rainy spells also count as
+     * all-day" rule in the renderer; either condition trips the all-day wording.
+     */
+    const val ALL_DAY_COVERAGE_FRACTION: Double = 0.6
 }

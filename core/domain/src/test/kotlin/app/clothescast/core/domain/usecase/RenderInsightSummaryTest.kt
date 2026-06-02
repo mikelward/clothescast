@@ -836,6 +836,110 @@ class RenderInsightSummaryTest {
         out.likelihood shouldBe PrecipLikelihood.LIKELY
     }
 
+    @Test
+    fun `precip clause is all-day when likely rain covers most of the daytime hours`() {
+        // The screenshot scenario: a single combined series sits ≥ 50% every
+        // hour from 07:00–18:00. No one hour represents the day, so the clause
+        // should drop the single peak and flag all-day. (One series → the
+        // per-model majority path can't fire; this exercises the base fallback.)
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 88.0,
+            condition = WeatherCondition.RAIN,
+            hourly = (7..18).map { hour ->
+                HourlyForecast(LocalTime.of(hour, 0), 14.0, 14.0, 70.0, WeatherCondition.RAIN)
+            },
+        )
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.LIKELY
+        out.allDay shouldBe true
+    }
+
+    @Test
+    fun `precip clause is all-day when likely rain falls in two separated spells`() {
+        // Two distinct rainy runs with a dry gap between them — neither covers a
+        // majority of the window (4 of 7 hours = 57%, under the coverage bar),
+        // but two separated spells alone trip all-day per the "either" rule.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 80.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(8, 0), 14.0, 14.0, 70.0, WeatherCondition.RAIN),
+                HourlyForecast(LocalTime.of(9, 0), 14.0, 14.0, 65.0, WeatherCondition.RAIN),
+                HourlyForecast(LocalTime.of(10, 0), 14.0, 14.0, 10.0, WeatherCondition.RAIN),
+                HourlyForecast(LocalTime.of(11, 0), 14.0, 14.0, 10.0, WeatherCondition.RAIN),
+                HourlyForecast(LocalTime.of(12, 0), 14.0, 14.0, 10.0, WeatherCondition.RAIN),
+                HourlyForecast(LocalTime.of(16, 0), 14.0, 14.0, 80.0, WeatherCondition.RAIN),
+                HourlyForecast(LocalTime.of(17, 0), 14.0, 14.0, 75.0, WeatherCondition.RAIN),
+            ),
+        )
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.allDay shouldBe true
+    }
+
+    @Test
+    fun `precip clause names a single hour for one short rain spell`() {
+        // One brief shower in an otherwise dry day — a single peak, not all-day.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 70.0,
+            condition = WeatherCondition.RAIN,
+            hourly = (10..18).map { hour ->
+                val pct = if (hour == 14 || hour == 15) 65.0 else 10.0
+                HourlyForecast(LocalTime.of(hour, 0), 14.0, 14.0, pct, WeatherCondition.RAIN)
+            },
+        )
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.allDay shouldBe false
+        out.time shouldBe LocalTime.of(14, 0)
+    }
+
+    @Test
+    fun `precip clause is all-day when the model majority is wet across most hours`() {
+        // Per-model path: two of three models clear 50% at nearly every hour
+        // 09:00–17:00, so the majority-agreement hours blanket the window.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 80.0,
+            condition = WeatherCondition.RAIN,
+            hourly = (9..17).map { hour ->
+                HourlyForecast(LocalTime.of(hour, 0), 14.0, 14.0, 70.0, WeatherCondition.RAIN)
+            },
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to (9..17).map { perModelHour(LocalTime.of(it, 0), 75.0) },
+            "ecmwf_ifs04" to (9..17).map { perModelHour(LocalTime.of(it, 0), 65.0) },
+            "icon_seamless" to (9..17).map { perModelHour(LocalTime.of(it, 0), 10.0) },
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.LIKELY
+        out.allDay shouldBe true
+    }
+
+    @Test
+    fun `precip clause is not all-day for the POSSIBLE tier`() {
+        // A single model hits 80% across every hour while the others stay dry —
+        // never a majority, so it stays POSSIBLE and keeps naming one hour even
+        // though that lone model is wet all day.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 30.0,
+            condition = WeatherCondition.RAIN,
+            hourly = (9..17).map { hour ->
+                HourlyForecast(LocalTime.of(hour, 0), 14.0, 14.0, 30.0, WeatherCondition.RAIN)
+            },
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to (9..17).map { perModelHour(LocalTime.of(it, 0), 80.0) },
+            "ecmwf_ifs04" to (9..17).map { perModelHour(LocalTime.of(it, 0), 5.0) },
+            "icon_seamless" to (9..17).map { perModelHour(LocalTime.of(it, 0), 5.0) },
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.POSSIBLE
+        out.allDay shouldBe false
+    }
+
     // PerModelHour now carries a LocalDateTime — paired against an arbitrary
     // anchor date so the test fixtures don't have to thread a date through
     // every call. The renderer reads `time.toLocalTime()` at output points;

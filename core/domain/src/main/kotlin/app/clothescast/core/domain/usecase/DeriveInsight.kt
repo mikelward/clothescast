@@ -287,6 +287,7 @@ class DeriveInsight(
             rainTime = precip?.time,
             likelihood = precip?.likelihood ?: PrecipLikelihood.LIKELY,
             precipCondition = precip?.condition,
+            allDay = precip?.allDay ?: false,
         )
     }
 

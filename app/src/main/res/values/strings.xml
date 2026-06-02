@@ -1299,6 +1299,13 @@
          (00:00–04:59) — "Rain at 2am" sounds robotic and the user is asleep
          anyway. -->
     <string name="insight_precip_overnight">overnight</string>
+    <!-- Replaces the time phrase entirely when rain runs the whole daytime
+         period rather than peaking at one hour — "Rain all day." Used as %2$s in
+         insight_precip / insight_precip_with_accessory and as the time phrase in
+         the "Chance of" variants. -->
+    <string name="insight_precip_all_day">all day</string>
+    <!-- Night-slice counterpart of insight_precip_all_day — "Rain all night." -->
+    <string name="insight_precip_all_night">all night</string>
 
     <!--
     Spoken-time vocabulary used by InsightFormatter.spokenTime to emit forms
@@ -1372,6 +1379,14 @@
     -->
     <string name="insight_tie_in_with_rain">Tonight, %3$s at %2$s, bring %1$s.</string>
     <!--
+    All-night variant of insight_tie_in_with_rain: the evening's rain runs the
+    whole window rather than peaking at one hour, so we drop the time and say
+    "all night" ("Tonight, rain all night, bring a jacket."). No time arg.
+    %1$s = item phrase, %2$s = condition noun (lowercased). LIKELY tier only —
+    the POSSIBLE hedge keeps naming an hour.
+    -->
+    <string name="insight_tie_in_with_rain_all_night">Tonight, %2$s all night, bring %1$s.</string>
+    <!--
     POSSIBLE-tier counterpart of insight_tie_in_with_rain: a clothes rule
     triggered for the evening but only one per-model series flagged the
     precip at ≥ 30%. Hedges the wording so a single-model reading doesn't
@@ -1395,6 +1410,13 @@
     templates.
     -->
     <string name="insight_evening_rain">Tonight, %2$s at %1$s.</string>
+    <!--
+    All-night variant of insight_evening_rain: bare-precip evening tie-in whose
+    rain runs the whole window, so it drops the hour and says "all night"
+    ("Tonight, rain all night."). No time arg. %1$s = condition noun
+    (lowercased). LIKELY tier only.
+    -->
+    <string name="insight_evening_rain_all_night">Tonight, %1$s all night.</string>
     <!--
     POSSIBLE-tier counterpart of insight_evening_rain: only one per-model
     series flagged the tonight hour ≥ 30%, so we hedge the wording. Matches

@@ -15,6 +15,7 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
+import app.clothescast.core.domain.model.PrecipProbability.ALL_DAY_COVERAGE_FRACTION
 import app.clothescast.core.domain.model.PrecipProbability.LIKELY_THRESHOLD
 import app.clothescast.core.domain.model.PrecipProbability.POSSIBLE_THRESHOLD
 import app.clothescast.core.domain.model.TemperatureBand
@@ -128,7 +129,7 @@ class RenderInsightSummary {
             band = bandClause(today),
             delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC, deltaFormat, diagLog) else null,
             clothes = clothesClause(todayItems, period, clothesMentionMode, yesterdayTriggeredItems),
-            precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood) },
+            precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood, it.allDay) },
             // Calendar tie-in only fires on TONIGHT — pairing the precip peak
             // with an event the listener hasn't yet attended ("Bring an
             // umbrella.") is the case where it adds value. Event titles and
@@ -344,7 +345,13 @@ class RenderInsightSummary {
             condition = if (peak.condition == WeatherCondition.UNKNOWN) today.condition else peak.condition
         }
         if (!condition.isPrecipitation()) return null
-        return PeakPrecip(time, condition, PrecipLikelihood.LIKELY)
+        // All-day is measured against the LIKELY bar (≥ 50%), not the 30% peak
+        // threshold above — "rain all day" should mean confident rain, so a day
+        // that only ever nudges 30–49% still names its single peak hour. The base
+        // hourly list is already in window order, so adjacency in the list is
+        // adjacency in time (no LocalTime midnight-wrap aliasing).
+        val allDay = isAllDayRain(today.hourly.map { it.precipitationProbabilityPct >= LIKELY_THRESHOLD })
+        return PeakPrecip(time, condition, PrecipLikelihood.LIKELY, allDay)
     }
 
     private fun pickPerModelPeak(today: DailyForecast, perModelHourly: PerModelHourly): PeakPrecip? {
@@ -363,8 +370,8 @@ class RenderInsightSummary {
         // POSSIBLE rather than promoting it to LIKELY: "one model says rain"
         // is the textbook chance-of-rain case the per-model tier exists to
         // express.
-        val hours = models.flatMap { entries -> entries.map { it.time } }.toSortedSet()
-        val likelyHour = hours
+        val hours = models.flatMap { entries -> entries.map { it.time } }.toSortedSet().toList()
+        val likelyHours = hours
             .mapNotNull { hour ->
                 // Readings with usable precip only: a model that reported
                 // temperature for this hour but no precipitation_probability
@@ -383,11 +390,19 @@ class RenderInsightSummary {
                 val likelyCount = readings.count { (it.precipitationProbabilityPct ?: 0.0) >= LIKELY_THRESHOLD }
                 if (likelyCount >= majorityOfReporters) hour to readings else null
             }
+        val likelyHour = likelyHours
             .maxByOrNull { (_, readings) -> readings.maxOf { it.precipitationProbabilityPct ?: 0.0 } }
             ?.first
             ?.toLocalTime()
         if (likelyHour != null) {
-            return PeakPrecip(likelyHour, perModelConditionAt(likelyHour, today), PrecipLikelihood.LIKELY)
+            // [hours] is sorted, so mapping each reported hour to "did it clear
+            // the per-hour majority" yields a window-ordered flag list — dry
+            // gaps split runs, missing hours simply don't appear (so they don't
+            // count as a dry break). LocalDateTime hours sort across the tonight
+            // midnight wrap correctly, unlike a bare LocalTime.
+            val likelySet = likelyHours.mapTo(HashSet()) { it.first }
+            val allDay = isAllDayRain(hours.map { it in likelySet })
+            return PeakPrecip(likelyHour, perModelConditionAt(likelyHour, today), PrecipLikelihood.LIKELY, allDay)
         }
 
         val possibleHour = models.asSequence()
@@ -433,9 +448,37 @@ class RenderInsightSummary {
         return CalendarTieInClause(item = items.first())
     }
 
+    /**
+     * Decides whether LIKELY rain runs the whole period rather than peaking at a
+     * single hour. [likelyByHour] is the period's reported hours in chronological
+     * order, each flagged true when it cleared the LIKELY rain bar. Two ways to
+     * trip (matching the user's two mental models):
+     *  - **Coverage** — a clear majority of the hours are wet
+     *    (≥ [ALL_DAY_COVERAGE_FRACTION]); a single time would undersell a chart
+     *    that's ≥ 50% across nearly every hour.
+     *  - **Multiple spells** — rain falls in two or more separated runs (a dry
+     *    gap between them), so no one hour represents the day.
+     * Needs at least two wet hours either way — one isolated hour is just a peak,
+     * not an all-day pattern.
+     */
+    private fun isAllDayRain(likelyByHour: List<Boolean>): Boolean {
+        val total = likelyByHour.size
+        val wet = likelyByHour.count { it }
+        if (wet < 2) return false
+        val coverage = wet.toDouble() / total >= ALL_DAY_COVERAGE_FRACTION
+        var runs = 0
+        var inRun = false
+        for (likely in likelyByHour) {
+            if (likely && !inRun) runs++
+            inRun = likely
+        }
+        return coverage || runs >= 2
+    }
+
     private data class PeakPrecip(
         val time: LocalTime,
         val condition: WeatherCondition,
         val likelihood: PrecipLikelihood,
+        val allDay: Boolean = false,
     )
 }

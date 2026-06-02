@@ -1044,6 +1044,10 @@ class GenerateDailyInsightTest {
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("jacket")
         tie.rainTime shouldBe LocalTime.of(21, 0)
+        // Both evening hours sit ≥ 50%, so the night's own notification would say
+        // "rain all night" — the tie-in mirrors that, and the morning insight
+        // renders "Tonight, rain all night, bring a jacket." rather than naming 9pm.
+        tie.allDay shouldBe true
     }
 
     @Test

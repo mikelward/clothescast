@@ -266,7 +266,7 @@ class InsightFormatter(
                 // Sourced from [carriedAccessories], not the (clothes-mention-
                 // gated) wear clause, so an opted-in umbrella still surfaces
                 // when the wear clause is suppressed (Clothes = Never / unchanged).
-                add(formatPrecip(it, summary.carriedAccessories.firstOrNull()))
+                add(formatPrecip(it, summary.carriedAccessories.firstOrNull(), summary.period))
             }
         }
         val tieInClauses = buildList {
@@ -651,14 +651,23 @@ class InsightFormatter(
         return resources.getString(R.string.insight_clothes_join_two, countPhrase, tailPhrase)
     }
 
-    private fun formatPrecip(precip: PrecipClause, accessoryKey: String?): String {
+    private fun formatPrecip(precip: PrecipClause, accessoryKey: String?, period: ForecastPeriod): String {
         val rawType = resources.getString(conditionRes(precip.condition))
         // "Rain at 02:00" sounds robotic and a precise hour adds little value
         // when the user is asleep — collapse early-morning peaks to "overnight".
-        val timePhrase = if (precip.time.hour in OVERNIGHT_HOURS) {
-            resources.getString(R.string.insight_precip_overnight)
-        } else {
-            resources.getString(R.string.insight_precip_at_time, spokenTime(precip.time))
+        // When rain runs the whole period, drop the hour entirely and say "all
+        // day" / "all night" — a single time undersells a wet-all-day forecast
+        // (period-keyed so the night slice doesn't say "all day").
+        val timePhrase = when {
+            precip.allDay -> resources.getString(
+                if (period == ForecastPeriod.TONIGHT) {
+                    R.string.insight_precip_all_night
+                } else {
+                    R.string.insight_precip_all_day
+                },
+            )
+            precip.time.hour in OVERNIGHT_HOURS -> resources.getString(R.string.insight_precip_overnight)
+            else -> resources.getString(R.string.insight_precip_at_time, spokenTime(precip.time))
         }
         // The accessory is rain-keyed by name ("Rain accessory: Umbrella");
         // gate it to RAIN / DRIZZLE so "Snow overnight, bring an umbrella."
@@ -747,11 +756,18 @@ class InsightFormatter(
         val conditionNoun =
             resources.getString(conditionRes(tieIn.precipCondition ?: WeatherCondition.RAIN))
                 .lowercase(locale)
+        // All-night mirrors the main precip clause: when the evening's rain runs
+        // the whole window the "at 9pm" undersells it, so we drop the hour and
+        // say "all night". Only meaningful on the LIKELY tier (POSSIBLE keeps
+        // hedging an hour), and the all-night templates take the condition noun
+        // without a time arg.
+        val allNight = tieIn.allDay && rainTime != null && tieIn.likelihood == PrecipLikelihood.LIKELY
         if (renderedItems.isBlank()) {
             // No items left to name. If there's a rain time, the clause
             // collapses to the bare-rain prose (the only signal left);
             // otherwise the whole tie-in is empty and we drop it.
             if (rainTime == null) return null
+            if (allNight) return resources.getString(R.string.insight_evening_rain_all_night, conditionNoun)
             val template = when (tieIn.likelihood) {
                 PrecipLikelihood.LIKELY -> R.string.insight_evening_rain
                 PrecipLikelihood.POSSIBLE -> R.string.insight_evening_rain_chance
@@ -763,6 +779,9 @@ class InsightFormatter(
         // on TODAY (the TONIGHT pass uses calendarTieIn for event-anchored
         // tie-ins).
         rainTime ?: return resources.getString(R.string.insight_tie_in, renderedItems)
+        if (allNight) {
+            return resources.getString(R.string.insight_tie_in_with_rain_all_night, renderedItems, conditionNoun)
+        }
         // Hedge the item-led wording when only one model spotted the rain,
         // matching the bare-rain path's chance-of-rain template.
         val template = when (tieIn.likelihood) {

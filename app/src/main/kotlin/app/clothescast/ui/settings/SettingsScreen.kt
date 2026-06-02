@@ -187,7 +187,7 @@ internal fun SchedulePage(
             dailyMentionEveningEvents = state.dailyMentionEveningEvents,
             deliveryMode = state.deliveryMode,
             tonightDeliveryMode = state.tonightDeliveryMode,
-            sharedTtsAvailable = state.sharedTtsAvailable,
+            speechConfigured = state.speechConfigured,
             useDeviceLocation = state.useDeviceLocation,
             location = state.location,
             padding = padding,

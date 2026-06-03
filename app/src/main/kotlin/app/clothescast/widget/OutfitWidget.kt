@@ -48,7 +48,8 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.ui.garment.bottomDrawable
 import app.clothescast.ui.garment.outfitBottomDefaults
-import app.clothescast.ui.garment.outfitGarmentCaptionLines
+import app.clothescast.ui.garment.outfitGarmentCaption
+import app.clothescast.ui.garment.outfitGarmentCaptionLineCount
 import app.clothescast.ui.garment.renderOutfitBitmap
 import app.clothescast.ui.garment.renderCarriedFigureBitmap
 import app.clothescast.ui.garment.renderTopWithHandsBitmap
@@ -198,21 +199,20 @@ private fun SingleColumnContent(
 ) {
     val context = LocalContext.current
     // Name every piece the icon shows — the rain-jacket shell and the gloves /
-    // umbrella accessories included — so the caption matches the figure. The
-    // worn outfit is the first line; accessories drop to a second. Kept as one
-    // "\n" Text (not two stacked Texts) so the two lines sit tightly together
-    // like the Today card's caption: a single TextView spaces its own lines by
-    // the font's line spacing, whereas two TextViews each add their own
-    // top/bottom padding and read looser.
-    val captionLines = outfitGarmentCaptionLines(
+    // umbrella accessories included — so the caption matches the figure. One
+    // flowing "· "-joined run (identical to the Today card's caption) that
+    // soft-wraps within the cell, rather than a forced worn/accessory break.
+    val caption = outfitGarmentCaption(
         context = context,
         outfit = outfit,
         topLabel = context.getString(topLabelRes(outfit.top)),
         bottomLabel = context.getString(bottomLabelRes(outfit.bottom)),
     )
-    // A second line means smaller icons to make room; a one-line caption keeps
-    // full-size icons.
-    val iconSize = scaledIconSize(size, subtitleLines = captionLines.size)
+    // The run wraps to two lines once any extra piece joins the base top +
+    // bottom; reserve (and cap at) that many lines. Two lines mean smaller icons
+    // to make room; a one-line caption keeps full-size icons.
+    val captionLines = outfitGarmentCaptionLineCount(outfit)
+    val iconSize = scaledIconSize(size, subtitleLines = captionLines)
     // Layout size is unbounded (the Image's Glance modifier holds whatever
     // iconSize the launcher's cell justifies) but the rasterized bitmap is
     // capped at MAX_ICON_BITMAP_PX so two ARGB icons can't blow the
@@ -286,9 +286,9 @@ private fun SingleColumnContent(
         }
         Spacer(modifier = GlanceModifier.height(2.dp))
         Text(
-            text = captionLines.joinToString("\n"),
+            text = caption,
             style = scaledSubtitleStyle(size),
-            maxLines = captionLines.size,
+            maxLines = captionLines,
             // Bound the width so each line centres within the cell.
             modifier = GlanceModifier.fillMaxWidth(),
         )

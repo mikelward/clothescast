@@ -304,6 +304,33 @@ internal fun OutfitRowTonightTomorrowPreview() {
     }
 }
 
+@Preview(name = "Outfit row · rain jacket + umbrella", widthDp = 360)
+@Composable
+internal fun OutfitRowRainJacketUmbrellaPreview() {
+    // Reproduces the side-by-side half-width clip: the left card's worn line
+    // names three pieces (top, rain-jacket shell, bottom) plus a carried
+    // umbrella, so the caption wraps past two lines on a narrow card. Mirrors a
+    // rainy default setup where both periods light the rain jacket + umbrella.
+    Frame {
+        OutfitPreviewRow(
+            SAMPLE_INSIGHT.copy(
+                period = ForecastPeriod.TODAY,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.SWEATER,
+                    OutfitSuggestion.Bottom.JEANS,
+                    carried = OutfitSuggestion.Carried.UMBRELLA,
+                    outer = OutfitSuggestion.Outer.RAIN_JACKET,
+                ),
+                nextOutfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.SWEATER,
+                    OutfitSuggestion.Bottom.JEANS,
+                    carried = OutfitSuggestion.Carried.UMBRELLA,
+                ),
+            ),
+        )
+    }
+}
+
 @Preview(name = "Outfit rationale · sweater + pants", widthDp = 360)
 @Composable
 internal fun OutfitRationaleDialogPreview() {

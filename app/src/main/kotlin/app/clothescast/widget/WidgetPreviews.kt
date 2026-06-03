@@ -41,7 +41,8 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.WeatherCondition
-import app.clothescast.ui.garment.outfitGarmentCaptionLines
+import app.clothescast.ui.garment.outfitGarmentCaption
+import app.clothescast.ui.garment.outfitGarmentCaptionLineCount
 import app.clothescast.ui.theme.ClothesCastTheme
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -174,16 +175,16 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
         )
         Spacer(modifier = Modifier.height(2.dp))
         // Mirrors OutfitWidget.SingleColumnContent: names every piece the icon
-        // shows (rain-jacket shell on the worn line, gloves / umbrella on a
-        // second line), each line its own Text so the pair sits tightly stacked
-        // like the Today card's caption.
-        val captionLines = outfitGarmentCaptionLines(
+        // shows (rain-jacket shell, gloves, umbrella) as one flowing "· "-joined
+        // run that soft-wraps, identical to the Today card's caption.
+        val caption = outfitGarmentCaption(
             context = LocalContext.current,
             outfit = outfit,
             topLabel = stringResource(topLabelResMock(outfit.top)),
             bottomLabel = stringResource(bottomLabelResMock(outfit.bottom)),
         )
-        val iconSize = scaledIconSizeMock(size, captionLines.size)
+        val captionLines = outfitGarmentCaptionLineCount(outfit)
+        val iconSize = scaledIconSizeMock(size, captionLines)
         // The umbrella is a full-figure overlay (held at the hip, hanging past
         // the legs), so it spans the top+bottom stack — mirror the real widget's
         // Box-over-both-images layout (see OutfitWidget.SingleColumnContent).
@@ -220,14 +221,14 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
         Spacer(modifier = Modifier.height(2.dp))
         val subtitleSp = scaledSubtitleSpMock(size)
         Text(
-            text = captionLines.joinToString("\n"),
+            text = caption,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = subtitleSp,
-            // A single "\n" Text (one TextView in the real widget) keeps the two
-            // lines tight. Pin a snug line height so the Compose mock matches —
-            // its default multi-line spacing reads looser than the TextView's.
+            // One Text (one TextView in the real widget) keeps wrapped lines
+            // tight. Pin a snug line height so the Compose mock matches — its
+            // default multi-line spacing reads looser than the TextView's.
             lineHeight = (subtitleSp.value * 1.2f).sp,
-            maxLines = captionLines.size,
+            maxLines = captionLines,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),

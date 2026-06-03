@@ -407,6 +407,7 @@ class PreviewSnapshots {
     @Test fun outfit_sweater_jeans_rain_jacket() = capture { OutfitSweaterJeansRainJacketPreview() }
     @Test fun outfit_row_today_tonight() = capture { OutfitRowTodayTonightPreview() }
     @Test fun outfit_row_tonight_tomorrow() = capture { OutfitRowTonightTomorrowPreview() }
+    @Test fun outfit_row_rain_jacket_umbrella() = capture { OutfitRowRainJacketUmbrellaPreview() }
     @Test fun outfit_rationale_dialog() = captureDialog { OutfitRationaleDialogPreview() }
     @Test fun outfit_rationale_dialog_tuned() = captureDialog { OutfitRationaleDialogTunedPreview() }
 

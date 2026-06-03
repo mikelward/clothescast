@@ -5,21 +5,20 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.OutfitSuggestion
 
 /**
- * The garment caption shown under an outfit's icons on the Today card and the
- * home-screen widget. Names *every* piece the icon shows, split across (up to)
- * two lines: the worn outfit on the first line — top, the rain-jacket outer
- * shell layered over it, then the bottom — and the optional accessories (gloves
- * at the hands, the carried umbrella) on a second line, joined by an explicit
- * break. The optional tiers are listed only when they actually fired, so a plain
- * outfit is a single line ("Sweater · Jeans") while a cold rainy day reads
- * "Thick coat · Long pants" / "Gloves · Umbrella".
+ * The garment caption shown under an outfit's icons — the same text on the Today
+ * card and the home-screen widget. Names *every* piece the icon shows as one
+ * flowing "· "-joined run: the worn outfit (top, the rain-jacket outer shell
+ * layered over it, then the bottom) followed by the optional accessories (gloves,
+ * the carried umbrella) at the end. The optional tiers are listed only when they
+ * actually fired, so a plain outfit reads "Sweater · Jeans" and a cold rainy day
+ * reads "Thick coat · Long pants · Gloves · Umbrella".
  *
- * The two-line split (rather than one long "· "-joined run) keeps the caption
- * from clipping in the narrow widget cell and groups "what you wear" apart from
- * "what you carry"; the break is explicit so the layout is deterministic rather
- * than relying on each surface's soft-wrap. Callers reserve room for the second
- * line (the Today card via `minLines = 2`, the widget via its icon-size reserve)
- * and bind the text width so each line centres.
+ * There's no forced break between worn and carried — the run just soft-wraps to
+ * as many lines as it needs. The Today card lets it grow freely (it reserves a
+ * floor with `minLines = 2` and stretches the side-by-side cards to equal height
+ * so a wrapping card doesn't run taller than its neighbour). The widget can't
+ * grow into a fixed cell, so it caps and reserves icon room via
+ * [outfitGarmentCaptionLineCount]; the text it renders is identical.
  *
  * [topLabel] / [bottomLabel] are passed in already-resolved because each surface
  * resolves them through its own `today_outfit_top_*` / `today_outfit_bottom_*`
@@ -31,30 +30,21 @@ internal fun outfitGarmentCaption(
     outfit: OutfitSuggestion,
     topLabel: String,
     bottomLabel: String,
-): String = outfitGarmentCaptionLines(context, outfit, topLabel, bottomLabel).joinToString("\n")
+): String = buildList {
+    add(topLabel)
+    if (outfit.outer != null) add(context.getString(R.string.garment_rain_jacket))
+    add(bottomLabel)
+    if (outfit.hands != null) add(context.getString(R.string.garment_gloves))
+    if (outfit.carried != null) add(context.getString(R.string.garment_umbrella))
+}.joinToString(" · ")
 
 /**
- * The caption as its individual lines — `[worn]` or `[worn, accessories]`. The
- * Today card joins them with a newline into one `minLines = 2` Text (its tuned
- * `bodySmall` line height keeps the pair tight), while the widget renders one
- * Text per line stacked with no gap, because Glance's [TextStyle] exposes no
- * line height to tighten a multi-line Text and the font's default spacing reads
- * too loose. Both end up matching.
+ * How many lines the widget should reserve for (and cap) the caption: 2 once any
+ * extra piece beyond the base top + bottom joins it — a rain-jacket shell, gloves,
+ * or the umbrella — because the longer flowing run wraps in the narrow widget
+ * cell, otherwise 1. The Today card doesn't use this: it has no cap and grows to
+ * fit. Kept here next to [outfitGarmentCaption] so the text and the line budget
+ * that frames it can't drift apart.
  */
-internal fun outfitGarmentCaptionLines(
-    context: Context,
-    outfit: OutfitSuggestion,
-    topLabel: String,
-    bottomLabel: String,
-): List<String> {
-    val worn = buildList {
-        add(topLabel)
-        if (outfit.outer != null) add(context.getString(R.string.garment_rain_jacket))
-        add(bottomLabel)
-    }.joinToString(" · ")
-    val accessories = buildList {
-        if (outfit.hands != null) add(context.getString(R.string.garment_gloves))
-        if (outfit.carried != null) add(context.getString(R.string.garment_umbrella))
-    }.joinToString(" · ")
-    return if (accessories.isEmpty()) listOf(worn) else listOf(worn, accessories)
-}
+internal fun outfitGarmentCaptionLineCount(outfit: OutfitSuggestion): Int =
+    if (outfit.outer != null || outfit.hands != null || outfit.carried != null) 2 else 1

@@ -572,6 +572,7 @@ displayed label localizes.
 
     <string name="bug_report_consent_title">Jaetaanko virheraportti?</string>
     <string name="bug_report_consent_body">Tämä auttaa ongelmien diagnosoinnissa. Raportti sisältää arkaluonteisia henkilötietoja, mukaan lukien sijaintisi, sovelluksen asetuksesi ja viimeaikaiset toimintasi. Voit tarkistaa ja muokata sitä ennen lähettämistä.</string>
+    <string name="bug_report_consent_screenshot">Se liittää mukaan myös kuvakaappauksen nykyisestä näytöstä, joten tarkista ennen lähettämistä, ettei siinä näy mitään yksityistä.</string>
     <string name="bug_report_consent_dont_show_again">Älä näytä uudelleen</string>
     <string name="bug_report_consent_continue">Jatka</string>
     <string name="bug_report_consent_cancel">Peruuta</string>

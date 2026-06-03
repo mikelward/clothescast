@@ -591,6 +591,7 @@ only the displayed label localizes.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Поделиться отчётом об ошибке?</string>
     <string name="bug_report_consent_body">Это поможет диагностировать проблемы. Отчёт содержит конфиденциальные данные, включая твоё местоположение, настройки приложения и последние действия. Перед отправкой ты сможешь просмотреть и отредактировать его.</string>
+    <string name="bug_report_consent_screenshot">Также прикрепляется снимок экрана, который у тебя сейчас открыт, поэтому перед отправкой проверь, не видно ли на нём чего-то личного.</string>
     <string name="bug_report_consent_dont_show_again">Больше не показывать</string>
     <string name="bug_report_consent_continue">Продолжить</string>
     <string name="bug_report_consent_cancel">Отмена</string>

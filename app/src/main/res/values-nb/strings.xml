@@ -526,6 +526,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Del feilrapport?</string>
     <string name="bug_report_consent_body">Det hjelper med å diagnostisere problemer. Rapporten inneholder sensitiv personlig informasjon, inkludert stedet ditt, appinnstillingene og nylige aktiviteter. Du kan gjennomgå og redigere den før du sender.</string>
+    <string name="bug_report_consent_screenshot">Den legger også ved et skjermbilde av skjermen du er på nå, så sjekk at det ikke viser noe privat før du sender.</string>
     <string name="bug_report_consent_dont_show_again">Ikke vis igjen</string>
     <string name="bug_report_consent_continue">Fortsett</string>
     <string name="bug_report_consent_cancel">Avbryt</string>

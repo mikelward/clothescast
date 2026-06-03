@@ -615,6 +615,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          ===================================================================== -->
     <string name="bug_report_consent_title">Chia sẻ báo cáo lỗi?</string>
     <string name="bug_report_consent_body">Điều này giúp chẩn đoán sự cố. Báo cáo chứa thông tin cá nhân nhạy cảm, bao gồm vị trí, cài đặt ứng dụng và hoạt động gần đây. Bạn sẽ có thể xem xét và chỉnh sửa trước khi gửi.</string>
+    <string name="bug_report_consent_screenshot">Báo cáo cũng đính kèm ảnh chụp màn hình bạn đang xem, vì vậy hãy kiểm tra để chắc chắn không có gì riêng tư trước khi gửi.</string>
     <string name="bug_report_consent_dont_show_again">Không hiện lại</string>
     <string name="bug_report_consent_continue">Tiếp tục</string>
     <string name="bug_report_consent_cancel">Hủy</string>

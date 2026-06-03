@@ -442,6 +442,7 @@ they work correctly in both the single-band and range templates.
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">مشاركة تقرير الخطأ؟</string>
     <string name="bug_report_consent_body">يساعد ذلك في تشخيص المشكلات. يحتوي التقرير على معلومات شخصية حساسة، بما فيها موقعك وإعدادات التطبيق والنشاط الأخير. ستتمكن من مراجعته وتعديله قبل الإرسال.</string>
+    <string name="bug_report_consent_screenshot">كما يُرفِق لقطة شاشة للشاشة التي تستخدمها الآن، لذا تأكّد قبل الإرسال من أنها لا تُظهر أي معلومات خاصة.</string>
     <string name="bug_report_consent_dont_show_again">لا تُظهر هذا مجددًا</string>
     <string name="bug_report_consent_continue">متابعة</string>
     <string name="bug_report_consent_cancel">إلغاء</string>

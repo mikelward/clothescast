@@ -637,6 +637,7 @@ the displayed label localizes.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Bugrapport delen?</string>
     <string name="bug_report_consent_body">Dit helpt bij het diagnosticeren van problemen. Het rapport bevat gevoelige persoonlijke informatie, waaronder je locatie, app-instellingen en recente activiteit. Je kunt het voor verzending bekijken en bewerken.</string>
+    <string name="bug_report_consent_screenshot">Het voegt ook een schermafbeelding toe van het scherm waarop je nu bent, dus controleer voor het verzenden dat er niets privés op staat.</string>
     <string name="bug_report_consent_dont_show_again">Niet meer weergeven</string>
     <string name="bug_report_consent_continue">Doorgaan</string>
     <string name="bug_report_consent_cancel">Annuleren</string>

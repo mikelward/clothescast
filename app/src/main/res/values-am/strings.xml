@@ -346,6 +346,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Bug report consent -->
     <string name="bug_report_consent_title">ስህተት ሪፖርት ያጋሩ?</string>
     <string name="bug_report_consent_body">ይህ ችግሮችን ለመመርመር ይረዳል። ሪፖርቱ ቦታዎን፣ የመተግበሪያ ቅንብሮችን፣ እና የቅርብ ጊዜ እንቅስቃሴዎን ጨምሮ ስሱ ግላዊ መረጃ ይይዛል። ከመላክዎ በፊት መፈተሸና ማርትዕ ይችላሉ።</string>
+    <string name="bug_report_consent_screenshot">እንዲሁም አሁን ያሉበትን ማያ ገጽ ቅጽበታዊ ገጽ እይታ ያያይዛል፣ ስለዚህ ከመላክዎ በፊት የግል ነገር አለማሳየቱን ያረጋግጡ።</string>
     <string name="bug_report_consent_dont_show_again">ዳግም አታሳይ</string>
     <string name="bug_report_consent_continue">ቀጥል</string>
     <string name="bug_report_consent_cancel">ሰርዝ</string>

@@ -604,6 +604,7 @@ The rest of the UI falls through to values/strings.xml (English).
          ============================================================ -->
     <string name="bug_report_consent_title">Ibahagi ang ulat ng bug?</string>
     <string name="bug_report_consent_body">Nakakatulong ito sa pag-diagnose ng mga isyu. Ang ulat ay naglalaman ng sensitibong personal na impormasyon, kabilang ang iyong lokasyon, mga setting ng app, at kamakailang aktibidad. Maaari mo itong suriin at i-edit bago ipadala.</string>
+    <string name="bug_report_consent_screenshot">Naglalakip din ito ng screenshot ng kasalukuyang screen mo, kaya bago ipadala, tiyaking walang pribadong ipinapakita.</string>
     <string name="bug_report_consent_dont_show_again">Huwag nang ipakita ito ulit</string>
     <string name="bug_report_consent_continue">Magpatuloy</string>
     <string name="bug_report_consent_cancel">Kanselahin</string>

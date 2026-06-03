@@ -474,6 +474,7 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="bug_report_consent_title">Compartir l\'informe d\'errors?</string>
     <string name="bug_report_consent_body">Això ajuda a diagnosticar problemes. L\'informe conté informació personal sensible, com la teva ubicació, la configuració de l\'aplicació i l\'activitat recent. Podràs revisar-lo i editar-lo abans d\'enviar-lo.</string>
+    <string name="bug_report_consent_screenshot">També adjunta una captura de la pantalla on ets ara, així que abans d\'enviar-la comprova que no mostri res privat.</string>
     <string name="bug_report_consent_dont_show_again">No tornis a mostrar-ho</string>
     <string name="bug_report_consent_continue">Continua</string>
     <string name="bug_report_consent_cancel">Cancel·la</string>

@@ -694,6 +694,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 
     <string name="bug_report_consent_title">Partilhar relatório de erro?</string>
     <string name="bug_report_consent_body">Isto ajuda a diagnosticar problemas. O relatório contém informações pessoais sensíveis, incluindo a tua localização, definições da aplicação e atividade recente. Poderás rever e editar antes de enviar.</string>
+    <string name="bug_report_consent_screenshot">Também anexa uma captura de ecrã do ecrã onde estás agora, por isso, antes de enviar, verifica que não mostra nada privado.</string>
     <string name="bug_report_consent_dont_show_again">Não mostrar novamente</string>
     <string name="bug_report_consent_continue">Continuar</string>
     <string name="bug_report_consent_cancel">Cancelar</string>

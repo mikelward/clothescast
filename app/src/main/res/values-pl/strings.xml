@@ -635,6 +635,7 @@ is unchanged; only the displayed label localizes.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Udostępnić raport o błędzie?</string>
     <string name="bug_report_consent_body">Pomoże to w diagnozowaniu problemów. Raport zawiera wrażliwe dane osobowe, w tym Twoją lokalizację, ustawienia aplikacji i ostatnią aktywność. Możesz go przejrzeć i edytować przed wysłaniem.</string>
+    <string name="bug_report_consent_screenshot">Dołącza też zrzut ekranu, na którym teraz jesteś, więc przed wysłaniem sprawdź, czy nie widać na nim niczego prywatnego.</string>
     <string name="bug_report_consent_dont_show_again">Nie pokazuj ponownie</string>
     <string name="bug_report_consent_continue">Dalej</string>
     <string name="bug_report_consent_cancel">Anuluj</string>

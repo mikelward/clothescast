@@ -682,6 +682,7 @@ label localizes.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">分享错误报告？</string>
     <string name="bug_report_consent_body">这有助于诊断问题。报告包含敏感的个人信息，包括你的位置、应用设置和近期活动。发送前你可以查看并编辑内容。</string>
+    <string name="bug_report_consent_screenshot">它还会附上你当前屏幕的截图，所以发送前请检查上面没有显示任何隐私内容。</string>
     <string name="bug_report_consent_dont_show_again">不再显示</string>
     <string name="bug_report_consent_continue">继续</string>
     <string name="bug_report_consent_cancel">取消</string>

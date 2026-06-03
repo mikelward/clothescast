@@ -480,6 +480,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="bug_report_consent_title">Jaga veaaruannet?</string>
     <string name="bug_report_consent_body">See aitab probleeme diagnoosida. Aruanne sisaldab tundlikku isiklikku teavet, sh sinu asukoha, rakenduse seaded ja hiljutise tegevuse. Saad seda enne saatmist üle vaadata ja redigeerida.</string>
+    <string name="bug_report_consent_screenshot">Samuti lisatakse ekraanipilt praegusest kuvast, nii et enne saatmist kontrolli, et sellel poleks midagi privaatset.</string>
     <string name="bug_report_consent_dont_show_again">Ära näita seda enam</string>
     <string name="bug_report_consent_continue">Jätka</string>
     <string name="bug_report_consent_cancel">Tühista</string>

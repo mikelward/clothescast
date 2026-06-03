@@ -652,6 +652,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="bug_report_consent_title">Compartilhar relatório de bug?</string>
     <string name="bug_report_consent_body">Isso ajuda a diagnosticar problemas. O relatório contém informações pessoais sensíveis, incluindo sua localização, configurações do app e atividade recente. Você poderá revisar e editar antes de enviar.</string>
+    <string name="bug_report_consent_screenshot">Ele também anexa uma captura de tela da tela em que você está agora, então confira se não há nada privado antes de enviar.</string>
     <string name="bug_report_consent_dont_show_again">Não mostrar novamente</string>
     <string name="bug_report_consent_continue">Continuar</string>
     <string name="bug_report_consent_cancel">Cancelar</string>

@@ -438,6 +438,7 @@ standard in Israeli digital communication.
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">לשתף דוח תקלה?</string>
     <string name="bug_report_consent_body">זה עוזר לאבחן בעיות. הדוח מכיל מידע אישי רגיש, כולל מיקומך, הגדרות האפליקציה ופעילות אחרונה. תוכל/י לסקור ולערוך לפני השליחה.</string>
+    <string name="bug_report_consent_screenshot">המערכת גם מצרפת צילום מסך של המסך שפתוח אצלך עכשיו, אז לפני השליחה כדאי לבדוק שלא מופיע בו מידע פרטי.</string>
     <string name="bug_report_consent_dont_show_again">אל תציג/י שוב</string>
     <string name="bug_report_consent_continue">המשך/י</string>
     <string name="bug_report_consent_cancel">ביטול</string>

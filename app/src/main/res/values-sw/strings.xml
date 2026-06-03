@@ -413,6 +413,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Bug report consent -->
     <string name="bug_report_consent_title">Shiriki ripoti ya hitilafu?</string>
     <string name="bug_report_consent_body">Hii husaidia kutambua matatizo. Ripoti ina taarifa za kibinafsi nyeti, ikiwa ni pamoja na mahali pako, mipangilio ya programu, na shughuli za hivi karibuni. Utaweza kukagua na kuhariri kabla ya kutuma.</string>
+    <string name="bug_report_consent_screenshot">Pia inaambatisha picha ya skrini unayoiona sasa, kwa hivyo kabla ya kutuma, hakikisha haionyeshi chochote cha faragha.</string>
     <string name="bug_report_consent_dont_show_again">Usionyeshe tena</string>
     <string name="bug_report_consent_continue">Endelea</string>
     <string name="bug_report_consent_cancel">Ghairi</string>

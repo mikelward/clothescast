@@ -566,6 +566,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Trimiți raportul de bug?</string>
     <string name="bug_report_consent_body">Aceasta ajută la diagnosticarea problemelor. Raportul conține informații personale sensibile, inclusiv locația ta, setările aplicației și activitatea recentă. Îl vei putea revizui și edita înainte de trimitere.</string>
+    <string name="bug_report_consent_screenshot">Atașează și o captură a ecranului pe care ești acum, așa că înainte de a trimite verifică să nu apară ceva privat.</string>
     <string name="bug_report_consent_dont_show_again">Nu mai arăta din nou</string>
     <string name="bug_report_consent_continue">Continuă</string>
     <string name="bug_report_consent_cancel">Anulează</string>

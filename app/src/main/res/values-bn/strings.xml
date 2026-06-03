@@ -614,6 +614,7 @@ West Bengal vocabulary differences in a future PR.
 
     <string name="bug_report_consent_title">বাগ রিপোর্ট শেয়ার করবেন?</string>
     <string name="bug_report_consent_body">এটি সমস্যা নির্ণয়ে সাহায্য করে। রিপোর্টে আপনার অবস্থান, অ্যাপের সেটিংস এবং সাম্প্রতিক কার্যকলাপ সহ সংবেদনশীল ব্যক্তিগত তথ্য রয়েছে। পাঠানোর আগে আপনি এটি পর্যালোচনা ও সম্পাদনা করতে পারবেন।</string>
+    <string name="bug_report_consent_screenshot">এটি আপনি এখন যে স্ক্রিনে আছেন তার একটি স্ক্রিনশটও সংযুক্ত করে, তাই পাঠানোর আগে দেখে নিন এটি কোনো ব্যক্তিগত কিছু দেখাচ্ছে না।</string>
     <string name="bug_report_consent_dont_show_again">আর দেখাবেন না</string>
     <string name="bug_report_consent_continue">চালিয়ে যান</string>
     <string name="bug_report_consent_cancel">বাতিল করুন</string>

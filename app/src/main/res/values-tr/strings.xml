@@ -571,6 +571,7 @@ displayed label localizes.
 
     <string name="bug_report_consent_title">Hata raporu paylaşılsın mı?</string>
     <string name="bug_report_consent_body">Bu sorunların teşhisine yardımcı olur. Rapor konumunuz, uygulama ayarlarınız ve son etkinlikleriniz dahil olmak üzere hassas kişisel bilgiler içerir. Göndermeden önce inceleyip düzenleyebilirsiniz.</string>
+    <string name="bug_report_consent_screenshot">Ayrıca şu anda açık olan ekranın bir ekran görüntüsünü de ekler; bu nedenle göndermeden önce özel bir şey göstermediğinden emin olun.</string>
     <string name="bug_report_consent_dont_show_again">Tekrar gösterme</string>
     <string name="bug_report_consent_continue">Devam et</string>
     <string name="bug_report_consent_cancel">İptal</string>

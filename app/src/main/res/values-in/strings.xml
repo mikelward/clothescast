@@ -563,6 +563,7 @@ to values/strings.xml (English).
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">Bagikan laporan bug?</string>
     <string name="bug_report_consent_body">Ini membantu mendiagnosis masalah. Laporan ini berisi informasi pribadi sensitif, termasuk lokasi, pengaturan aplikasi, dan aktivitas terkini Anda. Anda dapat meninjau dan mengeditnya sebelum dikirim.</string>
+    <string name="bug_report_consent_screenshot">Ini juga melampirkan tangkapan layar dari layar yang sedang Anda buka, jadi sebelum mengirim, periksa apakah ada hal pribadi yang terlihat.</string>
     <string name="bug_report_consent_dont_show_again">Jangan tampilkan lagi</string>
     <string name="bug_report_consent_continue">Lanjutkan</string>
     <string name="bug_report_consent_cancel">Batal</string>

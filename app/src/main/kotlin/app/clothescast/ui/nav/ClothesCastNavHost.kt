@@ -3,7 +3,6 @@ package app.clothescast.ui.nav
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
@@ -399,9 +398,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         voiceEnumerator = app.androidTtsVoiceEnumerator,
         applyAppLocale = { region ->
             AppLocale.apply(app, region)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                (context as? Activity)?.recreate()
-            }
+            (context as? Activity)?.recreate()
         },
         refreshLocationCache = {
             FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)

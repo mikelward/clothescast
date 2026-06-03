@@ -1540,6 +1540,40 @@ class InsightFormatterTest {
         ) shouldBe "Heute Abend wird es 8° bis 15°. Trag Pullover und Jacke."
     }
 
+    @Test
+    fun `non-English region prose does not leak rain-jacket or all-day English`() {
+        // Regression from a release build: Region=SR_RS on an en-GB device
+        // rendered otherwise-Serbian prose with English fallback fragments:
+        // "rain jacket" and "all day". Pin the in-app Region path for the
+        // locales reported with the same symptom.
+        val enGbConfig = Configuration(context.resources.configuration).apply {
+            setLocale(Locale.forLanguageTag("en-GB"))
+        }
+        val enGbContext = context.createConfigurationContext(enGbConfig)
+        val cases = listOf(
+            Region.DA_DK to ("regnjakke" to "hele dagen"),
+            Region.SV_SE to ("regnjacka" to "hela dagen"),
+            Region.SR_RS to ("kišna jakna" to "ceo dan"),
+            Region.SR_CYRL_RS to ("кишна јакна" to "цео дан"),
+            Region.UK_UA to ("дощова куртка" to "весь день"),
+            Region.RU_RU to ("дождевик" to "весь день"),
+        )
+
+        cases.forEach { (region, expected) ->
+            val out = InsightFormatter.forRegion(enGbContext, region).format(
+                summary(
+                    clothes = ClothesClause(listOf("sweater", "rain-jacket", "jeans")),
+                    precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), allDay = true),
+                ),
+            )
+
+            out shouldNotContain "rain jacket"
+            out shouldNotContain "all day"
+            out.contains(expected.first) shouldBe true
+            out.contains(expected.second) shouldBe true
+        }
+    }
+
     // ---------------------------------------------------------------------
     // British / Australian English — picks up the en-rGB / en-rAU vocabulary
     // overrides on `garment_*` resources so the rendered prose matches the

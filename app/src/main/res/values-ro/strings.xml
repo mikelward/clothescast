@@ -1210,6 +1210,22 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_week_ahead_warmer">Mai cald %1$s.</string>
     <string name="today_week_empty">Va fi gata după următoarea prognoză.</string>
 
+    <string name="today_stop">Oprește</string>
+    <string name="today_gemini_limit_title">Limita vocilor gratuite a fost atinsă</string>
+    <string name="today_gemini_limit_body">Ai folosit vocile Gemini gratuite de azi. Adaugă propria cheie Gemini pentru mai multe.</string>
+    <string name="today_gemini_limit_cta">Setări vorbire</string>
+    <string name="today_gemini_limit_dismiss">Respinge</string>
+    <string name="today_gemini_key_invalid_title">Cheia Gemini trebuie reintrodusă</string>
+    <string name="today_gemini_key_invalid_body">Cheia Gemini salvată nu a putut fi citită pe acest dispozitiv, așa că ClothesCast nu va folosi vocile Gemini partajate până când o reintroduci sau o ștergi.</string>
+    <string name="today_gemini_key_invalid_cta">Setări vorbire</string>
+    <string name="settings_api_key_status_unset">2 gratuite în fiecare zi, obține o cheie pentru mai multe.</string>
+    <string name="settings_tts_stop">Oprește</string>
+    <string name="garment_rain_jacket">Jachetă de ploaie</string>
+    <string name="insight_precip_all_day">toată ziua</string>
+    <string name="insight_precip_all_night">toată noaptea</string>
+    <string name="insight_tie_in_with_rain_all_night">În seara asta, %2$s toată noaptea, ia %1$s.</string>
+    <string name="insight_evening_rain_all_night">În seara asta, %1$s toată noaptea.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Setări de voce</string>

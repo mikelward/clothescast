@@ -1302,6 +1302,22 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_week_ahead_warmer">Toplije %1$s.</string>
     <string name="today_week_empty">Bit će spremno nakon sljedeće prognoze.</string>
 
+    <string name="today_stop">Zaustavi</string>
+    <string name="today_gemini_limit_title">Dosegnuto je ograničenje besplatnih glasova</string>
+    <string name="today_gemini_limit_body">Iskoristio/la si današnje besplatne Gemini glasove. Dodaj svoj Gemini ključ za više.</string>
+    <string name="today_gemini_limit_cta">Postavke govora</string>
+    <string name="today_gemini_limit_dismiss">Odbaci</string>
+    <string name="today_gemini_key_invalid_title">Gemini ključ treba ponovno unijeti</string>
+    <string name="today_gemini_key_invalid_body">Spremljeni Gemini ključ nije se mogao pročitati na ovom uređaju, pa ClothesCast neće koristiti dijeljene Gemini glasove dok ga ponovno ne uneseš ili izbrišeš.</string>
+    <string name="today_gemini_key_invalid_cta">Postavke govora</string>
+    <string name="settings_api_key_status_unset">2 besplatno svaki dan, nabavi ključ za više.</string>
+    <string name="settings_tts_stop">Zaustavi</string>
+    <string name="garment_rain_jacket">Kišna jakna</string>
+    <string name="insight_precip_all_day">cijeli dan</string>
+    <string name="insight_precip_all_night">cijelu noć</string>
+    <string name="insight_tie_in_with_rain_all_night">Večeras, %2$s cijelu noć, ponesi %1$s.</string>
+    <string name="insight_evening_rain_all_night">Večeras, %1$s cijelu noć.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Postavke glasa</string>

@@ -1382,6 +1382,22 @@ the displayed label localizes.
     <string name="today_week_ahead_warmer">%1$sは暖かめ。</string>
     <string name="today_week_empty">次の予報後に表示されます。</string>
 
+    <string name="today_stop">停止</string>
+    <string name="today_gemini_limit_title">無料音声の上限に達しました</string>
+    <string name="today_gemini_limit_body">今日の無料 Gemini 音声を使い切りました。さらに使うには自分の Gemini キーを追加してください。</string>
+    <string name="today_gemini_limit_cta">音声設定</string>
+    <string name="today_gemini_limit_dismiss">閉じる</string>
+    <string name="today_gemini_key_invalid_title">Gemini キーの再入力が必要です</string>
+    <string name="today_gemini_key_invalid_body">保存済みの Gemini キーをこのデバイスで読み取れなかったため、再入力または削除するまで ClothesCast は共有 Gemini 音声を使用しません。</string>
+    <string name="today_gemini_key_invalid_cta">音声設定</string>
+    <string name="settings_api_key_status_unset">毎日2回無料。さらに使うにはキーを取得してください。</string>
+    <string name="settings_tts_stop">停止</string>
+    <string name="garment_rain_jacket">レインジャケット</string>
+    <string name="insight_precip_all_day">一日中</string>
+    <string name="insight_precip_all_night">一晩中</string>
+    <string name="insight_tie_in_with_rain_all_night">今夜は%2$s一晩中。%1$sを持っていってください。</string>
+    <string name="insight_evening_rain_all_night">今夜は%1$s一晩中。</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">音声設定</string>

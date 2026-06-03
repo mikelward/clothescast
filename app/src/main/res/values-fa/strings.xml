@@ -1221,6 +1221,22 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_week_ahead_warmer">گرم‌تر %1$s.</string>
     <string name="today_week_empty">پس از پیش‌بینی بعدی آماده می‌شود.</string>
 
+    <string name="today_stop">توقف</string>
+    <string name="today_gemini_limit_title">به حد صدای رایگان رسیدید</string>
+    <string name="today_gemini_limit_body">صداهای رایگان Gemini امروز را استفاده کرده‌اید. برای موارد بیشتر، کلید Gemini خودتان را اضافه کنید.</string>
+    <string name="today_gemini_limit_cta">تنظیمات گفتار</string>
+    <string name="today_gemini_limit_dismiss">رد کردن</string>
+    <string name="today_gemini_key_invalid_title">کلید Gemini باید دوباره وارد شود</string>
+    <string name="today_gemini_key_invalid_body">کلید Gemini ذخیره‌شده‌تان در این دستگاه خوانده نشد، بنابراین ClothesCast تا وقتی آن را دوباره وارد یا پاک نکنید از صداهای مشترک Gemini استفاده نمی‌کند.</string>
+    <string name="today_gemini_key_invalid_cta">تنظیمات گفتار</string>
+    <string name="settings_api_key_status_unset">هر روز ۲ مورد رایگان، برای بیشتر کلید بگیرید.</string>
+    <string name="settings_tts_stop">توقف</string>
+    <string name="garment_rain_jacket">کاپشن بارانی</string>
+    <string name="insight_precip_all_day">تمام روز</string>
+    <string name="insight_precip_all_night">تمام شب</string>
+    <string name="insight_tie_in_with_rain_all_night">امشب، %2$s تمام شب، %1$s همراه داشته باشید.</string>
+    <string name="insight_evening_rain_all_night">امشب، %1$s تمام شب.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">تنظیمات صدا</string>

@@ -1281,6 +1281,22 @@ is unchanged; only the displayed label localizes.
     <string name="today_week_ahead_warmer">Cieplej %1$s.</string>
     <string name="today_week_empty">Gotowe po następnej prognozie.</string>
 
+    <string name="today_stop">Zatrzymaj</string>
+    <string name="today_gemini_limit_title">Osiągnięto limit bezpłatnych głosów</string>
+    <string name="today_gemini_limit_body">Wykorzystano dzisiejsze bezpłatne głosy Gemini. Dodaj własny klucz Gemini, aby mieć więcej.</string>
+    <string name="today_gemini_limit_cta">Ustawienia mowy</string>
+    <string name="today_gemini_limit_dismiss">Odrzuć</string>
+    <string name="today_gemini_key_invalid_title">Klucz Gemini trzeba wprowadzić ponownie</string>
+    <string name="today_gemini_key_invalid_body">Nie udało się odczytać zapisanego klucza Gemini na tym urządzeniu, więc ClothesCast nie będzie używać współdzielonych głosów Gemini, dopóki nie wprowadzisz go ponownie lub nie wyczyścisz.</string>
+    <string name="today_gemini_key_invalid_cta">Ustawienia mowy</string>
+    <string name="settings_api_key_status_unset">2 bezpłatne każdego dnia, zdobądź klucz, aby mieć więcej.</string>
+    <string name="settings_tts_stop">Zatrzymaj</string>
+    <string name="garment_rain_jacket">Kurtka przeciwdeszczowa</string>
+    <string name="insight_precip_all_day">cały dzień</string>
+    <string name="insight_precip_all_night">całą noc</string>
+    <string name="insight_tie_in_with_rain_all_night">Dziś wieczorem, %2$s całą noc, weź %1$s.</string>
+    <string name="insight_evening_rain_all_night">Dziś wieczorem, %1$s całą noc.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Ustawienia głosu</string>

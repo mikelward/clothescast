@@ -1231,6 +1231,22 @@ only the displayed label localizes.
     <string name="today_week_ahead_warmer">Тепліше %1$s.</string>
     <string name="today_week_empty">Буде готово після наступного прогнозу.</string>
 
+    <string name="today_stop">Зупинити</string>
+    <string name="today_gemini_limit_title">Ліміт безкоштовних голосів вичерпано</string>
+    <string name="today_gemini_limit_body">Ти використав(ла) сьогоднішні безкоштовні голоси Gemini. Додай власний ключ Gemini, щоб отримати більше.</string>
+    <string name="today_gemini_limit_cta">Налаштування мовлення</string>
+    <string name="today_gemini_limit_dismiss">Закрити</string>
+    <string name="today_gemini_key_invalid_title">Ключ Gemini потрібно ввести знову</string>
+    <string name="today_gemini_key_invalid_body">Збережений ключ Gemini не вдалося прочитати на цьому пристрої, тому ClothesCast не використовуватиме спільні голоси Gemini, доки ти не введеш його знову або не очистиш.</string>
+    <string name="today_gemini_key_invalid_cta">Налаштування мовлення</string>
+    <string name="settings_api_key_status_unset">2 безкоштовно щодня, отримай ключ для більшого.</string>
+    <string name="settings_tts_stop">Зупинити</string>
+    <string name="garment_rain_jacket">Дощова куртка</string>
+    <string name="insight_precip_all_day">весь день</string>
+    <string name="insight_precip_all_night">усю ніч</string>
+    <string name="insight_tie_in_with_rain_all_night">Сьогодні ввечері, %2$s усю ніч, візьми %1$s.</string>
+    <string name="insight_evening_rain_all_night">Сьогодні ввечері, %1$s усю ніч.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Налаштування голосу</string>

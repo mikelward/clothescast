@@ -1234,6 +1234,22 @@ displayed label localizes.
     <string name="today_week_ahead_warmer">%1$s daha sıcak.</string>
     <string name="today_week_empty">Sonraki tahminden sonra hazır olacak.</string>
 
+    <string name="today_stop">Durdur</string>
+    <string name="today_gemini_limit_title">Ücretsiz ses sınırına ulaşıldı</string>
+    <string name="today_gemini_limit_body">Bugünkü ücretsiz Gemini seslerini kullandın. Daha fazlası için kendi Gemini anahtarını ekle.</string>
+    <string name="today_gemini_limit_cta">Konuşma ayarları</string>
+    <string name="today_gemini_limit_dismiss">Kapat</string>
+    <string name="today_gemini_key_invalid_title">Gemini anahtarının yeniden girilmesi gerekiyor</string>
+    <string name="today_gemini_key_invalid_body">Kayıtlı Gemini anahtarın bu cihazda okunamadı, bu yüzden ClothesCast sen yeniden girene veya temizleyene kadar paylaşılan Gemini seslerini kullanmayacak.</string>
+    <string name="today_gemini_key_invalid_cta">Konuşma ayarları</string>
+    <string name="settings_api_key_status_unset">Her gün 2 ücretsiz, daha fazlası için anahtar al.</string>
+    <string name="settings_tts_stop">Durdur</string>
+    <string name="garment_rain_jacket">Yağmurluk</string>
+    <string name="insight_precip_all_day">tüm gün</string>
+    <string name="insight_precip_all_night">tüm gece</string>
+    <string name="insight_tie_in_with_rain_all_night">Bu gece, %2$s tüm gece, %1$s al.</string>
+    <string name="insight_evening_rain_all_night">Bu gece, %1$s tüm gece.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Ses ayarları</string>

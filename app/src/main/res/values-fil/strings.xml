@@ -1283,6 +1283,22 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_week_ahead_warmer">Mas mainit %1$s.</string>
     <string name="today_week_empty">Magiging handa pagkatapos ng susunod na forecast.</string>
 
+    <string name="today_stop">Ihinto</string>
+    <string name="today_gemini_limit_title">Naabot ang limit ng libreng boses</string>
+    <string name="today_gemini_limit_body">Nagamit mo na ang libreng Gemini voices ngayong araw. Magdagdag ng sarili mong Gemini key para sa higit pa.</string>
+    <string name="today_gemini_limit_cta">Mga setting ng pagsasalita</string>
+    <string name="today_gemini_limit_dismiss">I-dismiss</string>
+    <string name="today_gemini_key_invalid_title">Kailangang ilagay muli ang Gemini key</string>
+    <string name="today_gemini_key_invalid_body">Hindi mabasa sa device na ito ang naka-save mong Gemini key, kaya hindi gagamit ang ClothesCast ng shared Gemini voices hanggang ilagay mo ito muli o i-clear.</string>
+    <string name="today_gemini_key_invalid_cta">Mga setting ng pagsasalita</string>
+    <string name="settings_api_key_status_unset">2 libre bawat araw, kumuha ng key para sa higit pa.</string>
+    <string name="settings_tts_stop">Ihinto</string>
+    <string name="garment_rain_jacket">Rain jacket</string>
+    <string name="insight_precip_all_day">buong araw</string>
+    <string name="insight_precip_all_night">buong gabi</string>
+    <string name="insight_tie_in_with_rain_all_night">Ngayong gabi, %2$s buong gabi, magdala ng %1$s.</string>
+    <string name="insight_evening_rain_all_night">Ngayong gabi, %1$s buong gabi.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Mga setting ng boses</string>

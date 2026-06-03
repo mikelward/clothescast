@@ -1174,6 +1174,22 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_week_ahead_warmer">Siltāks %1$s.</string>
     <string name="today_week_empty">Būs pieejams pēc nākamās prognozes.</string>
 
+    <string name="today_stop">Apturēt</string>
+    <string name="today_gemini_limit_title">Sasniegts bezmaksas balsu limits</string>
+    <string name="today_gemini_limit_body">Tu esi izmantojis šodienas bezmaksas Gemini balsis. Pievieno savu Gemini atslēgu, lai iegūtu vairāk.</string>
+    <string name="today_gemini_limit_cta">Runas iestatījumi</string>
+    <string name="today_gemini_limit_dismiss">Noraidīt</string>
+    <string name="today_gemini_key_invalid_title">Gemini atslēga jāievada vēlreiz</string>
+    <string name="today_gemini_key_invalid_body">Saglabāto Gemini atslēgu šajā ierīcē nevarēja nolasīt, tāpēc ClothesCast neizmantos koplietotās Gemini balsis, līdz to ievadīsi vēlreiz vai notīrīsi.</string>
+    <string name="today_gemini_key_invalid_cta">Runas iestatījumi</string>
+    <string name="settings_api_key_status_unset">Katru dienu 2 bez maksas, iegūsti atslēgu vairāk.</string>
+    <string name="settings_tts_stop">Apturēt</string>
+    <string name="garment_rain_jacket">Lietus jaka</string>
+    <string name="insight_precip_all_day">visu dienu</string>
+    <string name="insight_precip_all_night">visu nakti</string>
+    <string name="insight_tie_in_with_rain_all_night">Šovakar, %2$s visu nakti, paņem %1$s.</string>
+    <string name="insight_evening_rain_all_night">Šovakar, %1$s visu nakti.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Balss iestatījumi</string>

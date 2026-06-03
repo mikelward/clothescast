@@ -1352,6 +1352,22 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_week_ahead_warmer">Πιο ζεστά %1$s.</string>
     <string name="today_week_empty">Έτοιμο μετά την επόμενη πρόγνωση.</string>
 
+    <string name="today_stop">Διακοπή</string>
+    <string name="today_gemini_limit_title">Συμπληρώθηκε το όριο δωρεάν φωνών</string>
+    <string name="today_gemini_limit_body">Χρησιμοποίησες τις σημερινές δωρεάν φωνές Gemini. Πρόσθεσε το δικό σου κλειδί Gemini για περισσότερες.</string>
+    <string name="today_gemini_limit_cta">Ρυθμίσεις ομιλίας</string>
+    <string name="today_gemini_limit_dismiss">Απόρριψη</string>
+    <string name="today_gemini_key_invalid_title">Το κλειδί Gemini χρειάζεται επανεισαγωγή</string>
+    <string name="today_gemini_key_invalid_body">Δεν ήταν δυνατή η ανάγνωση του αποθηκευμένου κλειδιού Gemini σε αυτήν τη συσκευή, επομένως το ClothesCast δεν θα χρησιμοποιεί κοινόχρηστες φωνές Gemini μέχρι να το εισαγάγεις ξανά ή να το διαγράψεις.</string>
+    <string name="today_gemini_key_invalid_cta">Ρυθμίσεις ομιλίας</string>
+    <string name="settings_api_key_status_unset">2 δωρεάν κάθε μέρα, πάρε κλειδί για περισσότερα.</string>
+    <string name="settings_tts_stop">Διακοπή</string>
+    <string name="garment_rain_jacket">Αδιάβροχο μπουφάν</string>
+    <string name="insight_precip_all_day">όλη μέρα</string>
+    <string name="insight_precip_all_night">όλη νύχτα</string>
+    <string name="insight_tie_in_with_rain_all_night">Απόψε, %2$s όλη νύχτα, πάρε %1$s.</string>
+    <string name="insight_evening_rain_all_night">Απόψε, %1$s όλη νύχτα.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Ρυθμίσεις φωνής</string>

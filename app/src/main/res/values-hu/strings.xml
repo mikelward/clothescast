@@ -1225,6 +1225,22 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_week_ahead_warmer">Melegebb %1$s.</string>
     <string name="today_week_empty">A következő előrejelzés után lesz elérhető.</string>
 
+    <string name="today_stop">Leállítás</string>
+    <string name="today_gemini_limit_title">Elérted az ingyenes hangok korlátját</string>
+    <string name="today_gemini_limit_body">Felhasználtad a mai ingyenes Gemini hangokat. Adj hozzá saját Gemini-kulcsot továbbiakhoz.</string>
+    <string name="today_gemini_limit_cta">Beszédbeállítások</string>
+    <string name="today_gemini_limit_dismiss">Elvetés</string>
+    <string name="today_gemini_key_invalid_title">A Gemini-kulcsot újra meg kell adni</string>
+    <string name="today_gemini_key_invalid_body">A mentett Gemini-kulcsot nem sikerült beolvasni ezen az eszközön, ezért a ClothesCast nem használ megosztott Gemini hangokat, amíg újra meg nem adod vagy nem törlöd.</string>
+    <string name="today_gemini_key_invalid_cta">Beszédbeállítások</string>
+    <string name="settings_api_key_status_unset">Naponta 2 ingyenes, szerezz kulcsot többhöz.</string>
+    <string name="settings_tts_stop">Leállítás</string>
+    <string name="garment_rain_jacket">Esőkabát</string>
+    <string name="insight_precip_all_day">egész nap</string>
+    <string name="insight_precip_all_night">egész éjjel</string>
+    <string name="insight_tie_in_with_rain_all_night">Ma este, %2$s egész éjjel, vigyél %1$s.</string>
+    <string name="insight_evening_rain_all_night">Ma este, %1$s egész éjjel.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Hangbeállítások</string>

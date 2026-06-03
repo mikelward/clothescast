@@ -1231,6 +1231,22 @@ standard in Israeli digital communication.
     <string name="today_week_ahead_warmer">חם יותר %1$s.</string>
     <string name="today_week_empty">יהיה זמין אחרי התחזית הבאה.</string>
 
+    <string name="today_stop">עצירה</string>
+    <string name="today_gemini_limit_title">הגעת למגבלת הקולות החינמיים</string>
+    <string name="today_gemini_limit_body">השתמשת בקולות Gemini החינמיים של היום. הוסיפו מפתח Gemini משלכם לעוד.</string>
+    <string name="today_gemini_limit_cta">הגדרות דיבור</string>
+    <string name="today_gemini_limit_dismiss">סגירה</string>
+    <string name="today_gemini_key_invalid_title">צריך להזין מחדש את מפתח Gemini</string>
+    <string name="today_gemini_key_invalid_body">לא ניתן היה לקרוא את מפתח Gemini השמור במכשיר הזה, לכן ClothesCast לא ישתמש בקולות Gemini משותפים עד שתזינו אותו מחדש או תמחקו אותו.</string>
+    <string name="today_gemini_key_invalid_cta">הגדרות דיבור</string>
+    <string name="settings_api_key_status_unset">2 בחינם בכל יום, קבלו מפתח לעוד.</string>
+    <string name="settings_tts_stop">עצירה</string>
+    <string name="garment_rain_jacket">מעיל גשם</string>
+    <string name="insight_precip_all_day">כל היום</string>
+    <string name="insight_precip_all_night">כל הלילה</string>
+    <string name="insight_tie_in_with_rain_all_night">הלילה, %2$s כל הלילה, קחו %1$s.</string>
+    <string name="insight_evening_rain_all_night">הלילה, %1$s כל הלילה.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">הגדרות קול</string>

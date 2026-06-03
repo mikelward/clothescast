@@ -1176,6 +1176,22 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_week_ahead_warmer">Soojem %1$s.</string>
     <string name="today_week_empty">Valmis pärast järgmist prognoosi.</string>
 
+    <string name="today_stop">Peata</string>
+    <string name="today_gemini_limit_title">Tasuta häälte limiit on täis</string>
+    <string name="today_gemini_limit_body">Oled tänased tasuta Gemini hääled ära kasutanud. Lisa oma Gemini võti, et rohkem saada.</string>
+    <string name="today_gemini_limit_cta">Kõne seaded</string>
+    <string name="today_gemini_limit_dismiss">Sulge</string>
+    <string name="today_gemini_key_invalid_title">Gemini võti tuleb uuesti sisestada</string>
+    <string name="today_gemini_key_invalid_body">Salvestatud Gemini võtit ei saanud selles seadmes lugeda, seega ClothesCast ei kasuta jagatud Gemini hääli enne, kui sisestad selle uuesti või kustutad.</string>
+    <string name="today_gemini_key_invalid_cta">Kõne seaded</string>
+    <string name="settings_api_key_status_unset">Iga päev 2 tasuta, rohkema jaoks hangi võti.</string>
+    <string name="settings_tts_stop">Peata</string>
+    <string name="garment_rain_jacket">Vihmajope</string>
+    <string name="insight_precip_all_day">kogu päeva</string>
+    <string name="insight_precip_all_night">kogu öö</string>
+    <string name="insight_tie_in_with_rain_all_night">Täna õhtul, %2$s kogu öö, võta %1$s kaasa.</string>
+    <string name="insight_evening_rain_all_night">Täna õhtul, %1$s kogu öö.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Hääle seaded</string>

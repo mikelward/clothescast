@@ -1380,6 +1380,22 @@ label localizes.
     <string name="today_week_ahead_warmer">%1$s 转暖。</string>
     <string name="today_week_empty">下次预报后就绪。</string>
 
+    <string name="today_stop">停止</string>
+    <string name="today_gemini_limit_title">已达到免费语音限制</string>
+    <string name="today_gemini_limit_body">你已用完今天的免费 Gemini 语音。添加你自己的 Gemini 密钥可获得更多。</string>
+    <string name="today_gemini_limit_cta">语音设置</string>
+    <string name="today_gemini_limit_dismiss">关闭</string>
+    <string name="today_gemini_key_invalid_title">需要重新输入 Gemini 密钥</string>
+    <string name="today_gemini_key_invalid_body">无法在此设备上读取你保存的 Gemini 密钥，因此 ClothesCast 在你重新输入或清除它之前不会使用共享 Gemini 语音。</string>
+    <string name="today_gemini_key_invalid_cta">语音设置</string>
+    <string name="settings_api_key_status_unset">每天 2 次免费，获取密钥可使用更多。</string>
+    <string name="settings_tts_stop">停止</string>
+    <string name="garment_rain_jacket">雨衣</string>
+    <string name="insight_precip_all_day">一整天</string>
+    <string name="insight_precip_all_night">一整夜</string>
+    <string name="insight_tie_in_with_rain_all_night">今晚，%2$s一整夜，带上%1$s。</string>
+    <string name="insight_evening_rain_all_night">今晚，%1$s一整夜。</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">语音设置</string>

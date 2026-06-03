@@ -1219,6 +1219,22 @@ What is NOT overridden, by design:
     <string name="today_week_ahead_warmer">По-топло %1$s.</string>
     <string name="today_week_empty">Ще е готово след следващата прогноза.</string>
 
+    <string name="today_stop">Спиране</string>
+    <string name="today_gemini_limit_title">Достигнат е лимитът за безплатен глас</string>
+    <string name="today_gemini_limit_body">Използва днешните безплатни гласове на Gemini. Добави собствен Gemini ключ за още.</string>
+    <string name="today_gemini_limit_cta">Настройки на речта</string>
+    <string name="today_gemini_limit_dismiss">Отхвърляне</string>
+    <string name="today_gemini_key_invalid_title">Gemini ключът трябва да се въведе отново</string>
+    <string name="today_gemini_key_invalid_body">Запазеният Gemini ключ не можа да бъде прочетен на това устройство, така че ClothesCast няма да използва споделените Gemini гласове, докато не го въведеш отново или изчистиш.</string>
+    <string name="today_gemini_key_invalid_cta">Настройки на речта</string>
+    <string name="settings_api_key_status_unset">2 безплатни всеки ден, вземи ключ за още.</string>
+    <string name="settings_tts_stop">Спиране</string>
+    <string name="garment_rain_jacket">Дъждобран</string>
+    <string name="insight_precip_all_day">през целия ден</string>
+    <string name="insight_precip_all_night">през цялата нощ</string>
+    <string name="insight_tie_in_with_rain_all_night">Тази вечер, %2$s през цялата нощ, вземи %1$s.</string>
+    <string name="insight_evening_rain_all_night">Тази вечер, %1$s през цялата нощ.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Настройки на гласа</string>

@@ -1385,6 +1385,22 @@ displayed label localizes.
     <string name="today_week_ahead_warmer">%1$s 더 따뜻함.</string>
     <string name="today_week_empty">다음 예보 후에 준비됩니다.</string>
 
+    <string name="today_stop">중지</string>
+    <string name="today_gemini_limit_title">무료 음성 한도에 도달했습니다</string>
+    <string name="today_gemini_limit_body">오늘의 무료 Gemini 음성을 모두 사용했습니다. 더 사용하려면 내 Gemini 키를 추가하세요.</string>
+    <string name="today_gemini_limit_cta">음성 설정</string>
+    <string name="today_gemini_limit_dismiss">닫기</string>
+    <string name="today_gemini_key_invalid_title">Gemini 키를 다시 입력해야 합니다</string>
+    <string name="today_gemini_key_invalid_body">저장된 Gemini 키를 이 기기에서 읽을 수 없어, 다시 입력하거나 지울 때까지 ClothesCast는 공유 Gemini 음성을 사용하지 않습니다.</string>
+    <string name="today_gemini_key_invalid_cta">음성 설정</string>
+    <string name="settings_api_key_status_unset">매일 2개 무료, 더 사용하려면 키를 받으세요.</string>
+    <string name="settings_tts_stop">중지</string>
+    <string name="garment_rain_jacket">비 재킷</string>
+    <string name="insight_precip_all_day">하루 종일</string>
+    <string name="insight_precip_all_night">밤새</string>
+    <string name="insight_tie_in_with_rain_all_night">오늘 밤, %2$s 밤새, %1$s 챙기세요.</string>
+    <string name="insight_evening_rain_all_night">오늘 밤, %1$s 밤새.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">음성 설정</string>

@@ -1262,6 +1262,22 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_week_ahead_warmer">Varmere %1$s.</string>
     <string name="today_week_empty">Klar efter næste prognose.</string>
 
+    <string name="today_stop">Stop</string>
+    <string name="today_gemini_limit_title">Grænsen for gratis stemmer er nået</string>
+    <string name="today_gemini_limit_body">Du har brugt dagens gratis Gemini-stemmer. Tilføj din egen Gemini-nøgle for mere.</string>
+    <string name="today_gemini_limit_cta">Taleindstillinger</string>
+    <string name="today_gemini_limit_dismiss">Afvis</string>
+    <string name="today_gemini_key_invalid_title">Gemini-nøglen skal indtastes igen</string>
+    <string name="today_gemini_key_invalid_body">Din gemte Gemini-nøgle kunne ikke læses på denne enhed, så ClothesCast bruger ikke delte Gemini-stemmer, før du indtaster den igen eller rydder den.</string>
+    <string name="today_gemini_key_invalid_cta">Taleindstillinger</string>
+    <string name="settings_api_key_status_unset">2 gratis hver dag, få en nøgle til mere.</string>
+    <string name="settings_tts_stop">Stop</string>
+    <string name="garment_rain_jacket">Regnjakke</string>
+    <string name="insight_precip_all_day">hele dagen</string>
+    <string name="insight_precip_all_night">hele natten</string>
+    <string name="insight_tie_in_with_rain_all_night">I aften, %2$s hele natten, tag %1$s med.</string>
+    <string name="insight_evening_rain_all_night">I aften, %1$s hele natten.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Stemmeindstillinger</string>

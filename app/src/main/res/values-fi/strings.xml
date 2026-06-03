@@ -1241,6 +1241,22 @@ displayed label localizes.
     <string name="today_week_ahead_warmer">Lämpimämpi %1$s.</string>
     <string name="today_week_empty">Valmis seuraavan ennusteen jälkeen.</string>
 
+    <string name="today_stop">Pysäytä</string>
+    <string name="today_gemini_limit_title">Ilmaisten äänien raja saavutettu</string>
+    <string name="today_gemini_limit_body">Olet käyttänyt tämän päivän ilmaiset Gemini-äänet. Lisää oma Gemini-avain saadaksesi lisää.</string>
+    <string name="today_gemini_limit_cta">Puheasetukset</string>
+    <string name="today_gemini_limit_dismiss">Ohita</string>
+    <string name="today_gemini_key_invalid_title">Gemini-avain pitää syöttää uudelleen</string>
+    <string name="today_gemini_key_invalid_body">Tallennettua Gemini-avaintasi ei voitu lukea tällä laitteella, joten ClothesCast ei käytä jaettuja Gemini-ääniä ennen kuin syötät sen uudelleen tai tyhjennät sen.</string>
+    <string name="today_gemini_key_invalid_cta">Puheasetukset</string>
+    <string name="settings_api_key_status_unset">2 ilmaista joka päivä, hanki avain saadaksesi lisää.</string>
+    <string name="settings_tts_stop">Pysäytä</string>
+    <string name="garment_rain_jacket">Sadetakki</string>
+    <string name="insight_precip_all_day">koko päivän</string>
+    <string name="insight_precip_all_night">koko yön</string>
+    <string name="insight_tie_in_with_rain_all_night">Tänä iltana, %2$s koko yön, ota %1$s mukaan.</string>
+    <string name="insight_evening_rain_all_night">Tänä iltana, %1$s koko yön.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Ääniasetukset</string>

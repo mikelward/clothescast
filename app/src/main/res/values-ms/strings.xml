@@ -1238,6 +1238,22 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_week_ahead_warmer">Lebih hangat %1$s.</string>
     <string name="today_week_empty">Akan siap selepas ramalan berikutnya.</string>
 
+    <string name="today_stop">Henti</string>
+    <string name="today_gemini_limit_title">Had suara percuma dicapai</string>
+    <string name="today_gemini_limit_body">Anda telah menggunakan suara Gemini percuma hari ini. Tambah kunci Gemini anda sendiri untuk lebih banyak.</string>
+    <string name="today_gemini_limit_cta">Tetapan pertuturan</string>
+    <string name="today_gemini_limit_dismiss">Tutup</string>
+    <string name="today_gemini_key_invalid_title">Kunci Gemini perlu dimasukkan semula</string>
+    <string name="today_gemini_key_invalid_body">Kunci Gemini tersimpan anda tidak dapat dibaca pada peranti ini, jadi ClothesCast tidak akan menggunakan suara Gemini berkongsi sehingga anda memasukkannya semula atau mengosongkannya.</string>
+    <string name="today_gemini_key_invalid_cta">Tetapan pertuturan</string>
+    <string name="settings_api_key_status_unset">2 percuma setiap hari, dapatkan kunci untuk lebih banyak.</string>
+    <string name="settings_tts_stop">Henti</string>
+    <string name="garment_rain_jacket">Jaket hujan</string>
+    <string name="insight_precip_all_day">sepanjang hari</string>
+    <string name="insight_precip_all_night">sepanjang malam</string>
+    <string name="insight_tie_in_with_rain_all_night">Malam ini, %2$s sepanjang malam, bawa %1$s.</string>
+    <string name="insight_evening_rain_all_night">Malam ini, %1$s sepanjang malam.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Tetapan suara</string>

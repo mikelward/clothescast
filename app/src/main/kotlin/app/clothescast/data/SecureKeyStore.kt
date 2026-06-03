@@ -3,9 +3,11 @@ package app.clothescast.data
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.clothescast.core.data.insight.InvalidApiKeyException
 import app.clothescast.core.data.insight.MissingApiKeyException
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
@@ -32,10 +34,11 @@ import java.util.Base64
  * a fake AEAD and a test DataStore (e.g. temp-file-backed via PreferenceDataStoreFactory).
  * Production callers use [SecureKeyStore.create].
  *
- * `get()` reports any decode or decrypt failure as [MissingApiKeyException] and clears
- * the stored value. This handles the Keystore master key rotating (factory reset,
- * device-to-device transfer that doesn't preserve hardware-backed keys, etc.) by asking
- * the user to re-enter their key, rather than looping on a corrupt ciphertext.
+ * `get()` reports any decode or decrypt failure as [InvalidApiKeyException],
+ * clears the stored value, and records that the key needs re-entry. This
+ * handles the Keystore master key rotating (factory reset, device-to-device
+ * transfer that doesn't preserve hardware-backed keys, etc.) without silently
+ * falling back to a shared-key network path.
  *
  * Read by the Gemini call planner on the BYOK branch: when the user has stored
  * their own Gemini key, the planner pulls it via [get] and routes the request
@@ -46,11 +49,16 @@ class SecureKeyStore(
     private val dataStore: DataStore<Preferences>,
 ) {
 
-    suspend fun get(): String = read(GEMINI_PREF_KEY, GEMINI_AAD, "Gemini")
+    suspend fun get(): String = read(
+        prefKey = GEMINI_PREF_KEY,
+        invalidPrefKey = GEMINI_NEEDS_REENTRY_KEY,
+        aad = GEMINI_AAD,
+        provider = "Gemini",
+    )
 
     suspend fun set(key: String) = write(GEMINI_PREF_KEY, GEMINI_AAD, key)
 
-    suspend fun clear() = remove(GEMINI_PREF_KEY)
+    suspend fun clear() = remove(GEMINI_PREF_KEY, GEMINI_NEEDS_REENTRY_KEY)
 
     /**
      * MQTT broker password for the optional Smart Home bridge. Returns `null`
@@ -58,7 +66,12 @@ class SecureKeyStore(
      * state are both indistinguishable from "unset" by design.
      */
     suspend fun getMqttPassword(): String? = try {
-        read(MQTT_PASS_PREF_KEY, MQTT_PASS_AAD, "MQTT")
+        read(
+            prefKey = MQTT_PASS_PREF_KEY,
+            invalidPrefKey = null,
+            aad = MQTT_PASS_AAD,
+            provider = "MQTT",
+        )
     } catch (_: MissingApiKeyException) {
         null
     }
@@ -77,6 +90,16 @@ class SecureKeyStore(
         .distinctUntilChanged()
 
     /**
+     * True after a stored Gemini key failed to decrypt and was cleared. Stays
+     * true until the user re-enters or explicitly clears the key so retries
+     * keep the BYOK privacy boundary instead of falling through to the shared
+     * TTS proxy.
+     */
+    val geminiKeyNeedsReentryFlow: Flow<Boolean> = dataStore.data
+        .map { it[GEMINI_NEEDS_REENTRY_KEY] == true }
+        .distinctUntilChanged()
+
+    /**
      * Sibling of [geminiKeyConfiguredFlow] for the MQTT broker password. The
      * Smart Home settings card uses it to render the "Password set" indicator
      * without ever decrypting the stored value.
@@ -85,32 +108,58 @@ class SecureKeyStore(
         .map { it[MQTT_PASS_PREF_KEY] != null }
         .distinctUntilChanged()
 
-    private suspend fun read(prefKey: Preferences.Key<String>, aad: ByteArray, provider: String): String {
+    private suspend fun read(
+        prefKey: Preferences.Key<String>,
+        invalidPrefKey: Preferences.Key<Boolean>?,
+        aad: ByteArray,
+        provider: String,
+    ): String {
         val ciphertextB64 = dataStore.data.map { it[prefKey] }.first()
-            ?: throw MissingApiKeyException(provider)
+            ?: if (invalidPrefKey != null && dataStore.data.map { it[invalidPrefKey] == true }.first()) {
+                throw InvalidApiKeyException(provider)
+            } else {
+                throw MissingApiKeyException(provider)
+            }
         return try {
             val ciphertext = Base64.getDecoder().decode(ciphertextB64)
             aead.decrypt(ciphertext, aad).toString(Charsets.UTF_8)
         } catch (_: Exception) {
             // Corrupt ciphertext or unrecoverable Keystore state — drop the bad value so
             // the next attempt prompts the user to re-enter their key cleanly.
-            remove(prefKey)
-            throw MissingApiKeyException(provider)
+            dataStore.edit {
+                it.remove(prefKey)
+                if (invalidPrefKey != null) it[invalidPrefKey] = true
+            }
+            if (invalidPrefKey != null) {
+                throw InvalidApiKeyException(provider)
+            } else {
+                throw MissingApiKeyException(provider)
+            }
         }
     }
 
     private suspend fun write(prefKey: Preferences.Key<String>, aad: ByteArray, key: String) {
         val ciphertext = aead.encrypt(key.toByteArray(Charsets.UTF_8), aad)
         val ciphertextB64 = Base64.getEncoder().encodeToString(ciphertext)
-        dataStore.edit { it[prefKey] = ciphertextB64 }
+        dataStore.edit {
+            it[prefKey] = ciphertextB64
+            if (prefKey == GEMINI_PREF_KEY) it.remove(GEMINI_NEEDS_REENTRY_KEY)
+        }
     }
 
-    private suspend fun remove(prefKey: Preferences.Key<String>) {
-        dataStore.edit { it.remove(prefKey) }
+    private suspend fun remove(
+        prefKey: Preferences.Key<String>,
+        invalidPrefKey: Preferences.Key<Boolean>? = null,
+    ) {
+        dataStore.edit {
+            it.remove(prefKey)
+            if (invalidPrefKey != null) it.remove(invalidPrefKey)
+        }
     }
 
     companion object {
         private val GEMINI_PREF_KEY = stringPreferencesKey("gemini_api_key_v1")
+        private val GEMINI_NEEDS_REENTRY_KEY = booleanPreferencesKey("gemini_api_key_needs_reentry_v1")
         private val GEMINI_AAD = "clothescast:gemini_api_key:v1".toByteArray(Charsets.UTF_8)
         private val MQTT_PASS_PREF_KEY = stringPreferencesKey("mqtt_password_v1")
         private val MQTT_PASS_AAD = "clothescast:mqtt_password:v1".toByteArray(Charsets.UTF_8)

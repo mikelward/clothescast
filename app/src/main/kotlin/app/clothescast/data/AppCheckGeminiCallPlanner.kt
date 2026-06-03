@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -68,14 +67,10 @@ class AppCheckGeminiCallPlanner(
         return sharedPlan()
     }
 
-    private suspend fun readOwnKey(): String? {
-        val keyWasConfigured = secureKeyStore.geminiKeyConfiguredFlow.first()
-        return try {
-            secureKeyStore.get().takeIf { it.isNotBlank() }
-        } catch (e: MissingApiKeyException) {
-            if (keyWasConfigured) throw e
-            null
-        }
+    private suspend fun readOwnKey(): String? = try {
+        secureKeyStore.get().takeIf { it.isNotBlank() }
+    } catch (_: MissingApiKeyException) {
+        null
     }
 
     private fun directPlan(key: String) = GeminiCallPlan(

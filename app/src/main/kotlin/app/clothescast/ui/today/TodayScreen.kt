@@ -847,6 +847,11 @@ private fun BannerStack(
         onDismiss = onDismissGeminiTtsLimitCard,
         modifier = bannerModifier,
     )
+    GeminiKeyNeedsReentryCard(
+        visible = state.geminiKeyNeedsReentry,
+        onOpenVoice = onOpenVoice,
+        modifier = bannerModifier,
+    )
     // "Set up a schedule" nudge — scheduled casts don't fire until the user
     // enables a slot, so a fresh install gets nothing on a timer. Gated
     // upstream on neither master switch being on (plus the user not having
@@ -3622,4 +3627,3 @@ internal fun openInMaps(context: Context, latitude: Double, longitude: Double, l
         // No maps app installed; nothing useful to do.
     }
 }
-

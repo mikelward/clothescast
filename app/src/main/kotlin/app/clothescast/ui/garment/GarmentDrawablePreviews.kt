@@ -77,6 +77,12 @@ internal fun ClothingThickCoatPreview() {
     ClothingDrawableFrame(R.drawable.ic_outfit_thick_coat, "thick coat")
 }
 
+@Preview(name = "Clothing · rain jacket", widthDp = 360)
+@Composable
+internal fun ClothingRainJacketPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_rain_jacket, "rain jacket")
+}
+
 @Preview(name = "Clothing · puffer jacket", widthDp = 360)
 @Composable
 internal fun ClothingPufferJacketPreview() {

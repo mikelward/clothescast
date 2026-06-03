@@ -390,9 +390,6 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_storyteller">Pasakotojas</string>
     <string name="settings_tts_style_fitness_instructor">Kūno kultūros instruktorius</string>
     <string name="settings_tts_style_morning_presenter">Ryto radijo vedėjas</string>
-    <string name="settings_tts_style_custom">Pasirinktinis…</string>
-    <string name="settings_tts_style_custom_label">Pasirinktinė direktyva</string>
-    <string name="settings_tts_style_custom_placeholder">pvz., Skaityk šį tekstą kaip griežtas šnabždantis bibliotekininkas</string>
 
     <!-- Device-voice picker. -->
     <string name="settings_tts_device_voice_label">Įrenginio balsas</string>

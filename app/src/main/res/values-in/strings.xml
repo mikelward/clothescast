@@ -379,9 +379,6 @@ to values/strings.xml (English).
     <string name="settings_tts_style_storyteller">Pendongeng</string>
     <string name="settings_tts_style_fitness_instructor">Instruktur Kebugaran</string>
     <string name="settings_tts_style_morning_presenter">Presenter Radio Pagi</string>
-    <string name="settings_tts_style_custom">Kustom…</string>
-    <string name="settings_tts_style_custom_label">Direktif kustom</string>
-    <string name="settings_tts_style_custom_placeholder">mis. Bacakan berikut sebagai pustakawan yang berbisik dengan tegas</string>
     <string name="settings_tts_device_voice_label">Suara perangkat</string>
     <string name="settings_tts_device_voice_auto">Otomatis (terbaik untuk aksen)</string>
     <string name="settings_tts_device_voice_currently">Saat ini: %1$s</string>

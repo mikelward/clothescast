@@ -309,9 +309,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_storyteller">ተረት ተራኪ</string>
     <string name="settings_tts_style_fitness_instructor">የአካል ብቃት አሰልጣኝ</string>
     <string name="settings_tts_style_morning_presenter">የጠዋቱ ሬዲዮ አቅራቢ</string>
-    <string name="settings_tts_style_custom">ብጁ…</string>
-    <string name="settings_tts_style_custom_label">ብጁ መመሪያ</string>
-    <string name="settings_tts_style_custom_placeholder">ምሳሌ: የሚከተለውን እንደ ጥብቅ ቤተ-መፃህፍት ጠባቂ በሹክሹክታ አንብብ</string>
     <string name="settings_tts_device_voice_label">የመሳሪያ ድምፅ</string>
     <string name="settings_tts_device_voice_auto">ራስ (ለዘዬ ምርጥ)</string>
     <string name="settings_tts_device_voice_currently">አሁን: %1$s</string>

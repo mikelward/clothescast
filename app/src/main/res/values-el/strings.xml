@@ -714,9 +714,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_storyteller">Αφηγητής</string>
     <string name="settings_tts_style_fitness_instructor">Προπονητής γυμναστικής</string>
     <string name="settings_tts_style_morning_presenter">Πρωινός παρουσιαστής ραδιοφώνου</string>
-    <string name="settings_tts_style_custom">Προσαρμοσμένο…</string>
-    <string name="settings_tts_style_custom_label">Προσαρμοσμένη οδηγία</string>
-    <string name="settings_tts_style_custom_placeholder">π.χ. Διάβασε το παρακάτω ως αυστηρός βιβλιοθηκάριος που ψιθυρίζει</string>
     <string name="today_forecast_air_section_title">Θερμοκρασία αέρα</string>
 
     <!-- Strings added to match base (new features). -->

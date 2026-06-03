@@ -724,9 +724,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_tts_style_storyteller">Contador de histórias</string>
     <string name="settings_tts_style_fitness_instructor">Instrutor de fitness</string>
     <string name="settings_tts_style_morning_presenter">Apresentador de rádio matinal</string>
-    <string name="settings_tts_style_custom">Personalizado…</string>
-    <string name="settings_tts_style_custom_label">Diretriz personalizada</string>
-    <string name="settings_tts_style_custom_placeholder">ex.: Lê o seguinte como um bibliotecário severo a sussurrar</string>
     <string name="today_forecast_air_section_title">Temperatura do ar</string>
 
     <!-- Strings added to match base (new features). -->

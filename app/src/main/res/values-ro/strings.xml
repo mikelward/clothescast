@@ -384,9 +384,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_tts_style_storyteller">Povestitor</string>
     <string name="settings_tts_style_fitness_instructor">Instructor de fitness</string>
     <string name="settings_tts_style_morning_presenter">Prezentator radio de dimineață</string>
-    <string name="settings_tts_style_custom">Personalizat…</string>
-    <string name="settings_tts_style_custom_label">Directivă personalizată</string>
-    <string name="settings_tts_style_custom_placeholder">de ex. Citește cele de mai jos ca un bibliotecar sever care șoptește</string>
     <string name="settings_tts_device_voice_label">Vocea dispozitivului</string>
     <string name="settings_tts_device_voice_auto">Automat (cel mai bun accent)</string>
     <string name="settings_tts_device_voice_currently">Curent: %1$s</string>

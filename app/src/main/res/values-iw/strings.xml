@@ -381,9 +381,6 @@ standard in Israeli digital communication.
     <string name="settings_tts_style_storyteller">מספר/ת סיפורים</string>
     <string name="settings_tts_style_fitness_instructor">מדריך/ה כושר</string>
     <string name="settings_tts_style_morning_presenter">מגיש/ת רדיו בוקר</string>
-    <string name="settings_tts_style_custom">מותאם אישית…</string>
-    <string name="settings_tts_style_custom_label">הוראה מותאמת אישית</string>
-    <string name="settings_tts_style_custom_placeholder">לדוגמה: קרא/י את הטקסט הבא כספרן/ית קפדני/ת שלוחש/ת</string>
     <string name="settings_tts_device_voice_label">קול המכשיר</string>
     <string name="settings_tts_device_voice_auto">אוטומטי (הטוב ביותר למבטא)</string>
     <string name="settings_tts_device_voice_currently">כעת: %1$s</string>

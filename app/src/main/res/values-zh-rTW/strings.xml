@@ -693,9 +693,6 @@ label localises.
     <string name="settings_tts_style_storyteller">說書人</string>
     <string name="settings_tts_style_fitness_instructor">健身教練</string>
     <string name="settings_tts_style_morning_presenter">晨間電台主持人</string>
-    <string name="settings_tts_style_custom">自訂…</string>
-    <string name="settings_tts_style_custom_label">自訂指令</string>
-    <string name="settings_tts_style_custom_placeholder">例如：請像嚴肅的圖書館員低聲細語般朗讀以下內容</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">分享錯誤報告？</string>

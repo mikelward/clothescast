@@ -401,9 +401,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_storyteller">Mangangatha</string>
     <string name="settings_tts_style_fitness_instructor">Fitness Instructor</string>
     <string name="settings_tts_style_morning_presenter">Presenter sa Umaga</string>
-    <string name="settings_tts_style_custom">Custom…</string>
-    <string name="settings_tts_style_custom_label">Custom na direktiba</string>
-    <string name="settings_tts_style_custom_placeholder">hal. Basahin ang sumusunod bilang isang mahigpit na aklatan na nagbubulong</string>
 
     <string name="settings_tts_device_voice_label">Boses ng device</string>
     <string name="settings_tts_device_voice_auto">Auto (pinakamainam para sa punto)</string>

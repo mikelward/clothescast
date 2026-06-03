@@ -689,9 +689,6 @@ displayed label localizes.
     <string name="settings_tts_style_storyteller">이야기꾼</string>
     <string name="settings_tts_style_fitness_instructor">피트니스 강사</string>
     <string name="settings_tts_style_morning_presenter">아침 라디오 진행자</string>
-    <string name="settings_tts_style_custom">사용자 지정…</string>
-    <string name="settings_tts_style_custom_label">사용자 지정 지시문</string>
-    <string name="settings_tts_style_custom_placeholder">예: 다음 내용을 엄격한 사서가 속삭이듯 읽어주세요</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">버그 보고서를 공유할까요?</string>

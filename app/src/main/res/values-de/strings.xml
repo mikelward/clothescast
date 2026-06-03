@@ -710,9 +710,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_storyteller">Geschichtenerzähler</string>
     <string name="settings_tts_style_fitness_instructor">Fitnesstrainer</string>
     <string name="settings_tts_style_morning_presenter">Morgenradio-Moderatorin</string>
-    <string name="settings_tts_style_custom">Benutzerdefiniert…</string>
-    <string name="settings_tts_style_custom_label">Benutzerdefinierte Anweisung</string>
-    <string name="settings_tts_style_custom_placeholder">z. B. Lies das Folgende wie ein strenger flüsternder Bibliothekar vor</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Fehlerbericht teilen?</string>

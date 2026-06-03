@@ -384,9 +384,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_storyteller">นักเล่าเรื่อง</string>
     <string name="settings_tts_style_fitness_instructor">ครูฝึกฟิตเนส</string>
     <string name="settings_tts_style_morning_presenter">พิธีกรวิทยุยามเช้า</string>
-    <string name="settings_tts_style_custom">กำหนดเอง…</string>
-    <string name="settings_tts_style_custom_label">คำสั่งที่กำหนดเอง</string>
-    <string name="settings_tts_style_custom_placeholder">เช่น อ่านข้อความต่อไปนี้ในสไตล์บรรณารักษ์เข้มงวดที่กำลังกระซิบ</string>
     <string name="settings_tts_device_voice_label">เสียงอุปกรณ์</string>
     <string name="settings_tts_device_voice_auto">อัตโนมัติ (ดีที่สุดสำหรับสำเนียง)</string>
     <string name="settings_tts_device_voice_currently">ปัจจุบัน: %1$s</string>

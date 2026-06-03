@@ -408,9 +408,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_tts_style_storyteller">Người kể chuyện</string>
     <string name="settings_tts_style_fitness_instructor">Huấn luyện viên thể dục</string>
     <string name="settings_tts_style_morning_presenter">Người dẫn radio buổi sáng</string>
-    <string name="settings_tts_style_custom">Tùy chỉnh…</string>
-    <string name="settings_tts_style_custom_label">Chỉ thị tùy chỉnh</string>
-    <string name="settings_tts_style_custom_placeholder">Ví dụ: Đọc phần sau như một thủ thư nghiêm khắc đang thì thầm</string>
 
     <!-- Device voice picker -->
     <string name="settings_tts_device_voice_label">Giọng thiết bị</string>

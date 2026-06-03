@@ -678,9 +678,6 @@ label localizes.
     <string name="settings_tts_style_storyteller">说书人</string>
     <string name="settings_tts_style_fitness_instructor">健身教练</string>
     <string name="settings_tts_style_morning_presenter">晨间电台主持人</string>
-    <string name="settings_tts_style_custom">自定义…</string>
-    <string name="settings_tts_style_custom_label">自定义指令</string>
-    <string name="settings_tts_style_custom_placeholder">例如：请像严厉的图书管理员低声细语般朗读以下内容</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">分享错误报告？</string>

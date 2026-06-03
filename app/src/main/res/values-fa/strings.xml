@@ -375,9 +375,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_tts_style_storyteller">داستان‌سرا</string>
     <string name="settings_tts_style_fitness_instructor">مربی تناسب اندام</string>
     <string name="settings_tts_style_morning_presenter">مجری رادیوی صبح</string>
-    <string name="settings_tts_style_custom">سفارشی…</string>
-    <string name="settings_tts_style_custom_label">دستورالعمل سفارشی</string>
-    <string name="settings_tts_style_custom_placeholder">مثال: متن بعدی را به سبک یک کتابدار جدی که زمزمه می‌کند بخوانید</string>
     <string name="settings_tts_device_voice_label">صدای دستگاه</string>
     <string name="settings_tts_device_voice_auto">خودکار (بهترین برای لهجه)</string>
     <string name="settings_tts_device_voice_currently">در حال حاضر: %1$s</string>

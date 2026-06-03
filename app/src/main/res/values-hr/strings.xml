@@ -645,9 +645,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_tts_style_storyteller">Pripovijedač</string>
     <string name="settings_tts_style_fitness_instructor">Fitness instruktor</string>
     <string name="settings_tts_style_morning_presenter">Jutarnji radio voditelj</string>
-    <string name="settings_tts_style_custom">Prilagođeno…</string>
-    <string name="settings_tts_style_custom_label">Prilagođena direktiva</string>
-    <string name="settings_tts_style_custom_placeholder">npr. Pročitaj sljedeće kao strogi knjižničar koji šapuće</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Podijeliti izvješće o grešci?</string>

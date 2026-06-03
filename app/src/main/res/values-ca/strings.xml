@@ -270,9 +270,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_tts_style_storyteller">Narrador</string>
     <string name="settings_tts_style_fitness_instructor">Monitor de fitness</string>
     <string name="settings_tts_style_morning_presenter">Presentador de ràdio matinal</string>
-    <string name="settings_tts_style_custom">Personalitzat…</string>
-    <string name="settings_tts_style_custom_label">Directiva personalitzada</string>
-    <string name="settings_tts_style_custom_placeholder">p. ex. Llegeix el següent com un bibliotecari sever que xiuxiueja</string>
     <string name="settings_tts_device_voice_label">Veu del dispositiu</string>
     <string name="settings_tts_device_voice_auto">Automàtic (millor per a l\'accent)</string>
     <string name="settings_tts_device_voice_currently">Actual: %1$s</string>

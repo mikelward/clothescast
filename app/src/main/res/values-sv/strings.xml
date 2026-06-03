@@ -136,9 +136,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_tts_style_storyteller">Berättare</string>
     <string name="settings_tts_style_fitness_instructor">Fitnessinstruktör</string>
     <string name="settings_tts_style_morning_presenter">Morgonradiokvärd</string>
-    <string name="settings_tts_style_custom">Anpassad…</string>
-    <string name="settings_tts_style_custom_label">Anpassad instruktion</string>
-    <string name="settings_tts_style_custom_placeholder">t.ex. Läs följande som en sträng, viskande bibliotekarie</string>
 
     <!-- Region screen — language picker. -->
     <string name="settings_region_language_title">Språk</string>

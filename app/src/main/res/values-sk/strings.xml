@@ -257,9 +257,6 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_storyteller">Rozprávač</string>
     <string name="settings_tts_style_fitness_instructor">Fitness inštruktor</string>
     <string name="settings_tts_style_morning_presenter">Moderátor ranného rádia</string>
-    <string name="settings_tts_style_custom">Vlastný…</string>
-    <string name="settings_tts_style_custom_label">Vlastná inštrukcia</string>
-    <string name="settings_tts_style_custom_placeholder">napr. Čítaj nasledovné ako prísny šepkajúci knihovník</string>
 
     <!-- Region screen — units pickers. -->
     <string name="settings_temperature_unit_title">Jednotka teploty</string>

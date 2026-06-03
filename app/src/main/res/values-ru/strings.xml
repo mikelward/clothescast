@@ -160,9 +160,6 @@ only the displayed label localizes.
     <string name="settings_tts_style_storyteller">Рассказчик</string>
     <string name="settings_tts_style_fitness_instructor">Фитнес-инструктор</string>
     <string name="settings_tts_style_morning_presenter">Ведущий утреннего радио</string>
-    <string name="settings_tts_style_custom">Особый…</string>
-    <string name="settings_tts_style_custom_label">Особая инструкция</string>
-    <string name="settings_tts_style_custom_placeholder">Например: читай это как строгий шепчущий библиотекарь</string>
 
     <!--
     Region screen — language picker title + caption (the disambiguation

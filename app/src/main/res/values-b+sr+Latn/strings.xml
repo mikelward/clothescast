@@ -238,9 +238,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_tts_style_storyteller">Pripovedač</string>
     <string name="settings_tts_style_fitness_instructor">Fitness instruktor</string>
     <string name="settings_tts_style_morning_presenter">Jutarnji radio voditelj</string>
-    <string name="settings_tts_style_custom">Prilagođeno…</string>
-    <string name="settings_tts_style_custom_label">Prilagođena direktiva</string>
-    <string name="settings_tts_style_custom_placeholder">npr. Čitaj sledeće kao strog bibliotekar koji šapuće</string>
 
     <!-- Device-voice picker. -->
     <string name="settings_tts_device_voice_label">Glas uređaja</string>

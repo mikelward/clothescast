@@ -385,9 +385,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_tts_style_storyteller">راوٍ</string>
     <string name="settings_tts_style_fitness_instructor">مدرب لياقة</string>
     <string name="settings_tts_style_morning_presenter">مقدم راديو صباحي</string>
-    <string name="settings_tts_style_custom">مخصص…</string>
-    <string name="settings_tts_style_custom_label">توجيه مخصص</string>
-    <string name="settings_tts_style_custom_placeholder">مثال: اقرأ التالي كمكتبي صارم يهمس</string>
     <string name="settings_tts_device_voice_label">صوت الجهاز</string>
     <string name="settings_tts_device_voice_auto">تلقائي (الأفضل للهجة)</string>
     <string name="settings_tts_device_voice_currently">حاليًا: %1$s</string>

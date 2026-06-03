@@ -691,6 +691,14 @@ data class UserPreferences(
      */
     val geminiPromoCardDismissed: Boolean = false,
     /**
+     * Set to true once the user acts on the Today-screen "Set up ClothesCast on
+     * your smart devices" promo card — either dismissing it via the X button or
+     * following its CTA into Smart Home settings. The card is additionally
+     * gated on no smart-home destination being configured, so it disappears as
+     * soon as the user sets up Cast or MQTT.
+     */
+    val smartHomePromoCardDismissed: Boolean = false,
+    /**
      * Set to true when the user taps "Skip" on the first-run onboarding screen.
      * Onboarding normally reappears on every cold launch while any of its
      * conditions (notification permission, location, Gemini key) are still

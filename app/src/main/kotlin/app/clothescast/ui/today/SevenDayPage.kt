@@ -128,6 +128,8 @@ internal fun SevenDayPage(
     onOpenVoice: () -> Unit = {},
     onDismissGeminiTtsPromoCard: () -> Unit = {},
     onDismissGeminiTtsLimitCard: () -> Unit = {},
+    onOpenSmartHome: () -> Unit = {},
+    onDismissSmartHomePromoCard: () -> Unit = {},
     onDismissMqttError: () -> Unit = {},
     onDismissCastError: () -> Unit = {},
 ) {
@@ -234,6 +236,8 @@ internal fun SevenDayPage(
         onOpenVoice = onOpenVoice,
         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
         onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
+        onOpenSmartHome = onOpenSmartHome,
+        onDismissSmartHomePromoCard = onDismissSmartHomePromoCard,
         onNavigateToClothes = onNavigateToClothes,
         onDismissMqttError = onDismissMqttError,
         onDismissCastError = onDismissCastError,

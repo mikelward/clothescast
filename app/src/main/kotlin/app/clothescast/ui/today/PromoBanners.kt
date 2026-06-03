@@ -6,19 +6,20 @@ package app.clothescast.ui.today
  * operational banners (update / crash / work-status / holiday), which aren't
  * capped.
  */
-internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, PLAY, GEMINI, SCHEDULE, CELEBRATION }
+internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, PLAY, GEMINI, SCHEDULE, CELEBRATION, SMART_HOME }
 
 /**
  * Decides which promo cards the Today screen shows, capping the stack so a
  * fresh user isn't buried under "set this up" noise. Eligible cards are taken
- * in priority order (location > privacy > clothes > play > gemini > schedule > celebration) up
- * to [maxVisible]; the rest wait until a higher one is resolved or dismissed.
+ * in priority order (location > privacy > clothes > play > gemini > schedule >
+ * celebration > smart home) up to [maxVisible]; the rest wait until a higher
+ * one is resolved or dismissed.
  *
- * The five customization nudges — clothes ([clothesPromoEligible]),
+ * The setup and customization nudges — clothes ([clothesPromoEligible]),
  * schedule ([schedulePromoEligible]), play ([playPromoEligible]),
- * Gemini voices ([geminiPromoEligible]), and
- * holiday/birthday theming ([celebrationEligible]) — plus the location prompt
- * ([locationActionRequired]) are held back until [hasForecast]:
+ * Gemini voices ([geminiPromoEligible]), holiday/birthday theming
+ * ([celebrationEligible]), and smart-home setup ([smartHomePromoEligible]) —
+ * plus the location prompt ([locationActionRequired]) are held back until [hasForecast]:
  * the user has received at least one forecast (foreground or background), i.e.
  * is no longer brand-new. The location banner is forecast-gated because the
  * empty-cache screen already carries its own "set up your location" placeholder
@@ -36,6 +37,7 @@ internal fun promoBannersToShow(
     playPromoEligible: Boolean,
     geminiPromoEligible: Boolean,
     celebrationEligible: Boolean,
+    smartHomePromoEligible: Boolean = false,
     hasForecast: Boolean,
     maxVisible: Int = 2,
 ): Set<PromoBanner> {
@@ -47,6 +49,7 @@ internal fun promoBannersToShow(
         if (geminiPromoEligible && hasForecast) add(PromoBanner.GEMINI)
         if (schedulePromoEligible && hasForecast) add(PromoBanner.SCHEDULE)
         if (celebrationEligible && hasForecast) add(PromoBanner.CELEBRATION)
+        if (smartHomePromoEligible && hasForecast) add(PromoBanner.SMART_HOME)
     }
     return eligible.take(maxVisible).toSet()
 }

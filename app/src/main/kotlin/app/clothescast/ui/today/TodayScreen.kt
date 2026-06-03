@@ -181,6 +181,7 @@ fun TodayScreen(
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
     onNavigateToVoice: () -> Unit = onNavigateToSettings,
+    onNavigateToSmartHome: () -> Unit = onNavigateToSettings,
     // Pager page to open on, from the Today deep link's `?page=` query. The
     // feels-like home-screen widgets deep-link to page 0 (current period) and
     // page 2 (7-day). rememberPagerState only reads this on first composition,
@@ -396,6 +397,11 @@ fun TodayScreen(
             onOpenVoice = onNavigateToVoice,
             onDismissGeminiTtsPromoCard = viewModel::dismissGeminiTtsPromoCard,
             onDismissGeminiTtsLimitCard = viewModel::dismissGeminiTtsLimitCard,
+            onOpenSmartHome = {
+                viewModel.dismissSmartHomePromoCard()
+                onNavigateToSmartHome()
+            },
+            onDismissSmartHomePromoCard = viewModel::dismissSmartHomePromoCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onNavigateToClothes = onNavigateToClothes,
             onNavigateToFormat = onNavigateToFormat,
@@ -442,6 +448,8 @@ private fun TodayContent(
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
+    onOpenSmartHome: () -> Unit,
+    onDismissSmartHomePromoCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onNavigateToClothes: () -> Unit,
     onNavigateToFormat: () -> Unit,
@@ -527,6 +535,8 @@ private fun TodayContent(
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                     onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
+                    onOpenSmartHome = onOpenSmartHome,
+                    onDismissSmartHomePromoCard = onDismissSmartHomePromoCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
                     onOpenCalendarSettings = onOpenCalendarSettings,
@@ -625,8 +635,10 @@ private fun TodayContent(
                         onOpenVoice = onOpenVoice,
                         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                         onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
-                    onDismissMqttError = onDismissMqttError,
-                    onDismissCastError = onDismissCastError,
+                        onOpenSmartHome = onOpenSmartHome,
+                        onDismissSmartHomePromoCard = onDismissSmartHomePromoCard,
+                        onDismissMqttError = onDismissMqttError,
+                        onDismissCastError = onDismissCastError,
                     )
                     return@HorizontalPager
                 }
@@ -686,6 +698,8 @@ private fun TodayContent(
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                     onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
+                    onOpenSmartHome = onOpenSmartHome,
+                    onDismissSmartHomePromoCard = onDismissSmartHomePromoCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
                 )
@@ -721,6 +735,8 @@ private fun BannerStack(
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
+    onOpenSmartHome: () -> Unit,
+    onDismissSmartHomePromoCard: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
     onSetUpLocation: () -> Unit,
@@ -742,6 +758,7 @@ private fun BannerStack(
         playPromoEligible = state.playPromoCardVisible,
         geminiPromoEligible = state.geminiTtsPromoCardVisible,
         celebrationEligible = state.celebrationCardVisible,
+        smartHomePromoEligible = state.smartHomePromoCardVisible,
         hasForecast = state.thisPeriodInsight != null,
     )
     // LocationActionRequiredBanner is first on purpose: without a resolvable
@@ -880,6 +897,12 @@ private fun BannerStack(
         onDismiss = onDismissCelebrationCard,
         modifier = bannerModifier,
     )
+    SmartHomePromoCard(
+        visible = PromoBanner.SMART_HOME in shownPromos,
+        onOpenSmartHome = onOpenSmartHome,
+        onDismiss = onDismissSmartHomePromoCard,
+        modifier = bannerModifier,
+    )
     WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
     // Delivery-destination failures sit just under the fetch / work-status
     // banner: the forecast may have fetched fine, but if the cast to the
@@ -944,6 +967,8 @@ internal fun HomePageScaffold(
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
+    onOpenSmartHome: () -> Unit,
+    onDismissSmartHomePromoCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
@@ -1069,6 +1094,8 @@ internal fun HomePageScaffold(
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
                     onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
+                    onOpenSmartHome = onOpenSmartHome,
+                    onDismissSmartHomePromoCard = onDismissSmartHomePromoCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
                     onOpenCalendarSettings = onOpenCalendarSettings,
@@ -1227,6 +1254,8 @@ private fun TodayPage(
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
+    onOpenSmartHome: () -> Unit,
+    onDismissSmartHomePromoCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
     // Captured via onGloballyPositioned so the chip-tap handler can scroll the
@@ -1255,6 +1284,8 @@ private fun TodayPage(
         onOpenVoice = onOpenVoice,
         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
         onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
+        onOpenSmartHome = onOpenSmartHome,
+        onDismissSmartHomePromoCard = onDismissSmartHomePromoCard,
         onNavigateToClothes = onNavigateToClothes,
         onDismissMqttError = onDismissMqttError,
         onDismissCastError = onDismissCastError,

@@ -275,6 +275,52 @@ class PromoBannersTest {
     }
 
     @Test
+    fun `smart home promo is held back until a forecast exists`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            smartHomePromoEligible = true,
+            hasForecast = false,
+        ) shouldBe emptySet()
+    }
+
+    @Test
+    fun `smart home promo shows once a forecast exists`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            smartHomePromoEligible = true,
+            hasForecast = true,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.SMART_HOME)
+    }
+
+    @Test
+    fun `smart home promo waits behind celebration under the cap`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = false,
+            celebrationEligible = true,
+            smartHomePromoEligible = true,
+            hasForecast = true,
+            maxVisible = 1,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.CELEBRATION)
+    }
+
+    @Test
     fun `gemini promo outranks schedule under the cap`() {
         promoBannersToShow(
             locationActionRequired = false,

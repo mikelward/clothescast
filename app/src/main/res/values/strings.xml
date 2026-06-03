@@ -432,6 +432,15 @@
     <string name="today_celebration_card_cta">Calendar settings</string>
     <string name="today_celebration_card_dismiss">Dismiss</string>
 
+    <!-- Promo card on the Today screen routing users to opt-in Cast and
+         Home Assistant / MQTT setup. The card itself does not scan or publish;
+         it only opens Smart Home settings. Auto-hides once Cast or MQTT is
+         configured, OR after the user dismisses it / follows the CTA. -->
+    <string name="today_smart_home_promo_title">Set up ClothesCast on your smart devices</string>
+    <string name="today_smart_home_promo_body">Get ClothesCast on your smart displays and home automation.</string>
+    <string name="today_smart_home_promo_cta">Smart home settings</string>
+    <string name="today_smart_home_promo_dismiss">Dismiss</string>
+
     <string name="today_view_other_period">View other forecast</string>
     <string name="today_back_to_primary">Back</string>
     <string name="today_placeholder_today_title">Today\'s forecast</string>

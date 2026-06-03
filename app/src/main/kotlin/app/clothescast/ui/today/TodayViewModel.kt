@@ -27,6 +27,7 @@ import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.HolidayResolver
 import app.clothescast.core.domain.usecase.ThemeForToday
+import app.clothescast.core.domain.usecase.isMqttPublishable
 import app.clothescast.tts.toJavaLocale
 import java.util.Locale
 import app.clothescast.data.InsightCache
@@ -213,6 +214,13 @@ data class TodayState(
      * voices. Hides the moment a key lands, regardless of the dismissal flag.
      */
     val geminiTtsPromoCardVisible: Boolean = false,
+    /**
+     * Whether the "Set up ClothesCast on your smart devices" promo is eligible
+     * — true iff the user hasn't dismissed it AND has not configured either
+     * MQTT or Cast yet. It points at Smart Home settings for opt-in smart
+     * displays and home automation setup.
+     */
+    val smartHomePromoCardVisible: Boolean = false,
     /**
      * Whether the "free voice limit reached" card is showing — true iff a synth
      * hit the shared-key daily Gemini TTS allowance, the user hasn't dismissed
@@ -757,6 +765,9 @@ class TodayViewModel(
             // a bug. The limit card already routes to the same Speech settings.
             geminiTtsPromoCardVisible = !prefs.geminiPromoCardDismissed &&
                 !geminiKeyConfigured && !geminiKeyNeedsReentry && !misc.geminiTtsLimitExceeded,
+            smartHomePromoCardVisible = !prefs.smartHomePromoCardDismissed &&
+                !isMqttPublishable(prefs) &&
+                prefs.castRouteId.isNullOrBlank(),
             // Gate on no BYOK key: a configured key bypasses the shared free
             // proxy entirely, so the moment the user adds one (e.g. via this
             // card's CTA) the limit no longer applies and the card hides
@@ -845,6 +856,17 @@ class TodayViewModel(
     fun dismissGeminiTtsPromoCard() {
         viewModelScope.launch {
             settingsRepository.setGeminiPromoCardDismissed(true)
+        }
+    }
+
+    /**
+     * Persists the user's dismissal of the Today-screen smart-home setup promo.
+     * Called on both the X-tap and the "Smart home settings" CTA so once the
+     * user has been pointed at the page the card stays hidden.
+     */
+    fun dismissSmartHomePromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setSmartHomePromoCardDismissed(true)
         }
     }
 

@@ -111,9 +111,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_wind_title">የንፋስ ፍጥነት</string>
     <string name="today_wind_subtitle">የንፋስ ፍጥነት (%1$s) በሰዓት</string>
     <string name="today_cloud_title">ደመና ሽፋን</string>
-    <string name="today_cloud_subtitle">ጠቅላላ ደመና ሽፋን (%%) በሰዓት</string>
+    <string name="today_cloud_subtitle">ጠቅላላ ደመና ሽፋን (%) በሰዓት</string>
     <string name="today_humidity_title">እርጥበት</string>
-    <string name="today_humidity_subtitle">አንጻራዊ እርጥበት (%%) በሰዓት</string>
+    <string name="today_humidity_subtitle">አንጻራዊ እርጥበት (%) በሰዓት</string>
     <string name="today_confidence_high">ከፍተኛ እምነት — ዋና ሞዴሎቹ ይስማማሉ</string>
     <string name="today_confidence_medium">መካከለኛ እምነት</string>
     <string name="today_confidence_low">ዝቅተኛ እምነት — ትንበያዎቹ ይለያያሉ</string>

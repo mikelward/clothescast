@@ -528,9 +528,9 @@ displayed label localizes.
     <string name="today_wind_title">Rüzgar hızı</string>
     <string name="today_wind_subtitle">Saatlik rüzgar hızı (%1$s)</string>
     <string name="today_cloud_title">Bulut örtüsü</string>
-    <string name="today_cloud_subtitle">Saatlik toplam bulut örtüsü (%%)</string>
+    <string name="today_cloud_subtitle">Saatlik toplam bulut örtüsü (%)</string>
     <string name="today_humidity_title">Nem</string>
-    <string name="today_humidity_subtitle">Saatlik bağıl nem (%%)</string>
+    <string name="today_humidity_subtitle">Saatlik bağıl nem (%)</string>
 
 
     <string name="today_telemetry_notice_title">Çökme ve kullanım raporları etkin</string>

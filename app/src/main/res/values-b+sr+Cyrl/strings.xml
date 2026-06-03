@@ -1,0 +1,1227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Serbian (Cyrillic) translation. Mirrors the Serbian Latin resource scope,
+using Ekavian Serbian and falling back to default English for untranslated
+surfaces.
+-->
+<resources>
+    <string name="settings_region_language_sr_rs">Српски (латиница)</string>
+    <string name="settings_region_language_sr_cyrl_rs">Српски (ћирилица)</string>
+    <string name="settings_tts_voice_locale_sr_rs">Српски (латиница)</string>
+    <string name="settings_tts_voice_locale_sr_cyrl_rs">Српски (ћирилица)</string>
+    <string name="settings_tts_voice_locale_label">Акценат</string>
+    <string name="settings_tts_voice_locale_system">Прати подешавање језика</string>
+
+    <string name="garment_sweater">Џемпер</string>
+    <string name="garment_hoodie">Дукс са капуљачом</string>
+    <string name="garment_jacket">Јакна</string>
+    <string name="garment_coat">Капут</string>
+    <string name="garment_tshirt">Мајица</string>
+    <string name="garment_shirt">Кошуља</string>
+    <string name="garment_shorts">Шортс</string>
+    <string name="garment_pants">Панталоне</string>
+    <string name="garment_jeans">Фармерке</string>
+    <string name="garment_gloves">Рукавице</string>
+    <string name="garment_umbrella">Кишобран</string>
+    <string name="garment_polo">Поло</string>
+    <string name="garment_thin_jacket">Танка јакна</string>
+    <string name="garment_puffer">Пуффер јакна</string>
+    <string name="garment_skirt">Сукња</string>
+
+    <string name="settings_clothes_empty">Нема правила. Додирни Додај за креирање.</string>
+    <string name="settings_clothes_add">Додај</string>
+    <string name="settings_clothes_edit">Измени</string>
+    <string name="settings_clothes_delete">Обриши</string>
+    <string name="settings_clothes_dialog_add_title">Додај правило одевања</string>
+    <string name="settings_clothes_dialog_edit_title">Измени правило одевања</string>
+    <string name="settings_clothes_item_label">Одевни предмет</string>
+    <string name="settings_clothes_color_label">Боја</string>
+    <string name="settings_clothes_condition_label">Услов</string>
+    <string name="settings_clothes_value_label_temp">Праг (%1$s)</string>
+    <string name="settings_clothes_value_label_precip">Праг (%)</string>
+    <string name="settings_clothes_cond_type_temp_below">Када се осећа хладније од</string>
+    <string name="settings_clothes_cond_type_temp_above">Када се осећа топлије од</string>
+    <string name="settings_clothes_cond_type_precip_above">Када је вероватноћа кише већа од</string>
+    <string name="settings_clothes_cond_temp_below">када је осећајна температура испод %1$s</string>
+    <string name="settings_clothes_cond_temp_above">када је осећајна температура изнад %1$s</string>
+    <string name="settings_clothes_cond_precip_above">када је вероватноћа кише већа од %.0f%%</string>
+
+    <!-- Clothes settings — title + description. -->
+    <string name="settings_clothes_title">Правила одевања</string>
+    <string name="settings_clothes_description">Ако прогноза пређе један од ових прагова, предмет се појављује у твом дневном ClothesCastу.</string>
+
+    <string name="today_outfit_top_tshirt">Мајица</string>
+    <string name="today_outfit_top_polo">Поло</string>
+    <string name="today_outfit_top_sweater">Џемпер</string>
+    <string name="today_outfit_top_thin_jacket">Танка јакна</string>
+    <string name="today_outfit_top_thick_jacket">Дебела јакна</string>
+    <string name="today_outfit_top_thick_coat">Дебели капут</string>
+    <string name="today_outfit_top_puffer_jacket">Пуффер јакна</string>
+    <string name="today_outfit_bottom_shorts">Шортс</string>
+    <string name="today_outfit_bottom_long_skirt">Сукња</string>
+    <string name="today_outfit_bottom_jeans">Фармерке</string>
+    <string name="today_outfit_bottom_long_pants">Панталоне</string>
+
+    <string name="insight_lead_today">Данас</string>
+    <string name="insight_lead_tomorrow">Сутра</string>
+    <string name="insight_unchanged_today">Данас ће бити исто као јуче.</string>
+    <string name="insight_unchanged_today_no_lead">Као јуче.</string>
+    <string name="insight_unchanged_tonight">Вечерас ће бити исто као синоћ.</string>
+    <string name="insight_unchanged_tonight_no_lead">Као синоћ.</string>
+    <string name="insight_unchanged_tomorrow">Сутра ће бити исто као данас.</string>
+    <string name="insight_unchanged_tomorrow_no_lead">Као данас.</string>
+    <string name="insight_lead_tonight">Вечерас</string>
+    <string name="insight_band_single">%1$s ће бити %2$d°.</string>
+    <string name="insight_band_single_no_lead">%1$d°.</string>
+    <string name="insight_band_range">%1$s ће бити од %2$d° до %3$d°.</string>
+    <string name="insight_band_range_no_lead">%1$d° до %2$d°.</string>
+    <string name="insight_band_words_single">%1$s ће бити %2$s.</string>
+    <string name="insight_band_words_single_no_lead">%1$s.</string>
+    <string name="insight_band_words_range">%1$s ће бити од %2$s до %3$s.</string>
+    <string name="insight_band_words_range_no_lead">%1$s до %2$s.</string>
+    <string name="insight_band_freezing">ледено</string>
+    <string name="insight_band_cold">хладно</string>
+    <string name="insight_band_cool">свеже</string>
+    <string name="insight_band_mild">благо</string>
+    <string name="insight_band_warm">топло</string>
+    <string name="insight_band_hot">вруће</string>
+    <string name="insight_delta_warmer">%1$d° топлије него јуче.</string>
+    <string name="insight_delta_cooler">%1$d° хладније него јуче.</string>
+    <string name="insight_clothes_wear">Обуци %1$s.</string>
+    <string name="insight_clothes_bare">%1$s.</string>
+    <string name="insight_clothes_article_a">%1$s</string>
+    <string name="insight_clothes_article_an">%1$s</string>
+    <string name="insight_clothes_join_two">%1$s и %2$s</string>
+    <string name="insight_clothes_join_many">%1$s, %2$s и %3$s</string>
+    <string name="insight_precip">%1$s %2$s.</string>
+    <string name="insight_precip_chance">Могућа %1$s %2$s.</string>
+    <string name="insight_precip_at_time">у %1$s</string>
+    <string name="insight_precip_overnight">током ноћи</string>
+    <string name="insight_condition_clear">Ведро</string>
+    <string name="insight_condition_partly_cloudy">Делимично облачно</string>
+    <string name="insight_condition_cloudy">Облачно</string>
+    <string name="insight_condition_fog">Магла</string>
+    <string name="insight_condition_drizzle">Ситна киша</string>
+    <string name="insight_condition_rain">Киша</string>
+    <string name="insight_condition_snow">Снег</string>
+    <string name="insight_condition_thunderstorm">Грмљавина</string>
+    <string name="insight_condition_unknown">Непознато</string>
+    <string name="insight_tie_in">Понеси %1$s вечерас.</string>
+    <string name="insight_tie_in_at_night">Понеси %1$s.</string>
+    <string name="insight_tie_in_with_rain">Понеси %1$s вечерас, %3$s у %2$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Вечерас могућа %3$s у %2$s, понеси %1$s.</string>
+    <string name="insight_evening_rain">Вечерас %2$s у %1$s.</string>
+    <string name="insight_evening_rain_chance">Вечерас могућа %2$s у %1$s.</string>
+    <!-- "15" — preposition "u" comes from surrounding templates. -->
+    <string name="insight_time_hour">%1$d</string>
+    <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
+
+    <!-- Device-incompatibility error screen. -->
+    <string name="error_device_incompatible">ClothesCast не може да ради на овом уређају — твоја верзија Androidа нема функцију коју захтева корисничко сучеље апликације (Configuration.fontWeightAdjustment, очекује се на Androidу 12 и новијим). Обрати се произвођачу уређаја за системско ажурирање.</string>
+
+    <!-- Settings — top bar + root navigation list. -->
+    <string name="settings_title">Подешавања</string>
+    <string name="settings_back">Назад</string>
+
+    <string name="settings_root_voice">Глас</string>
+    <string name="settings_root_schedule">Распоред</string>
+    <string name="settings_root_region">Регион</string>
+    <string name="settings_root_clothes">Одевање</string>
+    <string name="settings_root_display">Приказ</string>
+    <string name="settings_root_location">Локација</string>
+    <string name="settings_root_calendar">Календар</string>
+    <string name="settings_root_privacy">Приватност</string>
+    <string name="settings_root_about">О апликацији</string>
+
+    <string name="settings_root_schedule_subtitle">Обавештења и времена</string>
+    <string name="settings_root_format_subtitle">Формулација и ниво детаља</string>
+    <string name="settings_root_clothes_subtitle">Температуре и комбинације</string>
+    <string name="settings_root_region_subtitle">Језици и јединице</string>
+    <string name="settings_root_voice_subtitle">Провајдери и акценти</string>
+    <string name="settings_root_display_subtitle">Теме и боје</string>
+    <string name="settings_root_location_subtitle">Autoматски или одабери град</string>
+    <string name="settings_root_calendar_subtitle">Данашњи догађаји</string>
+    <string name="settings_root_privacy_subtitle">Извештаји о грешкама и коришћењу</string>
+
+    <!-- Display / theme settings. -->
+    <string name="settings_display_theme_title">Тема</string>
+    <string name="settings_display_theme_system">Прати системско подешавање</string>
+    <string name="settings_display_theme_light">Светла</string>
+    <string name="settings_display_theme_dark">Тамна</string>
+
+
+    <!-- API keys screen. -->
+    <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Гласови високог квалитета преко сервера ClothesCast и Gemini.</string>
+    <string name="settings_tts_device_header">Гласови ниског квалитета уграђени у твој телефон.</string>
+    <string name="settings_api_key_status_set">Gemini кључ је подешен.</string>
+    <string name="settings_api_key_placeholder">Налепи свој Gemini API кључ</string>
+    <string name="settings_api_key_save">Сачувај Gemini кључ</string>
+    <string name="settings_api_key_clear">Обриши сачувани Gemini кључ</string>
+
+    <!-- Location screen. -->
+    <string name="settings_location_title">Локација</string>
+    <string name="settings_location_use_device">Користи локацију уређаја</string>
+    <string name="settings_location_detecting">Откривање…</string>
+    <string name="settings_location_grant_background">Дозволи</string>
+    <string name="settings_location_background_banner_title">Потребна трајна локација</string>
+    <string name="settings_location_background_banner_body">Без ње, јутарња прогноза не може да чита твоју локацију.</string>
+    <string name="settings_location_unset">Локација није подешена</string>
+    <string name="settings_location_manual_override">Погрешна локација? Подеси ручно</string>
+    <string name="settings_location_manual_override_disclosure">Одабиром града искључује се аутоматско откривање.</string>
+    <string name="settings_location_clear">Обриши локацију</string>
+    <string name="settings_location_search_title">Претражи локацију</string>
+    <string name="settings_location_query_label">Град или место</string>
+    <string name="settings_location_search">Претражи</string>
+    <string name="settings_location_searching">Претрага…</string>
+    <string name="settings_location_no_results">Нема резултата.</string>
+    <string name="settings_location_background_rationale_title">Дозволи увек</string>
+    <string name="settings_location_background_rationale_body">Дозволи ClothesCastу да чита твоју локацију док је затворен како би се јутарња прогноза ажурирала на време.</string>
+    <string name="settings_location_background_rationale_continue">Отвори подешавања</string>
+    <string name="settings_location_background_rationale_dismiss">Не сада</string>
+    <string name="settings_location_background_denied_title">Трајни приступ није одобрен</string>
+    <string name="settings_location_background_denied_body">Без \'Дозволи увек\' јутарња прогноза не може аутоматски да се ажурира.</string>
+    <string name="settings_location_background_denied_open">Отвори подешавања</string>
+    <string name="settings_location_background_denied_keep">Не сада</string>
+
+    <!-- Schedule screen. -->
+    <string name="settings_schedule_title">Дневни ClothesCast</string>
+    <string name="settings_schedule_time_label">Време</string>
+    <string name="settings_daily_mention_evening_events">Помени вечерње догађаје</string>
+    <string name="settings_schedule_preview">Пусти сада</string>
+
+    <string name="settings_tonight_title">Ноћни ClothesCast</string>
+    <string name="settings_tonight_enabled">Прикажи ноћни ClothesCast</string>
+    <string name="settings_tonight_time_label">Време</string>
+    <string name="settings_tonight_notify_only_on_events">Обавести само кад има вечерњих догађаја</string>
+
+
+    <!-- Voice screen. -->
+    <string name="settings_tts_engine_title">Гласовни механизам</string>
+    <string name="settings_tts_engine_description">Изабери између говора ниског квалитета на уређају и говора високог квалитета на мрежи.</string>
+    <string name="settings_tts_engine_device">Уређај (ниска квалитета, на уређају)</string>
+    <string name="settings_tts_engine_gemini">Gemini (високи квалитет, онлине)</string>
+    <string name="settings_tts_voice_label">Глас</string>
+    <string name="settings_tts_voice_dismiss">Готово</string>
+    <string name="settings_tts_voice_locale_description">Поставља акценат изговореног гласа. Не мења приказани текст.</string>
+
+    <!-- TTS style picker. -->
+    <string name="settings_tts_style_label">Стил</string>
+    <string name="settings_tts_style_weather_forecaster">Временски најављивач</string>
+    <string name="settings_tts_style_pirate">Пират</string>
+    <string name="settings_tts_style_cowboy">Каубој</string>
+    <string name="settings_tts_style_shakespearean">Шекспиријански</string>
+    <string name="settings_tts_style_surfer">Сурфер</string>
+    <string name="settings_tts_style_parent">Родитељ</string>
+    <string name="settings_tts_style_child">Дете</string>
+    <string name="settings_tts_style_teenager">Тинејџер</string>
+    <string name="settings_tts_style_grandparent">Бака/Деда</string>
+    <string name="settings_tts_style_kids_host">Водитељ дечијег програма</string>
+    <string name="settings_tts_style_radio_host">Водитељ талкбацка</string>
+    <string name="settings_tts_style_morning_dj">Јутарњи ДЈ</string>
+    <string name="settings_tts_style_science_teacher">Професор природних наука</string>
+    <string name="settings_tts_style_historian">Историчар</string>
+    <string name="settings_tts_style_sportscaster">Спортски коментатор</string>
+    <string name="settings_tts_style_stadium_announcer">Најављивач стадиона</string>
+    <string name="settings_tts_style_storyteller">Приповедач</string>
+    <string name="settings_tts_style_fitness_instructor">Фитнесс инструктор</string>
+    <string name="settings_tts_style_morning_presenter">Јутарњи радио водитељ</string>
+
+    <!-- Device-voice picker. -->
+    <string name="settings_tts_device_voice_label">Глас уређаја</string>
+    <string name="settings_tts_device_voice_auto">Autoматски (најбољи за акценат)</string>
+    <string name="settings_tts_device_voice_currently">Тренутно: %1$s</string>
+    <string name="settings_tts_device_voice_currently_loading">Учитавање…</string>
+    <string name="settings_tts_device_voice_network">Мрежа</string>
+    <string name="settings_tts_device_voice_offline">Ван мреже</string>
+    <string name="settings_tts_test">Тестирај глас</string>
+    <string name="settings_tts_test_in_flight">Тестирање — сачекај…</string>
+
+    <!-- Region screen — language picker. -->
+    <string name="settings_region_language_title">Језик</string>
+    <string name="settings_region_language_description">Поставља језик приказаног текста и обавештења.</string>
+    <string name="settings_region_language_system">Прати системски језик</string>
+    <string name="settings_region_language_en_us">Енглески (САД)</string>
+    <string name="settings_region_language_en_gb">Енглески (Уједињено Краљевство)</string>
+    <string name="settings_region_language_en_au">Енглески (Аустралија)</string>
+    <string name="settings_region_language_en_ca">Енглески (Канада)</string>
+    <string name="settings_region_language_en_za">Енглески (Јужна Африка)</string>
+    <string name="settings_region_language_de_de">Немачки (Немачка)</string>
+    <string name="settings_region_language_de_at">Немачки (Аустрија)</string>
+    <string name="settings_region_language_de_ch">Немачки (Швајцарска)</string>
+    <string name="settings_region_language_fr_fr">Француски (Француска)</string>
+    <string name="settings_region_language_fr_ca">Француски (Канада)</string>
+    <string name="settings_region_language_it_it">Италијански (Италија)</string>
+    <string name="settings_region_language_es_es">Шпански (Шпанија)</string>
+    <string name="settings_region_language_es_mx">Шпански (Мексико)</string>
+    <string name="settings_region_language_ca_es">Каталонски (Шпанија)</string>
+    <string name="settings_region_language_ru_ru">Руски (Русија)</string>
+    <string name="settings_region_language_pl_pl">Пољски (Пољска)</string>
+    <string name="settings_region_language_hr_hr">Хрватски (Хрватска)</string>
+    <string name="settings_region_language_sl_si">Словеначки (Словенија)</string>
+    <string name="settings_region_language_bg_bg">Бугарски (Бугарска)</string>
+    <string name="settings_region_language_cs_cz">Чешки (Чешка)</string>
+    <string name="settings_region_language_sk_sk">Словачки (Словачка)</string>
+    <string name="settings_region_language_hu_hu">Мађарски (Мађарска)</string>
+    <string name="settings_region_language_ro_ro">Румунски (Румунија)</string>
+    <string name="settings_region_language_el_gr">Грчки (Грчка)</string>
+    <string name="settings_region_language_uk_ua">Украјински (Украјина)</string>
+    <string name="settings_region_language_pt_br">Португалски (Бразил)</string>
+    <string name="settings_region_language_pt_pt">Португалски (Португал)</string>
+    <string name="settings_region_language_nl_nl">Холандски (Холандија)</string>
+    <string name="settings_region_language_sv_se">Шведски (Шведска)</string>
+    <string name="settings_region_language_da_dk">Дански (Данска)</string>
+    <string name="settings_region_language_nb_no">Норвешки бокмåл (Норвешка)</string>
+    <string name="settings_region_language_fi_fi">Фински (Финска)</string>
+    <string name="settings_region_language_et_ee">Естонски (Естонија)</string>
+    <string name="settings_region_language_lv_lv">Латвијски (Латвија)</string>
+    <string name="settings_region_language_lt_lt">Литвански (Литванија)</string>
+    <string name="settings_region_language_tr_tr">Турски (Турска)</string>
+    <string name="settings_region_language_id_id">Индонежански (Индонезија)</string>
+    <string name="settings_region_language_ms_my">Малајски (Малезија)</string>
+    <string name="settings_region_language_fil_ph">Филипински (Филипини)</string>
+    <string name="settings_region_language_sw_ke">Свахили (Кенија)</string>
+    <string name="settings_region_language_vi_vn">Вијетнамски (Вијетнам)</string>
+    <string name="settings_region_language_th_th">Тајски (Тајланд)</string>
+    <string name="settings_region_language_zh_cn">Кинески (поједностављени)</string>
+    <string name="settings_region_language_zh_tw">Кинески (традиционални)</string>
+    <string name="settings_region_language_hi_in">Хинди (Индија)</string>
+    <string name="settings_region_language_bn_bd">Бенгалски (Бангладеш)</string>
+    <string name="settings_region_language_ja_jp">Јапански (Јапан)</string>
+    <string name="settings_region_language_ko_kr">Корејски (Јужна Кореја)</string>
+    <string name="settings_region_language_ar_sa">Арапски (Саудијска Арабија)</string>
+    <string name="settings_region_language_he_il">Хебрејски (Израел)</string>
+    <string name="settings_region_language_fa_ir">Персијски (Иран)</string>
+    <string name="settings_region_language_sq_al">Албански (Албанија)</string>
+    <string name="settings_region_language_am_et">Амхарски (Етиопија)</string>
+
+    <!-- Region screen — units pickers. -->
+    <string name="settings_temperature_unit_title">Јединица температуре</string>
+    <string name="settings_temperature_unit_celsius">Целзијус (°Ц)</string>
+    <string name="settings_temperature_unit_fahrenheit">Френхеит (°Ф)</string>
+    <string name="settings_distance_unit_title">Јединица удаљености</string>
+    <string name="settings_distance_unit_kilometers">Километри</string>
+    <string name="settings_distance_unit_miles">Миље</string>
+
+    <!-- Voice locale picker labels. -->
+    <string name="settings_tts_voice_locale_en_us">Енглески (САД)</string>
+    <string name="settings_tts_voice_locale_en_gb">Енглески (Уједињено Краљевство)</string>
+    <string name="settings_tts_voice_locale_en_au">Енглески (Аустралија)</string>
+    <string name="settings_tts_voice_locale_en_ca">Енглески (Канада)</string>
+    <string name="settings_tts_voice_locale_en_za">Енглески (Јужна Африка)</string>
+    <string name="settings_tts_voice_locale_de_de">Немачки (Немачка)</string>
+    <string name="settings_tts_voice_locale_de_at">Немачки (Аустрија)</string>
+    <string name="settings_tts_voice_locale_de_ch">Немачки (Швајцарска)</string>
+    <string name="settings_tts_voice_locale_fr_fr">Француски (Француска)</string>
+    <string name="settings_tts_voice_locale_fr_ca">Француски (Канада)</string>
+    <string name="settings_tts_voice_locale_it_it">Италијански (Италија)</string>
+    <string name="settings_tts_voice_locale_es_es">Шпански (Шпанија)</string>
+    <string name="settings_tts_voice_locale_es_mx">Шпански (Мексико)</string>
+    <string name="settings_tts_voice_locale_ca_es">Каталонски (Шпанија)</string>
+    <string name="settings_tts_voice_locale_ru_ru">Руски (Русија)</string>
+    <string name="settings_tts_voice_locale_pl_pl">Пољски (Пољска)</string>
+    <string name="settings_tts_voice_locale_hr_hr">Хрватски (Хрватска)</string>
+    <string name="settings_tts_voice_locale_sl_si">Словеначки (Словенија)</string>
+    <string name="settings_tts_voice_locale_bg_bg">Бугарски (Бугарска)</string>
+    <string name="settings_tts_voice_locale_cs_cz">Чешки (Чешка)</string>
+    <string name="settings_tts_voice_locale_sk_sk">Словачки (Словачка)</string>
+    <string name="settings_tts_voice_locale_hu_hu">Мађарски (Мађарска)</string>
+    <string name="settings_tts_voice_locale_ro_ro">Румунски (Румунија)</string>
+    <string name="settings_tts_voice_locale_el_gr">Грчки (Грчка)</string>
+    <string name="settings_tts_voice_locale_uk_ua">Украјински (Украјина)</string>
+    <string name="settings_tts_voice_locale_pt_br">Португалски (Бразил)</string>
+    <string name="settings_tts_voice_locale_pt_pt">Португалски (Португал)</string>
+    <string name="settings_tts_voice_locale_nl_nl">Холандски (Холандија)</string>
+    <string name="settings_tts_voice_locale_sv_se">Шведски (Шведска)</string>
+    <string name="settings_tts_voice_locale_da_dk">Дански (Данска)</string>
+    <string name="settings_tts_voice_locale_nb_no">Норвешки бокмåл (Норвешка)</string>
+    <string name="settings_tts_voice_locale_fi_fi">Фински (Финска)</string>
+    <string name="settings_tts_voice_locale_et_ee">Естонски (Естонија)</string>
+    <string name="settings_tts_voice_locale_lv_lv">Латвијски (Латвија)</string>
+    <string name="settings_tts_voice_locale_lt_lt">Литвански (Литванија)</string>
+    <string name="settings_tts_voice_locale_tr_tr">Турски (Турска)</string>
+    <string name="settings_tts_voice_locale_id_id">Индонежански (Индонезија)</string>
+    <string name="settings_tts_voice_locale_ms_my">Малајски (Малезија)</string>
+    <string name="settings_tts_voice_locale_fil_ph">Филипински (Филипини)</string>
+    <string name="settings_tts_voice_locale_sw_ke">Свахили (Кенија)</string>
+    <string name="settings_tts_voice_locale_vi_vn">Вијетнамски (Вијетнам)</string>
+    <string name="settings_tts_voice_locale_th_th">Тајски (Тајланд)</string>
+    <string name="settings_tts_voice_locale_zh_cn">Кинески (поједностављени)</string>
+    <string name="settings_tts_voice_locale_zh_tw">Кинески (традиционални)</string>
+    <string name="settings_tts_voice_locale_hi_in">Хинди (Индија)</string>
+    <string name="settings_tts_voice_locale_bn_bd">Бенгалски (Бангладеш)</string>
+    <string name="settings_tts_voice_locale_ja_jp">Јапански (Јапан)</string>
+    <string name="settings_tts_voice_locale_ko_kr">Корејски (Јужна Кореја)</string>
+    <string name="settings_tts_voice_locale_ar_sa">Арапски (Саудијска Арабија)</string>
+    <string name="settings_tts_voice_locale_ar_eg">Арапски (Египат)</string>
+    <string name="settings_tts_voice_locale_ar_ae">Арапски (Уједињени Арапски Емирати)</string>
+    <string name="settings_tts_voice_locale_ar_ma">Арапски (Мароко)</string>
+    <string name="settings_tts_voice_locale_he_il">Хебрејски (Израел)</string>
+    <string name="settings_tts_voice_locale_fa_ir">Персијски (Иран)</string>
+    <string name="settings_tts_voice_locale_sq_al">Албански (Албанија)</string>
+    <string name="settings_tts_voice_locale_am_et">Амхарски (Етиопија)</string>
+
+    <!-- Notification channels. -->
+    <string name="notification_channel_daily_insight_name">Дневни ClothesCast</string>
+    <string name="notification_channel_daily_insight_description">Јутарњи временски резиме који си укључио.</string>
+    <string name="notification_daily_insight_title">Данашњи ClothesCast</string>
+
+    <string name="notification_channel_tonight_insight_default_name">Ноћни ClothesCast (са догађајима)</string>
+    <string name="notification_channel_tonight_insight_default_description">Вечерњи временски резиме када вечерас имаш догађаје у календару. Репродукује твој подразумевани звук обавештења.</string>
+    <string name="notification_channel_tonight_insight_silent_name">Ноћни ClothesCast (тихи)</string>
+    <string name="notification_channel_tonight_insight_silent_description">Вечерњи временски резиме када ти је вечер слободна. Шаље се тихо — можеш да га погледаш на закључаном екрану, али неће репродуковати звук.</string>
+    <string name="notification_tonight_insight_title">Вечерашњи ClothesCast</string>
+
+
+    <!-- Notification-permission card. -->
+    <string name="settings_notification_permission_title">Обавештења су блокирана</string>
+    <string name="settings_notification_permission_description">Без дозволе за обавештења твој дневни ClothesCast нема где да оде. Дозволи их како би ClothesCast могао да се појави сутра ујутру.</string>
+    <string name="settings_notification_permission_grant">Дозволи обавештења</string>
+
+    <!-- Calendar opt-in card. -->
+    <string name="settings_calendar_open_settings">Приступ календару одбијен. Дозволи га у системским подешавањима.</string>
+
+    <!-- Debug screen. -->
+    <string name="settings_debug_title">Дебуг (само у дебуг верзијама)</string>
+    <string name="settings_debug_description">Одмах покрени дневни ClothesCast ток. Корисно за проверу без чекања на заказано време.</string>
+    <string name="settings_debug_fire_now">Покрени ClothesCast одмах</string>
+    <string name="settings_debug_fire_toast">ClothesCast радни задатак је у реду чекања</string>
+
+    <!-- About screen. -->
+    <string name="settings_about_title">О апликацији</string>
+    <string name="settings_about_version">Верзија %1$s (%2$d)</string>
+    <string name="settings_about_build_type_suffix"> · %1$s верзија</string>
+    <string name="settings_about_source">Изворни код на ГитХубу</string>
+    <string name="settings_about_dontkillmyapp">Позадинска ограничења (донткиллмyапп.цом)</string>
+    <string name="settings_about_share_bug_report">Подели извештај о грешци</string>
+    <string name="settings_about_version_copied">Верзија копирана у међуспремник</string>
+
+    <!-- Privacy sub-screen. -->
+    <string name="settings_privacy_telemetry_title">Извештаји о грешкама и коришћењу</string>
+    <string name="settings_privacy_telemetry_label">Шаљи податке о грешкама и коришћењу</string>
+    <string name="settings_privacy_telemetry_description">Шаље анонимне извештаје о грешкама и агрегиране статистике коришћења како би помогао програмеру да исправља грешке и одлучује које функције да задржи.</string>
+    <string name="settings_privacy_telemetry_limits">Никад се не шаље: догађаји из календара, координате локације или називи места, текст резимеа или обавештења, API кључеви, прецизни ГПС, ИД-ови за оглашавање.</string>
+    <string name="settings_privacy_open_policy">Прочитај потпуну политику приватности</string>
+
+    <!-- Today screen. -->
+    <string name="today_title">Данас</string>
+    <string name="today_open_settings">Отвори подешавања</string>
+    <string name="today_more_options">Више опција</string>
+    <string name="today_report_a_bug">Пријави грешку</string>
+    <string name="today_refresh">Освежи</string>
+    <string name="today_empty_title">Још нема ClothesCastа</string>
+    <string name="today_empty_subtitle">Твој јутарњи ClothesCast појавиће се овде чим буде генерисан.</string>
+    <string name="today_empty_location_title">Потребна је локација</string>
+    <string name="today_empty_location_subtitle">Подесите своју локацију да бисте добили свој ClothesCast.</string>
+    <string name="today_fetch_now">Преузми одмах</string>
+    <string name="today_generated_at">Генерисано у %1$s</string>
+    <string name="today_location_unknown">Твоја локација</string>
+
+    <string name="today_outfit_title">Шта обући</string>
+    <string name="today_outfit_label_today">Данас</string>
+    <string name="today_outfit_label_tonight">Вечерас</string>
+    <string name="today_outfit_label_tomorrow">Сутра</string>
+
+    <!-- "Why this outfit?" rationale dialog. -->
+    <string name="today_rationale_title">Зашто ова комбинација?</string>
+    <string name="today_rationale_show">Зашто?</string>
+    <string name="today_rationale_dismiss">Разумео</string>
+    <string name="today_rationale_unavailable">Нема доступног објашњења — отвори апликацију после следећег освежавања.</string>
+    <string name="today_rationale_min_below_with_time">Осећајна минимална %1$s%2$s у %3$s, испод %4$s%2$s</string>
+    <string name="today_rationale_min_below">Осећајна минимална %1$s%2$s, испод %3$s%2$s</string>
+    <string name="today_rationale_min_above_with_time">Осећајна минимална %1$s%2$s у %3$s, најмање %4$s%2$s</string>
+    <string name="today_rationale_min_above">Осећајна минимална %1$s%2$s, најмање %3$s%2$s</string>
+    <string name="today_rationale_max_below_with_time">Осећајна максимална само %1$s%2$s у %3$s, испод %4$s%2$s</string>
+    <string name="today_rationale_max_below">Осећајна максимална само %1$s%2$s, испод %3$s%2$s</string>
+    <string name="today_rationale_max_above_with_time">Осећајна максимална %1$s%2$s у %3$s, најмање %4$s%2$s</string>
+    <string name="today_rationale_max_above">Осећајна максимална %1$s%2$s, најмање %3$s%2$s</string>
+
+    <!-- Home-screen App Widget. -->
+    <string name="widget_label">Комбинација</string>
+    <string name="widget_description">Комбинација за тренутни период на први поглед.</string>
+    <string name="widget_empty_title">Још нема комбинације</string>
+    <string name="widget_empty_subtitle">Додирни за отварање ClothesCastа</string>
+    <string name="feels_like_widget_label">Графикон осећајне температуре</string>
+    <string name="feels_like_widget_description">Осећајна температура за тренутни период.</string>
+    <string name="feels_like_week_widget_label">Осећајна (7 дана)</string>
+    <string name="feels_like_week_widget_description">Осећајна температура за наредних 7 дана.</string>
+    <string name="feels_like_widget_empty_title">Још нема прогнозе</string>
+    <string name="conditions_widget_label">Услови</string>
+    <string name="conditions_widget_description">Температура, киша, ветар и УВ на први поглед.</string>
+    <string name="conditions_rain_pct">%1$d%%</string>
+    <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_uv">УВ %1$d</string>
+
+    <!-- Hourly forecast card. -->
+    <string name="today_forecast_title">Прогноза по сату</string>
+    <string name="today_forecast_min_max">Осећај %1$d – %2$d%3$s</string>
+    <string name="today_forecast_air_min_max">Ваздух %1$d – %2$d%3$s</string>
+    <string name="today_forecast_legend_feels_like">Осећајна температура (%1$s) по сату</string>
+    <string name="today_forecast_legend_air">Температура ваздуха (%1$s) по сату</string>
+
+    <!-- Precipitation card. -->
+    <string name="today_precipitation_title">Вероватноћа кише</string>
+    <string name="today_precipitation_peak">Врхунац %1$d%% у %2$s</string>
+    <string name="today_precipitation_dry">Данас се не очекује киша</string>
+
+    <!-- Chart labels. -->
+    <string name="today_chart_model_legend_label">Модели:</string>
+    <string name="today_chart_main_line_label">Комбиновано</string>
+    <string name="today_chart_divergence_summary">Модели се највише разликују у %1$s (Δ %2$.1f%3$s осећајна темп.) — углавном %4$s, %5$s</string>
+
+    <!-- Divergence factor names. -->
+    <string name="today_factor_air_temperature">температура ваздуха</string>
+    <string name="today_factor_wind_speed">брзина ветра</string>
+    <string name="today_factor_cloud_cover">облачност</string>
+    <string name="today_factor_humidity">влажност</string>
+
+    <!-- Diagnostic cards. -->
+    <string name="today_wind_title">Брзина ветра</string>
+    <string name="today_wind_subtitle">Брзина ветра (%1$s) по сату</string>
+    <string name="today_cloud_title">Облачност</string>
+    <string name="today_cloud_subtitle">Укупна облачност (%) по сату</string>
+    <string name="today_humidity_title">Влажност</string>
+    <string name="today_humidity_subtitle">Релативна влажност (%) по сату</string>
+
+    <!-- Confidence chip. -->
+    <string name="today_confidence_high">Висока поузданост — главни модели се слажу</string>
+    <string name="today_confidence_medium">Средња поузданост</string>
+    <string name="today_confidence_low">Ниска поузданост — прогнозе се разликују</string>
+
+    <!-- Low-confidence callout banner. -->
+
+    <!-- Work-status banners. -->
+    <string name="today_working">Преузимам твој ClothesCast…</string>
+    <string name="today_retrying">Последњи покушај није успео — понављам…</string>
+    <string name="today_failed_title">Последњи покушај није успео</string>
+    <string name="today_failed_unexpected_http">Неочекивана ХТТП грешка од сервиса за прогнозу.</string>
+    <string name="today_failed_unhandled">Дошло је до неочекиване грешке.</string>
+    <string name="today_failed_no_location">Нисмо могли да добијемо твоју локацију. Дозволи трајни приступ локацији или подеси град у подешавањима.</string>
+    <string name="today_failed_show_details">Прикажи детаље</string>
+    <string name="today_failed_hide_details">Сакриј детаље</string>
+    <string name="today_mqtt_failed_title">Слање у ваш паметни дом није успело</string>
+    <string name="today_cast_failed_title">Пребацивање на ваш екран није успело</string>
+    <string name="today_publish_failed_body">Покушаћемо поново при следећем ажурирању.</string>
+    <string name="today_publish_failed_dismiss">Одбаци</string>
+
+    <!-- Location required banner. -->
+    <string name="today_location_required_title">Подеси своју локацију</string>
+    <string name="today_location_required_body">ClothesCast треба да зна где се налазиш како би преузео прогнозу. Дозволи трајни приступ локацији или одабери град.</string>
+    <string name="today_location_required_action">Отвори подешавања локације</string>
+
+    <!-- Crash-report banner. -->
+    <string name="today_crash_banner_title">Последње покретање се срушило</string>
+    <string name="today_crash_banner_body">Извештај о рушењу сачуван је на твом уређају. Поделити га како би се грешка исправила? Ништа се не шаље док не одабереш одредиште.</string>
+    <string name="today_crash_banner_share">Подели извештај</string>
+    <string name="today_crash_banner_dismiss">Затвори</string>
+
+    <!-- In-app update banner. -->
+    <string name="today_update_available_title">Доступно ажурирање</string>
+    <string name="today_update_available_body">Новија верзија ClothesCastа је доступна на Плаy Стореу.</string>
+    <string name="today_update_available_action">Ажурирај</string>
+    <string name="today_update_available_dismiss">Не сада</string>
+    <string name="today_update_downloaded_body">Ажурирање преузето. Поново покрени да завршиш инсталацију.</string>
+    <string name="today_update_downloaded_action">Поново покрени</string>
+
+    <!-- Telemetry notice banner. -->
+    <string name="today_telemetry_notice_title">Извештаји о грешкама и коришћењу су укључени</string>
+    <string name="today_telemetry_notice_body">ClothesCast шаље анонимне извештаје о грешкама и аналитику коришћења ради исправљања грешака. Подаци календара, локација или текст резимеа нису укључени. Искључи у било ком тренутку у подешавањима.</string>
+    <string name="today_telemetry_notice_open_settings">Подешавања приватности</string>
+    <string name="today_telemetry_notice_dismiss">Затвори</string>
+
+    <!-- Onboarding flow. -->
+    <string name="onboarding_title">Добродошао у ClothesCast</string>
+    <string name="onboarding_subtitle">Три брза избора и готово. Све остало можеш да подесиш у подешавањима.</string>
+    <string name="onboarding_subtitle_tv">Два брза избора и готово. Све остало можеш да подесиш у подешавањима.</string>
+    <string name="onboarding_notifications_title">Обавештења</string>
+    <string name="onboarding_notifications_description">Потребно за испоруку твог дневног ClothesCastа.</string>
+    <string name="onboarding_notifications_grant">Дозволи обавештења</string>
+    <string name="onboarding_location_title">Локација</string>
+    <string name="onboarding_location_description">Преузимање прогнозе за твоју апроксимативну локацију.</string>
+    <string name="onboarding_location_grant">Дозволи приступ локацији</string>
+    <string name="onboarding_location_grant_background">Дозволи трајни приступ локацији</string>
+    <string name="onboarding_location_background_needed">Још један корак: ClothesCast треба \'Дозволи увек\' како би јутарња прогноза могла да чита твоју локацију док је апликација затворена.</string>
+    <string name="onboarding_location_denied_hint">Приступ локацији одбијен. Уместо тога можеш ручно да одабереш град.</string>
+    <string name="onboarding_location_enter_manual">Унеси локацију ручно</string>
+    <string name="onboarding_location_enter_manual_hint">Можеш ручно да унесеш своју локацију ако одбијете приступ локацији или ако је локација уређаја нетачна.</string>
+    <string name="onboarding_location_using_device">Користимо локацију твог уређаја сваког јутра.</string>
+    <string name="onboarding_gemini_title">Gemini API кључ</string>
+    <string name="onboarding_gemini_description">Користи Gemini за висококвалитетне гласове.</string>
+    <string name="onboarding_step_done">Готово</string>
+    <string name="onboarding_skip">Прескочи за сада</string>
+    <string name="onboarding_continue">Настави</string>
+    <string name="onboarding_pair_from_phone">Упари путем телефона</string>
+
+    <!-- Phone-pairing screen. -->
+    <string name="pairing_title">Скенирај за упаривање</string>
+    <string name="pairing_instructions">Скенирај овај QR код телефоном, затим налепи свој Gemini API кључ у образац који се отвори. Кључ ће бити послат директно на овај TV путем кућног Wi-Fi-ја — без посредника у облаку.</string>
+    <string name="pairing_qr_description">QR код који води на %1$s</string>
+    <string name="pairing_cancel">Откажи</string>
+    <string name="pairing_received">Кључ примљен — чување…</string>
+    <string name="pairing_timeout_title">Прозор за упаривање је истекао</string>
+    <string name="pairing_timeout_body">Петоминутни прозор за упаривање је затворен. Додирни Покушај поново да отвориш нови.</string>
+    <string name="pairing_error_title">Упаривање се није могло покренути</string>
+    <string name="pairing_error_body">Провери да ли је TV повезан на Wi-Fi и покушај поново.</string>
+    <string name="pairing_retry">Покушај поново</string>
+
+    <!-- Bug report consent dialog. -->
+    <string name="bug_report_consent_title">Поделити извештај о грешци?</string>
+    <string name="bug_report_consent_body">Ово помаже у дијагностиковању проблема. Извештај садржи осетљиве личне податке, укључујући твоју локацију, подешавања апликације и недавну активност. Моћи ћеш да га прегледаш и уредиш пре слања.</string>
+    <string name="bug_report_consent_dont_show_again">Не приказуј више</string>
+    <string name="bug_report_consent_continue">Настави</string>
+    <string name="bug_report_consent_cancel">Откажи</string>
+
+    <string name="today_forecast_air_section_title">Температура ваздуха</string>
+
+    <!-- Strings added to match base (new features). -->
+    <string name="settings_display_colors_title">Палета боја</string>
+    <string name="settings_display_palette_accessible">Приступачна</string>
+    <string name="settings_display_palette_accessible_description">Палета изведена из Окабе-Ито, дизајнирана да остане разлучива при деутеранопији, протанопији и тританопији. Картице поузданости користе небеско плаву, неутралну и јантарну уместо тиркизне, неутралне и црвене.</string>
+    <string name="settings_display_palette_rainbow">Дуга</string>
+    <string name="settings_display_palette_rainbow_description">Розе, наранџасте и зелене линије графикона са тиркизним/црвеним картицама поузданости Material. Подразумевано.</string>
+    <string name="settings_display_palette_highlighter">Маркер</string>
+    <string name="settings_display_palette_highlighter_description">Магента, жуте и цијан линије графикона — као траг маркера на страници. На први поглед видно другачије од \"Дуге\"; светла тема користи дубље варијанте за читљивост. Безбедно за црвено-зелено слепило за боје.</string>
+    <string name="settings_display_home_layout_title">Распоред почетног екрана</string>
+    <string name="settings_display_home_layout_description">Превуци ручице да промениш редослед којим се ови одељци приказују на почетном екрану.</string>
+    <string name="settings_display_home_layout_drag">Превуци да промениш редослед: %1$s</string>
+    <string name="settings_display_home_section_outfit">Комбинација</string>
+    <string name="settings_display_home_section_conditions">Услови</string>
+    <string name="settings_display_home_section_confidence">Поузданост</string>
+    <string name="settings_display_home_section_insight">Прогноза</string>
+    <string name="settings_display_home_section_charts">Графикони</string>
+    <string name="settings_unit_auto">Auto</string>
+    <string name="today_cloud_range">Облачност %1$d–%2$d%%</string>
+    <string name="today_confidence_precip_spread">Модели се не слажу око кише (Δ %1$.0f%% код %2$d модела)</string>
+    <string name="today_confidence_tap_to_hide">Додирните за скривање прогноза по моделу</string>
+    <string name="today_confidence_tap_to_show">Додирните за приказ прогнозе сваког модела</string>
+    <string name="today_humidity_range">Влажност %1$d–%2$d%%</string>
+    <string name="today_solar_subtitle">Површинска ирадијанса (W/м²) по сату</string>
+    <string name="today_solar_title">Сунчево зрачење</string>
+    <string name="today_sunshine_subtitle">Минуте сунца по сату</string>
+    <string name="today_sunshine_title">Сијање сунца</string>
+    <string name="today_sunshine_total_hours_minutes">%1$dх %2$dм сунца данас</string>
+    <string name="today_sunshine_total_hours_only">%1$dх сунца данас</string>
+    <string name="today_sunshine_total_minutes_only">%1$dм сунца данас</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$dх %2$dм сунца вечерас</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$dх сунца вечерас</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$dм сунца вечерас</string>
+    <string name="today_uv_subtitle">УВ индекс по сату</string>
+    <string name="today_uv_peak">Врхунац %1$d у %2$s</string>
+    <string name="today_uv_title">УВ индекс</string>
+    <string name="today_wind_peak">Врхунац %1$d %2$s у %3$s</string>
+
+    <!-- Strings added to match base — forecasters picker, garment-colour picker,
+         update-downloading banner, placeholder cards, Open-Meteo credit. -->
+    <string name="today_update_downloading_body">Преузимање ажурирања…</string>
+    <string name="today_update_downloading_action">Ажурирам…</string>
+    <string name="today_update_downloading_dismiss">Откажи</string>
+    <string name="today_view_other_period">Погледај другу прогнозу</string>
+    <string name="today_back_to_primary">Назад</string>
+    <string name="today_placeholder_today_title">Данашња прогноза</string>
+    <string name="today_placeholder_tonight_title">Вечерашња прогноза</string>
+    <string name="today_placeholder_body">Биће спремна око %1$s.</string>
+
+    <string name="settings_root_forecasters">Модели прогнозе</string>
+    <string name="settings_root_forecasters_subtitle">Извори и модели времена</string>
+
+    <string name="settings_display_garment_colors_title">Боје одеће</string>
+    <string name="settings_garment_color_default">Подразумевано</string>
+    <string name="settings_garment_color_picker_title">Изабери боју</string>
+    <string name="settings_garment_color_swatch_description">Узорак боје %1$s</string>
+    <string name="settings_garment_color_default_swatch_description">Врати %1$s на подразумевану боју</string>
+    <string name="settings_garment_color_dialog_close">Затвори</string>
+
+    <string name="settings_forecasters_title">Модели прогнозе</string>
+    <string name="settings_forecasters_description">Ознака поузданости и графикон по моделу повлаче податке из ових модела. Више изабраних даје шири распон; мање значи ужи фокус. Најмање два остају изабрана.</string>
+    <string name="settings_forecasters_auto_title">Autoматски (најбоље за твоју локацију)</string>
+    <string name="settings_forecasters_auto_subtitle">Autoматски бира регионални модел — UKMO на Британским острвима, JMA у Јапану, GFS + GEM у Северној Америци итд. Искључи да моделе бираш сам.</string>
+    <string name="settings_forecasters_cap_hint">Изабрао си %1$d модела — највише колико графикон остаје читљив. Одзначи један да додаш други.</string>
+    <string name="settings_forecasters_ecmwf">ECMWF</string>
+    <string name="settings_forecasters_ecmwf_subtitle">Европски — углавном најтачнији глобални модел. Тросатни корак на отвореном фиду.</string>
+    <string name="settings_forecasters_icon">ICON</string>
+    <string name="settings_forecasters_icon_subtitle">Немачки (DWD) — јак у Европи и на кратке рокове. Нативно сатни.</string>
+    <string name="settings_forecasters_gfs">GFS</string>
+    <string name="settings_forecasters_gfs_subtitle">Амерички (NOAA) — јак над Северном Америком. Нативно сатни.</string>
+    <string name="settings_forecasters_gem">GEM</string>
+    <string name="settings_forecasters_gem_subtitle">Канадски (ЕЦЦЦ) — јак над Северном Америком. Тросатни корак на отвореном фиду.</string>
+    <string name="settings_forecasters_arpege">АРПЕГЕ</string>
+    <string name="settings_forecasters_arpege_subtitle">Француски (Мéтéо-Франце) — јак над Француском и Западном Европом. Нативно сатни.</string>
+    <string name="settings_forecasters_ukmo">UKMO</string>
+    <string name="settings_forecasters_ukmo_subtitle">Британски (УК Мет Оффице) — историјски други одмах иза ECMWF-а. Тросатни корак на отвореном фиду.</string>
+    <string name="settings_forecasters_jma">JMA</string>
+    <string name="settings_forecasters_jma_subtitle">Јапански — јак над азијско-пацифичким регионом. Тро- до шестосатни корак на отвореном фиду.</string>
+    <string name="settings_forecasters_bom">БОМ</string>
+    <string name="settings_forecasters_bom_subtitle">Аустралијски — на одржавању, враћа се чим пре.</string>
+
+    <string name="settings_about_open_meteo">Временске податке обезбеђује Open-Meteo</string>
+
+    <!-- Holidays settings page -->
+    <string name="settings_holidays_title">Празници</string>
+    <string name="settings_holiday_country_home">Дом (%1$s)</string>
+    <string name="settings_holiday_country_current">Тренутна локација (%1$s)</string>
+    <string name="settings_holiday_country_unknown">Непознато</string>
+    <string name="settings_holiday_country_global_label">Глобално</string>
+    <string name="settings_holiday_country_all_label">Сви</string>
+    <string name="settings_holiday_all_section_title">Сви</string>
+    <string name="settings_holidays_expand">Прошири</string>
+    <string name="settings_holidays_collapse">Скупи</string>
+    <string name="settings_holiday_override_auto_on">Autoматски (укључено)</string>
+    <string name="settings_holiday_override_auto_off">Autoматски (искључено)</string>
+    <string name="settings_holiday_override_on">Укључено</string>
+    <string name="settings_holiday_override_off">Искључено</string>
+    <string name="settings_holiday_country_at">Аустрија</string>
+    <string name="settings_holiday_country_au">Аустралија</string>
+    <string name="settings_holiday_country_br">Бразил</string>
+    <string name="settings_holiday_country_ca">Канада</string>
+    <string name="settings_holiday_country_de">Немачка</string>
+    <string name="settings_holiday_country_es">Шпанија</string>
+    <string name="settings_holiday_country_fr">Француска</string>
+    <string name="settings_holiday_country_gb">Уједињено Краљевство</string>
+    <string name="settings_holiday_country_hr">Хрватска</string>
+    <string name="settings_holiday_country_ie">Ирска</string>
+    <string name="settings_holiday_country_it">Италија</string>
+    <string name="settings_holiday_country_jp">Јапан</string>
+    <string name="settings_holiday_country_kr">Јужна Кореја</string>
+    <string name="settings_holiday_country_nz">Нови Зеланд</string>
+    <string name="settings_holiday_country_us">САД</string>
+    <string name="holiday_name_new_years_day">Нова година</string>
+    <string name="holiday_name_epiphany">Богојављење</string>
+    <string name="holiday_name_japan_coming_of_age_day">Дан пунолетности (Јапан)</string>
+    <string name="holiday_name_mlk_day">Дан Мартина Лутера Кинга</string>
+    <string name="holiday_name_burns_night">Бурнс Нигхт</string>
+    <string name="holiday_name_australia_day">Дан Аустралије</string>
+    <string name="holiday_name_waitangi_day">Дан Wаитангија</string>
+    <string name="holiday_name_valentines_day">Дан заљубљених</string>
+    <string name="holiday_name_st_davids_day">Дан светог Давида</string>
+    <string name="holiday_name_korean_independence_movement_day">Корејски покрет за независност</string>
+    <string name="holiday_name_st_patricks_day">Дан светог Патрика</string>
+    <string name="holiday_name_uk_mothering_sunday">Недља мајки (УК)</string>
+    <string name="holiday_name_good_friday">Велики Петак</string>
+    <string name="holiday_name_easter_sunday">Ускрсна недеља</string>
+    <string name="holiday_name_easter_monday">Ускрсни понедељак</string>
+    <string name="holiday_name_st_georges_day">Дан светог Ђорђа</string>
+    <string name="holiday_name_anzac_day">Дан Анзака</string>
+    <string name="holiday_name_labour_day">Празник рада</string>
+    <string name="holiday_name_uk_early_may_bank_holiday">Банкарски празник — мај (УК)</string>
+    <string name="holiday_name_mothers_day">Дан мајки</string>
+    <string name="holiday_name_japan_greenery_day">Дан зеленила (Јапан)</string>
+    <string name="holiday_name_croatia_statehood_day">Дан државности Хрватске</string>
+    <string name="holiday_name_us_memorial_day">Мемориал Даy (САД)</string>
+    <string name="holiday_name_uk_spring_bank_holiday">Банкарски празник — пролеће (УК)</string>
+    <string name="holiday_name_italy_republic_day">Дан републике (Италија)</string>
+    <string name="holiday_name_korean_memorial_day">Корејски Дан сећања</string>
+    <string name="holiday_name_uk_kings_birthday">Краљевљев рођендан</string>
+    <string name="holiday_name_juneteenth">Јунетеентх</string>
+    <string name="holiday_name_fathers_day_jun">Дан очева (јун.)</string>
+    <string name="holiday_name_canada_day">Дан Канаде</string>
+    <string name="holiday_name_us_independence_day">Дан независности (САД)</string>
+    <string name="holiday_name_bastille_day">Дан Бастиље</string>
+    <string name="holiday_name_japan_marine_day">Дан мора (Јапан)</string>
+    <string name="holiday_name_croatia_victory_day">Дан победе (Хрватска)</string>
+    <string name="holiday_name_uk_summer_bank_holiday">Банкарски празник — лето (УК)</string>
+    <string name="holiday_name_korean_liberation_day">Дан ослобођења (Кореја)</string>
+    <string name="holiday_name_assumption">Велика Госпојина</string>
+    <string name="holiday_name_fathers_day_sep">Дан очева (сеп.)</string>
+    <string name="holiday_name_brazil_independence_day">Дан независности Бразила</string>
+    <string name="holiday_name_german_unity_day">Дан немачког јединства</string>
+    <string name="holiday_name_croatia_independence_day">Дан независности Хрватске</string>
+    <string name="holiday_name_korean_hangeul_day">Дан Хангула (Кореја)</string>
+    <string name="holiday_name_canadian_thanksgiving">Канадски Дан захвалности</string>
+    <string name="holiday_name_spain_hispanic_day">Дан Хиспанидада</string>
+    <string name="holiday_name_austria_national_day">Аустријски национални празник</string>
+    <string name="holiday_name_halloween">Халлоwеен</string>
+    <string name="holiday_name_all_saints_day">Дан свих светих</string>
+    <string name="holiday_name_japan_culture_day">Дан културе (Јапан)</string>
+    <string name="holiday_name_bonfire_night">Бонфире Нигхт</string>
+    <string name="holiday_name_remembrance_day">Дан примирја / Ветеранс Даy</string>
+    <string name="holiday_name_us_thanksgiving">Дан захвалности (САД)</string>
+    <string name="holiday_name_st_andrews_day">Дан светог Андрије</string>
+    <string name="holiday_name_immaculate_conception">Безгрешно зачеће</string>
+    <string name="holiday_name_christmas_day">Божић</string>
+    <string name="holiday_name_boxing_day">Други дан Божића</string>
+    <string name="tts_greeting_birthday">Срећан рођендан</string>
+    <string name="holiday_banner_new_years_day">Срећна Нова Година</string>
+    <string name="holiday_banner_epiphany">Срећно Богојављење</string>
+    <string name="holiday_banner_valentines_day">Срећан Дан заљубљених</string>
+    <string name="holiday_banner_st_patricks_day">Срећан Дан светог Патрика</string>
+    <string name="holiday_banner_good_friday">Велики Петак</string>
+    <string name="holiday_banner_easter_sunday">Христос Васкрсе</string>
+    <string name="holiday_banner_easter_monday">Христос Васкрсе</string>
+    <string name="holiday_banner_labour_day">Срећан Празник рада</string>
+    <string name="holiday_banner_mothers_day">Срећан Дан мајки</string>
+    <string name="holiday_banner_assumption">Срећна Велика Госпојина</string>
+    <string name="holiday_banner_halloween">Срећан Халлоwеен</string>
+    <string name="holiday_banner_all_saints_day">Срећан Дан свих светих</string>
+    <string name="holiday_banner_immaculate_conception">Срећно Безгрешно зачеће</string>
+    <string name="holiday_banner_christmas_day">Срећан Божић</string>
+    <string name="holiday_banner_boxing_day">Срећан Други дан Божића</string>
+
+    <!-- Missing holiday banners. -->
+    <string name="holiday_banner_anzac_day">Дан Анзака</string>
+    <string name="holiday_banner_australia_day">Срећан Дан Аустралије</string>
+    <string name="holiday_banner_austria_national_day">Срећан аустријски национални празник</string>
+    <string name="holiday_banner_bastille_day">Срећан Дан Бастиље</string>
+    <string name="holiday_banner_bonfire_night">Срећна Бонфире Нигхт</string>
+    <string name="holiday_banner_brazil_independence_day">Срећан Дан независности Бразила</string>
+    <string name="holiday_banner_burns_night">Срећна Бурнс Нигхт</string>
+    <string name="holiday_banner_canada_day">Срећан Дан Канаде</string>
+    <string name="holiday_banner_canadian_thanksgiving">Срећан канадски Дан захвалности</string>
+    <string name="holiday_banner_fathers_day_jun">Срећан Дан очева</string>
+    <string name="holiday_banner_fathers_day_sep">Срећан Дан очева</string>
+    <string name="holiday_banner_fr_armistice_day">Обележавамо палог</string>
+    <string name="holiday_banner_german_unity_day">Срећан Дан немачког јединства</string>
+    <string name="holiday_banner_italy_republic_day">Срећан Дан републике</string>
+    <string name="holiday_banner_japan_coming_of_age_day">Срећан Дан пунолетности</string>
+    <string name="holiday_banner_japan_culture_day">Срећан Дан културе</string>
+    <string name="holiday_banner_japan_greenery_day">Срећан Дан зеленила</string>
+    <string name="holiday_banner_japan_marine_day">Срећан Дан мора</string>
+    <string name="holiday_banner_juneteenth">Срећан Јунетеентх</string>
+    <string name="holiday_banner_korean_hangeul_day">Срећан Дан Хангула</string>
+    <string name="holiday_banner_korean_independence_movement_day">Обележавамо корејски покрет за независност</string>
+    <string name="holiday_banner_korean_liberation_day">Срећан Дан ослобођења</string>
+    <string name="holiday_banner_korean_memorial_day">Обележавамо палог</string>
+    <string name="holiday_banner_mlk_day">Срећан Дан Мартина Лутера Кинга</string>
+    <string name="holiday_banner_remembrance_day">Обележавамо палог</string>
+    <string name="holiday_banner_spain_hispanic_day">Срећан Дан Хиспанидада</string>
+    <string name="holiday_banner_st_andrews_day">Срећан Дан светог Андрије</string>
+    <string name="holiday_banner_st_davids_day">Срећан Дан светог Давида</string>
+    <string name="holiday_banner_st_georges_day">Срећан Дан светог Ђорђа</string>
+    <string name="holiday_banner_uk_bank_holiday">Срећан банкарски празник</string>
+    <string name="holiday_banner_uk_kings_birthday">Срећан Краљевљев рођендан</string>
+    <string name="holiday_banner_uk_mothering_sunday">Срећна Недља мајки</string>
+    <string name="holiday_banner_us_independence_day">Срећан Дан независности</string>
+    <string name="holiday_banner_us_memorial_day">Обележавамо палог</string>
+    <string name="holiday_banner_us_presidents_day">Срећан Пресидентс\' Даy</string>
+    <string name="holiday_banner_us_thanksgiving">Срећан Дан захвалности</string>
+    <string name="holiday_banner_us_veterans_day">Обележавамо ветеране</string>
+    <string name="holiday_banner_waitangi_day">Срећан Дан Wаитангија</string>
+    <string name="holiday_banner_croatia_statehood_day">Срећан Дан државности</string>
+    <string name="holiday_banner_croatia_victory_day">Срећан Дан победе</string>
+    <string name="holiday_banner_croatia_independence_day">Срећан Дан независности</string>
+    <string name="holiday_name_us_presidents_day">Пресидентс\' Даy</string>
+
+    <!-- Smart Home settings, outfit card headers, and other missing strings. -->
+    <string name="settings_root_smart_home">Паметни дом</string>
+    <string name="settings_root_smart_home_subtitle">Паметни дисплеј и кућна аутоматизација</string>
+    <string name="settings_api_key_replace">Замени Gemini кључ</string>
+    <string name="outfit_card_header_today">Данашњи ClothesCast</string>
+    <string name="outfit_card_header_tonight">Вечерњи ClothesCast</string>
+    <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="today_rationale_open_clothes_settings">Подешавања одеће</string>
+    <string name="today_celebration_card_title">Празничне теме</string>
+    <string name="today_celebration_card_body">Омогућите посебне боје и поруке за празнике и рођендане.</string>
+    <string name="today_celebration_card_cta">Подешавања календара</string>
+    <string name="today_celebration_card_dismiss">Одбаци</string>
+    <string name="settings_holidays_source_global">Глобално</string>
+    <string name="settings_holidays_source_location">Локација (%1$s)</string>
+    <string name="settings_holidays_source_region">Регион (%1$s)</string>
+    <string name="settings_holidays_source_all">Све земље</string>
+    <string name="settings_holidays_link_settings">Подешавања</string>
+    <string name="settings_holidays_link_calendar_settings_a11y">Подешавања календара</string>
+    <string name="settings_holidays_link_location_settings_a11y">Подешавања локације</string>
+    <string name="settings_holidays_link_region_settings_a11y">Подешавања региона</string>
+    <string name="settings_holidays_permission_revoked">Потребна дозвола за календар. Додирните за поновну доделу.</string>
+    <string name="settings_smart_home_cast_title">Пренос</string>
+    <string name="settings_smart_home_cast_device_label">Паметни екран</string>
+    <string name="settings_smart_home_cast_device_none">Није одабран екран</string>
+    <string name="settings_smart_home_cast_choose">Одабери паметни екран</string>
+    <string name="settings_smart_home_cast_change">Промени</string>
+    <string name="settings_smart_home_cast_clear">Уклони</string>
+    <string name="settings_smart_home_cast_now">Пренеси сада</string>
+    <string name="settings_smart_home_cast_casting">Преношење…</string>
+    <string name="settings_smart_home_cast_picker_title">Одабери паметни екран</string>
+    <string name="settings_smart_home_cast_picker_scanning">Тражење паметних екрана на мрежи…</string>
+    <string name="settings_smart_home_cast_picker_empty">Нису пронађени паметни екрани. Проверите да ли је екран укључен и на истој Wi-Fi мрежи.</string>
+    <string name="settings_smart_home_cast_picker_cancel">Откажи</string>
+    <string name="settings_smart_home_cast_last_success">Последњи пренос %1$s</string>
+    <string name="settings_smart_home_cast_never">Још није пренето</string>
+    <string name="settings_smart_home_cast_last_error_title">Последњи пренос није успео</string>
+    <string name="settings_smart_home_cast_morning_title">Дневни ClothesCast</string>
+    <string name="settings_smart_home_cast_morning_description">Пошаљи дневни ClothesCast на паметни екран кад се огласи јутарњи аларм.</string>
+    <string name="settings_smart_home_cast_tonight_title">Ноћни ClothesCast</string>
+    <string name="settings_smart_home_cast_tonight_description">Пошаљи ноћни ClothesCast на паметни екран кад се огласи вечерњи аларм.</string>
+    <string name="settings_smart_home_discover_scan">Пронађи брокер</string>
+    <string name="settings_smart_home_discover_scanning">Тражим…</string>
+    <string name="settings_smart_home_discover_stop">Заустави тражење</string>
+    <string name="settings_smart_home_discover_empty">Брокер још није пронађен. Наставите да тражите или ручно унесите хост брокера.</string>
+    <string name="settings_smart_home_discover_results">Пронађено на вашој мрежи</string>
+    <string name="settings_smart_home_discover_use">Користи</string>
+    <string name="settings_smart_home_discover_label_ha">Хоме Ассистант</string>
+    <string name="settings_smart_home_discover_label_mqtt">МQТТ брокер</string>
+    <string name="settings_smart_home_mqtt_title">Хоме Ассистант мост (МQТТ)</string>
+    <string name="settings_smart_home_mqtt_label">Објави прогнозу на МQТТ</string>
+    <string name="settings_smart_home_mqtt_host">Хост брокера</string>
+    <string name="settings_smart_home_mqtt_host_placeholder">хомеассистант.лоцал</string>
+    <string name="settings_smart_home_mqtt_port">Порт</string>
+    <string name="settings_smart_home_mqtt_tls">Користи ТЛС</string>
+    <string name="settings_smart_home_mqtt_username">Корисничко име (опционално)</string>
+    <string name="settings_smart_home_mqtt_username_placeholder">мqтт-усер</string>
+    <string name="settings_smart_home_mqtt_password">Лозинка (опционално)</string>
+    <string name="settings_smart_home_mqtt_password_status_set">Лозинка је конфигурисана.</string>
+    <string name="settings_smart_home_mqtt_password_replace">Замени лозинку</string>
+    <string name="settings_smart_home_mqtt_password_clear">Уклони сачувану лозинку</string>
+    <string name="settings_smart_home_mqtt_topic">Префикс теме</string>
+    <string name="settings_smart_home_mqtt_save">Сачувај</string>
+    <string name="settings_smart_home_mqtt_publish_now">Објави сада</string>
+    <string name="settings_smart_home_mqtt_publishing">Објављивање…</string>
+    <string name="settings_smart_home_mqtt_last_published">Последња објава %1$s</string>
+    <string name="settings_smart_home_mqtt_never_published">Још није објављено</string>
+    <string name="settings_smart_home_mqtt_last_error_title">Последња објава није успела</string>
+    <string name="settings_smart_home_mqtt_setup_guide">Водич за подешавање</string>
+    <string name="settings_smart_home_mqtt_open_privacy">Прочитај детаље приватности</string>
+    <string name="cast_error_no_route_picked">Прво одабери паметни екран.</string>
+    <string name="cast_error_no_insight_yet">Прогноза још није доступна. Сачекај следеће планирано покретање или додирни Освежи на екрану Данас.</string>
+    <string name="cast_error_unknown">Пренос није успео.</string>
+    <string name="settings_calendar_birthdays">Рођендани из календара</string>
+    <string name="settings_calendar_public_holidays">Празници из календара</string>
+
+    <!-- Settings strings added in 2026-05: Smart Home, Developer, Format, Calendar, Schedule, Default outfit. -->
+    <!-- Settings root labels — Developer, Format. -->
+    <string name="settings_root_developer">Програмер</string>
+    <string name="settings_root_developer_subtitle">Тестирање и отклањање грешака</string>
+    <string name="settings_root_format">Формат</string>
+
+    <!-- Developer settings page (Settings → Developer → Preview a day) -->
+    <string name="settings_developer_preview_day_title">Преглед дана</string>
+    <string name="settings_developer_preview_day_subtitle">Оутфит, банер и глас за било који датум, користећи фиксни узорак благог времена.</string>
+    <string name="settings_developer_pick_date">Изабери датум</string>
+    <string name="settings_developer_today">Данас</string>
+    <string name="settings_developer_no_theme">Нема празничке теме за овај дан.</string>
+    <string name="settings_developer_resolved_label">Разрешено: %1$s</string>
+    <string name="settings_developer_speak">Прочитај</string>
+
+    <!-- Smart Home — newer keys. -->
+    <string name="settings_smart_home_cast_label">Пошаљи прогнозу на паметни екран</string>
+    <string name="settings_smart_home_cast_last_published">Последња објава %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched">Последње преузимање %1$s</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Екран још није преузео ниједан ClothesCast</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_title">Прескочи говор на телефону</string>
+    <string name="settings_smart_home_cast_skip_phone_speech_description">Избегни двоструке обавештаје код куће.</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_title">Прескочи говор на телефону</string>
+    <string name="settings_smart_home_mqtt_skip_phone_speech_description">Избегни двоструке обавештаје код куће.</string>
+    <string name="settings_smart_home_mqtt_topic_hint">%1$s/ноw/теxт, %1$s/ноw/аудио, итд.</string>
+
+    <!-- Schedule settings — Daily ClothesCast -->
+    <string name="settings_schedule_enabled">Дневни ClothesCast</string>
+    <string name="settings_delivery_notification">Обавести</string>
+    <string name="settings_delivery_tts">Прочитај</string>
+    <string name="settings_done">Готово</string>
+
+    <!-- Clothes-mention picker on Format / Schedule -->
+    <string name="settings_clothes_mention_label">Одећа</string>
+    <string name="settings_clothes_mention_always">Увек</string>
+    <string name="settings_clothes_mention_if_changed">Промена</string>
+    <string name="settings_clothes_mention_never">Никад</string>
+
+    <!-- Format settings page -->
+    <string name="settings_format_preview_example_title">Пример</string>
+    <string name="settings_format_preview_current_title">Тренутна прогноза</string>
+    <string name="settings_format_preview_current_empty">Још нема прогнозе — провери након следећег ClothesCastа.</string>
+    <string name="settings_format_what_to_say">Шта рећи</string>
+    <string name="settings_format_range_label">Распон температура</string>
+    <string name="settings_format_range_none">Без</string>
+    <string name="settings_format_range_degrees">Степени</string>
+    <string name="settings_format_range_bands">Појасеви</string>
+    <string name="settings_format_change_label">Промена температуре</string>
+    <string name="settings_format_change_off">Искључено</string>
+    <string name="settings_format_change_degrees">%1$d°</string>
+    <string name="settings_format_change_band">Појас</string>
+    <string name="settings_format_clothes_label">Формулација одеће</string>
+    <string name="settings_format_clothes_items">Комади одеће</string>
+    <string name="settings_format_clothes_layer_count">Број слојева</string>
+    <string name="settings_format_bottoms_label">Доњи делови</string>
+    <string name="settings_format_bottoms_always">Увек</string>
+    <string name="settings_format_bottoms_if_garments">Ако има комада</string>
+    <string name="settings_format_bottoms_never">Никад</string>
+    <string name="settings_format_period_preamble_label">Увод</string>
+    <string name="settings_format_wear_preamble_label">Увод „Обуци"</string>
+    <string name="settings_format_preamble_always">Увек</string>
+    <string name="settings_format_preamble_speech_only">Само говор</string>
+    <string name="settings_format_preamble_never">Никад</string>
+
+    <!-- Fallback clothes rules — "If no rules match" section -->
+    <string name="settings_default_outfit_title">Ако се ниједно правило не подудара</string>
+    <string name="settings_default_top_edit_title">Подразумевани горњи део</string>
+    <string name="settings_default_bottom_edit_title">Подразумевани доњи део</string>
+    <string name="settings_default_outfit_range_above">кад је температура изнад %1$s</string>
+    <string name="settings_default_outfit_range_below">кад је температура испод %1$s</string>
+    <string name="settings_default_outfit_range_between">кад је температура између %1$s и %2$s</string>
+    <string name="settings_default_outfit_range_never">никад</string>
+
+    <!-- Calendar settings — master switch + per-feature toggles -->
+    <string name="settings_calendar_master">Користи мој календар</string>
+    <string name="settings_calendar_master_description">Дозволи ClothesCastу да чита твоје календаре ради персонализације прогноза и оутфита. Ништа не напушта уређај.</string>
+    <string name="settings_calendar_features_title">Лични календари</string>
+    <string name="settings_calendar_evening_tie_ins">Вечерње повезнице</string>
+    <string name="settings_calendar_evening_tie_ins_description">Ако увече излазиш, јутарња прогноза ти каже да ли треба да понесеш нешто додатно.</string>
+    <string name="settings_calendar_birthdays_description">Користи посебне боје и поруке за рођендане у твојим календарима.</string>
+    <string name="settings_calendar_public_holidays_description">Користи посебне боје и поруке за државне празнике у твојим календарима.</string>
+    <string name="settings_calendar_open_system_settings">Отвори системска подешавања</string>
+
+
+    <!-- Translations for late-added UI / holiday / settings strings. -->
+    <string name="app_name">ClothesCast</string>
+    <string name="garment_short_skirt">Мини сукња</string>
+    <string name="today_outfit_bottom_short_skirt">Мини сукња</string>
+    <string name="holiday_banner_and">и</string>
+    <string name="holiday_banner_argentina_independence_day">Срећан Дан независности Аргентине</string>
+    <string name="holiday_banner_argentina_may_revolution">Срећан Дан Мајске револуције</string>
+    <string name="holiday_banner_ascension_day">Срећно Вазнесење</string>
+    <string name="holiday_banner_ash_wednesday">Сети се да си прах</string>
+    <string name="holiday_banner_bangladesh_independence_day">Срећан Дан независности</string>
+    <string name="holiday_banner_bangladesh_victory_day">Срећан Дан победе</string>
+    <string name="holiday_banner_brazil_black_awareness">Дан црне свести</string>
+    <string name="holiday_banner_brazil_our_lady_aparecida">Срећан дан Богородице од Апаресиди</string>
+    <string name="holiday_banner_brazil_republic_proclamation">Срећна Прокламација Републике</string>
+    <string name="holiday_banner_brazil_tiradentes_day">Срећан Дан Тирадентеса</string>
+    <string name="holiday_banner_ca_labour_day">Срећан Празник рада</string>
+    <string name="holiday_banner_cinco_de_mayo">Срећан Синко де Мајо</string>
+    <string name="holiday_banner_corpus_christi">Срећан празник Тела Христовог</string>
+    <string name="holiday_banner_egypt_revolution_day">Срећан Дан револуције</string>
+    <string name="holiday_banner_egypt_sinai_liberation_day">Срећан Дан ослобођења Синаја</string>
+    <string name="holiday_banner_india_childrens_day">Срећан Дан деце</string>
+    <string name="holiday_banner_india_gandhi_jayanti">Срећан Ганди Ђајанти</string>
+    <string name="holiday_banner_india_independence_day">Срећан Дан независности</string>
+    <string name="holiday_banner_india_republic_day">Срећан Дан републике</string>
+    <string name="holiday_banner_indonesia_independence_day">Срећан Дан независности Индонезије</string>
+    <string name="holiday_banner_indonesia_pancasila_day">Срећан Дан Панчасиле</string>
+    <string name="holiday_banner_join_talk_like_a_pirate_day">причај као гусар</string>
+    <string name="holiday_banner_join_towel_day">не заборави свој пешкир</string>
+    <string name="holiday_banner_malaysia_day">Срећан Дан Малезије</string>
+    <string name="holiday_banner_malaysia_independence_day">Срећан Дан Мердеке</string>
+    <string name="holiday_banner_mardi_gras">Срећне Покладе</string>
+    <string name="holiday_banner_maundy_thursday">Нова заповест</string>
+    <string name="holiday_banner_melbourne_cup_day">Трка која зауставља нацију</string>
+    <string name="holiday_banner_mexico_benito_juarez_birthday">У част Бенита Хуареса</string>
+    <string name="holiday_banner_mexico_constitution_day">Срећан Дан Устава</string>
+    <string name="holiday_banner_mexico_day_of_the_dead">Срећан Дан мртвих</string>
+    <string name="holiday_banner_mexico_independence_day">Живео Мексико!</string>
+    <string name="holiday_banner_mexico_revolution_day">Срећан Дан револуције</string>
+    <string name="holiday_banner_nigeria_democracy_day">Срећан Дан демократије</string>
+    <string name="holiday_banner_nigeria_independence_day">Срећан Дан независности</string>
+    <string name="holiday_banner_orthodox_christmas">Срећан православни Божић</string>
+    <string name="holiday_banner_pakistan_day">Срећан Дан Пакистана</string>
+    <string name="holiday_banner_pakistan_independence_day">Срећан Дан независности</string>
+    <string name="holiday_banner_palm_sunday">Осана на висини</string>
+    <string name="holiday_banner_pentecost">Срећна Педесетница</string>
+    <string name="holiday_banner_philippines_bonifacio_day">Срећан Дан Бонифасија</string>
+    <string name="holiday_banner_philippines_independence_day">Срећан Дан независности Филипина</string>
+    <string name="holiday_banner_philippines_rizal_day">У част Хосе Рисала</string>
+    <string name="holiday_banner_russia_day">Срећан Дан Русије</string>
+    <string name="holiday_banner_russia_defender_of_fatherland_day">Срећан Дан браниоца Отаџбине</string>
+    <string name="holiday_banner_russia_unity_day">Срећан Дан јединства</string>
+    <string name="holiday_banner_russia_victory_day">У част палих</string>
+    <string name="holiday_banner_singapore_national_day">Срећан национални празник</string>
+    <string name="holiday_banner_south_africa_day_of_reconciliation">Срећан Дан помирења</string>
+    <string name="holiday_banner_south_africa_freedom_day">Срећан Дан слободе</string>
+    <string name="holiday_banner_south_africa_heritage_day">Срећан Дан наслеђа</string>
+    <string name="holiday_banner_south_africa_youth_day">У част јужноафричке омладине</string>
+    <string name="holiday_banner_talk_like_a_pirate_day">Ахој, морнару!</string>
+    <string name="holiday_banner_thailand_chakri_day">Срећан Дан Чакрија</string>
+    <string name="holiday_banner_thailand_songkran">Срећан Сонгкран</string>
+    <string name="holiday_banner_towel_day">Без панике!</string>
+    <string name="holiday_banner_turkey_childrens_day">Срећан Дан деце</string>
+    <string name="holiday_banner_turkey_republic_day">Срећан Дан републике</string>
+    <string name="holiday_banner_turkey_victory_day">Срећан Дан победе</string>
+    <string name="holiday_banner_turkey_youth_day">Срећан Дан омладине и спорта</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Сећаћемо их се</string>
+    <string name="holiday_banner_ukraine_constitution_day">Срећан Дан Устава</string>
+    <string name="holiday_banner_ukraine_defender_day">У част бранилаца Украјине</string>
+    <string name="holiday_banner_ukraine_independence_day">Срећан Дан независности</string>
+    <string name="holiday_banner_ukraine_statehood_day">Срећан Дан украјинске државности</string>
+    <string name="holiday_banner_ukraine_unity_day">Срећан Дан јединства</string>
+    <string name="holiday_banner_ukraine_victory_day">У част палих</string>
+    <string name="holiday_banner_us_election_day">Иди да гласаш</string>
+    <string name="holiday_banner_us_labor_day">Срећан Празник рада</string>
+    <string name="holiday_banner_vietnam_national_day">Срећан национални празник</string>
+    <string name="holiday_banner_vietnam_reunification_day">Срећан Дан уједињења</string>
+    <string name="holiday_banner_whit_monday">Срећан понедељак после Педесетнице</string>
+    <string name="holiday_name_argentina_independence_day">Дан независности (Аргентина)</string>
+    <string name="holiday_name_argentina_may_revolution">Мајска револуција (Аргентина)</string>
+    <string name="holiday_name_ascension_day">Вазнесење Господње</string>
+    <string name="holiday_name_ash_wednesday">Чиста среда</string>
+    <string name="holiday_name_bangladesh_independence_day">Дан независности (Бангладеш)</string>
+    <string name="holiday_name_bangladesh_victory_day">Дан победе (Бангладеш)</string>
+    <string name="holiday_name_brazil_black_awareness">Дан црне свести (Бразил)</string>
+    <string name="holiday_name_brazil_our_lady_aparecida">Богородица од Апаресиди</string>
+    <string name="holiday_name_brazil_republic_proclamation">Прокламација Републике (Бразил)</string>
+    <string name="holiday_name_brazil_tiradentes_day">Дан Тирадентеса</string>
+    <string name="holiday_name_cinco_de_mayo">Синко де Мајо</string>
+    <string name="holiday_name_corpus_christi">Тело Христово</string>
+    <string name="holiday_name_egypt_revolution_day">Дан револуције (Египат)</string>
+    <string name="holiday_name_egypt_sinai_liberation_day">Дан ослобођења Синаја</string>
+    <string name="holiday_name_india_childrens_day">Дан деце (Индија)</string>
+    <string name="holiday_name_india_gandhi_jayanti">Ганди Ђајанти</string>
+    <string name="holiday_name_india_independence_day">Дан независности (Индија)</string>
+    <string name="holiday_name_india_republic_day">Дан републике (Индија)</string>
+    <string name="holiday_name_indonesia_independence_day">Дан независности (Индонезија)</string>
+    <string name="holiday_name_indonesia_pancasila_day">Дан Панчасиле</string>
+    <string name="holiday_name_malaysia_day">Дан Малезије</string>
+    <string name="holiday_name_malaysia_independence_day">Дан Мердеке (Малезија)</string>
+    <string name="holiday_name_mardi_gras">Покладе</string>
+    <string name="holiday_name_maundy_thursday">Велики четвртак</string>
+    <string name="holiday_name_melbourne_cup_day">Дан Мелбоурне Цуп</string>
+    <string name="holiday_name_mexico_benito_juarez_birthday">Рођендан Бенита Хуареса</string>
+    <string name="holiday_name_mexico_constitution_day">Дан Устава (Мексико)</string>
+    <string name="holiday_name_mexico_day_of_the_dead">Дан мртвих</string>
+    <string name="holiday_name_mexico_independence_day">Дан независности (Мексико)</string>
+    <string name="holiday_name_mexico_revolution_day">Дан револуције (Мексико)</string>
+    <string name="holiday_name_nigeria_democracy_day">Дан демократије (Нигерија)</string>
+    <string name="holiday_name_nigeria_independence_day">Дан независности (Нигерија)</string>
+    <string name="holiday_name_nz_labour_day">Празник рада</string>
+    <string name="holiday_name_orthodox_christmas">Православни Божић</string>
+    <string name="holiday_name_pakistan_day">Дан Пакистана</string>
+    <string name="holiday_name_pakistan_independence_day">Дан независности (Пакистан)</string>
+    <string name="holiday_name_palm_sunday">Цвети</string>
+    <string name="holiday_name_pentecost">Педесетница</string>
+    <string name="holiday_name_philippines_bonifacio_day">Дан Бонифасија</string>
+    <string name="holiday_name_philippines_independence_day">Дан независности (Филипини)</string>
+    <string name="holiday_name_philippines_rizal_day">Дан Рисала</string>
+    <string name="holiday_name_russia_day">Дан Русије</string>
+    <string name="holiday_name_russia_defender_of_fatherland_day">Дан браниоца Отаџбине</string>
+    <string name="holiday_name_russia_unity_day">Дан јединства (Русија)</string>
+    <string name="holiday_name_russia_victory_day">Дан победе (Русија)</string>
+    <string name="holiday_name_singapore_national_day">Национални празник (Сингапур)</string>
+    <string name="holiday_name_south_africa_day_of_reconciliation">Дан помирења</string>
+    <string name="holiday_name_south_africa_freedom_day">Дан слободе (Јужна Африка)</string>
+    <string name="holiday_name_south_africa_heritage_day">Дан наслеђа (Јужна Африка)</string>
+    <string name="holiday_name_south_africa_youth_day">Дан омладине (Јужна Африка)</string>
+    <string name="holiday_name_talk_like_a_pirate_day">Дан причања као гусар</string>
+    <string name="holiday_name_thailand_chakri_day">Дан Чакрија</string>
+    <string name="holiday_name_thailand_songkran">Сонгкран</string>
+    <string name="holiday_name_towel_day">Дан пешкира</string>
+    <string name="holiday_name_turkey_childrens_day">Дан националног суверенитета и деце</string>
+    <string name="holiday_name_turkey_republic_day">Дан републике (Турска)</string>
+    <string name="holiday_name_turkey_victory_day">Дан победе (Турска)</string>
+    <string name="holiday_name_turkey_youth_day">Сећање на Ататурка, Дан омладине и спорта</string>
+    <string name="holiday_name_uk_remembrance_sunday">Недеља сећања</string>
+    <string name="holiday_name_ukraine_constitution_day">Дан Устава (Украјина)</string>
+    <string name="holiday_name_ukraine_defender_day">Дан браниоца Украјине</string>
+    <string name="holiday_name_ukraine_independence_day">Дан независности (Украјина)</string>
+    <string name="holiday_name_ukraine_statehood_day">Дан украјинске државности</string>
+    <string name="holiday_name_ukraine_unity_day">Дан јединства (Украјина)</string>
+    <string name="holiday_name_ukraine_victory_day">Дан победе над нацизмом у Другом светском рату (Украјина)</string>
+    <string name="holiday_name_us_election_day">Дан избора</string>
+    <string name="holiday_name_us_labor_day">Празник рада</string>
+    <string name="holiday_name_vietnam_national_day">Национални празник (Вијетнам)</string>
+    <string name="holiday_name_vietnam_reunification_day">Дан уједињења (Вијетнам)</string>
+    <string name="holiday_name_whit_monday">Понедељак после Педесетнице</string>
+    <plurals name="insight_clothes_layer_count">
+        <item quantity="one">%1$d слој</item>
+        <item quantity="few">%1$d слоја</item>
+        <item quantity="other">%1$d слојева</item>
+    </plurals>
+    <string name="insight_delta_cooler_lead">биће %1$d° хладније него јуче.</string>
+    <string name="insight_delta_warmer_lead">биће %1$d° топлије него јуче.</string>
+    <string name="insight_lead_continues">%1$s, %2$s</string>
+    <string name="insight_precip_chance_with_accessory">Могућ %1$s %2$s, понеси %3$s.</string>
+    <string name="insight_precip_with_accessory">%1$s %2$s, понеси %3$s.</string>
+    <string name="insight_time_am">у %1$d х</string>
+    <string name="insight_time_am_minutes">у %1$d:%2$02d</string>
+    <string name="insight_time_midnight">поноћ</string>
+    <string name="insight_time_noon">подне</string>
+    <string name="insight_time_pm">у %1$d х</string>
+    <string name="insight_time_pm_minutes">у %1$d:%2$02d</string>
+    <string name="settings_holiday_country_ar">Аргентина</string>
+    <string name="settings_holiday_country_bd">Бангладеш</string>
+    <string name="settings_holiday_country_by">Белорусија</string>
+    <string name="settings_holiday_country_christian_label">Хришћански</string>
+    <string name="settings_holiday_country_eg">Египат</string>
+    <string name="settings_holiday_country_et">Етиопија</string>
+    <string name="settings_holiday_country_funny_label">Забавни</string>
+    <string name="settings_holiday_country_ge">Грузија</string>
+    <string name="settings_holiday_country_id">Индонезија</string>
+    <string name="settings_holiday_country_in">Индија</string>
+    <string name="settings_holiday_country_mk">Северна Македонија</string>
+    <string name="settings_holiday_country_mx">Мексико</string>
+    <string name="settings_holiday_country_my">Малезија</string>
+    <string name="settings_holiday_country_ng">Нигерија</string>
+    <string name="settings_holiday_country_orthodox_label">Православни</string>
+    <string name="settings_holiday_country_ph">Филипини</string>
+    <string name="settings_holiday_country_pk">Пакистан</string>
+    <string name="settings_holiday_country_rs">Србија</string>
+    <string name="settings_holiday_country_ru">Русија</string>
+    <string name="settings_holiday_country_sg">Сингапур</string>
+    <string name="settings_holiday_country_th">Тајланд</string>
+    <string name="settings_holiday_country_tr">Турска</string>
+    <string name="settings_holiday_country_ua">Украјина</string>
+    <string name="settings_holiday_country_vn">Вијетнам</string>
+    <string name="settings_holiday_country_za">Јужна Африка</string>
+    <string name="settings_holidays_calendar_enable_master">Укључи горе \"Користи мој календар\" да видиш наредне прославе.</string>
+    <string name="settings_holidays_calendar_grant_permission">Дозволи приступ календару да видиш наредне прославе из својих синхронизованих календара.</string>
+    <string name="settings_holidays_calendar_loading">Проверавам твоје календаре…</string>
+    <string name="settings_holidays_calendar_no_birthdays">У синхронизованим календарима нема наредних рођендана.</string>
+    <string name="settings_holidays_calendar_no_holidays">У синхронизованим календарима нема наредних празника.</string>
+    <string name="settings_holidays_more_countries">Више земаља</string>
+    <string name="settings_holidays_source_christian">Хришћански</string>
+    <string name="settings_holidays_source_funny">Забавни</string>
+    <string name="settings_holidays_source_orthodox">Православни</string>
+    <string name="settings_holidays_sources_title">Уграђени календари</string>
+    <string name="settings_location_privacy_note">Локације се заокружују на најближи 1 км ради твоје приватности.</string>
+    <string name="settings_location_refresh">Освежи</string>
+    <string name="settings_time_format_12h">12-часовни</string>
+    <string name="settings_time_format_24h">24-часовни</string>
+    <string name="settings_time_format_title">Формат времена</string>
+    <string name="settings_tts_style_father_christmas">Деда Мраз</string>
+    <string name="settings_tts_style_king">Краљ</string>
+    <string name="settings_tts_style_leprechaun">Вилењак</string>
+    <string name="settings_tts_style_new_years_host">Новогодишњи водитељ</string>
+    <string name="settings_tts_style_president">Председник</string>
+    <string name="settings_tts_style_queen">Краљица</string>
+    <string name="settings_tts_style_scifi_narrator">Научнофантастични приповедач</string>
+    <string name="settings_tts_style_spooky_narrator">Језиви приповедач</string>
+    <string name="today_chart_readout">%1$s · %2$s</string>
+    <string name="today_chart_reset_to_now">Прикажи сада</string>
+    <string name="today_clothes_promo_body">ClothesCast бира одећу по правилима. Промени температуре и прилагоди своју гардеробу у подешавањима Одећа.</string>
+    <string name="today_clothes_promo_cta">Подешавања одеће</string>
+    <string name="today_clothes_promo_dismiss">Одбаци</string>
+    <string name="today_schedule_promo_title">Autoматски ClothesCastови</string>
+    <string name="today_schedule_promo_body">Изабери када примаш обавештења и најаве.</string>
+    <string name="today_schedule_promo_cta">Подешавања распореда</string>
+    <string name="today_schedule_promo_dismiss">Одбаци</string>
+    <string name="today_play_promo_title">Слушајте свој дневни ClothesCast</string>
+    <string name="today_play_promo_body">Додирните дугме за репродукцију да чујете свој ClothesCast.</string>
+    <string name="today_play_promo_dismiss">Одбаци</string>
+    <string name="today_gemini_promo_title">Испробајте гласове високог квалитета</string>
+    <string name="today_gemini_promo_body">Укључите Gemini да чујете свој ClothesCast природним, животним гласовима.</string>
+    <string name="today_gemini_promo_cta">Подешавања гласа</string>
+    <string name="today_gemini_promo_dismiss">Одбаци</string>
+    <string name="today_clothes_promo_title">Прилагоди одећу себи</string>
+    <string name="today_insight_format_link">Формат</string>
+    <string name="today_play">Пусти</string>
+    <string name="today_play_toast_daily">Пуштам твој јутарњи ClothesCast.</string>
+    <string name="today_play_toast_nightly">Пуштам твој вечерњи ClothesCast.</string>
+    <string name="today_precipitation_amount_dry_today">Данас се не очекује киша</string>
+    <string name="today_precipitation_amount_dry_tonight">Вечерас се не очекује киша</string>
+    <string name="today_precipitation_amount_title">Падавине по сату</string>
+    <string name="today_precipitation_amount_total_today">%1$s кише данас</string>
+    <string name="today_precipitation_amount_total_tonight">%1$s кише вечерас</string>
+    <string name="today_solar_peak">Врх %1$d W/м² у %2$s</string>
+    <string name="today_title_week">Следећих 7 дана</string>
+    <string name="today_week_ahead_cooler">Хладније %1$s.</string>
+    <string name="today_week_ahead_day_on_named">%1$s</string>
+    <string name="today_week_ahead_day_tomorrow">сутра</string>
+    <string name="today_week_ahead_rain_likely">Киша %1$s.</string>
+    <string name="today_week_ahead_separator">", "</string>
+    <string name="today_week_ahead_snow_likely">Снег %1$s.</string>
+    <string name="today_week_ahead_stays_cold">Хладно целе недеље.</string>
+    <string name="today_week_ahead_stays_hot">Вруће целе недеље.</string>
+    <string name="today_week_ahead_steady">Стабилна недеља пред нама.</string>
+    <string name="today_week_ahead_warmer">Топлије %1$s.</string>
+    <string name="today_week_empty">Биће спремно после следеће прогнозе.</string>
+
+    <!-- Settings sub-page titles ("… settings"); the bare menu-row
+         labels that open them are settings_root_* . -->
+    <string name="settings_page_voice">Подешавања гласа</string>
+    <string name="settings_page_schedule">Подешавања распореда</string>
+    <string name="settings_page_format">Подешавања формата</string>
+    <string name="settings_page_region">Подешавања региона</string>
+    <string name="settings_page_clothes">Подешавања одевања</string>
+    <string name="settings_page_display">Подешавања приказа</string>
+    <string name="settings_page_location">Подешавања локације</string>
+    <string name="settings_page_calendar">Подешавања календара</string>
+    <string name="settings_page_forecasters">Подешавања модела прогнозе</string>
+    <string name="settings_page_smart_home">Подешавања паметног дома</string>
+    <string name="settings_page_privacy">Подешавања приватности</string>
+    <string name="settings_page_developer">Подешавања програмера</string>
+</resources>

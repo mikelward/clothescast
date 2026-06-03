@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="96dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="96">
+
+    <!-- Rain pants: baggier than regular pants (x: 20 to 76 instead of 24 to 72 at bottom) -->
+    <path android:fillColor="#FFEB3B" android:strokeColor="#F57F17" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M24,0 L72,0 L76,96 L54,96 L51,34 L45,34 L42,96 L20,96 Z" />
+
+    <!-- Waistband stays the same so it aligns with jackets -->
+    <path android:fillColor="#F57F17" android:pathData="M24,0 L72,0 L71,10 L25,10 Z" />
+
+</vector>

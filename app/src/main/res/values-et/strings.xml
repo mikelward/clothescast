@@ -273,9 +273,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_tts_style_storyteller">Jutustaja</string>
     <string name="settings_tts_style_fitness_instructor">Treeninguinstruktor</string>
     <string name="settings_tts_style_morning_presenter">Hommikuradio saatejuht</string>
-    <string name="settings_tts_style_custom">Kohandatud…</string>
-    <string name="settings_tts_style_custom_label">Kohandatud juhend</string>
-    <string name="settings_tts_style_custom_placeholder">nt Loe järgnev ette range raamatukoguhoidjana sosistatuna</string>
 
     <string name="settings_tts_device_voice_label">Seadme hääl</string>
     <string name="settings_tts_device_voice_auto">Automaatne (parim aktsendi jaoks)</string>

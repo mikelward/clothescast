@@ -828,13 +828,10 @@
     <string name="settings_tts_engine_gemini">Gemini (high-quality, online)</string>
     <string name="settings_tts_voice_label">Voice</string>
     <string name="settings_tts_voice_dismiss">Done</string>
-    <!-- Style preamble for Gemini TTS. "Normal" is the original studio-voice
-         wording; "Newsreader" tightens delivery into a newsreader register.
-         The character / persona registers below shape *delivery* (the words
-         read aloud are unchanged) and permit brief in-character interjections
-         like "Arrr". "Custom…" is a development knob that lets the user type
-         a freeform directive — TODO(pre-release) remove before shipping.
-         Only shown for the Gemini engine. -->
+    <!-- Style preamble for Gemini TTS. The character / persona registers below
+         shape delivery (the words read aloud are unchanged) and permit brief
+         in-character interjections like "Arrr". Only shown for the Gemini
+         engine. -->
     <string name="settings_tts_style_label">Style</string>
     <string name="settings_tts_style_weather_forecaster">Weather Forecaster</string>
     <string name="settings_tts_style_pirate">Pirate</string>
@@ -863,9 +860,6 @@
     <string name="settings_tts_style_king">King</string>
     <string name="settings_tts_style_queen">Queen</string>
     <string name="settings_tts_style_president">President</string>
-    <string name="settings_tts_style_custom">Custom…</string>
-    <string name="settings_tts_style_custom_label">Custom directive</string>
-    <string name="settings_tts_style_custom_placeholder">e.g. Read the following as a stern librarian whispering</string>
     <!-- Device-voice picker (TtsEngine.DEVICE only). %1$s is a voice id like
          "en-us-x-tpc-network · Network · q400". -->
     <string name="settings_tts_device_voice_label">Device voice</string>

@@ -362,9 +362,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_tts_style_storyteller">Stāstnieks</string>
     <string name="settings_tts_style_fitness_instructor">Fitnesa instruktors</string>
     <string name="settings_tts_style_morning_presenter">Rīta raidījuma vadītājs</string>
-    <string name="settings_tts_style_custom">Pielāgots…</string>
-    <string name="settings_tts_style_custom_label">Pielāgota direktīva</string>
-    <string name="settings_tts_style_custom_placeholder">piem., Lasi šo kā stingra bibliotekāre, kas čukst</string>
     <string name="settings_tts_device_voice_label">Ierīces balss</string>
     <string name="settings_tts_device_voice_auto">Automātiski (vislabāk akcenta gadījumā)</string>
     <string name="settings_tts_device_voice_currently">Pašlaik: %1$s</string>

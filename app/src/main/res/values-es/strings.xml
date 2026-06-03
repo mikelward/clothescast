@@ -680,9 +680,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_storyteller">Narrador</string>
     <string name="settings_tts_style_fitness_instructor">Instructor de fitness</string>
     <string name="settings_tts_style_morning_presenter">Presentador de radio matutino</string>
-    <string name="settings_tts_style_custom">Personalizado…</string>
-    <string name="settings_tts_style_custom_label">Directiva personalizada</string>
-    <string name="settings_tts_style_custom_placeholder">p. ej. Lee lo siguiente como un bibliotecario severo susurrando</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">¿Compartir informe de error?</string>

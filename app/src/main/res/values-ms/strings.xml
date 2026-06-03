@@ -380,9 +380,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_tts_style_storyteller">Pencerita</string>
     <string name="settings_tts_style_fitness_instructor">Jurulatih kecergasan</string>
     <string name="settings_tts_style_morning_presenter">Pengacara radio pagi</string>
-    <string name="settings_tts_style_custom">Tersuai…</string>
-    <string name="settings_tts_style_custom_label">Arahan tersuai</string>
-    <string name="settings_tts_style_custom_placeholder">cth. Bacakan yang berikut sebagai pustakawan tegas yang berbisik</string>
     <string name="settings_tts_device_voice_label">Suara peranti</string>
     <string name="settings_tts_device_voice_auto">Auto (terbaik untuk loghat)</string>
     <string name="settings_tts_device_voice_currently">Semasa: %1$s</string>

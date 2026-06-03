@@ -686,9 +686,6 @@ the displayed label localizes.
     <string name="settings_tts_style_storyteller">語り部</string>
     <string name="settings_tts_style_fitness_instructor">フィットネスインストラクター</string>
     <string name="settings_tts_style_morning_presenter">朝のラジオパーソナリティ</string>
-    <string name="settings_tts_style_custom">カスタム…</string>
-    <string name="settings_tts_style_custom_label">カスタム指示</string>
-    <string name="settings_tts_style_custom_placeholder">例：以下の文章を、厳しい司書がささやくように読んでください</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">バグレポートを共有しますか？</string>

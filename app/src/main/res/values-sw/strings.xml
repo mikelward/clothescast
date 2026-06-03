@@ -338,9 +338,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_storyteller">Msimulizi</string>
     <string name="settings_tts_style_fitness_instructor">Mwalimu wa mazoezi</string>
     <string name="settings_tts_style_morning_presenter">Mwasilishaji wa redio ya asubuhi</string>
-    <string name="settings_tts_style_custom">Maalum…</string>
-    <string name="settings_tts_style_custom_label">Agizo maalum</string>
-    <string name="settings_tts_style_custom_placeholder">mf. Soma yafuatayo kama maktabani mkali anayenong\'ona</string>
     <string name="settings_tts_device_voice_label">Sauti ya kifaa</string>
     <string name="settings_tts_device_voice_auto">Kiotomatiki (bora kwa lafudhi)</string>
     <string name="settings_tts_device_voice_currently">Sasa hivi: %1$s</string>

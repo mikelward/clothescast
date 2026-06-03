@@ -370,9 +370,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_tts_style_storyteller">গল্পকার</string>
     <string name="settings_tts_style_fitness_instructor">ফিটনেস প্রশিক্ষক</string>
     <string name="settings_tts_style_morning_presenter">সকালের রেডিও উপস্থাপক</string>
-    <string name="settings_tts_style_custom">কাস্টম…</string>
-    <string name="settings_tts_style_custom_label">কাস্টম নির্দেশনা</string>
-    <string name="settings_tts_style_custom_placeholder">যেমন: নিম্নলিখিতটি একজন কঠোর লাইব্রেরিয়ানের ফিসফিসানিতে পড়ুন</string>
     <string name="settings_tts_device_voice_label">ডিভাইস ভয়েস</string>
     <string name="settings_tts_device_voice_auto">স্বয়ংক্রিয় (উচ্চারণভঙ্গির জন্য সেরা)</string>
     <string name="settings_tts_device_voice_currently">বর্তমান: %1$s</string>

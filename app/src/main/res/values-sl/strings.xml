@@ -397,9 +397,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_tts_style_storyteller">Pripovedovalec</string>
     <string name="settings_tts_style_fitness_instructor">Fitnes inštruktor</string>
     <string name="settings_tts_style_morning_presenter">Jutranji radijski voditelj</string>
-    <string name="settings_tts_style_custom">Po meri…</string>
-    <string name="settings_tts_style_custom_label">Direktiva po meri</string>
-    <string name="settings_tts_style_custom_placeholder">npr. Preberi naslednje kot strog knjižničar, ki šepeta</string>
 
     <!-- Device-voice picker. -->
     <string name="settings_tts_device_voice_label">Glas naprave</string>

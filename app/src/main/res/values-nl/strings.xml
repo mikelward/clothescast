@@ -633,9 +633,6 @@ the displayed label localizes.
     <string name="settings_tts_style_storyteller">Verteller</string>
     <string name="settings_tts_style_fitness_instructor">Fitnessinstructeur</string>
     <string name="settings_tts_style_morning_presenter">Ochtendradio-presentatrice</string>
-    <string name="settings_tts_style_custom">Aangepast…</string>
-    <string name="settings_tts_style_custom_label">Aangepaste instructie</string>
-    <string name="settings_tts_style_custom_placeholder">bijv. Lees het volgende voor als een strenge fluisterende bibliotheekmedewerker</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Bugrapport delen?</string>

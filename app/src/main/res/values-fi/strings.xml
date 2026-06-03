@@ -569,9 +569,6 @@ displayed label localizes.
     <string name="settings_tts_style_storyteller">Tarinankertoja</string>
     <string name="settings_tts_style_fitness_instructor">Kuntoinstruktori</string>
     <string name="settings_tts_style_morning_presenter">Aamuradion juontaja</string>
-    <string name="settings_tts_style_custom">Mukautettu…</string>
-    <string name="settings_tts_style_custom_label">Mukautettu ohje</string>
-    <string name="settings_tts_style_custom_placeholder">esim. Lue seuraava kuin tiukka kuiskaava kirjastonhoitaja</string>
 
     <string name="bug_report_consent_title">Jaetaanko virheraportti?</string>
     <string name="bug_report_consent_body">Tämä auttaa ongelmien diagnosoinnissa. Raportti sisältää arkaluonteisia henkilötietoja, mukaan lukien sijaintisi, sovelluksen asetuksesi ja viimeaikaiset toimintasi. Voit tarkistaa ja muokata sitä ennen lähettämistä.</string>

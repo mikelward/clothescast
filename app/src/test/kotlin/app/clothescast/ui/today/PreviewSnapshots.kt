@@ -73,6 +73,7 @@ import app.clothescast.widget.WidgetTodayCompactPreview
 import app.clothescast.widget.WidgetTodayExtraLargePreview
 import app.clothescast.widget.WidgetTodayJacketPantsPreview
 import app.clothescast.widget.WidgetTodayLargePreview
+import app.clothescast.widget.WidgetSideBySideAccessoriesNarrowPreview
 import app.clothescast.widget.WidgetTodayTonightWidePreview
 import app.clothescast.widget.WidgetTodayTShirtShortsPreview
 import app.clothescast.widget.WidgetTonightDarkPreview
@@ -614,6 +615,7 @@ class PreviewSnapshots {
     @Test fun widget_today_large() = capture { WidgetTodayLargePreview() }
     @Test fun widget_today_extra_large() = capture { WidgetTodayExtraLargePreview() }
     @Test fun widget_today_tonight_wide() = capture { WidgetTodayTonightWidePreview() }
+    @Test fun widget_side_by_side_accessories_narrow() = capture { WidgetSideBySideAccessoriesNarrowPreview() }
     @Test fun widget_tonight_tomorrow_wide() = capture { WidgetTonightTomorrowWidePreview() }
 
     @Test fun feels_like_widget_today() = capture { FeelsLikeWidgetTodayPreview() }

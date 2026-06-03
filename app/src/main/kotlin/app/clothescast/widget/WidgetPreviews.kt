@@ -183,7 +183,11 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
             topLabel = stringResource(topLabelResMock(outfit.top)),
             bottomLabel = stringResource(bottomLabelResMock(outfit.bottom)),
         )
-        val captionLines = outfitGarmentCaptionLineCount(outfit)
+        val captionLines = outfitGarmentCaptionLineCount(
+            caption = caption,
+            availableWidthDp = size.width.value,
+            fontSizeSp = scaledSubtitleSpMock(size).value,
+        )
         val iconSize = scaledIconSizeMock(size, captionLines)
         // The umbrella is a full-figure overlay (held at the hip, hanging past
         // the legs), so it spans the top+bottom stack — mirror the real widget's
@@ -416,6 +420,29 @@ internal fun WidgetTonightTomorrowWidePreview() {
             primaryPeriod = ForecastPeriod.TONIGHT,
             primary = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
             next = OutfitSuggestion(OutfitSuggestion.Top.THIN_JACKET, OutfitSuggestion.Bottom.JEANS),
+        )
+    }
+}
+
+// Narrow side-by-side: a 240dp widget halves to ~120dp columns, where a full
+// accessory run ("Thick coat · Long pants · Gloves · Umbrella") wraps to three
+// lines. Captures that the per-column line budget grows so the final accessory
+// (Umbrella) isn't clipped — the regression a constant 2-line cap caused.
+@Preview(name = "Widget · side by side · accessories (narrow)", widthDp = 272, heightDp = 192)
+@Composable
+internal fun WidgetSideBySideAccessoriesNarrowPreview() {
+    WidgetFrame {
+        OutfitWidgetMockSideBySide(
+            primaryPeriod = ForecastPeriod.TODAY,
+            primary = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_COAT,
+                OutfitSuggestion.Bottom.LONG_PANTS,
+                hands = OutfitSuggestion.Hands.GLOVES,
+                carried = OutfitSuggestion.Carried.UMBRELLA,
+            ),
+            next = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.JEANS),
+            width = 240.dp,
+            height = 160.dp,
         )
     }
 }

@@ -208,10 +208,15 @@ private fun SingleColumnContent(
         topLabel = context.getString(topLabelRes(outfit.top)),
         bottomLabel = context.getString(bottomLabelRes(outfit.bottom)),
     )
-    // The run wraps to two lines once any extra piece joins the base top +
-    // bottom; reserve (and cap at) that many lines. Two lines mean smaller icons
-    // to make room; a one-line caption keeps full-size icons.
-    val captionLines = outfitGarmentCaptionLineCount(outfit)
+    // Reserve (and cap at) however many lines the run actually wraps to in this
+    // column — 2 in a single-column cell, 3 once a side-by-side column halves
+    // the width — so the final accessory is never clipped. More lines mean
+    // smaller icons to make room; a one-line caption keeps full-size icons.
+    val captionLines = outfitGarmentCaptionLineCount(
+        caption = caption,
+        availableWidthDp = size.width.value,
+        fontSizeSp = scaledSubtitleSp(size).value,
+    )
     val iconSize = scaledIconSize(size, subtitleLines = captionLines)
     // Layout size is unbounded (the Image's Glance modifier holds whatever
     // iconSize the launcher's cell justifies) but the rasterized bitmap is

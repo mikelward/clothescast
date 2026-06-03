@@ -144,6 +144,7 @@ import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.ui.garment.OutfitCardInfoLines
 import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.outfitCardInfoLines
+import app.clothescast.ui.garment.outfitGarmentCaption
 import app.clothescast.ui.garment.renderConditionsStripBitmap
 import app.clothescast.diag.BugReport
 import app.clothescast.diag.BugReportConsentDialog
@@ -2149,17 +2150,24 @@ internal fun OutfitPreviewCard(
                     )
                 }
             }
-            // Reserve two lines for the garment-name text so cards match
-            // even when one combination wraps and the other doesn't (e.g.
-            // "Thick jacket · Long pants" wraps at the row's per-card width
-            // but "Sweater · Long pants" doesn't).
+            // Reserve two lines for the garment-name text so cards stay the
+            // same height. Names every piece the icon shows — the worn outfit
+            // (top, rain-jacket shell, bottom) on the first line and the
+            // gloves / umbrella accessories on the second — so the caption
+            // matches the figure. fillMaxWidth + centre keeps both lines
+            // centred under the icons.
             Text(
-                text = stringResource(topLabelRes(outfit.top)) +
-                    " · " +
-                    stringResource(bottomLabelRes(outfit.bottom)),
+                text = outfitGarmentCaption(
+                    context = LocalContext.current,
+                    outfit = outfit,
+                    topLabel = stringResource(topLabelRes(outfit.top)),
+                    bottomLabel = stringResource(bottomLabelRes(outfit.bottom)),
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 minLines = 2,
+                maxLines = 2,
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }

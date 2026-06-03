@@ -1219,6 +1219,22 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_week_ahead_warmer">Topleje %1$s.</string>
     <string name="today_week_empty">Bo na voljo po naslednji napovedi.</string>
 
+    <string name="today_stop">Ustavi</string>
+    <string name="today_gemini_limit_title">Dosežena je omejitev brezplačnih glasov</string>
+    <string name="today_gemini_limit_body">Uporabil(a) si današnje brezplačne glasove Gemini. Dodaj svoj ključ Gemini za več.</string>
+    <string name="today_gemini_limit_cta">Nastavitve govora</string>
+    <string name="today_gemini_limit_dismiss">Zavrzi</string>
+    <string name="today_gemini_key_invalid_title">Ključ Gemini je treba znova vnesti</string>
+    <string name="today_gemini_key_invalid_body">Shranjeni ključ Gemini ni bilo mogoče prebrati v tej napravi, zato ClothesCast ne bo uporabljal deljenih glasov Gemini, dokler ga znova ne vneseš ali počistiš.</string>
+    <string name="today_gemini_key_invalid_cta">Nastavitve govora</string>
+    <string name="settings_api_key_status_unset">2 brezplačno vsak dan, pridobi ključ za več.</string>
+    <string name="settings_tts_stop">Ustavi</string>
+    <string name="garment_rain_jacket">Dežna jakna</string>
+    <string name="insight_precip_all_day">ves dan</string>
+    <string name="insight_precip_all_night">vso noč</string>
+    <string name="insight_tie_in_with_rain_all_night">Nocoj, %2$s vso noč, vzemi %1$s.</string>
+    <string name="insight_evening_rain_all_night">Nocoj, %1$s vso noč.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Nastavitve glasu</string>

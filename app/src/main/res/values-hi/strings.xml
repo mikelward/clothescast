@@ -1264,6 +1264,22 @@ Not overridden by design:
     <string name="today_week_ahead_warmer">गर्म %1$s।</string>
     <string name="today_week_empty">अगले पूर्वानुमान के बाद तैयार होगा।</string>
 
+    <string name="today_stop">रोकें</string>
+    <string name="today_gemini_limit_title">मुफ़्त आवाज़ों की सीमा पूरी हो गई</string>
+    <string name="today_gemini_limit_body">आपने आज की मुफ़्त Gemini आवाज़ें इस्तेमाल कर ली हैं। और पाने के लिए अपनी Gemini कुंजी जोड़ें।</string>
+    <string name="today_gemini_limit_cta">बोली सेटिंग</string>
+    <string name="today_gemini_limit_dismiss">खारिज करें</string>
+    <string name="today_gemini_key_invalid_title">Gemini कुंजी फिर से दर्ज करनी होगी</string>
+    <string name="today_gemini_key_invalid_body">आपकी सहेजी गई Gemini कुंजी इस डिवाइस पर पढ़ी नहीं जा सकी, इसलिए ClothesCast साझा Gemini आवाज़ों का उपयोग तब तक नहीं करेगा जब तक आप उसे फिर से दर्ज या साफ़ नहीं करते।</string>
+    <string name="today_gemini_key_invalid_cta">बोली सेटिंग</string>
+    <string name="settings_api_key_status_unset">हर दिन 2 मुफ़्त, और के लिए कुंजी लें।</string>
+    <string name="settings_tts_stop">रोकें</string>
+    <string name="garment_rain_jacket">रेन जैकेट</string>
+    <string name="insight_precip_all_day">पूरे दिन</string>
+    <string name="insight_precip_all_night">पूरी रात</string>
+    <string name="insight_tie_in_with_rain_all_night">आज रात, %2$s पूरी रात, %1$s साथ ले जाएँ।</string>
+    <string name="insight_evening_rain_all_night">आज रात, %1$s पूरी रात।</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">आवाज़ सेटिंग</string>

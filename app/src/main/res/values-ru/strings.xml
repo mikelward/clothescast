@@ -1288,6 +1288,22 @@ only the displayed label localizes.
     <string name="today_week_ahead_warmer">Теплее %1$s.</string>
     <string name="today_week_empty">Будет готово после следующего прогноза.</string>
 
+    <string name="today_stop">Остановить</string>
+    <string name="today_gemini_limit_title">Лимит бесплатных голосов исчерпан</string>
+    <string name="today_gemini_limit_body">Вы использовали сегодняшние бесплатные голоса Gemini. Добавьте свой ключ Gemini, чтобы получить больше.</string>
+    <string name="today_gemini_limit_cta">Настройки речи</string>
+    <string name="today_gemini_limit_dismiss">Закрыть</string>
+    <string name="today_gemini_key_invalid_title">Ключ Gemini нужно ввести заново</string>
+    <string name="today_gemini_key_invalid_body">Сохраненный ключ Gemini не удалось прочитать на этом устройстве, поэтому ClothesCast не будет использовать общие голоса Gemini, пока вы не введете его заново или не очистите.</string>
+    <string name="today_gemini_key_invalid_cta">Настройки речи</string>
+    <string name="settings_api_key_status_unset">2 бесплатно каждый день, получите ключ для большего.</string>
+    <string name="settings_tts_stop">Остановить</string>
+    <string name="garment_rain_jacket">Дождевик</string>
+    <string name="insight_precip_all_day">весь день</string>
+    <string name="insight_precip_all_night">всю ночь</string>
+    <string name="insight_tie_in_with_rain_all_night">Сегодня вечером, %2$s всю ночь, возьмите %1$s.</string>
+    <string name="insight_evening_rain_all_night">Сегодня вечером, %1$s всю ночь.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Настройки голоса</string>

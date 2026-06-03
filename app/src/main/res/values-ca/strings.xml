@@ -1172,6 +1172,22 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_week_ahead_warmer">Més càlid %1$s.</string>
     <string name="today_week_empty">Disponible després de la pròxima previsió.</string>
 
+    <string name="today_stop">Atura</string>
+    <string name="today_gemini_limit_title">S’ha assolit el límit de veus gratuïtes</string>
+    <string name="today_gemini_limit_body">Has fet servir les veus Gemini gratuïtes d’avui. Afegeix la teva clau Gemini per a més.</string>
+    <string name="today_gemini_limit_cta">Configuració de veu</string>
+    <string name="today_gemini_limit_dismiss">Descarta</string>
+    <string name="today_gemini_key_invalid_title">Cal tornar a introduir la clau Gemini</string>
+    <string name="today_gemini_key_invalid_body">No s’ha pogut llegir la clau Gemini desada en aquest dispositiu, així que ClothesCast no farà servir les veus Gemini compartides fins que la tornis a introduir o l’esborris.</string>
+    <string name="today_gemini_key_invalid_cta">Configuració de veu</string>
+    <string name="settings_api_key_status_unset">2 de gratuïtes cada dia, obtén una clau per a més.</string>
+    <string name="settings_tts_stop">Atura</string>
+    <string name="garment_rain_jacket">Jaqueta impermeable</string>
+    <string name="insight_precip_all_day">tot el dia</string>
+    <string name="insight_precip_all_night">tota la nit</string>
+    <string name="insight_tie_in_with_rain_all_night">Aquesta nit, %2$s tota la nit, agafa %1$s.</string>
+    <string name="insight_evening_rain_all_night">Aquesta nit, %1$s tota la nit.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Configuració de veu</string>

@@ -1200,6 +1200,22 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_week_ahead_warmer">ሞቃት %1$s።</string>
     <string name="today_week_empty">ከቀጣዩ ትንበያ በኋላ ይዘጋጃል።</string>
 
+    <string name="today_stop">አቁም</string>
+    <string name="today_gemini_limit_title">የነፃ ድምፅ ገደብ ደርሷል</string>
+    <string name="today_gemini_limit_body">የዛሬዎቹን ነፃ የGemini ድምፆች ተጠቅመሃል። ለተጨማሪ የራስህን Gemini ቁልፍ ጨምር።</string>
+    <string name="today_gemini_limit_cta">የንግግር ቅንብሮች</string>
+    <string name="today_gemini_limit_dismiss">ዝጋ</string>
+    <string name="today_gemini_key_invalid_title">የGemini ቁልፍ እንደገና መግባት ያስፈልገዋል</string>
+    <string name="today_gemini_key_invalid_body">የተቀመጠው የGemini ቁልፍህ በዚህ መሣሪያ ሊነበብ አልቻለም፣ ስለዚህ ClothesCast እስክታስገባው ወይም እስክታጸዳው ድረስ የጋራ Gemini ድምፆችን አይጠቀምም።</string>
+    <string name="today_gemini_key_invalid_cta">የንግግር ቅንብሮች</string>
+    <string name="settings_api_key_status_unset">በየቀኑ 2 ነፃ፣ ለተጨማሪ ቁልፍ አግኝ።</string>
+    <string name="settings_tts_stop">አቁም</string>
+    <string name="garment_rain_jacket">የዝናብ ጃኬት</string>
+    <string name="insight_precip_all_day">ቀኑን ሙሉ</string>
+    <string name="insight_precip_all_night">ሌሊቱን ሙሉ</string>
+    <string name="insight_tie_in_with_rain_all_night">ዛሬ ማታ፣ %2$s ሌሊቱን ሙሉ፣ %1$s ይዘህ ሂድ።</string>
+    <string name="insight_evening_rain_all_night">ዛሬ ማታ፣ %1$s ሌሊቱን ሙሉ።</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">የድምፅ ቅንብሮች</string>

@@ -1256,6 +1256,22 @@ What is NOT overridden, by design:
     <string name="today_week_ahead_warmer">Teplejšie %1$s.</string>
     <string name="today_week_empty">Bude k dispozícii po ďalšej predpovedi.</string>
 
+    <string name="today_stop">Zastaviť</string>
+    <string name="today_gemini_limit_title">Limit bezplatných hlasov dosiahnutý</string>
+    <string name="today_gemini_limit_body">Použil(a) si dnešné bezplatné hlasy Gemini. Pridaj vlastný kľúč Gemini pre ďalšie.</string>
+    <string name="today_gemini_limit_cta">Nastavenia reči</string>
+    <string name="today_gemini_limit_dismiss">Zavrieť</string>
+    <string name="today_gemini_key_invalid_title">Kľúč Gemini treba zadať znova</string>
+    <string name="today_gemini_key_invalid_body">Uložený kľúč Gemini sa na tomto zariadení nepodarilo prečítať, takže ClothesCast nebude používať zdieľané hlasy Gemini, kým ho znova nezadáš alebo nevymažeš.</string>
+    <string name="today_gemini_key_invalid_cta">Nastavenia reči</string>
+    <string name="settings_api_key_status_unset">2 zadarmo každý deň, získaj kľúč pre ďalšie.</string>
+    <string name="settings_tts_stop">Zastaviť</string>
+    <string name="garment_rain_jacket">Bunda do dažďa</string>
+    <string name="insight_precip_all_day">celý deň</string>
+    <string name="insight_precip_all_night">celú noc</string>
+    <string name="insight_tie_in_with_rain_all_night">Dnes večer, %2$s celú noc, vezmi si %1$s.</string>
+    <string name="insight_evening_rain_all_night">Dnes večer, %1$s celú noc.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Nastavenia hlasu</string>

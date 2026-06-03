@@ -1222,6 +1222,22 @@ default English (matching values-pl / values-uk).
     <string name="today_week_ahead_warmer">Toplije %1$s.</string>
     <string name="today_week_empty">Biće spremno posle sledeće prognoze.</string>
 
+    <string name="today_stop">Zaustavi</string>
+    <string name="today_gemini_limit_title">Dostignuto je ograničenje besplatnih glasova</string>
+    <string name="today_gemini_limit_body">Iskoristio/la si današnje besplatne Gemini glasove. Dodaj svoj Gemini ključ za više.</string>
+    <string name="today_gemini_limit_cta">Podešavanja govora</string>
+    <string name="today_gemini_limit_dismiss">Odbaci</string>
+    <string name="today_gemini_key_invalid_title">Gemini ključ treba ponovo uneti</string>
+    <string name="today_gemini_key_invalid_body">Sačuvani Gemini ključ nije mogao da se pročita na ovom uređaju, pa ClothesCast neće koristiti deljene Gemini glasove dok ga ponovo ne uneseš ili obrišeš.</string>
+    <string name="today_gemini_key_invalid_cta">Podešavanja govora</string>
+    <string name="settings_api_key_status_unset">2 besplatno svakog dana, nabavi ključ za više.</string>
+    <string name="settings_tts_stop">Zaustavi</string>
+    <string name="garment_rain_jacket">Kišna jakna</string>
+    <string name="insight_precip_all_day">ceo dan</string>
+    <string name="insight_precip_all_night">celu noć</string>
+    <string name="insight_tie_in_with_rain_all_night">Večeras, %2$s celu noć, ponesi %1$s.</string>
+    <string name="insight_evening_rain_all_night">Večeras, %1$s celu noć.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Podešavanja glasa</string>

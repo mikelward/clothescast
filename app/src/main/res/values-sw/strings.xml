@@ -1201,6 +1201,22 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_week_ahead_warmer">Joto zaidi %1$s.</string>
     <string name="today_week_empty">Itakuwa tayari baada ya utabiri unaofuata.</string>
 
+    <string name="today_stop">Simamisha</string>
+    <string name="today_gemini_limit_title">Kikomo cha sauti za bure kimefikiwa</string>
+    <string name="today_gemini_limit_body">Umetumia sauti za bure za Gemini za leo. Ongeza ufunguo wako wa Gemini ili upate zaidi.</string>
+    <string name="today_gemini_limit_cta">Mipangilio ya usemi</string>
+    <string name="today_gemini_limit_dismiss">Ondoa</string>
+    <string name="today_gemini_key_invalid_title">Ufunguo wa Gemini unahitaji kuingizwa tena</string>
+    <string name="today_gemini_key_invalid_body">Ufunguo wako wa Gemini uliohifadhiwa haukuweza kusomwa kwenye kifaa hiki, kwa hivyo ClothesCast haitatumia sauti za Gemini zilizoshirikiwa hadi uuingize tena au kuufuta.</string>
+    <string name="today_gemini_key_invalid_cta">Mipangilio ya usemi</string>
+    <string name="settings_api_key_status_unset">2 bila malipo kila siku, pata ufunguo kwa zaidi.</string>
+    <string name="settings_tts_stop">Simamisha</string>
+    <string name="garment_rain_jacket">Jacket ya mvua</string>
+    <string name="insight_precip_all_day">siku nzima</string>
+    <string name="insight_precip_all_night">usiku kucha</string>
+    <string name="insight_tie_in_with_rain_all_night">Usiku wa leo, %2$s usiku kucha, beba %1$s.</string>
+    <string name="insight_evening_rain_all_night">Usiku wa leo, %1$s usiku kucha.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Mipangilio ya sauti</string>

@@ -1391,6 +1391,21 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_week_ahead_warmer">Wärmer %1$s.</string>
     <string name="today_week_empty">Bereit nach der nächsten Vorhersage.</string>
 
+    <string name="today_stop">Stopp</string>
+    <string name="today_gemini_limit_title">Limit für kostenlose Stimmen erreicht</string>
+    <string name="today_gemini_limit_body">Du hast die heutigen kostenlosen Gemini-Stimmen genutzt. Füge deinen eigenen Gemini-Schlüssel hinzu, um mehr zu erhalten.</string>
+    <string name="today_gemini_limit_cta">Spracheinstellungen</string>
+    <string name="today_gemini_limit_dismiss">Schließen</string>
+    <string name="today_gemini_key_invalid_title">Gemini-Schlüssel muss erneut eingegeben werden</string>
+    <string name="today_gemini_key_invalid_body">Dein gespeicherter Gemini-Schlüssel konnte auf diesem Gerät nicht gelesen werden, daher verwendet ClothesCast keine geteilten Gemini-Stimmen, bis du ihn erneut eingibst oder löschst.</string>
+    <string name="today_gemini_key_invalid_cta">Spracheinstellungen</string>
+    <string name="settings_api_key_status_unset">2 kostenlos pro Tag, hol dir einen Schlüssel für mehr.</string>
+    <string name="settings_tts_stop">Stopp</string>
+    <string name="insight_precip_all_day">den ganzen Tag</string>
+    <string name="insight_precip_all_night">die ganze Nacht</string>
+    <string name="insight_tie_in_with_rain_all_night">Heute Abend, %2$s die ganze Nacht, nimm %1$s mit.</string>
+    <string name="insight_evening_rain_all_night">Heute Abend, %1$s die ganze Nacht.</string>
+
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->
     <string name="settings_page_voice">Stimmeinstellungen</string>

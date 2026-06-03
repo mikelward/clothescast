@@ -420,6 +420,9 @@
     <string name="today_gemini_limit_body">You\'ve used today\'s free Gemini voices. Add your own Gemini key for more.</string>
     <string name="today_gemini_limit_cta">Speech settings</string>
     <string name="today_gemini_limit_dismiss">Dismiss</string>
+    <string name="today_gemini_key_invalid_title">Gemini key needs re-entry</string>
+    <string name="today_gemini_key_invalid_body">Your saved Gemini key could not be read on this device, so ClothesCast will not use shared Gemini voices until you re-enter or clear it.</string>
+    <string name="today_gemini_key_invalid_cta">Speech settings</string>
 
     <!-- Promo card on the Today screen nudging users toward the new
          calendar-sourced holiday + birthday theming. Auto-hides once

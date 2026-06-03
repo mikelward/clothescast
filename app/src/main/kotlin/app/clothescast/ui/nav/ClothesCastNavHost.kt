@@ -377,6 +377,7 @@ private fun todayViewModelFactory(app: ClothesCastApplication, context: Context)
         deriveInsight = app.deriveInsight,
         calendarEventReader = app.calendarEventReader,
         geminiKeyConfigured = app.secureKeyStore.geminiKeyConfiguredFlow,
+        geminiKeyNeedsReentry = app.secureKeyStore.geminiKeyNeedsReentryFlow,
     )
 
 private fun settingsViewModelFactory(app: ClothesCastApplication, context: Context) =

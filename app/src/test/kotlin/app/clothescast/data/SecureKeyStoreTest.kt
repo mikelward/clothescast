@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import app.clothescast.core.data.insight.InvalidApiKeyException
 import app.clothescast.core.data.insight.MissingApiKeyException
 import com.google.crypto.tink.Aead
 import io.kotest.assertions.throwables.shouldThrow
@@ -93,15 +94,33 @@ class SecureKeyStoreTest {
     }
 
     @Test
-    fun `corrupt ciphertext is cleared and reported as MissingApiKeyException`() = runTest {
+    fun `corrupt ciphertext is cleared and reported as InvalidApiKeyException`() = runTest {
         // Simulate a Keystore master-key rotation: the stored ciphertext is no longer
-        // decodeable. The store should drop the bad value and tell callers there's no key.
+        // decodeable. The store should drop the bad value and keep asking for re-entry.
         dataStore.edit { it[GEMINI_KEY_PREFERENCE] = "@@@not-valid-base64@@@" }
 
-        shouldThrow<MissingApiKeyException> { subject.get() }
+        shouldThrow<InvalidApiKeyException> { subject.get() }
 
         // And subsequent reads no longer see the corrupt value.
         dataStore.data.first()[GEMINI_KEY_PREFERENCE] shouldBe null
+    }
+
+    @Test
+    fun `decrypt failure keeps reporting invalid key until re-entered`() = runTest {
+        subject = SecureKeyStore(aead = DecryptFailsFakeAead, dataStore = dataStore)
+        subject.set("AIzaSyExampleKeyValue123")
+
+        shouldThrow<InvalidApiKeyException> { subject.get() }
+        dataStore.data.first()[GEMINI_KEY_PREFERENCE] shouldBe null
+        subject.geminiKeyNeedsReentryFlow.first() shouldBe true
+
+        shouldThrow<InvalidApiKeyException> { subject.get() }
+
+        subject = SecureKeyStore(aead = ReversibleFakeAead, dataStore = dataStore)
+        subject.set("AIzaSyNewExampleKeyValue123")
+
+        subject.geminiKeyNeedsReentryFlow.first() shouldBe false
+        subject.get() shouldBe "AIzaSyNewExampleKeyValue123"
     }
 
     private companion object {
@@ -122,4 +141,12 @@ private object ReversibleFakeAead : Aead {
 
     override fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray =
         ciphertext.reversedArray()
+}
+
+private object DecryptFailsFakeAead : Aead {
+    override fun encrypt(plaintext: ByteArray, associatedData: ByteArray?): ByteArray =
+        plaintext.reversedArray()
+
+    override fun decrypt(ciphertext: ByteArray, associatedData: ByteArray?): ByteArray =
+        throw java.security.GeneralSecurityException("Simulated decrypt failure")
 }

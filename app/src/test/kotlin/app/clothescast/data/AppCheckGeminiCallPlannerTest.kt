@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import app.clothescast.core.data.insight.GeminiEndpoint
-import app.clothescast.core.data.insight.MissingApiKeyException
+import app.clothescast.core.data.insight.InvalidApiKeyException
 import com.google.crypto.tink.Aead
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
@@ -46,8 +46,8 @@ class AppCheckGeminiCallPlannerTest {
     }
 
     @Test
-    fun `plan does not fall back to shared proxy when configured key cannot decrypt`() = runTest {
-        val secureKeyStore = SecureKeyStore(aead = DecryptFailsFakeAead, dataStore = dataStore)
+    fun `plan does not fall back to shared proxy after configured key cannot decrypt`() = runTest {
+        val secureKeyStore = SecureKeyStore(aead = PlannerDecryptFailsFakeAead, dataStore = dataStore)
         secureKeyStore.set("AIzaSyExampleKeyValue123")
         val subject = AppCheckGeminiCallPlanner(
             secureKeyStore = secureKeyStore,
@@ -56,7 +56,8 @@ class AppCheckGeminiCallPlannerTest {
             model = "gemini-test",
         )
 
-        shouldThrow<MissingApiKeyException> { subject.plan() }
+        shouldThrow<InvalidApiKeyException> { subject.plan() }
+        shouldThrow<InvalidApiKeyException> { subject.plan() }
     }
 
     @Test
@@ -95,7 +96,7 @@ class AppCheckGeminiCallPlannerTest {
     }
 }
 
-private object DecryptFailsFakeAead : Aead {
+private object PlannerDecryptFailsFakeAead : Aead {
     override fun encrypt(plaintext: ByteArray, associatedData: ByteArray?): ByteArray =
         plaintext.reversedArray()
 

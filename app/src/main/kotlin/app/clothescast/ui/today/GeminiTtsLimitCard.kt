@@ -101,3 +101,47 @@ internal fun GeminiTtsLimitCardContent(
         }
     }
 }
+
+/**
+ * Persistent Today-screen card shown when the stored BYOK Gemini key could not
+ * be decrypted locally. It intentionally has no dismiss action: the card
+ * clears only when the user re-enters or explicitly clears the key, matching
+ * the planner's privacy boundary.
+ */
+@Composable
+internal fun GeminiKeyNeedsReentryCard(
+    visible: Boolean,
+    onOpenVoice: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (!visible) return
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.today_gemini_key_invalid_title),
+                style = MaterialTheme.typography.titleSmall,
+            )
+            Text(
+                text = stringResource(R.string.today_gemini_key_invalid_body),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = onOpenVoice) {
+                    Text(stringResource(R.string.today_gemini_key_invalid_cta))
+                }
+            }
+        }
+    }
+}

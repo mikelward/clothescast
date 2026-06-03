@@ -231,6 +231,12 @@ data class TodayState(
      */
     val geminiTtsLimitExceededAt: Long = 0L,
     /**
+     * True after a configured Gemini BYOK value failed local decrypt. It stays
+     * true until the user re-enters or clears the key, preserving the user's
+     * private BYOK choice across retries.
+     */
+    val geminiKeyNeedsReentry: Boolean = false,
+    /**
      * Whether the one-time telemetry/privacy disclosure is still pending
      * (the user hasn't acked it). Lifted out of the banner so [BannerStack]
      * can fold it into the capped promo pool alongside the location, clothes,
@@ -403,6 +409,12 @@ internal data class WorkSignals(
     val anyWorkActive: Boolean,
 )
 
+/** Presence + invalid-state mirror of the Gemini BYOK secret. */
+internal data class GeminiKeySignals(
+    val configured: Boolean,
+    val needsReentry: Boolean,
+)
+
 /**
  * Per-tick bundle of the odds-and-ends signals folded into
  * [TodayViewModel.state] so the outer combine stays at its five-flow
@@ -412,7 +424,7 @@ internal data class WorkSignals(
  */
 internal data class MiscSignals(
     val showModelSpread: Boolean,
-    val geminiKeyConfigured: Boolean,
+    val geminiKey: GeminiKeySignals,
     /** Latest MQTT publish failure to show (null when none / dismissed). */
     val mqttError: String?,
     /** [recordedAtMs] of the latest MQTT failure, so dismiss can mark it seen. */
@@ -496,6 +508,7 @@ class TodayViewModel(
      * it (no key ⇒ the promo is eligible, matching a fresh install).
      */
     private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
+    private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
 ) : ViewModel() {
     /**
      * Session-scoped "show model spread" flag. Held in the ViewModel rather
@@ -594,6 +607,9 @@ class TodayViewModel(
             }
         }
 
+    private val geminiKeySignals: Flow<GeminiKeySignals> =
+        combine(geminiKeyConfigured, geminiKeyNeedsReentry, ::GeminiKeySignals)
+
     // Fuse the session-scoped spread toggle, the external "Gemini key
     // configured" signal, and the latest MQTT / Cast publish-error messages
     // into one input so the outer [state] combine stays at five flows (the
@@ -603,7 +619,7 @@ class TodayViewModel(
     private val miscSignals: Flow<MiscSignals> =
         combine(
             showModelSpread,
-            geminiKeyConfigured,
+            geminiKeySignals,
             settingsRepository.mqttPublishStatus,
             settingsRepository.castStatus,
             geminiTtsLimitStatusTicking,
@@ -632,7 +648,7 @@ class TodayViewModel(
             } ?: false
             MiscSignals(
                 showModelSpread = spread,
-                geminiKeyConfigured = geminiKey,
+                geminiKey = geminiKey,
                 mqttError = mqttError,
                 mqttErrorAt = mqtt?.recordedAtMs ?: 0L,
                 castError = castError,
@@ -650,7 +666,8 @@ class TodayViewModel(
         miscSignals,
     ) { thisPeriodSnapshot, nextPeriodSnapshot, workSignals, prefsDateEvents, misc ->
         val spread = misc.showModelSpread
-        val geminiKeyConfigured = misc.geminiKeyConfigured
+        val geminiKeyConfigured = misc.geminiKey.configured
+        val geminiKeyNeedsReentry = misc.geminiKey.needsReentry
         val (prefs, today, events) = prefsDateEvents
         // Derive each cached snapshot against the *current* prefs so a settings
         // change re-renders the prose / outfit / bullets in the same frame as
@@ -739,14 +756,17 @@ class TodayViewModel(
             // card is up — pitching voices the user just hit a cap on reads as
             // a bug. The limit card already routes to the same Speech settings.
             geminiTtsPromoCardVisible = !prefs.geminiPromoCardDismissed &&
-                !geminiKeyConfigured && !misc.geminiTtsLimitExceeded,
+                !geminiKeyConfigured && !geminiKeyNeedsReentry && !misc.geminiTtsLimitExceeded,
             // Gate on no BYOK key: a configured key bypasses the shared free
             // proxy entirely, so the moment the user adds one (e.g. via this
             // card's CTA) the limit no longer applies and the card hides
             // immediately — without waiting for the next synth to clear the
             // persisted quota status.
-            geminiTtsLimitCardVisible = misc.geminiTtsLimitExceeded && !geminiKeyConfigured,
+            geminiTtsLimitCardVisible = misc.geminiTtsLimitExceeded &&
+                !geminiKeyConfigured &&
+                !geminiKeyNeedsReentry,
             geminiTtsLimitExceededAt = misc.geminiTtsLimitExceededAt,
+            geminiKeyNeedsReentry = geminiKeyNeedsReentry,
             telemetryNoticeVisible = !prefs.telemetryNoticeAcked,
             usesCalendarThemes = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive,
             // Surface a publish error for any failed delivery attempt — a
@@ -923,6 +943,7 @@ class TodayViewModel(
         private val deriveInsight: DeriveInsight = DeriveInsight(),
         private val calendarEventReader: CalendarEventReader? = null,
         private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
+        private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -937,6 +958,7 @@ class TodayViewModel(
                 deriveInsight = deriveInsight,
                 calendarEventReader = calendarEventReader,
                 geminiKeyConfigured = geminiKeyConfigured,
+                geminiKeyNeedsReentry = geminiKeyNeedsReentry,
             ) as T
         }
     }

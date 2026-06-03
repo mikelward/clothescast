@@ -68,6 +68,27 @@ data class DeliveryGates(
      */
     val mqttPublishable: Boolean,
     /**
+     * A successful audio-carrying cast should take over for the phone
+     * speaker on this run — `willCast` AND `castSkipPhoneSpeech`. The
+     * worker still requires a synth buffer and a *successful* cast at
+     * runtime before it actually stays quiet; this flag is just the
+     * "settings say the display is the speaker" half.
+     *
+     * Cleared by [forcePhoneSpeech]: an explicit Play tap is the user
+     * asking *this phone* to speak now, so it overrides the takeover —
+     * the phone speaks even when the cast also plays.
+     */
+    val castSuppressesPhone: Boolean,
+    /**
+     * Mirror of [castSuppressesPhone] for the MQTT bridge: a successful
+     * audio publish should take over for the phone speaker when
+     * `mqttPublishable` AND `mqttSkipPhoneSpeech`. Same runtime caveat
+     * (needs a buffer and a successful publish) and same
+     * [forcePhoneSpeech] override — a tapped Play is never silenced just
+     * because the bridge published the forecast.
+     */
+    val mqttSuppressesPhone: Boolean,
+    /**
      * True when a Gemini PCM buffer is needed by some destination:
      * MQTT audio publish, audio-carrying cast, or phone speaker on
      * the Gemini engine when the evening isn't being skipped.
@@ -101,7 +122,10 @@ data class DeliveryGates(
  *   Gemini is the only PCM producer — pulls the phone-speaker term into
  *   `needsSynth` so the buffer exists when the speaker reaches for it.
  *   Also clears `emptyEveningSkip`: an explicit "deliver now" tap is
- *   never suppressed by the tonight "only notify on events" rule.
+ *   never suppressed by the tonight "only notify on events" rule, and
+ *   clears `castSuppressesPhone` / `mqttSuppressesPhone` so a tapped
+ *   forecast is heard on the phone even when a cast or the MQTT bridge
+ *   would otherwise take over as the speaker.
  *   Defaults to false: scheduled runs and the Schedule "Play now"
  *   preview keep honouring the delivery mode exactly as before.
  */
@@ -127,6 +151,12 @@ fun computeDeliveryGates(
     }
     val willCast = prefs.castEnabled && prefs.castRouteId != null && castPeriodEnabled
     val castWillHaveAudio = willCast && geminiAvailable
+
+    // Phone-speaker takeover: a cast / MQTT publish only speaks for the
+    // phone on a scheduled run. A forced Play is the user asking this
+    // phone to speak now, so it overrides both takeovers.
+    val castSuppressesPhone = !forcePhoneSpeech && willCast && prefs.castSkipPhoneSpeech
+    val mqttSuppressesPhone = !forcePhoneSpeech && mqttPublishable && prefs.mqttSkipPhoneSpeech
 
     // Empty-evening only applies to TONIGHT. TODAY is never skipped
     // here regardless of `tonightNotifyOnlyOnEvents`. A forced Play
@@ -163,6 +193,8 @@ fun computeDeliveryGates(
         castWillHaveAudio = castWillHaveAudio,
         emptyEveningSkip = emptyEveningSkip,
         mqttPublishable = mqttPublishable,
+        castSuppressesPhone = castSuppressesPhone,
+        mqttSuppressesPhone = mqttSuppressesPhone,
         needsSynth = needsSynth,
     )
 }

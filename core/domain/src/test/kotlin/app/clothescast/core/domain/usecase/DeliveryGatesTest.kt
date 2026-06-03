@@ -246,6 +246,93 @@ class DeliveryGatesTest {
     }
 
     @Test
+    fun `MQTT publishable + skip-phone-speech — bridge takes over phone speech on a scheduled run`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                mqttSkipPhoneSpeech = true,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = true,
+        )
+        gates.mqttSuppressesPhone shouldBe true
+    }
+
+    @Test
+    fun `force phone speech overrides MQTT takeover — tapped Play still speaks on the phone`() {
+        // Bug report 2026-06-03: MQTT bridge on with skip-phone-speech
+        // silenced a manual Play. The explicit tap must win over the
+        // bridge takeover — the phone speaks even though the bridge
+        // published the forecast.
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                mqttSkipPhoneSpeech = true,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = true,
+            forcePhoneSpeech = true,
+        )
+        gates.mqttSuppressesPhone shouldBe false
+    }
+
+    @Test
+    fun `MQTT skip-phone-speech off — bridge never takes over phone speech`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                mqttSkipPhoneSpeech = false,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = true,
+        )
+        gates.mqttSuppressesPhone shouldBe false
+    }
+
+    @Test
+    fun `cast + skip-phone-speech — display takes over phone speech on a scheduled run`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                castRouteId = "route-1",
+                castMorning = true,
+                castSkipPhoneSpeech = true,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+        )
+        gates.willCast shouldBe true
+        gates.castSuppressesPhone shouldBe true
+    }
+
+    @Test
+    fun `force phone speech overrides cast takeover — tapped Play still speaks on the phone`() {
+        val gates = computeDeliveryGates(
+            prefs = basePrefs.copy(
+                ttsEngine = TtsEngine.GEMINI,
+                castRouteId = "route-1",
+                castMorning = true,
+                castSkipPhoneSpeech = true,
+            ),
+            period = ForecastPeriod.TODAY,
+            insightHasEvents = false,
+            geminiAvailable = true,
+            mqttPublishable = false,
+            forcePhoneSpeech = true,
+        )
+        gates.willCast shouldBe true
+        gates.castSuppressesPhone shouldBe false
+    }
+
+    @Test
     fun `isMqttPublishable — toggle on but blank host is not publishable`() {
         isMqttPublishable(
             basePrefs.copy(mqttBridgeEnabled = true, mqttHost = null),

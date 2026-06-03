@@ -1395,9 +1395,11 @@ class FetchAndNotifyWorker(
         // audio (willCast AND a synth buffer exists). An image-only
         // cast (Gemini unavailable / synth failed → silent WAV stub)
         // doesn't trigger suppression — the smart display isn't the
-        // speaker in that path.
-        val castHasAudio = gates.willCast && wav != null
-        if (castHasAudio && castDeferred != null && prefs.castSkipPhoneSpeech) {
+        // speaker in that path. gates.castSuppressesPhone folds in
+        // castSkipPhoneSpeech and the forced-Play override: a tapped
+        // Play always speaks on this phone even when a cast is playing.
+        val castHasAudio = gates.castSuppressesPhone && wav != null
+        if (castHasAudio && castDeferred != null) {
             val castOutcome = castDeferred.await()
             if (castOutcome is CastInsightController.CastWorkerOutcome.Success) {
                 DiagLog.i(TAG, "Phone speech suppressed — smart display is playing the forecast.")
@@ -1410,9 +1412,11 @@ class FetchAndNotifyWorker(
         // the user's HA-side automation to play it. Only suppresses
         // when the publish included audio (synth succeeded) — without
         // a buffer the broker has nothing to speak, so the phone needs
-        // to.
-        val mqttHasAudio = gates.mqttPublishable && wav != null
-        if (mqttHasAudio && prefs.mqttSkipPhoneSpeech) {
+        // to. gates.mqttSuppressesPhone folds in mqttSkipPhoneSpeech and
+        // the forced-Play override, so a tapped Play isn't silenced just
+        // because the bridge published the forecast.
+        val mqttHasAudio = gates.mqttSuppressesPhone && wav != null
+        if (mqttHasAudio) {
             val mqttOutcome = mqttDeferred.await()
             if (mqttOutcome is MqttPublishOutcome.Success) {
                 DiagLog.i(TAG, "Phone speech suppressed — MQTT bridge published the forecast.")

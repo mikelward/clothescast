@@ -958,7 +958,9 @@ data class UserPreferences(
      * redundant. Publishes that didn't include audio (Gemini synth failed,
      * device TTS only) don't trigger the suppression — the phone speaker
      * is what speaks in that path. The phone *notification* still posts
-     * per [deliveryMode]; only TTS playback is affected.
+     * per [deliveryMode]; only TTS playback is affected. An explicit Play
+     * tap overrides this — the user asked this phone to speak now, so it
+     * always does even when the bridge published the forecast.
      */
     val mqttSkipPhoneSpeech: Boolean = true,
     /**
@@ -1005,7 +1007,9 @@ data class UserPreferences(
      * (Gemini unavailable, smart display showing the outfit PNG silently)
      * don't trigger the suppression — the phone speaker is what speaks in
      * that path. The phone *notification* still posts per [deliveryMode];
-     * only TTS playback is affected.
+     * only TTS playback is affected. An explicit Play tap overrides this —
+     * the user asked this phone to speak now, so it always does even when
+     * the cast is playing.
      */
     val castSkipPhoneSpeech: Boolean = true,
 ) {

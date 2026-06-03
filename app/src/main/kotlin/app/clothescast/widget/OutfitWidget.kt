@@ -31,12 +31,14 @@ import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import app.clothescast.ClothesCastApplication
 import app.clothescast.MainActivity
@@ -46,6 +48,7 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.ui.garment.bottomDrawable
 import app.clothescast.ui.garment.outfitBottomDefaults
+import app.clothescast.ui.garment.outfitGarmentCaptionLines
 import app.clothescast.ui.garment.renderOutfitBitmap
 import app.clothescast.ui.garment.renderCarriedFigureBitmap
 import app.clothescast.ui.garment.renderTopWithHandsBitmap
@@ -123,6 +126,7 @@ private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
 // up rather than allocating a bigger one.
 private const val MAX_ICON_BITMAP_PX = 512
 
+
 // Glance 1.1.x's actionStartActivity<MainActivity>() crashed in the wild with
 // "List adapter activity trampoline invoked without specifying target intent"
 // — the launcher dispatches the trampoline activity with empty extras, so the
@@ -193,7 +197,22 @@ private fun SingleColumnContent(
     outerColors: Map<OutfitSuggestion.Outer, Long>,
 ) {
     val context = LocalContext.current
-    val iconSize = scaledIconSize(size)
+    // Name every piece the icon shows — the rain-jacket shell and the gloves /
+    // umbrella accessories included — so the caption matches the figure. The
+    // worn outfit is the first line; accessories drop to a second. Kept as one
+    // "\n" Text (not two stacked Texts) so the two lines sit tightly together
+    // like the Today card's caption: a single TextView spaces its own lines by
+    // the font's line spacing, whereas two TextViews each add their own
+    // top/bottom padding and read looser.
+    val captionLines = outfitGarmentCaptionLines(
+        context = context,
+        outfit = outfit,
+        topLabel = context.getString(topLabelRes(outfit.top)),
+        bottomLabel = context.getString(bottomLabelRes(outfit.bottom)),
+    )
+    // A second line means smaller icons to make room; a one-line caption keeps
+    // full-size icons.
+    val iconSize = scaledIconSize(size, subtitleLines = captionLines.size)
     // Layout size is unbounded (the Image's Glance modifier holds whatever
     // iconSize the launcher's cell justifies) but the rasterized bitmap is
     // capped at MAX_ICON_BITMAP_PX so two ARGB icons can't blow the
@@ -267,10 +286,11 @@ private fun SingleColumnContent(
         }
         Spacer(modifier = GlanceModifier.height(2.dp))
         Text(
-            text = context.getString(topLabelRes(outfit.top)) +
-                " · " +
-                context.getString(bottomLabelRes(outfit.bottom)),
+            text = captionLines.joinToString("\n"),
             style = scaledSubtitleStyle(size),
+            maxLines = captionLines.size,
+            // Bound the width so each line centres within the cell.
+            modifier = GlanceModifier.fillMaxWidth(),
         )
     }
 }
@@ -364,7 +384,7 @@ private fun EmptyContent(size: DpSize) {
 // Text scaling stays anchored to the shortest dimension because labels want
 // to remain proportionate to the smaller of the two axes — readable in a
 // compact cell, not stadium-sized in a tall-and-narrow column.
-private fun scaledIconSize(size: DpSize): Dp {
+private fun scaledIconSize(size: DpSize, subtitleLines: Int = 1): Dp {
     val short = minOf(size.width.value, size.height.value)
     val labelSp = (short * 0.0875f).coerceAtLeast(13f)
     val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
@@ -374,7 +394,15 @@ private fun scaledIconSize(size: DpSize): Dp {
     // outer Box padding (2dp × 2) with a few dp of safety. Was `+ 22` when
     // spacers / padding totalled 14dp; the tighter spacing here saves 6dp
     // so the constant drops to 16 while keeping the same safety margin.
-    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 16f
+    // The label is always one line; the caption is [subtitleLines] (1 for a
+    // plain top + bottom outfit, 2 once an accessory / shell drops to a second
+    // line). A two-line caption reserves an extra line of headroom: the centred
+    // Column hands the caption only the height left after the icon stack, and
+    // without that spare line the second line gets squeezed out. One-line
+    // captions reserve exactly one line, so plain outfits keep their full-size
+    // icons (unchanged from before).
+    val reserveLines = if (subtitleLines > 1) subtitleLines + 1 else subtitleLines
+    val reservedVertical = (labelSp + subtitleSp * reserveLines) * 1.5f + 16f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
     // 5% horizontal margin on each side keeps the icon off the column edge
     // without pushing a measurable gap back into the layout.
@@ -384,7 +412,9 @@ private fun scaledIconSize(size: DpSize): Dp {
 
 @Composable
 private fun scaledLabelStyle(size: DpSize): TextStyle = TextStyle(
-    color = GlanceTheme.colors.onSurface,
+    // Match the Today card's period label (titleSmall, onSurfaceVariant) — a
+    // muted grey rather than full-strength onSurface.
+    color = GlanceTheme.colors.onSurfaceVariant,
     fontWeight = FontWeight.Medium,
     fontSize = scaledLabelSp(size),
 )
@@ -393,6 +423,9 @@ private fun scaledLabelStyle(size: DpSize): TextStyle = TextStyle(
 private fun scaledSubtitleStyle(size: DpSize): TextStyle = TextStyle(
     color = GlanceTheme.colors.onSurfaceVariant,
     fontSize = scaledSubtitleSp(size),
+    // Centre each line so a wrapped two-line garment caption stays balanced
+    // under the figure.
+    textAlign = TextAlign.Center,
 )
 
 private fun scaledLabelSp(size: DpSize): TextUnit {

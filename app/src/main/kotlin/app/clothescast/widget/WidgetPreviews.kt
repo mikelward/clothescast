@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,10 +20,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -37,6 +41,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.ui.garment.outfitGarmentCaptionLines
 import app.clothescast.ui.theme.ClothesCastTheme
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -163,12 +168,22 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
     ) {
         Text(
             text = label,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = scaledLabelSpMock(size),
             fontWeight = FontWeight.Medium,
         )
         Spacer(modifier = Modifier.height(2.dp))
-        val iconSize = scaledIconSizeMock(size)
+        // Mirrors OutfitWidget.SingleColumnContent: names every piece the icon
+        // shows (rain-jacket shell on the worn line, gloves / umbrella on a
+        // second line), each line its own Text so the pair sits tightly stacked
+        // like the Today card's caption.
+        val captionLines = outfitGarmentCaptionLines(
+            context = LocalContext.current,
+            outfit = outfit,
+            topLabel = stringResource(topLabelResMock(outfit.top)),
+            bottomLabel = stringResource(bottomLabelResMock(outfit.bottom)),
+        )
+        val iconSize = scaledIconSizeMock(size, captionLines.size)
         // The umbrella is a full-figure overlay (held at the hip, hanging past
         // the legs), so it spans the top+bottom stack — mirror the real widget's
         // Box-over-both-images layout (see OutfitWidget.SingleColumnContent).
@@ -203,12 +218,19 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
             }
         }
         Spacer(modifier = Modifier.height(2.dp))
+        val subtitleSp = scaledSubtitleSpMock(size)
         Text(
-            text = stringResource(topLabelResMock(outfit.top)) +
-                " · " +
-                stringResource(bottomLabelResMock(outfit.bottom)),
+            text = captionLines.joinToString("\n"),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = scaledSubtitleSpMock(size),
+            fontSize = subtitleSp,
+            // A single "\n" Text (one TextView in the real widget) keeps the two
+            // lines tight. Pin a snug line height so the Compose mock matches —
+            // its default multi-line spacing reads looser than the TextView's.
+            lineHeight = (subtitleSp.value * 1.2f).sp,
+            maxLines = captionLines.size,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
@@ -417,11 +439,14 @@ internal fun WidgetTonightTallPortraitPreview() {
 // Scaling formulas — kept in lockstep with OutfitWidget.kt's scaledIconSize /
 // scaledLabelSp / scaledSubtitleSp. See the comment block over scaledIconSize
 // for the two-budget reasoning; this mirror must stay byte-for-byte equivalent.
-private fun scaledIconSizeMock(size: DpSize): Dp {
+private fun scaledIconSizeMock(size: DpSize, subtitleLines: Int = 1): Dp {
     val short = minOf(size.width.value, size.height.value)
     val labelSp = (short * 0.0875f).coerceAtLeast(13f)
     val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
-    val reservedVertical = (labelSp + subtitleSp) * 1.5f + 16f
+    // Two-line captions reserve +1 line of headroom so the wrapped second line
+    // isn't squeezed out by the centred column — see OutfitWidget.scaledIconSize.
+    val reserveLines = if (subtitleLines > 1) subtitleLines + 1 else subtitleLines
+    val reservedVertical = (labelSp + subtitleSp * reserveLines) * 1.5f + 16f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
     val horizontalBudget = size.width.value * 0.9f
     return minOf(verticalBudget, horizontalBudget).coerceAtLeast(36f).dp

@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Build
-import androidx.core.content.FileProvider
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.BottomsFormat
@@ -24,7 +23,6 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import kotlinx.coroutines.flow.first
-import java.io.File
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -43,10 +41,26 @@ object BugReport {
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z").withZone(ZoneId.systemDefault())
 
     /**
+     * How many trailing log lines the report carries. The report ships as a
+     * pure-text `EXTRA_TEXT` share, and many targets (messengers especially)
+     * treat that as a caption with a hard character cap that silently truncates
+     * a long report mid-line. Capping the log tail keeps the whole payload —
+     * header plus log — small enough to survive those targets intact. The
+     * header runs ~3-4 KB, so 100 lines leaves comfortable headroom under a
+     * ~20 KB budget. [DiagLog] still retains its full 300-line buffer; this
+     * only trims what the share carries.
+     */
+    private const val MAX_LOG_LINES = 100
+
+    /**
      * Builds the text payload, copies it to the clipboard, and fires the
-     * share-sheet chooser with the report as a cache-backed text attachment.
-     * Many share targets treat `EXTRA_TEXT` as a caption and silently cap it;
-     * the attachment path preserves the full 300-line log tail.
+     * share-sheet chooser as a pure-text intent. No file is attached and no
+     * screenshot: an image- or stream-typed intent surfaces share targets that
+     * treat `EXTRA_TEXT` as a *caption* with a hard character cap, which
+     * silently truncated long bug reports mid-line. Keeping the payload text-
+     * only — and capped to [MAX_LOG_LINES] log lines — fits it under those
+     * caption limits while still carrying everything the recipient needs
+     * (settings, cached insights, recent log).
      */
     suspend fun share(activity: Activity) {
         val app = activity.application as ClothesCastApplication
@@ -82,7 +96,7 @@ object BugReport {
             runCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
         } else null
         val crash = DiagLog.readPersistedCrash()
-        val recent = DiagLog.snapshot()
+        val recent = DiagLog.snapshot().takeLast(MAX_LOG_LINES)
         val now = TIMESTAMP_FORMAT.format(Instant.now())
 
         return buildString {
@@ -122,7 +136,7 @@ object BugReport {
                 appendLine(crash.trim())
                 appendLine()
             }
-            appendLine("--- Recent log (newest last, ${recent.size} of max 300) ---")
+            appendLine("--- Recent log (newest last, ${recent.size} of max $MAX_LOG_LINES) ---")
             if (recent.isEmpty()) {
                 appendLine("(no captured log lines)")
             } else {
@@ -365,47 +379,14 @@ object BugReport {
     }
 
     private fun startShare(activity: Activity, text: String) {
-        val reportUri = runCatching { writeReportFile(activity, text) }
-            .onFailure { DiagLog.w("BugReport", "bug report file write failed; falling back to text-only share", it) }
-            .getOrNull()
-        if (reportUri == null) {
-            startTextShare(activity, text)
-            return
-        }
-
         val send = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
             putExtra(Intent.EXTRA_TEXT, text)
-            putExtra(Intent.EXTRA_STREAM, reportUri)
-            clipData = ClipData.newUri(activity.contentResolver, "ClothesCast bug report", reportUri)
         }
         val chooser = Intent.createChooser(send, "Share bug report")
         runCatching { activity.startActivity(chooser) }
             .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
-    }
-
-    private fun writeReportFile(context: Context, text: String): android.net.Uri {
-        val dir = File(context.cacheDir, "bug-reports").apply { mkdirs() }
-        val file = File.createTempFile("clothescast-bug-report-", ".txt", dir)
-        file.writeText(text)
-        return FileProvider.getUriForFile(
-            context,
-            "${BuildConfig.APPLICATION_ID}.bug-report-file-provider",
-            file,
-        )
-    }
-
-    private fun startTextShare(activity: Activity, text: String) {
-        val send = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
-            putExtra(Intent.EXTRA_TEXT, text)
-        }
-        val chooser = Intent.createChooser(send, "Share bug report")
-        runCatching { activity.startActivity(chooser) }
-            .onFailure { DiagLog.w("BugReport", "text-only share intent failed", it) }
     }
 
     private fun copyToClipboard(context: Context, text: String) {

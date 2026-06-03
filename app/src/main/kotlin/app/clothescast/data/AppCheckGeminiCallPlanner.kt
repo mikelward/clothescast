@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.installations.FirebaseInstallations
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -67,21 +68,14 @@ class AppCheckGeminiCallPlanner(
         return sharedPlan()
     }
 
-    private suspend fun readOwnKey(): String? = try {
-        secureKeyStore.get().takeIf { it.isNotBlank() }
-    } catch (_: MissingApiKeyException) {
-        // TODO: SecureKeyStore.get() throws MissingApiKeyException for two
-        // distinct reasons — "user never stored a key" and "stored
-        // ciphertext failed to decrypt and was cleared" (Keystore master
-        // rotation after factory reset / cross-device transfer). The
-        // second case should keep the user on the BYOK path and prompt
-        // them to re-enter the key, not silently route the next request
-        // through the developer proxy. Distinguish by checking
-        // SecureKeyStore.geminiKeyConfiguredFlow.first() *before* calling
-        // get(): if a doc was present at decision time, treat a
-        // subsequent decrypt failure as "ask user to re-enter" rather
-        // than falling through to sharedPlan().
-        null
+    private suspend fun readOwnKey(): String? {
+        val keyWasConfigured = secureKeyStore.geminiKeyConfiguredFlow.first()
+        return try {
+            secureKeyStore.get().takeIf { it.isNotBlank() }
+        } catch (e: MissingApiKeyException) {
+            if (keyWasConfigured) throw e
+            null
+        }
     }
 
     private fun directPlan(key: String) = GeminiCallPlan(

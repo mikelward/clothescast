@@ -6,7 +6,16 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Rect
+import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
+import android.view.PixelCopy
+import android.view.View
+import android.view.Window
+import androidx.core.content.FileProvider
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.BottomsFormat
@@ -23,11 +32,15 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.io.File
+import java.io.FileOutputStream
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.coroutines.resume
 
 /**
  * Builds a "paste-into-Claude" bug-report payload (version, device, settings,
@@ -37,36 +50,38 @@ import java.util.Locale
  * clipboard as a paste fallback.
  */
 object BugReport {
+    private const val FILE_PROVIDER_AUTHORITY_SUFFIX = ".fileprovider"
     private val TIMESTAMP_FORMAT: DateTimeFormatter =
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z").withZone(ZoneId.systemDefault())
 
     /**
-     * How many trailing log lines the report carries. The report ships as a
-     * pure-text `EXTRA_TEXT` share, and many targets (messengers especially)
-     * treat that as a caption with a hard character cap that silently truncates
-     * a long report mid-line. Capping the log tail keeps the whole payload —
-     * header plus log — small enough to survive those targets intact. The
-     * header runs ~3-4 KB, so 100 lines leaves comfortable headroom under a
-     * ~20 KB budget. [DiagLog] still retains its full 300-line buffer; this
-     * only trims what the share carries.
+     * How many trailing log lines the report carries. The text rides along as
+     * the share intent's `EXTRA_TEXT`, which many targets (messengers
+     * especially) treat as a caption with a hard character cap that silently
+     * truncates a long report mid-line — doubly so once a screenshot flips the
+     * intent's MIME type to `image/png` and the chooser surfaces image-share
+     * targets. Capping the log tail keeps the caption small enough to survive
+     * those targets intact. The header runs ~3-4 KB, so 100 lines leaves
+     * comfortable headroom under a ~20 KB budget. [DiagLog] still retains its
+     * full 300-line buffer; this only trims what the share carries.
      */
     private const val MAX_LOG_LINES = 100
 
     /**
-     * Builds the text payload, copies it to the clipboard, and fires the
-     * share-sheet chooser as a pure-text intent. No file is attached and no
-     * screenshot: an image- or stream-typed intent surfaces share targets that
-     * treat `EXTRA_TEXT` as a *caption* with a hard character cap, which
-     * silently truncated long bug reports mid-line. Keeping the payload text-
-     * only — and capped to [MAX_LOG_LINES] log lines — fits it under those
-     * caption limits while still carrying everything the recipient needs
-     * (settings, cached insights, recent log).
+     * Captures the screen, builds the text payload, copies the text to the
+     * clipboard, and fires the share-sheet chooser. When [includeScreenshot] is
+     * true (the default) the current window is grabbed and attached as a PNG so
+     * the report shows what the user was looking at; when it's false (or the
+     * capture fails) the report shares text-only. The text payload is capped to
+     * [MAX_LOG_LINES] log lines so the `EXTRA_TEXT` caption stays under the
+     * length limits image-share targets impose.
      */
-    suspend fun share(activity: Activity) {
+    suspend fun share(activity: Activity, includeScreenshot: Boolean = true) {
         val app = activity.application as ClothesCastApplication
         val text = buildPayload(activity, app)
+        val screenshotUri: Uri? = if (includeScreenshot) captureAndPersistScreenshot(activity) else null
         copyToClipboard(activity, text)
-        startShare(activity, text)
+        startShare(activity, text, screenshotUri)
     }
 
     private suspend fun buildPayload(context: Context, app: ClothesCastApplication): String {
@@ -378,13 +393,78 @@ object BugReport {
         }
     }
 
-    private fun startShare(activity: Activity, text: String) {
+    private suspend fun captureAndPersistScreenshot(activity: Activity): Uri? {
+        val bitmap = runCatching { captureWindow(activity) }.getOrNull() ?: return null
+        return runCatching {
+            val dir = File(activity.cacheDir, "bug-reports").apply { mkdirs() }
+            // Wipe older screenshots — keep only the freshest one to avoid cache bloat.
+            dir.listFiles()?.forEach { it.delete() }
+            val file = File(dir, "screenshot-${System.currentTimeMillis()}.png")
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+            FileProvider.getUriForFile(
+                activity,
+                activity.packageName + FILE_PROVIDER_AUTHORITY_SUFFIX,
+                file,
+            )
+        }.onFailure { DiagLog.w("BugReport", "screenshot persist failed", it) }.getOrNull()
+    }
+
+    private suspend fun captureWindow(activity: Activity): Bitmap? {
+        val window = activity.window ?: return null
+        val view: View = window.decorView
+        if (view.width <= 0 || view.height <= 0) return null
+        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        return suspendCancellableCoroutine { cont ->
+            val location = IntArray(2)
+            view.getLocationInWindow(location)
+            val rect = Rect(
+                location[0],
+                location[1],
+                location[0] + view.width,
+                location[1] + view.height,
+            )
+            try {
+                requestPixelCopy(window, rect, bitmap) { ok ->
+                    cont.resume(if (ok) bitmap else null)
+                }
+            } catch (t: Throwable) {
+                DiagLog.w("BugReport", "PixelCopy.request threw", t)
+                cont.resume(null)
+            }
+        }
+    }
+
+    private fun requestPixelCopy(
+        window: Window,
+        rect: Rect,
+        bitmap: Bitmap,
+        onResult: (Boolean) -> Unit,
+    ) {
+        val handler = Handler(Looper.getMainLooper())
+        PixelCopy.request(window, rect, bitmap, { result ->
+            onResult(result == PixelCopy.SUCCESS)
+        }, handler)
+    }
+
+    private fun startShare(activity: Activity, text: String, screenshotUri: Uri?) {
         val send = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
             putExtra(Intent.EXTRA_TEXT, text)
+            if (screenshotUri != null) {
+                type = "image/png"
+                putExtra(Intent.EXTRA_STREAM, screenshotUri)
+                clipData = ClipData.newRawUri("ClothesCast screenshot", screenshotUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } else {
+                type = "text/plain"
+            }
         }
         val chooser = Intent.createChooser(send, "Share bug report")
+        if (screenshotUri != null) {
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
         runCatching { activity.startActivity(chooser) }
             .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
     }

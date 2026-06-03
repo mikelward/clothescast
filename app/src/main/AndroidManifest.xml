@@ -89,6 +89,20 @@
             </intent-filter>
         </activity>
 
+        <!-- Bug-report screenshot sharing. The PNG is written to cacheDir/bug-reports/
+             and exposed read-only to the app the user picks in the share sheet.
+             Authority follows the ${applicationId}.fileprovider convention so the
+             debug build's `.debug` suffix doesn't collide with the release build. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- Internal — only the OS delivers via PendingIntent. -->
         <receiver
             android:name=".alarm.AlarmReceiver"

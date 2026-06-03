@@ -42,7 +42,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -51,8 +50,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -131,8 +128,8 @@ import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.core.domain.model.windSpeedUnit
-import app.clothescast.ClothesCastApplication
 import app.clothescast.tts.toJavaLocale
+import app.clothescast.ui.BugReportOverflowMenu
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.StopSquareIcon
@@ -148,10 +145,7 @@ import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.outfitGarmentCaption
 import app.clothescast.ui.garment.renderConditionsStripBitmap
-import app.clothescast.diag.BugReport
-import app.clothescast.diag.BugReportConsentDialog
 import app.clothescast.diag.DiagLog
-import app.clothescast.diag.findActivity
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
@@ -190,23 +184,12 @@ fun TodayScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val activity = context.findActivity()
     val coroutineScope = rememberCoroutineScope()
-    val app = context.applicationContext as ClothesCastApplication
-    val bugReportConsentAcked by app.settingsRepository.bugReportConsentAcknowledged
-        .collectAsStateWithLifecycle(initialValue = false)
     // Both Running (fresh enqueue) and Retrying (post-failure backoff) suppress
     // Refresh — the worker still bills a Gemini call on resumption, and a tap
     // would REPLACE the in-flight retry chain. The banner copy distinguishes them.
     val isWorking = state.workStatus is WorkStatus.Running ||
         state.workStatus is WorkStatus.Retrying
-    var overflowExpanded by remember { mutableStateOf(false) }
-    var bugReportConsentVisible by remember { mutableStateOf(false) }
-
-    val launchBugReport: () -> Unit = launchBugReport@{
-        val act = activity ?: return@launchBugReport
-        coroutineScope.launch { BugReport.share(act) }
-    }
 
     // Hoisted out of TodayContent so the TopAppBar title can swap with the
     // visible page — page 0 is the user's current 12-hour window ("Today" or
@@ -339,35 +322,7 @@ fun TodayScreen(
                             contentDescription = stringResource(R.string.today_open_settings),
                         )
                     }
-                    IconButton(onClick = { overflowExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = stringResource(R.string.today_more_options),
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = overflowExpanded,
-                        onDismissRequest = { overflowExpanded = false },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.today_report_a_bug)) },
-                            onClick = {
-                                overflowExpanded = false
-                                if (bugReportConsentAcked) {
-                                    launchBugReport()
-                                } else {
-                                    bugReportConsentVisible = true
-                                }
-                            },
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.settings_root_about)) },
-                            onClick = {
-                                overflowExpanded = false
-                                onNavigateToAbout()
-                            },
-                        )
-                    }
+                    BugReportOverflowMenu(onNavigateToAbout = onNavigateToAbout)
                 },
             )
         },
@@ -403,21 +358,6 @@ fun TodayScreen(
             onRevealModelSpread = viewModel::revealModelSpread,
             onHideModelSpread = viewModel::hideModelSpread,
             onLongPressDate = onNavigateToDeveloper,
-        )
-    }
-
-    if (bugReportConsentVisible) {
-        BugReportConsentDialog(
-            onConfirm = { dontShowAgain ->
-                bugReportConsentVisible = false
-                if (dontShowAgain) {
-                    coroutineScope.launch {
-                        app.settingsRepository.setBugReportConsentAcknowledged(true)
-                    }
-                }
-                launchBugReport()
-            },
-            onDismiss = { bugReportConsentVisible = false },
         )
     }
 }

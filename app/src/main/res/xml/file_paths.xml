@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Bug-report screenshots are written to cacheDir/bug-reports/ and shared via
+         FileProvider. Scoped to that subdir so we don't expose the rest of the cache. -->
+    <cache-path
+        name="bug_reports"
+        path="bug-reports/" />
+</paths>

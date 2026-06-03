@@ -87,7 +87,9 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
     val shareCrashReport: () -> Unit = shareCrashReport@{
         val act = activity ?: return@shareCrashReport
         coroutineScope.launch {
-            BugReport.share(act)
+            // No screenshot: the crash is from a previous run, so the screen
+            // visible now would be misleading attached to that report.
+            BugReport.share(act, includeScreenshot = false)
             DiagLog.acknowledgePersistedCrash()
         }
     }

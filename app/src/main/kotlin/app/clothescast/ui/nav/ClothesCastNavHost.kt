@@ -34,6 +34,7 @@ import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
+import app.clothescast.ui.LocalNavigateToAbout
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.ui.onboarding.OnboardingScreen
@@ -123,6 +124,13 @@ fun ClothesCastNavHost(
         if (newIntent != null) nav.handleDeepLink(newIntent)
     }
 
+    // Provided once for the whole tree so the shared bug-report overflow menu —
+    // on Today's top bar and every settings page's — can open About from
+    // anywhere. launchSingleTop avoids stacking a second About when the menu is
+    // used while already on it.
+    CompositionLocalProvider(
+        LocalNavigateToAbout provides { nav.navigate(AboutDest) { launchSingleTop = true } },
+    ) {
     NavHost(
         navController = nav,
         startDestination = TodayRoute(),
@@ -222,6 +230,7 @@ fun ClothesCastNavHost(
         }
 
         settingsGraph(nav, app)
+    }
     }
 }
 

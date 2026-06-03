@@ -468,9 +468,9 @@ only the displayed label localizes.
     <string name="today_wind_title">Скорость ветра</string>
     <string name="today_wind_subtitle">Скорость ветра (%1$s) по часам</string>
     <string name="today_cloud_title">Облачность</string>
-    <string name="today_cloud_subtitle">Общая облачность (%%) по часам</string>
+    <string name="today_cloud_subtitle">Общая облачность (%) по часам</string>
     <string name="today_humidity_title">Влажность</string>
-    <string name="today_humidity_subtitle">Относительная влажность (%%) по часам</string>
+    <string name="today_humidity_subtitle">Относительная влажность (%) по часам</string>
 
     <!-- Low-confidence callout banner. -->
 

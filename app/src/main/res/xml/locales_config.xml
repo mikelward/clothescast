@@ -102,6 +102,10 @@
     <locale android:name="sk-SK"/>
     <locale android:name="sl"/>
     <locale android:name="sl-SI"/>
+    <locale android:name="sq"/>
+    <locale android:name="sq-AL"/>
+    <locale android:name="sr-Cyrl"/>
+    <locale android:name="sr-Cyrl-RS"/>
     <locale android:name="sr-Latn"/>
     <locale android:name="sr-Latn-RS"/>
     <locale android:name="sv"/>

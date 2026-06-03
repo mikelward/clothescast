@@ -13,14 +13,8 @@ class AppLocaleConfigTest {
         val advertisedTags = File("src/main/res/xml/locales_config.xml")
             .readLocaleConfigTags()
             .toSet()
-        val untranslatedRegionTags = setOf(
-            "sr-Cyrl-RS",
-            "sq-AL",
-        )
-
         val translatedPickerTags = Region.entries
             .mapNotNull { it.bcp47 }
-            .filterNot { it in untranslatedRegionTags }
 
         advertisedTags.shouldContainAll(translatedPickerTags)
     }

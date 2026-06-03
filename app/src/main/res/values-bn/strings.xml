@@ -180,9 +180,9 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_wind_title">বাতাসের গতি</string>
     <string name="today_wind_subtitle">প্রতি ঘণ্টায় বাতাসের গতি (%1$s)</string>
     <string name="today_cloud_title">মেঘাচ্ছন্নতা</string>
-    <string name="today_cloud_subtitle">প্রতি ঘণ্টায় মোট মেঘাচ্ছন্নতা (%%)</string>
+    <string name="today_cloud_subtitle">প্রতি ঘণ্টায় মোট মেঘাচ্ছন্নতা (%)</string>
     <string name="today_humidity_title">আর্দ্রতা</string>
-    <string name="today_humidity_subtitle">প্রতি ঘণ্টায় আপেক্ষিক আর্দ্রতা (%%)</string>
+    <string name="today_humidity_subtitle">প্রতি ঘণ্টায় আপেক্ষিক আর্দ্রতা (%)</string>
 
     <!-- Confidence -->
     <string name="today_confidence_high">উচ্চ আস্থা — প্রধান মডেলগুলো একমত</string>

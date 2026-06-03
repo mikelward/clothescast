@@ -583,6 +583,7 @@ Not overridden by design:
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">बग रिपोर्ट साझा करें?</string>
     <string name="bug_report_consent_body">यह समस्याओं को जाँचने में मदद करता है। रिपोर्ट में आपका स्थान, ऐप सेटिंग और हालिया गतिविधि सहित संवेदनशील व्यक्तिगत जानकारी शामिल है। भेजने से पहले आप इसे देख और संपादित कर सकते हैं।</string>
+    <string name="bug_report_consent_screenshot">यह अभी आप जिस स्क्रीन पर हैं उसका स्क्रीनशॉट भी जोड़ता है, इसलिए भेजने से पहले देख लें कि उसमें कोई निजी चीज़ न दिख रही हो।</string>
     <string name="bug_report_consent_dont_show_again">यह दोबारा न दिखाएँ</string>
     <string name="bug_report_consent_continue">जारी रखें</string>
     <string name="bug_report_consent_cancel">रद्द करें</string>

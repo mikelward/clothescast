@@ -579,6 +579,7 @@ default English (matching values-pl / values-uk).
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Podeliti izveštaj o grešci?</string>
     <string name="bug_report_consent_body">Ovo pomaže u dijagnostikovanju problema. Izveštaj sadrži osetljive lične podatke, uključujući tvoju lokaciju, podešavanja aplikacije i nedavnu aktivnost. Moći ćeš da ga pregledaš i urediš pre slanja.</string>
+    <string name="bug_report_consent_screenshot">Takođe prilaže snimak ekrana na kom se trenutno nalaziš, zato pre slanja proveri da ne prikazuje nešto privatno.</string>
     <string name="bug_report_consent_dont_show_again">Ne prikazuj više</string>
     <string name="bug_report_consent_continue">Nastavi</string>
     <string name="bug_report_consent_cancel">Otkaži</string>

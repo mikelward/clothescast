@@ -693,6 +693,7 @@ displayed label localizes.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">버그 보고서를 공유할까요?</string>
     <string name="bug_report_consent_body">문제 진단에 도움이 됩니다. 보고서에는 위치, 앱 설정, 최근 활동 등 민감한 개인정보가 포함됩니다. 보내기 전에 검토하고 편집할 수 있습니다.</string>
+    <string name="bug_report_consent_screenshot">현재 보고 있는 화면의 스크린샷도 함께 첨부됩니다. 보내기 전에 비공개 정보가 없는지 확인하세요.</string>
     <string name="bug_report_consent_dont_show_again">다시 표시 안 함</string>
     <string name="bug_report_consent_continue">계속</string>
     <string name="bug_report_consent_cancel">취소</string>

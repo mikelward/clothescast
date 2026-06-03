@@ -525,6 +525,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Hibajelentés megosztása?</string>
     <string name="bug_report_consent_body">Ez segít a problémák diagnosztizálásában. A jelentés érzékeny személyes adatokat tartalmaz, beleértve a helyszínedet, az alkalmazásbeállításaidat és a legutóbbi tevékenységeidet. Elküldés előtt megtekintheted és szerkesztheted.</string>
+    <string name="bug_report_consent_screenshot">Csatol egy képernyőképet is a jelenlegi képernyődről, ezért küldés előtt ellenőrizd, hogy nem látszik-e rajta valami magánjellegű.</string>
     <string name="bug_report_consent_dont_show_again">Ne jelenjen meg újra</string>
     <string name="bug_report_consent_continue">Folytatás</string>
     <string name="bug_report_consent_cancel">Mégse</string>

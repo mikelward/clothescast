@@ -690,6 +690,7 @@ the displayed label localizes.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">バグレポートを共有しますか？</string>
     <string name="bug_report_consent_body">問題の診断に役立ちます。レポートには、現在地、アプリの設定、最近の操作など、機密性の高い個人情報が含まれます。送信前に内容を確認・編集できます。</string>
+    <string name="bug_report_consent_screenshot">現在開いている画面のスクリーンショットも添付されます。送信する前に、個人的な情報が写っていないか確認してください。</string>
     <string name="bug_report_consent_dont_show_again">今後表示しない</string>
     <string name="bug_report_consent_continue">続ける</string>
     <string name="bug_report_consent_cancel">キャンセル</string>

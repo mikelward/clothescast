@@ -715,6 +715,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Fehlerbericht teilen?</string>
     <string name="bug_report_consent_body">Dies hilft bei der Diagnose von Problemen. Der Bericht enthält sensible persönliche Informationen, einschließlich deines Standorts, deiner App-Einstellungen und deiner letzten Aktivitäten. Du kannst ihn vor dem Senden überprüfen und bearbeiten.</string>
+    <string name="bug_report_consent_screenshot">Außerdem wird ein Screenshot des aktuellen Bildschirms angehängt. Prüfe daher vor dem Senden, dass darauf nichts Privates zu sehen ist.</string>
     <string name="bug_report_consent_dont_show_again">Nicht mehr anzeigen</string>
     <string name="bug_report_consent_continue">Weiter</string>
     <string name="bug_report_consent_cancel">Abbrechen</string>

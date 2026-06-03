@@ -567,6 +567,7 @@ surfaces.
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Поделити извештај о грешци?</string>
     <string name="bug_report_consent_body">Ово помаже у дијагностиковању проблема. Извештај садржи осетљиве личне податке, укључујући твоју локацију, подешавања апликације и недавну активност. Моћи ћеш да га прегледаш и уредиш пре слања.</string>
+    <string name="bug_report_consent_screenshot">Такође прилаже снимак екрана на ком се тренутно налазиш, зато пре слања провери да не приказује нешто приватно.</string>
     <string name="bug_report_consent_dont_show_again">Не приказуј више</string>
     <string name="bug_report_consent_continue">Настави</string>
     <string name="bug_report_consent_cancel">Откажи</string>

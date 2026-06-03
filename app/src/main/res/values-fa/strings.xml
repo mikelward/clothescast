@@ -430,6 +430,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">گزارش خطا را به اشتراک می‌گذارید؟</string>
     <string name="bug_report_consent_body">این به تشخیص مشکلات کمک می‌کند. گزارش حاوی اطلاعات شخصی حساس است، از جمله موقعیت شما، تنظیمات برنامه و فعالیت اخیر. قبل از ارسال می‌توانید آن را بررسی و ویرایش کنید.</string>
+    <string name="bug_report_consent_screenshot">همچنین یک عکس از صفحه‌ای که اکنون در آن هستید پیوست می‌کند، پس پیش از ارسال مطمئن شوید چیز خصوصی‌ای نشان نمی‌دهد.</string>
     <string name="bug_report_consent_dont_show_again">دیگر نشان نده</string>
     <string name="bug_report_consent_continue">ادامه</string>
     <string name="bug_report_consent_cancel">لغو</string>

@@ -535,6 +535,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <!-- Bug report consent -->
     <string name="bug_report_consent_title">Kopīgot kļūdu ziņojumu?</string>
     <string name="bug_report_consent_body">Tas palīdz diagnosticēt problēmas. Ziņojumā ir sensitīva personiskā informācija, tostarp tava atrašanās vieta, lietotnes iestatījumi un nesenā aktivitāte. Pirms nosūtīšanas varēsi to pārskatīt un rediģēt.</string>
+    <string name="bug_report_consent_screenshot">Tāpat tiek pievienots pašreizējā ekrāna ekrānuzņēmums, tāpēc pirms nosūtīšanas pārliecinies, ka tajā nav redzams nekas privāts.</string>
     <string name="bug_report_consent_dont_show_again">Vairs nerādīt</string>
     <string name="bug_report_consent_continue">Turpināt</string>
     <string name="bug_report_consent_cancel">Atcelt</string>

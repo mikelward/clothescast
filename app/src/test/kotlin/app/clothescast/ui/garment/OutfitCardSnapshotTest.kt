@@ -221,6 +221,35 @@ class OutfitCardSnapshotTest {
     }
 
     @Test
+    fun outfit_card_rainy_sweater_jeans_rain_jacket() {
+        // Rainy day: the rain-jacket outer shell paints over the sweater at the
+        // top icon's footprint, while the sweater stays underneath in the model.
+        // Exercises the optional outer slot on the cast card, including its
+        // baked-in yellow default colour.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.SWEATER,
+                    OutfitSuggestion.Bottom.JEANS,
+                    outer = OutfitSuggestion.Outer.RAIN_JACKET,
+                ),
+                header = "Today's ClothesCast",
+                prose = "A cool, wet one. Wear a sweater and jeans, and a rain jacket.",
+                info = OutfitCardInfoLines(
+                    tempLine = "11–16°C",
+                    tempFillFraction = thermometerFillFractionFor(16.0),
+                    rainFillFraction = 0.75f,
+                    rainLineShort = "75%",
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+            ),
+        )
+    }
+
+    @Test
     fun outfit_card_all_indicators() {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         writeCard(

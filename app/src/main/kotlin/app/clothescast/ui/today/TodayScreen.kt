@@ -138,6 +138,7 @@ import app.clothescast.ui.formatHourMinute
 import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.garment.GarmentBottomIcon
 import app.clothescast.ui.garment.GarmentCarriedIcon
+import app.clothescast.ui.garment.GarmentOuterIcon
 import app.clothescast.ui.garment.GarmentHandsIcon
 import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.ui.garment.OutfitCardInfoLines
@@ -1102,6 +1103,7 @@ internal fun HomePageScaffold(
                                 outfitBottomColors = state.outfitBottomColors,
                                 outfitHandsColors = state.outfitHandsColors,
                                 outfitCarriedColors = state.outfitCarriedColors,
+                                outfitOuterColors = state.outfitOuterColors,
                                 outfitTopStrokes = state.outfitTopStrokes,
                                 outfitBottomStrokes = state.outfitBottomStrokes,
                                 onNavigateToClothes = onNavigateToClothes,
@@ -1967,6 +1969,7 @@ internal fun OutfitPreviewRow(
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
+    outfitOuterColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -1987,6 +1990,7 @@ internal fun OutfitPreviewRow(
             outfitBottomColors = outfitBottomColors,
             outfitHandsColors = outfitHandsColors,
             outfitCarriedColors = outfitCarriedColors,
+            outfitOuterColors = outfitOuterColors,
             outfitTopStrokes = outfitTopStrokes,
             outfitBottomStrokes = outfitBottomStrokes,
             onNavigateToClothes = onNavigateToClothes,
@@ -2002,6 +2006,8 @@ internal fun OutfitPreviewRow(
                 outfitTopColors = outfitTopColors,
                 outfitBottomColors = outfitBottomColors,
                 outfitHandsColors = outfitHandsColors,
+                outfitCarriedColors = outfitCarriedColors,
+                outfitOuterColors = outfitOuterColors,
                 outfitTopStrokes = outfitTopStrokes,
                 outfitBottomStrokes = outfitBottomStrokes,
                 onNavigateToClothes = onNavigateToClothes,
@@ -2044,6 +2050,7 @@ internal fun OutfitPreviewCard(
     outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
+    outfitOuterColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -2101,6 +2108,18 @@ internal fun OutfitPreviewCard(
                             contentDescription = stringResource(topLabelRes(outfit.top)),
                             modifier = Modifier.width(80.dp),
                         )
+                        // Rain jacket overlays the top at the same width — the outer
+                        // shell painted over whatever warmth tier the rules picked.
+                        // Drawn before the gloves so they stay visible at the sides.
+                        // Only when an outer rule fired (off by default).
+                        outfit.outer?.let { outer ->
+                            GarmentOuterIcon(
+                                outer = outer,
+                                customFill = outfitOuterColors[outer]?.let { Color(it.toInt()) },
+                                contentDescription = stringResource(R.string.garment_rain_jacket),
+                                modifier = Modifier.width(80.dp),
+                            )
+                        }
                         // Gloves overlay the top at the same width, bottom-aligned
                         // so they land at the body's sides. Only when a hands rule
                         // fired — extremity gear is opt-in, so most outfits skip it.

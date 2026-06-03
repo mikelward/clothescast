@@ -1045,6 +1045,7 @@
     <string name="garment_jeans">Jeans</string>
     <string name="garment_gloves">Gloves</string>
     <string name="garment_umbrella">Umbrella</string>
+    <string name="garment_rain_jacket">Rain jacket</string>
 
     <!-- Editor strings restored from the pre-lockdown UI. Free-form
          garment-name input is gone; the user picks from the garment dropdown

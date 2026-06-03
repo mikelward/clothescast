@@ -1001,6 +1001,57 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `evening tie-in surfaces a rain jacket even when the day wore an equally warm top`() = runTest {
+        // Cool-but-dry day (sweater fires, no rain) and a cool rainy evening
+        // (sweater + rain jacket fire). The rain jacket is a thin OUTER shell
+        // with the same warmth as the sweater, so the warmth-only top comparison
+        // would drop it from the delta — but it's the one new thing the rainy
+        // evening needs, so it must surface ("bring a rain jacket tonight").
+        val zone = ZoneId.of("Europe/London")
+        val daytime = listOf(
+            HourlyForecast(LocalTime.of(8, 0), 15.0, 14.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val evening = listOf(
+            HourlyForecast(LocalTime.of(19, 0), 14.0, 13.0, 60.0, WeatherCondition.RAIN),
+            HourlyForecast(LocalTime.of(21, 0), 13.0, 12.0, 80.0, WeatherCondition.RAIN),
+        )
+        val baseHourly = today.copy(
+            hourly = daytime + evening,
+            precipitationProbabilityMaxPct = 80.0,
+            condition = WeatherCondition.RAIN,
+        )
+        val diner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(23, 0),
+            location = "Restaurant",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(diner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val sweaterAndRainJacket = listOf(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(
+                clothesRules = sweaterAndRainJacket,
+                useCalendarEvents = true,
+                schedule = Schedule.default(zone),
+            ),
+            period = ForecastPeriod.TODAY,
+        )
+
+        val tie = result.insight.summary.eveningEventTieIn
+        tie.shouldNotBeNull()
+        tie!!.items shouldBe listOf("rain-jacket")
+        tie.rainTime shouldBe LocalTime.of(21, 0)
+    }
+
+    @Test
     fun `evening tie-in mirrors what the night notification would itself say`() = runTest {
         // The day's evening tie-in is the night insight, dictated by the
         // night bundle. When the night insight would say "Bring a jacket;

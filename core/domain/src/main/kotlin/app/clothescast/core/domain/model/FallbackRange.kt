@@ -35,6 +35,13 @@ enum class FallbackTier { TOP, BOTTOM }
  * [Garment.fromKey], so legacy `"Jacket"` / `" jacket "` items normalize
  * the same as `"jacket"`); a `sweater` rule narrows the top fallback, but
  * a `shorts` rule doesn't.
+ *
+ * [Garment.Layer.OUTER] shells (the rain jacket) are excluded from the top
+ * tier: they're worn *over* a base top rather than in place of one, so
+ * [EvaluateClothesRules] still adds the default top under them. A
+ * rain-jacket-below-10°C rule therefore must *not* narrow the top fallback
+ * range — the default top still applies below 10°C too — so the Settings "If
+ * no rules match" row matches what rule evaluation actually does.
  */
 fun fallbackRange(rules: List<ClothesRule>, tier: FallbackTier): FallbackRange {
     val expectedSlot = when (tier) {
@@ -45,6 +52,10 @@ fun fallbackRange(rules: List<ClothesRule>, tier: FallbackTier): FallbackRange {
     var upper: Double? = null
     for (rule in rules) {
         if (rule.item.slot != expectedSlot) continue
+        // Outer shells don't cover the base-top fallback (see kdoc), so skip
+        // them — counting a rain jacket here would shadow the default top in
+        // the UI even though it still applies.
+        if (rule.item.layer == Garment.Layer.OUTER) continue
         val threshold = rule.thresholdC() ?: continue
         when (rule.condition) {
             is ClothesRule.TemperatureBelow -> {

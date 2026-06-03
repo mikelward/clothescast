@@ -96,9 +96,10 @@ class OutfitWidget : GlanceAppWidget() {
         val bottomColors = prefs?.outfitBottomColors ?: emptyMap()
         val handsColors = prefs?.outfitHandsColors ?: emptyMap()
         val carriedColors = prefs?.outfitCarriedColors ?: emptyMap()
+        val outerColors = prefs?.outfitOuterColors ?: emptyMap()
         provideContent {
             GlanceTheme {
-                OutfitWidgetContent(insight, topColors, bottomColors, handsColors, carriedColors)
+                OutfitWidgetContent(insight, topColors, bottomColors, handsColors, carriedColors, outerColors)
             }
         }
     }
@@ -143,6 +144,7 @@ private fun OutfitWidgetContent(
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
     carriedColors: Map<OutfitSuggestion.Carried, Long>,
+    outerColors: Map<OutfitSuggestion.Outer, Long>,
 ) {
     val size = LocalSize.current
     val context = LocalContext.current
@@ -163,7 +165,7 @@ private fun OutfitWidgetContent(
             size.width >= size.height &&
             insight.nextOutfit != null
         ) {
-            SideBySideContent(insight, size, topColors, bottomColors, handsColors, carriedColors)
+            SideBySideContent(insight, size, topColors, bottomColors, handsColors, carriedColors, outerColors)
         } else {
             SingleColumnContent(
                 label = context.getString(periodLabelRes(insight.period)),
@@ -173,6 +175,7 @@ private fun OutfitWidgetContent(
                 bottomColors = bottomColors,
                 handsColors = handsColors,
                 carriedColors = carriedColors,
+                outerColors = outerColors,
             )
         }
     }
@@ -187,6 +190,7 @@ private fun SingleColumnContent(
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
     carriedColors: Map<OutfitSuggestion.Carried, Long>,
+    outerColors: Map<OutfitSuggestion.Outer, Long>,
 ) {
     val context = LocalContext.current
     val iconSize = scaledIconSize(size)
@@ -224,6 +228,8 @@ private fun SingleColumnContent(
                             sizePx = iconPx,
                             topFillArgb = topColors[outfit.top],
                             handsFillArgb = outfit.hands?.let { handsColors[it] },
+                            outer = outfit.outer,
+                            outerFillArgb = outfit.outer?.let { outerColors[it] },
                         ),
                     ),
                     contentDescription = outfitContentDescription(context, outfit),
@@ -277,6 +283,7 @@ private fun SideBySideContent(
     bottomColors: Map<OutfitSuggestion.Bottom, Long>,
     handsColors: Map<OutfitSuggestion.Hands, Long>,
     carriedColors: Map<OutfitSuggestion.Carried, Long>,
+    outerColors: Map<OutfitSuggestion.Outer, Long>,
 ) {
     val context = LocalContext.current
     val primaryOutfit = insight.outfit ?: return
@@ -302,6 +309,7 @@ private fun SideBySideContent(
                 bottomColors = bottomColors,
                 handsColors = handsColors,
                 carriedColors = carriedColors,
+                outerColors = outerColors,
             )
         }
         Box(
@@ -316,6 +324,7 @@ private fun SideBySideContent(
                 bottomColors = bottomColors,
                 handsColors = handsColors,
                 carriedColors = carriedColors,
+                outerColors = outerColors,
             )
         }
     }
@@ -416,6 +425,7 @@ private fun sideBySideLabelRes(period: ForecastPeriod): Pair<Int, Int> = when (p
 private fun outfitContentDescription(context: Context, outfit: OutfitSuggestion): String =
     buildList {
         add(context.getString(topLabelRes(outfit.top)))
+        if (outfit.outer != null) add(context.getString(R.string.garment_rain_jacket))
         if (outfit.carried != null) add(context.getString(R.string.garment_umbrella))
         if (outfit.hands != null) add(context.getString(R.string.garment_gloves))
     }.joinToString(", ")

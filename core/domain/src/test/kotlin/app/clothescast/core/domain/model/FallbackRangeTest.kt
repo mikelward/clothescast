@@ -86,4 +86,31 @@ class FallbackRangeTest {
             FallbackTier.TOP,
         ).lowerC shouldBe 18.0
     }
+
+    @Test
+    fun `a rain jacket temperature rule does not narrow the top fallback range`() {
+        // The rain jacket is an OUTER shell worn over a base top, not a base top
+        // itself — EvaluateClothesRules still adds the default top under it — so
+        // a rain-jacket-below-10°C rule must not shadow the default top below
+        // 10°C. The range stays unbounded so the Settings "If no rules match"
+        // row matches rule evaluation.
+        fallbackRange(
+            listOf(ClothesRule(Garment.RAIN_JACKET, ClothesRule.TemperatureBelow(10.0))),
+            FallbackTier.TOP,
+        ) shouldBe FallbackRange(lowerC = null, upperC = null)
+    }
+
+    @Test
+    fun `a rain jacket rule alongside a real top rule leaves only the real rule narrowing`() {
+        // A sweater-below-16 rule narrows the top fallback to ≥16°C; adding a
+        // rain-jacket-below-10 rule doesn't tighten it further, since the OUTER
+        // shell doesn't cover the base top.
+        fallbackRange(
+            listOf(
+                ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+                ClothesRule(Garment.RAIN_JACKET, ClothesRule.TemperatureBelow(10.0)),
+            ),
+            FallbackTier.TOP,
+        ) shouldBe FallbackRange(lowerC = 16.0, upperC = null)
+    }
 }

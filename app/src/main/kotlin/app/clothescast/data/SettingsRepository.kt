@@ -830,6 +830,15 @@ class SettingsRepository(
         }
     }
 
+    /** Sibling of [setOutfitTopColor] for the optional rain-jacket outer slot. */
+    suspend fun setOutfitOuterColor(outer: OutfitSuggestion.Outer, argb: Long?) {
+        dataStore.edit { prefs ->
+            val current = parseOutfitOuterColors(prefs[OUTFIT_OUTER_COLORS])
+            val updated = if (argb == null) current - outer else current + (outer to argb)
+            prefs[OUTFIT_OUTER_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+        }
+    }
+
     /** Persists the per-holiday override (or clears it back to AUTO). */
     suspend fun setHolidayOverride(id: HolidayId, override: HolidayOverride) {
         dataStore.edit { prefs ->
@@ -1032,6 +1041,7 @@ class SettingsRepository(
         val outfitBottomColors = parseOutfitBottomColors(this[OUTFIT_BOTTOM_COLORS])
         val outfitHandsColors = parseOutfitHandsColors(this[OUTFIT_HANDS_COLORS])
         val outfitCarriedColors = parseOutfitCarriedColors(this[OUTFIT_CARRIED_COLORS])
+        val outfitOuterColors = parseOutfitOuterColors(this[OUTFIT_OUTER_COLORS])
         val holidayCountrySelection = HolidayCountrySelection(
             home = this[HOLIDAY_COUNTRY_HOME] != false,
             current = this[HOLIDAY_COUNTRY_CURRENT] != false,
@@ -1146,6 +1156,7 @@ class SettingsRepository(
             outfitBottomColors = outfitBottomColors,
             outfitHandsColors = outfitHandsColors,
             outfitCarriedColors = outfitCarriedColors,
+            outfitOuterColors = outfitOuterColors,
             holidayCountrySelection = holidayCountrySelection,
             holidayOverrides = holidayOverrides,
             forecastModels = forecastModels,
@@ -1316,6 +1327,9 @@ class SettingsRepository(
     private fun parseOutfitCarriedColors(raw: String?): Map<OutfitSuggestion.Carried, Long> =
         parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Carried.valueOf(name) }.getOrNull() }
 
+    private fun parseOutfitOuterColors(raw: String?): Map<OutfitSuggestion.Outer, Long> =
+        parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Outer.valueOf(name) }.getOrNull() }
+
     /**
      * Decodes a `Map<String, Long>` JSON blob and projects keys through
      * [resolveKey], dropping entries with unknown enum names. Tolerant of
@@ -1430,6 +1444,7 @@ class SettingsRepository(
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
         private val OUTFIT_HANDS_COLORS = stringPreferencesKey("outfit_hands_colors_json")
         private val OUTFIT_CARRIED_COLORS = stringPreferencesKey("outfit_carried_colors_json")
+        private val OUTFIT_OUTER_COLORS = stringPreferencesKey("outfit_outer_colors_json")
         private val HOLIDAY_OVERRIDES = stringSetPreferencesKey("holiday_overrides")
         private val HOLIDAY_COUNTRY_HOME = booleanPreferencesKey("holiday_country_home")
         private val HOLIDAY_COUNTRY_CURRENT = booleanPreferencesKey("holiday_country_current")

@@ -31,6 +31,7 @@ class InsightNotifier(private val context: Context) {
         topColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
         topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
         handsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
+        outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     ) {
         if (!NotificationPermission.isGranted(context)) return
 
@@ -57,6 +58,8 @@ class InsightNotifier(private val context: Context) {
                     customFillArgb = top?.let { topColors[it] },
                     customStrokeArgb = top?.let { topStrokes[it] },
                     handsFillArgb = insight.outfit?.hands?.let { handsColors[it] },
+                    outer = insight.outfit?.outer,
+                    outerFillArgb = insight.outfit?.outer?.let { outerColors[it] },
                 ),
             )
             .setContentTitle(context.getString(R.string.notification_daily_insight_title))
@@ -101,12 +104,14 @@ class InsightNotifier(private val context: Context) {
          * user-picked colour override passed in via [customFillArgb], the
          * tricolour-holiday accent passed in via [customStrokeArgb], and the
          * optional gloves overlay when [hands] is set (so the notification shows
-         * the same extremity gear the card and widget do on a freezing day). The
-         * carried umbrella is a full-figure overlay (held at the hip, hanging
-         * past the legs), so it has no place on this top-only large icon — it
-         * shows on the Today cards, widget, and cast card instead. Returns null
-         * when [top] is missing (older cached payloads), letting the system fall
-         * back to no large icon.
+         * the same extremity gear the card and widget do on a freezing day) and
+         * the optional rain-jacket outer shell when [outer] is set (it shares the
+         * tops' footprint, so it paints over the top the same way). The carried
+         * umbrella is a full-figure overlay (held at the hip, hanging past the
+         * legs), so it has no place on this top-only large icon — it shows on the
+         * Today cards, widget, and cast card instead. Returns null when [top] is
+         * missing (older cached payloads), letting the system fall back to no
+         * large icon.
          */
         internal fun largeIconForTop(
             context: Context,
@@ -115,6 +120,8 @@ class InsightNotifier(private val context: Context) {
             customFillArgb: Long? = null,
             customStrokeArgb: Long? = null,
             handsFillArgb: Long? = null,
+            outer: OutfitSuggestion.Outer? = null,
+            outerFillArgb: Long? = null,
         ): Bitmap? {
             if (top == null) return null
             val sizePx = context.resources.getDimensionPixelSize(android.R.dimen.notification_large_icon_width)
@@ -128,6 +135,8 @@ class InsightNotifier(private val context: Context) {
                 topFillArgb = customFillArgb,
                 topStrokeArgb = customStrokeArgb,
                 handsFillArgb = handsFillArgb,
+                outer = outer,
+                outerFillArgb = outerFillArgb,
             )
         }
 

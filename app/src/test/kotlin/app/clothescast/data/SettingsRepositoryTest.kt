@@ -659,6 +659,7 @@ class SettingsRepositoryTest {
         prefs.outfitBottomColors shouldBe emptyMap()
         prefs.outfitHandsColors shouldBe emptyMap()
         prefs.outfitCarriedColors shouldBe emptyMap()
+        prefs.outfitOuterColors shouldBe emptyMap()
     }
 
     @Test
@@ -677,6 +678,15 @@ class SettingsRepositoryTest {
 
         subject.setOutfitCarriedColor(OutfitSuggestion.Carried.UMBRELLA, null)
         subject.preferences.first().outfitCarriedColors.containsKey(OutfitSuggestion.Carried.UMBRELLA) shouldBe false
+    }
+
+    @Test
+    fun `setOutfitOuterColor round-trips a fill and clears with null`() = runTest {
+        subject.setOutfitOuterColor(OutfitSuggestion.Outer.RAIN_JACKET, 0xFF43A047L)
+        subject.preferences.first().outfitOuterColors[OutfitSuggestion.Outer.RAIN_JACKET] shouldBe 0xFF43A047L
+
+        subject.setOutfitOuterColor(OutfitSuggestion.Outer.RAIN_JACKET, null)
+        subject.preferences.first().outfitOuterColors.containsKey(OutfitSuggestion.Outer.RAIN_JACKET) shouldBe false
     }
 
     @Test

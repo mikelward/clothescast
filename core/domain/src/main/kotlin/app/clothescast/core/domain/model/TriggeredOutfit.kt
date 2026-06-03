@@ -56,15 +56,26 @@ data class TriggeredOutfit(
     val items: List<String>
         get() {
             val raw = Garment.layerReduce(rules).map { it.item.itemKey } + fallbacks
-            // Stable sort that floats bottoms to the end. Tops and unclassified
-            // items (accessories, free-form) keep their input order; only the
-            // top↔bottom flip — which happens when a bottom rule fires and the
-            // top comes from the default fallback (shorts rule + t-shirt
-            // default on a warm day) — is corrected. Accessories are filtered
-            // out before prose rendering anyway, so their slot is left at 0
-            // to preserve their position relative to tops.
+            // Stable sort into reading order: warmth tops (and unclassified
+            // free-form items) first, then the OUTER rain shell worn over them,
+            // then accessories (gloves / umbrella), then bottoms last. Within a
+            // group the input order is preserved (reduced rules, then defaults),
+            // so only the cross-group order is imposed. This keeps a rain jacket
+            // reading *after* the base top it layers over ("a t-shirt and a rain
+            // jacket") rather than ahead of it when the base top comes from the
+            // default fallback, and still floats bottoms to the end so a warm-day
+            // "shorts rule + t-shirt default" reads "Wear a t-shirt and shorts."
+            // Accessories are filtered out before prose rendering anyway, so
+            // their exact slot only matters for the recommended-items list.
             return raw.sortedBy {
-                if (Garment.fromKey(it)?.slot == Garment.Slot.BOTTOM) 1 else 0
+                val garment = Garment.fromKey(it)
+                when {
+                    garment == null -> 0
+                    garment.slot == Garment.Slot.TOP && garment.layer == Garment.Layer.OUTER -> 1
+                    garment.slot == Garment.Slot.TOP -> 0
+                    garment.slot == Garment.Slot.BOTTOM -> 3
+                    else -> 2
+                }
             }
         }
 }

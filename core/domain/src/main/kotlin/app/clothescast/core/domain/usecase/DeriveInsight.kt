@@ -298,27 +298,39 @@ class DeriveInsight(
      * that fires when nothing else covers the slot, so it belongs in the outfit
      * on both sides of the comparison).
      *
-     * Tops are warmth-aware: an evening top is "extra" only when it's warmer than
-     * the day's warmest top — wearing a jacket by day already implies the lighter
-     * layers under it, so a lighter evening top isn't worth mentioning. Warmth is
-     * [Garment.warmth], not the [Garment.Layer] band, so same-band upgrades still
-     * surface: a day `jacket` doesn't suppress a warmer evening `puffer`. Bottoms
-     * substitute rather than stack, so an evening bottom is extra when it's a
-     * different garment than the day's. Items we can't place in a slot (legacy
-     * free-form rules, accessories like an umbrella) are left to the prose / rain
-     * paths rather than the clothes delta.
+     * Insulating tops are warmth-aware: an evening top is "extra" only when it's
+     * warmer than the day's warmest top — wearing a jacket by day already implies
+     * the lighter layers under it, so a lighter evening top isn't worth
+     * mentioning. Warmth is [Garment.warmth], not the [Garment.Layer] band, so
+     * same-band upgrades still surface: a day `jacket` doesn't suppress a warmer
+     * evening `puffer`. The [Garment.Layer.OUTER] rain shell is the exception:
+     * it's keyed on rain, not warmth, so it's never gated by the warmth
+     * comparison — a warm daytime top must not swallow the evening's required
+     * rain jacket. It's additive instead, surfacing whenever the day's outfit
+     * didn't already include it (like the substitute slots). Bottoms substitute
+     * rather than stack, so an evening bottom is extra when it's a different
+     * garment than the day's. Items we can't place in a slot (legacy free-form
+     * rules, accessories like an umbrella) are left to the prose / rain paths
+     * rather than the clothes delta.
      */
     private fun eveningClothesDelta(
         eveningItems: List<String>,
         dayItems: List<String>,
     ): List<String> {
         val dayGarments = dayItems.mapNotNull { Garment.fromKey(it) }
-        // Warmest top worn by day, by [Garment.warmth] (== layer position now
-        // that puffer is an honest shell), so an evening top is "extra" only
-        // when it adds a layer the day didn't have.
+        // Warmest *insulating* top worn by day, by [Garment.warmth] (== layer
+        // position now that puffer is an honest shell), so an evening top is
+        // "extra" only when it adds a layer the day didn't have. The OUTER rain
+        // shell is excluded — it's handled additively below, not by warmth.
         val dayTopWarmth = dayGarments
-            .filter { it.slot == Garment.Slot.TOP }
+            .filter { it.slot == Garment.Slot.TOP && it.layer != Garment.Layer.OUTER }
             .maxOfOrNull { it.warmth } ?: 0
+        // The OUTER shells (rain jacket) the day already included — an evening
+        // rain jacket is "extra" only when the day didn't have one, regardless
+        // of how warm the day's tops were.
+        val dayOuterKeys = dayGarments
+            .filter { it.slot == Garment.Slot.TOP && it.layer == Garment.Layer.OUTER }
+            .mapTo(mutableSetOf()) { it.itemKey }
         // Non-top slots substitute, so an evening garment is "extra" when the
         // day didn't already include that exact garment — a different bottom,
         // or gloves the warmer day didn't need.
@@ -327,12 +339,15 @@ class DeriveInsight(
             .groupBy({ it.slot }, { it.itemKey })
         return eveningItems.filter { item ->
             val g = Garment.fromKey(item) ?: return@filter false
-            when (g.slot) {
-                Garment.Slot.TOP -> g.warmth > dayTopWarmth
+            when {
                 // Carried accessories (umbrella) are handled separately in
                 // buildEveningEventTieIn so they survive the day-dedup; keep
                 // them out of the worn-garment delta to avoid a double mention.
-                Garment.Slot.CARRIED -> false
+                g.slot == Garment.Slot.CARRIED -> false
+                // OUTER rain shell: additive and rain-keyed, never warmth-gated.
+                g.slot == Garment.Slot.TOP && g.layer == Garment.Layer.OUTER ->
+                    g.itemKey !in dayOuterKeys
+                g.slot == Garment.Slot.TOP -> g.warmth > dayTopWarmth
                 else -> g.itemKey !in daySubstituteKeys[g.slot].orEmpty()
             }
         }

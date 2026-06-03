@@ -54,9 +54,21 @@ class EvaluateClothesRules {
         // Every [ClothesRule.item] is a catalog [Garment], so each matched rule
         // claims a known slot. A slot covered by a matched rule (whether keyed
         // on temperature or precipitation) doesn't also get its per-tier default.
+        //
+        // The base top is the exception: a [Garment.Layer.OUTER] shell (the rain
+        // jacket) is worn *over* a base top, not in place of one, so it doesn't
+        // satisfy the TOP slot on its own. When the only matched top is the rain
+        // jacket, still add the default top — so a rain-jacket-only rule reads
+        // "Wear a t-shirt and a rain jacket" in the prose, matching the icon
+        // (which already paints the shell over the default top). Without this the
+        // prose would collapse to a bare "rain jacket" while the icon shows the
+        // base top underneath — a text/icon mismatch.
         val matchedSlots = matched.mapTo(mutableSetOf()) { it.item.slot }
+        val baseTopMatched = matched.any {
+            it.item.slot == Garment.Slot.TOP && it.item.layer != Garment.Layer.OUTER
+        }
         val fallbacks = buildList {
-            if (Garment.Slot.TOP !in matchedSlots) add(defaultTop.itemKey())
+            if (!baseTopMatched) add(defaultTop.itemKey())
             if (Garment.Slot.BOTTOM !in matchedSlots) add(defaultBottom.itemKey())
         }
         return TriggeredOutfit(rules = matched, fallbacks = fallbacks)

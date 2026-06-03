@@ -7,14 +7,15 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Build
+import androidx.core.content.FileProvider
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ForecastSnapshot
-import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -23,6 +24,7 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import kotlinx.coroutines.flow.first
+import java.io.File
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
@@ -42,12 +44,9 @@ object BugReport {
 
     /**
      * Builds the text payload, copies it to the clipboard, and fires the
-     * share-sheet chooser as a pure-text intent. No screenshot is attached:
-     * an image-typed intent makes the chooser surface image-share targets that
-     * treat `EXTRA_TEXT` as a *caption* with a hard character cap, which
-     * silently truncated long bug reports mid-line. The text payload already
-     * carries everything the recipient needs (settings, cached insights,
-     * recent log).
+     * share-sheet chooser with the report as a cache-backed text attachment.
+     * Many share targets treat `EXTRA_TEXT` as a caption and silently cap it;
+     * the attachment path preserves the full 300-line log tail.
      */
     suspend fun share(activity: Activity) {
         val app = activity.application as ClothesCastApplication
@@ -366,6 +365,39 @@ object BugReport {
     }
 
     private fun startShare(activity: Activity, text: String) {
+        val reportUri = runCatching { writeReportFile(activity, text) }
+            .onFailure { DiagLog.w("BugReport", "bug report file write failed; falling back to text-only share", it) }
+            .getOrNull()
+        if (reportUri == null) {
+            startTextShare(activity, text)
+            return
+        }
+
+        val send = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
+            putExtra(Intent.EXTRA_TEXT, text)
+            putExtra(Intent.EXTRA_STREAM, reportUri)
+            clipData = ClipData.newUri(activity.contentResolver, "ClothesCast bug report", reportUri)
+        }
+        val chooser = Intent.createChooser(send, "Share bug report")
+        runCatching { activity.startActivity(chooser) }
+            .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
+    }
+
+    private fun writeReportFile(context: Context, text: String): android.net.Uri {
+        val dir = File(context.cacheDir, "bug-reports").apply { mkdirs() }
+        val file = File.createTempFile("clothescast-bug-report-", ".txt", dir)
+        file.writeText(text)
+        return FileProvider.getUriForFile(
+            context,
+            "${BuildConfig.APPLICATION_ID}.bug-report-file-provider",
+            file,
+        )
+    }
+
+    private fun startTextShare(activity: Activity, text: String) {
         val send = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
@@ -373,7 +405,7 @@ object BugReport {
         }
         val chooser = Intent.createChooser(send, "Share bug report")
         runCatching { activity.startActivity(chooser) }
-            .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
+            .onFailure { DiagLog.w("BugReport", "text-only share intent failed", it) }
     }
 
     private fun copyToClipboard(context: Context, text: String) {

@@ -85,9 +85,6 @@ Code TODOs in source files are linked from here when they exist.
 
 ## Forecast & alerts
 
-- [x] **Severe weather alerts.** Open-Meteo's `/v1/warnings` is now wired up:
-      alerts feed into `BuildPrompt`, and SEVERE / EXTREME alerts also fire a
-      separate high-priority notification on a dedicated channel.
 - [x] **Hourly forecast UI** on Today. Vico chart of temperature + feels-like
       across today's hours. Multi-day extension still possible.
 - [ ] **Forecast accuracy ideas** — end-of-day accuracy survey, user-flagged
@@ -129,51 +126,16 @@ Done:
       removed ~70 lines of keep rules, RFC-6125 hostname verification
       enabled on the TLS socket so a CA-trusted cert for the wrong
       name fails before CONNECT is sent (PR #510).
-
 Open:
 
-- [ ] **"Publish now" button + persistent last-error card** on the
-      Smart Home settings page. The bridge's failure modes (broker
-      unreachable, IPv6 link-local mDNS resolution, TLS on a
-      plain-only broker, wrong credentials) all surface today only
-      via the diag log after a manual Refresh + Share-bug-report
-      round-trip. A direct trigger that runs the publisher against
-      the most recent cached insight, plus a card that pins the most
-      recent error (or "last published OK at HH:MM" on success),
-      collapses that loop to one tap. Architecturally needs an
-      observable status flow on `MqttPublisher` or wrapping
-      VM-state, plus a VM action that calls the publisher directly
-      against `InsightCache.deliveredForToday(...)`. Worth combining
-      with a "test connection" pre-flight (CONNECT/CONNACK only, no
-      PUBLISH) so a misconfigured broker fails on Save without
-      surfacing as a delivered-but-not-published surprise on the
-      next refresh.
-- [ ] **Publish the outfit image alongside the prose.** Nest Hubs and
-      Nest Hub Maxes have displays; HA's
-      [`image.mqtt`](https://www.home-assistant.io/integrations/image.mqtt/)
-      platform consumes binary image payloads off MQTT and exposes
-      them as `image.*` entities. The shape: rasterise the
-      OutfitWidget composition (top + bottom icons, ~1280x800 for
-      Hub Max scaling) to PNG, publish to
-      `clothescast/default/<period>/image` as a retained binary
-      payload. HA picks it up via `mqtt: image: - state_topic:` and a
-      downstream automation calls `media_player.play_media` with the
-      entity's `entity_picture` URL targeting the Hub's
-      `media_player.*`. New code: ~50 lines (PNG rasteriser +
-      binary MQTT publish branch in `RawMqttClient`; the wire format
-      is identical to the text publish, just `byte[]` payload).
-      Voice + visual on the kitchen / bathroom Hub at 07:00 is a
-      much nicer UX than a disembodied audio broadcast. Privacy
-      story is identical to the prose bridge — same
-      "user-hosted-broker only" caveat, same opt-in.
 - [ ] **HA MQTT discovery for the sensors.** Publish a discovery
       payload on `homeassistant/sensor/clothescast_today/config` so
       a fresh HA install picks up the `sensor.clothescast_today` and
       `sensor.clothescast_tonight` entities without the user editing
       `configuration.yaml` or pasting YAML into Devices & Services.
       The discovery JSON is small (`{"name": "...", "state_topic":
-      "...", "unique_id": "..."}`). Same trick for `image.*` when
-      the image feature lands above. Worth it for "drop in the
+      "...", "unique_id": "..."}`). Same trick for the image, audio,
+      video, and `now/timestamp` topics. Worth it for "drop in the
       Mosquitto add-on + flip the toggle in ClothesCast" zero-YAML
       setup.
 - [ ] **Music Assistant `mass.announce` quick-start in the setup
@@ -274,13 +236,6 @@ Open work:
 ## Deferred to v2 (out of scope for v1)
 
 - iOS port (needs a Mac + KMP-promotion of the core modules).
-- Settings nudge for `GeminiTtsDailyQuotaExhaustedException`. The
-  proxy now caps the shared-key path at 5 successful syntheses per
-  UTC day and the Voice settings preview Toast shows a friendly
-  message, but the morning worker just degrades silently to device
-  TTS — a Today / Settings banner pointing at the BYOK flow would
-  let users notice and resolve the cap without going hunting in the
-  logs.
 - [x] **Bind the TTS proxy quota to a server-verified identity**
   rather than the client-chosen `X-Install-Id` header. Done: the
   client now sends an anonymous Firebase Authentication ID token

@@ -82,7 +82,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -1982,8 +1984,13 @@ internal fun OutfitPreviewRow(
 ) {
     val primary = insight.outfit ?: return
     val (primaryLabel, nextLabel) = outfitLabels(insight.period)
+    // IntrinsicSize.Max + fillMaxHeight stretches both cards to the taller one's
+    // height. The garment caption grows to as many lines as its content needs
+    // (a long worn line wrapping on a narrow card, plus an accessory line) — so
+    // a card pairing an umbrella with a wrapping worn line keeps the same height
+    // as its neighbour instead of one card running taller than the other.
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         OutfitPreviewCard(
@@ -2000,7 +2007,7 @@ internal fun OutfitPreviewRow(
             outfitTopStrokes = outfitTopStrokes,
             outfitBottomStrokes = outfitBottomStrokes,
             onNavigateToClothes = onNavigateToClothes,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
         )
         insight.nextOutfit?.let {
             OutfitPreviewCard(
@@ -2017,7 +2024,7 @@ internal fun OutfitPreviewRow(
                 outfitTopStrokes = outfitTopStrokes,
                 outfitBottomStrokes = outfitBottomStrokes,
                 onNavigateToClothes = onNavigateToClothes,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).fillMaxHeight(),
             )
         }
     }
@@ -2155,12 +2162,16 @@ internal fun OutfitPreviewCard(
                     )
                 }
             }
-            // Reserve two lines for the garment-name text so cards stay the
-            // same height. Names every piece the icon shows — the worn outfit
-            // (top, rain-jacket shell, bottom) on the first line and the
-            // gloves / umbrella accessories on the second — so the caption
-            // matches the figure. fillMaxWidth + centre keeps both lines
-            // centred under the icons.
+            // Names every piece the icon shows in one flowing "· "-joined run —
+            // worn outfit (top, rain-jacket shell, bottom) then the gloves /
+            // umbrella accessories — so the caption matches the figure. No forced
+            // break and no maxLines cap: a long caption on a narrow side-by-side
+            // card ("Sweater · Rain jacket · Jeans · Umbrella") just soft-wraps,
+            // where a hard two-line cap used to clip the trailing accessory and
+            // drop "Umbrella" even though the figure holds one. minLines = 2
+            // reserves height so a short caption isn't cramped, and the Row
+            // stretches both cards to equal height so a wrapping card doesn't run
+            // taller than its neighbour. fillMaxWidth + centre keeps it centred.
             Text(
                 text = outfitGarmentCaption(
                     context = LocalContext.current,
@@ -2171,7 +2182,6 @@ internal fun OutfitPreviewCard(
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 minLines = 2,
-                maxLines = 2,
                 modifier = Modifier.fillMaxWidth(),
             )
         }

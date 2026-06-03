@@ -126,18 +126,16 @@ Done:
       removed ~70 lines of keep rules, RFC-6125 hostname verification
       enabled on the TLS socket so a CA-trusted cert for the wrong
       name fails before CONNECT is sent (PR #510).
+- [x] **HA MQTT discovery for the sensors/images.** After a successful
+      publish, ClothesCast now emits retained discovery configs under
+      `homeassistant/.../config` for today / tonight / now text sensors,
+      the `now/timestamp` timestamp sensor, and today / tonight / now
+      image entities. A fresh HA install can pick them up without YAML;
+      audio/video remain retained publish topics consumed by automations
+      or media actions rather than first-class HA MQTT entities.
+
 Open:
 
-- [ ] **HA MQTT discovery for the sensors.** Publish a discovery
-      payload on `homeassistant/sensor/clothescast_today/config` so
-      a fresh HA install picks up the `sensor.clothescast_today` and
-      `sensor.clothescast_tonight` entities without the user editing
-      `configuration.yaml` or pasting YAML into Devices & Services.
-      The discovery JSON is small (`{"name": "...", "state_topic":
-      "...", "unique_id": "..."}`). Same trick for the image, audio,
-      video, and `now/timestamp` topics. Worth it for "drop in the
-      Mosquitto add-on + flip the toggle in ClothesCast" zero-YAML
-      setup.
 - [ ] **Music Assistant `mass.announce` quick-start in the setup
       guide.** docs/smart-home.md now describes the three speaking
       options at a high level, but for users picking Option B the

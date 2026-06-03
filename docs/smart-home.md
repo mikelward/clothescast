@@ -74,8 +74,13 @@ yourself; no developer-operated service ever sees the payload.
 6. Tap **Save**.
 
 The next scheduled refresh (07:00 by default for today, 19:00 for
-tonight — configurable in Settings → Schedule) will publish a retained
-MQTT message to each topic.
+tonight — configurable in Settings → Schedule) will publish retained
+MQTT messages to each topic. After a successful forecast publish,
+ClothesCast also publishes retained Home Assistant MQTT discovery
+configs under `homeassistant/.../config`, so HA can create the text,
+timestamp, and image entities automatically. The discovery configs point
+at the normal state topics above — they replace YAML setup, not the
+forecast publishes themselves.
 
 ## Broker
 
@@ -121,10 +126,12 @@ topics ClothesCast actually writes:
    ```
    user clothescast
    topic write clothescast/default/#
+   topic write homeassistant/#
    ```
-   That grants write-only access on the topic prefix and nothing else.
-   Adjust the topic if you customised the prefix in the ClothesCast
-   Smart Home settings.
+   That grants write-only access on the topic prefix plus Home
+   Assistant's MQTT discovery config topics, and nothing else. Adjust
+   `clothescast/default/#` if you customised the prefix in the
+   ClothesCast Smart Home settings.
 2. Open the Mosquitto broker add-on's **Configuration** tab and set:
    ```yaml
    customize:
@@ -147,10 +154,30 @@ forecast.
 > `mosquitto.conf` (`acl_file /etc/mosquitto/acl`). HA-side YAML for
 > reading the sensor is identical.
 
-## Home Assistant — reading the sensor
+## Home Assistant — auto-discovered entities
+
+With MQTT discovery enabled in Home Assistant (the default for the MQTT
+integration), ClothesCast creates these entities automatically after the
+next successful publish:
+
+- `sensor.clothescast_today` from `<prefix>/today/text`
+- `sensor.clothescast_tonight` from `<prefix>/tonight/text`
+- `sensor.clothescast_now` from `<prefix>/now/text`
+- `sensor.clothescast_now_updated` from `<prefix>/now/timestamp`
+- `image.clothescast_today_image` from `<prefix>/today/image`
+- `image.clothescast_tonight_image` from `<prefix>/tonight/image`
+- `image.clothescast_now_image` from `<prefix>/now/image`
+
+All entities are grouped under a single ClothesCast device in Home
+Assistant. If a broker ACL rejects `homeassistant/#`, the forecast
+topics still publish normally, but HA will not auto-create the entities;
+allow the discovery topic or use the manual YAML below.
+
+## Home Assistant — manual YAML fallback
 
 Add the following to `configuration.yaml` (or anywhere your
-`mqtt:` block lives):
+`mqtt:` block lives) only if you do not want to use MQTT discovery or
+your broker ACL blocks the discovery config topics:
 
 <!-- raw guard: the snippets below are Home Assistant Jinja templates, not
 Jekyll Liquid. Without this guard GitHub Pages runs Liquid over them first and

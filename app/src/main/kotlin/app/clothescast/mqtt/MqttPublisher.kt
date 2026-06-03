@@ -17,6 +17,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import kotlin.coroutines.cancellation.CancellationException
 import java.util.UUID
 import java.util.concurrent.TimeUnit
@@ -284,6 +289,9 @@ class MqttPublisher(
                     "($failed failed); previous retained /now bundle stays intact.",
             )
         }
+        if (proseOutcome is MqttPublishOutcome.Success) {
+            publishHomeAssistantDiscovery(prepared)
+        }
         proseOutcome
     }
 
@@ -437,6 +445,23 @@ class MqttPublisher(
         )
     }
 
+    private suspend fun publishHomeAssistantDiscovery(prepared: PreparedPublish) {
+        homeAssistantDiscoveryEntries(prepared.baseTopic).forEach { entry ->
+            val outcome = executePublish(
+                prepared = prepared,
+                topic = entry.configTopic,
+                payload = entry.payload.toByteArray(Charsets.UTF_8),
+            )
+            if (outcome !is MqttPublishOutcome.Success) {
+                DiagLog.w(
+                    TAG,
+                    "Home Assistant discovery config ${entry.configTopic} failed ($outcome); " +
+                        "forecast topics remain published but HA may not auto-create this entity.",
+                )
+            }
+        }
+    }
+
     private data class PreparedPublish(
         val config: MqttConfig,
         val baseTopic: String,
@@ -502,6 +527,71 @@ class MqttPublisher(
         // retained bundle they've already acted on.
         fun nowTimestampTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "timestamp")
 
+        internal fun homeAssistantDiscoveryEntries(baseTopic: String): List<HomeAssistantDiscoveryEntry> {
+            val base = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+            val suffix = discoveryIdSuffix(base)
+            val idPrefix = if (base == UserPreferences.DEFAULT_MQTT_TOPIC) {
+                "clothescast"
+            } else {
+                "clothescast_$suffix"
+            }
+            val device = JsonObject(
+                mapOf(
+                    "identifiers" to JsonArray(listOf(JsonPrimitive(idPrefix))),
+                    "name" to JsonPrimitive("ClothesCast"),
+                    "manufacturer" to JsonPrimitive("ClothesCast"),
+                    "model" to JsonPrimitive("Android app"),
+                ),
+            )
+            fun sensor(
+                id: String,
+                name: String,
+                stateTopic: String,
+                icon: String? = null,
+                deviceClass: String? = null,
+                valueTemplate: String? = null,
+            ) = HomeAssistantDiscoveryEntry(
+                configTopic = "homeassistant/sensor/${idPrefix}_$id/config",
+                payload = buildJsonObject {
+                    put("name", name)
+                    put("unique_id", "${idPrefix}_$id")
+                    put("default_entity_id", "sensor.${idPrefix}_$id")
+                    put("state_topic", stateTopic)
+                    put("device", device)
+                    if (icon != null) put("icon", icon)
+                    if (deviceClass != null) put("device_class", deviceClass)
+                    if (valueTemplate != null) put("value_template", valueTemplate)
+                }.toString(),
+            )
+            fun image(id: String, name: String, imageTopic: String) = HomeAssistantDiscoveryEntry(
+                configTopic = "homeassistant/image/${idPrefix}_$id/config",
+                payload = buildJsonObject {
+                    put("name", name)
+                    put("unique_id", "${idPrefix}_$id")
+                    put("default_entity_id", "image.${idPrefix}_$id")
+                    put("image_topic", imageTopic)
+                    put("content_type", "image/png")
+                    put("device", device)
+                }.toString(),
+            )
+            return listOf(
+                sensor("today", "Today", topicFor(base, ForecastPeriod.TODAY), icon = "mdi:tshirt-crew"),
+                sensor("tonight", "Tonight", topicFor(base, ForecastPeriod.TONIGHT), icon = "mdi:tshirt-crew"),
+                sensor("now", "Now", nowTopicFor(base), icon = "mdi:tshirt-crew"),
+                sensor(
+                    id = "now_updated",
+                    name = "Now updated",
+                    stateTopic = nowTimestampTopicFor(base),
+                    icon = "mdi:clock-outline",
+                    deviceClass = "timestamp",
+                    valueTemplate = "{{ as_datetime((value | int) / 1000) }}",
+                ),
+                image("today_image", "Today image", imageTopicFor(base, ForecastPeriod.TODAY)),
+                image("tonight_image", "Tonight image", imageTopicFor(base, ForecastPeriod.TONIGHT)),
+                image("now_image", "Now image", nowImageTopicFor(base)),
+            )
+        }
+
         private fun periodTopicFor(baseTopic: String, period: ForecastPeriod, kind: String): String {
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
             return "$trimmed/${period.name.lowercase()}/$kind"
@@ -511,8 +601,23 @@ class MqttPublisher(
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
             return "$trimmed/now/$kind"
         }
+
+        private fun discoveryIdSuffix(baseTopic: String): String =
+            baseTopic.trim().trim('/')
+                .ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+                .lowercase()
+                .map { if (it.isLetterOrDigit()) it else '_' }
+                .joinToString("")
+                .replace(Regex("_+"), "_")
+                .trim('_')
+                .ifBlank { "default" }
     }
 }
+
+internal data class HomeAssistantDiscoveryEntry(
+    val configTopic: String,
+    val payload: String,
+)
 
 /**
  * A plain-English hint for an MQTT publish that failed at the connection layer,

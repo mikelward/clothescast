@@ -25,6 +25,9 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -537,6 +540,89 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `successful publish emits Home Assistant discovery configs`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "home/forecast",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        val discovery = captured.filter { isDiscoveryTopic(it.topic) }
+        discovery.map { it.topic } shouldContainAll listOf(
+            "homeassistant/sensor/clothescast_home_forecast_today/config",
+            "homeassistant/sensor/clothescast_home_forecast_tonight/config",
+            "homeassistant/sensor/clothescast_home_forecast_now/config",
+            "homeassistant/sensor/clothescast_home_forecast_now_updated/config",
+            "homeassistant/image/clothescast_home_forecast_today_image/config",
+            "homeassistant/image/clothescast_home_forecast_tonight_image/config",
+            "homeassistant/image/clothescast_home_forecast_now_image/config",
+        )
+        val today = discoveryPayload(discovery, "homeassistant/sensor/clothescast_home_forecast_today/config")
+        today["unique_id"]!!.jsonPrimitive.content shouldBe "clothescast_home_forecast_today"
+        today["default_entity_id"]!!.jsonPrimitive.content shouldBe "sensor.clothescast_home_forecast_today"
+        today["state_topic"]!!.jsonPrimitive.content shouldBe "home/forecast/today/text"
+        today["device"]!!.jsonObject["name"]!!.jsonPrimitive.content shouldBe "ClothesCast"
+
+        val updated = discoveryPayload(discovery, "homeassistant/sensor/clothescast_home_forecast_now_updated/config")
+        updated["state_topic"]!!.jsonPrimitive.content shouldBe "home/forecast/now/timestamp"
+        updated["device_class"]!!.jsonPrimitive.content shouldBe "timestamp"
+        updated["value_template"]!!.jsonPrimitive.content shouldBe "{{ as_datetime((value | int) / 1000) }}"
+
+        val image = discoveryPayload(discovery, "homeassistant/image/clothescast_home_forecast_now_image/config")
+        image["default_entity_id"]!!.jsonPrimitive.content shouldBe "image.clothescast_home_forecast_now_image"
+        image["image_topic"]!!.jsonPrimitive.content shouldBe "home/forecast/now/image"
+        image["content_type"]!!.jsonPrimitive.content shouldBe "image/png"
+    }
+
+    @Test
+    fun `default Home Assistant discovery ids omit the default topic suffix`() {
+        val entries = MqttPublisher.homeAssistantDiscoveryEntries("clothescast/default")
+
+        entries.map { it.configTopic } shouldContainAll listOf(
+            "homeassistant/sensor/clothescast_today/config",
+            "homeassistant/sensor/clothescast_tonight/config",
+            "homeassistant/sensor/clothescast_now/config",
+            "homeassistant/sensor/clothescast_now_updated/config",
+            "homeassistant/image/clothescast_now_image/config",
+        )
+        val now = Json.parseToJsonElement(
+            entries.first { it.configTopic == "homeassistant/sensor/clothescast_now/config" }.payload,
+        ).jsonObject
+        now["default_entity_id"]!!.jsonPrimitive.content shouldBe "sensor.clothescast_now"
+    }
+
+    @Test
+    fun `Home Assistant discovery failure does not block forecast publish outcome`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload ->
+                captured.add(PublishCall(config, topic, payload))
+                if (topic.startsWith("homeassistant/")) error("discovery ACL rejected")
+            },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        outcome shouldBe MqttPublishOutcome.Success
+        captured.any { it.topic == "clothescast/default/today/text" }.shouldBeTrue()
+        captured.any { it.topic.startsWith("homeassistant/") }.shouldBeTrue()
+    }
+
+    @Test
     fun `bundle with image publishes period prose and image, mirrors both with text last and audio cleared`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(
@@ -949,7 +1035,7 @@ class MqttPublisherTest {
         // clears, text, then timestamp last as the commit marker) all succeed.
         // First two attempts are the retried period publish; the rest are the
         // coordinated /now mirrors.
-        attempts.map { it.topic } shouldBe listOf(
+        nonDiscoveryTopics(attempts) shouldBe listOf(
             "clothescast/default/today/text",
             "clothescast/default/today/text",
             "clothescast/default/now/image",
@@ -998,7 +1084,7 @@ class MqttPublisherTest {
         // No retries on the period publish; the remaining attempts are the
         // coordinated /now bundle (image/audio/video clears, text, then
         // timestamp last as the commit marker).
-        attempts shouldBe listOf(
+        attempts.filterNot(::isDiscoveryTopic) shouldBe listOf(
             "clothescast/default/today/text",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
@@ -1038,6 +1124,15 @@ class MqttPublisherTest {
 
     private fun capturing(into: MutableList<PublishCall>): suspend (MqttConfig, String, ByteArray) -> Unit =
         { config, topic, payload -> into.add(PublishCall(config, topic, payload)) }
+
+    private fun nonDiscoveryTopics(calls: List<PublishCall>): List<String> =
+        calls.map { it.topic }.filterNot(::isDiscoveryTopic)
+
+    private fun isDiscoveryTopic(topic: String): Boolean =
+        topic.startsWith("homeassistant/")
+
+    private fun discoveryPayload(calls: List<PublishCall>, topic: String) =
+        Json.parseToJsonElement(calls.first { it.topic == topic }.payload.decodeToString()).jsonObject
 
     private val basePrefs = UserPreferences(
         schedule = Schedule(time = LocalTime.of(7, 0), days = Schedule.EVERY_DAY, zoneId = ZoneId.of("UTC")),

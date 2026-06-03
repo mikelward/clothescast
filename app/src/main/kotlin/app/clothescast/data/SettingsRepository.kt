@@ -1438,7 +1438,12 @@ class SettingsRepository(
         private val DISMISSED_LOCAL_BUILD_SHA = stringPreferencesKey("dismissed_local_build_sha")
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")
         private val TELEMETRY_NOTICE_ACKED = booleanPreferencesKey("telemetry_notice_acked")
-        private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked")
+        // Versioned: the v1 dialog disclosed only the text report. Adding the
+        // screenshot to the payload widened what leaves the device, so the key
+        // is bumped to re-prompt anyone who had ticked "Don't show again" under
+        // the old, text-only disclosure rather than silently attaching a
+        // screenshot on their saved consent.
+        private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked_v2")
         private val COLOR_PALETTE = stringPreferencesKey("color_palette")
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")

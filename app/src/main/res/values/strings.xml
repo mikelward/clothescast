@@ -1141,6 +1141,7 @@
          sent, so consenting here isn't a one-shot commitment. -->
     <string name="bug_report_consent_title">Share bug report?</string>
     <string name="bug_report_consent_body">This helps diagnose issues. The report contains sensitive personal information, including your location, app settings, and recent activity. You\'ll be able to review and edit it before sending.</string>
+    <string name="bug_report_consent_screenshot">It also attaches a screenshot of the screen you\'re on now, so check it doesn\'t show anything private before you send.</string>
     <string name="bug_report_consent_dont_show_again">Don\'t show this again</string>
     <string name="bug_report_consent_continue">Continue</string>
     <string name="bug_report_consent_cancel">Cancel</string>

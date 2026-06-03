@@ -26,17 +26,19 @@ import app.clothescast.R
 /**
  * Confirmation dialog the user sees before any "share bug report" entry point
  * actually opens the share sheet. The payload built by [BugReport] includes
- * the saved location, app settings, and recent log lines — all of which leave
- * the device the moment the user picks a destination — so we surface that up
- * front and require an explicit Continue tap rather than burying it in the
- * privacy policy.
+ * the saved location, app settings, and recent log lines — plus a screenshot
+ * of the current screen — all of which leave the device the moment the user
+ * picks a destination, so we surface that up front and require an explicit
+ * Continue tap rather than burying it in the privacy policy.
  *
  * The "Don't show this again" checkbox is offered because the disclosure is
  * the same every time and a power-user filing repeated reports shouldn't have
  * to re-confirm; ticking it persists via
  * [app.clothescast.data.SettingsRepository.setBugReportConsentAcknowledged]
  * and the three callsites skip this dialog on subsequent invocations.
- * Reinstalling the app resets the flag.
+ * Reinstalling the app resets the flag. The persisted key is versioned (see
+ * SettingsRepository) so adding the screenshot disclosure re-prompts anyone
+ * who had dismissed the earlier, text-only version of this dialog.
  *
  * Stateless w.r.t. that persistence: callers own the Don't-show pref and
  * receive the user's checkbox choice through [onConfirm]'s `dontShowAgain`
@@ -56,6 +58,10 @@ internal fun BugReportConsentDialog(
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
                     text = stringResource(R.string.bug_report_consent_body),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = stringResource(R.string.bug_report_consent_screenshot),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 // Whole-row toggleable so taps on the label flip the box too —

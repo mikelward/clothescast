@@ -32,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
 import app.clothescast.tts.toJavaLocale
+import app.clothescast.ui.BugReportOverflowMenu
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.LocalNavigateToAbout
 import app.clothescast.ui.LocalTimeFormat
 
 /**
@@ -120,6 +122,9 @@ internal fun SettingsScaffold(
                             contentDescription = stringResource(R.string.settings_back),
                         )
                     }
+                },
+                actions = {
+                    BugReportOverflowMenu(onNavigateToAbout = LocalNavigateToAbout.current)
                 },
             )
         },

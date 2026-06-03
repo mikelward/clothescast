@@ -146,6 +146,32 @@ internal fun GarmentCarriedIcon(
     )
 }
 
+/**
+ * Renders the optional outer-shell icon (today only the rain jacket) for the
+ * [OutfitSuggestion.outer] slot. Authored at the same 96×96 viewport as the
+ * tops, it's drawn at the top garment's width and overlaid on top of it, so the
+ * shell sits over whatever warmth tier the rules picked; see
+ * [renderTopWithHandsBitmap] for the bitmap-surface equivalent.
+ */
+@Composable
+internal fun GarmentOuterIcon(
+    outer: OutfitSuggestion.Outer,
+    customFill: Color?,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    customStroke: Color? = null,
+) {
+    val defaults = outfitOuterDefaults.getValue(outer)
+    GarmentIconImpl(
+        drawableRes = outerDrawable(outer),
+        defaults = defaults,
+        customFill = customFill,
+        customStroke = customStroke,
+        contentDescription = contentDescription,
+        modifier = modifier,
+    )
+}
+
 @Composable
 private fun GarmentIconImpl(
     @DrawableRes drawableRes: Int,
@@ -339,16 +365,23 @@ private data class BitmapCacheKey(
 )
 
 /**
- * The top garment bitmap with the optional [hands] (gloves) accessory
- * composited over it at the same `sizePx`-square footprint — the overlay look
- * gloves use on the bitmap render surfaces (notification / widget via
- * [androidx.glance.ImageProvider], Nest-Hub card). The gloves vector sits at the
- * lower sides of its 96×96 viewport, so a same-size overlay lands the gloves at
- * the body's hands without any per-surface alignment maths.
+ * The top garment bitmap with the optional [outer] (rain-jacket) shell and
+ * [hands] (gloves) accessory composited over it at the same `sizePx`-square
+ * footprint — the overlay look gloves use on the bitmap render surfaces
+ * (notification / widget via [androidx.glance.ImageProvider], Nest-Hub card).
+ * The gloves vector sits at the lower sides of its 96×96 viewport, so a
+ * same-size overlay lands the gloves at the body's hands without any
+ * per-surface alignment maths; the rain jacket shares the tops' 96×96 viewport,
+ * so it lands over the torso the same way.
  *
- * When [hands] is null this returns the (cached) plain top bitmap untouched, so
- * the no-gloves path stays byte-identical to the previous single-icon render —
- * existing snapshots don't move. Only the gloves case allocates a composite.
+ * Composite order is top → outer → hands: the rain jacket covers the torso of
+ * the underlying top (it's the outer shell), and the gloves paint last so they
+ * stay visible at the body's sides.
+ *
+ * When both [outer] and [hands] are null this returns the (cached) plain top
+ * bitmap untouched, so the no-overlay path stays byte-identical to the previous
+ * single-icon render — existing snapshots don't move. Only the overlay cases
+ * allocate a composite.
  */
 internal fun renderTopWithHandsBitmap(
     context: Context,
@@ -359,6 +392,9 @@ internal fun renderTopWithHandsBitmap(
     topStrokeArgb: Long? = null,
     handsFillArgb: Long? = null,
     handsStrokeArgb: Long? = null,
+    outer: OutfitSuggestion.Outer? = null,
+    outerFillArgb: Long? = null,
+    outerStrokeArgb: Long? = null,
 ): Bitmap {
     val topBmp = renderOutfitBitmap(
         context = context,
@@ -368,19 +404,32 @@ internal fun renderTopWithHandsBitmap(
         sizePx = sizePx,
         customStrokeArgb = topStrokeArgb,
     )
-    if (hands == null) return topBmp
-    val handsBmp = renderOutfitBitmap(
-        context = context,
-        drawableRes = handsDrawable(hands),
-        defaults = outfitHandsDefaults.getValue(hands),
-        customFillArgb = handsFillArgb,
-        sizePx = sizePx,
-        customStrokeArgb = handsStrokeArgb,
-    )
+    if (hands == null && outer == null) return topBmp
+    val outerBmp = outer?.let {
+        renderOutfitBitmap(
+            context = context,
+            drawableRes = outerDrawable(it),
+            defaults = outfitOuterDefaults.getValue(it),
+            customFillArgb = outerFillArgb,
+            sizePx = sizePx,
+            customStrokeArgb = outerStrokeArgb,
+        )
+    }
+    val handsBmp = hands?.let {
+        renderOutfitBitmap(
+            context = context,
+            drawableRes = handsDrawable(it),
+            defaults = outfitHandsDefaults.getValue(it),
+            customFillArgb = handsFillArgb,
+            sizePx = sizePx,
+            customStrokeArgb = handsStrokeArgb,
+        )
+    }
     val composite = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
     Canvas(composite).apply {
         drawBitmap(topBmp, 0f, 0f, null)
-        drawBitmap(handsBmp, 0f, 0f, null)
+        outerBmp?.let { drawBitmap(it, 0f, 0f, null) }
+        handsBmp?.let { drawBitmap(it, 0f, 0f, null) }
     }
     return composite
 }
@@ -468,6 +517,8 @@ internal fun renderOutfitCard(
     handsStrokes: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     carriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     carriedStrokes: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
+    outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
+    outerStrokes: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
 ): ByteArray {
     val bmp = Bitmap.createBitmap(CARD_W, CARD_H, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bmp)
@@ -487,6 +538,9 @@ internal fun renderOutfitCard(
         topStrokeArgb = topStrokes[outfit.top],
         handsFillArgb = outfit.hands?.let { handsColors[it] },
         handsStrokeArgb = outfit.hands?.let { handsStrokes[it] },
+        outer = outfit.outer,
+        outerFillArgb = outfit.outer?.let { outerColors[it] },
+        outerStrokeArgb = outfit.outer?.let { outerStrokes[it] },
     )
     val botBmp = renderOutfitBitmap(
         context = context,

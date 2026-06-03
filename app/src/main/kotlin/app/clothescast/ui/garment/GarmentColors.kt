@@ -57,6 +57,15 @@ internal val outfitCarriedDefaults: Map<OutfitSuggestion.Carried, GarmentDefault
     OutfitSuggestion.Carried.UMBRELLA to GarmentDefaults(0xFF2D6CDF.toInt(), 0xFF163F7E.toInt()),
 )
 
+// The rain jacket is the only OUTER-slot tier today; the recolour primary is the
+// shell fill / stroke in ic_outfit_rain_jacket.xml (#FFEB3B over #F57F17) — i.e.
+// yellow by default. The lighter zip-channel highlight (#FFF9C4) and the mid
+// drawstring band (#FBC02D) are accent colours that survive the recolour
+// unchanged (same as a puffer's white panels).
+internal val outfitOuterDefaults: Map<OutfitSuggestion.Outer, GarmentDefaults> = mapOf(
+    OutfitSuggestion.Outer.RAIN_JACKET to GarmentDefaults(0xFFFFEB3B.toInt(), 0xFFF57F17.toInt()),
+)
+
 @DrawableRes
 internal fun topDrawable(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.TSHIRT -> R.drawable.ic_outfit_tshirt
@@ -92,6 +101,14 @@ internal fun handsDrawable(hands: OutfitSuggestion.Hands): Int = when (hands) {
 @DrawableRes
 internal fun carriedDrawable(carried: OutfitSuggestion.Carried): Int = when (carried) {
     OutfitSuggestion.Carried.UMBRELLA -> R.drawable.ic_outfit_umbrella
+}
+
+// The rain jacket vector is authored at a 96×96 viewport with the shell over the
+// torso, so it overlays a top icon at matching width — the same footprint the
+// gloves overlay uses — see renderTopWithHandsBitmap / GarmentOuterIcon.
+@DrawableRes
+internal fun outerDrawable(outer: OutfitSuggestion.Outer): Int = when (outer) {
+    OutfitSuggestion.Outer.RAIN_JACKET -> R.drawable.ic_outfit_rain_jacket
 }
 
 /**

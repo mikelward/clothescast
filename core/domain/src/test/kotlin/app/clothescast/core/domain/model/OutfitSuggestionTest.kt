@@ -617,4 +617,61 @@ class OutfitSuggestionTest {
             Garment.fromKey(carried.itemKey())?.slot shouldBe Garment.Slot.CARRIED
         }
     }
+
+    @Test
+    fun `a firing rain-jacket rule sets the outer slot without replacing the top`() {
+        // The rain jacket is an additional outer shell, not a top tier: a firing
+        // rule lights the outer slot and leaves whatever warmth tier the other
+        // rules picked (here the sweater) intact underneath.
+        val rules = listOf(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 12.0, feelsLikeMax = 15.0, precipMaxPct = 60.0),
+            rules,
+        )
+        outfit.top shouldBe OutfitSuggestion.Top.SWEATER
+        outfit.outer shouldBe OutfitSuggestion.Outer.RAIN_JACKET
+    }
+
+    @Test
+    fun `outer stays null when no rain-jacket rule fires`() {
+        // Outer is opt-in with no fallback: a default rule set (no rain-jacket
+        // rule) leaves the slot null and no rain-jacket overlay shows.
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 12.0, feelsLikeMax = 15.0, precipMaxPct = 90.0),
+            rules,
+        )
+        outfit.outer shouldBe null
+    }
+
+    @Test
+    fun `a rain-jacket rule firing alone overlays the default top`() {
+        // With only a rain-jacket rule firing, the top tier falls through to the
+        // user's default and the rain jacket paints over it — the shell adds to
+        // the outfit rather than standing in for a missing top.
+        val rules = listOf(
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 18.0, feelsLikeMax = 24.0, precipMaxPct = 70.0),
+            rules,
+            defaultTop = OutfitSuggestion.Top.TSHIRT,
+        )
+        outfit.top shouldBe OutfitSuggestion.Top.TSHIRT
+        outfit.outer shouldBe OutfitSuggestion.Outer.RAIN_JACKET
+    }
+
+    @Test
+    fun `outer itemKey round-trips through the garment catalog`() {
+        // The slot's catalog key must resolve back to the OUTER-layer TOP-slot
+        // garment so prose / persistence / the rain-jacket icon all key off the
+        // same string.
+        OutfitSuggestion.Outer.entries.forEach { outer ->
+            val garment = Garment.fromKey(outer.itemKey())
+            garment?.slot shouldBe Garment.Slot.TOP
+            garment?.layer shouldBe Garment.Layer.OUTER
+        }
+    }
 }

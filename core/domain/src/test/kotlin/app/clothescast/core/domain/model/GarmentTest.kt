@@ -90,6 +90,46 @@ class GarmentTest {
     }
 
     @Test
+    fun `rain jacket is an outer-layer worn shell that stacks over the warmth tier`() {
+        // The rain jacket joins the catalog as a worn TOP-slot garment in the
+        // OUTER layer (above SHELL), so it round-trips via fromKey, reads as a
+        // worn garment (not a "bring/carry" accessory), and — being its own
+        // layer — survives reduction alongside the sweater rather than
+        // displacing it. The prose then reads "a sweater and a rain jacket".
+        Garment.fromKey("rain-jacket") shouldBe Garment.RAIN_JACKET
+        Garment.RAIN_JACKET.slot shouldBe Garment.Slot.TOP
+        Garment.RAIN_JACKET.layer shouldBe Garment.Layer.OUTER
+        Garment.isAccessoryKey("rain-jacket") shouldBe false
+        val rules = listOf(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        Garment.layerReduce(rules) shouldBe rules
+    }
+
+    @Test
+    fun `a bare rain jacket does not suppress the base top, but a warm layer does`() {
+        // The base layer is implicit only under an *insulating* covering layer.
+        // A thin OUTER rain shell isn't one, so an explicit base-top rule
+        // survives next to a rain jacket ("a t-shirt and a rain jacket") — the
+        // prose then matches the icon, which shows the shell over the base top.
+        val baseAndShell = listOf(
+            ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(20.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        Garment.layerReduce(baseAndShell) shouldBe baseAndShell
+
+        // A warm MID/SHELL layer still hides the base: a t-shirt under a sweater
+        // (and a rain jacket over it) reduces to "a sweater and a rain jacket".
+        val baseMidShell = listOf(
+            ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(20.0)),
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        Garment.layerReduce(baseMidShell) shouldBe listOf(baseMidShell[1], baseMidShell[2])
+    }
+
+    @Test
     fun `fromKey does not depend on process locale`() {
         val originalDefault = Locale.getDefault()
         Locale.setDefault(Locale.forLanguageTag("tr-TR"))

@@ -54,6 +54,14 @@ enum class Garment(
     // matches the other shells. "Extra cold" beyond a full shell stack is
     // signalled by extremity gear (gloves), not a higher layer count.
     PUFFER("puffer", Slot.TOP, Layer.SHELL, layerCount = 3),
+    // A rain jacket is a waterproof *outer* shell worn over whatever top the
+    // other rules pick — it sits in its own [Layer.OUTER] so it stacks on top
+    // of a sweater / jacket / coat rather than replacing it (the prose reads
+    // "Wear a jacket and a rain jacket", and the icon paints it over the top
+    // tier). Its [layerCount] is a light shell's 2: it adds weather protection,
+    // not much warmth, so it never inflates the perceived-warmth tier past the
+    // garment underneath. Ships off by default (absent from [ClothesRule.DEFAULTS]).
+    RAIN_JACKET("rain-jacket", Slot.TOP, Layer.OUTER, layerCount = 2),
     THIN_JACKET("thin-jacket", Slot.TOP, Layer.MID, layerCount = 2),
     TSHIRT("t-shirt", Slot.TOP, Layer.BASE, layerCount = 1),
     POLO("polo", Slot.TOP, Layer.BASE, layerCount = 1),
@@ -133,15 +141,20 @@ enum class Garment(
      *  - At most one garment per layer (heaviest firing tier within the
      *    layer wins — picked via the priority order encoded in
      *    [OutfitSuggestion]'s key sets), and
-     *  - the [BASE] layer is suppressed when [MID] or [SHELL] also fires,
-     *    because the base is implicit when you're wearing something over
-     *    it (no one says "wear a t-shirt under your coat" — they just
-     *    name the coat).
+     *  - the [BASE] layer is suppressed when an *insulating* covering layer
+     *    ([MID] / [SHELL]) also fires, because the base is implicit when
+     *    you're wearing something warm over it (no one says "wear a t-shirt
+     *    under your coat" — they just name the coat).
      *
-     * Bottoms substitute today (shorts vs. pants is an either-or, not a
-     * stack), so they don't carry a layer.
+     * [OUTER] sits above [SHELL]: a waterproof rain jacket worn over the
+     * sweater / jacket / coat the warmth rules pick, so it coexists with the
+     * SHELL / MID winner in the stack rather than displacing it. Unlike a warm
+     * covering layer it does *not* suppress [BASE] on its own — a thin rain
+     * shell doesn't subsume the base top, so a t-shirt + rain jacket keeps both
+     * ("a t-shirt and a rain jacket"). Bottoms substitute today (shorts vs.
+     * pants is an either-or, not a stack), so they don't carry a layer.
      */
-    enum class Layer { BASE, MID, SHELL }
+    enum class Layer { BASE, MID, SHELL, OUTER }
 
     companion object {
         /**
@@ -186,11 +199,13 @@ enum class Garment(
          *
          * Garments are listed in the order [OutfitSuggestion.fromForecast]
          * already encodes:
+         *  - OUTER: RAIN_JACKET
          *  - SHELL: COAT → PUFFER → JACKET
          *  - MID:   THIN_JACKET → SWEATER → HOODIE
          *  - BASE:  POLO → TSHIRT → SHIRT
          */
         private val TOP_LAYER_PRIORITY: Map<Layer, List<Garment>> = mapOf(
+            Layer.OUTER to listOf(RAIN_JACKET),
             Layer.SHELL to listOf(COAT, PUFFER, JACKET),
             Layer.MID to listOf(THIN_JACKET, SWEATER, HOODIE),
             Layer.BASE to listOf(POLO, TSHIRT, SHIRT),
@@ -281,6 +296,14 @@ enum class Garment(
          * per [Layer] (earliest in the slot's priority wins), dropping the base
          * layer when a mid / shell winner also fired. Garments with no
          * [Garment.layer] aren't part of the stack, so they pass through.
+         *
+         * The base is dropped only under an *insulating* covering layer ([MID] /
+         * [SHELL]) — "wear a t-shirt under your coat" goes without saying, so we
+         * name just the coat. A bare [OUTER] shell (the rain jacket) is the
+         * exception: it's a thin waterproof layer that doesn't subsume the base
+         * top, so a `t-shirt > 20°C` + rain-jacket pairing keeps both and reads
+         * "a t-shirt and a rain jacket" — matching the icon, which paints the
+         * shell over that same base top.
          */
         private fun layeredWinners(
             slot: Slot,
@@ -296,8 +319,9 @@ enum class Garment(
                 .mapValues { (layer, group) ->
                     group.minBy { it.value.item.rankIn(priorityByLayer[layer].orEmpty()) }.index
                 }
+            val hasInsulatingLayer = winnerByLayer.keys.any { it == Layer.MID || it == Layer.SHELL }
             val effective =
-                if (winnerByLayer.keys.any { it != Layer.BASE }) {
+                if (hasInsulatingLayer) {
                     winnerByLayer.filterKeys { it != Layer.BASE }
                 } else {
                     winnerByLayer

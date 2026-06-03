@@ -267,6 +267,7 @@ class SettingsViewModel(
                         outfitBottomColors = prefs.outfitBottomColors,
                         outfitHandsColors = prefs.outfitHandsColors,
                         outfitCarriedColors = prefs.outfitCarriedColors,
+                        outfitOuterColors = prefs.outfitOuterColors,
                         holidayCountrySelection = prefs.holidayCountrySelection,
                         holidayOverrides = prefs.holidayOverrides,
                         effectiveEnabledHolidayCountries = effectiveCountries,
@@ -566,6 +567,14 @@ class SettingsViewModel(
     fun setOutfitCarriedColor(carried: OutfitSuggestion.Carried, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitCarriedColor(carried, argb)
+            refreshOutfitWidget()
+        }
+    }
+
+    /** Sibling of [setOutfitTopColor] for the optional rain-jacket outer overlay. */
+    fun setOutfitOuterColor(outer: OutfitSuggestion.Outer, argb: Long?) {
+        viewModelScope.launch {
+            settingsRepository.setOutfitOuterColor(outer, argb)
             refreshOutfitWidget()
         }
     }

@@ -261,6 +261,21 @@ internal fun OutfitCoatPantsGlovesUmbrellaPreview() {
     }
 }
 
+@Preview(name = "Outfit · sweater + jeans + rain jacket", widthDp = 360)
+@Composable
+internal fun OutfitSweaterJeansRainJacketPreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.SWEATER,
+                OutfitSuggestion.Bottom.JEANS,
+                outer = OutfitSuggestion.Outer.RAIN_JACKET,
+            ),
+            label = "Today",
+        )
+    }
+}
+
 @Preview(name = "Outfit row · today + tonight", widthDp = 360)
 @Composable
 internal fun OutfitRowTodayTonightPreview() {

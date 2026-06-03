@@ -187,6 +187,19 @@ class InsightFormatterTest {
         ) shouldBe "(Today, it will be) 21°. Wear a sweater."
     }
 
+    @Test
+    fun `items format names the base top before the rain jacket that layers over it`() {
+        // The rain jacket is an outer shell worn over the base top, so the
+        // itemized wear clause names the base first and the shell second —
+        // matching the order TriggeredOutfit.items produces. The English
+        // two-item join gives only the first item an article ("a t-shirt and
+        // rain jacket"), the same style as "Wear a sweater and jacket."
+        subject.format(summary(clothes = ClothesClause(listOf("t-shirt", "rain-jacket")))) shouldBe
+            "Today, it will be 21°. Wear a t-shirt and rain jacket."
+        subject.format(summary(clothes = ClothesClause(listOf("sweater", "rain-jacket")))) shouldBe
+            "Today, it will be 21°. Wear a sweater and rain jacket."
+    }
+
     // --- Wear preamble (PreambleVisibility) ---
 
     @Test
@@ -531,6 +544,25 @@ class InsightFormatterTest {
         // runs in both modes.
         layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "umbrella")))) shouldBe
             "Today, it will be 21°. Wear 2 layers."
+    }
+
+    @Test
+    fun `layer-count format names the rain jacket after the count instead of folding it in`() {
+        // The rain jacket is weather protection, not warmth: in layer-count mode
+        // it rides after the count like gloves do ("2 layers and a rain jacket")
+        // rather than disappearing into the number — otherwise a sweater-warmth
+        // rain jacket would silently vanish for users who opted into the rule.
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("sweater", "rain-jacket")))) shouldBe
+            "Today, it will be 21°. Wear 2 layers and a rain jacket."
+    }
+
+    @Test
+    fun `layer-count format names a rain jacket over the default base top`() {
+        // Rain-jacket-only opt-in: the base t-shirt supplies the count (1) and
+        // the rain jacket is named after it, so the weather-protection
+        // instruction survives rather than collapsing to a bare "1 layer".
+        layerCountSubject.format(summary(clothes = ClothesClause(listOf("t-shirt", "rain-jacket")))) shouldBe
+            "Today, it will be 21°. Wear 1 layer and a rain jacket."
     }
 
     @Test

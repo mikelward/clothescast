@@ -70,4 +70,14 @@ class OutfitRenderExhaustivenessTest {
         OutfitSuggestion.Carried.entries.filterNot { it in outfitCarriedDefaults }.shouldBeEmpty()
         outfitCarriedDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Carried.entries.toTypedArray())
     }
+
+    @Test
+    fun `every Outer tier has a render-path defaults entry`() {
+        // The optional rain-jacket outer overlay (renderTopWithHandsBitmap /
+        // GarmentOuterIcon) reads outfitOuterDefaults.getValue(outer), so a new
+        // Outer tier without its entry blows up only when an outer rule actually
+        // fires at render time.
+        OutfitSuggestion.Outer.entries.filterNot { it in outfitOuterDefaults }.shouldBeEmpty()
+        outfitOuterDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Outer.entries.toTypedArray())
+    }
 }

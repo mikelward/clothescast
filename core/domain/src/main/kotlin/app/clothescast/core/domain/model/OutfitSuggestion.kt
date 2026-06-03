@@ -36,19 +36,24 @@ import java.time.LocalTime
  * what [ClothesRule.appliesTo] does.
  *
  * Note: [top], [bottom], and [hands] (gloves) render on every icon surface
- * (home-screen card, widget, notification, Nest-Hub cast card). [carried]
- * (umbrella) renders as a full-figure overlay — held at the hip and hanging
- * straight down beside the legs — on the surfaces that show the whole figure
- * (Today cards, widget, cast card); the top-only notification large icon omits
- * it. On a cold rainy day the gloved hand reads as gripping its crook. Its fill
- * is user-recolorable via the same per-row / GarmentColorsCard flow as the worn
- * tiers (`outfit_carried_colors`).
+ * (home-screen card, widget, notification, Nest-Hub cast card). [outer] (rain
+ * jacket) is an additional shell painted over the top icon at the same
+ * footprint (like the gloves overlay), so it also rides every surface — it
+ * stacks on top of whatever warmth tier the rules pick rather than replacing
+ * it. [carried] (umbrella) renders as a full-figure overlay — held at the hip
+ * and hanging straight down beside the legs — on the surfaces that show the
+ * whole figure (Today cards, widget, cast card); the top-only notification
+ * large icon omits it. On a cold rainy day the gloved hand reads as gripping
+ * its crook. The [carried] and [outer] fills are user-recolorable via the same
+ * per-row / GarmentColorsCard flow as the worn tiers (`outfit_carried_colors`
+ * / `outfit_outer_colors`).
  */
 data class OutfitSuggestion(
     val top: Top,
     val bottom: Bottom,
     val hands: Hands? = null,
     val carried: Carried? = null,
+    val outer: Outer? = null,
 ) {
     enum class Top {
         TSHIRT, POLO, SWEATER, THIN_JACKET, THICK_JACKET, THICK_COAT, PUFFER_JACKET;
@@ -114,6 +119,26 @@ data class OutfitSuggestion(
         }
     }
 
+    /**
+     * Optional outer layer worn *over* the chosen [top] — today just the
+     * rain jacket, the `Garment.Slot.TOP` member in `Garment.Layer.OUTER`.
+     * Unlike a [Top] tier it doesn't replace what the warmth rules pick: it's
+     * an additional shell painted over the top icon (the way [hands] gloves
+     * overlay the top), present only when an outer-layer rule fires. Off by
+     * default — no rule ships for it (see [ClothesRule.DEFAULTS]) — so it
+     * stays null unless the user adds a rain-jacket rule. Its fill is
+     * user-recolorable via the same per-row / GarmentColorsCard flow as the
+     * worn tiers (`outfit_outer_colors`); it ships yellow by default.
+     */
+    enum class Outer {
+        RAIN_JACKET;
+
+        /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
+        fun itemKey(): String = when (this) {
+            RAIN_JACKET -> "rain-jacket"
+        }
+    }
+
     companion object {
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
         // Top tiers (coldest first): coat → THICK_COAT, puffer → PUFFER_JACKET,
@@ -148,6 +173,11 @@ data class OutfitSuggestion(
         // Carried tier: a firing `umbrella` rule lights the optional umbrella
         // icon. Like the hands tier it has no fallback — uncovered stays null.
         private val CARRIED_KEYS = listOf(Garment.UMBRELLA)
+        // Outer tier: a firing `rain-jacket` rule lights the optional outer
+        // shell painted over the top. Like hands / carried it has no fallback
+        // — uncovered stays null (off by default; the user opts in by adding
+        // a rain-jacket rule).
+        private val OUTER_KEYS = listOf(Garment.RAIN_JACKET)
 
         /**
          * Two-piece icon outfit for [forecast] given the user's [clothesRules].
@@ -231,7 +261,10 @@ data class OutfitSuggestion(
             val hands = if (firingRules.hasKeyIn(GLOVES_KEYS)) Hands.GLOVES else null
             // Same shape for carried gear (umbrella): independent of hands.
             val carried = if (firingRules.hasKeyIn(CARRIED_KEYS)) Carried.UMBRELLA else null
-            return OutfitSuggestion(top, bottom, hands, carried)
+            // Outer shell (rain jacket) worn over the picked top: independent
+            // of the top tier, so it adds to the stack rather than replacing it.
+            val outer = if (firingRules.hasKeyIn(OUTER_KEYS)) Outer.RAIN_JACKET else null
+            return OutfitSuggestion(top, bottom, hands, carried, outer)
         }
 
         /** True when any rule in the list is keyed on a garment in [keys]. */

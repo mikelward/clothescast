@@ -876,6 +876,8 @@ data class UserPreferences(
     val outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the optional carried umbrella overlay. */
     val outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
+    /** Sibling of [outfitTopColors] for the optional rain-jacket outer overlay. */
+    val outfitOuterColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     /**
      * Holiday themes the user wants to participate in. When today matches an
      * enabled holiday's date predicate, the Today screen recolours the outfit

@@ -105,6 +105,69 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
+    fun `rain-jacket-only rule keeps the default top as the base layer`() {
+        // The rain jacket is an OUTER-layer shell worn over a base top, not a
+        // replacement for one. On a warm wet day where only the rain-jacket rule
+        // fires, the default top still surfaces as the base layer — so the prose
+        // reads "Wear a t-shirt and a rain jacket" rather than collapsing to a
+        // bare "rain jacket", matching the icon (which paints the shell over the
+        // default top). The bottom slot still falls back to its default too.
+        val rules = listOf(
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val out = subject(
+            forecast(min = 18.0, max = 24.0, precip = 70.0, condition = WeatherCondition.RAIN),
+            rules,
+        )
+        out.rules.map { it.item.itemKey }.shouldContainExactly("rain-jacket")
+        out.fallbacks.shouldContainExactly("t-shirt", "pants")
+        // items orders the base top ahead of the OUTER rain shell that layers
+        // over it, even though the rain jacket came from a rule and the t-shirt
+        // from the default fallback — so the prose reads "a t-shirt and a rain
+        // jacket", not "a rain jacket, t-shirt, …".
+        out.items.shouldContainExactly("t-shirt", "rain-jacket", "pants")
+    }
+
+    @Test
+    fun `explicit base-top rule survives under a rain jacket`() {
+        // A user's own base-top rule (t-shirt > 20°C) plus a rain-jacket precip
+        // rule, both firing on a warm wet day. The rain jacket is a thin OUTER
+        // shell that doesn't subsume the base top, so layerReduce keeps the
+        // t-shirt — the prose reads "Wear a t-shirt and a rain jacket", matching
+        // the icon (t-shirt with the rain-jacket overlay). No default top is
+        // added since an explicit base top already covers the slot.
+        val rules = listOf(
+            ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureAbove(20.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val out = subject(
+            forecast(min = 19.0, max = 24.0, precip = 70.0, condition = WeatherCondition.RAIN),
+            rules,
+        )
+        out.rules.map { it.item.itemKey }.shouldContainExactly("t-shirt", "rain-jacket")
+        out.fallbacks.shouldContainExactly("pants")
+        out.items.shouldContainExactly("t-shirt", "rain-jacket", "pants")
+    }
+
+    @Test
+    fun `rain jacket alongside a warmth rule does not double up the base top`() {
+        // When a real top-tier rule fires (sweater), it covers the base top, so
+        // the rain jacket just stacks on top and no default top is added — the
+        // prose reads "Wear a sweater and a rain jacket".
+        val rules = listOf(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+        )
+        val out = subject(
+            forecast(min = 11.0, max = 15.0, precip = 70.0, condition = WeatherCondition.RAIN),
+            rules,
+        )
+        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "rain-jacket")
+        out.fallbacks.shouldContainExactly("pants")
+        out.items.shouldContainExactly("sweater", "rain-jacket", "pants")
+    }
+
+    @Test
     fun `snowy day above the umbrella gate suppresses the carried umbrella`() {
         // The umbrella default keys off aggregate precip probability, so an 80%
         // snowy day clears its gate — but snow doesn't warrant an umbrella, so

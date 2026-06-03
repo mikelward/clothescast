@@ -628,10 +628,15 @@ class InsightFormatter(
         var topCount = 0
         // Non-top garments (bottoms when they reach here, plus extremity gear
         // like gloves) are named after the count: "Wear 3 layers and gloves."
+        // The OUTER rain shell (rain jacket) joins them: it's weather protection,
+        // not warmth, so folding it into the count would silently drop it (its
+        // layerCount can't raise a warmer top's), losing the instruction for the
+        // very users who opted into the rule. Name it in the tail instead —
+        // "Wear 2 layers and a rain jacket."
         val tail = mutableListOf<String>()
         for (item in items) {
             val garment = Garment.fromKey(item) ?: return null
-            if (garment.slot == Garment.Slot.TOP) {
+            if (garment.slot == Garment.Slot.TOP && garment.layer != Garment.Layer.OUTER) {
                 if (garment.layerCount > topCount) topCount = garment.layerCount
             } else {
                 tail.add(item)

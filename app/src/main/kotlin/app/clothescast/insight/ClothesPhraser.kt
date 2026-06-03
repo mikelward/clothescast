@@ -182,6 +182,7 @@ internal class GermanClothesPhraser(private val resources: Resources) : ClothesP
             "coat" to "Mantel",
             "puffer" to "Steppjacke",
             "raincoat" to "Regenjacke",
+            "rain-jacket" to "Regenjacke",
             "shirt" to "Hemd",
             "t-shirt" to "T-Shirt",
             "tshirt" to "T-Shirt",
@@ -280,6 +281,7 @@ private val GARMENT_RES_IDS: Map<Garment, Int> = mapOf(
     Garment.JEANS to R.string.garment_jeans,
     Garment.GLOVES to R.string.garment_gloves,
     Garment.UMBRELLA to R.string.garment_umbrella,
+    Garment.RAIN_JACKET to R.string.garment_rain_jacket,
 )
 
 /**

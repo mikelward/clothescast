@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="96dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="96">
+
+    <!-- Baggy body: same loose, hip-bulged silhouette as the rain pants, in the snow/winter white-gray palette. -->
+    <path android:fillColor="#F5F7FA" android:strokeColor="#90A4AE" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M22,3 L74,3 Q84,38 75,68 L75,95 L53,95 L53,46 Q48,56 43,46 L43,95 L21,95 L21,68 Q12,38 22,3 Z" />
+
+    <!-- Waistband -->
+    <path android:fillColor="#CFD8DC" android:pathData="M22,3 L74,3 L73,13 L23,13 Z" />
+
+    <!-- Quilted padding: one band across the hips, then one across each thigh. -->
+    <path android:fillColor="#CFD8DC" android:pathData="M20,30 L76,30 L76,35 L20,35 Z" />
+    <path android:fillColor="#CFD8DC" android:pathData="M22,60 L43,60 L43,65 L22,65 Z" />
+    <path android:fillColor="#CFD8DC" android:pathData="M53,60 L74,60 L74,65 L53,65 Z" />
+
+    <!-- Snug ankle cuffs -->
+    <path android:fillColor="#CFD8DC" android:pathData="M21,82 L43,82 L43,95 L21,95 Z" />
+    <path android:fillColor="#CFD8DC" android:pathData="M53,82 L75,82 L75,95 L53,95 Z" />
+
+</vector>

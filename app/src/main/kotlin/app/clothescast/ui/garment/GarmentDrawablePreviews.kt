@@ -119,6 +119,18 @@ internal fun ClothingLongPantsPreview() {
     ClothingDrawableFrame(R.drawable.ic_outfit_long_pants, "long pants")
 }
 
+@Preview(name = "Clothing · rain pants", widthDp = 360)
+@Composable
+internal fun ClothingRainPantsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_rain_pants, "rain pants")
+}
+
+@Preview(name = "Clothing · snow pants", widthDp = 360)
+@Composable
+internal fun ClothingSnowPantsPreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_snow_pants, "snow pants")
+}
+
 @Preview(name = "Clothing · gloves", widthDp = 360)
 @Composable
 internal fun ClothingGlovesPreview() {

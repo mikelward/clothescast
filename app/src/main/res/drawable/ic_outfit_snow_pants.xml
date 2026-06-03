@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="96dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="96">
+
+    <!-- Snow pants: very thick/puffy (x: 16 to 80) -->
+    <path android:fillColor="#ECEFF1" android:strokeColor="#263238" android:strokeWidth="2.25" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M24,0 L72,0 L80,96 L56,96 L51,34 L45,34 L40,96 L16,96 Z" />
+
+    <!-- Horizontal baffle lines for puffy look -->
+    <path android:fillColor="#ECEFF1" android:strokeColor="#B0BEC5" android:strokeWidth="2.25" android:strokeLineCap="round" android:pathData="M22,25 L49,25" />
+    <path android:fillColor="#ECEFF1" android:strokeColor="#B0BEC5" android:strokeWidth="2.25" android:strokeLineCap="round" android:pathData="M47,25 L74,25" />
+
+    <path android:fillColor="#ECEFF1" android:strokeColor="#B0BEC5" android:strokeWidth="2.25" android:strokeLineCap="round" android:pathData="M20,50 L46,50" />
+    <path android:fillColor="#ECEFF1" android:strokeColor="#B0BEC5" android:strokeWidth="2.25" android:strokeLineCap="round" android:pathData="M50,50 L76,50" />
+
+    <path android:fillColor="#ECEFF1" android:strokeColor="#B0BEC5" android:strokeWidth="2.25" android:strokeLineCap="round" android:pathData="M18,75 L43,75" />
+    <path android:fillColor="#ECEFF1" android:strokeColor="#B0BEC5" android:strokeWidth="2.25" android:strokeLineCap="round" android:pathData="M53,75 L78,75" />
+
+    <!-- Waistband -->
+    <path android:fillColor="#263238" android:pathData="M24,0 L72,0 L71,10 L25,10 Z" />
+
+</vector>

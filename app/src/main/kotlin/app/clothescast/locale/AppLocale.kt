@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.os.LocaleList
+import androidx.core.content.edit
 import app.clothescast.core.domain.model.Region
 import java.util.Locale
 
@@ -52,7 +53,7 @@ object AppLocale {
             context.getSystemService(LocaleManager::class.java)
                 ?.applicationLocales = LocaleList(locale)
         } else {
-            context.prefs().edit().putString(KEY_TAG, tag).apply()
+            context.prefs().edit { putString(KEY_TAG, tag) }
         }
     }
 
@@ -68,7 +69,7 @@ object AppLocale {
             context.getSystemService(LocaleManager::class.java)
                 ?.applicationLocales = LocaleList.getEmptyLocaleList()
         } else {
-            context.prefs().edit().remove(KEY_TAG).apply()
+            context.prefs().edit { remove(KEY_TAG) }
         }
     }
 

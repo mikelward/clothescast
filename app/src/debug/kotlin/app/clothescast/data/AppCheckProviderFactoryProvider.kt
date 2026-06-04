@@ -1,6 +1,7 @@
 package app.clothescast.data
 
 import android.content.Context
+import androidx.core.content.edit
 import app.clothescast.BuildConfig
 import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.AppCheckProviderFactory
@@ -48,9 +49,9 @@ fun provideAppCheckProviderFactory(context: Context): AppCheckProviderFactory {
         val persistenceKey = FirebaseApp.getInstance().persistenceKey
         val prefName = "com.google.firebase.appcheck.debug.store.$persistenceKey"
         val prefKey = "com.google.firebase.appcheck.debug.DEBUG_SECRET"
-        context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit()
-            .putString(prefKey, token)
-            .apply()
+        context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit {
+            putString(prefKey, token)
+        }
     }
     return DebugAppCheckProviderFactory.getInstance()
 }

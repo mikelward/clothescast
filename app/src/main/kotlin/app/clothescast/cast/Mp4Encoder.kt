@@ -7,6 +7,7 @@ import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
 import android.media.MediaMuxer
+import androidx.core.graphics.scale
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -74,7 +75,7 @@ object Mp4Encoder {
         val targetW = ((source.width * scale).toInt() / 2) * 2
         val targetH = ((source.height * scale).toInt() / 2) * 2
         if (targetW == source.width && targetH == source.height) return source
-        return Bitmap.createScaledBitmap(source, targetW, targetH, true)
+        return source.scale(targetW, targetH)
     }
 
     private fun muxToFile(frame: Bitmap, wav: WavInfo, output: File) {

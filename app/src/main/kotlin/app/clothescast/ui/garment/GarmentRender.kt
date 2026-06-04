@@ -9,6 +9,8 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
 import androidx.core.graphics.PathParser as AndroidPathParser
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.withTranslation
 import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -332,7 +334,7 @@ private fun renderRecoloredBitmap(
         customFillArgb?.let { Color(it.toInt()) },
         customStrokeArgb?.let { Color(it.toInt()) },
     )
-    val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(sizePx, sizePx)
     val canvas = Canvas(bitmap)
     val scaleX = sizePx / vector.viewportWidth
     val scaleY = sizePx / vector.viewportHeight
@@ -425,7 +427,7 @@ internal fun renderTopWithHandsBitmap(
             customStrokeArgb = handsStrokeArgb,
         )
     }
-    val composite = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+    val composite = createBitmap(sizePx, sizePx)
     Canvas(composite).apply {
         drawBitmap(topBmp, 0f, 0f, null)
         outerBmp?.let { drawBitmap(it, 0f, 0f, null) }
@@ -460,7 +462,7 @@ internal fun renderCarriedFigureBitmap(
         customFillArgb?.let { Color(it.toInt()) },
         customStrokeArgb?.let { Color(it.toInt()) },
     )
-    val bitmap = Bitmap.createBitmap(widthPx, heightPx, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(widthPx, heightPx)
     val canvas = Canvas(bitmap)
     canvas.scale(widthPx / vector.viewportWidth, heightPx / vector.viewportHeight)
     val paint = Paint().apply { isAntiAlias = true }
@@ -520,7 +522,7 @@ internal fun renderOutfitCard(
     outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     outerStrokes: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
 ): ByteArray {
-    val bmp = Bitmap.createBitmap(CARD_W, CARD_H, Bitmap.Config.ARGB_8888)
+    val bmp = createBitmap(CARD_W, CARD_H)
     val canvas = Canvas(bmp)
     canvas.drawColor(android.graphics.Color.WHITE)
 
@@ -594,10 +596,9 @@ internal fun renderOutfitCard(
             .setEllipsize(TextUtils.TruncateAt.END)
             .setMaxLines(PROSE_MAX_LINES)
             .build()
-        canvas.save()
-        canvas.translate(proseX.toFloat(), proseTop.toFloat())
-        layout.draw(canvas)
-        canvas.restore()
+        canvas.withTranslation(proseX.toFloat(), proseTop.toFloat()) {
+            layout.draw(this)
+        }
     }
 
     // A single conditions row anchored to the bottom of the right column —
@@ -834,19 +835,18 @@ private fun drawSolidGlyph(
 ) {
     val path = AndroidPathParser.createPathFromPathData(pathData)
     val scale = size.toFloat() / 24f
-    canvas.save()
-    canvas.translate(x.toFloat(), y.toFloat())
-    canvas.scale(scale, scale)
-    canvas.drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = fillArgb })
-    canvas.drawPath(
-        path,
-        Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            style = Paint.Style.STROKE
-            color = outlineArgb
-            strokeWidth = outlineWidth
-        },
-    )
-    canvas.restore()
+    canvas.withTranslation(x.toFloat(), y.toFloat()) {
+        scale(scale, scale)
+        drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = fillArgb })
+        drawPath(
+            path,
+            Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                style = Paint.Style.STROKE
+                color = outlineArgb
+                strokeWidth = outlineWidth
+            },
+        )
+    }
 }
 
 /**
@@ -996,7 +996,7 @@ internal fun renderConditionsStripBitmap(
     val outlineArgb = if (darkTheme) STRIP_DARK_OUTLINE_ARGB else INFO_ICON_OUTLINE_ARGB
     val textArgb = if (darkTheme) STRIP_DARK_TEXT_ARGB else STRIP_LIGHT_TEXT_ARGB
 
-    val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(w, h)
     val canvas = Canvas(bitmap) // transparent — the widget Box paints its own background
 
     val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {

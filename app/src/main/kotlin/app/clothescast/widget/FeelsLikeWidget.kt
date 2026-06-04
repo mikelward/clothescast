@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -185,7 +185,7 @@ private fun EmptyContent() {
 // under-specified intent hit). NEW_TASK is required because the widget launches
 // from a non-activity context.
 private fun chartTapIntent(context: Context, page: Int): Intent =
-    Intent(Intent.ACTION_VIEW, Uri.parse(MainActivity.todayPageUri(page)), context, MainActivity::class.java)
+    Intent(Intent.ACTION_VIEW, MainActivity.todayPageUri(page).toUri(), context, MainActivity::class.java)
         .apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or
                 Intent.FLAG_ACTIVITY_SINGLE_TOP or

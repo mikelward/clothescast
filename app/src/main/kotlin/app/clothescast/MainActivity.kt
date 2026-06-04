@@ -2,7 +2,6 @@ package app.clothescast
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.TextView
@@ -19,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import app.clothescast.core.domain.model.ThemeMode
@@ -205,7 +205,7 @@ class MainActivity : ComponentActivity() {
         /** Tap intent for notifications: opens (or brings forward) MainActivity and
          *  deep-links to Today. SINGLE_TOP/CLEAR_TOP reuses a running task. */
         fun todayTapIntent(context: Context): Intent =
-            Intent(Intent.ACTION_VIEW, Uri.parse(DEEP_LINK_TODAY), context, MainActivity::class.java).apply {
+            Intent(Intent.ACTION_VIEW, DEEP_LINK_TODAY.toUri(), context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
     }

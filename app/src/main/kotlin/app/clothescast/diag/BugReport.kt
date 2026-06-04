@@ -16,6 +16,7 @@ import android.view.PixelCopy
 import android.view.View
 import android.view.Window
 import androidx.core.content.FileProvider
+import androidx.core.graphics.createBitmap
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.BottomsFormat
@@ -415,7 +416,7 @@ object BugReport {
         val window = activity.window ?: return null
         val view: View = window.decorView
         if (view.width <= 0 || view.height <= 0) return null
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(view.width, view.height)
         return suspendCancellableCoroutine { cont ->
             val location = IntArray(2)
             view.getLocationInWindow(location)

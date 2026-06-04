@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 
 @Composable
 internal fun SectionCard(title: String, content: @Composable () -> Unit) {
@@ -173,7 +174,7 @@ internal const val PRIVACY_POLICY_URL =
     "https://github.com/mikelward/clothescast/blob/main/PRIVACY.md"
 
 internal fun openUrl(context: android.content.Context, url: String) {
-    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
+    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, url.toUri())
         .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
     runCatching { context.startActivity(intent) }
 }

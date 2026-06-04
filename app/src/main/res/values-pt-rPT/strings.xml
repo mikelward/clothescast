@@ -1260,6 +1260,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="holiday_name_whit_monday">Segunda-feira de Pentecostes</string>
     <plurals name="insight_clothes_layer_count">
         <item quantity="one">%1$d camada</item>
+        <item quantity="many">%1$d camadas</item>
         <item quantity="other">%1$d camadas</item>
     </plurals>
     <string name="insight_delta_cooler_lead">estará %1$d° mais frio do que ontem.</string>

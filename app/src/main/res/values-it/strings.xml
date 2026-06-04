@@ -1245,6 +1245,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_name_whit_monday">Lunedì di Pentecoste</string>
     <plurals name="insight_clothes_layer_count">
         <item quantity="one">%1$d strato</item>
+        <item quantity="many">%1$d strati</item>
         <item quantity="other">%1$d strati</item>
     </plurals>
     <string name="insight_delta_cooler_lead">farà %1$d° in meno rispetto a ieri.</string>

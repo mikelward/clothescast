@@ -1130,7 +1130,6 @@ standard in Israeli digital communication.
     <plurals name="insight_clothes_layer_count">
         <item quantity="one">שכבה אחת</item>
         <item quantity="two">שתי שכבות</item>
-        <item quantity="many">%1$d שכבות</item>
         <item quantity="other">%1$d שכבות</item>
     </plurals>
     <string name="insight_delta_cooler_lead">יהיה קריר ב-%1$d° מאשר אתמול.</string>

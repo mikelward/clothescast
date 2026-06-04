@@ -1259,6 +1259,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_name_whit_monday">Lundi de Pentecôte</string>
     <plurals name="insight_clothes_layer_count">
         <item quantity="one">%1$d couche</item>
+        <item quantity="many">%1$d couches</item>
         <item quantity="other">%1$d couches</item>
     </plurals>
     <string name="insight_delta_cooler_lead">il fera %1$d° de moins qu\'hier.</string>

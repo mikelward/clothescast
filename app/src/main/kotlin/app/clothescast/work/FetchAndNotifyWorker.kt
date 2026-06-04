@@ -127,6 +127,10 @@ class FetchAndNotifyWorker(
         }
     }
 
+    // WorkManager marks Result.Success/Failure and getOutputData @RestrictTo its
+    // own library group; reading the terminal Result's output data here is
+    // intentional and has no public equivalent.
+    @Suppress("RestrictedApi")
     private fun recordDailyRefreshOutcome(period: ForecastPeriod, result: Result, startMs: Long) {
         val outcome = when (result) {
             is Result.Success -> {
@@ -724,6 +728,7 @@ class FetchAndNotifyWorker(
      * Result.retry() leaves the WorkInfo non-terminal, so it doesn't need stamping;
      * we only annotate success / failure outputs.
      */
+    @Suppress("RestrictedApi") // see recordDailyRefreshOutcome: reading restricted Result output is intentional
     private fun stamped(result: Result): Result {
         val now = System.currentTimeMillis()
         return when (result) {

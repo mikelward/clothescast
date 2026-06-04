@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PixelFormat
-import android.graphics.drawable.ColorDrawable
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.Image
@@ -13,6 +12,9 @@ import android.media.ImageReader
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.get
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.ViewModelStore
@@ -102,7 +104,7 @@ internal suspend fun renderComposableToBitmap(
             // The RGBA_8888 ImageReader preserves the alpha channel.
             window?.apply {
                 setLayout(widthPx, heightPx)
-                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             }
         }
         val composeView = ComposeView(presentation.context).apply {
@@ -172,11 +174,7 @@ private fun Image.toBitmap(width: Int, height: Int): Bitmap {
     val pixelStride = plane.pixelStride
     val rowStride = plane.rowStride
     val rowPadding = rowStride - pixelStride * width
-    val padded = Bitmap.createBitmap(
-        width + rowPadding / pixelStride,
-        height,
-        Bitmap.Config.ARGB_8888,
-    )
+    val padded = createBitmap(width + rowPadding / pixelStride, height)
     padded.copyPixelsFromBuffer(plane.buffer)
     return if (rowPadding == 0) padded else Bitmap.createBitmap(padded, 0, 0, width, height)
 }
@@ -191,7 +189,7 @@ private fun Bitmap.coarseHash(): Int {
     while (y < height) {
         var x = 0
         while (x < width) {
-            hash = hash * 31 + getPixel(x, y)
+            hash = hash * 31 + this[x, y]
             x += stepX
         }
         y += stepY
@@ -202,14 +200,14 @@ private fun Bitmap.coarseHash(): Int {
 // True when every sampled pixel matches the first — a fully transparent or
 // single-colour frame, i.e. nothing meaningful drew.
 private fun Bitmap.isBlank(): Boolean {
-    val first = getPixel(0, 0)
+    val first = this[0, 0]
     val stepX = (width / 16).coerceAtLeast(1)
     val stepY = (height / 16).coerceAtLeast(1)
     var y = 0
     while (y < height) {
         var x = 0
         while (x < width) {
-            if (getPixel(x, y) != first) return false
+            if (this[x, y] != first) return false
             x += stepX
         }
         y += stepY

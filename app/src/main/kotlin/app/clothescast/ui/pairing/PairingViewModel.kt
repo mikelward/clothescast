@@ -3,6 +3,7 @@ package app.clothescast.ui.pairing
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
+import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -154,7 +155,7 @@ private fun generateQrBitmap(content: String): Bitmap {
     val pixels = IntArray(QR_SIZE_PX * QR_SIZE_PX) { i ->
         if (bits[i % QR_SIZE_PX, i / QR_SIZE_PX]) Color.BLACK else Color.WHITE
     }
-    val bmp = Bitmap.createBitmap(QR_SIZE_PX, QR_SIZE_PX, Bitmap.Config.ARGB_8888)
+    val bmp = createBitmap(QR_SIZE_PX, QR_SIZE_PX)
     bmp.setPixels(pixels, 0, QR_SIZE_PX, 0, 0, QR_SIZE_PX, QR_SIZE_PX)
     return bmp
 }

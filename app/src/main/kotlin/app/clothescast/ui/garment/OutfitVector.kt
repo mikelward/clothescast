@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.util.Xml
 import androidx.annotation.DrawableRes
 import androidx.core.graphics.PathParser
+import androidx.core.graphics.toColorInt
 import org.xmlpull.v1.XmlPullParser
 import java.util.concurrent.ConcurrentHashMap
 
@@ -104,7 +105,7 @@ private fun floatAttr(attrs: android.util.AttributeSet, name: String): Float? =
 
 private fun colorAttr(attrs: android.util.AttributeSet, name: String): Int? {
     val raw = stringAttr(attrs, name) ?: return null
-    return runCatching { android.graphics.Color.parseColor(raw) }.getOrNull()
+    return runCatching { raw.toColorInt() }.getOrNull()
 }
 
 private fun capAttr(attrs: android.util.AttributeSet, name: String): Paint.Cap? =

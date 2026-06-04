@@ -93,6 +93,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -3569,7 +3570,7 @@ internal fun openInMaps(context: Context, latitude: Double, longitude: Double, l
     val labelPart = label?.takeIf { it.isNotBlank() }
         ?.let { "(${Uri.encode(it)})" }
         .orEmpty()
-    val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude$labelPart")
+    val uri = "geo:$latitude,$longitude?q=$latitude,$longitude$labelPart".toUri()
     val intent = Intent(Intent.ACTION_VIEW, uri)
     try {
         context.startActivity(intent)

@@ -1,6 +1,6 @@
 package app.clothescast.data
 
-import android.net.Uri
+import androidx.core.net.toUri
 import app.clothescast.core.data.insight.GeminiCallPlan
 import app.clothescast.core.data.insight.GeminiCallPlanner
 import app.clothescast.core.data.insight.GeminiEndpoint
@@ -165,7 +165,7 @@ class AppCheckGeminiCallPlanner(
          * URL directly instead of going through `GeminiEndpoint.apiVersion`.
          */
         internal fun parseProxyEndpoint(url: String): GeminiEndpoint {
-            val parsed = Uri.parse(url)
+            val parsed = url.toUri()
             val host = parsed.host
                 ?: error("GEMINI_PROXY_URL has no host: $url")
             val pathPrefix = parsed.path.orEmpty().trim('/')

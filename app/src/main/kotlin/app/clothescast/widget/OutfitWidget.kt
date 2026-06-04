@@ -2,7 +2,6 @@ package app.clothescast.widget
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -10,6 +9,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -139,7 +139,7 @@ internal fun launchAppIntent(context: Context): Intent =
     Intent(Intent.ACTION_MAIN)
         .setClass(context, MainActivity::class.java)
         .addCategory(Intent.CATEGORY_LAUNCHER)
-        .setData(Uri.parse("clothescast://widget/open"))
+        .setData("clothescast://widget/open".toUri())
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
 
 @Composable

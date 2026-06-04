@@ -40,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -128,8 +129,9 @@ internal fun CalendarContent(
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val uiLocale = remember(context.resources.configuration) {
-        context.resources.configuration.locales.get(0) ?: Locale.getDefault()
+    val configuration = LocalConfiguration.current
+    val uiLocale = remember(configuration) {
+        configuration.locales.get(0) ?: Locale.getDefault()
     }
 
     // One source of permission truth for the whole page — the master toggle, the
@@ -797,6 +799,9 @@ private fun OverrideDropdown(
  * crashing.
  */
 @Composable
+// The resource id is looked up dynamically by name (getIdentifier), so
+// stringResource() can't be used here — the id isn't known at compile time.
+@Suppress("LocalContextGetResourceValueCall")
 private fun resolveHolidayString(name: String): String? {
     val context = LocalContext.current
     val resId = context.resources.getIdentifier(name, "string", context.packageName)

@@ -67,13 +67,15 @@ class MainActivity : ComponentActivity() {
                 it.themeMode to it.colorPalette
             }
         }
+        // Derive the theme/palette flows outside composition — invoking flow
+        // operators (map) inside setContent recreates them on every recompose.
+        val themeModeFlow = app.settingsRepository.preferences.map { it.themeMode }
+        val colorPaletteFlow = app.settingsRepository.preferences.map { it.colorPalette }
         try {
             setContent {
-                val themeMode by app.settingsRepository.preferences
-                    .map { it.themeMode }
+                val themeMode by themeModeFlow
                     .collectAsStateWithLifecycle(initialValue = initialPrefs.first)
-                val colorPalette by app.settingsRepository.preferences
-                    .map { it.colorPalette }
+                val colorPalette by colorPaletteFlow
                     .collectAsStateWithLifecycle(initialValue = initialPrefs.second)
                 val darkTheme = when (themeMode) {
                     ThemeMode.SYSTEM -> isSystemInDarkTheme()

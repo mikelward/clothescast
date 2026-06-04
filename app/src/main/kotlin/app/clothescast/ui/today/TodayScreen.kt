@@ -1631,13 +1631,13 @@ internal fun HolidayBanner(
     val effectiveCountry = remember(region) {
         (region.toJavaLocale() ?: Locale.getDefault()).country
     }
-    val bannerText = remember(theme, effectiveCountry) {
+    // Composed multi-celebration banner joins each piece with the localised
+    // "and" ("Happy bank holiday and don't forget your towel"). Read observably
+    // up front so it isn't queried off LocalContext inside the remember body.
+    val and = stringResource(R.string.holiday_banner_and)
+    val bannerText = remember(theme, effectiveCountry, and) {
         val segments = theme.bannerSegments
         if (!segments.isNullOrEmpty()) {
-            // Composed multi-celebration banner: join each piece with the
-            // localised "and" ("Happy bank holiday and don't forget your
-            // towel").
-            val and = context.getString(R.string.holiday_banner_and)
             segments.joinToString(separator = " $and ") { segment ->
                 segment.literalText ?: run {
                     val key = segment.textKeyByCountry[effectiveCountry.uppercase()] ?: segment.textKey

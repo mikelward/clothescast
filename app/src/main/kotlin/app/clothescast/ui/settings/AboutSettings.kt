@@ -153,6 +153,7 @@ private fun AboutCard() {
 @Composable
 private fun DebugCard() {
     val context = LocalContext.current
+    val fireToast = stringResource(R.string.settings_debug_fire_toast)
     SectionCard(title = stringResource(R.string.settings_debug_title)) {
         Text(
             text = stringResource(R.string.settings_debug_description),
@@ -163,7 +164,7 @@ private fun DebugCard() {
                 FetchAndNotifyWorker.enqueueOneShot(context.applicationContext)
                 Toast.makeText(
                     context,
-                    context.getString(R.string.settings_debug_fire_toast),
+                    fireToast,
                     Toast.LENGTH_SHORT,
                 ).show()
             },

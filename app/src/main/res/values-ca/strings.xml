@@ -1072,6 +1072,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_name_whit_monday">Dilluns de Pentecosta</string>
     <plurals name="insight_clothes_layer_count">
         <item quantity="one">%1$d capa</item>
+        <item quantity="many">%1$d capes</item>
         <item quantity="other">%1$d capes</item>
     </plurals>
     <string name="insight_delta_cooler_lead">farà %1$d° menys que ahir.</string>

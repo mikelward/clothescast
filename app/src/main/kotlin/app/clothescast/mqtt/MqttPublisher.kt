@@ -660,6 +660,10 @@ data class MqttConfig(
     val password: String?,
 )
 
+// HiveMQ's builders are fluent and mutate in place, returning the receiver;
+// sslWithDefaultConfig() / password() inside the apply{} blocks below take
+// effect even though their return value is discarded.
+@Suppress("CheckResult")
 private suspend fun publishWithHiveMq(
     config: MqttConfig,
     topic: String,

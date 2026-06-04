@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -133,10 +134,11 @@ private fun RegionLanguagePicker(
     // the app override — we use LocaleManager.getSystemLocales() there.
     // The label itself is also rendered in the device language so it reads
     // naturally regardless of which in-app region is active.
+    val configuration = LocalConfiguration.current
     val systemLocale = remember { context.deviceSystemLocale().stripExtensions() }
     val systemTag = remember(systemLocale) { systemLocale.toLanguageTag() }
-    val systemLabel = remember(systemLocale) {
-        val cfg = Configuration(context.resources.configuration)
+    val systemLabel = remember(systemLocale, configuration) {
+        val cfg = Configuration(configuration)
             .also { it.setLocale(systemLocale) }
         context.createConfigurationContext(cfg)
             .resources.getString(R.string.settings_region_language_system)

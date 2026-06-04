@@ -27,6 +27,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -349,13 +350,15 @@ internal fun CalendarPage(
     onNavigateToLocation: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    // Observe the device locale so the fallback country tracks a locale change.
+    val deviceLocale = LocalConfiguration.current.locales[0]
     SettingsScaffold(R.string.settings_page_calendar, onBack) { padding ->
         CalendarContent(
             holidayCountrySelection = state.holidayCountrySelection,
             holidayOverrides = state.holidayOverrides,
             effectiveEnabledHolidayCountries = state.effectiveEnabledHolidayCountries,
             localeCountry = state.region.toJavaLocale()?.country
-                ?: java.util.Locale.getDefault().country,
+                ?: deviceLocale.country,
             weatherLocationCountry = state.location?.countryCode,
             calendarEnabled = state.calendarEnabled,
             useCalendarEvents = state.useCalendarEvents,

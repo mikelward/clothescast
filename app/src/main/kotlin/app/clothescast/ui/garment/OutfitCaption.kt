@@ -98,10 +98,17 @@ private fun greedyWrappedLineCount(text: String, charsPerLine: Int): Int {
 // fillMaxWidth, minus the widget's small outer padding).
 private const val USABLE_WIDTH_FRACTION = 0.9f
 // Average glyph advance as a fraction of the font size, for the proxy
-// char-per-line budget. Tuned (with USABLE_WIDTH_FRACTION) so a single-column
-// cell keeps the established 1-line base / 2-line accessory wrapping and a
-// halved side-by-side column tips a long accessory run onto a third line.
-private const val AVG_CHAR_EM = 0.5f
+// char-per-line budget. Tuned (with USABLE_WIDTH_FRACTION) to track what the
+// renderer actually wraps to: the run's narrow "·" separators and spaces pull
+// the real average well under a full em, so 0.5 over-counted — a four-piece
+// accessory run ("Thick coat · Long pants · Gloves · Umbrella") that renders on
+// two lines in a halved side-by-side column was estimated at three, which then
+// over-reserved icon room and shrank the figure into a sea of empty space.
+// 0.46 lands the estimate on the rendered line count for the catalogue's
+// captions; it stays a deliberate slight over-estimate vs. the proportional
+// glyph widths so it rounds up rather than down (an over-count only adds a
+// little headroom, an under-count clips the final accessory).
+private const val AVG_CHAR_EM = 0.46f
 // A widget cell never has room for more than this many caption lines on top of
 // the icons; past it the run is left to ellipsize rather than shrinking the
 // icons into nothing.

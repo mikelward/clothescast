@@ -382,9 +382,8 @@ private fun EmptyContent(size: DpSize) {
 // 1:2 tall+narrow even when the widget as a whole is square — so a single
 // shortest-dimension factor would lock the icons to the narrow side and
 // leave the vertical room as visual padding. The two-budget min keeps the
-// horizontal cap honest at modest cell sizes (160dp square: ~50dp icon,
-// matching the previous look) and lets icons grow into the column when the
-// launcher stretches the cell.
+// horizontal cap honest at modest cell sizes and lets icons grow into the
+// column when the launcher stretches the cell.
 //
 // Text scaling stays anchored to the shortest dimension because labels want
 // to remain proportionate to the smaller of the two axes — readable in a
@@ -393,25 +392,31 @@ private fun scaledIconSize(size: DpSize, subtitleLines: Int = 1): Dp {
     val short = minOf(size.width.value, size.height.value)
     val labelSp = (short * 0.0875f).coerceAtLeast(13f)
     val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
-    // 1.5× covers Compose Text's actual rendered line height (the legacy
-    // includeFontPadding adds ~0.16× to natural line height on top of the
-    // ~1.2× font metric), plus the inter-row spacers (2dp + 2dp) and the
-    // outer Box padding (2dp × 2) with a few dp of safety. Was `+ 22` when
-    // spacers / padding totalled 14dp; the tighter spacing here saves 6dp
-    // so the constant drops to 16 while keeping the same safety margin.
-    // The label is always one line; the caption is [subtitleLines] (1 for a
-    // plain top + bottom outfit, 2 once an accessory / shell drops to a second
-    // line). A two-line caption reserves an extra line of headroom: the centred
-    // Column hands the caption only the height left after the icon stack, and
-    // without that spare line the second line gets squeezed out. One-line
-    // captions reserve exactly one line, so plain outfits keep their full-size
-    // icons (unchanged from before).
-    val reserveLines = if (subtitleLines > 1) subtitleLines + 1 else subtitleLines
-    val reservedVertical = (labelSp + subtitleSp * reserveLines) * 1.5f + 16f
+    // We reserve room for exactly the lines the caption renders ([subtitleLines]
+    // from outfitGarmentCaptionLineCount, now tuned to track real wrapping) plus
+    // the label, and hand the rest to the figure. The 1.45× multiplier covers a
+    // Glance TextView's rendered line height (the legacy includeFontPadding adds
+    // ~0.16× on top of the ~1.2× font metric, ~1.36× — 1.45× keeps a margin),
+    // and the +14 constant covers the inter-row spacers (2dp + 2dp) and the
+    // outer Box padding (2dp × 2) with a few dp to spare.
+    //
+    // This used to carry two stacked safety margins — a +1 phantom caption line
+    // *and* a line-count estimate biased to over-count — which together reserved
+    // room for ~4 lines on an outfit whose caption renders on 2 (the umbrella +
+    // gloves run in a halved side-by-side column). The centred Column splits any
+    // height it doesn't hand the figure into equal top/bottom padding, so that
+    // double over-reservation shrank the figure to its floor and left a big
+    // empty band below it — most visible on the left/Today column. Reserving the
+    // real line count (no +1) lets the figure grow into that reclaimed space and
+    // closes the gap; the 1.45× margin over the ~1.36× real line height keeps
+    // the final caption line from clipping. The label is always one line.
+    val reservedVertical = (labelSp + subtitleSp * subtitleLines) * 1.45f + 14f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
-    // 5% horizontal margin on each side keeps the icon off the column edge
-    // without pushing a measurable gap back into the layout.
-    val horizontalBudget = size.width.value * 0.9f
+    // Near-edge-to-edge horizontal cap: the figure (a top stacked over a
+    // narrower bottom) never visually fills its square footprint, so leaving
+    // only a 2.5% margin each side lets the column-bound case grow without the
+    // art actually touching the cell edge.
+    val horizontalBudget = size.width.value * 0.95f
     return minOf(verticalBudget, horizontalBudget).coerceAtLeast(36f).dp
 }
 

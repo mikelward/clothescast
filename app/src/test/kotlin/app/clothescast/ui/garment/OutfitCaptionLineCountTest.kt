@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test
  * only sets the widget's `maxLines` cap and icon-room reserve, so it must:
  *  - keep the established single-column wrapping (a long base outfit on one
  *    line, an accessory run on two) so existing widget snapshots don't move, and
- *  - grow to three lines once a side-by-side column halves the width, so the
- *    final accessory ("Umbrella") isn't clipped — the regression this fixes.
+ *  - track what the renderer *actually* wraps to so the widget reserves icon
+ *    room for the real line count — over-counting reserves a phantom line that
+ *    shrinks the figure and leaves an empty band below it, under-counting clips
+ *    the final accessory ("Umbrella").
  *
  * Widths / font sizes mirror what the widget passes: ~160 dp / 11 sp for a
  * single column, ~120 dp / 10 sp for a halved side-by-side column.
@@ -24,9 +26,13 @@ class OutfitCaptionLineCountTest {
     }
 
     @Test
-    fun `accessory run wraps to three lines in a halved side-by-side column`() {
-        // The previous constant cap of 2 clipped "Umbrella" here.
-        outfitGarmentCaptionLineCount(accessoryRun, availableWidthDp = 120f, fontSizeSp = 10f) shouldBe 3
+    fun `accessory run wraps to two lines in a halved side-by-side column`() {
+        // At 120 dp / 10 sp the run renders on two lines — "Thick coat · Long
+        // pants" then "· Gloves · Umbrella" — with the umbrella fully visible
+        // (see the widget_side_by_side_accessories_narrow snapshot). The estimate
+        // used to over-count this at three, which reserved a phantom caption line
+        // and shrank the Today figure into a band of empty space.
+        outfitGarmentCaptionLineCount(accessoryRun, availableWidthDp = 120f, fontSizeSp = 10f) shouldBe 2
     }
 
     @Test

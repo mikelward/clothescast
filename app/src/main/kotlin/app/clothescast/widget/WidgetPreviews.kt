@@ -471,12 +471,12 @@ private fun scaledIconSizeMock(size: DpSize, subtitleLines: Int = 1): Dp {
     val short = minOf(size.width.value, size.height.value)
     val labelSp = (short * 0.0875f).coerceAtLeast(13f)
     val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
-    // Two-line captions reserve +1 line of headroom so the wrapped second line
-    // isn't squeezed out by the centred column — see OutfitWidget.scaledIconSize.
-    val reserveLines = if (subtitleLines > 1) subtitleLines + 1 else subtitleLines
-    val reservedVertical = (labelSp + subtitleSp * reserveLines) * 1.5f + 16f
+    // Reserve room for exactly the rendered caption line count (no phantom
+    // extra line); the 1.45× margin keeps the final line from clipping — see
+    // OutfitWidget.scaledIconSize.
+    val reservedVertical = (labelSp + subtitleSp * subtitleLines) * 1.45f + 14f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
-    val horizontalBudget = size.width.value * 0.9f
+    val horizontalBudget = size.width.value * 0.95f
     return minOf(verticalBudget, horizontalBudget).coerceAtLeast(36f).dp
 }
 

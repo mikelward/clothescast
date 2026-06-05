@@ -67,6 +67,9 @@ internal fun holidayTtsGreeting(
 
 private val TERMINAL_PUNCTUATION = setOf('.', '!', '?')
 
+// getIdentifier is required: the string name is computed at runtime (holiday
+// key), so a compile-time R.string reference isn't possible.
+@android.annotation.SuppressLint("DiscouragedApi")
 private fun Context.resolveStringByName(name: String): String? {
     val resId = resources.getIdentifier(name, "string", packageName)
     return if (resId == 0) null else getString(resId)

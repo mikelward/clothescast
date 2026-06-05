@@ -146,7 +146,7 @@ class ReverseGeocoder(
             fetchSync(geocoder, lat, lon)
         }
 
-    @android.annotation.TargetApi(Build.VERSION_CODES.TIRAMISU)
+    @androidx.annotation.RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private suspend fun fetchAsync(
         geocoder: Geocoder,
         lat: Double,

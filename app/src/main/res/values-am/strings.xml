@@ -395,8 +395,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s እና %2$s</string>
     <string name="insight_clothes_join_many">%1$s፣ %2$s፣ እና %3$s</string>
-    <string name="insight_precip">%1$s %2$s።</string>
-    <string name="insight_precip_at_time">%1$s ሰዓት</string>
+    <string name="insight_precip">%1$s።</string>
     <string name="insight_precip_overnight">ሌሊት</string>
     <string name="insight_condition_clear">ፀሃያማ</string>
     <string name="insight_condition_partly_cloudy">ትንሽ ደመናማ</string>
@@ -408,19 +407,19 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">ነጎድጓዳ ዝናብ</string>
     <string name="insight_condition_unknown">ያልታወቀ</string>
     <string name="insight_tie_in">ዛሬ ምሽት %1$s ይዙ።</string>
-    <string name="insight_tie_in_with_rain">ዛሬ ምሽት %1$s ይዙ፣ %3$s %2$s ሰዓት።</string>
+    <string name="insight_tie_in_with_rain">ዛሬ ምሽት %1$s ይዙ፣ %3$s።</string>
     <!-- Amharic: bare digits for TTS-friendly 24h time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
     <!-- insight_precip_chance: %1$s = condition word, %2$s = time phrase -->
-    <string name="insight_precip_chance">%1$s %2$s ሊኖር ይችላል።</string>
+    <string name="insight_precip_chance">%1$s ሊኖር ይችላል።</string>
     <!-- insight_tie_in_at_night: bare imperative, "tonight" already established -->
     <string name="insight_tie_in_at_night">%1$s ይዙ።</string>
     <!-- insight_tie_in_with_rain_chance: %1$s = item, %2$s = time -->
-    <string name="insight_tie_in_with_rain_chance">%1$s ይዙ፣ %3$s ሊኖር ይችላል %2$s ሰዓት።</string>
+    <string name="insight_tie_in_with_rain_chance">%1$s ይዙ፣ %3$s ሊኖር ይችላል።</string>
     <!-- insight_evening_rain / insight_evening_rain_chance: %1$s = time -->
-    <string name="insight_evening_rain">ዛሬ ምሽት %2$s %1$s ሰዓት።</string>
-    <string name="insight_evening_rain_chance">ዛሬ ምሽት %2$s ሊኖር ይችላል %1$s ሰዓት።</string>
+    <string name="insight_evening_rain">ዛሬ ምሽት %2$s።</string>
+    <string name="insight_evening_rain_chance">ዛሬ ምሽት %2$s ሊኖር ይችላል።</string>
 
     <!-- Miscellaneous -->
 
@@ -1105,8 +1104,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_delta_cooler_lead">ከትናንት %1$d° ይቀዘቅዛል።</string>
     <string name="insight_delta_warmer_lead">ከትናንት %1$d° ይሞቃል።</string>
     <string name="insight_lead_continues">%1$s፣ %2$s</string>
-    <string name="insight_precip_chance_with_accessory">የ%1$s ዕድል %2$s፣ %3$s ይዘህ ሂድ።</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s፣ %3$s ይዘህ ሂድ።</string>
+    <string name="insight_precip_chance_with_accessory">የ%1$s ዕድል፣ %2$s ይዘህ ሂድ።</string>
+    <string name="insight_precip_with_accessory">%1$s፣ %2$s ይዘህ ሂድ።</string>
     <string name="insight_time_am">ጠዋት %1$d ሰዓት</string>
     <string name="insight_time_am_minutes">ጠዋት %1$d:%2$02d</string>
     <string name="insight_time_midnight">እኩለ ሌሊት</string>
@@ -1212,10 +1211,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_status_unset">በየቀኑ 2 ነፃ፣ ለተጨማሪ ቁልፍ አግኝ።</string>
     <string name="settings_tts_stop">አቁም</string>
     <string name="garment_rain_jacket">የዝናብ ጃኬት</string>
-    <string name="insight_precip_all_day">ቀኑን ሙሉ</string>
-    <string name="insight_precip_all_night">ሌሊቱን ሙሉ</string>
-    <string name="insight_tie_in_with_rain_all_night">ዛሬ ማታ፣ %2$s ሌሊቱን ሙሉ፣ %1$s ይዘህ ሂድ።</string>
-    <string name="insight_evening_rain_all_night">ዛሬ ማታ፣ %1$s ሌሊቱን ሙሉ።</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

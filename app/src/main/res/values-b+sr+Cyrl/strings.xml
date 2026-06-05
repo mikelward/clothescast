@@ -93,9 +93,8 @@ surfaces.
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s и %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s и %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_chance">Могућа %1$s %2$s.</string>
-    <string name="insight_precip_at_time">у %1$s</string>
+    <string name="insight_precip">%1$s.</string>
+    <string name="insight_precip_chance">Могућа %1$s.</string>
     <string name="insight_precip_overnight">током ноћи</string>
     <string name="insight_condition_clear">Ведро</string>
     <string name="insight_condition_partly_cloudy">Делимично облачно</string>
@@ -108,10 +107,10 @@ surfaces.
     <string name="insight_condition_unknown">Непознато</string>
     <string name="insight_tie_in">Понеси %1$s вечерас.</string>
     <string name="insight_tie_in_at_night">Понеси %1$s.</string>
-    <string name="insight_tie_in_with_rain">Понеси %1$s вечерас, %3$s у %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Вечерас могућа %3$s у %2$s, понеси %1$s.</string>
-    <string name="insight_evening_rain">Вечерас %2$s у %1$s.</string>
-    <string name="insight_evening_rain_chance">Вечерас могућа %2$s у %1$s.</string>
+    <string name="insight_tie_in_with_rain">Понеси %1$s вечерас, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Вечерас могућа %3$s, понеси %1$s.</string>
+    <string name="insight_evening_rain">Вечерас %2$s.</string>
+    <string name="insight_evening_rain_chance">Вечерас могућа %2$s.</string>
     <!-- "15" — preposition "u" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -1115,8 +1114,8 @@ surfaces.
     <string name="insight_delta_cooler_lead">биће %1$d° хладније него јуче.</string>
     <string name="insight_delta_warmer_lead">биће %1$d° топлије него јуче.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Могућ %1$s %2$s, понеси %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, понеси %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Могућ %1$s, понеси %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, понеси %2$s.</string>
     <string name="insight_time_am">у %1$d х</string>
     <string name="insight_time_am_minutes">у %1$d:%2$02d</string>
     <string name="insight_time_midnight">поноћ</string>
@@ -1222,10 +1221,6 @@ surfaces.
     <string name="settings_api_key_status_unset">2 бесплатно сваког дана, набави кључ за више.</string>
     <string name="settings_tts_stop">Заустави</string>
     <string name="garment_rain_jacket">Кишна јакна</string>
-    <string name="insight_precip_all_day">цео дан</string>
-    <string name="insight_precip_all_night">целу ноћ</string>
-    <string name="insight_tie_in_with_rain_all_night">Вечерас, %2$s целу ноћ, понеси %1$s.</string>
-    <string name="insight_evening_rain_all_night">Вечерас, %1$s целу ноћ.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

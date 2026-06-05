@@ -631,10 +631,9 @@ only the displayed label localizes.
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s и %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s и %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">в %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">ночью</string>
-    <string name="insight_precip_chance">Возможен %1$s %2$s.</string>
+    <string name="insight_precip_chance">Возможен %1$s.</string>
     <string name="insight_condition_clear">Ясно</string>
     <string name="insight_condition_partly_cloudy">Переменная облачность</string>
     <string name="insight_condition_cloudy">Облачно</string>
@@ -646,10 +645,10 @@ only the displayed label localizes.
     <string name="insight_condition_unknown">Неизвестно</string>
     <string name="insight_tie_in">Возьми %1$s сегодня вечером.</string>
     <string name="insight_tie_in_at_night">Возьми %1$s сегодня вечером.</string>
-    <string name="insight_tie_in_with_rain">Возьми %1$s сегодня вечером, %3$s в %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Возможен %3$s в %2$s — возьми %1$s.</string>
-    <string name="insight_evening_rain">Сегодня вечером %2$s в %1$s.</string>
-    <string name="insight_evening_rain_chance">Сегодня вечером возможен %2$s в %1$s.</string>
+    <string name="insight_tie_in_with_rain">Возьми %1$s сегодня вечером, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Возможен %3$s — возьми %1$s.</string>
+    <string name="insight_evening_rain">Сегодня вечером %2$s.</string>
+    <string name="insight_evening_rain_chance">Сегодня вечером возможен %2$s.</string>
     <!-- "15" — preposition "в" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -1193,8 +1192,8 @@ only the displayed label localizes.
     <string name="insight_delta_cooler_lead">будет на %1$d° холоднее, чем вчера.</string>
     <string name="insight_delta_warmer_lead">будет на %1$d° теплее, чем вчера.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Возможен %1$s %2$s, возьми %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, возьми %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Возможен %1$s, возьми %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, возьми %2$s.</string>
     <string name="insight_time_am">в %1$d ч</string>
     <string name="insight_time_am_minutes">в %1$d:%2$02d</string>
     <string name="insight_time_pm">в %1$d ч</string>
@@ -1300,10 +1299,6 @@ only the displayed label localizes.
     <string name="settings_api_key_status_unset">2 бесплатно каждый день, получите ключ для большего.</string>
     <string name="settings_tts_stop">Остановить</string>
     <string name="garment_rain_jacket">Дождевик</string>
-    <string name="insight_precip_all_day">весь день</string>
-    <string name="insight_precip_all_night">всю ночь</string>
-    <string name="insight_tie_in_with_rain_all_night">Сегодня вечером, %2$s всю ночь, возьмите %1$s.</string>
-    <string name="insight_evening_rain_all_night">Сегодня вечером, %1$s всю ночь.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -86,9 +86,7 @@ standard in Israeli digital communication.
     <!-- "ו" (vav) = and, directly prefixed (no space before next word). -->
     <string name="insight_clothes_join_two">%1$s ו%2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s ו%3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <!-- "בשעה 15" — "בשעה" = "at hour". -->
-    <string name="insight_precip_at_time">בשעה %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">בלילה</string>
     <string name="insight_condition_clear">בהיר</string>
     <string name="insight_condition_partly_cloudy">מעונן חלקית</string>
@@ -100,9 +98,7 @@ standard in Israeli digital communication.
     <string name="insight_condition_thunderstorm">סופת רעמים</string>
     <string name="insight_condition_unknown">לא ידוע</string>
     <string name="insight_tie_in">קח/י %1$s הלילה.</string>
-    <!-- %2$s is the spoken time — "בשעה" embedded here since time is a bare number. -->
-    <string name="insight_tie_in_with_rain">קח/י %1$s הלילה, %3$s בשעה %2$s.</string>
-    <!-- Bare number; "בשעה" comes from insight_precip_at_time. -->
+    <string name="insight_tie_in_with_rain">קח/י %1$s הלילה, %3$s.</string>
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
@@ -444,11 +440,11 @@ standard in Israeli digital communication.
     <string name="bug_report_consent_cancel">ביטול</string>
 
     <!-- Insight prose templates (additional) -->
-    <string name="insight_precip_chance">סיכוי ל%1$s %2$s.</string>
+    <string name="insight_precip_chance">סיכוי ל%1$s.</string>
     <string name="insight_tie_in_at_night">קח/י %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">קח/י %1$s הלילה, סיכוי ל%3$s בשעה %2$s.</string>
-    <string name="insight_evening_rain">הלילה, %2$s בשעה %1$s.</string>
-    <string name="insight_evening_rain_chance">הלילה, סיכוי ל%2$s בשעה %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">קח/י %1$s הלילה, סיכוי ל%3$s.</string>
+    <string name="insight_evening_rain">הלילה, %2$s.</string>
+    <string name="insight_evening_rain_chance">הלילה, סיכוי ל%2$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">שפה</string>
@@ -1135,8 +1131,8 @@ standard in Israeli digital communication.
     <string name="insight_delta_cooler_lead">יהיה קריר ב-%1$d° מאשר אתמול.</string>
     <string name="insight_delta_warmer_lead">יהיה חם ב-%1$d° מאשר אתמול.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">סיכוי ל-%1$s %2$s, קח %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, קח %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">סיכוי ל-%1$s, קח %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, קח %2$s.</string>
     <string name="insight_time_am">ב-%1$d בבוקר</string>
     <string name="insight_time_am_minutes">ב-%1$d:%2$02d בבוקר</string>
     <string name="insight_time_midnight">חצות</string>
@@ -1242,10 +1238,6 @@ standard in Israeli digital communication.
     <string name="settings_api_key_status_unset">2 בחינם בכל יום, קבלו מפתח לעוד.</string>
     <string name="settings_tts_stop">עצירה</string>
     <string name="garment_rain_jacket">מעיל גשם</string>
-    <string name="insight_precip_all_day">כל היום</string>
-    <string name="insight_precip_all_night">כל הלילה</string>
-    <string name="insight_tie_in_with_rain_all_night">הלילה, %2$s כל הלילה, קחו %1$s.</string>
-    <string name="insight_evening_rain_all_night">הלילה, %1$s כל הלילה.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

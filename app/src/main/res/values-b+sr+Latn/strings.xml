@@ -105,9 +105,8 @@ default English (matching values-pl / values-uk).
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s i %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_chance">Moguća %1$s %2$s.</string>
-    <string name="insight_precip_at_time">u %1$s</string>
+    <string name="insight_precip">%1$s.</string>
+    <string name="insight_precip_chance">Moguća %1$s.</string>
     <string name="insight_precip_overnight">tokom noći</string>
     <string name="insight_condition_clear">Vedro</string>
     <string name="insight_condition_partly_cloudy">Delimično oblačno</string>
@@ -120,10 +119,10 @@ default English (matching values-pl / values-uk).
     <string name="insight_condition_unknown">Nepoznato</string>
     <string name="insight_tie_in">Ponesi %1$s večeras.</string>
     <string name="insight_tie_in_at_night">Ponesi %1$s.</string>
-    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, %3$s u %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Večeras moguća %3$s u %2$s, ponesi %1$s.</string>
-    <string name="insight_evening_rain">Večeras %2$s u %1$s.</string>
-    <string name="insight_evening_rain_chance">Večeras moguća %2$s u %1$s.</string>
+    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Večeras moguća %3$s, ponesi %1$s.</string>
+    <string name="insight_evening_rain">Večeras %2$s.</string>
+    <string name="insight_evening_rain_chance">Večeras moguća %2$s.</string>
     <!-- "15" — preposition "u" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -1127,8 +1126,8 @@ default English (matching values-pl / values-uk).
     <string name="insight_delta_cooler_lead">biće %1$d° hladnije nego juče.</string>
     <string name="insight_delta_warmer_lead">biće %1$d° toplije nego juče.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Moguć %1$s %2$s, ponesi %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, ponesi %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Moguć %1$s, ponesi %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, ponesi %2$s.</string>
     <string name="insight_time_am">u %1$d h</string>
     <string name="insight_time_am_minutes">u %1$d:%2$02d</string>
     <string name="insight_time_midnight">ponoć</string>
@@ -1234,10 +1233,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_api_key_status_unset">2 besplatno svakog dana, nabavi ključ za više.</string>
     <string name="settings_tts_stop">Zaustavi</string>
     <string name="garment_rain_jacket">Kišna jakna</string>
-    <string name="insight_precip_all_day">ceo dan</string>
-    <string name="insight_precip_all_night">celu noć</string>
-    <string name="insight_tie_in_with_rain_all_night">Večeras, %2$s celu noć, ponesi %1$s.</string>
-    <string name="insight_evening_rain_all_night">Večeras, %1$s celu noć.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

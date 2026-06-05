@@ -479,8 +479,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s e %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s e %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">às %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">de madrugada</string>
     <string name="insight_condition_clear">Céu limpo</string>
     <string name="insight_condition_partly_cloudy">Parcialmente nublado</string>
@@ -492,7 +491,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="insight_condition_thunderstorm">Trovoada</string>
     <string name="insight_condition_unknown">Desconhecido</string>
     <string name="insight_tie_in">Leva %1$s esta noite.</string>
-    <string name="insight_tie_in_with_rain">Leva %1$s esta noite, %3$s às %2$s.</string>
+    <string name="insight_tie_in_with_rain">Leva %1$s esta noite, %3$s.</string>
     <!-- "15h" / "15h30" — PT-PT hour notation, TTS reads naturally. -->
     <string name="insight_time_hour">%1$dh</string>
     <string name="insight_time_hour_minutes">%1$dh%2$02d</string>
@@ -699,11 +698,11 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="bug_report_consent_continue">Continuar</string>
     <string name="bug_report_consent_cancel">Cancelar</string>
 
-    <string name="insight_precip_chance">Possibilidade de %1$s %2$s.</string>
+    <string name="insight_precip_chance">Possibilidade de %1$s.</string>
     <string name="insight_tie_in_at_night">Leva %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Esta noite, possibilidade de %3$s às %2$s, leva %1$s.</string>
-    <string name="insight_evening_rain">Esta noite, %2$s às %1$s.</string>
-    <string name="insight_evening_rain_chance">Esta noite, possibilidade de %2$s às %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Esta noite, possibilidade de %3$s, leva %1$s.</string>
+    <string name="insight_evening_rain">Esta noite, %2$s.</string>
+    <string name="insight_evening_rain_chance">Esta noite, possibilidade de %2$s.</string>
 
     <string name="settings_tts_style_label">Estilo</string>
     <string name="settings_tts_style_weather_forecaster">Apresentador de meteorologia</string>
@@ -1266,8 +1265,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="insight_delta_cooler_lead">estará %1$d° mais frio do que ontem.</string>
     <string name="insight_delta_warmer_lead">estará %1$d° mais quente do que ontem.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Possibilidade de %1$s %2$s, leva %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, leva %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Possibilidade de %1$s, leva %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, leva %2$s.</string>
     <string name="insight_time_am">às %1$d h</string>
     <string name="insight_time_am_minutes">às %1$d:%2$02d</string>
     <string name="insight_time_pm">às %1$d h</string>
@@ -1373,10 +1372,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_api_key_status_unset">2 grátis por dia, obtém uma chave para mais.</string>
     <string name="settings_tts_stop">Parar</string>
     <string name="garment_rain_jacket">Casaco impermeável</string>
-    <string name="insight_precip_all_day">o dia todo</string>
-    <string name="insight_precip_all_night">a noite toda</string>
-    <string name="insight_tie_in_with_rain_all_night">Esta noite, %2$s a noite toda, leva %1$s.</string>
-    <string name="insight_evening_rain_all_night">Esta noite, %1$s a noite toda.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

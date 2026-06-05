@@ -448,8 +448,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s y %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s y %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">a las %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">durante la noche</string>
     <string name="insight_condition_clear">Despejado</string>
     <string name="insight_condition_partly_cloudy">Parcialmente nublado</string>
@@ -467,7 +466,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Counterpart used on a TONIGHT insight where the band lead already
          says "Esta noche …"; drops "esta noche" so it isn't repeated. -->
     <string name="insight_tie_in_at_night">Lleva %1$s.</string>
-    <string name="insight_tie_in_with_rain">Lleva %1$s esta noche, %3$s a las %2$s.</string>
+    <string name="insight_tie_in_with_rain">Lleva %1$s esta noche, %3$s.</string>
     <!-- "15" — prepositions ("a las", "de las") come from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -690,10 +689,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="bug_report_consent_cancel">Cancelar</string>
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
-    <string name="insight_precip_chance">Posibilidad de %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Esta noche, posibilidad de %3$s a las %2$s, lleva %1$s.</string>
-    <string name="insight_evening_rain">Esta noche, %2$s a las %1$s.</string>
-    <string name="insight_evening_rain_chance">Esta noche, posibilidad de %2$s a las %1$s.</string>
+    <string name="insight_precip_chance">Posibilidad de %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Esta noche, posibilidad de %3$s, lleva %1$s.</string>
+    <string name="insight_evening_rain">Esta noche, %2$s.</string>
+    <string name="insight_evening_rain_chance">Esta noche, posibilidad de %2$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast no puede ejecutarse en este dispositivo — tu versión de Android carece de una función que la interfaz de la app requiere (Configuration.fontWeightAdjustment, esperada en Android 12 y superior). Contacta al fabricante de tu dispositivo para obtener una actualización del sistema.</string>
@@ -1266,8 +1265,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_delta_cooler_lead">hará %1$d° menos que ayer.</string>
     <string name="insight_delta_warmer_lead">hará %1$d° más que ayer.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Probabilidad de %1$s %2$s, lleva %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, lleva %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Probabilidad de %1$s, lleva %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, lleva %2$s.</string>
     <string name="insight_time_am">a las %1$d</string>
     <string name="insight_time_am_minutes">a las %1$d:%2$02d</string>
     <string name="insight_time_pm">a las %1$d</string>
@@ -1373,10 +1372,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_status_unset">2 gratis cada día, consigue una clave para más.</string>
     <string name="settings_tts_stop">Detener</string>
     <string name="garment_rain_jacket">Chaqueta impermeable</string>
-    <string name="insight_precip_all_day">todo el día</string>
-    <string name="insight_precip_all_night">toda la noche</string>
-    <string name="insight_tie_in_with_rain_all_night">Esta noche, %2$s toda la noche, lleva %1$s.</string>
-    <string name="insight_evening_rain_all_night">Esta noche, %1$s toda la noche.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

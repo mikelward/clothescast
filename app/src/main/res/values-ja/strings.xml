@@ -451,9 +451,7 @@ the displayed label localizes.
     <string name="insight_clothes_join_two">%1$sと%2$s</string>
     <!-- Japanese uses 、(読点) between list items. -->
     <string name="insight_clothes_join_many">%1$s、%2$s、%3$s</string>
-    <!-- "雨（15:00頃）。" / "雨（夜通し）。" — parenthetical time fits Japanese style. -->
-    <string name="insight_precip">%1$s（%2$s）。</string>
-    <string name="insight_precip_at_time">%1$s頃</string>
+    <string name="insight_precip">%1$s。</string>
     <string name="insight_precip_overnight">夜通し</string>
     <string name="insight_condition_clear">晴れ</string>
     <string name="insight_condition_partly_cloudy">晴れのち曇り</string>
@@ -466,8 +464,8 @@ the displayed label localizes.
     <string name="insight_condition_unknown">不明</string>
     <!-- "会議（15時）のためにコートを持っていきましょう。" -->
     <string name="insight_tie_in">今夜は%1$sを持っていきましょう。</string>
-    <string name="insight_tie_in_with_rain">今夜は%1$sを持っていきましょう。%2$s頃に%3$s。</string>
-    <!-- "15時" / "15時30分" — Japanese spoken time; postposition "頃" comes from insight_precip_at_time. -->
+    <string name="insight_tie_in_with_rain">今夜は%1$sを持っていきましょう。%3$s。</string>
+    <!-- "15時" / "15時30分" — Japanese spoken time. -->
     <string name="insight_time_hour">%1$d時</string>
     <string name="insight_time_hour_minutes">%1$d時%2$02d分</string>
 
@@ -697,11 +695,11 @@ the displayed label localizes.
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "〜の可能性" wraps a noun (e.g. 雨); invariant for any precip noun. -->
-    <string name="insight_precip_chance">%1$sの可能性（%2$s）。</string>
+    <string name="insight_precip_chance">%1$sの可能性。</string>
     <string name="insight_tie_in_at_night">%1$sを持っていきましょう。</string>
-    <string name="insight_tie_in_with_rain_chance">今夜は%1$sを持っていきましょう。%2$s頃に%3$sの可能性。</string>
-    <string name="insight_evening_rain">今夜は%1$s頃に%2$s。</string>
-    <string name="insight_evening_rain_chance">今夜は%1$s頃に%2$sの可能性。</string>
+    <string name="insight_tie_in_with_rain_chance">今夜は%1$sを持っていきましょう。%3$sの可能性。</string>
+    <string name="insight_evening_rain">今夜は%2$s。</string>
+    <string name="insight_evening_rain_chance">今夜は%2$sの可能性。</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">この端末では ClothesCast を実行できません — お使いの Android ビルドに、アプリの UI に必要な機能（Configuration.fontWeightAdjustment、Android 12 以降で利用可能）がありません。システムアップデートについては端末メーカーにお問い合わせください。</string>
@@ -1287,8 +1285,8 @@ the displayed label localizes.
     <string name="insight_delta_cooler_lead">昨日より%1$d°低くなります。</string>
     <string name="insight_delta_warmer_lead">昨日より%1$d°高くなります。</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">%2$s%1$sの可能性、%3$sを持って。</string>
-    <string name="insight_precip_with_accessory">%2$s%1$s、%3$sを持って。</string>
+    <string name="insight_precip_chance_with_accessory">%1$sの可能性、%2$sを持って。</string>
+    <string name="insight_precip_with_accessory">%1$s、%2$sを持って。</string>
     <string name="insight_time_am">%1$d時</string>
     <string name="insight_time_am_minutes">%1$d時%2$02d分</string>
     <string name="insight_time_pm">%1$d時</string>
@@ -1394,10 +1392,6 @@ the displayed label localizes.
     <string name="settings_api_key_status_unset">毎日2回無料。さらに使うにはキーを取得してください。</string>
     <string name="settings_tts_stop">停止</string>
     <string name="garment_rain_jacket">レインジャケット</string>
-    <string name="insight_precip_all_day">一日中</string>
-    <string name="insight_precip_all_night">一晩中</string>
-    <string name="insight_tie_in_with_rain_all_night">今夜は%2$s一晩中。%1$sを持っていってください。</string>
-    <string name="insight_evening_rain_all_night">今夜は%1$s一晩中。</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

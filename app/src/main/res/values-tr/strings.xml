@@ -373,9 +373,7 @@ displayed label localizes.
     <string name="insight_clothes_join_two">%1$s ve %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s ve %3$s</string>
 
-    <string name="insight_precip">%1$s %2$s.</string>
-    <!-- "saat X'de" — time preposition in Turkish. -->
-    <string name="insight_precip_at_time">saat %1$s\'de</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">gece boyunca</string>
 
     <string name="insight_condition_clear">Açık</string>
@@ -390,11 +388,11 @@ displayed label localizes.
 
     <string name="insight_tie_in">Bu gece %1$s al.</string>
     <string name="insight_tie_in_at_night">Bu gece %1$s al.</string>
-    <string name="insight_tie_in_with_rain">Bu gece %1$s al, saat %2$s\'de %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Saat %2$s\'de olası %3$s — %1$s al.</string>
-    <string name="insight_precip_chance">Olası %1$s %2$s.</string>
-    <string name="insight_evening_rain">Bu gece saat %1$s\'de %2$s.</string>
-    <string name="insight_evening_rain_chance">Bu gece saat %1$s\'de olası %2$s.</string>
+    <string name="insight_tie_in_with_rain">Bu gece %1$s al, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Olası %3$s — %1$s al.</string>
+    <string name="insight_precip_chance">Olası %1$s.</string>
+    <string name="insight_evening_rain">Bu gece %2$s.</string>
+    <string name="insight_evening_rain_chance">Bu gece olası %2$s.</string>
 
     <!-- Turkish time format: colon separator, no AM/PM. -->
     <string name="insight_time_hour">%1$d</string>
@@ -1139,8 +1137,8 @@ displayed label localizes.
     <string name="insight_delta_cooler_lead">dünden %1$d° daha serin olacak.</string>
     <string name="insight_delta_warmer_lead">dünden %1$d° daha sıcak olacak.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">%2$s %1$s ihtimali var, %3$s al.</string>
-    <string name="insight_precip_with_accessory">%2$s %1$s, %3$s al.</string>
+    <string name="insight_precip_chance_with_accessory">%1$s ihtimali var, %2$s al.</string>
+    <string name="insight_precip_with_accessory">%1$s, %2$s al.</string>
     <string name="insight_time_am">%1$d\'de</string>
     <string name="insight_time_am_minutes">%1$d:%2$02d\'de</string>
     <string name="insight_time_pm">%1$d\'de</string>
@@ -1246,10 +1244,6 @@ displayed label localizes.
     <string name="settings_api_key_status_unset">Her gün 2 ücretsiz, daha fazlası için anahtar al.</string>
     <string name="settings_tts_stop">Durdur</string>
     <string name="garment_rain_jacket">Yağmurluk</string>
-    <string name="insight_precip_all_day">tüm gün</string>
-    <string name="insight_precip_all_night">tüm gece</string>
-    <string name="insight_tie_in_with_rain_all_night">Bu gece, %2$s tüm gece, %1$s al.</string>
-    <string name="insight_evening_rain_all_night">Bu gece, %1$s tüm gece.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

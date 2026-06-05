@@ -48,7 +48,7 @@ class OutfitCardSnapshotTest {
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
                 header = "Today's ClothesCast",
                 prose = "Today, it will be warm. 3° warmer than yesterday. " +
-                    "Wear a t-shirt and shorts. Chance of rain at 3pm.",
+                    "Wear a t-shirt and shorts. Chance of rain.",
                 info = OutfitCardInfoLines(
                     tempLine = "22–30°C",
                     // Warm day: high 30°C, HOT band → (5 + (30-28)/12) / 6 ≈ 0.86.

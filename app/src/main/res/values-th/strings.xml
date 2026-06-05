@@ -79,8 +79,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$sและ%2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s และ%3$s</string>
-    <string name="insight_precip">%1$s%2$s</string>
-    <string name="insight_precip_at_time">เวลา %1$s</string>
+    <string name="insight_precip">%1$s</string>
     <string name="insight_precip_overnight">ตลอดทั้งคืน</string>
     <string name="insight_condition_clear">ท้องฟ้าแจ่มใส</string>
     <string name="insight_condition_partly_cloudy">มีเมฆบางส่วน</string>
@@ -92,17 +91,17 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">พายุฝนฟ้าคะนอง</string>
     <string name="insight_condition_unknown">ไม่ทราบ</string>
     <string name="insight_tie_in">พก%1$sไปคืนนี้</string>
-    <string name="insight_tie_in_with_rain">พก%1$sไปคืนนี้, %3$sเวลา %2$s</string>
+    <string name="insight_tie_in_with_rain">พก%1$sไปคืนนี้, %3$s</string>
     <!-- "15 นาฬิกา" / "15 นาฬิกา 30 นาที" — preposition "เวลา" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d นาฬิกา</string>
     <string name="insight_time_hour_minutes">%1$d นาฬิกา %2$02d นาที</string>
 
     <!-- Missing insight strings -->
-    <string name="insight_precip_chance">อาจมี%1$s%2$s</string>
+    <string name="insight_precip_chance">อาจมี%1$s</string>
     <string name="insight_tie_in_at_night">พก%1$sด้วย</string>
-    <string name="insight_tie_in_with_rain_chance">คืนนี้อาจมี%3$sเวลา %2$s พก%1$sด้วย</string>
-    <string name="insight_evening_rain">คืนนี้%2$sเวลา %1$s</string>
-    <string name="insight_evening_rain_chance">คืนนี้อาจมี%2$sเวลา %1$s</string>
+    <string name="insight_tie_in_with_rain_chance">คืนนี้อาจมี%3$s พก%1$sด้วย</string>
+    <string name="insight_evening_rain">คืนนี้%2$s</string>
+    <string name="insight_evening_rain_chance">คืนนี้อาจมี%2$s</string>
 
     <!-- Missing garment names -->
     <string name="garment_puffer">เสื้อขนเป็ด</string>
@@ -1137,8 +1136,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_delta_cooler_lead">จะเย็นกว่าเมื่อวาน %1$d°</string>
     <string name="insight_delta_warmer_lead">จะอุ่นกว่าเมื่อวาน %1$d°</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">มีโอกาส %1$s %2$s, พก %3$s ไปด้วย</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, พก %3$s ไปด้วย</string>
+    <string name="insight_precip_chance_with_accessory">มีโอกาส %1$s, พก %2$s ไปด้วย</string>
+    <string name="insight_precip_with_accessory">%1$s, พก %2$s ไปด้วย</string>
     <string name="insight_time_am">เวลา %1$d น.</string>
     <string name="insight_time_am_minutes">เวลา %1$d:%2$02d น.</string>
     <string name="insight_time_midnight">เที่ยงคืน</string>
@@ -1244,10 +1243,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_status_unset">ฟรีวันละ 2 ครั้ง รับคีย์เพื่อใช้เพิ่ม</string>
     <string name="settings_tts_stop">หยุด</string>
     <string name="garment_rain_jacket">เสื้อกันฝน</string>
-    <string name="insight_precip_all_day">ตลอดทั้งวัน</string>
-    <string name="insight_precip_all_night">ตลอดทั้งคืน</string>
-    <string name="insight_tie_in_with_rain_all_night">คืนนี้ %2$s ตลอดทั้งคืน พก %1$s ไปด้วย</string>
-    <string name="insight_evening_rain_all_night">คืนนี้ %1$s ตลอดทั้งคืน</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

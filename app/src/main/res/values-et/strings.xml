@@ -518,9 +518,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s ja %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s ja %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_chance">Vihma võimalus: %1$s %2$s.</string>
-    <string name="insight_precip_at_time">kell %1$s</string>
+    <string name="insight_precip">%1$s.</string>
+    <string name="insight_precip_chance">Vihma võimalus: %1$s.</string>
     <string name="insight_precip_overnight">öö jooksul</string>
     <string name="insight_condition_clear">Selge</string>
     <string name="insight_condition_partly_cloudy">Vahelduv pilvisus</string>
@@ -535,10 +534,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_tie_in">Võta %1$s täna õhtul kaasa.</string>
     <!-- No-prefix tonight form: band lead already established the night context. -->
     <string name="insight_tie_in_at_night">Võta %1$s kaasa.</string>
-    <string name="insight_tie_in_with_rain">Võta %1$s täna õhtul kaasa, %3$s kell %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Täna õhtul %3$s võimalus kell %2$s, võta %1$s kaasa.</string>
-    <string name="insight_evening_rain">Täna õhtul %2$s kell %1$s.</string>
-    <string name="insight_evening_rain_chance">Täna õhtul %2$s võimalus kell %1$s.</string>
+    <string name="insight_tie_in_with_rain">Võta %1$s täna õhtul kaasa, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Täna õhtul %3$s võimalus, võta %1$s kaasa.</string>
+    <string name="insight_evening_rain">Täna õhtul %2$s.</string>
+    <string name="insight_evening_rain_chance">Täna õhtul %2$s võimalus.</string>
     <!-- Estonian time format uses "." separator: "kell 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
@@ -1081,8 +1080,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_delta_cooler_lead">tuleb %1$d° jahedam kui eile.</string>
     <string name="insight_delta_warmer_lead">tuleb %1$d° soojem kui eile.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Võimalik %1$s %2$s, võta kaasa %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, võta kaasa %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Võimalik %1$s, võta kaasa %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, võta kaasa %2$s.</string>
     <string name="insight_time_am">kell %1$d</string>
     <string name="insight_time_am_minutes">kell %1$d.%2$02d</string>
     <string name="insight_time_midnight">kesköö</string>
@@ -1188,10 +1187,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_api_key_status_unset">Iga päev 2 tasuta, rohkema jaoks hangi võti.</string>
     <string name="settings_tts_stop">Peata</string>
     <string name="garment_rain_jacket">Vihmajope</string>
-    <string name="insight_precip_all_day">kogu päeva</string>
-    <string name="insight_precip_all_night">kogu öö</string>
-    <string name="insight_tie_in_with_rain_all_night">Täna õhtul, %2$s kogu öö, võta %1$s kaasa.</string>
-    <string name="insight_evening_rain_all_night">Täna õhtul, %1$s kogu öö.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -416,8 +416,7 @@ is unchanged; only the displayed label localizes.
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s i %3$s</string>
 
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">o %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">w nocy</string>
 
     <string name="insight_condition_clear">Słonecznie</string>
@@ -432,11 +431,11 @@ is unchanged; only the displayed label localizes.
 
     <string name="insight_tie_in">Weź %1$s wieczorem.</string>
     <string name="insight_tie_in_at_night">Weź %1$s wieczorem.</string>
-    <string name="insight_tie_in_with_rain">Weź %1$s wieczorem, %3$s o %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Możliwy %3$s o %2$s — weź %1$s.</string>
-    <string name="insight_evening_rain">Wieczorem %2$s o %1$s.</string>
-    <string name="insight_evening_rain_chance">Wieczorem możliwy %2$s o %1$s.</string>
-    <string name="insight_precip_chance">Możliwy %1$s %2$s.</string>
+    <string name="insight_tie_in_with_rain">Weź %1$s wieczorem, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Możliwy %3$s — weź %1$s.</string>
+    <string name="insight_evening_rain">Wieczorem %2$s.</string>
+    <string name="insight_evening_rain_chance">Wieczorem możliwy %2$s.</string>
+    <string name="insight_precip_chance">Możliwy %1$s.</string>
 
     <!-- "15" — preposition "o" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
@@ -1186,8 +1185,8 @@ is unchanged; only the displayed label localizes.
     <string name="insight_delta_cooler_lead">będzie o %1$d° chłodniej niż wczoraj.</string>
     <string name="insight_delta_warmer_lead">będzie o %1$d° cieplej niż wczoraj.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Możliwe %1$s %2$s, weź %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, weź %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Możliwe %1$s, weź %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, weź %2$s.</string>
     <string name="insight_time_am">o %1$d</string>
     <string name="insight_time_am_minutes">o %1$d:%2$02d</string>
     <string name="insight_time_pm">o %1$d</string>
@@ -1293,10 +1292,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_api_key_status_unset">2 bezpłatne każdego dnia, zdobądź klucz, aby mieć więcej.</string>
     <string name="settings_tts_stop">Zatrzymaj</string>
     <string name="garment_rain_jacket">Kurtka przeciwdeszczowa</string>
-    <string name="insight_precip_all_day">cały dzień</string>
-    <string name="insight_precip_all_night">całą noc</string>
-    <string name="insight_tie_in_with_rain_all_night">Dziś wieczorem, %2$s całą noc, weź %1$s.</string>
-    <string name="insight_evening_rain_all_night">Dziś wieczorem, %1$s całą noc.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

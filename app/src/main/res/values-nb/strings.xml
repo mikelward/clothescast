@@ -569,10 +569,9 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="insight_clothes_join_two">%1$s og %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s og %3$s</string>
 
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">klokken %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">i natt</string>
-    <string name="insight_precip_chance">Sjanse for %1$s %2$s.</string>
+    <string name="insight_precip_chance">Sjanse for %1$s.</string>
 
     <string name="insight_condition_clear">Klart</string>
     <string name="insight_condition_partly_cloudy">Delvis skyet</string>
@@ -586,10 +585,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
 
     <string name="insight_tie_in">Ta med deg %1$s i kveld.</string>
     <string name="insight_tie_in_at_night">Ta med deg %1$s i kveld.</string>
-    <string name="insight_tie_in_with_rain">Ta med deg %1$s i kveld, %3$s klokken %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Sjanse for %3$s klokken %2$s — ta med deg %1$s.</string>
-    <string name="insight_evening_rain">I kveld %2$s klokken %1$s.</string>
-    <string name="insight_evening_rain_chance">I kveld sjanse for %2$s klokken %1$s.</string>
+    <string name="insight_tie_in_with_rain">Ta med deg %1$s i kveld, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Sjanse for %3$s — ta med deg %1$s.</string>
+    <string name="insight_evening_rain">I kveld %2$s.</string>
+    <string name="insight_evening_rain_chance">I kveld sjanse for %2$s.</string>
 
     <!-- "15" — "klokken" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
@@ -1166,8 +1165,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="insight_delta_cooler_lead">det blir %1$d° kaldere enn i går.</string>
     <string name="insight_delta_warmer_lead">det blir %1$d° varmere enn i går.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Sjanse for %1$s %2$s, ta med %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, ta med %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Sjanse for %1$s, ta med %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, ta med %2$s.</string>
     <string name="insight_time_am">kl. %1$d</string>
     <string name="insight_time_am_minutes">kl. %1$d:%2$02d</string>
     <string name="insight_time_midnight">midnatt</string>
@@ -1273,10 +1272,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_api_key_status_unset">2 gratis hver dag, skaff en nøkkel for mer.</string>
     <string name="settings_tts_stop">Stopp</string>
     <string name="garment_rain_jacket">Regnjakke</string>
-    <string name="insight_precip_all_day">hele dagen</string>
-    <string name="insight_precip_all_night">hele natten</string>
-    <string name="insight_tie_in_with_rain_all_night">I kveld, %2$s hele natten, ta med %1$s.</string>
-    <string name="insight_evening_rain_all_night">I kveld, %1$s hele natten.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

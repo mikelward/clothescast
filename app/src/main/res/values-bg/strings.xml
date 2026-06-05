@@ -91,8 +91,7 @@ What is NOT overridden, by design:
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s и %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s и %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">в %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">през нощта</string>
     <string name="insight_condition_clear">Ясно</string>
     <string name="insight_condition_partly_cloudy">Частично облачно</string>
@@ -104,17 +103,17 @@ What is NOT overridden, by design:
     <string name="insight_condition_thunderstorm">Гръмотевична буря</string>
     <string name="insight_condition_unknown">Неизвестно</string>
     <string name="insight_tie_in">Вземи %1$s за тази вечер.</string>
-    <string name="insight_tie_in_with_rain">Вземи %1$s за тази вечер, %3$s в %2$s.</string>
+    <string name="insight_tie_in_with_rain">Вземи %1$s за тази вечер, %3$s.</string>
     <!-- "15" — preposition "в" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
     <!-- New insight strings -->
-    <string name="insight_precip_chance">Шанс за %1$s %2$s.</string>
+    <string name="insight_precip_chance">Шанс за %1$s.</string>
     <string name="insight_tie_in_at_night">Вземи %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Тази вечер шанс за %3$s в %2$s, вземи %1$s.</string>
-    <string name="insight_evening_rain">Тази вечер %2$s в %1$s.</string>
-    <string name="insight_evening_rain_chance">Тази вечер шанс за %2$s в %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Тази вечер шанс за %3$s, вземи %1$s.</string>
+    <string name="insight_evening_rain">Тази вечер %2$s.</string>
+    <string name="insight_evening_rain_chance">Тази вечер шанс за %2$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast не може да работи на това устройство — Android сборката ти липсва функция, необходима за интерфейса на приложението (Configuration.fontWeightAdjustment, очаквана при Android 12 и нагоре). Свържи се с производителя на устройството за системна актуализация.</string>
@@ -1124,8 +1123,8 @@ What is NOT overridden, by design:
     <string name="insight_delta_cooler_lead">ще бъде с %1$d° по-хладно от вчера.</string>
     <string name="insight_delta_warmer_lead">ще бъде с %1$d° по-топло от вчера.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Възможен %1$s %2$s, вземи %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, вземи %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Възможен %1$s, вземи %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, вземи %2$s.</string>
     <string name="insight_time_am">в %1$d ч.</string>
     <string name="insight_time_am_minutes">в %1$d:%2$02d</string>
     <string name="insight_time_midnight">полунощ</string>
@@ -1231,10 +1230,6 @@ What is NOT overridden, by design:
     <string name="settings_api_key_status_unset">2 безплатни всеки ден, вземи ключ за още.</string>
     <string name="settings_tts_stop">Спиране</string>
     <string name="garment_rain_jacket">Дъждобран</string>
-    <string name="insight_precip_all_day">през целия ден</string>
-    <string name="insight_precip_all_night">през цялата нощ</string>
-    <string name="insight_tie_in_with_rain_all_night">Тази вечер, %2$s през цялата нощ, вземи %1$s.</string>
-    <string name="insight_evening_rain_all_night">Тази вечер, %1$s през цялата нощ.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

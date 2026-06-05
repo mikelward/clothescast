@@ -504,8 +504,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s και %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s και %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">στις %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">τη νύχτα</string>
     <string name="insight_condition_clear">Αίθριος</string>
     <string name="insight_condition_partly_cloudy">Μερική συννεφιά</string>
@@ -517,7 +516,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_thunderstorm">Καταιγίδα</string>
     <string name="insight_condition_unknown">Άγνωστος</string>
     <string name="insight_tie_in">Πάρε %1$s απόψε.</string>
-    <string name="insight_tie_in_with_rain">Πάρε %1$s απόψε, %3$s στις %2$s.</string>
+    <string name="insight_tie_in_with_rain">Πάρε %1$s απόψε, %3$s.</string>
     <!-- "15:00" / "15:30" — standard Greek 24-hour colon notation,
          TTS reads naturally. -->
     <string name="insight_time_hour">%1$d:00</string>
@@ -640,11 +639,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="bug_report_consent_cancel">Άκυρο</string>
 
     <!-- Missing insight prose. -->
-    <string name="insight_precip_chance">Πιθανότητα %1$s %2$s.</string>
+    <string name="insight_precip_chance">Πιθανότητα %1$s.</string>
     <string name="insight_tie_in_at_night">Πάρε %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα %3$s στις %2$s.</string>
-    <string name="insight_evening_rain">Απόψε, %2$s στις %1$s.</string>
-    <string name="insight_evening_rain_chance">Απόψε, πιθανότητα %2$s στις %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα %3$s.</string>
+    <string name="insight_evening_rain">Απόψε, %2$s.</string>
+    <string name="insight_evening_rain_chance">Απόψε, πιθανότητα %2$s.</string>
 
     <!-- Missing onboarding strings. -->
     <string name="onboarding_subtitle_tv">Δύο γρήγορες επιλογές και είσαι έτοιμος. Μπορείς να τα αλλάξεις αργότερα στις Ρυθμίσεις.</string>
@@ -1257,8 +1256,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_delta_cooler_lead">θα είναι %1$d° πιο δροσερά από χθες.</string>
     <string name="insight_delta_warmer_lead">θα είναι %1$d° πιο ζεστά από χθες.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Πιθανότητα για %1$s %2$s, πάρε %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, πάρε %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Πιθανότητα για %1$s, πάρε %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, πάρε %2$s.</string>
     <string name="insight_time_am">στις %1$d</string>
     <string name="insight_time_am_minutes">στις %1$d:%2$02d</string>
     <string name="insight_time_midnight">μεσάνυχτα</string>
@@ -1364,10 +1363,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_status_unset">2 δωρεάν κάθε μέρα, πάρε κλειδί για περισσότερα.</string>
     <string name="settings_tts_stop">Διακοπή</string>
     <string name="garment_rain_jacket">Αδιάβροχο μπουφάν</string>
-    <string name="insight_precip_all_day">όλη μέρα</string>
-    <string name="insight_precip_all_night">όλη νύχτα</string>
-    <string name="insight_tie_in_with_rain_all_night">Απόψε, %2$s όλη νύχτα, πάρε %1$s.</string>
-    <string name="insight_evening_rain_all_night">Απόψε, %1$s όλη νύχτα.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

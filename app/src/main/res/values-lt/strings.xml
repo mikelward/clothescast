@@ -85,8 +85,7 @@ What is NOT overridden, by design:
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s ir %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s ir %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">%1$s val.</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">naktį</string>
     <string name="insight_condition_clear">Giedra</string>
     <string name="insight_condition_partly_cloudy">Mažai debesuota</string>
@@ -98,7 +97,7 @@ What is NOT overridden, by design:
     <string name="insight_condition_thunderstorm">Perkūnija</string>
     <string name="insight_condition_unknown">Nežinoma</string>
     <string name="insight_tie_in">Pasiimk %1$s šįvakar.</string>
-    <string name="insight_tie_in_with_rain">Pasiimk %1$s šįvakar, %3$s %2$s val.</string>
+    <string name="insight_tie_in_with_rain">Pasiimk %1$s šįvakar, %3$s.</string>
     <!-- Lithuanian time uses "val." (= o\'clock) suffix; minutes joined by ":". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -581,11 +580,11 @@ What is NOT overridden, by design:
     <string name="bug_report_consent_cancel">Atšaukti</string>
 
     <!-- Additional insight prose templates. -->
-    <string name="insight_precip_chance">Gali būti %1$s %2$s.</string>
+    <string name="insight_precip_chance">Gali būti %1$s.</string>
     <string name="insight_tie_in_at_night">Pasiimk %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Pasiimk %1$s šįvakar, gali būti %3$s %2$s val.</string>
-    <string name="insight_evening_rain">Šįvakar %2$s %1$s val.</string>
-    <string name="insight_evening_rain_chance">Šįvakar gali būti %2$s %1$s val.</string>
+    <string name="insight_tie_in_with_rain_chance">Pasiimk %1$s šįvakar, gali būti %3$s.</string>
+    <string name="insight_evening_rain">Šįvakar %2$s.</string>
+    <string name="insight_evening_rain_chance">Šįvakar gali būti %2$s.</string>
 
     <string name="today_forecast_air_section_title">Oro temperatūra</string>
 
@@ -1127,8 +1126,8 @@ What is NOT overridden, by design:
     <string name="insight_delta_cooler_lead">bus %1$d° vėsiau nei vakar.</string>
     <string name="insight_delta_warmer_lead">bus %1$d° šilčiau nei vakar.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Tikėtina %1$s %2$s, pasiimk %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, pasiimk %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Tikėtina %1$s, pasiimk %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, pasiimk %2$s.</string>
     <string name="insight_time_am">%1$d val.</string>
     <string name="insight_time_am_minutes">%1$d:%2$02d</string>
     <string name="insight_time_midnight">vidurnaktis</string>
@@ -1234,10 +1233,6 @@ What is NOT overridden, by design:
     <string name="settings_api_key_status_unset">Kasdien 2 nemokamai, gauk raktą daugiau.</string>
     <string name="settings_tts_stop">Stabdyti</string>
     <string name="garment_rain_jacket">Lietaus striukė</string>
-    <string name="insight_precip_all_day">visą dieną</string>
-    <string name="insight_precip_all_night">visą naktį</string>
-    <string name="insight_tie_in_with_rain_all_night">Šį vakarą, %2$s visą naktį, pasiimk %1$s.</string>
-    <string name="insight_evening_rain_all_night">Šį vakarą, %1$s visą naktį.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

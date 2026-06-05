@@ -512,9 +512,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s i %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_chance">Possibilitat de %1$s %2$s.</string>
-    <string name="insight_precip_at_time">a les %1$s</string>
+    <string name="insight_precip">%1$s.</string>
+    <string name="insight_precip_chance">Possibilitat de %1$s.</string>
     <string name="insight_precip_overnight">durant la nit</string>
     <string name="insight_condition_clear">Cel serè</string>
     <string name="insight_condition_partly_cloudy">Parcialment ennuvolat</string>
@@ -527,10 +526,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_condition_unknown">Desconegut</string>
     <string name="insight_tie_in">Emporta\'t %1$s aquesta nit.</string>
     <string name="insight_tie_in_at_night">Emporta\'t %1$s.</string>
-    <string name="insight_tie_in_with_rain">Aquesta nit, %3$s a les %2$s, emporta\'t %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Aquesta nit, possibilitat de %3$s a les %2$s, emporta\'t %1$s.</string>
-    <string name="insight_evening_rain">Aquesta nit, %2$s a les %1$s.</string>
-    <string name="insight_evening_rain_chance">Aquesta nit, possibilitat de %2$s a les %1$s.</string>
+    <string name="insight_tie_in_with_rain">Aquesta nit, %3$s, emporta\'t %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Aquesta nit, possibilitat de %3$s, emporta\'t %1$s.</string>
+    <string name="insight_evening_rain">Aquesta nit, %2$s.</string>
+    <string name="insight_evening_rain_chance">Aquesta nit, possibilitat de %2$s.</string>
     <!-- "15" / "15:30" — "a les" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -1078,8 +1077,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_delta_cooler_lead">farà %1$d° menys que ahir.</string>
     <string name="insight_delta_warmer_lead">farà %1$d° més que ahir.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Probabilitat de %1$s %2$s, agafa %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, agafa %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Probabilitat de %1$s, agafa %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, agafa %2$s.</string>
     <string name="insight_time_am">a les %1$d</string>
     <string name="insight_time_am_minutes">a les %1$d:%2$02d</string>
     <string name="insight_time_midnight">mitjanit</string>
@@ -1185,10 +1184,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_api_key_status_unset">2 de gratuïtes cada dia, obtén una clau per a més.</string>
     <string name="settings_tts_stop">Atura</string>
     <string name="garment_rain_jacket">Jaqueta impermeable</string>
-    <string name="insight_precip_all_day">tot el dia</string>
-    <string name="insight_precip_all_night">tota la nit</string>
-    <string name="insight_tie_in_with_rain_all_night">Aquesta nit, %2$s tota la nit, agafa %1$s.</string>
-    <string name="insight_evening_rain_all_night">Aquesta nit, %1$s tota la nit.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

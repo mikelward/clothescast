@@ -79,8 +79,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s at %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s, at %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">ng %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">buong gabi</string>
     <string name="insight_condition_clear">Maliwanag</string>
     <string name="insight_condition_partly_cloudy">Bahagyang maulap</string>
@@ -92,7 +91,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">Bagyo</string>
     <string name="insight_condition_unknown">Hindi kilala</string>
     <string name="insight_tie_in">Magdala ng %1$s ngayong gabi.</string>
-    <string name="insight_tie_in_with_rain">Magdala ng %1$s ngayong gabi, %3$s ng %2$s.</string>
+    <string name="insight_tie_in_with_rain">Magdala ng %1$s ngayong gabi, %3$s.</string>
     <!-- "15" — preposition "ng" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -612,11 +611,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- ============================================================
          Additional insight prose templates
          ============================================================ -->
-    <string name="insight_precip_chance">Posibilidad ng %1$s %2$s.</string>
+    <string name="insight_precip_chance">Posibilidad ng %1$s.</string>
     <string name="insight_tie_in_at_night">Magdala ng %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Ngayong gabi, posibilidad ng %3$s ng %2$s, magdala ng %1$s.</string>
-    <string name="insight_evening_rain">Ngayong gabi, %2$s ng %1$s.</string>
-    <string name="insight_evening_rain_chance">Ngayong gabi, posibilidad ng %2$s ng %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Ngayong gabi, posibilidad ng %3$s, magdala ng %1$s.</string>
+    <string name="insight_evening_rain">Ngayong gabi, %2$s.</string>
+    <string name="insight_evening_rain_chance">Ngayong gabi, posibilidad ng %2$s.</string>
 
     <string name="today_forecast_air_section_title">Temperatura ng hangin</string>
 
@@ -1188,8 +1187,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_delta_cooler_lead">magiging %1$d° na mas malamig kaysa kahapon.</string>
     <string name="insight_delta_warmer_lead">magiging %1$d° na mas mainit kaysa kahapon.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Posibleng %1$s %2$s, magdala ng %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, magdala ng %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Posibleng %1$s, magdala ng %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, magdala ng %2$s.</string>
     <string name="insight_time_am">%1$dnu</string>
     <string name="insight_time_am_minutes">%1$d:%2$02dnu</string>
     <string name="insight_time_midnight">hatinggabi</string>
@@ -1295,10 +1294,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_status_unset">2 libre bawat araw, kumuha ng key para sa higit pa.</string>
     <string name="settings_tts_stop">Ihinto</string>
     <string name="garment_rain_jacket">Rain jacket</string>
-    <string name="insight_precip_all_day">buong araw</string>
-    <string name="insight_precip_all_night">buong gabi</string>
-    <string name="insight_tie_in_with_rain_all_night">Ngayong gabi, %2$s buong gabi, magdala ng %1$s.</string>
-    <string name="insight_evening_rain_all_night">Ngayong gabi, %1$s buong gabi.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

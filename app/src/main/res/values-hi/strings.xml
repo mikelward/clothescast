@@ -480,8 +480,7 @@ Not overridden by design:
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s और %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s और %3$s</string>
-    <string name="insight_precip">%1$s %2$s।</string>
-    <string name="insight_precip_at_time">%1$s बजे</string>
+    <string name="insight_precip">%1$s।</string>
     <string name="insight_precip_overnight">रात भर</string>
     <string name="insight_condition_clear">साफ़</string>
     <string name="insight_condition_partly_cloudy">आंशिक बादल</string>
@@ -494,8 +493,7 @@ Not overridden by design:
     <string name="insight_condition_unknown">अज्ञात</string>
     <!-- "मीटिंग (15 बजे) के लिए कोट साथ लें।" -->
     <string name="insight_tie_in">आज रात %1$s साथ लें।</string>
-    <string name="insight_tie_in_with_rain">आज रात %1$s साथ लें, %2$s बजे %3$s।</string>
-    <!-- "15" — postposition "बजे" comes from insight_precip_at_time wrapper. -->
+    <string name="insight_tie_in_with_rain">आज रात %1$s साथ लें, %3$s।</string>
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
@@ -590,11 +588,11 @@ Not overridden by design:
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "की संभावना" — invariant phrase appended after a noun in oblique case. -->
-    <string name="insight_precip_chance">%1$s की संभावना %2$s।</string>
+    <string name="insight_precip_chance">%1$s की संभावना।</string>
     <string name="insight_tie_in_at_night">%1$s साथ लें।</string>
-    <string name="insight_tie_in_with_rain_chance">आज रात %1$s साथ लें, %2$s बजे %3$s की संभावना।</string>
-    <string name="insight_evening_rain">आज रात %1$s बजे %2$s।</string>
-    <string name="insight_evening_rain_chance">आज रात %1$s बजे %2$s की संभावना।</string>
+    <string name="insight_tie_in_with_rain_chance">आज रात %1$s साथ लें, %3$s की संभावना।</string>
+    <string name="insight_evening_rain">आज रात %2$s।</string>
+    <string name="insight_evening_rain_chance">आज रात %2$s की संभावना।</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast इस डिवाइस पर नहीं चल सकता — आपके Android बिल्ड में ऐप UI के लिए ज़रूरी सुविधा (Configuration.fontWeightAdjustment, Android 12 और उससे ऊपर अपेक्षित) मौजूद नहीं है। कृपया सिस्टम अपडेट के लिए अपने डिवाइस निर्माता से संपर्क करें।</string>
@@ -1169,8 +1167,8 @@ Not overridden by design:
     <string name="insight_delta_cooler_lead">कल से %1$d° ठंडा रहेगा।</string>
     <string name="insight_delta_warmer_lead">कल से %1$d° गर्म रहेगा।</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">%1$s की संभावना %2$s, %3$s ले जाओ।</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, %3$s ले जाओ।</string>
+    <string name="insight_precip_chance_with_accessory">%1$s की संभावना, %2$s ले जाओ।</string>
+    <string name="insight_precip_with_accessory">%1$s, %2$s ले जाओ।</string>
     <string name="insight_time_am">सुबह %1$d बजे</string>
     <string name="insight_time_am_minutes">सुबह %1$d:%2$02d बजे</string>
     <string name="insight_time_midnight">आधी रात</string>
@@ -1276,10 +1274,6 @@ Not overridden by design:
     <string name="settings_api_key_status_unset">हर दिन 2 मुफ़्त, और के लिए कुंजी लें।</string>
     <string name="settings_tts_stop">रोकें</string>
     <string name="garment_rain_jacket">रेन जैकेट</string>
-    <string name="insight_precip_all_day">पूरे दिन</string>
-    <string name="insight_precip_all_night">पूरी रात</string>
-    <string name="insight_tie_in_with_rain_all_night">आज रात, %2$s पूरी रात, %1$s साथ ले जाएँ।</string>
-    <string name="insight_evening_rain_all_night">आज रात, %1$s पूरी रात।</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

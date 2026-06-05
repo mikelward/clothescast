@@ -79,8 +79,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s in %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s in %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">ob %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">čez noč</string>
     <string name="insight_condition_clear">Jasno</string>
     <string name="insight_condition_partly_cloudy">Delno oblačno</string>
@@ -92,7 +91,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_condition_thunderstorm">Nevihta</string>
     <string name="insight_condition_unknown">Neznano</string>
     <string name="insight_tie_in">Vzemi %1$s s seboj nocoj.</string>
-    <string name="insight_tie_in_with_rain">Vzemi %1$s s seboj nocoj, %3$s ob %2$s.</string>
+    <string name="insight_tie_in_with_rain">Vzemi %1$s s seboj nocoj, %3$s.</string>
     <!-- Slovenian time format uses "." separator: "ob 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
@@ -100,10 +99,10 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <!-- Insight: tie-in at night (no "Nocoj" prefix — band lead already set context). -->
     <string name="insight_tie_in_at_night">Vzemi %1$s s seboj.</string>
     <!-- Hedged precipitation: "Možnost dežja" (chance of rain). -->
-    <string name="insight_precip_chance">Možnost %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Nocoj možnost %3$s ob %2$s, vzemi %1$s s seboj.</string>
-    <string name="insight_evening_rain">Nocoj %2$s ob %1$s.</string>
-    <string name="insight_evening_rain_chance">Nocoj možnost %2$s ob %1$s.</string>
+    <string name="insight_precip_chance">Možnost %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Nocoj možnost %3$s, vzemi %1$s s seboj.</string>
+    <string name="insight_evening_rain">Nocoj %2$s.</string>
+    <string name="insight_evening_rain_chance">Nocoj možnost %2$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast ne more delovati na tej napravi — vaša različica Androida nima funkcije, ki jo zahteva vmesnik aplikacije (Configuration.fontWeightAdjustment, pričakovano na Androidu 12 in novejšem). Za posodobitev sistema se obrnite na proizvajalca naprave.</string>
@@ -1124,8 +1123,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_delta_cooler_lead">bo %1$d° hladneje kot včeraj.</string>
     <string name="insight_delta_warmer_lead">bo %1$d° topleje kot včeraj.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Možen %1$s %2$s, vzemi %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, vzemi %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Možen %1$s, vzemi %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, vzemi %2$s.</string>
     <string name="insight_time_am">ob %1$d. uri</string>
     <string name="insight_time_am_minutes">ob %1$d.%2$02d</string>
     <string name="insight_time_midnight">polnoč</string>
@@ -1231,10 +1230,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_api_key_status_unset">2 brezplačno vsak dan, pridobi ključ za več.</string>
     <string name="settings_tts_stop">Ustavi</string>
     <string name="garment_rain_jacket">Dežna jakna</string>
-    <string name="insight_precip_all_day">ves dan</string>
-    <string name="insight_precip_all_night">vso noč</string>
-    <string name="insight_tie_in_with_rain_all_night">Nocoj, %2$s vso noč, vzemi %1$s.</string>
-    <string name="insight_evening_rain_all_night">Nocoj, %1$s vso noč.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

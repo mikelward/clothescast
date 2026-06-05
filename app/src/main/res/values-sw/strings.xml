@@ -79,8 +79,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s na %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s, na %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">saa %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">usiku</string>
     <string name="insight_condition_clear">Angavu</string>
     <string name="insight_condition_partly_cloudy">Na mawingu kidogo</string>
@@ -92,7 +91,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">Dhoruba ya radi</string>
     <string name="insight_condition_unknown">Haijulikana</string>
     <string name="insight_tie_in">Chukua %1$s usiku huu.</string>
-    <string name="insight_tie_in_with_rain">Chukua %1$s usiku huu, %3$s saa %2$s.</string>
+    <string name="insight_tie_in_with_rain">Chukua %1$s usiku huu, %3$s.</string>
     <!-- Swahili: bare digits for TTS-friendly 24h time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -419,11 +418,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="bug_report_consent_cancel">Ghairi</string>
 
     <!-- Insight: precipitation / tie-in templates (new variants) -->
-    <string name="insight_precip_chance">Uwezekano wa %1$s %2$s.</string>
+    <string name="insight_precip_chance">Uwezekano wa %1$s.</string>
     <string name="insight_tie_in_at_night">Chukua %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Usiku huu, uwezekano wa %3$s saa %2$s, chukua %1$s.</string>
-    <string name="insight_evening_rain">Usiku huu, %2$s saa %1$s.</string>
-    <string name="insight_evening_rain_chance">Usiku huu, uwezekano wa %2$s saa %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Usiku huu, uwezekano wa %3$s, chukua %1$s.</string>
+    <string name="insight_evening_rain">Usiku huu, %2$s.</string>
+    <string name="insight_evening_rain_chance">Usiku huu, uwezekano wa %2$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">Lugha</string>
@@ -1106,8 +1105,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_delta_cooler_lead">itakuwa baridi zaidi kwa %1$d° kuliko jana.</string>
     <string name="insight_delta_warmer_lead">itakuwa moto zaidi kwa %1$d° kuliko jana.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Uwezekano wa %1$s %2$s, beba %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, beba %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Uwezekano wa %1$s, beba %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, beba %2$s.</string>
     <string name="insight_time_am">saa %1$d asubuhi</string>
     <string name="insight_time_am_minutes">saa %1$d:%2$02d asubuhi</string>
     <string name="insight_time_midnight">usiku wa manane</string>
@@ -1213,10 +1212,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_status_unset">2 bila malipo kila siku, pata ufunguo kwa zaidi.</string>
     <string name="settings_tts_stop">Simamisha</string>
     <string name="garment_rain_jacket">Jacket ya mvua</string>
-    <string name="insight_precip_all_day">siku nzima</string>
-    <string name="insight_precip_all_night">usiku kucha</string>
-    <string name="insight_tie_in_with_rain_all_night">Usiku wa leo, %2$s usiku kucha, beba %1$s.</string>
-    <string name="insight_evening_rain_all_night">Usiku wa leo, %1$s usiku kucha.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

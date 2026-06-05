@@ -435,8 +435,7 @@ label localises.
     <!-- Chinese uses the enumeration comma (、) between list items. -->
     <string name="insight_clothes_join_many">%1$s、%2$s和%3$s</string>
     <!-- "雨（15:00）。" / "雨（整夜）。" — parenthetical time fits Chinese style. -->
-    <string name="insight_precip">%1$s（%2$s）。</string>
-    <string name="insight_precip_at_time">%1$s</string>
+    <string name="insight_precip">%1$s。</string>
     <string name="insight_precip_overnight">整夜</string>
     <string name="insight_condition_clear">晴</string>
     <string name="insight_condition_partly_cloudy">多雲</string>
@@ -449,7 +448,7 @@ label localises.
     <string name="insight_condition_unknown">未知</string>
     <!-- "為15點的會議帶上雨傘。" — time before event name follows Chinese convention. -->
     <string name="insight_tie_in">今晚帶上%1$s。</string>
-    <string name="insight_tie_in_with_rain">今晚帶上%1$s，%2$s有%3$s。</string>
+    <string name="insight_tie_in_with_rain">今晚帶上%1$s，有%3$s。</string>
     <!-- "15點" / "15點30分" — Chinese spoken time. insight_precip_at_time is a passthrough. -->
     <string name="insight_time_hour">%1$d點</string>
     <string name="insight_time_hour_minutes">%1$d點%2$02d分</string>
@@ -704,11 +703,11 @@ label localises.
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "可能" — invariant adverb; works for any precip noun. -->
-    <string name="insight_precip_chance">可能%1$s（%2$s）。</string>
+    <string name="insight_precip_chance">可能%1$s。</string>
     <string name="insight_tie_in_at_night">帶上%1$s。</string>
-    <string name="insight_tie_in_with_rain_chance">今晚帶上%1$s，%2$s可能有%3$s。</string>
-    <string name="insight_evening_rain">今晚%1$s有%2$s。</string>
-    <string name="insight_evening_rain_chance">今晚%1$s可能有%2$s。</string>
+    <string name="insight_tie_in_with_rain_chance">今晚帶上%1$s，可能有%3$s。</string>
+    <string name="insight_evening_rain">今晚有%2$s。</string>
+    <string name="insight_evening_rain_chance">今晚可能有%2$s。</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast 無法在此裝置上執行 — 你的 Android 版本缺少應用程式介面所需的功能（Configuration.fontWeightAdjustment，需 Android 12 以上）。請聯絡裝置製造商進行系統更新。</string>
@@ -1300,8 +1299,8 @@ label localises.
     <string name="insight_delta_cooler_lead">比昨天低 %1$d°。</string>
     <string name="insight_delta_warmer_lead">比昨天高 %1$d°。</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">%2$s可能有%1$s,帶上%3$s。</string>
-    <string name="insight_precip_with_accessory">%2$s有%1$s,帶上%3$s。</string>
+    <string name="insight_precip_chance_with_accessory">可能有%1$s,帶上%2$s。</string>
+    <string name="insight_precip_with_accessory">有%1$s,帶上%2$s。</string>
     <string name="insight_time_am">%1$d點</string>
     <string name="insight_time_am_minutes">%1$d:%2$02d</string>
     <string name="insight_time_pm">%1$d點</string>
@@ -1407,10 +1406,6 @@ label localises.
     <string name="settings_api_key_status_unset">每天 2 次免費，取得金鑰可使用更多。</string>
     <string name="settings_tts_stop">停止</string>
     <string name="garment_rain_jacket">雨衣</string>
-    <string name="insight_precip_all_day">一整天</string>
-    <string name="insight_precip_all_night">一整夜</string>
-    <string name="insight_tie_in_with_rain_all_night">今晚，%2$s一整夜，帶上%1$s。</string>
-    <string name="insight_evening_rain_all_night">今晚，%1$s一整夜。</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

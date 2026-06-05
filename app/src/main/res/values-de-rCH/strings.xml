@@ -451,9 +451,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Same composed shape as the English template ("%1$s %2$s.") — German
          likewise wants the type then the time-phrase, just with German tokens. -->
-    <string name="insight_precip">%1$s %2$s.</string>
-    <!-- "Regen um 15 Uhr." — time rendered by insight_time_hour below. -->
-    <string name="insight_precip_at_time">um %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <!-- "Regen über Nacht." for the early-morning collapse. -->
     <string name="insight_precip_overnight">über Nacht</string>
 
@@ -469,7 +467,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- "Denk an Regenschirm für heute Abend." / "…, Regen um 21 Uhr." -->
     <string name="insight_tie_in">Denk an %1$s für heute Abend.</string>
-    <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, %3$s um %2$s.</string>
+    <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, %3$s.</string>
     <!-- "15 Uhr" / "15 Uhr 30" — read naturally by German TTS. -->
     <string name="insight_time_hour">%1$d Uhr</string>
     <string name="insight_time_hour_minutes">%1$d Uhr %2$02d</string>

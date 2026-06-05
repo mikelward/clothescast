@@ -563,10 +563,9 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s és %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s és %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">%1$s órakor</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">éjszaka</string>
-    <string name="insight_precip_chance">Esetleg %1$s %2$s.</string>
+    <string name="insight_precip_chance">Esetleg %1$s.</string>
     <string name="insight_condition_clear">Tiszta</string>
     <string name="insight_condition_partly_cloudy">Részben felhős</string>
     <string name="insight_condition_cloudy">Felhős</string>
@@ -578,10 +577,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_condition_unknown">Ismeretlen</string>
     <string name="insight_tie_in">Vigyél magaddal %1$s estére.</string>
     <string name="insight_tie_in_at_night">Vigyél magaddal %1$s estére.</string>
-    <string name="insight_tie_in_with_rain">Vigyél magaddal %1$s estére, %3$s %2$s órakor.</string>
-    <string name="insight_tie_in_with_rain_chance">Esetleg %3$s %2$s órakor — vigyél %1$s.</string>
-    <string name="insight_evening_rain">Este %2$s %1$s órakor.</string>
-    <string name="insight_evening_rain_chance">Este esetleg %2$s %1$s órakor.</string>
+    <string name="insight_tie_in_with_rain">Vigyél magaddal %1$s estére, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Esetleg %3$s — vigyél %1$s.</string>
+    <string name="insight_evening_rain">Este %2$s.</string>
+    <string name="insight_evening_rain_chance">Este esetleg %2$s.</string>
     <!-- "15" — postposition "órakor" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -1130,8 +1129,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_delta_cooler_lead">%1$d°-kal hűvösebb lesz, mint tegnap.</string>
     <string name="insight_delta_warmer_lead">%1$d°-kal melegebb lesz, mint tegnap.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Esély a(z) %1$s-re %2$s, vigyél %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, vigyél %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Esély a(z) %1$s-re, vigyél %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, vigyél %2$s.</string>
     <string name="insight_time_am">%1$d-kor</string>
     <string name="insight_time_am_minutes">%1$d:%2$02d-kor</string>
     <string name="insight_time_midnight">éjfél</string>
@@ -1237,10 +1236,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_api_key_status_unset">Naponta 2 ingyenes, szerezz kulcsot többhöz.</string>
     <string name="settings_tts_stop">Leállítás</string>
     <string name="garment_rain_jacket">Esőkabát</string>
-    <string name="insight_precip_all_day">egész nap</string>
-    <string name="insight_precip_all_night">egész éjjel</string>
-    <string name="insight_tie_in_with_rain_all_night">Ma este, %2$s egész éjjel, vigyél %1$s.</string>
-    <string name="insight_evening_rain_all_night">Ma este, %1$s egész éjjel.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

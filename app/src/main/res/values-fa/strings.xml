@@ -85,9 +85,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- "و" (va) = and. -->
     <string name="insight_clothes_join_two">%1$s و %2$s</string>
     <string name="insight_clothes_join_many">%1$s، %2$s و %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <!-- "ساعت 15" — "ساعت" = "hour/o\'clock". -->
-    <string name="insight_precip_at_time">ساعت %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">در طول شب</string>
     <string name="insight_condition_clear">آفتابی</string>
     <string name="insight_condition_partly_cloudy">نیمه ابری</string>
@@ -101,7 +99,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- SOV: "%1$s را امشب ببرید" = "[item] را tonight bring". -->
     <string name="insight_tie_in">%1$s را امشب ببرید.</string>
     <!-- %2$s is the spoken time — "ساعت" embedded here since time is a bare number. -->
-    <string name="insight_tie_in_with_rain">%1$s را امشب ببرید، %3$s ساعت %2$s.</string>
+    <string name="insight_tie_in_with_rain">%1$s را امشب ببرید، %3$s.</string>
     <!-- Bare number; "ساعت" comes from insight_precip_at_time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -436,11 +434,11 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="bug_report_consent_cancel">لغو</string>
 
     <!-- Insight prose — precipitation and tie-in variants -->
-    <string name="insight_precip_chance">احتمال %1$s %2$s.</string>
+    <string name="insight_precip_chance">احتمال %1$s.</string>
     <string name="insight_tie_in_at_night">%1$s را ببرید.</string>
-    <string name="insight_tie_in_with_rain_chance">%1$s را امشب ببرید، احتمال %3$s ساعت %2$s.</string>
-    <string name="insight_evening_rain">امشب، %2$s ساعت %1$s.</string>
-    <string name="insight_evening_rain_chance">امشب، احتمال %2$s ساعت %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">%1$s را امشب ببرید، احتمال %3$s.</string>
+    <string name="insight_evening_rain">امشب، %2$s.</string>
+    <string name="insight_evening_rain_chance">امشب، احتمال %2$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">زبان</string>
@@ -1126,8 +1124,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_delta_cooler_lead">%1$d° خنک‌تر از دیروز خواهد بود.</string>
     <string name="insight_delta_warmer_lead">%1$d° گرم‌تر از دیروز خواهد بود.</string>
     <string name="insight_lead_continues">%1$s، %2$s</string>
-    <string name="insight_precip_chance_with_accessory">احتمال %1$s %2$s، %3$s ببر.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s، %3$s ببر.</string>
+    <string name="insight_precip_chance_with_accessory">احتمال %1$s، %2$s ببر.</string>
+    <string name="insight_precip_with_accessory">%1$s، %2$s ببر.</string>
     <string name="insight_time_am">ساعت %1$d صبح</string>
     <string name="insight_time_am_minutes">ساعت %1$d:%2$02d صبح</string>
     <string name="insight_time_midnight">نیمه‌شب</string>
@@ -1233,10 +1231,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_api_key_status_unset">هر روز ۲ مورد رایگان، برای بیشتر کلید بگیرید.</string>
     <string name="settings_tts_stop">توقف</string>
     <string name="garment_rain_jacket">کاپشن بارانی</string>
-    <string name="insight_precip_all_day">تمام روز</string>
-    <string name="insight_precip_all_night">تمام شب</string>
-    <string name="insight_tie_in_with_rain_all_night">امشب، %2$s تمام شب، %1$s همراه داشته باشید.</string>
-    <string name="insight_evening_rain_all_night">امشب، %1$s تمام شب.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

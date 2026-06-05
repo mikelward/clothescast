@@ -81,8 +81,7 @@ to values/strings.xml (English).
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s dan %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s, dan %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">pukul %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">semalam</string>
     <string name="insight_condition_clear">Cerah</string>
     <string name="insight_condition_partly_cloudy">Sebagian berawan</string>
@@ -94,17 +93,16 @@ to values/strings.xml (English).
     <string name="insight_condition_thunderstorm">Badai petir</string>
     <string name="insight_condition_unknown">Tidak diketahui</string>
     <string name="insight_tie_in">Bawa %1$s malam ini.</string>
-    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, %3$s pukul %2$s.</string>
-    <!-- "15" / "15.30" — "pukul" comes from surrounding templates. -->
+    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, %3$s.</string>
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
 
     <!-- Insight prose: precip chance hedge and evening rain -->
-    <string name="insight_precip_chance">Kemungkinan %1$s %2$s.</string>
+    <string name="insight_precip_chance">Kemungkinan %1$s.</string>
     <string name="insight_tie_in_at_night">Bawa %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan %3$s pukul %2$s, bawa %1$s.</string>
-    <string name="insight_evening_rain">Malam ini, %2$s pukul %1$s.</string>
-    <string name="insight_evening_rain_chance">Malam ini, kemungkinan %2$s pukul %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan %3$s, bawa %1$s.</string>
+    <string name="insight_evening_rain">Malam ini, %2$s.</string>
+    <string name="insight_evening_rain_chance">Malam ini, kemungkinan %2$s.</string>
 
     <!-- Device incompatibility error -->
     <string name="error_device_incompatible">ClothesCast tidak dapat berjalan di perangkat ini — build Android Anda tidak memiliki fitur yang dibutuhkan oleh antarmuka aplikasi (Configuration.fontWeightAdjustment, diharapkan ada di Android 12 ke atas). Silakan hubungi produsen perangkat Anda untuk pembaruan sistem.</string>
@@ -1137,8 +1135,8 @@ to values/strings.xml (English).
     <string name="insight_delta_cooler_lead">akan %1$d° lebih dingin dari kemarin.</string>
     <string name="insight_delta_warmer_lead">akan %1$d° lebih hangat dari kemarin.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Kemungkinan %1$s %2$s, bawa %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, bawa %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Kemungkinan %1$s, bawa %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, bawa %2$s.</string>
     <string name="insight_time_am">pukul %1$d pagi</string>
     <string name="insight_time_am_minutes">pukul %1$d.%2$02d pagi</string>
     <string name="insight_time_midnight">tengah malam</string>
@@ -1244,10 +1242,6 @@ to values/strings.xml (English).
     <string name="settings_api_key_status_unset">2 gratis setiap hari, dapatkan kunci untuk lebih banyak.</string>
     <string name="settings_tts_stop">Berhenti</string>
     <string name="garment_rain_jacket">Jaket hujan</string>
-    <string name="insight_precip_all_day">sepanjang hari</string>
-    <string name="insight_precip_all_night">sepanjang malam</string>
-    <string name="insight_tie_in_with_rain_all_night">Malam ini, %2$s sepanjang malam, bawa %1$s.</string>
-    <string name="insight_evening_rain_all_night">Malam ini, %1$s sepanjang malam.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

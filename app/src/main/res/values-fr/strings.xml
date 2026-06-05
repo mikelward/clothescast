@@ -451,8 +451,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s et %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s et %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">à %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">pendant la nuit</string>
     <string name="insight_condition_clear">Clair</string>
     <string name="insight_condition_partly_cloudy">Partiellement nuageux</string>
@@ -464,7 +463,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_thunderstorm">Orage</string>
     <string name="insight_condition_unknown">Inconnu</string>
     <string name="insight_tie_in">Prends %1$s ce soir.</string>
-    <string name="insight_tie_in_with_rain">Prends %1$s ce soir, %3$s à %2$s.</string>
+    <string name="insight_tie_in_with_rain">Prends %1$s ce soir, %3$s.</string>
     <!-- "15h" / "15h30" — French TTS reads as "quinze heures" / "quinze heures trente". -->
     <string name="insight_time_hour">%1$dh</string>
     <string name="insight_time_hour_minutes">%1$dh%2$02d</string>
@@ -689,10 +688,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Insight: tie-in at night (no "Ce soir" prefix — band lead already set context). -->
     <string name="insight_tie_in_at_night">Prends %1$s.</string>
     <!-- Hedged precipitation and evening-rain templates. -->
-    <string name="insight_precip_chance">Risque de %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Ce soir, risque de %3$s à %2$s, prends %1$s.</string>
-    <string name="insight_evening_rain">Ce soir, %2$s à %1$s.</string>
-    <string name="insight_evening_rain_chance">Ce soir, risque de %2$s à %1$s.</string>
+    <string name="insight_precip_chance">Risque de %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Ce soir, risque de %3$s, prends %1$s.</string>
+    <string name="insight_evening_rain">Ce soir, %2$s.</string>
+    <string name="insight_evening_rain_chance">Ce soir, risque de %2$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast ne peut pas fonctionner sur cet appareil — ta version d\'Android ne dispose pas d\'une fonctionnalité requise par l\'interface de l\'app (Configuration.fontWeightAdjustment, attendue sur Android 12 et versions ultérieures). Contacte le fabricant de ton appareil pour une mise à jour système.</string>
@@ -1265,8 +1264,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_delta_cooler_lead">il fera %1$d° de moins qu\'hier.</string>
     <string name="insight_delta_warmer_lead">il fera %1$d° de plus qu\'hier.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Risque de %1$s %2$s, prends %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, prends %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Risque de %1$s, prends %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, prends %2$s.</string>
     <string name="insight_time_am">%1$d h</string>
     <string name="insight_time_am_minutes">%1$d h %2$02d</string>
     <string name="insight_time_pm">%1$d h</string>
@@ -1372,10 +1371,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_status_unset">2 gratuites par jour, obtiens une clé pour plus.</string>
     <string name="settings_tts_stop">Arrêter</string>
     <string name="garment_rain_jacket">Veste de pluie</string>
-    <string name="insight_precip_all_day">toute la journée</string>
-    <string name="insight_precip_all_night">toute la nuit</string>
-    <string name="insight_tie_in_with_rain_all_night">Ce soir, %2$s toute la nuit, prends %1$s.</string>
-    <string name="insight_evening_rain_all_night">Ce soir, %1$s toute la nuit.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

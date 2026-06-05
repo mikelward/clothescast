@@ -417,8 +417,7 @@ the displayed label localizes.
     <string name="insight_clothes_join_two">%1$s en %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s en %3$s</string>
 
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">om %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <!-- Apostrophe before s-genitive in Dutch: "'s nachts" = at night. -->
     <string name="insight_precip_overnight">\'s nachts</string>
 
@@ -434,11 +433,11 @@ the displayed label localizes.
 
     <string name="insight_tie_in">Neem %1$s mee vanavond.</string>
     <string name="insight_tie_in_at_night">Neem %1$s mee vanavond.</string>
-    <string name="insight_tie_in_with_rain">Neem %1$s mee vanavond, %3$s om %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Kans op %3$s om %2$s — neem %1$s mee.</string>
-    <string name="insight_evening_rain">Vanavond %2$s om %1$s.</string>
-    <string name="insight_evening_rain_chance">Vanavond kans op %2$s om %1$s.</string>
-    <string name="insight_precip_chance">Kans op %1$s %2$s.</string>
+    <string name="insight_tie_in_with_rain">Neem %1$s mee vanavond, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Kans op %3$s — neem %1$s mee.</string>
+    <string name="insight_evening_rain">Vanavond %2$s.</string>
+    <string name="insight_evening_rain_chance">Vanavond kans op %2$s.</string>
+    <string name="insight_precip_chance">Kans op %1$s.</string>
 
     <!-- "15 uur" — preposition "om" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d uur</string>
@@ -1186,8 +1185,8 @@ the displayed label localizes.
     <string name="insight_delta_cooler_lead">het wordt %1$d° kouder dan gisteren.</string>
     <string name="insight_delta_warmer_lead">het wordt %1$d° warmer dan gisteren.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Kans op %1$s %2$s, neem %3$s mee.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, neem %3$s mee.</string>
+    <string name="insight_precip_chance_with_accessory">Kans op %1$s, neem %2$s mee.</string>
+    <string name="insight_precip_with_accessory">%1$s, neem %2$s mee.</string>
     <string name="insight_time_am">om %1$d uur</string>
     <string name="insight_time_am_minutes">om %1$d:%2$02d</string>
     <string name="insight_time_pm">om %1$d uur</string>
@@ -1293,10 +1292,6 @@ the displayed label localizes.
     <string name="settings_api_key_status_unset">Elke dag 2 gratis, haal een sleutel voor meer.</string>
     <string name="settings_tts_stop">Stoppen</string>
     <string name="garment_rain_jacket">Regenjas</string>
-    <string name="insight_precip_all_day">de hele dag</string>
-    <string name="insight_precip_all_night">de hele nacht</string>
-    <string name="insight_tie_in_with_rain_all_night">Vanavond, %2$s de hele nacht, neem %1$s mee.</string>
-    <string name="insight_evening_rain_all_night">Vanavond, %1$s de hele nacht.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

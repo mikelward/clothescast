@@ -574,10 +574,9 @@ What is NOT overridden, by design:
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s a %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s a %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">o %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">v noci</string>
-    <string name="insight_precip_chance">Možnosť %1$s %2$s.</string>
+    <string name="insight_precip_chance">Možnosť %1$s.</string>
     <string name="insight_condition_clear">Jasno</string>
     <string name="insight_condition_partly_cloudy">Polooblačno</string>
     <string name="insight_condition_cloudy">Zamračené</string>
@@ -589,10 +588,10 @@ What is NOT overridden, by design:
     <string name="insight_condition_unknown">Neznáme</string>
     <string name="insight_tie_in">Vezmi si %1$s na večer.</string>
     <string name="insight_tie_in_at_night">Vezmi si %1$s.</string>
-    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, %3$s o %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Dnes večer možnosť %3$s o %2$s, vezmi si %1$s.</string>
-    <string name="insight_evening_rain">Dnes večer %2$s o %1$s.</string>
-    <string name="insight_evening_rain_chance">Dnes večer možnosť %2$s o %1$s.</string>
+    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Dnes večer možnosť %3$s, vezmi si %1$s.</string>
+    <string name="insight_evening_rain">Dnes večer %2$s.</string>
+    <string name="insight_evening_rain_chance">Dnes večer možnosť %2$s.</string>
     <!-- "15" — preposition "o" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -1161,8 +1160,8 @@ What is NOT overridden, by design:
     <string name="insight_delta_cooler_lead">bude o %1$d° chladnejšie ako včera.</string>
     <string name="insight_delta_warmer_lead">bude o %1$d° teplejšie ako včera.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Možný %1$s %2$s, vezmi si %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, vezmi si %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Možný %1$s, vezmi si %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, vezmi si %2$s.</string>
     <string name="insight_time_am">o %1$d h</string>
     <string name="insight_time_am_minutes">o %1$d:%2$02d</string>
     <string name="insight_time_midnight">polnoc</string>
@@ -1268,10 +1267,6 @@ What is NOT overridden, by design:
     <string name="settings_api_key_status_unset">2 zadarmo každý deň, získaj kľúč pre ďalšie.</string>
     <string name="settings_tts_stop">Zastaviť</string>
     <string name="garment_rain_jacket">Bunda do dažďa</string>
-    <string name="insight_precip_all_day">celý deň</string>
-    <string name="insight_precip_all_night">celú noc</string>
-    <string name="insight_tie_in_with_rain_all_night">Dnes večer, %2$s celú noc, vezmi si %1$s.</string>
-    <string name="insight_evening_rain_all_night">Dnes večer, %1$s celú noc.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

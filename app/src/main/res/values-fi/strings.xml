@@ -374,9 +374,7 @@ displayed label localizes.
     <string name="insight_clothes_join_two">%1$s ja %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s ja %3$s</string>
 
-    <string name="insight_precip">%1$s %2$s.</string>
-    <!-- "kello" — time preposition in Finnish. -->
-    <string name="insight_precip_at_time">kello %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">yön aikana</string>
 
     <string name="insight_condition_clear">Selkeää</string>
@@ -391,11 +389,11 @@ displayed label localizes.
 
     <string name="insight_tie_in">Ota %1$s mukaan tänä iltana.</string>
     <string name="insight_tie_in_at_night">Ota %1$s mukaan tänä iltana.</string>
-    <string name="insight_tie_in_with_rain">Ota %1$s mukaan tänä iltana, %3$s kello %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Mahdollisesti %3$s kello %2$s — ota %1$s mukaan.</string>
-    <string name="insight_precip_chance">Mahdollisesti %1$s %2$s.</string>
-    <string name="insight_evening_rain">Tänä iltana %2$s kello %1$s.</string>
-    <string name="insight_evening_rain_chance">Tänä iltana mahdollisesti %2$s kello %1$s.</string>
+    <string name="insight_tie_in_with_rain">Ota %1$s mukaan tänä iltana, %3$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Mahdollisesti %3$s — ota %1$s mukaan.</string>
+    <string name="insight_precip_chance">Mahdollisesti %1$s.</string>
+    <string name="insight_evening_rain">Tänä iltana %2$s.</string>
+    <string name="insight_evening_rain_chance">Tänä iltana mahdollisesti %2$s.</string>
 
     <!-- Finnish time format: period as decimal separator, no AM/PM. -->
     <string name="insight_time_hour">%1$d</string>
@@ -1146,8 +1144,8 @@ displayed label localizes.
     <string name="insight_delta_cooler_lead">huominen on %1$d° viileämpi kuin eilen.</string>
     <string name="insight_delta_warmer_lead">huominen on %1$d° lämpimämpi kuin eilen.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Mahdollinen %1$s %2$s, ota mukaan %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, ota mukaan %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Mahdollinen %1$s, ota mukaan %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, ota mukaan %2$s.</string>
     <string name="insight_time_am">klo %1$d</string>
     <string name="insight_time_am_minutes">klo %1$d.%2$02d</string>
     <string name="insight_time_midnight">keskiyö</string>
@@ -1253,10 +1251,6 @@ displayed label localizes.
     <string name="settings_api_key_status_unset">2 ilmaista joka päivä, hanki avain saadaksesi lisää.</string>
     <string name="settings_tts_stop">Pysäytä</string>
     <string name="garment_rain_jacket">Sadetakki</string>
-    <string name="insight_precip_all_day">koko päivän</string>
-    <string name="insight_precip_all_night">koko yön</string>
-    <string name="insight_tie_in_with_rain_all_night">Tänä iltana, %2$s koko yön, ota %1$s mukaan.</string>
-    <string name="insight_evening_rain_all_night">Tänä iltana, %1$s koko yön.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

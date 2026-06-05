@@ -86,9 +86,7 @@ they work correctly in both the single-band and range templates.
     <!-- "و" (wa) = and; no Oxford comma in Arabic. -->
     <string name="insight_clothes_join_two">%1$s و%2$s</string>
     <string name="insight_clothes_join_many">%1$s و%2$s و%3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <!-- "في الساعة 15" — "في الساعة" = "at hour". -->
-    <string name="insight_precip_at_time">في الساعة %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">طوال الليل</string>
     <string name="insight_condition_clear">صافٍ</string>
     <string name="insight_condition_partly_cloudy">غائم جزئياً</string>
@@ -100,8 +98,7 @@ they work correctly in both the single-band and range templates.
     <string name="insight_condition_thunderstorm">عاصفة رعدية</string>
     <string name="insight_condition_unknown">غير معروف</string>
     <string name="insight_tie_in">خذ %1$s الليلة.</string>
-    <!-- %2$s is the spoken time from insight_time_hour — "الساعة" embedded here. -->
-    <string name="insight_tie_in_with_rain">خذ %1$s الليلة، %3$s الساعة %2$s.</string>
+    <string name="insight_tie_in_with_rain">خذ %1$s الليلة، %3$s.</string>
     <!-- Bare number; "في الساعة" comes from insight_precip_at_time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -448,11 +445,11 @@ they work correctly in both the single-band and range templates.
     <string name="bug_report_consent_cancel">إلغاء</string>
 
     <!-- Insight prose (additional templates) -->
-    <string name="insight_precip_chance">احتمال %1$s %2$s.</string>
+    <string name="insight_precip_chance">احتمال %1$s.</string>
     <string name="insight_tie_in_at_night">خذ %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">خذ %1$s الليلة، احتمال %3$s الساعة %2$s.</string>
-    <string name="insight_evening_rain">الليلة، %2$s الساعة %1$s.</string>
-    <string name="insight_evening_rain_chance">الليلة، احتمال %2$s الساعة %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">خذ %1$s الليلة، احتمال %3$s.</string>
+    <string name="insight_evening_rain">الليلة، %2$s.</string>
+    <string name="insight_evening_rain_chance">الليلة، احتمال %2$s.</string>
 
     <!-- Strings added to match base. -->
     <string name="settings_region_language_title">اللغة</string>
@@ -1139,8 +1136,8 @@ they work correctly in both the single-band and range templates.
     <string name="insight_delta_cooler_lead">ستكون %1$d° أبرد من الأمس.</string>
     <string name="insight_delta_warmer_lead">ستكون %1$d° أدفأ من الأمس.</string>
     <string name="insight_lead_continues">%1$s، %2$s</string>
-    <string name="insight_precip_chance_with_accessory">احتمال %1$s %2$s، خذ %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s، خذ %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">احتمال %1$s، خذ %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s، خذ %2$s.</string>
     <string name="insight_time_am">الساعة %1$d صباحًا</string>
     <string name="insight_time_am_minutes">الساعة %1$d:%2$02d صباحًا</string>
     <string name="insight_time_midnight">منتصف الليل</string>
@@ -1246,10 +1243,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_api_key_status_unset">2 مجانًا كل يوم، احصل على مفتاح للمزيد.</string>
     <string name="settings_tts_stop">إيقاف</string>
     <string name="garment_rain_jacket">سترة مطر</string>
-    <string name="insight_precip_all_day">طوال اليوم</string>
-    <string name="insight_precip_all_night">طوال الليل</string>
-    <string name="insight_tie_in_with_rain_all_night">الليلة، %2$s طوال الليل، أحضر %1$s.</string>
-    <string name="insight_evening_rain_all_night">الليلة، %1$s طوال الليل.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -128,7 +128,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("sweater")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-        ) shouldBe "21°. Wear a sweater. Rain at 3pm."
+        ) shouldBe "21°. Wear a sweater. Rain."
     }
 
     @Test
@@ -643,56 +643,34 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `precip clause emits with spoken peak hour and capitalised type`() {
+    fun `precip clause names the condition without a peak hour`() {
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)))) shouldBe
-            "Today, it will be 21°. Rain at 3pm."
+            "Today, it will be 21°. Rain."
     }
 
     @Test
-    fun `precip clause says 'noon' for 12-00`() {
-        subject.format(summary(precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.NOON))) shouldBe
-            "Today, it will be 21°. Drizzle at noon."
-    }
-
-    @Test
-    fun `precip clause says 'overnight' for early-morning peak`() {
+    fun `precip clause drops the hour for an early-morning peak`() {
+        // The peak time still rides on PrecipClause, but the prose no longer
+        // speaks it — a 2am peak reads the same bare "Rain." as any other.
         subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(2, 0)))) shouldBe
-            "Today, it will be 21°. Rain overnight."
+            "Today, it will be 21°. Rain."
     }
 
     @Test
-    fun `precip clause says 'overnight' for midnight peak`() {
-        subject.format(summary(precip = PrecipClause(WeatherCondition.SNOW, LocalTime.MIDNIGHT))) shouldBe
-            "Today, it will be 21°. Snow overnight."
-    }
-
-    @Test
-    fun `precip clause uses 12-hour pm form for late-evening peak`() {
-        subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(23, 0)))) shouldBe
-            "Today, it will be 21°. Rain at 11pm."
-    }
-
-    @Test
-    fun `precip clause renders non-zero minutes`() {
-        subject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 30)))) shouldBe
-            "Today, it will be 21°. Rain at 3:30pm."
-    }
-
-    @Test
-    fun `precip clause says 'all day' when rain runs the whole period`() {
+    fun `precip clause drops the time when rain runs the whole period`() {
         subject.format(
             summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), allDay = true)),
-        ) shouldBe "Today, it will be 21°. Rain all day."
+        ) shouldBe "Today, it will be 21°. Rain."
     }
 
     @Test
-    fun `precip clause says 'all night' for an all-day night slice`() {
+    fun `precip clause drops the time on an all-day night slice`() {
         subject.format(
             summary(
                 period = ForecastPeriod.TONIGHT,
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(21, 0), allDay = true),
             ),
-        ) shouldBe "Tonight, it will be 21°. Rain all night."
+        ) shouldBe "Tonight, it will be 21°. Rain."
     }
 
     @Test
@@ -702,7 +680,7 @@ class InsightFormatterTest {
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), allDay = true),
                 carriedAccessories = listOf("umbrella"),
             ),
-        ) shouldBe "Today, it will be 21°. Rain all day, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Rain, bring an umbrella."
     }
 
     @Test
@@ -715,13 +693,13 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Chance of rain at 3pm."
+        ) shouldBe "Today, it will be 21°. Chance of rain."
     }
 
     @Test
     fun `precip clause downcases the condition mid-sentence in the hedged form`() {
-        // Drizzle would otherwise read "Chance of Drizzle at noon." — title-
-        // cased mid-sentence. The formatter lowercases the condition for the
+        // Drizzle would otherwise read "Chance of Drizzle." — title-cased
+        // mid-sentence. The formatter lowercases the condition for the
         // POSSIBLE template so it sits naturally after "Chance of".
         subject.format(
             summary(
@@ -731,7 +709,19 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Chance of drizzle at noon."
+        ) shouldBe "Today, it will be 21°. Chance of drizzle."
+    }
+
+    @Test
+    fun `formatTime still renders spoken clock forms for callers that want them`() {
+        // The precip prose dropped the hour, but the peak time is still spoken
+        // by callers like the Nest-Hub outfit card via formatTime — keep the
+        // 12h named forms covered.
+        subject.formatTime(LocalTime.NOON) shouldBe "noon"
+        subject.formatTime(LocalTime.MIDNIGHT) shouldBe "midnight"
+        subject.formatTime(LocalTime.of(15, 0)) shouldBe "3pm"
+        subject.formatTime(LocalTime.of(15, 30)) shouldBe "3:30pm"
+        subject.formatTime(LocalTime.of(23, 0)) shouldBe "11pm"
     }
 
     private val omitSubject = InsightFormatter.forContext(
@@ -796,7 +786,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("sweater")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-        ) shouldBe "Wear a sweater. Rain at 3pm."
+        ) shouldBe "Wear a sweater. Rain."
     }
 
     @Test
@@ -840,7 +830,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("sweater")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-        ) shouldBe "Today, wear a sweater. Rain at 3pm."
+        ) shouldBe "Today, wear a sweater. Rain."
     }
 
     @Test
@@ -940,7 +930,7 @@ class InsightFormatterTest {
         // The umbrella rides in via the recommended items (a fired umbrella
         // rule). It's filtered out of the wear sentence (carried, not worn) and
         // the calendar tie-in skips it as a dupe, but the precip clause folds it
-        // in so rain and umbrella travel together: "Rain at 9pm, bring an
+        // in so rain and umbrella travel together: "Rain, bring an
         // umbrella." — one mention, not three sentences.
         val out = subject.format(
             summary(
@@ -950,7 +940,7 @@ class InsightFormatterTest {
                 calendarTieIn = CalendarTieInClause("umbrella"),
             ),
         )
-        out shouldBe "Tonight, it will be 21°. Rain at 9pm, bring an umbrella."
+        out shouldBe "Tonight, it will be 21°. Rain, bring an umbrella."
     }
 
     @Test
@@ -993,11 +983,43 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
     }
 
     @Test
-    fun `evening event tie-in says 'all night' for bare all-day rain`() {
+    fun `evening event tie-in says 'overnight' for a post-midnight rain peak`() {
+        // A peak in the early hours (00:00–04:59) reads "overnight" instead of
+        // "tonight", flagging the post-midnight window the "Tonight," lead
+        // doesn't already cover.
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket"),
+                    rainTime = LocalTime.of(1, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Tonight, rain overnight, bring a jacket."
+    }
+
+    @Test
+    fun `evening event tie-in says 'overnight' for bare post-midnight rain`() {
+        val out = subject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(2, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Tonight, rain overnight."
+    }
+
+    @Test
+    fun `evening event tie-in ignores the all-day flag on bare evening rain`() {
+        // The coarse "tonight" / "overnight" word is keyed off the peak hour,
+        // not coverage, so an all-day evening reads the same "tonight" as a
+        // single-hour evening peak — the all-day distinction is gone.
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1007,12 +1029,11 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain all night."
+        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
     }
 
     @Test
-    fun `evening event tie-in keeps the hour for all-day rain on the POSSIBLE tier`() {
-        // all-night is LIKELY-only — a single-model chance still names its hour.
+    fun `evening event tie-in ignores the all-day flag on the POSSIBLE tier`() {
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1023,11 +1044,11 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain tonight."
     }
 
     @Test
-    fun `evening event tie-in folds all-night rain ahead of the items`() {
+    fun `evening event tie-in ignores the all-day flag ahead of the items`() {
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1037,7 +1058,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain all night, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
     }
 
     @Test
@@ -1051,7 +1072,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain tonight."
     }
 
     @Test
@@ -1099,7 +1120,7 @@ class InsightFormatterTest {
 
     @Test
     fun `evening event tie-in folds rain time leading the items when present`() {
-        // Rain leads the item ("Tonight, rain at 9pm, bring a jacket.") so
+        // Rain leads the item ("Tonight, rain tonight, bring a jacket.") so
         // the tie-in reads weather-then-action, same shape as the day insight
         // (precip clause precedes the carry).
         val out = subject.format(
@@ -1107,7 +1128,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket"), rainTime = LocalTime.of(21, 0)),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
     }
 
     @Test
@@ -1123,7 +1144,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.SNOW,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, snow at 9pm, bring a jacket."
+        ) shouldBe "Today, it will be 21°. Tonight, snow tonight, bring a jacket."
 
         subject.format(
             summary(
@@ -1133,7 +1154,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.THUNDERSTORM,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm at 9pm."
+        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm tonight."
     }
 
     @Test
@@ -1149,7 +1170,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.SNOW,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, chance of snow at 9pm."
+        ) shouldBe "Today, it will be 21°. Tonight, chance of snow tonight."
     }
 
     @Test
@@ -1165,7 +1186,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
     }
 
     @Test
@@ -1178,7 +1199,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
     }
 
     @Test
@@ -1208,7 +1229,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain tonight, bring a jacket."
     }
 
     @Test
@@ -1241,7 +1262,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("umbrella")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-        ) shouldBe "Today, it will be 21°. Rain at 3pm, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Rain, bring an umbrella."
     }
 
     @Test
@@ -1255,17 +1276,17 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Chance of rain at 3pm, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Chance of rain, bring an umbrella."
     }
 
     @Test
-    fun `umbrella accessory appends to the overnight-collapsed precip clause`() {
+    fun `umbrella accessory appends to an early-morning precip clause`() {
         umbrellaSubject.format(
             summary(
                 clothes = ClothesClause(listOf("umbrella")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(2, 0)),
             ),
-        ) shouldBe "Today, it will be 21°. Rain overnight, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Rain, bring an umbrella."
     }
 
     @Test
@@ -1276,17 +1297,16 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("umbrella")),
                 precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.NOON),
             ),
-        ) shouldBe "Today, it will be 21°. Drizzle at noon, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Drizzle, bring an umbrella."
     }
 
     @Test
     fun `umbrella accessory is suppressed when the precip is snow`() {
-        // Regression: "Snow overnight, bring an umbrella." reads wrong — the
-        // accessory is rain-keyed by name and an umbrella isn't the right tool
-        // for snow.
+        // Regression: "Snow, bring an umbrella." reads wrong — the accessory
+        // is rain-keyed by name and an umbrella isn't the right tool for snow.
         umbrellaSubject.format(
             summary(precip = PrecipClause(WeatherCondition.SNOW, LocalTime.MIDNIGHT)),
-        ) shouldBe "Today, it will be 21°. Snow overnight."
+        ) shouldBe "Today, it will be 21°. Snow."
     }
 
     @Test
@@ -1298,7 +1318,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("umbrella")),
                 precip = PrecipClause(WeatherCondition.THUNDERSTORM, LocalTime.of(15, 0)),
             ),
-        ) shouldBe "Today, it will be 21°. Thunderstorm at 3pm, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Thunderstorm, bring an umbrella."
     }
 
     @Test
@@ -1313,7 +1333,7 @@ class InsightFormatterTest {
                     PrecipLikelihood.POSSIBLE,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Chance of snow at 3pm."
+        ) shouldBe "Today, it will be 21°. Chance of snow."
     }
 
     @Test
@@ -1333,12 +1353,12 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket and umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket and umbrella."
     }
 
     @Test
     fun `umbrella accessory promotes the bare-rain evening tie-in to the item-led template`() {
-        // Without an opted-in umbrella rule this path renders "Tonight, rain at 9pm.".
+        // Without an opted-in umbrella rule this path renders "Tonight, rain tonight.".
         // The umbrella choice promotes it to the item-led template with the
         // accessory as the lone item.
         umbrellaSubject.format(
@@ -1349,7 +1369,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring an umbrella."
     }
 
     @Test
@@ -1363,7 +1383,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, chance of rain at 9pm, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, chance of rain tonight, bring an umbrella."
     }
 
     @Test
@@ -1389,7 +1409,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket and umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket and umbrella."
     }
 
     @Test
@@ -1407,7 +1427,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.SNOW,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, snow at 9pm."
+        ) shouldBe "Today, it will be 21°. Tonight, snow tonight."
     }
 
     @Test
@@ -1422,7 +1442,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.THUNDERSTORM,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm at 9pm, bring a jacket."
+        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm tonight, bring a jacket."
     }
 
     @Test
@@ -1438,7 +1458,7 @@ class InsightFormatterTest {
                     precipCondition = null,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain at 9pm, bring a jacket."
+        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
     }
 
     @Test
@@ -1452,7 +1472,7 @@ class InsightFormatterTest {
                 clothes = ClothesClause(listOf("umbrella")),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-        ) shouldBe "Heute wird es 21°. Regen um 15 Uhr, denk an Regenschirm."
+        ) shouldBe "Heute wird es 21°. Regen, denk an Regenschirm."
     }
 
     @Test
@@ -1466,14 +1486,14 @@ class InsightFormatterTest {
                 carriedAccessories = listOf("umbrella"),
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
-        ) shouldBe "Today, it will be 21°. Rain at 3pm, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Rain, bring an umbrella."
     }
 
     @Test
     fun `full insight composes band + delta + clothes + precip in order`() {
         // The umbrella is filtered out of the wear sentence (carried, not worn)
         // but folds into the precip clause, so "Wear a sweater." names the worn
-        // garment and "Rain at 3pm, bring an umbrella." carries the carry.
+        // garment and "Rain, bring an umbrella." carries the carry.
         val out = subject.format(
             summary(
                 band = BandClause(TemperatureBand.COOL, TemperatureBand.MILD),
@@ -1483,7 +1503,7 @@ class InsightFormatterTest {
             ),
         )
         out shouldBe "Today, it will be 15° to 21°. 6° warmer than yesterday. " +
-            "Wear a sweater. Rain at 3pm, bring an umbrella."
+            "Wear a sweater. Rain, bring an umbrella."
     }
 
     @Test
@@ -1541,36 +1561,36 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `non-English region prose does not leak rain-jacket or all-day English`() {
+    fun `non-English region prose does not leak rain-jacket English`() {
         // Regression from a release build: Region=SR_RS on an en-GB device
-        // rendered otherwise-Serbian prose with English fallback fragments:
-        // "rain jacket" and "all day". Pin the in-app Region path for the
-        // locales reported with the same symptom.
+        // rendered otherwise-Serbian prose with the English fallback fragment
+        // "rain jacket". Pin the in-app Region path for the locales reported
+        // with the same symptom. (The precip clause used to also leak "all
+        // day"; it no longer names a coverage phrase, so only the rain-jacket
+        // garment vocabulary is checked here.)
         val enGbConfig = Configuration(context.resources.configuration).apply {
             setLocale(Locale.forLanguageTag("en-GB"))
         }
         val enGbContext = context.createConfigurationContext(enGbConfig)
         val cases = listOf(
-            Region.DA_DK to ("regnjakke" to "hele dagen"),
-            Region.SV_SE to ("regnjacka" to "hela dagen"),
-            Region.SR_RS to ("kišna jakna" to "ceo dan"),
-            Region.SR_CYRL_RS to ("кишна јакна" to "цео дан"),
-            Region.UK_UA to ("дощова куртка" to "весь день"),
-            Region.RU_RU to ("дождевик" to "весь день"),
+            Region.DA_DK to "regnjakke",
+            Region.SV_SE to "regnjacka",
+            Region.SR_RS to "kišna jakna",
+            Region.SR_CYRL_RS to "кишна јакна",
+            Region.UK_UA to "дощова куртка",
+            Region.RU_RU to "дождевик",
         )
 
-        cases.forEach { (region, expected) ->
+        cases.forEach { (region, expectedGarment) ->
             val out = InsightFormatter.forRegion(enGbContext, region).format(
                 summary(
                     clothes = ClothesClause(listOf("sweater", "rain-jacket", "jeans")),
-                    precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), allDay = true),
+                    precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
                 ),
             )
 
             out shouldNotContain "rain jacket"
-            out shouldNotContain "all day"
-            out.contains(expected.first) shouldBe true
-            out.contains(expected.second) shouldBe true
+            out.contains(expectedGarment) shouldBe true
         }
     }
 
@@ -1685,9 +1705,9 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `de — precip uses 'um' between condition and time`() {
+    fun `de — precip names the condition without a time`() {
         germanSubject.format(summary(precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)))) shouldBe
-            "Heute wird es 21°. Regen um 15 Uhr."
+            "Heute wird es 21°. Regen."
     }
 
     @Test
@@ -1720,12 +1740,12 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `de — evening event tie-in folds rain time via German positional placeholders`() {
-        // The condition noun is now a parameter (lowercased mid-sentence, the
-        // same treatment insight_precip_chance already applies — German ships
-        // "Evtl. regen …" there), so it reads "regen um 21 Uhr" rather than the
-        // old hardcoded "Regen". The win is that a snowy / stormy evening now
-        // names the real condition instead of always saying rain.
+    fun `de — evening event tie-in names the condition via German positional placeholders`() {
+        // The condition noun is a parameter (lowercased mid-sentence, the same
+        // treatment insight_precip_chance already applies — German ships "Evtl.
+        // regen …" there), so it reads "regen". The German template carries the
+        // timing in its own "für heute Abend" wording and drops the coarse-word
+        // placeholder, so no clock time appears.
         val out = germanSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1734,7 +1754,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Heute wird es 21°. Denk an Regenschirm für heute Abend, regen um 21 Uhr."
+        out shouldBe "Heute wird es 21°. Denk an Regenschirm für heute Abend, regen."
     }
 
     @Test
@@ -1934,7 +1954,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Hoy hará 21°. Lleva paraguas esta noche, lluvia a las 21."
+        out shouldBe "Hoy hará 21°. Lleva paraguas esta noche, lluvia."
     }
 
     @Test
@@ -1991,7 +2011,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain at 9pm."
+        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
     }
 
     @Test

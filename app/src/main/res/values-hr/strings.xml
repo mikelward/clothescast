@@ -419,8 +419,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_clothes_article_an">%1$s</string>
     <string name="insight_clothes_join_two">%1$s i %2$s</string>
     <string name="insight_clothes_join_many">%1$s, %2$s i %3$s</string>
-    <string name="insight_precip">%1$s %2$s.</string>
-    <string name="insight_precip_at_time">u %1$s</string>
+    <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">noću</string>
     <string name="insight_condition_clear">Vedro</string>
     <string name="insight_condition_partly_cloudy">Djelomično oblačno</string>
@@ -432,7 +431,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_condition_thunderstorm">Grmljavina</string>
     <string name="insight_condition_unknown">Nepoznato</string>
     <string name="insight_tie_in">Ponesi %1$s večeras.</string>
-    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, %3$s u %2$s.</string>
+    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, %3$s.</string>
     <!-- "15" — preposition "u" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -658,10 +657,10 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_tie_in_at_night">Ponesi %1$s.</string>
     <!-- Hedged precipitation and evening-rain templates.
          "Možda" (maybe) is an invariable adverb — no gender agreement issues. -->
-    <string name="insight_precip_chance">Možda %1$s %2$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Večeras, možda %3$s u %2$s, ponesi %1$s.</string>
-    <string name="insight_evening_rain">Večeras, %2$s u %1$s.</string>
-    <string name="insight_evening_rain_chance">Večeras, možda %2$s u %1$s.</string>
+    <string name="insight_precip_chance">Možda %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Večeras, možda %3$s, ponesi %1$s.</string>
+    <string name="insight_evening_rain">Večeras, %2$s.</string>
+    <string name="insight_evening_rain_chance">Večeras, možda %2$s.</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast ne može raditi na ovom uređaju — tvoja Android verzija nema značajku koju sučelje aplikacije zahtijeva (Configuration.fontWeightAdjustment, očekuje se na Androidu 12 i novijim). Obrati se proizvođaču uređaja za ažuriranje sustava.</string>
@@ -1207,8 +1206,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_delta_cooler_lead">bit će %1$d° hladnije nego jučer.</string>
     <string name="insight_delta_warmer_lead">bit će %1$d° toplije nego jučer.</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
-    <string name="insight_precip_chance_with_accessory">Moguć %1$s %2$s, ponesi %3$s.</string>
-    <string name="insight_precip_with_accessory">%1$s %2$s, ponesi %3$s.</string>
+    <string name="insight_precip_chance_with_accessory">Moguć %1$s, ponesi %2$s.</string>
+    <string name="insight_precip_with_accessory">%1$s, ponesi %2$s.</string>
     <string name="insight_time_am">u %1$d h</string>
     <string name="insight_time_am_minutes">u %1$d:%2$02d</string>
     <string name="insight_time_pm">u %1$d h</string>
@@ -1314,10 +1313,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_api_key_status_unset">2 besplatno svaki dan, nabavi ključ za više.</string>
     <string name="settings_tts_stop">Zaustavi</string>
     <string name="garment_rain_jacket">Kišna jakna</string>
-    <string name="insight_precip_all_day">cijeli dan</string>
-    <string name="insight_precip_all_night">cijelu noć</string>
-    <string name="insight_tie_in_with_rain_all_night">Večeras, %2$s cijelu noć, ponesi %1$s.</string>
-    <string name="insight_evening_rain_all_night">Večeras, %1$s cijelu noć.</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

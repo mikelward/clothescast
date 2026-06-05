@@ -58,13 +58,15 @@
         android:name="android.permission.SCHEDULE_EXACT_ALARM"
         android:maxSdkVersion="32" />
 
-    <!-- TTS playback while backgrounded on Android 14+ requires a short foreground service. -->
+    <!-- TTS playback while backgrounded on Android 14+ requires a short foreground service.
+         A shortService FGS needs only FOREGROUND_SERVICE — there is no separate
+         FOREGROUND_SERVICE_SHORT_SERVICE permission. -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SHORT_SERVICE" />
 
     <application
         android:name=".ClothesCastApplication"
         android:allowBackup="false"
+        tools:ignore="UnusedAttribute"
         android:banner="@drawable/tv_banner"
         android:enableOnBackInvokedCallback="true"
         android:icon="${launcherIconRes}"

@@ -1699,12 +1699,14 @@ internal fun HolidayBanner(
  * missing translation degrades to something developer-readable rather than
  * blank.
  */
+@android.annotation.SuppressLint("DiscouragedApi")
 private fun resolveBannerString(
     context: android.content.Context,
     key: String?,
     fallback: String,
 ): String {
     if (key == null) return fallback
+    // getIdentifier is required: the string name is a runtime banner key.
     val resId = context.resources.getIdentifier(key, "string", context.packageName)
     return if (resId == 0) fallback else context.getString(resId)
 }
@@ -2262,8 +2264,9 @@ private fun formatFact(fact: Fact, unit: TemperatureUnit, liveThresholdC: Double
     val observedStr: String
     val thresholdStr: String
     if (collide) {
-        observedStr = ONE_DECIMAL_FORMAT.format(observedConverted)
-        thresholdStr = ONE_DECIMAL_FORMAT.format(thresholdConverted)
+        val format = oneDecimalFormat()
+        observedStr = format.format(observedConverted)
+        thresholdStr = format.format(thresholdConverted)
     } else {
         observedStr = observedI.toString()
         thresholdStr = thresholdI.toString()
@@ -2318,8 +2321,10 @@ private fun comparisonFor(observedC: Double, thresholdC: Double): Fact.Compariso
 // Locale-aware one-decimal formatter used as a fallback in [formatFact] when
 // integer rounding of observed and threshold values would otherwise collide
 // (e.g. "17.6" and "18.0" both rounding to "18"). Default locale picks the
-// right decimal separator (`,` in de-DE, `.` in en-US, etc.).
-private val ONE_DECIMAL_FORMAT: java.text.NumberFormat =
+// right decimal separator (`,` in de-DE, `.` in en-US, etc.). Built per call
+// rather than cached in a static field so it tracks the user's in-app locale
+// changes (NumberFormat is also not thread-safe to share).
+private fun oneDecimalFormat(): java.text.NumberFormat =
     java.text.NumberFormat.getNumberInstance(Locale.getDefault()).apply {
         minimumFractionDigits = 1
         maximumFractionDigits = 1

@@ -800,8 +800,10 @@ private fun OverrideDropdown(
  */
 @Composable
 // The resource id is looked up dynamically by name (getIdentifier), so
-// stringResource() can't be used here — the id isn't known at compile time.
+// stringResource() can't be used here — the id isn't known at compile time, so
+// getIdentifier is required (DiscouragedApi).
 @Suppress("LocalContextGetResourceValueCall")
+@android.annotation.SuppressLint("DiscouragedApi")
 private fun resolveHolidayString(name: String): String? {
     val context = LocalContext.current
     val resId = context.resources.getIdentifier(name, "string", context.packageName)
@@ -814,11 +816,13 @@ private fun resolveHolidayString(name: String): String? {
  * [Locale]'s display name (e.g. "United States") if the resource is
  * missing and finally to the raw code so the row is always readable.
  */
+@android.annotation.SuppressLint("DiscouragedApi")
 private fun resolveCountryDisplayName(
     context: android.content.Context,
     uiLocale: Locale,
     code: String,
 ): String {
+    // getIdentifier is required: resName is built from a runtime country code.
     val resName = "settings_holiday_country_${code.lowercase()}"
     val resId = context.resources.getIdentifier(resName, "string", context.packageName)
     if (resId != 0) return context.getString(resId)

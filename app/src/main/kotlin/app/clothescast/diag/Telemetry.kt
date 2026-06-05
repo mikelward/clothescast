@@ -56,6 +56,10 @@ object Telemetry {
      * unconditionally — when collection is disabled the SDK won't send
      * anything anyway, and the property store is local until an event flushes.
      */
+    // The SDK_INT < MIN_SDK_VERSION guard below looks dead to lint (install-time
+    // minSdk enforcement), but Test Lab elevated installs and some sideload
+    // paths reach it on sub-minSdk devices — see the comment there.
+    @android.annotation.SuppressLint("ObsoleteSdkInt")
     fun start(context: Context, settings: SettingsRepository, scope: CoroutineScope) {
         if (FirebaseApp.getApps(context).isEmpty()) return
         val analytics = FirebaseAnalytics.getInstance(context)

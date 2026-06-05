@@ -13,7 +13,7 @@ What is NOT overridden, by design:
 `settings_region_language_*` and `settings_tts_voice_locale_*` use Norwegian
 native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Own-locale entries (used by both Region and Voice pickers). -->
     <string name="settings_region_language_nb_no">Norsk bokmål (Norge)</string>
     <string name="settings_tts_voice_locale_nb_no">Norsk bokmål (Norge)</string>
@@ -534,11 +534,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">I dag</string>
     <string name="insight_lead_tomorrow">I morgen</string>
-    <string name="insight_unchanged_today">I dag blir det det samme som i går.</string>
+    <string name="insight_unchanged_today" tools:ignore="Typos">I dag blir det det samme som i går.</string>
     <string name="insight_unchanged_today_no_lead">Som i går.</string>
-    <string name="insight_unchanged_tonight">I kveld blir det det samme som i går kveld.</string>
+    <string name="insight_unchanged_tonight" tools:ignore="Typos">I kveld blir det det samme som i går kveld.</string>
     <string name="insight_unchanged_tonight_no_lead">Som i går kveld.</string>
-    <string name="insight_unchanged_tomorrow">I morgen blir det det samme som i dag.</string>
+    <string name="insight_unchanged_tomorrow" tools:ignore="Typos">I morgen blir det det samme som i dag.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Som i dag.</string>
     <string name="insight_lead_tonight">I kveld</string>
     <!-- Norwegian V2 word order: "I dag blir det mildt." -->

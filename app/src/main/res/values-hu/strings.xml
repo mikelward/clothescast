@@ -17,7 +17,7 @@ Picker labels under `settings_region_language_*` and
 locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 (Németország), …).
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="settings_region_language_hu_hu">Magyar (Magyarország)</string>
     <string name="settings_tts_voice_locale_hu_hu">Magyar (Magyarország)</string>
     <string name="settings_tts_voice_locale_label">Akcentus</string>
@@ -62,7 +62,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_region_language_id_id">Indonéz (Indonézia)</string>
     <string name="settings_region_language_ms_my">Maláj (Malajzia)</string>
     <string name="settings_region_language_fil_ph">Filippínó (Fülöp-szigetek)</string>
-    <string name="settings_region_language_vi_vn">Vietnami (Vietnám)</string>
+    <string name="settings_region_language_vi_vn" tools:ignore="Typos">Vietnami (Vietnám)</string>
     <string name="settings_region_language_th_th">Thai (Thaiföld)</string>
     <string name="settings_region_language_zh_cn">Kínai (egyszerűsített)</string>
     <string name="settings_region_language_zh_tw">Kínai (hagyományos)</string>
@@ -118,7 +118,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_tts_voice_locale_id_id">Indonéz (Indonézia)</string>
     <string name="settings_tts_voice_locale_ms_my">Maláj (Malajzia)</string>
     <string name="settings_tts_voice_locale_fil_ph">Filippínó (Fülöp-szigetek)</string>
-    <string name="settings_tts_voice_locale_vi_vn">Vietnami (Vietnám)</string>
+    <string name="settings_tts_voice_locale_vi_vn" tools:ignore="Typos">Vietnami (Vietnám)</string>
     <string name="settings_tts_voice_locale_th_th">Thai (Thaiföld)</string>
     <string name="settings_tts_voice_locale_zh_cn">Kínai (egyszerűsített)</string>
     <string name="settings_tts_voice_locale_zh_tw">Kínai (hagyományos)</string>
@@ -1120,8 +1120,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="holiday_name_ukraine_victory_day">Győzelem a nácizmus felett a II. világháborúban (Ukrajna)</string>
     <string name="holiday_name_us_election_day">Választás napja</string>
     <string name="holiday_name_us_labor_day">Munka ünnepe</string>
-    <string name="holiday_name_vietnam_national_day">Nemzeti ünnep (Vietnám)</string>
-    <string name="holiday_name_vietnam_reunification_day">Újraegyesítés napja (Vietnám)</string>
+    <string name="holiday_name_vietnam_national_day" tools:ignore="Typos">Nemzeti ünnep (Vietnám)</string>
+    <string name="holiday_name_vietnam_reunification_day" tools:ignore="Typos">Újraegyesítés napja (Vietnám)</string>
     <string name="holiday_name_whit_monday">Pünkösdhétfő</string>
     <plurals name="insight_clothes_layer_count">
         <item quantity="one">%1$d réteg</item>
@@ -1161,7 +1161,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_holiday_country_th">Thaiföld</string>
     <string name="settings_holiday_country_tr">Törökország</string>
     <string name="settings_holiday_country_ua">Ukrajna</string>
-    <string name="settings_holiday_country_vn">Vietnám</string>
+    <string name="settings_holiday_country_vn" tools:ignore="Typos">Vietnám</string>
     <string name="settings_holiday_country_za">Dél-Afrika</string>
     <string name="settings_holidays_calendar_enable_master">Kapcsold be fent a \"Naptáram használata\" opciót a közelgő ünnepek megjelenítéséhez.</string>
     <string name="settings_holidays_calendar_grant_permission">Adj naptárhozzáférést, hogy lásd a szinkronizált naptáraidból a közelgő ünnepeket.</string>

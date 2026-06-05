@@ -42,7 +42,7 @@ Polaco / Neerlandês / Japonês / etc. follow PT-PT conventions where
 they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 "Neerlandês").
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="settings_region_language_pt_pt">Português (Portugal)</string>
     <string name="settings_region_language_pt_br">Português (Brasil)</string>
     <string name="settings_tts_voice_locale_pt_pt">Português (Portugal)</string>
@@ -1309,7 +1309,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_holidays_source_funny">Engraçados</string>
     <string name="settings_holidays_source_orthodox">Ortodoxo</string>
     <string name="settings_holidays_sources_title">Calendários integrados</string>
-    <string name="settings_location_privacy_note">As localizações são arredondadas ao quilómetro mais próximo para a tua privacidade.</string>
+    <string name="settings_location_privacy_note" tools:ignore="Typos">As localizações são arredondadas ao quilómetro mais próximo para a tua privacidade.</string>
     <string name="settings_location_refresh">Atualizar</string>
     <string name="settings_time_format_12h">12 horas</string>
     <string name="settings_time_format_24h">24 horas</string>

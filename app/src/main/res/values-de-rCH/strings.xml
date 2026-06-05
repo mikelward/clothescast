@@ -43,7 +43,7 @@ locale (Englisch (Vereinigte Staaten), Französisch (Kanada), Chinesisch
 (vereinfacht), …). The locale tag stored on disk (en-US / fr-CA /
 zh-CN) is unchanged; only the displayed label localizes.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="settings_region_language_de_de">Deutsch (Deutschland)</string>
     <string name="settings_region_language_de_at">Deutsch (Österreich)</string>
     <string name="settings_region_language_de_ch">Deutsch (Schweiz)</string>
@@ -424,7 +424,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_band_cool">kühl</string>
     <string name="insight_band_mild">mild</string>
     <string name="insight_band_warm">warm</string>
-    <string name="insight_band_hot">heiss</string>
+    <string name="insight_band_hot" tools:ignore="Typos">heiss</string>
 
     <!-- Subject-less comparison fragment (see values-de): keep it equal to
          insight_delta_*_lead minus the leading "es wird " so the no-lead
@@ -495,7 +495,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_celebration_card_title">Festtagsthemen</string>
     <string name="today_celebration_card_body">Aktiviere besondere Farben und Nachrichten für Feiertage und Geburtstage.</string>
     <string name="today_celebration_card_cta">Kalendereinstellungen</string>
-    <string name="today_celebration_card_dismiss">Schliessen</string>
+    <string name="today_celebration_card_dismiss" tools:ignore="Typos">Schliessen</string>
 
     <!-- Holidays settings — source filter chips. -->
     <string name="settings_holidays_source_global">Global</string>

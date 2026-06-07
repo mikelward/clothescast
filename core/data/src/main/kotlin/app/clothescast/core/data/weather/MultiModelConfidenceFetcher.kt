@@ -11,9 +11,11 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
 import kotlinx.coroutines.CancellationException
@@ -50,6 +52,12 @@ import java.time.LocalDateTime
  * usable daily values, and a [PerModelHourly] when at least one model reported
  * usable hourly values. Every drop and every failure is reported through
  * [logger] so the caller can surface why the chip didn't render.
+ *
+ * Invalid-model resilience: Open-Meteo rejects the *entire* batched request with
+ * HTTP 400 if any one `models=` id is invalid or withdrawn (it names the bad one
+ * in the body). Rather than let a single bad id wipe the chip and every chart,
+ * [fetch] drops the rejected model(s) and retries with the rest — so a typo'd or
+ * retired id costs only its own line, not the whole feature.
  */
 internal class MultiModelConfidenceFetcher(
     private val httpClient: HttpClient,
@@ -59,13 +67,86 @@ internal class MultiModelConfidenceFetcher(
     suspend fun fetch(
         location: Location,
         models: List<String> = DEFAULT_MODELS,
-    ): MultiModelData? = try {
+    ): MultiModelData? {
         // Tolerate a degenerate user selection by falling back to defaults rather
         // than firing a `models=` parameter that Open-Meteo would reject. The
         // settings UI keeps the picker pinned to ≥ 2 enabled, so this branch is
         // a hand-edited-DataStore safety net more than a user-reachable path.
-        val effectiveModels = models.takeIf { it.isNotEmpty() } ?: DEFAULT_MODELS
-        val response = apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_CONFIDENCE) {
+        var remaining = models.takeIf { it.isNotEmpty() } ?: DEFAULT_MODELS
+        var attempts = 0
+        while (true) {
+            attempts++
+            val response = try {
+                requestModels(location, remaining)
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: ResponseException) {
+                // Open-Meteo answers the whole batched request with HTTP 400 when
+                // any single `models=` entry is invalid or withdrawn, naming the
+                // offending model in the error body. Because `expectSuccess` turns
+                // that into a throw, one bad id would otherwise take the confidence
+                // chip *and* every per-model chart down with it (the catch-all
+                // below returns null). Instead, drop the model(s) the server
+                // complained about and retry with the rest, so the feature
+                // degrades to the surviving models rather than vanishing. Each
+                // retry strictly shrinks the list, so the loop terminates; if we
+                // can't identify a model to drop we fall through to null like any
+                // other failure.
+                val status = e.response.status.value
+                // Read the error body to find which model(s) the server named.
+                // Don't use runCatching here: reading the body suspends, and a
+                // blanket catch would swallow a CancellationException (cancelled
+                // while suspended) and mask it as an empty body — breaking
+                // structured concurrency. Rethrow cancellation; treat any other
+                // read failure as "no body to parse".
+                val body = try {
+                    e.response.bodyAsText()
+                } catch (ce: CancellationException) {
+                    throw ce
+                } catch (readError: Throwable) {
+                    logger.log("could not read error body for status $status", readError)
+                    ""
+                }
+                val rejected = remaining.filter { it.isNotBlank() && body.contains(it) }
+                if (status != HTTP_BAD_REQUEST || rejected.isEmpty() || attempts > MAX_FETCH_ATTEMPTS) {
+                    logger.log("confidence fetch failed (status $status)", e)
+                    return null
+                }
+                val pruned = remaining - rejected.toSet()
+                if (pruned.isEmpty()) {
+                    logger.log("confidence fetch failed: Open-Meteo rejected every requested model ($rejected)", e)
+                    return null
+                }
+                logger.log("Open-Meteo rejected model(s) $rejected; retrying with $pruned")
+                remaining = pruned
+                continue
+            } catch (t: Throwable) {
+                logger.log("confidence fetch failed", t)
+                return null
+            }
+
+            val confidence = computeConfidence(response.daily, remaining)
+            val hourly = parseHourly(response.hourly, remaining)
+            return if (confidence == null && hourly == null) {
+                null
+            } else {
+                MultiModelData(confidence, hourly)
+            }
+        }
+    }
+
+    /**
+     * Issues one batched Open-Meteo request for [models] and parses the body.
+     * Split out of [fetch] so it can be re-issued with a pruned model list when
+     * the server rejects an invalid id. `expectSuccess = true` makes a non-2xx
+     * status throw a [ResponseException], which [instrument] records with the
+     * real HTTP status before rethrowing.
+     */
+    private suspend fun requestModels(
+        location: Location,
+        models: List<String>,
+    ): MultiModelResponse =
+        apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_CONFIDENCE) {
             httpClient.get {
                 expectSuccess = true
                 url {
@@ -104,19 +185,9 @@ internal class MultiModelConfidenceFetcher(
                         "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
                         "shortwave_radiation,sunshine_duration,uv_index,weather_code",
                 )
-                parameter("models", effectiveModels.joinToString(","))
+                parameter("models", models.joinToString(","))
             }.body<MultiModelResponse>()
         }
-
-        val confidence = computeConfidence(response.daily, effectiveModels)
-        val hourly = parseHourly(response.hourly, effectiveModels)
-        if (confidence == null && hourly == null) null else MultiModelData(confidence, hourly)
-    } catch (ce: CancellationException) {
-        throw ce
-    } catch (t: Throwable) {
-        logger.log("confidence fetch failed", t)
-        null
-    }
 
     private fun computeConfidence(daily: JsonObject, models: List<String>): ConfidenceInfo? {
         val results = buildList {
@@ -329,6 +400,15 @@ internal class MultiModelConfidenceFetcher(
         // the `models` parameter (SettingsRepository → defaultsFor).
         val DEFAULT_MODELS =
             listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless", "ecmwf_aifs025_single")
+
+        // Open-Meteo's status for an invalid/withdrawn `models=` entry.
+        private const val HTTP_BAD_REQUEST = 400
+
+        // Hard cap on prune-and-retry rounds. Each round drops at least one
+        // model, so the loop already terminates on its own; this is a
+        // belt-and-suspenders bound against a pathological model list (and
+        // keeps a worst case of a handful of requests, not an unbounded storm).
+        private const val MAX_FETCH_ATTEMPTS = 6
     }
 }
 

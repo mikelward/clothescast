@@ -76,6 +76,26 @@ class MultiModelConfidenceFetcherTest {
         }
     }
 
+    /**
+     * Overload for tests that need a stateful engine (e.g. 400 on the first
+     * model list, 200 on the pruned retry) rather than one fixed response.
+     */
+    private fun fetcherWith(
+        engine: MockEngine,
+        logger: ConfidenceFetchLogger? = null,
+    ): MultiModelConfidenceFetcher {
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                json(Json { ignoreUnknownKeys = true })
+            }
+        }
+        return if (logger != null) {
+            MultiModelConfidenceFetcher(client, logger = logger)
+        } else {
+            MultiModelConfidenceFetcher(client)
+        }
+    }
+
     @Test
     fun `issues exactly one batched request listing every model`() = runTest {
         val captured = mutableListOf<HttpRequestData>()
@@ -339,6 +359,82 @@ class MultiModelConfidenceFetcherTest {
         fetcherWith(THREE_MODEL_AGREEMENT, logger = logger).fetch(london, fixtureModels).shouldNotBeNull()
 
         logger.entries shouldBe emptyList()
+    }
+
+    @Test
+    fun `drops a model Open-Meteo rejects and retries with the rest`() = runTest {
+        // Open-Meteo 400s the whole batched request when any models= entry is
+        // invalid, naming the offender in the body. The fetcher must drop it and
+        // retry so a single bad id costs only its own line, not the chip + every
+        // chart. Engine: 400 while the list still contains icon_seamless, 200
+        // once it's pruned.
+        val requestedModels = mutableListOf<String?>()
+        val engine = MockEngine { request ->
+            val models = request.url.parameters["models"]
+            requestedModels += models
+            if (models != null && "icon_seamless" in models) {
+                respond(
+                    content = ByteReadChannel(
+                        """{"error":true,"reason":"Cannot initialize WeatherModel from String \"icon_seamless\""}""",
+                    ),
+                    status = HttpStatusCode.BadRequest,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            } else {
+                respond(
+                    content = ByteReadChannel(THREE_MODEL_AGREEMENT),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            }
+        }
+        val logger = CapturingLogger()
+        val data = fetcherWith(engine, logger = logger)
+            .fetch(london, listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless"))
+            .shouldNotBeNull()
+
+        // First request lists all three; the retry drops the rejected model.
+        requestedModels shouldBe listOf(
+            "ecmwf_ifs025,gfs_seamless,icon_seamless",
+            "ecmwf_ifs025,gfs_seamless",
+        )
+        // Confidence still computed from the surviving models.
+        data.confidence.shouldNotBeNull()
+            .modelsConsulted shouldContainExactlyInAnyOrder listOf("ecmwf_ifs025", "gfs_seamless")
+        logger.entries.any { "icon_seamless" in it.message && "retrying" in it.message } shouldBe true
+    }
+
+    @Test
+    fun `does not retry when the 400 names no requested model`() = runTest {
+        // A 400 that isn't about a model id (bad coordinates, etc.) shouldn't
+        // trigger a prune-and-retry — there's nothing to drop. Fail fast to null.
+        val requestedModels = mutableListOf<String?>()
+        val engine = MockEngine { request ->
+            requestedModels += request.url.parameters["models"]
+            respond(
+                content = ByteReadChannel("""{"error":true,"reason":"Latitude must be in range -90 to 90"}"""),
+                status = HttpStatusCode.BadRequest,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        fetcherWith(engine).fetch(london, listOf("ecmwf_ifs025", "gfs_seamless")).shouldBeNull()
+        requestedModels.size shouldBe 1
+    }
+
+    @Test
+    fun `returns null when Open-Meteo rejects every requested model`() = runTest {
+        // If pruning the rejected models leaves nothing, give up rather than
+        // fire an empty models= request.
+        val engine = MockEngine {
+            respond(
+                content = ByteReadChannel(
+                    """{"error":true,"reason":"invalid models: ecmwf_ifs025, gfs_seamless"}""",
+                ),
+                status = HttpStatusCode.BadRequest,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        fetcherWith(engine).fetch(london, listOf("ecmwf_ifs025", "gfs_seamless")).shouldBeNull()
     }
 
     companion object {

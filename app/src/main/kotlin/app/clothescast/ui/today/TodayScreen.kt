@@ -557,6 +557,11 @@ private fun TodayContent(
                         },
                         state = state,
                         weekPerModelHourly = state.thisPeriodInsight.weekPerModelHourly,
+                        // Second week only: let the diagnostic deck render even
+                        // when models cover just part of days 8-14 (they thin
+                        // out past day 7). The near-week page keeps the strict
+                        // all-days gate so a stale cache there stays hidden.
+                        allowPartialModelCoverage = isFollowingWeek,
                         scrollState = scrollState,
                         workStatusToShow = workStatusToShow,
                         locationActionRequired = locationActionRequired,

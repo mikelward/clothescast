@@ -2308,30 +2308,54 @@ private val SAMPLE_FOLLOWING_WEEK: List<DailyForecast> = run {
 // (In production ICON drops out past day 7 and the deck thins on the far
 // days; the preview keeps full coverage to exercise the rendered path.)
 private val SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
-    fun shift(deltaC: Double, precipDelta: Double, windBase: Double) =
-        SAMPLE_FOLLOWING_WEEK.flatMap { day ->
-            day.hourly.map { h ->
-                PerModelHour(
-                    time = java.time.LocalDateTime.of(day.date, h.time),
-                    apparentTemperatureC = h.feelsLikeC + deltaC,
-                    temperatureC = h.temperatureC + deltaC,
-                    precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
-                        .coerceIn(0.0, 100.0),
-                    precipitationMm = h.precipitationMm,
-                    windSpeedKmh = windBase + (h.time.hour - 12).let { if (it < 0) -it else it } * 0.4,
-                    relativeHumidityPct = 65.0,
-                    cloudCoverPct = 45.0,
-                    shortwaveRadiationWm2 = null,
-                    sunshineDurationSec = null,
-                    uvIndex = null,
-                )
+    fun shift(
+        deltaC: Double,
+        precipDelta: Double,
+        windBase: Double,
+        cloudBase: Double,
+        solarPeakWm2: Double,
+        sunshineMinutesAtMidday: Double,
+        uvPeak: Double,
+    ) = SAMPLE_FOLLOWING_WEEK.flatMap { day ->
+        day.hourly.map { h ->
+            // Daytime bell curve (zero overnight, peak ~noon) for the
+            // radiation-driven metrics, matching how solar / sunshine / UV behave.
+            val hour = h.time.hour
+            val daylight = if (hour in 6..18) {
+                kotlin.math.sin((hour - 6) / 12.0 * kotlin.math.PI)
+            } else {
+                0.0
             }
+            PerModelHour(
+                time = java.time.LocalDateTime.of(day.date, h.time),
+                apparentTemperatureC = h.feelsLikeC + deltaC,
+                temperatureC = h.temperatureC + deltaC,
+                precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
+                    .coerceIn(0.0, 100.0),
+                precipitationMm = h.precipitationMm,
+                windSpeedKmh = windBase + (h.time.hour - 12).let { if (it < 0) -it else it } * 0.4,
+                relativeHumidityPct = 65.0,
+                cloudCoverPct = cloudBase,
+                shortwaveRadiationWm2 = solarPeakWm2 * daylight,
+                sunshineDurationSec = sunshineMinutesAtMidday * 60.0 * daylight,
+                uvIndex = uvPeak * daylight,
+            )
         }
+    }
     PerModelHourly(
         byModel = mapOf(
-            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = 0.0, windBase = 7.0),
-            "gfs_seamless" to shift(deltaC = 0.8, precipDelta = 8.0, windBase = 11.0),
-            "icon_seamless" to shift(deltaC = 2.2, precipDelta = -2.0, windBase = 5.0),
+            "ecmwf_ifs04" to shift(
+                deltaC = -1.5, precipDelta = 0.0, windBase = 7.0, cloudBase = 50.0,
+                solarPeakWm2 = 620.0, sunshineMinutesAtMidday = 38.0, uvPeak = 5.2,
+            ),
+            "gfs_seamless" to shift(
+                deltaC = 0.8, precipDelta = 8.0, windBase = 11.0, cloudBase = 65.0,
+                solarPeakWm2 = 520.0, sunshineMinutesAtMidday = 28.0, uvPeak = 4.3,
+            ),
+            "icon_seamless" to shift(
+                deltaC = 2.2, precipDelta = -2.0, windBase = 5.0, cloudBase = 40.0,
+                solarPeakWm2 = 780.0, sunshineMinutesAtMidday = 48.0, uvPeak = 6.2,
+            ),
         ),
     )
 }
@@ -2401,6 +2425,103 @@ internal fun SevenDayPageWithForwardChevronPreview() {
             onForwardChevronTap = {},
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
         )
+    }
+}
+
+// The full Following-7-days chart deck (days 8-14), rendered outside the page's
+// scroll container so the whole stack captures — the [FollowingWeekPagePreview]
+// snapshot stops at the fold, so the charts below it had no coverage. Renders
+// the same ten cards [SevenDayPage] does, in the same order: the four primary
+// charts plus the wind / humidity / cloud / solar / UV / sunshine diagnostic
+// deck (all fetched across the 14-day window). Model spread on, day-of-week
+// axis. The per-model sample covers exactly days 8-14, so it plots aligned (the
+// page's own slicing is exercised separately by [FollowingWeekPagePreview]).
+@Preview(name = "Following-week chart deck", widthDp = 360)
+@Composable
+internal fun FollowingWeekChartDeckPreview() {
+    Frame {
+        val days = SAMPLE_FOLLOWING_WEEK
+        val flat = days.flatMap { it.hourly }
+        val startDate = days.first().date
+        val perModel = SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY
+        val labels = days.map {
+            it.date.dayOfWeek.getDisplayName(java.time.format.TextStyle.SHORT, java.util.Locale.getDefault())
+        }
+        val dayFormatter =
+            com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter { _, value, _ ->
+                labels[((value.toInt() - 12) / 24).coerceIn(0, labels.lastIndex)]
+            }
+        val placer = com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis.ItemPlacer
+            .aligned(spacing = { 24 }, offset = { 12 })
+        CompositionLocalProvider(
+            LocalChartBottomFormatter provides dayFormatter,
+            LocalChartBottomItemPlacer provides placer,
+        ) {
+            ForecastCard(
+                hourly = flat,
+                temperatureUnit = TemperatureUnit.CELSIUS,
+                startDate = startDate,
+                perModelHourly = perModel,
+                showModelSpread = true,
+            )
+            AirTemperatureCard(
+                hourly = flat,
+                temperatureUnit = TemperatureUnit.CELSIUS,
+                startDate = startDate,
+                perModelHourly = perModel,
+                showModelSpread = true,
+            )
+            PrecipitationCard(
+                hourly = flat,
+                startDate = startDate,
+                perModelHourly = perModel,
+                showModelSpread = true,
+            )
+            PrecipitationAmountCard(
+                hourly = flat,
+                forDate = startDate,
+                period = ForecastPeriod.TODAY,
+                perModelHourly = perModel,
+                showModelSpread = true,
+            )
+            WindCard(
+                hourly = flat,
+                perModelHourly = perModel,
+                startDate = startDate,
+                showModelSpread = true,
+            )
+            HumidityCard(
+                hourly = flat,
+                perModelHourly = perModel,
+                startDate = startDate,
+                showModelSpread = true,
+            )
+            CloudCard(
+                hourly = flat,
+                perModelHourly = perModel,
+                startDate = startDate,
+                showModelSpread = true,
+            )
+            SolarRadiationCard(
+                hourly = flat,
+                perModelHourly = perModel,
+                startDate = startDate,
+                showModelSpread = true,
+            )
+            UvIndexCard(
+                hourly = flat,
+                perModelHourly = perModel,
+                startDate = startDate,
+                showModelSpread = true,
+            )
+            SunshineCard(
+                hourly = flat,
+                perModelHourly = perModel,
+                forDate = startDate,
+                period = ForecastPeriod.TODAY,
+                showModelSpread = true,
+            )
+        }
     }
 }
 

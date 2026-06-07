@@ -114,6 +114,16 @@ internal fun SevenDayPage(
      * day 8, and the whole [days] list (days 8-14) is the look-ahead window.
      */
     weekAheadBaseline: DailyForecast? = null,
+    /**
+     * Whether the per-model diagnostic deck (wind / humidity / cloud / solar /
+     * UV / sunshine) may render when real models cover only *part* of [days].
+     * False (the default, "Next 7 days") requires every plotted day covered —
+     * partial coverage there means a stale cache, so the deck stays hidden.
+     * True ("Following 7 days") lets the deck show on partial coverage, since
+     * models legitimately thin out past day 7; the per-model lines then stop on
+     * the last day each model forecasts. See [weekPerModelDiagnostics].
+     */
+    allowPartialModelCoverage: Boolean = false,
     workStatusToShow: WorkStatus = WorkStatus.Idle,
     locationActionRequired: Boolean = false,
     onToggleModelSpread: () -> Unit = {},
@@ -228,35 +238,34 @@ internal fun SevenDayPage(
     // A current series carries ~168 hourly entries per model spanning every
     // date in [days]. Older cached payloads (from before the multi-model
     // fetcher carried the window) carry only ~48 hours covering 2 dates, and on
-    // the "Following 7 days" page some models (ICON past day 7) never reach the
-    // far dates at all. Without this gate, an upgraded user whose cache hasn't
-    // refreshed yet sees the
-    // 7-day primary charts (already widened) plus diagnostic cards whose
-    // per-model lines stop short at day 2 — which reads as "the models
-    // gave up" rather than "the cache is stale." Counting distinct
-    // [LocalDate]s across every model lets the gate hold whether the
-    // series is sparse-but-week-covering or dense-but-2-day-covering.
-    val weekPerModelDiagnostics: PerModelHourly? = remember(weekPerModelInWindow, days) {
+    // the "Following 7 days" page some models (ICON past day 7, ECMWF before
+    // day 14) never reach the far dates at all. The gate keeps the diagnostic
+    // deck hidden until per-model data is genuinely present — without it, a
+    // stale cache shows diagnostic cards whose lines stop short at day 2, which
+    // reads as "the models gave up" rather than "the cache is stale."
+    //
+    // [allowPartialModelCoverage] picks how strict that is. On the "Next 7
+    // days" page (false) every plotted day must be covered by a real model:
+    // near-week models all reach day 7, so partial coverage there means a stale
+    // cache and the deck stays hidden. On the "Following 7 days" page (true) it
+    // only needs *some* real coverage: models legitimately thin past day 7, so
+    // requiring all 7 days would hide the deck for most regions (the user
+    // accepted the resulting ragged lines, where each per-model series stops on
+    // the last day it forecasts). best_match (Auto) is excluded from the check
+    // either way — it always spans the window, so counting it would light the
+    // surfaces up backed only by Auto (mirrors ConfidenceInfo.computeFrom).
+    // (PerModelHour temperatures are non-null, so a model that doesn't reach a
+    // date contributes no entry there — presence in byModel means real coverage.)
+    val weekPerModelDiagnostics: PerModelHourly? = remember(weekPerModelInWindow, days, allowPartialModelCoverage) {
         weekPerModelInWindow?.takeIf { perModel ->
             val expected = days.map { it.date }.toSet()
-            // Exclude best_match (Auto) from the coverage check. It always spans
-            // the full window, so counting it would light up the per-model
-            // surfaces even when no *consulted* model reaches these dates — e.g.
-            // an ICON / UKMO / Météo-France-only setup on the second-week page,
-            // where every selected model stops at day 7 and only the injected
-            // Auto line survives the slice. The spread/diagnostics should enable
-            // only when a real selected model covers the window; this mirrors
-            // ConfidenceInfo.computeFrom, which likewise drops best_match before
-            // its >=2-model check. (PerModelHour temperatures are non-null, so a
-            // model that doesn't reach a date contributes no entry there rather
-            // than a null-valued one — presence in byModel means real coverage.)
             val covered = perModel.byModel
                 .filterKeys { it != PerModelHourly.BEST_MATCH_MODEL_ID }
                 .values.asSequence()
                 .flatten()
                 .map { it.time.toLocalDate() }
                 .toSet()
-            expected.all { it in covered }
+            if (allowPartialModelCoverage) covered.isNotEmpty() else expected.all { it in covered }
         }
     }
 

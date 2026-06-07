@@ -2303,10 +2303,12 @@ private val SAMPLE_FOLLOWING_WEEK: List<DailyForecast> = run {
     }
 }
 
-// Per-model series covering every date in [SAMPLE_FOLLOWING_WEEK] so the
-// second-week page's coverage gate passes and the diagnostic deck renders.
-// (In production ICON drops out past day 7 and the deck thins on the far
-// days; the preview keeps full coverage to exercise the rendered path.)
+// Per-model series for the second week, modelling realistic thinning: ICON is
+// absent (it runs ~7.5 days, so it never reaches day 8), ECMWF stops a day
+// short of the end, and GFS stops earlier still. Their union doesn't cover the
+// last day, so the strict coverage gate would hide the deck — this is exactly
+// the partial-coverage case the "Following 7 days" page (allowPartialModelCoverage
+// = true) renders anyway, with each per-model line stopping on its last day.
 private val SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
     fun shift(
         deltaC: Double,
@@ -2342,20 +2344,21 @@ private val SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
             )
         }
     }
+    // ECMWF reaches day 13 (index 5), GFS only day 11 (index 3); neither covers
+    // day 14, and days 12-13 carry ECMWF alone — the thinning the second week
+    // really shows.
+    val ecmwfThrough = SAMPLE_FOLLOWING_WEEK[5].date
+    val gfsThrough = SAMPLE_FOLLOWING_WEEK[3].date
     PerModelHourly(
         byModel = mapOf(
             "ecmwf_ifs04" to shift(
                 deltaC = -1.5, precipDelta = 0.0, windBase = 7.0, cloudBase = 50.0,
                 solarPeakWm2 = 620.0, sunshineMinutesAtMidday = 38.0, uvPeak = 5.2,
-            ),
+            ).filter { !it.time.toLocalDate().isAfter(ecmwfThrough) },
             "gfs_seamless" to shift(
                 deltaC = 0.8, precipDelta = 8.0, windBase = 11.0, cloudBase = 65.0,
                 solarPeakWm2 = 520.0, sunshineMinutesAtMidday = 28.0, uvPeak = 4.3,
-            ),
-            "icon_seamless" to shift(
-                deltaC = 2.2, precipDelta = -2.0, windBase = 5.0, cloudBase = 40.0,
-                solarPeakWm2 = 780.0, sunshineMinutesAtMidday = 48.0, uvPeak = 6.2,
-            ),
+            ).filter { !it.time.toLocalDate().isAfter(gfsThrough) },
         ),
     )
 }
@@ -2434,8 +2437,9 @@ internal fun SevenDayPageWithForwardChevronPreview() {
 // the same ten cards [SevenDayPage] does, in the same order: the four primary
 // charts plus the wind / humidity / cloud / solar / UV / sunshine diagnostic
 // deck (all fetched across the 14-day window). Model spread on, day-of-week
-// axis. The per-model sample covers exactly days 8-14, so it plots aligned (the
-// page's own slicing is exercised separately by [FollowingWeekPagePreview]).
+// axis. The per-model sample thins realistically — ECMWF to day 13, GFS to day
+// 11, no ICON — so the diagnostic lines stop mid-window and the last day is
+// bare, the ragged second-week look the relaxed coverage gate now allows.
 @Preview(name = "Following-week chart deck", widthDp = 360)
 @Composable
 internal fun FollowingWeekChartDeckPreview() {
@@ -2543,6 +2547,9 @@ internal fun FollowingWeekPagePreview() {
             onChevronTap = {},
             titleRes = app.clothescast.R.string.today_title_following_week,
             weekAheadBaseline = SAMPLE_WEEK.first(),
+            // Mirror page 3 — the second week's models thin out, so the deck
+            // renders on partial coverage.
+            allowPartialModelCoverage = true,
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
         )
     }

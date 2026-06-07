@@ -440,6 +440,11 @@
     <string name="today_placeholder_body">Will be ready around %1$s.</string>
 
     <string name="today_title_week">Next 7 days</string>
+    <!-- Title for the fourth pager page, covering forecast days 8-14. -->
+    <string name="today_title_following_week">Following 7 days</string>
+    <!-- Content description for the forward chevron on the "Next 7 days" page
+         that advances to the "Following 7 days" page. -->
+    <string name="today_forward_to_following_week">See the following 7 days</string>
     <string name="today_week_empty">Will be ready after the next forecast.</string>
 
     <!-- Week-ahead headline shown above the 7-day chart deck. Produced by

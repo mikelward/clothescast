@@ -195,10 +195,10 @@ fun TodayScreen(
     // Hoisted out of TodayContent so the TopAppBar title can swap with the
     // visible page — page 0 is the user's current 12-hour window ("Today" or
     // "Tonight"), page 1 is the next window ("Tonight" or "Tomorrow"),
-    // page 2 is the 7-day outlook. Page count is constant; when
-    // thisPeriodInsight is null the pager doesn't render but the state is
-    // harmlessly retained at page 0.
-    val pagerState = rememberPagerState(initialPage = startPage.coerceIn(0, 2)) { 3 }
+    // page 2 is the 7-day outlook (days 1-7), page 3 is the following week
+    // (days 8-14). Page count is constant; when thisPeriodInsight is null the
+    // pager doesn't render but the state is harmlessly retained at page 0.
+    val pagerState = rememberPagerState(initialPage = startPage.coerceIn(0, 3)) { 4 }
     val titleRes = topBarTitleRes(
         period = state.thisPeriodInsight?.period,
         page = pagerState.currentPage,
@@ -523,27 +523,54 @@ private fun TodayContent(
                     .weight(1f)
                     .fillMaxWidth(),
             ) { page ->
-                if (page == 2) {
-                    // Plot today + upcomingDays so the chart starts on the
-                    // user's current day. On legacy cached insights that
-                    // predate either field, the page collapses to a stand-in
-                    // message via [SevenDayPage]. The diagnostic cards
-                    // (wind / humidity / cloud / solar / UV / sunshine) and
-                    // model-spread overlays ride on [weekPerModelHourly] —
-                    // null on payloads from before the multi-model fetcher's
-                    // forecast_days=7 bump, in which case those cards
-                    // auto-hide and only the primary-data charts render.
-                    val weekDays = listOfNotNull(state.thisPeriodInsight.currentDay) +
-                        state.thisPeriodInsight.upcomingDays
+                if (page == 2 || page == 3) {
+                    val currentDay = state.thisPeriodInsight.currentDay
+                    val upcoming = state.thisPeriodInsight.upcomingDays
+                    val isFollowingWeek = page == 3
+                    // Page 2 ("Next 7 days") plots today + days 2-7 so the chart
+                    // starts on the user's current day. Page 3 ("Following 7
+                    // days") plots days 8-14 — upcomingDays[0] is tomorrow
+                    // (day 2), so day 8 is upcomingDays[6] onward. Either page
+                    // collapses to a stand-in message via [SevenDayPage] when
+                    // the slice has fewer than two days: legacy cached insights
+                    // that predate the field, or a 7-day cache not yet widened
+                    // to 14 days (which leaves page 3 empty until the next
+                    // fetch). The diagnostic cards (wind / humidity / cloud /
+                    // solar / UV / sunshine) and model-spread overlays ride on
+                    // [weekPerModelHourly]; they auto-hide for any day a model
+                    // doesn't reach — which on page 3 is routine, since ICON
+                    // stops at day 7 and ECMWF coarsens past ~day 6.
+                    val weekDays = if (isFollowingWeek) {
+                        upcoming.drop(6)
+                    } else {
+                        listOfNotNull(currentDay) + upcoming.take(6)
+                    }
                     SevenDayPage(
                         days = weekDays,
+                        // The second week's headline compares against today (the
+                        // user's anchor) rather than against day 8.
+                        weekAheadBaseline = if (isFollowingWeek) currentDay else null,
+                        titleRes = if (isFollowingWeek) {
+                            R.string.today_title_following_week
+                        } else {
+                            R.string.today_title_week
+                        },
                         state = state,
                         weekPerModelHourly = state.thisPeriodInsight.weekPerModelHourly,
                         scrollState = scrollState,
                         workStatusToShow = workStatusToShow,
                         locationActionRequired = locationActionRequired,
                         onChevronTap = {
-                            pagerScope.launch { pagerState.animateScrollToPage(1) }
+                            // Left chevron steps back one page (3 → 2, 2 → 1).
+                            pagerScope.launch {
+                                pagerState.animateScrollToPage(if (isFollowingWeek) 2 else 1)
+                            }
+                        },
+                        // Forward chevron only on page 2, advancing to page 3.
+                        onForwardChevronTap = if (isFollowingWeek) {
+                            null
+                        } else {
+                            { pagerScope.launch { pagerState.animateScrollToPage(3) } }
                         },
                         onToggleModelSpread = onToggleModelSpread,
                         onRevealModelSpread = onRevealModelSpread,
@@ -1980,12 +2007,13 @@ private fun outfitLabels(period: ForecastPeriod): Pair<Int, Int> = when (period)
 
 // Title shown in the TopAppBar — tracks the visible pager page so swiping
 // right from a morning view flips "Today" to "Tonight" (and the evening
-// equivalent flips "Tonight" to "Tomorrow"). Page 2 is the 7-day outlook;
-// the title is the same regardless of which period the user opened from.
-// Falls back to "Today" when no insight is cached yet (pager isn't
-// rendered in that state).
+// equivalent flips "Tonight" to "Tomorrow"). Page 2 is the 7-day outlook and
+// page 3 the following week (days 8-14); their titles are the same regardless
+// of which period the user opened from. Falls back to "Today" when no insight
+// is cached yet (pager isn't rendered in that state).
 internal fun topBarTitleRes(period: ForecastPeriod?, page: Int): Int {
     if (page == 2) return R.string.today_title_week
+    if (page == 3) return R.string.today_title_following_week
     return when (period) {
         null -> R.string.today_title
         ForecastPeriod.TODAY -> if (page == 0) R.string.today_title else R.string.today_outfit_label_tonight

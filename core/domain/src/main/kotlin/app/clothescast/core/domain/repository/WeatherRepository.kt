@@ -52,14 +52,15 @@ data class ForecastBundle(
      */
     val tomorrow: DailyForecast? = null,
     /**
-     * Days *after* today, in date order — tomorrow + up to five more
-     * (six entries with `forecast_days=7`). Drives the Today screen's
-     * 7-day pager page. Tomorrow is intentionally duplicated between
+     * Days *after* today, in date order — tomorrow + up to twelve more
+     * (thirteen entries with `forecast_days=14`). Drives the Today screen's
+     * two week pages ("Next 7 days" reads days 2-7, "Following 7 days" reads
+     * days 8-14). Tomorrow is intentionally duplicated between
      * [tomorrow] and `upcomingDays[0]` so the existing tonight-insight
      * paths can keep reading [tomorrow] unchanged; new consumers that
      * want a single multi-day list read [upcomingDays] instead. Empty
-     * on legacy fixtures and on 2-entry responses; the 7-day page
-     * collapses or hides itself when the list is empty.
+     * on legacy fixtures and on 2-entry responses; the week pages
+     * collapse or hide themselves when the slice is empty.
      */
     val upcomingDays: List<DailyForecast> = emptyList(),
     /**

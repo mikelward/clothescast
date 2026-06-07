@@ -2265,6 +2265,92 @@ private val SAMPLE_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
     )
 }
 
+// Forecast days 8-14 for the "Following 7 days" page. Same diurnal-curve
+// construction as [SAMPLE_WEEK], starting the Monday after it and trending
+// warmer (highs 19→24) so the week-ahead headline — compared against today's
+// 18° baseline — fires "Warmer …" rather than collapsing to the steady line.
+private val SAMPLE_FOLLOWING_WEEK: List<DailyForecast> = run {
+    val highs = listOf(19.0, 21.0, 23.0, 24.0, 22.0, 20.0, 21.0)
+    val lows = listOf(10.0, 12.0, 13.0, 14.0, 12.0, 11.0, 12.0)
+    val start = SAMPLE_WEEK.last().date.plusDays(1)
+    highs.indices.map { i ->
+        val hi = highs[i]
+        val lo = lows[i]
+        val hourly = (0 until 24).map { h ->
+            val phase = ((h - 4 + 24) % 24) / 24.0
+            val curve = 0.5 * (1 - kotlin.math.cos(phase * 2 * Math.PI))
+            val t = lo + (hi - lo) * curve
+            HourlyForecast(
+                time = LocalTime.of(h, 0),
+                temperatureC = t + 1.0,
+                feelsLikeC = t,
+                precipitationProbabilityPct = 5.0,
+                condition = WeatherCondition.CLEAR,
+                precipitationMm = 0.0,
+            )
+        }
+        DailyForecast(
+            date = start.plusDays(i.toLong()),
+            temperatureMinC = lo + 1.0,
+            temperatureMaxC = hi + 1.0,
+            feelsLikeMinC = lo,
+            feelsLikeMaxC = hi,
+            precipitationProbabilityMaxPct = 5.0,
+            precipitationMmTotal = 0.0,
+            condition = WeatherCondition.CLEAR,
+            hourly = hourly,
+        )
+    }
+}
+
+// Per-model series covering every date in [SAMPLE_FOLLOWING_WEEK] so the
+// second-week page's coverage gate passes and the diagnostic deck renders.
+// (In production ICON drops out past day 7 and the deck thins on the far
+// days; the preview keeps full coverage to exercise the rendered path.)
+private val SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
+    fun shift(deltaC: Double, precipDelta: Double, windBase: Double) =
+        SAMPLE_FOLLOWING_WEEK.flatMap { day ->
+            day.hourly.map { h ->
+                PerModelHour(
+                    time = java.time.LocalDateTime.of(day.date, h.time),
+                    apparentTemperatureC = h.feelsLikeC + deltaC,
+                    temperatureC = h.temperatureC + deltaC,
+                    precipitationProbabilityPct = (h.precipitationProbabilityPct + precipDelta)
+                        .coerceIn(0.0, 100.0),
+                    precipitationMm = h.precipitationMm,
+                    windSpeedKmh = windBase + (h.time.hour - 12).let { if (it < 0) -it else it } * 0.4,
+                    relativeHumidityPct = 65.0,
+                    cloudCoverPct = 45.0,
+                    shortwaveRadiationWm2 = null,
+                    sunshineDurationSec = null,
+                    uvIndex = null,
+                )
+            }
+        }
+    PerModelHourly(
+        byModel = mapOf(
+            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = 0.0, windBase = 7.0),
+            "gfs_seamless" to shift(deltaC = 0.8, precipDelta = 8.0, windBase = 11.0),
+            "icon_seamless" to shift(deltaC = 2.2, precipDelta = -2.0, windBase = 5.0),
+        ),
+    )
+}
+
+// A full two-week per-model series (days 1-14), built by concatenating the
+// first- and second-week samples per model. Mirrors what production hands the
+// "Following 7 days" page: a series that *starts at today*, not at day 8. The
+// page must slice it to its own window before plotting (the chart positions
+// per-model points by index), so feeding this to [FollowingWeekPagePreview]
+// turns the snapshot into a regression guard for that slicing — drop the slice
+// and the overlays misalign, changing the PNG.
+private val SAMPLE_TWO_WEEK_PER_MODEL_HOURLY: PerModelHourly = PerModelHourly(
+    byModel = (SAMPLE_WEEK_PER_MODEL_HOURLY.byModel.keys + SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY.byModel.keys)
+        .associateWith { id ->
+            SAMPLE_WEEK_PER_MODEL_HOURLY.byModel[id].orEmpty() +
+                SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY.byModel[id].orEmpty()
+        },
+)
+
 // Exercises the tap-hint card and the per-model envelope on the 7-day
 // primary charts. With [showModelSpread] off, the hint reads "Tap to
 // see each model's forecast" and the primary charts draw consensus
@@ -2294,6 +2380,48 @@ internal fun SevenDayPageWithPerModelSpreadOnPreview() {
             weekPerModelHourly = SAMPLE_WEEK_PER_MODEL_HOURLY,
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
+            outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
+        )
+    }
+}
+
+// "Next 7 days" page carrying the forward chevron that advances to the
+// "Following 7 days" page — exercises the right-hand header slot that the
+// other seven-day previews leave empty.
+@Preview(name = "Seven-day page · with forward chevron", widthDp = 360)
+@Composable
+internal fun SevenDayPageWithForwardChevronPreview() {
+    SevenDayFrame {
+        SevenDayPage(
+            days = SAMPLE_WEEK,
+            state = TodayState(),
+            weekPerModelHourly = null,
+            scrollState = androidx.compose.foundation.rememberScrollState(),
+            onChevronTap = {},
+            onForwardChevronTap = {},
+            outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
+        )
+    }
+}
+
+// The fourth pager page — forecast days 8-14. Exercises the
+// "Following 7 days" title, the day-8 day-of-week axis, and the week-ahead
+// headline computed against today's baseline (warmer trend → "Warmer …").
+// Per-model data is supplied so the diagnostic deck renders.
+@Preview(name = "Following-week page · weekly card", widthDp = 360)
+@Composable
+internal fun FollowingWeekPagePreview() {
+    SevenDayFrame {
+        SevenDayPage(
+            days = SAMPLE_FOLLOWING_WEEK,
+            state = TodayState(),
+            // Full days-1-14 series (starts at today, like production) so the
+            // page's window-slicing is actually exercised by the snapshot.
+            weekPerModelHourly = SAMPLE_TWO_WEEK_PER_MODEL_HOURLY,
+            scrollState = androidx.compose.foundation.rememberScrollState(),
+            onChevronTap = {},
+            titleRes = app.clothescast.R.string.today_title_following_week,
+            weekAheadBaseline = SAMPLE_WEEK.first(),
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
         )
     }

@@ -9,10 +9,10 @@ import java.time.LocalTime
 import java.time.ZoneId
 
 /**
- * Maps an [OpenMeteoResponse] (queried with past_days=1&forecast_days=7) into a
+ * Maps an [OpenMeteoResponse] (queried with past_days=1&forecast_days=14) into a
  * [ForecastBundle]. Index 0 in the daily arrays is yesterday, index 1 is today,
  * index 2 (when present) is tomorrow, and indices 3..N are the rest of the
- * 7-day window. Tomorrow's daily aggregates flow through on
+ * 14-day window. Tomorrow's daily aggregates flow through on
  * [ForecastBundle.tomorrow] (so the side-by-side outfit row can render the
  * tomorrow-morning suggestion); tomorrow's hourly entries flow through on
  * [ForecastBundle.tomorrowHourly] so the tonight insight can wrap from 19:00 today
@@ -52,7 +52,7 @@ internal object OpenMeteoMapper {
         }
 
         // Tomorrow + everything past tomorrow, in date order. With
-        // `forecast_days=7` this is 6 entries (tomorrow + the next five);
+        // `forecast_days=14` this is 13 entries (tomorrow + the next twelve);
         // shorter responses degrade gracefully to a shorter list (or empty
         // on a 2-entry legacy fixture). Tomorrow is duplicated between
         // `tomorrow` above and `upcomingDays[0]` so existing tonight-insight

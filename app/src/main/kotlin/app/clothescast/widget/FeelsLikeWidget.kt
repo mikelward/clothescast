@@ -203,7 +203,10 @@ private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boo
     val days: List<DailyForecast>?
     val startDate: LocalDate
     if (weekly) {
-        val weekDays = listOfNotNull(insight.currentDay) + insight.upcomingDays
+        // The forecast now carries 14 days (days 2-14 in upcomingDays) to feed
+        // the Today screen's second week page; the widget's weekly chart stays a
+        // 7-day view, so cap to today + the next six days.
+        val weekDays = listOfNotNull(insight.currentDay) + insight.upcomingDays.take(6)
         if (weekDays.size < 2) return null
         val flat = weekDays.flatMap { it.hourly }
         if (flat.size < 2) return null

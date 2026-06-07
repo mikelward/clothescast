@@ -49,22 +49,25 @@ data class AppPalette(
  * `errorContainer` for LOW — so dynamic colour stays in play on Android
  * 12+.
  *
- * Additional global models (GEM / ARPEGE / UKMO / JMA / BOM) added with the
+ * Additional global models (GEM / ARPEGE / UKMO / JMA / AIFS) added with the
  * Forecasters picker pull from Material-600 saturated hues hand-tuned for
  * distinguishability against the original trio and against each other:
- * purple, blue, amber, teal, brown. Eight chart lines is visually busy and
- * we'd suggest the user not enable all of them, but the palette covers it
+ * purple, blue, amber, teal, brown. Nine chart lines is visually busy and
+ * the picker caps a selection at five, but the palette covers every model
  * so the chart never crashes on a `modelColors.getValue` lookup.
  */
 internal fun rainbowPalette(scheme: ColorScheme): AppPalette = AppPalette(
     modelColors = mapOf(
-        "ecmwf_ifs04" to Color(0xFFD81B60),
+        "ecmwf_ifs025" to Color(0xFFD81B60),
         "gfs_seamless" to Color(0xFFFB8C00),
         "icon_seamless" to Color(0xFF43A047),
         "gem_seamless" to Color(0xFF8E24AA),
         "meteofrance_seamless" to Color(0xFF1E88E5),
         "ukmo_seamless" to Color(0xFFFBC02D),
         "jma_seamless" to Color(0xFF00897B),
+        // AIFS — ECMWF's AI model. Brown, well separated from the pink ECMWF
+        // line it sits alongside and from the other Material-600 hues.
+        "ecmwf_aifs025_single" to Color(0xFF6D4C41),
         BEST_MATCH_MODEL_ID to Color(0xFF9E9E9E),
     ),
     confidence = mapOf(
@@ -104,7 +107,7 @@ internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
         // Okabe-Ito vermillion, orange, bluish-green — all three readable on
         // both light and dark surfaces and distinguishable under deutan / protan
         // / tritan simulations.
-        "ecmwf_ifs04" to Color(0xFFD55E00),
+        "ecmwf_ifs025" to Color(0xFFD55E00),
         "gfs_seamless" to Color(0xFFE69F00),
         "icon_seamless" to Color(0xFF009E73),
         // Additional Okabe-Ito-derived hues for the models added in the
@@ -118,6 +121,9 @@ internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
         "meteofrance_seamless" to Color(0xFF56B4E9),
         "ukmo_seamless" to Color(0xFFB47C00),
         "jma_seamless" to Color(0xFFCC79A7),
+        // AIFS — a CVD-safe indigo (IBM palette), distinct from the blue GEM
+        // and sky-blue ARPEGE under deutan / protan / tritan simulation.
+        "ecmwf_aifs025_single" to Color(0xFF785EF0),
         BEST_MATCH_MODEL_ID to if (darkTheme) Color(0xFFBFBFBF) else Color(0xFF595959),
     ),
     confidence = if (darkTheme) {
@@ -213,7 +219,7 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
     modelColors = if (darkTheme) {
         mapOf(
             // Full neon on dark — chart card is dark, every line glows.
-            "ecmwf_ifs04" to Color(0xFFFF2D95),
+            "ecmwf_ifs025" to Color(0xFFFF2D95),
             "gfs_seamless" to Color(0xFFFFEB3B),
             "icon_seamless" to Color(0xFF00E5FF),
             // Five more neon-ish hues for the Forecasters picker additions.
@@ -226,6 +232,9 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             "meteofrance_seamless" to Color(0xFF00FFA1),
             "ukmo_seamless" to Color(0xFFFF7043),
             "jma_seamless" to Color(0xFFFF6EC7),
+            // AIFS — neon blue-violet, deeper than GEM's lavender so the two
+            // stay separable in the full-neon dark set.
+            "ecmwf_aifs025_single" to Color(0xFF7C4DFF),
             BEST_MATCH_MODEL_ID to Color(0xFFEAEAEA),
         )
     } else {
@@ -237,7 +246,7 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             // dark amber and deep electric blue. The palette still reads
             // as "neon-ish" because saturation stays high — only luminance
             // shifts.
-            "ecmwf_ifs04" to Color(0xFFFF2D95),
+            "ecmwf_ifs025" to Color(0xFFFF2D95),
             "gfs_seamless" to Color(0xFFB58A00),
             "icon_seamless" to Color(0xFF0277BD),
             // Light-theme variants of the Forecasters additions — same hue
@@ -247,6 +256,9 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             "meteofrance_seamless" to Color(0xFF2E7D32),
             "ukmo_seamless" to Color(0xFFBF360C),
             "jma_seamless" to Color(0xFFAD1457),
+            // AIFS — deep indigo, darkened from the dark set's blue-violet to
+            // clear 3:1 contrast on the near-white light surfaceContainer.
+            "ecmwf_aifs025_single" to Color(0xFF4527A0),
             BEST_MATCH_MODEL_ID to Color(0xFF2A2A2A),
         )
     },

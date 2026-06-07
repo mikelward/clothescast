@@ -17,6 +17,14 @@ package app.clothescast.core.domain.model
  * (GFS or ICON) so the spread doesn't collapse when the regional model and
  * ECMWF happen to share a synoptic interpretation.
  *
+ * Tail reinforcement: the regional locals (UKMO, ARPEGE, JMA) and ICON are
+ * short-range — they fall silent after ~day 7, which would leave only ECMWF
+ * painting the second-week ("Following 7 days") charts in most regions. So
+ * every set also carries GEM (reaches ~day 10) and AIFS — ECMWF's AI model,
+ * skillful to ~day 15 — so at least two models keep reporting through days
+ * 8-14. They append last because they're the lowest-priority members to
+ * trim, and they push each set to the picker's MAX_MODELS = 5 ceiling.
+ *
  * The mapping is intentionally coarse — bounding boxes, not country
  * polygons — because the goal is "good defaults", not "perfect mapping".
  * Anyone unhappy with what auto picks for them can flip Auto off and pick
@@ -46,21 +54,39 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
         // UKMO's home synoptic region. Tested by the London / Dublin /
         // Edinburgh entries in ForecastModelDefaultsTest.
         lat in 49.5..61.0 && lon in -10.5..2.0 ->
-            setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS04, ForecastModel.ICON_SEAMLESS)
+            setOf(
+                ForecastModel.UKMO_SEAMLESS,
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.ICON_SEAMLESS,
+                ForecastModel.GEM_SEAMLESS,
+                ForecastModel.ECMWF_AIFS025_SINGLE,
+            )
 
         // Iceland: handled before the Nordic branch because it sits west of
         // 0° longitude. Same trio as Nordics (ECMWF + ICON + UKMO) — UKMO
         // covers the North Atlantic well, no native Icelandic model on
         // Open-Meteo.
         lat in 63.0..67.0 && lon in -25.0..-13.0 ->
-            setOf(ForecastModel.ECMWF_IFS04, ForecastModel.ICON_SEAMLESS, ForecastModel.UKMO_SEAMLESS)
+            setOf(
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.ICON_SEAMLESS,
+                ForecastModel.UKMO_SEAMLESS,
+                ForecastModel.GEM_SEAMLESS,
+                ForecastModel.ECMWF_AIFS025_SINGLE,
+            )
 
         // Nordics (Norway / Sweden / Finland / Denmark, plus a Baltic slop
         // that catches Tallinn / Riga). UKMO is the local-ish official —
         // MET Norway's flagship MetCoOp Nordic model isn't on Open-Meteo
         // as a per-model series.
         lat in 55.0..72.0 && lon in 4.0..32.0 ->
-            setOf(ForecastModel.ECMWF_IFS04, ForecastModel.ICON_SEAMLESS, ForecastModel.UKMO_SEAMLESS)
+            setOf(
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.ICON_SEAMLESS,
+                ForecastModel.UKMO_SEAMLESS,
+                ForecastModel.GEM_SEAMLESS,
+                ForecastModel.ECMWF_AIFS025_SINGLE,
+            )
 
         // Western + Central Europe (Iberia / France / Benelux / Germany /
         // Italy / Switzerland / Austria / Poland / Czechia). Three European
@@ -68,26 +94,49 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
         // (Météo-France). British Isles + Iceland + Nordics already took
         // their slice above, so this catches the rest.
         lat in 36.0..58.0 && lon in -10.0..28.0 ->
-            setOf(ForecastModel.ECMWF_IFS04, ForecastModel.ICON_SEAMLESS, ForecastModel.METEOFRANCE_SEAMLESS)
+            setOf(
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.ICON_SEAMLESS,
+                ForecastModel.METEOFRANCE_SEAMLESS,
+                ForecastModel.GEM_SEAMLESS,
+                ForecastModel.ECMWF_AIFS025_SINGLE,
+            )
 
         // Japan: JMA is the local official, ECMWF + ICON as the global
         // cross-checks. Tightish lat/lon — overlapping the Korean peninsula
         // is fine, the next branch will catch it.
         lat in 30.0..46.0 && lon in 128.0..146.0 ->
-            setOf(ForecastModel.JMA_SEAMLESS, ForecastModel.ECMWF_IFS04, ForecastModel.ICON_SEAMLESS)
+            setOf(
+                ForecastModel.JMA_SEAMLESS,
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.ICON_SEAMLESS,
+                ForecastModel.GEM_SEAMLESS,
+                ForecastModel.ECMWF_AIFS025_SINGLE,
+            )
 
         // Korean peninsula: KMA isn't on Open-Meteo, so JMA is the closest
         // regional model with native East Asia coverage. ECMWF + ICON
         // round out the trio.
         lat in 33.0..43.0 && lon in 124.0..131.0 ->
-            setOf(ForecastModel.JMA_SEAMLESS, ForecastModel.ECMWF_IFS04, ForecastModel.ICON_SEAMLESS)
+            setOf(
+                ForecastModel.JMA_SEAMLESS,
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.ICON_SEAMLESS,
+                ForecastModel.GEM_SEAMLESS,
+                ForecastModel.ECMWF_AIFS025_SINGLE,
+            )
 
         // North America: US (lower 48 + Alaska) + Canada + Mexico. GFS
         // (NCEP, American) and GEM (Environment Canada) are the locals;
         // ECMWF as the global cross-check that's still considered the
         // most accurate over North America even by NOAA's own metrics.
         lat in 15.0..72.0 && lon in -170.0..-50.0 ->
-            setOf(ForecastModel.GFS_SEAMLESS, ForecastModel.GEM_SEAMLESS, ForecastModel.ECMWF_IFS04)
+            setOf(
+                ForecastModel.GFS_SEAMLESS,
+                ForecastModel.GEM_SEAMLESS,
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.ECMWF_AIFS025_SINGLE,
+            )
 
         // Australia + New Zealand: BOM (Australian Bureau of Meteorology)
         // would be the obvious local pick but Open-Meteo currently has

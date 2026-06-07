@@ -634,7 +634,7 @@ internal fun SettingsForecastersPreview() {
     SettingsFrame {
         ForecastersContent(
             forecastModels = setOf(
-                ForecastModel.ECMWF_IFS04,
+                ForecastModel.ECMWF_IFS025,
                 ForecastModel.GFS_SEAMLESS,
                 ForecastModel.ICON_SEAMLESS,
                 ForecastModel.UKMO_SEAMLESS,

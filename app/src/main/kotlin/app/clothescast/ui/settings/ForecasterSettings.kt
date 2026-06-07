@@ -44,11 +44,12 @@ private const val MIN_MODELS = 2
 
 /**
  * Cap on the number of models the picker accepts. The chart palette covers
- * all eight [ForecastModel] entries, so this isn't a "we'd crash above" limit
+ * every [ForecastModel] entry, so this isn't a "we'd crash above" limit
  * — it's a readability floor. Five overlay lines on the per-model chart is
- * already busy; eight turns it into a rainbow nobody can read. The picker
- * disables unchecked rows when the user is at the cap, with a one-line hint
- * directing them to deselect first.
+ * already busy; the full set turns it into a rainbow nobody can read. The
+ * picker disables unchecked rows when the user is at the cap, with a one-line
+ * hint directing them to deselect first. The location-aware Auto defaults
+ * (see [ForecastModel.defaultsFor]) are sized to sit at this ceiling.
  */
 private const val MAX_MODELS = 5
 
@@ -219,21 +220,23 @@ private fun ForecasterRow(
 }
 
 private fun forecastModelLabel(model: ForecastModel): Int = when (model) {
-    ForecastModel.ECMWF_IFS04 -> R.string.settings_forecasters_ecmwf
+    ForecastModel.ECMWF_IFS025 -> R.string.settings_forecasters_ecmwf
     ForecastModel.ICON_SEAMLESS -> R.string.settings_forecasters_icon
     ForecastModel.GFS_SEAMLESS -> R.string.settings_forecasters_gfs
     ForecastModel.GEM_SEAMLESS -> R.string.settings_forecasters_gem
     ForecastModel.METEOFRANCE_SEAMLESS -> R.string.settings_forecasters_arpege
     ForecastModel.UKMO_SEAMLESS -> R.string.settings_forecasters_ukmo
     ForecastModel.JMA_SEAMLESS -> R.string.settings_forecasters_jma
+    ForecastModel.ECMWF_AIFS025_SINGLE -> R.string.settings_forecasters_aifs
 }
 
 private fun forecastModelSubtitle(model: ForecastModel): Int = when (model) {
-    ForecastModel.ECMWF_IFS04 -> R.string.settings_forecasters_ecmwf_subtitle
+    ForecastModel.ECMWF_IFS025 -> R.string.settings_forecasters_ecmwf_subtitle
     ForecastModel.ICON_SEAMLESS -> R.string.settings_forecasters_icon_subtitle
     ForecastModel.GFS_SEAMLESS -> R.string.settings_forecasters_gfs_subtitle
     ForecastModel.GEM_SEAMLESS -> R.string.settings_forecasters_gem_subtitle
     ForecastModel.METEOFRANCE_SEAMLESS -> R.string.settings_forecasters_arpege_subtitle
     ForecastModel.UKMO_SEAMLESS -> R.string.settings_forecasters_ukmo_subtitle
     ForecastModel.JMA_SEAMLESS -> R.string.settings_forecasters_jma_subtitle
+    ForecastModel.ECMWF_AIFS025_SINGLE -> R.string.settings_forecasters_aifs_subtitle
 }

@@ -51,7 +51,7 @@ class AppPaletteTest {
         // colour blindness. GFS orange happens to already be safe but the
         // Accessible palette still re-picks it for consistency, so assert
         // all three differ from their Rainbow counterparts.
-        accessible.modelColors.getValue("ecmwf_ifs04") shouldNotBe rainbow.modelColors.getValue("ecmwf_ifs04")
+        accessible.modelColors.getValue("ecmwf_ifs025") shouldNotBe rainbow.modelColors.getValue("ecmwf_ifs025")
         accessible.modelColors.getValue("icon_seamless") shouldNotBe rainbow.modelColors.getValue("icon_seamless")
         accessible.modelColors.getValue("gfs_seamless") shouldNotBe rainbow.modelColors.getValue("gfs_seamless")
     }
@@ -107,7 +107,7 @@ class AppPaletteTest {
         // The whole point of Highlighter is visible difference from Rainbow
         // at a glance, so every consulted-model hue must differ from both
         // other palettes' equivalents.
-        for (model in listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")) {
+        for (model in listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless")) {
             highlighter.modelColors.getValue(model) shouldNotBe rainbow.modelColors.getValue(model)
             highlighter.modelColors.getValue(model) shouldNotBe accessible.modelColors.getValue(model)
         }
@@ -122,7 +122,7 @@ class AppPaletteTest {
         // variant uses darker counterparts for WCAG contrast; see the
         // separate light-theme test.
         val palette = appPaletteFor(scheme, darkTheme = true, colorPalette = ColorPalette.HIGHLIGHTER)
-        palette.modelColors.getValue("ecmwf_ifs04") shouldBe Color(0xFFFF2D95)
+        palette.modelColors.getValue("ecmwf_ifs025") shouldBe Color(0xFFFF2D95)
         palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFFFFEB3B)
         palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF00E5FF)
     }
@@ -133,7 +133,7 @@ class AppPaletteTest {
         // drops the yellow and cyan slots to deeper hues so they aren't
         // washed out against the near-white card surface.
         val palette = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
-        palette.modelColors.getValue("ecmwf_ifs04") shouldBe Color(0xFFFF2D95)
+        palette.modelColors.getValue("ecmwf_ifs025") shouldBe Color(0xFFFF2D95)
         palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFFB58A00)
         palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF0277BD)
     }

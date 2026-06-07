@@ -314,11 +314,13 @@ class OpenMeteoMapperTest {
 
     @Test
     fun `upcomingDays carries every day after today with hourly attached`() {
-        // Eight-entry response (yesterday + today + six future days) is what
-        // the production client now asks for via forecast_days=7. The mapper
-        // must populate `upcomingDays` with tomorrow + the rest, in date
-        // order, with each day's hourly slice attached.
-        val days = (0L..7L).map { LocalDate.of(2026, 4, 24).plusDays(it) }
+        // Fifteen-entry response (yesterday + today + thirteen future days) is
+        // what the production client now asks for via forecast_days=14 — enough
+        // to feed both the "Next 7 days" (days 1-7) and "Following 7 days"
+        // (days 8-14) pager pages. The mapper must populate `upcomingDays` with
+        // tomorrow + the rest, in date order, with each day's hourly slice
+        // attached.
+        val days = (0L..14L).map { LocalDate.of(2026, 4, 24).plusDays(it) }
         val response = OpenMeteoResponse(
             timezone = "UTC",
             daily = DailyData(
@@ -345,9 +347,9 @@ class OpenMeteoMapperTest {
 
         val bundle = OpenMeteoMapper.toBundle(response)
 
-        bundle.upcomingDays shouldHaveSize 6
+        bundle.upcomingDays shouldHaveSize 13
         bundle.upcomingDays.first().date shouldBe LocalDate.of(2026, 4, 26)
-        bundle.upcomingDays.last().date shouldBe LocalDate.of(2026, 5, 1)
+        bundle.upcomingDays.last().date shouldBe LocalDate.of(2026, 5, 8)
         bundle.upcomingDays.first().hourly shouldHaveSize 1
         bundle.upcomingDays.first().hourly.first().time shouldBe LocalTime.of(12, 0)
         // Tomorrow is still exposed via [ForecastBundle.tomorrow] for the

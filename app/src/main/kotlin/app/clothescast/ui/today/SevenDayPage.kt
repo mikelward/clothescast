@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,12 +47,15 @@ import java.util.Locale
 import kotlinx.coroutines.delay
 
 /**
- * Page 3 of the Today pager — a 7-day chart deck.
+ * A 7-day chart deck — used for two pager pages: "Next 7 days" (page 3,
+ * forecast days 1-7) and "Following 7 days" (page 4, days 8-14). The caller
+ * picks which week by passing the matching [days] slice plus [titleRes] and
+ * [weekAheadBaseline]; the body is identical otherwise.
  *
  * Renders the same chart stack the per-period pages use (forecast / air
  * temp / precipitation probability / amount, plus the wind / humidity /
  * cloud / solar / UV / sunshine diagnostic cards), but fed a flat 168-hour
- * list of hourly samples covering today + the next six days, with a
+ * list of hourly samples covering the page's seven days, with a
  * day-of-week x-axis (`Mon Tue …`) instead of the per-period hour-of-day
  * ticks. The bottom-axis swap rides on [LocalChartBottomFormatter] so the
  * underlying chart composables stay byte-identical on the per-period
@@ -60,8 +64,8 @@ import kotlinx.coroutines.delay
  * The diagnostic cards (wind onward) and the primary cards' model-spread
  * overlays auto-hide when [weekPerModelHourly] is null OR when the
  * supplied series doesn't yet cover every date in [days] — i.e. on
- * legacy cached payloads from before the multi-model fetcher widened to
- * `forecast_days=7`, on upgraded-but-stale-cache users mid-refresh, or
+ * legacy cached payloads from before the multi-model fetcher carried the
+ * window, on upgraded-but-stale-cache users mid-refresh, or
  * when the side-band fetch failed. The page still renders the four
  * primary-data charts on the cheap path.
  *
@@ -89,6 +93,27 @@ internal fun SevenDayPage(
     weekPerModelHourly: PerModelHourly?,
     scrollState: ScrollState,
     onChevronTap: () -> Unit,
+    /**
+     * Forward chevron in the right-hand header slot. Non-null on the "Next 7
+     * days" page so it advances to the "Following 7 days" page; null on that
+     * second page (and on previews/tests), leaving the reserved slot empty so
+     * the centered label stays put.
+     */
+    onForwardChevronTap: (() -> Unit)? = null,
+    /**
+     * Centered header label. Defaults to "Next 7 days"; the fourth pager page
+     * (forecast days 8-14) passes [R.string.today_title_following_week].
+     */
+    titleRes: Int = R.string.today_title_week,
+    /**
+     * Baseline day the week-ahead headline compares against. Null (the default)
+     * uses `days.first()` as the baseline and `days.drop(1)` as the look-ahead
+     * window — the "Next 7 days" page, where `days[0]` is today. The "Following
+     * 7 days" page passes today's [DailyForecast] here so its headline reads as
+     * a shift relative to *today* (the user's anchor) rather than relative to
+     * day 8, and the whole [days] list (days 8-14) is the look-ahead window.
+     */
+    weekAheadBaseline: DailyForecast? = null,
     workStatusToShow: WorkStatus = WorkStatus.Idle,
     locationActionRequired: Boolean = false,
     onToggleModelSpread: () -> Unit = {},
@@ -178,19 +203,56 @@ internal fun SevenDayPage(
     val dayItemPlacer: HorizontalAxis.ItemPlacer? = remember(days) {
         if (days.size < 2) null else HorizontalAxis.ItemPlacer.aligned(spacing = { 24 }, offset = { 12 })
     }
-    // Newly-fetched 7-day series carries ~168 hourly entries per model
-    // spanning every date in [days]. Older cached payloads (from before the
-    // forecast_days=7 bump) carry only ~48 hours covering 2 dates. Without
-    // this gate, an upgraded user whose cache hasn't refreshed yet sees the
+    // Restrict the per-model series to the dates this page plots before any
+    // chart sees it. The chart cards position each per-model point by its
+    // *index* in the series against the page-local [flatHourly] window (see
+    // [PerModelDiagnosticCard] / [ForecastChart]), so the series must start on
+    // the same day as [flatHourly]. The fetched series always starts at today;
+    // on the "Following 7 days" page [flatHourly] starts at day 8, so passing
+    // the unsliced series would plot days 1-7 under the day-8 axis and push the
+    // day 8-14 points off the right edge. Slicing to the window dates realigns
+    // index 0 with the first plotted hour — and on the "Next 7 days" page it
+    // also keeps the now-14-day fetch from stretching the chart's y-bounds with
+    // values the page doesn't show. Models that don't reach the window at all
+    // (ICON past day 7) drop out here.
+    val weekPerModelInWindow: PerModelHourly? = remember(weekPerModelHourly, days) {
+        val windowDates = days.map { it.date }.toSet()
+        weekPerModelHourly?.let { perModel ->
+            PerModelHourly(
+                byModel = perModel.byModel
+                    .mapValues { (_, hours) -> hours.filter { it.time.toLocalDate() in windowDates } }
+                    .filterValues { it.isNotEmpty() },
+            )
+        }
+    }
+    // A current series carries ~168 hourly entries per model spanning every
+    // date in [days]. Older cached payloads (from before the multi-model
+    // fetcher carried the window) carry only ~48 hours covering 2 dates, and on
+    // the "Following 7 days" page some models (ICON past day 7) never reach the
+    // far dates at all. Without this gate, an upgraded user whose cache hasn't
+    // refreshed yet sees the
     // 7-day primary charts (already widened) plus diagnostic cards whose
     // per-model lines stop short at day 2 — which reads as "the models
     // gave up" rather than "the cache is stale." Counting distinct
     // [LocalDate]s across every model lets the gate hold whether the
     // series is sparse-but-week-covering or dense-but-2-day-covering.
-    val weekPerModelDiagnostics: PerModelHourly? = remember(weekPerModelHourly, days) {
-        weekPerModelHourly?.takeIf { perModel ->
+    val weekPerModelDiagnostics: PerModelHourly? = remember(weekPerModelInWindow, days) {
+        weekPerModelInWindow?.takeIf { perModel ->
             val expected = days.map { it.date }.toSet()
-            val covered = perModel.byModel.values.asSequence()
+            // Exclude best_match (Auto) from the coverage check. It always spans
+            // the full window, so counting it would light up the per-model
+            // surfaces even when no *consulted* model reaches these dates — e.g.
+            // an ICON / UKMO / Météo-France-only setup on the second-week page,
+            // where every selected model stops at day 7 and only the injected
+            // Auto line survives the slice. The spread/diagnostics should enable
+            // only when a real selected model covers the window; this mirrors
+            // ConfidenceInfo.computeFrom, which likewise drops best_match before
+            // its >=2-model check. (PerModelHour temperatures are non-null, so a
+            // model that doesn't reach a date contributes no entry there rather
+            // than a null-valued one — presence in byModel means real coverage.)
+            val covered = perModel.byModel
+                .filterKeys { it != PerModelHourly.BEST_MATCH_MODEL_ID }
+                .values.asSequence()
                 .flatten()
                 .map { it.time.toLocalDate() }
                 .toSet()
@@ -204,9 +266,13 @@ internal fun SevenDayPage(
     // no headline beats a vacuous one. Today is days[0] (the page composes
     // [currentDay] + [upcomingDays] in that order); upstream callers that
     // pass <2 days have already been short-circuited above.
-    val weekAheadInsight = remember(days, deltaThresholdC) {
-        val todayDay = days.firstOrNull() ?: return@remember null
-        DeriveWeekAheadInsight()(todayDay, days.drop(1), deltaThresholdC = deltaThresholdC)
+    val weekAheadInsight = remember(days, deltaThresholdC, weekAheadBaseline) {
+        val baseline = weekAheadBaseline ?: days.firstOrNull() ?: return@remember null
+        // With an explicit baseline (the second-week page) the whole day list is
+        // the look-ahead window; otherwise days[0] is the baseline and the rest
+        // is the window.
+        val window = if (weekAheadBaseline != null) days else days.drop(1)
+        DeriveWeekAheadInsight()(baseline, window, deltaThresholdC = deltaThresholdC)
     }
     val context = LocalContext.current
     val weekAheadFormatter = remember(context, region, temperatureUnit) {
@@ -300,7 +366,7 @@ internal fun SevenDayPage(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = stringResource(R.string.today_title_week),
+                            text = stringResource(titleRes),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -327,7 +393,20 @@ internal fun SevenDayPage(
                             )
                         }
                     }
-                    Box(modifier = Modifier.size(28.dp))
+                    Box(modifier = Modifier.size(28.dp)) {
+                        if (onForwardChevronTap != null) {
+                            IconButton(
+                                onClick = onForwardChevronTap,
+                                modifier = Modifier.size(28.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                    contentDescription =
+                                        stringResource(R.string.today_forward_to_following_week),
+                                )
+                            }
+                        }
+                    }
                 }
                 val proseText = when {
                     days.size < 2 -> stringResource(R.string.today_week_empty)

@@ -70,7 +70,7 @@ class OpenMeteoClientTest {
         params["latitude"] shouldBe "51.5074"
         params["longitude"] shouldBe "-0.1278"
         params["past_days"] shouldBe "1"
-        params["forecast_days"] shouldBe "7"
+        params["forecast_days"] shouldBe "14"
         params["timezone"] shouldBe "auto"
 
         val daily = checkNotNull(params["daily"]).split(",")

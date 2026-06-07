@@ -28,11 +28,12 @@ import java.time.LocalDate
 internal const val OPEN_METEO_HOST = "api.open-meteo.com"
 
 /**
- * Open-Meteo `forecast` endpoint with past_days=1&forecast_days=7, returning yesterday's
- * actuals plus a 7-day forecast in one call. Free, key-less. Free-tier soft cap is
+ * Open-Meteo `forecast` endpoint with past_days=1&forecast_days=14, returning yesterday's
+ * actuals plus a 14-day forecast in one call. Free, key-less. Free-tier soft cap is
  * 10k requests/day; this app makes one call per device per day.
  *
- * `forecast_days=7` covers the Today screen's 7-day pager page. Tomorrow's
+ * `forecast_days=14` covers the Today screen's two week pages — "Next 7 days"
+ * (days 1-7) and "Following 7 days" (days 8-14). Tomorrow's
  * pre-dawn hourly entries — read by the tonight insight via
  * [ForecastBundle.tomorrowHourly] so its overnight low / pre-dawn rain reflect
  * what the user will actually walk into — come along for free in the same call.
@@ -114,13 +115,13 @@ class OpenMeteoClient(
         // pre-injection map (Codex caught it on PR review).
         //
         // Include best_match hours for every forward day, not just today. The
-        // consulted models (ECMWF / GFS / ICON) carry the full forecast_days=7
+        // consulted models (ECMWF / GFS / ICON) carry the full forecast_days=14
         // window, so best_match has to span it too or the consensus silently
-        // changes character partway through the week: with best_match present
-        // only for today + tomorrow, days 3–7 would average the consulted
+        // changes character partway through: with best_match present
+        // only for today + tomorrow, later days would average the consulted
         // models *without* Open-Meteo's auto-pick, breaking the equal-weight
-        // policy [blendConsensusHourly] documents and making days 1–2 and 3–7
-        // blend differently (Codex caught it). It also keeps best_match a real
+        // policy [blendConsensusHourly] documents and making the near days and
+        // later days blend differently (Codex caught it). It also keeps best_match a real
         // vote in [RenderInsightSummary.pickPerModelPeak]'s `majorityNeeded`
         // bar on both sides of the midnight boundary.
         //
@@ -151,8 +152,8 @@ class OpenMeteoClient(
         // apply anywhere.
         //
         // Blend every forward-looking series, not just today: the consulted
-        // models are fetched at forecast_days=7, so the whole week can follow
-        // the consensus. This keeps the 7-day chart's combined line, the
+        // models are fetched at forecast_days=14, so both weeks can follow
+        // the consensus. This keeps the week charts' combined line, the
         // week-ahead headline, and the conditions strip's week-wide peaks all
         // reading the same blended numbers — and lets the strip read wind / UV
         // straight off [HourlyForecast] (now consensus) instead of recomputing
@@ -213,12 +214,17 @@ class OpenMeteoClient(
                 parameter("latitude", location.latitude)
                 parameter("longitude", location.longitude)
                 parameter("past_days", 1)
-                // forecast_days=7 covers the Today screen's 7-day forecast
-                // pager page. Tomorrow's pre-dawn hourly entries (which the
-                // tonight insight reads via [ForecastBundle.tomorrowHourly] to
-                // wrap past midnight) come along for free in the same call,
-                // so we don't issue a second fetch.
-                parameter("forecast_days", 7)
+                // forecast_days=14 covers the Today screen's two week pages —
+                // "Next 7 days" (days 1-7) and "Following 7 days" (days 8-14).
+                // Open-Meteo's /v1/forecast accepts up to 16 days at the same
+                // resolution and JSON shape, so the second week comes back in
+                // the same fields the mapper already parses; it just reads as a
+                // daily trend (per-model agreement thins past ~day 7). Tomorrow's
+                // pre-dawn hourly entries (which the tonight insight reads via
+                // [ForecastBundle.tomorrowHourly] to wrap past midnight) come
+                // along for free in the same call, so we don't issue a second
+                // fetch.
+                parameter("forecast_days", 14)
                 parameter("timezone", "auto")
                 parameter(
                     "daily",

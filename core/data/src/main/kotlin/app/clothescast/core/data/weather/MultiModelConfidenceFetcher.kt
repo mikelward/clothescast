@@ -75,17 +75,20 @@ internal class MultiModelConfidenceFetcher(
                 }
                 parameter("latitude", location.latitude)
                 parameter("longitude", location.longitude)
-                // forecast_days=7 keeps the per-model series aligned with the
-                // primary call's 7-day window so the Today screen's 7-day pager
-                // page can render its per-model diagnostic cards (wind,
-                // humidity, cloud, solar, UV, sunshine) and model-spread
-                // overlays across the full week instead of going dark past
-                // tomorrow morning. The tonight insight's evening tie-in still
+                // forecast_days=14 keeps the per-model series aligned with the
+                // primary call's 14-day window so both Today-screen week pages
+                // ("Next 7 days" and "Following 7 days") can render their
+                // per-model diagnostic cards (wind, humidity, cloud, solar, UV,
+                // sunshine) and model-spread overlays. Not every model runs the
+                // full 14 days (ICON stops at day 7; ECMWF coarsens past ~day 6),
+                // so the second week's spread is naturally sparser — the page's
+                // coverage gate auto-hides diagnostics for any day a model
+                // doesn't reach. The tonight insight's evening tie-in still
                 // reads tomorrow's pre-dawn hours out of the same series.
                 // Confidence aggregates read `daily[0]` (today's value), so
                 // widening the window doesn't disturb the tier calculation
                 // downstream.
-                parameter("forecast_days", 7)
+                parameter("forecast_days", 14)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,precipitation_probability_max")
                 // cloud_cover_low (the deck below ~2 km) rather than total

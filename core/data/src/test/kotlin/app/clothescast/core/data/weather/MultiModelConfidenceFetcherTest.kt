@@ -78,13 +78,13 @@ class MultiModelConfidenceFetcherTest {
             "apparent_temperature,temperature_2m,precipitation_probability,precipitation," +
             "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
             "shortwave_radiation,sunshine_duration,uv_index,weather_code"
-        // forecast_days=7 covers the Today screen's 7-day pager page so the
-        // per-model diagnostic cards (wind / humidity / cloud / solar / UV /
-        // sunshine) and model-spread overlays render across the full week,
-        // and keeps the wrap-past-midnight evening tie-in able to see
-        // tomorrow's pre-dawn rain that one model spots but the base
-        // forecast under-calls.
-        req.url.parameters["forecast_days"] shouldBe "7"
+        // forecast_days=14 covers the Today screen's two week pages ("Next 7
+        // days" and "Following 7 days") so the per-model diagnostic cards
+        // (wind / humidity / cloud / solar / UV / sunshine) and model-spread
+        // overlays render across both weeks, and keeps the wrap-past-midnight
+        // evening tie-in able to see tomorrow's pre-dawn rain that one model
+        // spots but the base forecast under-calls.
+        req.url.parameters["forecast_days"] shouldBe "14"
         req.url.parameters["past_days"].shouldBeNull()
     }
 

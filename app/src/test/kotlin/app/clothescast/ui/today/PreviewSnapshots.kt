@@ -440,6 +440,8 @@ class PreviewSnapshots {
     @Test fun seven_day_page_with_location() = capture { SevenDayPageWithLocationPreview() }
     @Test fun seven_day_page_with_per_model_spread_off() = capture { SevenDayPageWithPerModelSpreadOffPreview() }
     @Test fun seven_day_page_with_per_model_spread_on() = capture { SevenDayPageWithPerModelSpreadOnPreview() }
+    @Test fun seven_day_page_with_forward_chevron() = capture { SevenDayPageWithForwardChevronPreview() }
+    @Test fun following_week_page() = capture { FollowingWeekPagePreview() }
     @Test fun forecast_card_week_scrubbed() = capture { ForecastCardWeekScrubbedPreview() }
     @Test fun forecast_chart_with_current_time() = capture { ForecastChartWithCurrentTimePreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }

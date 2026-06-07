@@ -14,13 +14,22 @@ from:
 
 | Model | Origin | Notes |
 |---|---|---|
-| `ecmwf_ifs04` | ECMWF | Generally best long-range global model |
-| `icon_seamless` / `icon_eu` | DWD (Germany) | Strong European coverage |
-| `gfs_seamless` | NOAA (US) | Strong American coverage |
-| `meteofrance_seamless` | Météo-France | Strong for France/W. Europe |
-| `gem_seamless` | ECCC (Canada) | Strong for North America |
-| `jma_seamless` | JMA (Japan) | Strong for Asia-Pacific |
-| `bom_access_global` | BOM (Australia) | Strong for Australasia |
+| `ecmwf_ifs025` | ECMWF | Generally best long-range global model; 0.25° open feed, reaches ~day 15 (replaced the older 0.4° `ecmwf_ifs04` in Feb 2024) |
+| `ecmwf_aifs025_single` | ECMWF | AI model (graph neural net, "AIFS Single"); skillful to ~day 15; exposes a reduced hourly field set, so it may not draw a line on every diagnostic chart; carries the second-week charts |
+| `icon_seamless` / `icon_eu` | DWD (Germany) | Strong European coverage; short-range, stops at ~day 7 |
+| `gfs_seamless` | NOAA (US) | Strong American coverage; reaches ~day 16 |
+| `meteofrance_seamless` | Météo-France | Strong for France/W. Europe (ARPEGE); short-range |
+| `gem_seamless` | ECCC (Canada) | Strong for North America; reaches ~day 10 |
+| `ukmo_seamless` | UK Met Office | Strong for the British Isles; short-range |
+| `jma_seamless` | JMA (Japan) | Strong for Asia-Pacific; short-range |
+| `bom_access_global` | BOM (Australia) | Strong for Australasia (open-data delivery currently suspended) |
+
+Horizon matters for the two-week forecast: ICON and the regional locals
+(UKMO, ARPEGE, JMA) fade after ~day 7, so the second-week ("Following 7
+days") charts lean on the longer-horizon models — ECMWF IFS 0.25°, AIFS, and
+GFS reach into days 8-14, with GEM reinforcing days 8-10. The default model
+set per region (see `ForecastModelDefaults`) is built to keep at least two
+models reporting across the whole fortnight.
 
 Default `best_match` picks the model believed to be most accurate for the
 requested coordinates. We currently don't pass `models=` at all, so we get

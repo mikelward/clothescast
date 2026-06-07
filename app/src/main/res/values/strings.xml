@@ -617,7 +617,7 @@
     <string name="settings_forecasters_auto_subtitle">Pick the regional forecaster automatically — UKMO in the British Isles, JMA in Japan, GFS + GEM in North America, etc. Turn off to choose models yourself.</string>
     <string name="settings_forecasters_cap_hint">You\'ve picked %1$d models — the most the chart stays readable for. Deselect one to add a different model.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
-    <string name="settings_forecasters_ecmwf_subtitle">European — generally the most accurate global model. 3-hourly on the open feed.</string>
+    <string name="settings_forecasters_ecmwf_subtitle">European — generally the most accurate global model. 0.25° open feed, out to 15 days.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">German (DWD) — strong in Europe and at short range. Native hourly.</string>
     <string name="settings_forecasters_gfs">GFS</string>
@@ -630,6 +630,8 @@
     <string name="settings_forecasters_ukmo_subtitle">British (UK Met Office) — historically second only to ECMWF. 3-hourly on the open feed.</string>
     <string name="settings_forecasters_jma">JMA</string>
     <string name="settings_forecasters_jma_subtitle">Japanese — strong over Asia-Pacific. 3- to 6-hourly on the open feed.</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF\'s AI model — skillful out to 15 days, so it carries the second-week charts. Some detail charts may not show a line for it.</string>
     <!-- BOM is still omitted from the ForecastModel enum while Open-Meteo's
          BOM open-data delivery is suspended, but the picker surfaces it as a
          permanently-disabled row so users looking for the Australian model

@@ -321,9 +321,14 @@ internal class MultiModelConfidenceFetcher(
     }
 
     companion object {
-        // Three models with global coverage so the spread is meaningful regardless of
-        // where the user is. Could be made user-tunable later (MODELS.md idea).
-        val DEFAULT_MODELS = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
+        // Safety-net default when the caller passes an empty model list (a
+        // hand-edited DataStore could). Mirrors ForecastModel.DEFAULTS: the
+        // ECMWF (0.25°) / GFS / ICON trio for the high-res first week, plus
+        // GEM and AIFS so two-plus models keep reporting through the second
+        // week once ICON drops out at ~day 7. The real selection flows in via
+        // the `models` parameter (SettingsRepository → defaultsFor).
+        val DEFAULT_MODELS =
+            listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless", "ecmwf_aifs025_single")
     }
 }
 

@@ -3472,13 +3472,14 @@ private fun LegendChip(
 }
 
 private fun friendlyModelName(modelId: String): String = when (modelId) {
-    "ecmwf_ifs04" -> "ECMWF"
+    "ecmwf_ifs025" -> "ECMWF"
     "gfs_seamless" -> "GFS"
     "icon_seamless" -> "ICON"
     "gem_seamless" -> "GEM"
     "meteofrance_seamless" -> "ARPEGE"
     "ukmo_seamless" -> "UKMO"
     "jma_seamless" -> "JMA"
+    "ecmwf_aifs025_single" -> "AIFS"
     PerModelHourly.BEST_MATCH_MODEL_ID -> "Auto"
     else -> modelId
 }

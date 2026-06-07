@@ -27,6 +27,20 @@ import java.time.LocalDateTime
 class MultiModelConfidenceFetcherTest {
     private val london = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
 
+    // The three models these mechanics fixtures are keyed on. Passed
+    // explicitly so the parse / confidence / logging assertions don't depend
+    // on the production default set (now five models — see
+    // ForecastModel.DEFAULTS / MultiModelConfidenceFetcher.DEFAULT_MODELS),
+    // which would otherwise log drops for the fixture-omitted models and
+    // change the consulted-model counts.
+    private val fixtureModels = listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless")
+
+    // The default set the fetcher falls back to when the caller passes no
+    // (or an empty) model list — mirrors MultiModelConfidenceFetcher
+    // .DEFAULT_MODELS. Joined into the request's models= parameter.
+    private val defaultModelsParam =
+        "ecmwf_ifs025,gfs_seamless,icon_seamless,gem_seamless,ecmwf_aifs025_single"
+
     private data class LogEntry(val message: String, val throwable: Throwable?)
 
     private class CapturingLogger : ConfidenceFetchLogger {
@@ -72,7 +86,7 @@ class MultiModelConfidenceFetcherTest {
         captured.size shouldBe 1
         val req = captured.single()
         req.url.encodedPath shouldBe "/v1/forecast"
-        req.url.parameters["models"] shouldBe "ecmwf_ifs04,gfs_seamless,icon_seamless"
+        req.url.parameters["models"] shouldBe defaultModelsParam
         req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
         req.url.parameters["hourly"] shouldBe
             "apparent_temperature,temperature_2m,precipitation_probability,precipitation," +
@@ -99,7 +113,7 @@ class MultiModelConfidenceFetcherTest {
     }
 
     @Test
-    fun `empty caller-supplied models falls back to the default trio`() = runTest {
+    fun `empty caller-supplied models falls back to the default set`() = runTest {
         // The Forecasters settings UI keeps the picker pinned to at least
         // two checked entries, so this path is a hand-edited-DataStore
         // safety net. The fetcher recovers rather than firing an empty
@@ -109,23 +123,23 @@ class MultiModelConfidenceFetcherTest {
 
         fetcher.fetch(london, emptyList())
 
-        captured.single().url.parameters["models"] shouldBe "ecmwf_ifs04,gfs_seamless,icon_seamless"
+        captured.single().url.parameters["models"] shouldBe defaultModelsParam
     }
 
     @Test
     fun `tight spread across all three models returns HIGH confidence`() = runTest {
-        val info = fetcherWith(THREE_MODEL_AGREEMENT).fetch(london)?.confidence.shouldNotBeNull()
+        val info = fetcherWith(THREE_MODEL_AGREEMENT).fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
 
         info.level shouldBe ForecastConfidence.HIGH
         info.tempSpreadC shouldBe (1.0 plusOrMinus 0.0001)
         info.precipSpreadPp shouldBe (10.0 plusOrMinus 0.0001)
         info.modelsConsulted shouldContainExactlyInAnyOrder
-            listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
+            listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless")
     }
 
     @Test
     fun `wide temp spread drops confidence to LOW`() = runTest {
-        val info = fetcherWith(THREE_MODEL_DISAGREEMENT).fetch(london)?.confidence.shouldNotBeNull()
+        val info = fetcherWith(THREE_MODEL_DISAGREEMENT).fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
 
         info.level shouldBe ForecastConfidence.LOW
         info.tempSpreadC shouldBe (5.0 plusOrMinus 0.0001)
@@ -133,37 +147,37 @@ class MultiModelConfidenceFetcherTest {
 
     @Test
     fun `falls back to two-model spread when one model is missing from response`() = runTest {
-        val info = fetcherWith(ONE_MODEL_OMITTED).fetch(london)?.confidence.shouldNotBeNull()
+        val info = fetcherWith(ONE_MODEL_OMITTED).fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
 
-        info.modelsConsulted shouldContainExactlyInAnyOrder listOf("ecmwf_ifs04", "gfs_seamless")
+        info.modelsConsulted shouldContainExactlyInAnyOrder listOf("ecmwf_ifs025", "gfs_seamless")
         info.tempSpreadC shouldBe (0.5 plusOrMinus 0.0001)
     }
 
     @Test
     fun `returns null when only one model reports usable values and no hourly is present`() = runTest {
-        fetcherWith(TWO_MODELS_OMITTED).fetch(london).shouldBeNull()
+        fetcherWith(TWO_MODELS_OMITTED).fetch(london, fixtureModels).shouldBeNull()
     }
 
     @Test
     fun `returns null when the request fails`() = runTest {
-        fetcherWith(body = "boom", status = HttpStatusCode.InternalServerError).fetch(london).shouldBeNull()
+        fetcherWith(body = "boom", status = HttpStatusCode.InternalServerError).fetch(london, fixtureModels).shouldBeNull()
     }
 
     @Test
     fun `null entries from a model are treated as missing`() = runTest {
         // Open-Meteo can return [null] for a model whose run hasn't finished yet.
-        val info = fetcherWith(ONE_MODEL_NULL_VALUES).fetch(london)?.confidence.shouldNotBeNull()
+        val info = fetcherWith(ONE_MODEL_NULL_VALUES).fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
 
         info.modelsConsulted shouldContainExactlyInAnyOrder listOf("gfs_seamless", "icon_seamless")
     }
 
     @Test
     fun `parses per-model hourly series when present`() = runTest {
-        val hourly = fetcherWith(THREE_MODEL_WITH_HOURLY).fetch(london)?.hourly.shouldNotBeNull()
+        val hourly = fetcherWith(THREE_MODEL_WITH_HOURLY).fetch(london, fixtureModels)?.hourly.shouldNotBeNull()
 
         hourly.byModel.keys shouldContainExactlyInAnyOrder
-            listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless")
-        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+            listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless")
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs025")
         ecmwf.size shouldBe 3
         ecmwf[0].time shouldBe LocalDateTime.parse("2026-05-12T00:00")
         ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
@@ -192,10 +206,10 @@ class MultiModelConfidenceFetcherTest {
         // model run that didn't return those fields yet). The hour survives
         // because the required temp + precip values are present; the
         // diagnostic fields just come back null.
-        val hourly = fetcherWith(THREE_MODEL_WITH_HOURLY_NO_DIAGNOSTICS).fetch(london)?.hourly
+        val hourly = fetcherWith(THREE_MODEL_WITH_HOURLY_NO_DIAGNOSTICS).fetch(london, fixtureModels)?.hourly
             .shouldNotBeNull()
 
-        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs025")
         ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
         ecmwf[0].windSpeedKmh.shouldBeNull()
         ecmwf[0].relativeHumidityPct.shouldBeNull()
@@ -207,14 +221,14 @@ class MultiModelConfidenceFetcherTest {
 
     @Test
     fun `hourly is null when the response carries only daily fields`() = runTest {
-        fetcherWith(THREE_MODEL_AGREEMENT).fetch(london)?.hourly.shouldBeNull()
+        fetcherWith(THREE_MODEL_AGREEMENT).fetch(london, fixtureModels)?.hourly.shouldBeNull()
     }
 
     @Test
     fun `drops a model's hourly entry when temperature_2m is null for that hour`() = runTest {
-        val hourly = fetcherWith(HOURLY_WITH_ONE_NULL_HOUR).fetch(london)?.hourly.shouldNotBeNull()
+        val hourly = fetcherWith(HOURLY_WITH_ONE_NULL_HOUR).fetch(london, fixtureModels)?.hourly.shouldNotBeNull()
 
-        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs025")
         // Hour 1 had a null temperature_2m for ecmwf; the entry is dropped,
         // but the other two hours survive. apparent_temperature and
         // precipitation_probability are now optional per-hour — temperature_2m
@@ -235,16 +249,16 @@ class MultiModelConfidenceFetcherTest {
         // mode rather than a wind-chill-adjusted one.
         val logger = CapturingLogger()
         val hourly = fetcherWith(HOURLY_MISSING_APPARENT_TEMPERATURE, logger = logger)
-            .fetch(london)?.hourly.shouldNotBeNull()
+            .fetch(london, fixtureModels)?.hourly.shouldNotBeNull()
 
-        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs025")
         ecmwf.size shouldBe 3
         // apparent_temperature falls back to temperature_2m per hour
         ecmwf[0].apparentTemperatureC shouldBe (14.0 plusOrMinus 0.0001)
         ecmwf[0].temperatureC shouldBe (14.0 plusOrMinus 0.0001)
         // Log entry surfaces the substitution so a Diagnostics scrape
         // explains why the apparent series mirrors air temp.
-        logger.entries.any { "ecmwf_ifs04" in it.message && "apparent_temperature missing" in it.message } shouldBe true
+        logger.entries.any { "ecmwf_ifs025" in it.message && "apparent_temperature missing" in it.message } shouldBe true
     }
 
     @Test
@@ -258,12 +272,12 @@ class MultiModelConfidenceFetcherTest {
         // so the cause is observable from Diagnostics.
         val logger = CapturingLogger()
         val hourly = fetcherWith(HOURLY_MISSING_PRECIP_PROBABILITY, logger = logger)
-            .fetch(london)?.hourly.shouldNotBeNull()
+            .fetch(london, fixtureModels)?.hourly.shouldNotBeNull()
 
-        val ecmwf = hourly.byModel.getValue("ecmwf_ifs04")
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs025")
         ecmwf.size shouldBe 3
         ecmwf.all { it.precipitationProbabilityPct == null } shouldBe true
-        logger.entries.any { "ecmwf_ifs04" in it.message && "precipitation_probability missing" in it.message } shouldBe true
+        logger.entries.any { "ecmwf_ifs025" in it.message && "precipitation_probability missing" in it.message } shouldBe true
     }
 
     @Test
@@ -272,22 +286,22 @@ class MultiModelConfidenceFetcherTest {
         // and the consensus blend has no temp signal to fold in. Log + drop.
         val logger = CapturingLogger()
         val hourly = fetcherWith(HOURLY_MISSING_AIR_TEMPERATURE, logger = logger)
-            .fetch(london)?.hourly
+            .fetch(london, fixtureModels)?.hourly
 
         // ecmwf is the only model in this fixture; with it dropped, byModel
         // is empty and parseHourly returns null.
         hourly shouldBe null
         logger.entries.any {
-            "ecmwf_ifs04" in it.message && "temperature_2m missing" in it.message
+            "ecmwf_ifs025" in it.message && "temperature_2m missing" in it.message
         } shouldBe true
     }
 
     @Test
     fun `dropping a model logs which fields were missing`() = runTest {
         val logger = CapturingLogger()
-        fetcherWith(ONE_MODEL_NULL_VALUES, logger = logger).fetch(london)
+        fetcherWith(ONE_MODEL_NULL_VALUES, logger = logger).fetch(london, fixtureModels)
 
-        val message = logger.entries.singleOrNull { "ecmwf_ifs04" in it.message }
+        val message = logger.entries.singleOrNull { "ecmwf_ifs025" in it.message }
             .shouldNotBeNull()
             .message
         message shouldContain "dropped"
@@ -298,7 +312,7 @@ class MultiModelConfidenceFetcherTest {
     @Test
     fun `returning null because too few models reported logs the ratio`() = runTest {
         val logger = CapturingLogger()
-        fetcherWith(TWO_MODELS_OMITTED, logger = logger).fetch(london).shouldBeNull()
+        fetcherWith(TWO_MODELS_OMITTED, logger = logger).fetch(london, fixtureModels).shouldBeNull()
 
         val giveUp = logger.entries.lastOrNull().shouldNotBeNull()
         giveUp.message shouldContain "1 of 3"
@@ -312,7 +326,7 @@ class MultiModelConfidenceFetcherTest {
             body = "boom",
             status = HttpStatusCode.InternalServerError,
             logger = logger,
-        ).fetch(london).shouldBeNull()
+        ).fetch(london, fixtureModels).shouldBeNull()
 
         val entry = logger.entries.singleOrNull { it.throwable != null }.shouldNotBeNull()
         entry.message shouldContain "confidence fetch failed"
@@ -322,7 +336,7 @@ class MultiModelConfidenceFetcherTest {
     @Test
     fun `successful fetch logs nothing`() = runTest {
         val logger = CapturingLogger()
-        fetcherWith(THREE_MODEL_AGREEMENT, logger = logger).fetch(london).shouldNotBeNull()
+        fetcherWith(THREE_MODEL_AGREEMENT, logger = logger).fetch(london, fixtureModels).shouldNotBeNull()
 
         logger.entries shouldBe emptyList()
     }
@@ -333,10 +347,10 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
                 "apparent_temperature_max_gfs_seamless": [21.5],
                 "apparent_temperature_max_icon_seamless": [22.0],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
               }
@@ -348,10 +362,10 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [18.0],
+                "apparent_temperature_max_ecmwf_ifs025": [18.0],
                 "apparent_temperature_max_gfs_seamless": [21.0],
                 "apparent_temperature_max_icon_seamless": [23.0],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
               }
@@ -363,9 +377,9 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
                 "apparent_temperature_max_gfs_seamless": [21.5],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15]
               }
             }
@@ -375,8 +389,8 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
-                "precipitation_probability_max_ecmwf_ifs04": [10]
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
+                "precipitation_probability_max_ecmwf_ifs025": [10]
               }
             }
         """.trimIndent()
@@ -386,10 +400,10 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [null],
+                "apparent_temperature_max_ecmwf_ifs025": [null],
                 "apparent_temperature_max_gfs_seamless": [21.5],
                 "apparent_temperature_max_icon_seamless": [22.0],
-                "precipitation_probability_max_ecmwf_ifs04": [null],
+                "precipitation_probability_max_ecmwf_ifs025": [null],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
               }
@@ -403,43 +417,43 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
                 "apparent_temperature_max_gfs_seamless": [21.5],
                 "apparent_temperature_max_icon_seamless": [22.0],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
               },
               "hourly": {
                 "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
-                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "apparent_temperature_ecmwf_ifs025": [12.0, 11.5, 11.0],
                 "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
                 "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
-                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_ecmwf_ifs025": [14.0, 13.5, 13.0],
                 "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
                 "temperature_2m_icon_seamless": [15.0, 14.6, 14.0],
-                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_ecmwf_ifs025": [10, 15, 20],
                 "precipitation_probability_gfs_seamless": [12, 18, 22],
                 "precipitation_probability_icon_seamless": [18, 22, 28],
-                "wind_speed_10m_ecmwf_ifs04": [8.0, 9.5, 11.0],
+                "wind_speed_10m_ecmwf_ifs025": [8.0, 9.5, 11.0],
                 "wind_speed_10m_gfs_seamless": [7.5, 9.0, 10.5],
                 "wind_speed_10m_icon_seamless": [10.0, 12.0, 13.5],
-                "relative_humidity_2m_ecmwf_ifs04": [78, 80, 82],
+                "relative_humidity_2m_ecmwf_ifs025": [78, 80, 82],
                 "relative_humidity_2m_gfs_seamless": [76, 78, 80],
                 "relative_humidity_2m_icon_seamless": [82, 84, 85],
-                "cloud_cover_low_ecmwf_ifs04": [60, 70, 80],
+                "cloud_cover_low_ecmwf_ifs025": [60, 70, 80],
                 "cloud_cover_low_gfs_seamless": [65, 72, 78],
                 "cloud_cover_low_icon_seamless": [40, 55, 70],
-                "shortwave_radiation_ecmwf_ifs04": [0, 50, 120],
+                "shortwave_radiation_ecmwf_ifs025": [0, 50, 120],
                 "shortwave_radiation_gfs_seamless": [0, 45, 110],
                 "shortwave_radiation_icon_seamless": [0, 60, 140],
-                "sunshine_duration_ecmwf_ifs04": [0, 600, 1800],
+                "sunshine_duration_ecmwf_ifs025": [0, 600, 1800],
                 "sunshine_duration_gfs_seamless": [0, 500, 1500],
                 "sunshine_duration_icon_seamless": [0, 700, 2100],
-                "uv_index_ecmwf_ifs04": [0.0, 0.5, 1.5],
+                "uv_index_ecmwf_ifs025": [0.0, 0.5, 1.5],
                 "uv_index_gfs_seamless": [0.0, 0.4, 1.3],
                 "uv_index_icon_seamless": [0.0, 0.6, 1.8],
-                "weather_code_ecmwf_ifs04": [3, 61, 61],
+                "weather_code_ecmwf_ifs025": [3, 61, 61],
                 "weather_code_gfs_seamless": [2, 61, 61],
                 "weather_code_icon_seamless": [3, 51, 51]
               }
@@ -453,22 +467,22 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
                 "apparent_temperature_max_gfs_seamless": [21.5],
                 "apparent_temperature_max_icon_seamless": [22.0],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
               },
               "hourly": {
                 "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
-                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "apparent_temperature_ecmwf_ifs025": [12.0, 11.5, 11.0],
                 "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
                 "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
-                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_ecmwf_ifs025": [14.0, 13.5, 13.0],
                 "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
                 "temperature_2m_icon_seamless": [15.0, 14.6, 14.0],
-                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_ecmwf_ifs025": [10, 15, 20],
                 "precipitation_probability_gfs_seamless": [12, 18, 22],
                 "precipitation_probability_icon_seamless": [18, 22, 28]
               }
@@ -482,22 +496,22 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
                 "apparent_temperature_max_gfs_seamless": [21.5],
                 "apparent_temperature_max_icon_seamless": [22.0],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
               },
               "hourly": {
                 "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
-                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "apparent_temperature_ecmwf_ifs025": [12.0, 11.5, 11.0],
                 "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
                 "apparent_temperature_icon_seamless": [13.0, 12.6, 12.0],
-                "temperature_2m_ecmwf_ifs04": [14.0, null, 13.0],
+                "temperature_2m_ecmwf_ifs025": [14.0, null, 13.0],
                 "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
                 "temperature_2m_icon_seamless": [15.0, 14.6, 14.0],
-                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_ecmwf_ifs025": [10, 15, 20],
                 "precipitation_probability_gfs_seamless": [12, 18, 22],
                 "precipitation_probability_icon_seamless": [18, 22, 28]
               }
@@ -512,16 +526,16 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
                 "apparent_temperature_max_gfs_seamless": [21.5],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15]
               },
               "hourly": {
                 "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
-                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_ecmwf_ifs025": [14.0, 13.5, 13.0],
                 "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
-                "precipitation_probability_ecmwf_ifs04": [10, 15, 20],
+                "precipitation_probability_ecmwf_ifs025": [10, 15, 20],
                 "precipitation_probability_gfs_seamless": [12, 18, 22]
               }
             }
@@ -533,16 +547,16 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
                 "apparent_temperature_max_gfs_seamless": [21.5],
-                "precipitation_probability_max_ecmwf_ifs04": [10],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15]
               },
               "hourly": {
                 "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
-                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
+                "apparent_temperature_ecmwf_ifs025": [12.0, 11.5, 11.0],
                 "apparent_temperature_gfs_seamless": [12.2, 11.8, 11.4],
-                "temperature_2m_ecmwf_ifs04": [14.0, 13.5, 13.0],
+                "temperature_2m_ecmwf_ifs025": [14.0, 13.5, 13.0],
                 "temperature_2m_gfs_seamless": [14.2, 13.8, 13.4],
                 "precipitation_probability_gfs_seamless": [12, 18, 22]
               }
@@ -555,13 +569,13 @@ class MultiModelConfidenceFetcherTest {
             {
               "daily": {
                 "time": ["2026-05-12"],
-                "apparent_temperature_max_ecmwf_ifs04": [21.0],
-                "precipitation_probability_max_ecmwf_ifs04": [10]
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
+                "precipitation_probability_max_ecmwf_ifs025": [10]
               },
               "hourly": {
                 "time": ["2026-05-12T00:00", "2026-05-12T01:00", "2026-05-12T02:00"],
-                "apparent_temperature_ecmwf_ifs04": [12.0, 11.5, 11.0],
-                "precipitation_probability_ecmwf_ifs04": [10, 15, 20]
+                "apparent_temperature_ecmwf_ifs025": [12.0, 11.5, 11.0],
+                "precipitation_probability_ecmwf_ifs025": [10, 15, 20]
               }
             }
         """.trimIndent()

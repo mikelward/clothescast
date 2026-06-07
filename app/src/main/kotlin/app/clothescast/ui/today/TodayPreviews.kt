@@ -711,7 +711,7 @@ internal fun ConfidenceHighPreview() {
                 level = ForecastConfidence.HIGH,
                 tempSpreadC = 0.8,
                 precipSpreadPp = 5.0,
-                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+                modelsConsulted = listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless"),
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
@@ -730,7 +730,7 @@ internal fun ConfidenceMediumPreview() {
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 2.5,
                 precipSpreadPp = 20.0,
-                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
+                modelsConsulted = listOf("ecmwf_ifs025", "gfs_seamless"),
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
@@ -749,7 +749,7 @@ internal fun ConfidenceLowPreview() {
                 level = ForecastConfidence.LOW,
                 tempSpreadC = 6.1,
                 precipSpreadPp = 55.0,
-                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+                modelsConsulted = listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless"),
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
@@ -772,7 +772,7 @@ internal fun ConfidenceMediumTapToShowPreview() {
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 2.5,
                 precipSpreadPp = 20.0,
-                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
+                modelsConsulted = listOf("ecmwf_ifs025", "gfs_seamless"),
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
@@ -792,7 +792,7 @@ internal fun ConfidenceMediumTapToHidePreview() {
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 2.5,
                 precipSpreadPp = 20.0,
-                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless"),
+                modelsConsulted = listOf("ecmwf_ifs025", "gfs_seamless"),
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
@@ -827,7 +827,7 @@ internal fun ConfidenceMediumPrecipOnlyPreview() {
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 1.0,
                 precipSpreadPp = 35.0,
-                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+                modelsConsulted = listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless"),
             ),
             perModelHourly = null,
             temperatureUnit = TemperatureUnit.CELSIUS,
@@ -847,7 +847,7 @@ internal fun ConfidenceMediumNoDetailPreview() {
                 level = ForecastConfidence.MEDIUM,
                 tempSpreadC = 2.5,
                 precipSpreadPp = 8.0,
-                modelsConsulted = listOf("ecmwf_ifs04", "gfs_seamless", "icon_seamless"),
+                modelsConsulted = listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless"),
             ),
             perModelHourly = null,
             temperatureUnit = TemperatureUnit.CELSIUS,
@@ -1633,7 +1633,7 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
     }
     PerModelHourly(
         byModel = mapOf(
-            "ecmwf_ifs04" to shift(
+            "ecmwf_ifs025" to shift(
                 deltaC = -1.5, precipDelta = -10.0, windBase = 8.0, cloudBase = 55.0,
                 solarPeakWm2 = 600.0, sunshineMinutesAtMidday = 35.0, uvPeak = 5.0,
                 precipMmScale = 0.9,
@@ -2258,7 +2258,7 @@ private val SAMPLE_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
         }
     PerModelHourly(
         byModel = mapOf(
-            "ecmwf_ifs04" to shift(deltaC = -1.5, precipDelta = -10.0, windBase = 8.0),
+            "ecmwf_ifs025" to shift(deltaC = -1.5, precipDelta = -10.0, windBase = 8.0),
             "gfs_seamless" to shift(deltaC = 0.5, precipDelta = 5.0, windBase = 12.0),
             "icon_seamless" to shift(deltaC = 2.0, precipDelta = -5.0, windBase = 6.0),
         ),
@@ -2351,7 +2351,7 @@ private val SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
     val gfsThrough = SAMPLE_FOLLOWING_WEEK[3].date
     PerModelHourly(
         byModel = mapOf(
-            "ecmwf_ifs04" to shift(
+            "ecmwf_ifs025" to shift(
                 deltaC = -1.5, precipDelta = 0.0, windBase = 7.0, cloudBase = 50.0,
                 solarPeakWm2 = 620.0, sunshineMinutesAtMidday = 38.0, uvPeak = 5.2,
             ).filter { !it.time.toLocalDate().isAfter(ecmwfThrough) },

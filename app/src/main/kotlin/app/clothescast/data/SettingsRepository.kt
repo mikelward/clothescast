@@ -1079,7 +1079,20 @@ class SettingsRepository(
         // forced on every install; null lets fresh installs follow the user's
         // region.
         val forecastModels: Set<ForecastModel>? = this[FORECAST_MODELS]
-            ?.mapNotNull { runCatching { ForecastModel.valueOf(it) }.getOrNull() }
+            ?.mapNotNull { stored ->
+                // Migrate the pre-0.25° ECMWF id forward: users who explicitly
+                // picked ECMWF before the ecmwf_ifs04 → ecmwf_ifs025 swap have
+                // "ECMWF_IFS04" persisted, which no longer resolves. Map it to
+                // the current entry so their selection survives the rename
+                // instead of silently dropping (and possibly falling below the
+                // picker's two-model floor).
+                val name = if (stored == LEGACY_ECMWF_IFS04_NAME) {
+                    ForecastModel.ECMWF_IFS025.name
+                } else {
+                    stored
+                }
+                runCatching { ForecastModel.valueOf(name) }.getOrNull()
+            }
             ?.toSet()
             ?.takeIf { it.isNotEmpty() }
         val mqttBridgeEnabled = this[MQTT_BRIDGE_ENABLED] == true
@@ -1460,6 +1473,10 @@ class SettingsRepository(
         private val HOLIDAY_COUNTRY_ALL = booleanPreferencesKey("holiday_country_all")
         private val HOLIDAY_COUNTRY_OVERRIDES = stringSetPreferencesKey("holiday_country_overrides")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
+        // Legacy persisted name for the ECMWF model, retired when Open-Meteo
+        // moved the IFS open feed from 0.4° to 0.25° (ecmwf_ifs04 →
+        // ecmwf_ifs025). Migrated forward on read — see forecastModels above.
+        private const val LEGACY_ECMWF_IFS04_NAME = "ECMWF_IFS04"
         private val MQTT_BRIDGE_ENABLED = booleanPreferencesKey("mqtt_bridge_enabled")
         private val MQTT_HOST = stringPreferencesKey("mqtt_host")
         private val MQTT_PORT = intPreferencesKey("mqtt_port")

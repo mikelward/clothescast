@@ -1038,17 +1038,27 @@ data class UserPreferences(
  * domain doesn't have to leak Open-Meteo specifics anywhere else.
  *
  * The set the user has enabled lives at [UserPreferences.forecastModels].
- * Default is the trio that's been shipping: ECMWF, GFS, ICON — three
- * independent global majors (European, American, German), chosen for
- * dynamical-core diversity rather than for each being the most accurate
- * individually. Users who care about the spread (or whose region has a
- * stronger regional model) can swap in others via the Forecasters picker.
+ * Default is a blend chosen for dynamical-core diversity *and* a long
+ * enough horizon to cover the second week: ECMWF (0.25°), GFS, ICON for
+ * the high-resolution first week, plus GEM and AIFS to keep two or more
+ * models reporting through days 8-14, where ICON (and the regional locals)
+ * fall silent after ~day 7. Users who care about the spread (or whose
+ * region has a stronger regional model) can swap in others via the
+ * Forecasters picker.
+ *
+ * Note on horizon: ICON stops at ~day 7 and the regional locals (UKMO,
+ * ARPEGE, JMA) are short-range too, so they only paint the first week.
+ * ECMWF IFS 0.25° and AIFS reach ~day 15 and GFS ~day 16, so those carry
+ * the second-week charts; GEM reaches ~day 10, reinforcing days 8-10.
  *
  * Note on temporal cadence: ECMWF IFS, GEM, UKMO, JMA, and BOM are 3- or
  * 6-hourly on the open-data feed Open-Meteo distributes, which Open-Meteo
- * interpolates to hourly. ICON, GFS, and ARPEGE are natively hourly. This
- * matters for the per-model chart's hour-by-hour curves but not for the
- * daily-aggregate confidence chip.
+ * interpolates to hourly. ICON, GFS, and ARPEGE are natively hourly. AIFS
+ * is a 6-hourly AI model interpolated to hourly and exposes a reduced set of
+ * hourly fields, so it may not contribute a line to every diagnostic chart;
+ * the per-field null-drop path in MultiModelConfidenceFetcher omits whatever
+ * series it doesn't return. This matters for the per-model chart's
+ * hour-by-hour curves but not for the daily-aggregate confidence chip.
  */
 enum class ForecastModel(val openMeteoId: String) {
     // Order matters: the chart's MODEL_DRAW_ORDER and the per-model legend
@@ -1057,14 +1067,22 @@ enum class ForecastModel(val openMeteoId: String) {
     // then the entry order below on top. Keep the original shipping trio
     // (ECMWF / GFS / ICON) at the head of the enum so the consulted-model
     // layering stays pixel-identical to pre-picker builds; new models
-    // append in geographical-spread order (NA → Europe → Asia-Pacific).
-    ECMWF_IFS04("ecmwf_ifs04"),
+    // append in geographical-spread order (NA → Europe → Asia-Pacific),
+    // then the global AI model (AIFS) last so it draws on top.
+    //
+    // ECMWF_IFS025 replaced the older ECMWF_IFS04: Open-Meteo moved the IFS
+    // open-data feed from 0.4° to 0.25° on 2024-02-01, which is finer-grid
+    // (better over coast and mountains) and reaches ~day 15 instead of
+    // coarsening at ~day 6. Stored selections naming the old id are migrated
+    // forward in SettingsRepository.
+    ECMWF_IFS025("ecmwf_ifs025"),
     GFS_SEAMLESS("gfs_seamless"),
     ICON_SEAMLESS("icon_seamless"),
     GEM_SEAMLESS("gem_seamless"),
     METEOFRANCE_SEAMLESS("meteofrance_seamless"),
     UKMO_SEAMLESS("ukmo_seamless"),
-    JMA_SEAMLESS("jma_seamless");
+    JMA_SEAMLESS("jma_seamless"),
+    ECMWF_AIFS025_SINGLE("ecmwf_aifs025_single");
     // BOM_ACCESS_GLOBAL deliberately excluded — Open-Meteo's BOM docs note
     // that "BOM is currently upgrading its key platforms and services. During
     // this process, open-data delivery has been temporarily suspended." With
@@ -1077,14 +1095,25 @@ enum class ForecastModel(val openMeteoId: String) {
 
     companion object {
         /**
-         * The three models the confidence chip has shipped with — ECMWF, GFS,
-         * ICON. The location-agnostic fallback used by [defaultsFor] when no
+         * The location-agnostic default set used by [defaultsFor] when no
          * location is known yet (fresh install before first GPS fix) or when
          * the location doesn't sit in any of the regional branches, and as
          * the recovery set when the user has somehow deselected everything
          * (the picker's UI prevents that, but a hand-edited DataStore could).
+         *
+         * Five models: the original ECMWF / GFS / ICON trio (now ECMWF at
+         * 0.25°) for the high-resolution first week, plus GEM and AIFS so at
+         * least two models keep reporting through the second week once ICON
+         * drops out at ~day 7. Sits at the picker's MAX_MODELS = 5 ceiling on
+         * purpose — five overlay lines is the busy-but-readable upper bound.
          */
-        val DEFAULTS: Set<ForecastModel> = setOf(ECMWF_IFS04, GFS_SEAMLESS, ICON_SEAMLESS)
+        val DEFAULTS: Set<ForecastModel> = setOf(
+            ECMWF_IFS025,
+            GFS_SEAMLESS,
+            ICON_SEAMLESS,
+            GEM_SEAMLESS,
+            ECMWF_AIFS025_SINGLE,
+        )
     }
 }
 

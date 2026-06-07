@@ -1124,9 +1124,9 @@ class SettingsRepositoryTest {
     fun `setting forecast models to null clears the key to Auto`() = runTest {
         // First persist an explicit set, then clear by passing null —
         // mirrors the picker's Auto-switch-on flow.
-        subject.setForecastModels(setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS04))
+        subject.setForecastModels(setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS025))
         subject.preferences.first().forecastModels shouldBe
-            setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS04)
+            setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS025)
         subject.setForecastModels(null)
         subject.preferences.first().forecastModels shouldBe null
     }
@@ -1139,10 +1139,25 @@ class SettingsRepositoryTest {
         // survive.
         dataStore.edit {
             it[stringSetPreferencesKey("forecast_models")] =
-                setOf("ECMWF_IFS04", "FUTURE_MODEL_VARIANT", "GFS_SEAMLESS")
+                setOf("ICON_SEAMLESS", "FUTURE_MODEL_VARIANT", "GFS_SEAMLESS")
         }
         subject.preferences.first().forecastModels shouldBe
-            setOf(ForecastModel.ECMWF_IFS04, ForecastModel.GFS_SEAMLESS)
+            setOf(ForecastModel.ICON_SEAMLESS, ForecastModel.GFS_SEAMLESS)
+    }
+
+    @Test
+    fun `legacy ECMWF_IFS04 selection migrates forward to ECMWF_IFS025`() = runTest {
+        // Open-Meteo moved the IFS open feed from 0.4° to 0.25°, so the enum
+        // entry was renamed ECMWF_IFS04 → ECMWF_IFS025. A user who explicitly
+        // picked ECMWF before the rename has "ECMWF_IFS04" persisted; it must
+        // resolve to the current entry rather than dropping (which could push
+        // their selection below the picker's two-model floor).
+        dataStore.edit {
+            it[stringSetPreferencesKey("forecast_models")] =
+                setOf("ECMWF_IFS04", "GFS_SEAMLESS")
+        }
+        subject.preferences.first().forecastModels shouldBe
+            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS)
     }
 
     @Test

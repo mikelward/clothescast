@@ -2,6 +2,7 @@ package app.clothescast.core.domain.model
 
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
@@ -11,28 +12,27 @@ class ForecastModelDefaultsTest {
         Location(latitude = lat, longitude = lon, displayName = null)
 
     // The regional locals (UKMO / ARPEGE / JMA) and ICON are short-range, so
-    // every default set carries GEM (~day 10) and AIFS (~day 15) to keep the
-    // second-week charts populated. Shared here so the per-city expectations
-    // stay readable.
+    // every default set keeps a long-range model painting the second-week
+    // charts: AIFS (~day 15) everywhere, paired with ECMWF IFS 0.25° (~day
+    // 15). GEM (~day 10) reinforces only where it's skillful — North America
+    // and East Asia — and is left out of the European sets the same way GFS
+    // is. Shared here so the per-city expectations stay readable.
     private val britishIsles = listOf(
         ForecastModel.UKMO_SEAMLESS,
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
-        ForecastModel.GEM_SEAMLESS,
         ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val westernEurope = listOf(
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
         ForecastModel.METEOFRANCE_SEAMLESS,
-        ForecastModel.GEM_SEAMLESS,
         ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val nordics = listOf(
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
         ForecastModel.UKMO_SEAMLESS,
-        ForecastModel.GEM_SEAMLESS,
         ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val northAmerica = listOf(
@@ -170,6 +170,25 @@ class ForecastModelDefaultsTest {
         )
         for (city in cities) {
             ForecastModel.defaultsFor(city) shouldContain ForecastModel.ECMWF_AIFS025_SINGLE
+        }
+    }
+
+    @Test
+    fun `European defaults exclude both GFS and GEM`() {
+        // GFS and GEM are both weak over Europe, so neither belongs in a
+        // European default set — Europe leans on ECMWF IFS + AIFS for the
+        // second week instead of GEM's tail reinforcement.
+        val europeanCities = listOf(
+            at(51.51, -0.13), // London (British Isles)
+            at(48.86, 2.35), // Paris (Western Europe)
+            at(40.42, -3.70), // Madrid (Western Europe)
+            at(59.33, 18.07), // Stockholm (Nordics)
+            at(64.13, -21.94), // Reykjavik (Iceland)
+        )
+        for (city in europeanCities) {
+            val models = ForecastModel.defaultsFor(city)
+            models shouldNotContain ForecastModel.GFS_SEAMLESS
+            models shouldNotContain ForecastModel.GEM_SEAMLESS
         }
     }
 }

@@ -432,7 +432,7 @@ only the displayed label localizes.
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Моделі:</string>
-    <string name="today_chart_main_line_label">Зведене</string>
+    <string name="today_chart_main_line_label">Середнє</string>
     <string name="today_chart_divergence_summary">Найбільше розходження о %1$s (Δ %2$.1f%3$s відчуваної) — переважно %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

@@ -571,7 +571,7 @@ is unchanged; only the displayed label localizes.
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modele:</string>
-    <string name="today_chart_main_line_label">Łącznie</string>
+    <string name="today_chart_main_line_label">Średnia</string>
     <string name="today_chart_divergence_summary">Modele najbardziej się różnią o %1$s (Δ %2$.1f%3$s temperatura odczuwalna) — głównie %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

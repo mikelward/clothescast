@@ -596,7 +596,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Model spread / chart strings. -->
     <string name="today_chart_model_legend_label">Μοντέλα:</string>
-    <string name="today_chart_main_line_label">Συνδυασμένο</string>
+    <string name="today_chart_main_line_label">Μέσος</string>
     <string name="today_chart_divergence_summary">Τα μοντέλα διαφωνούν περισσότερο στις %1$s (Δ %2$.1f%3$s αισθητή) — κυρίως %4$s, %5$s</string>
     <string name="today_factor_air_temperature">θερμοκρασία αέρα</string>
     <string name="today_factor_wind_speed">ταχύτητα ανέμου</string>

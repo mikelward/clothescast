@@ -518,7 +518,7 @@ Not overridden by design:
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">मॉडल:</string>
-    <string name="today_chart_main_line_label">संयुक्त</string>
+    <string name="today_chart_main_line_label">औसत</string>
     <string name="today_chart_divergence_summary">मॉडलों में सबसे ज़्यादा मतभेद %1$s पर (अनुभव तापमान Δ %2$.1f%3$s) — मुख्यतः %4$s, %5$s</string>
 
     <!-- Divergence factor names (used inside today_chart_divergence_summary). -->

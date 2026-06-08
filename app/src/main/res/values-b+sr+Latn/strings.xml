@@ -477,7 +477,7 @@ default English (matching values-pl / values-uk).
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>
-    <string name="today_chart_main_line_label">Kombinovano</string>
+    <string name="today_chart_main_line_label">Prosek</string>
     <string name="today_chart_divergence_summary">Modeli se najviše razlikuju u %1$s (Δ %2$.1f%3$s osećajna temp.) — uglavnom %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

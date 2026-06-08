@@ -649,7 +649,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modelle:</string>
-    <string name="today_chart_main_line_label">Kombiniert</string>
+    <string name="today_chart_main_line_label">Mittel</string>
     <string name="today_chart_divergence_summary">Modelle weichen am stärksten um %1$s ab (Δ %2$.1f%3$s Gefühlstemperatur) — hauptsächlich %4$s, %5$s</string>
     <string name="today_confidence_precip_spread">Modelle uneinig beim Regen (Δ %1$.0f%% über %2$d Modelle)</string>
 

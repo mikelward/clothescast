@@ -102,7 +102,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak">ከፍተኛ %1$d%% በ%2$s ሰዓት</string>
     <string name="today_precipitation_dry">ዛሬ ዝናብ አይጠበቅም</string>
     <string name="today_chart_model_legend_label">ሞዴሎች:</string>
-    <string name="today_chart_main_line_label">ጠቅላላ</string>
+    <string name="today_chart_main_line_label">አማካይ</string>
     <string name="today_chart_divergence_summary">ሞዴሎቹ በ%1$s ሰዓት ይለያያሉ (Δ %2$.1f%3$s የሚሰማ) — ብዙውን ጊዜ %4$s፣ %5$s</string>
     <string name="today_factor_air_temperature">የአየር ሙቀት</string>
     <string name="today_factor_wind_speed">የንፋስ ፍጥነት</string>

@@ -602,7 +602,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modelli:</string>
-    <string name="today_chart_main_line_label">Combinato</string>
+    <string name="today_chart_main_line_label">Media</string>
     <string name="today_chart_divergence_summary">I modelli divergono maggiormente alle %1$s (Δ %2$.1f%3$s percepita) — principalmente %4$s, %5$s</string>
     <string name="today_confidence_precip_spread">I modelli divergono sulla pioggia (Δ %1$.0f%% su %2$d modelli)</string>
 

@@ -633,7 +633,7 @@ label localises.
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">模型：</string>
-    <string name="today_chart_main_line_label">綜合</string>
+    <string name="today_chart_main_line_label">平均</string>
     <string name="today_chart_divergence_summary">模型分歧最大的時段是 %1$s（體感溫度 Δ %2$.1f%3$s）— 主要因 %4$s、%5$s</string>
 
     <!-- Divergence factor names (used inside today_chart_divergence_summary). -->

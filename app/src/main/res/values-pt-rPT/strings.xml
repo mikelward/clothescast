@@ -660,7 +660,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_precipitation_dry">Sem chuva prevista hoje</string>
 
     <string name="today_chart_model_legend_label">Modelos:</string>
-    <string name="today_chart_main_line_label">Combinado</string>
+    <string name="today_chart_main_line_label">Média</string>
     <string name="today_chart_divergence_summary">Os modelos discordam mais às %1$s (Δ %2$.1f%3$s de sensação térmica) — principalmente %4$s, %5$s</string>
 
     <string name="today_factor_air_temperature">temperatura do ar</string>

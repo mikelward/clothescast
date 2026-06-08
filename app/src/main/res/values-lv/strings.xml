@@ -173,7 +173,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_precipitation_peak">Maksimums %1$d%% plkst. %2$s</string>
     <string name="today_precipitation_dry">Šodien lietus nav paredzams</string>
     <string name="today_chart_model_legend_label">Modeļi:</string>
-    <string name="today_chart_main_line_label">Apvienots</string>
+    <string name="today_chart_main_line_label">Vidējais</string>
     <string name="today_chart_divergence_summary">Modeļi visvairāk atšķiras plkst. %1$s (Δ %2$.1f%3$s sajustā) — galvenokārt %4$s, %5$s</string>
     <string name="today_factor_air_temperature">gaisa temperatūra</string>
     <string name="today_factor_wind_speed">vēja ātrums</string>

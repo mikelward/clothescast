@@ -165,7 +165,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak">Kilele %1$d%% saa %2$s</string>
     <string name="today_precipitation_dry">Hakuna mvua inayotarajiwa leo</string>
     <string name="today_chart_model_legend_label">Mifano:</string>
-    <string name="today_chart_main_line_label">Mchanganyiko</string>
+    <string name="today_chart_main_line_label">Wastani</string>
     <string name="today_chart_divergence_summary">Mifano inayotofautiana zaidi saa %1$s (Δ %2$.1f%3$s inayohisi) — hasa %4$s, %5$s</string>
     <string name="today_factor_air_temperature">joto la hewa</string>
     <string name="today_factor_wind_speed">kasi ya upepo</string>

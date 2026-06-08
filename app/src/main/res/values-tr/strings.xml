@@ -515,7 +515,7 @@ displayed label localizes.
     <string name="today_precipitation_dry">Bugün yağış beklenmez</string>
 
     <string name="today_chart_model_legend_label">Modeller:</string>
-    <string name="today_chart_main_line_label">Birleşik</string>
+    <string name="today_chart_main_line_label">Ortalama</string>
     <string name="today_chart_divergence_summary">Modeller saat %1$s\'de en fazla farklılaşıyor (Δ %2$.1f%3$s hissedilen sıcaklık) — ağırlıklı olarak %4$s, %5$s</string>
 
     <string name="today_factor_air_temperature">Hava sıcaklığı</string>

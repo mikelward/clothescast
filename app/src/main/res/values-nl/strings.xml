@@ -573,7 +573,7 @@ the displayed label localizes.
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modellen:</string>
-    <string name="today_chart_main_line_label">Gecombineerd</string>
+    <string name="today_chart_main_line_label">Gem.</string>
     <string name="today_chart_divergence_summary">Modellen wijken het meest af om %1$s (Δ %2$.1f%3$s gevoelstemperatuur) — voornamelijk %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

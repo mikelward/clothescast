@@ -111,7 +111,7 @@
     <string name="today_confidence_tap_to_show">Prek për të parë parashikimin e çdo modeli</string>
     <string name="today_confidence_tap_to_hide">Prek për të fshehur parashikimet e modeleve</string>
     <string name="today_chart_model_legend_label">Modelet:</string>
-    <string name="today_chart_main_line_label">I kombinuar</string>
+    <string name="today_chart_main_line_label">Mesatare</string>
     <string name="today_chart_reset_to_now">Shfaq tani</string>
     <string name="today_chart_readout">%1$s në %2$s</string>
     <string name="today_working">Duke punuar — po merret ClothesCast-i yt…</string>

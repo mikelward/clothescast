@@ -18,12 +18,19 @@ package app.clothescast.core.domain.model
  * ECMWF happen to share a synoptic interpretation.
  *
  * Tail reinforcement: the regional locals (UKMO, ARPEGE, JMA) and ICON are
- * short-range — they fall silent after ~day 7, which would leave only ECMWF
- * painting the second-week ("Following 7 days") charts in most regions. So
- * every set also carries GEM (reaches ~day 10) and AIFS — ECMWF's AI model,
- * skillful to ~day 15 — so at least two models keep reporting through days
- * 8-14. They append last because they're the lowest-priority members to
- * trim, and they push each set to the picker's MAX_MODELS = 5 ceiling.
+ * short-range — they fall silent after ~day 7, which would leave the
+ * second-week ("Following 7 days") charts thin. So every set carries AIFS —
+ * ECMWF's AI model, skillful to ~day 15 — paired with ECMWF IFS 0.25° (also
+ * ~day 15), so at least two models keep reporting through days 8-14. AIFS
+ * appends last because it's the lowest-priority member to trim.
+ *
+ * GEM (ECCC, reaches ~day 10) adds a third long-range voice, but only where
+ * it's actually skillful: it's the local official over North America and a
+ * reasonable cross-check over East Asia, so those sets carry it. It's a poor
+ * performer over Europe — the same reason GFS (NOAA) is kept out of every
+ * European set — so the British Isles, Iceland, Nordics, and Western/Central
+ * Europe branches leave it out and lean on ECMWF IFS + AIFS for the second
+ * week.
  *
  * The mapping is intentionally coarse — bounding boxes, not country
  * polygons — because the goal is "good defaults", not "perfect mapping".
@@ -58,7 +65,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.UKMO_SEAMLESS,
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
-                ForecastModel.GEM_SEAMLESS,
                 ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
@@ -71,7 +77,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
                 ForecastModel.UKMO_SEAMLESS,
-                ForecastModel.GEM_SEAMLESS,
                 ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
@@ -84,7 +89,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
                 ForecastModel.UKMO_SEAMLESS,
-                ForecastModel.GEM_SEAMLESS,
                 ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
@@ -98,7 +102,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
                 ForecastModel.METEOFRANCE_SEAMLESS,
-                ForecastModel.GEM_SEAMLESS,
                 ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 

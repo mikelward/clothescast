@@ -251,7 +251,25 @@ fun ForecastChart(
     val scrubController = LocalChartScrub.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
-    val decorations = listOf(scrubIndicator)
+    // Shaded min–max range band on the default view (hidden once the per-model
+    // overlay is on — the individual lines convey the spread then). Built from
+    // the same picker + unit as the main line so it lands on the same scale.
+    val (bandMin, bandMax) = remember(overlays, showFeelsLike, temperatureUnit, hourly) {
+        if (perModelHourly == null) {
+            emptyList<Pair<Int, Double>>() to emptyList()
+        } else {
+            perModelEnvelope(perModelHourly, hourly.map { it.time }) {
+                pickModel(it).toUnit(temperatureUnit)
+            }
+        }
+    }
+    val rangeBand = rememberRangeBandDecoration(
+        minSeries = bandMin,
+        maxSeries = bandMax,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = RANGE_BAND_ALPHA),
+        visible = !showModelSpread,
+    )
+    val decorations = listOf(rangeBand, scrubIndicator)
 
     Box(
         modifier = modifier

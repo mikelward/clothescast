@@ -2006,6 +2006,60 @@ internal fun PrecipitationCardWithModelSpreadPreview() {
     }
 }
 
+// Default-view "consensus only" variants of the main cards (showModelSpread =
+// false). These exercise the shaded min–max range band drawn beneath the
+// consensus line on the default view — the band hides once the per-model
+// overlay toggles on, as in the "· with model spread" previews above.
+@Preview(name = "Forecast card · consensus only", widthDp = 360)
+@Composable
+internal fun ForecastCardConsensusPreview() {
+    Frame {
+        ForecastCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = false,
+        )
+    }
+}
+
+@Preview(name = "Air temperature card · consensus only", widthDp = 360)
+@Composable
+internal fun AirTemperatureCardConsensusPreview() {
+    Frame {
+        AirTemperatureCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = false,
+        )
+    }
+}
+
+@Preview(name = "Precipitation card · consensus only", widthDp = 360)
+@Composable
+internal fun PrecipitationCardConsensusPreview() {
+    Frame {
+        PrecipitationCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = false,
+        )
+    }
+}
+
+@Preview(name = "Precipitation amount card · consensus only", widthDp = 360)
+@Composable
+internal fun PrecipitationAmountCardConsensusPreview() {
+    Frame {
+        PrecipitationAmountCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = false,
+        )
+    }
+}
+
 // Two accessible-palette previews — the temp + rain cards with the per-model
 // overlay turned on — so reviewers can see what the Okabe-Ito-derived trio
 // actually looks like on a chart before the toggle ships. We pick the two

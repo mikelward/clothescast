@@ -3,6 +3,7 @@ package app.clothescast.ui.today
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -127,7 +128,22 @@ fun PrecipitationAmountChart(
     val scrubController = LocalChartScrub.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
-    val decorations = listOf(scrubIndicator)
+    // Shaded min–max band on the default view, hidden once the per-model overlay
+    // is on. Same rainfall-mm picker as the lines; shares the 0..yMax range.
+    val (bandMin, bandMax) = remember(overlays, hourly) {
+        if (perModelHourly == null) {
+            emptyList<Pair<Int, Double>>() to emptyList()
+        } else {
+            perModelEnvelope(perModelHourly, hourly.map { it.time }) { it.precipitationMm }
+        }
+    }
+    val rangeBand = rememberRangeBandDecoration(
+        minSeries = bandMin,
+        maxSeries = bandMax,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = RANGE_BAND_ALPHA),
+        visible = !showModelSpread,
+    )
+    val decorations = listOf(rangeBand, scrubIndicator)
     val axisLabel = rememberOnSurfaceAxisLabel()
 
     Box(

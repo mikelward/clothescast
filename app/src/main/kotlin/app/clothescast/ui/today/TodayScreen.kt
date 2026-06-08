@@ -3392,11 +3392,14 @@ internal fun PrecipitationAmountCard(
 }
 
 /**
- * Compact "Models: ● Combined ● ECMWF ● GFS ● ICON · ● Best match" footer
- * rendered under the charts. The optional [mainLine] entry (theme primary)
+ * Compact one-line "● Average ● Auto ● ECM ● GFS ● ICO" footer rendered
+ * under the charts (no "Models:" prefix — the chips read as the line key on
+ * their own). Per-model entries use three-letter codes
+ * ([shortModelName]) so the full five-model default set still fits a single
+ * line without wrapping. The optional [mainLine] entry (theme primary)
  * comes first so its position in the legend is the same in the single and
  * per-model views — i.e. when the overlay is off and the legend has only
- * "Combined" in it, that chip sits where it sits in the spread view too.
+ * "Average" in it, that chip sits where it sits in the spread view too.
  * Each consulted model then follows in its pinned hue from the active
  * [app.clothescast.ui.theme.AppPalette]. The main line on the temperature
  * and precipitation charts comes from Open-Meteo's automatic-model-selection
@@ -3420,15 +3423,13 @@ internal fun ModelSpreadLegend(
     val labelStyle = MaterialTheme.typography.bodySmall
     val labelColor = MaterialTheme.colorScheme.onSurfaceVariant
     val modelColors = AppTheme.palette.modelColors
+    // No "Models:" prefix — the coloured chips under a titled chart read as
+    // the line key on their own, and dropping the word buys horizontal room
+    // to keep the full default set on one line.
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = stringResource(R.string.today_chart_model_legend_label),
-            style = labelStyle,
-            color = labelColor,
-        )
         mainLine?.let {
             LegendChip(
                 color = it.color,
@@ -3440,7 +3441,7 @@ internal fun ModelSpreadLegend(
         visibleModelIds.forEach { modelId ->
             LegendChip(
                 color = modelColors.getValue(modelId),
-                label = friendlyModelName(modelId),
+                label = shortModelName(modelId),
                 style = labelStyle,
                 textColor = labelColor,
             )
@@ -3483,6 +3484,20 @@ private fun friendlyModelName(modelId: String): String = when (modelId) {
     PerModelHourly.BEST_MATCH_MODEL_ID -> "Auto"
     else -> modelId
 }
+
+/**
+ * Short legend label so the model spread legend stays on one line even with
+ * the full five-model default set. The model names truncate to three letters
+ * (ECMWF → ECM, ICON → ICO, …); the synthetic Auto (best-match) entry keeps
+ * its word since it isn't a forecaster name. The blended main line is labelled
+ * separately via [MainLineLegend] (see `today_chart_main_line_label`).
+ */
+private fun shortModelName(modelId: String): String =
+    if (modelId == PerModelHourly.BEST_MATCH_MODEL_ID) {
+        friendlyModelName(modelId)
+    } else {
+        friendlyModelName(modelId).take(3)
+    }
 
 // Open-Meteo rounds probability to whole percents and returns 1–3% peaks on
 // objectively dry days; treating anything under 5% as "no rain" suppresses

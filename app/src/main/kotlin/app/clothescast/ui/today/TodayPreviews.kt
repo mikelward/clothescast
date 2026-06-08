@@ -2017,6 +2017,9 @@ internal fun ForecastCardConsensusPreview() {
         ForecastCard(
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
+            // Match the per-model fixture's date so the band's window-start
+            // anchor lines up with the sample entries' timestamps.
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = false,
         )
@@ -2030,6 +2033,7 @@ internal fun AirTemperatureCardConsensusPreview() {
         AirTemperatureCard(
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = false,
         )
@@ -2042,6 +2046,7 @@ internal fun PrecipitationCardConsensusPreview() {
     Frame {
         PrecipitationCard(
             hourly = SAMPLE_HOURLY_RAINY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = false,
         )
@@ -2054,6 +2059,7 @@ internal fun PrecipitationAmountCardConsensusPreview() {
     Frame {
         PrecipitationAmountCard(
             hourly = SAMPLE_HOURLY_RAINY,
+            forDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = false,
         )

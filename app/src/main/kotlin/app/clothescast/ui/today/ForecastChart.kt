@@ -22,6 +22,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
+import java.time.LocalDateTime
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -254,11 +255,12 @@ fun ForecastChart(
     // Shaded min–max range band on the default view (hidden once the per-model
     // overlay is on — the individual lines convey the spread then). Built from
     // the same picker + unit as the main line so it lands on the same scale.
-    val (bandMin, bandMax) = remember(overlays, showFeelsLike, temperatureUnit, hourly) {
-        if (perModelHourly == null) {
+    val (bandMin, bandMax) = remember(overlays, showFeelsLike, temperatureUnit, hourly, startDate) {
+        val windowStart = hourly.firstOrNull()?.let { LocalDateTime.of(startDate, it.time) }
+        if (perModelHourly == null || windowStart == null) {
             emptyList<Pair<Int, Double>>() to emptyList()
         } else {
-            perModelEnvelope(perModelHourly, hourly.map { it.time }) {
+            perModelEnvelope(perModelHourly, windowStart, hourly.size) {
                 pickModel(it).toUnit(temperatureUnit)
             }
         }

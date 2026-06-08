@@ -18,9 +18,10 @@ class RangeBandTest {
     private val t0 = LocalDateTime.of(2026, 6, 8, 0, 0)
     private val t1 = t0.plusHours(1)
     private val t2 = t0.plusHours(2)
-    // The chart's hourly window — the canonical x grid the consensus main line
-    // is plotted against. Matched by time-of-day (date-agnostic).
-    private val window = listOf(t0, t1, t2).map { it.toLocalTime() }
+    // The chart's hourly window: it starts at t0 and spans 3 hours. Entries are
+    // mapped to their whole-hour offset from t0 (the consensus main line's x grid).
+    private val windowStart = t0
+    private val windowSize = 3
 
     @Test
     fun `envelope keys by time, so a model's dropped hour doesn't merge mismatched hours`() {
@@ -32,7 +33,7 @@ class RangeBandTest {
                 "gfs_seamless" to listOf(hour(t0, 12.0), hour(t2, 32.0)),
             ),
         )
-        val (minSeries, maxSeries) = perModelEnvelope(perModel, window) { it.apparentTemperatureC }
+        val (minSeries, maxSeries) = perModelEnvelope(perModel, windowStart, windowSize) { it.apparentTemperatureC }
 
         // t0 (index 0) has both models; t1 (index 1) has only A, so it's dropped
         // (< 2 models); t2 (index 2) pairs A's 30 with B's 32. Position-keying
@@ -53,7 +54,7 @@ class RangeBandTest {
                 "gfs_seamless" to listOf(hour(t1, 22.0), hour(t2, 32.0)),
             ),
         )
-        val (minSeries, maxSeries) = perModelEnvelope(perModel, window) { it.apparentTemperatureC }
+        val (minSeries, maxSeries) = perModelEnvelope(perModel, windowStart, windowSize) { it.apparentTemperatureC }
 
         minSeries shouldContainExactly listOf(1 to 20.0, 2 to 30.0)
         maxSeries shouldContainExactly listOf(1 to 22.0, 2 to 32.0)
@@ -76,7 +77,7 @@ class RangeBandTest {
                 PerModelHourly.BEST_MATCH_MODEL_ID to listOf(hour(t0, 99.0)),
             ),
         )
-        val (minSeries, maxSeries) = perModelEnvelope(perModel, window) { it.apparentTemperatureC }
+        val (minSeries, maxSeries) = perModelEnvelope(perModel, windowStart, windowSize) { it.apparentTemperatureC }
 
         // best_match's outlier 99 must not widen the band.
         minSeries shouldContainExactly listOf(0 to 10.0)

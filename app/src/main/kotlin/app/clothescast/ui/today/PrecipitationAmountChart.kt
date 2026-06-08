@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
+import java.time.LocalDateTime
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
@@ -130,11 +131,12 @@ fun PrecipitationAmountChart(
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     // Shaded min–max band on the default view, hidden once the per-model overlay
     // is on. Same rainfall-mm picker as the lines; shares the 0..yMax range.
-    val (bandMin, bandMax) = remember(overlays, hourly) {
-        if (perModelHourly == null) {
+    val (bandMin, bandMax) = remember(overlays, hourly, startDate) {
+        val windowStart = hourly.firstOrNull()?.let { LocalDateTime.of(startDate, it.time) }
+        if (perModelHourly == null || windowStart == null) {
             emptyList<Pair<Int, Double>>() to emptyList()
         } else {
-            perModelEnvelope(perModelHourly, hourly.map { it.time }) { it.precipitationMm }
+            perModelEnvelope(perModelHourly, windowStart, hourly.size) { it.precipitationMm }
         }
     }
     val rangeBand = rememberRangeBandDecoration(

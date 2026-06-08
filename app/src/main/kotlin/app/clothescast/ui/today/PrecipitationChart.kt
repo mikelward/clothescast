@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
+import java.time.LocalDateTime
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
@@ -155,11 +156,12 @@ fun PrecipitationChart(
     // Shaded min–max band on the default view, hidden once the per-model overlay
     // is on. Uses the same precip-probability picker as the lines; y-range is the
     // pinned 0..100.
-    val (bandMin, bandMax) = remember(overlays, hourly) {
-        if (perModelHourly == null) {
+    val (bandMin, bandMax) = remember(overlays, hourly, startDate) {
+        val windowStart = hourly.firstOrNull()?.let { LocalDateTime.of(startDate, it.time) }
+        if (perModelHourly == null || windowStart == null) {
             emptyList<Pair<Int, Double>>() to emptyList()
         } else {
-            perModelEnvelope(perModelHourly, hourly.map { it.time }) { it.precipitationProbabilityPct }
+            perModelEnvelope(perModelHourly, windowStart, hourly.size) { it.precipitationProbabilityPct }
         }
     }
     val rangeBand = rememberRangeBandDecoration(

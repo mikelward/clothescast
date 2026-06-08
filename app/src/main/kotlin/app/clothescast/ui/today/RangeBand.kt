@@ -11,7 +11,8 @@ import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MOD
 import com.patrykandpatrick.vico.compose.cartesian.CartesianDrawingContext
 import com.patrykandpatrick.vico.compose.cartesian.axis.Axis
 import com.patrykandpatrick.vico.compose.cartesian.decoration.Decoration
-import java.time.LocalTime
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 // Opacity of the shaded min–max range band drawn beneath the consensus line on
 // the default chart view. Low enough to read as a soft "spread" shading without
@@ -34,30 +35,30 @@ internal const val RANGE_BAND_ALPHA = 0.12f
  * Values are raw: the caller passes a [picker] that already applies the same unit
  * conversion it uses for the chart's series, so the band lands on the same scale.
  *
- * Indexed against the chart's own hourly window ([windowHourTimes], the
- * `hourly` series' times) by wall-clock time rather than each model's list
- * position. A model can drop an hour (the parser omits an entry when its
- * `temperature_2m` is null), which would shift its tail and make a position-keyed
- * band merge mismatched hours across models. Anchoring to the window keeps every
- * value under the hour the consensus main line plots it at — and a leading hour
- * that *every* consulted model dropped stays an empty gap rather than sliding the
- * whole band left. Matching is by `LocalTime`: each chart window is ≤ 24 h so its
- * times are unique, and using the time-of-day (not the full `LocalDateTime`) keeps
- * it date-agnostic, which the previews rely on. An entry whose time isn't in the
- * window is skipped.
+ * Indexed against the chart's own hourly window — [windowStart] is the
+ * `LocalDateTime` of `hourly[0]` and [windowSize] is `hourly.size` — by each
+ * entry's whole-hour offset from the window start, not its list position. A model
+ * can drop an hour (the parser omits an entry when its `temperature_2m` is null),
+ * which would shift its tail and make a position-keyed band merge mismatched hours
+ * across models. Offsetting from the window keeps every value under the hour the
+ * consensus main line plots it at, and a leading hour that *every* consulted model
+ * dropped stays an empty gap rather than sliding the band left. The full
+ * `LocalDateTime` (not time-of-day) is essential for the 168 h `SevenDayPage`
+ * window, where a `LocalTime` would alias every day's 09:00 onto one index. An
+ * entry outside `[0, windowSize)` is skipped.
  */
 internal fun perModelEnvelope(
     perModelHourly: PerModelHourly,
-    windowHourTimes: List<LocalTime>,
+    windowStart: LocalDateTime,
+    windowSize: Int,
     picker: (PerModelHour) -> Double?,
 ): Pair<List<Pair<Int, Double>>, List<Pair<Int, Double>>> {
-    val indexByTime = HashMap<LocalTime, Int>(windowHourTimes.size)
-    windowHourTimes.forEachIndexed { i, t -> indexByTime.putIfAbsent(t, i) }
     val byIndex = mutableMapOf<Int, MutableList<Double>>()
     perModelHourly.byModel.forEach { (model, entries) ->
         if (model == BEST_MATCH_MODEL_ID) return@forEach
         entries.forEach { entry ->
-            val idx = indexByTime[entry.time.toLocalTime()] ?: return@forEach
+            val idx = ChronoUnit.HOURS.between(windowStart, entry.time).toInt()
+            if (idx !in 0 until windowSize) return@forEach
             picker(entry)?.let { byIndex.getOrPut(idx) { mutableListOf() } += it }
         }
     }

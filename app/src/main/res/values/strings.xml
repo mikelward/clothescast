@@ -156,11 +156,11 @@
     <string name="today_chart_model_legend_label">Models:</string>
 
     <!-- Label for the main blended line on the temp + rain charts. The
-         line is our combined consensus across the consulted models —
-         per-hour mean of ECMWF / GFS / ICON, falling back to Open-Meteo's
-         "Auto" pick when fewer than two of them reported an hour. This
-         is what drives the clothes recommendation. -->
-    <string name="today_chart_main_line_label">Combined</string>
+         line is the per-hour mean across the consulted models, falling back
+         to Open-Meteo's "Auto" pick when fewer than two of them reported an
+         hour. This is what drives the clothes recommendation. "Average" reads
+         clearly next to the short per-model legend codes (ECM, ICO, …). -->
+    <string name="today_chart_main_line_label">Average</string>
 
     <!-- Content description for the small restore-clock icon that appears
          in the top-right of each chart card after the user has scrubbed

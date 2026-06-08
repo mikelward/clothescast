@@ -173,7 +173,7 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Model:</string>
-    <string name="today_chart_main_line_label">Gabungan</string>
+    <string name="today_chart_main_line_label">Purata</string>
     <string name="today_chart_divergence_summary">Model paling berbeza pada %1$s (Δ %2$.1f%3$s terasa seperti) — kebanyakannya %4$s, %5$s</string>
 
     <!-- Factor names -->

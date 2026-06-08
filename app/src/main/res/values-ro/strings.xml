@@ -175,7 +175,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modele:</string>
-    <string name="today_chart_main_line_label">Combinat</string>
+    <string name="today_chart_main_line_label">Medie</string>
     <string name="today_chart_divergence_summary">Modelele diferă cel mai mult la %1$s (Δ %2$.1f%3$s resimțit) — mai ales %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

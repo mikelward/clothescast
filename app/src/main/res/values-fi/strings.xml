@@ -516,7 +516,7 @@ displayed label localizes.
     <string name="today_precipitation_dry">Ei sadetta odotettavissa tänään</string>
 
     <string name="today_chart_model_legend_label">Mallit:</string>
-    <string name="today_chart_main_line_label">Yhdistetty</string>
+    <string name="today_chart_main_line_label">Ka.</string>
     <string name="today_chart_divergence_summary">Mallit poikkeavat eniten kello %1$s (Δ %2$.1f%3$s tuntuva lämpötila) — pääasiassa %4$s, %5$s</string>
 
     <string name="today_factor_air_temperature">Ilmalämpötila</string>

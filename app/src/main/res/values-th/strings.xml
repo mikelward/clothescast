@@ -179,7 +179,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Model spread / chart labels -->
     <string name="today_chart_model_legend_label">แบบจำลอง:</string>
-    <string name="today_chart_main_line_label">รวม</string>
+    <string name="today_chart_main_line_label">เฉลี่ย</string>
     <string name="today_chart_divergence_summary">แบบจำลองต่างกันมากที่สุดเวลา %1$s (Δ %2$.1f%3$s อุณหภูมิที่รู้สึก) — ส่วนใหญ่เป็น %4$s, %5$s</string>
     <string name="today_factor_air_temperature">อุณหภูมิอากาศ</string>
     <string name="today_factor_wind_speed">ความเร็วลม</string>

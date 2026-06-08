@@ -3433,7 +3433,7 @@ internal fun ModelSpreadLegend(
         mainLine?.let {
             LegendChip(
                 color = it.color,
-                label = it.label,
+                label = compactMainLabel(it.label),
                 style = labelStyle,
                 textColor = labelColor,
             )
@@ -3497,6 +3497,24 @@ private fun shortModelName(modelId: String): String =
         friendlyModelName(modelId)
     } else {
         friendlyModelName(modelId).take(3)
+    }
+
+/**
+ * Width budget for the blended main-line label ("Average" and its
+ * translations). Most languages have a short word for it (Media, Medel,
+ * Snitt, Mittel, Moyenne, …), but a few are long, so this is the cross-locale
+ * safety net: anything longer is truncated with an ellipsis so it can't push
+ * the one-line legend into a wrap. Translators should still aim for a short
+ * native word or abbreviation (see `today_chart_main_line_label`); this only
+ * catches overflow.
+ */
+private const val MAX_MAIN_LINE_LABEL_CHARS = 8
+
+private fun compactMainLabel(label: String): String =
+    if (label.length <= MAX_MAIN_LINE_LABEL_CHARS) {
+        label
+    } else {
+        label.take(MAX_MAIN_LINE_LABEL_CHARS - 1).trimEnd() + "…"
     }
 
 // Open-Meteo rounds probability to whole percents and returns 1–3% peaks on

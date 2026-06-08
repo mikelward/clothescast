@@ -159,7 +159,10 @@
          line is the per-hour mean across the consulted models, falling back
          to Open-Meteo's "Auto" pick when fewer than two of them reported an
          hour. This is what drives the clothes recommendation. "Average" reads
-         clearly next to the short per-model legend codes (ECM, ICO, …). -->
+         clearly next to the short per-model legend codes (ECM, ICO, …).
+         Translators: keep this short (≈8 chars max) so it stays on one line —
+         prefer a short native word or accepted abbreviation. Anything longer
+         is truncated with an ellipsis at runtime. -->
     <string name="today_chart_main_line_label">Average</string>
 
     <!-- Content description for the small restore-clock icon that appears

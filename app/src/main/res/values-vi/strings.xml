@@ -178,7 +178,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Mô hình:</string>
-    <string name="today_chart_main_line_label">Tổng hợp</string>
+    <string name="today_chart_main_line_label">TB</string>
     <string name="today_chart_divergence_summary">Các mô hình không đồng nhất nhất lúc %1$s (Δ %2$.1f%3$s cảm giác) — chủ yếu do %4$s, %5$s</string>
 
     <!-- Factor names -->

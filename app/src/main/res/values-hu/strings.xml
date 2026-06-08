@@ -418,7 +418,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modellek:</string>
-    <string name="today_chart_main_line_label">Kombinált</string>
+    <string name="today_chart_main_line_label">Átlag</string>
     <string name="today_chart_divergence_summary">A modellek %1$s-kor térnek el legjobban (Δ %2$.1f%3$s hőérzet) — főként %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

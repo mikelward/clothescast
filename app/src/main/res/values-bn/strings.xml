@@ -166,7 +166,7 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Model spread / charts -->
     <string name="today_chart_model_legend_label">মডেল:</string>
-    <string name="today_chart_main_line_label">সম্মিলিত</string>
+    <string name="today_chart_main_line_label">গড়</string>
     <string name="today_chart_divergence_summary">%1$s-এ মডেলগুলো সবচেয়ে বেশি ভিন্নমত পোষণ করে (Δ %2$.1f%3$s অনুভূত) — মূলত %4$s, %5$s</string>
 
     <!-- Factor names -->

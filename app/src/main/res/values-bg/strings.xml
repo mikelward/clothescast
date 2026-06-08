@@ -188,7 +188,7 @@ What is NOT overridden, by design:
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Модели:</string>
-    <string name="today_chart_main_line_label">Комбиниран</string>
+    <string name="today_chart_main_line_label">Средно</string>
     <string name="today_chart_divergence_summary">Моделите се разминават най-много в %1$s (Δ %2$.1f%3$s усещана) — предимно %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

@@ -431,7 +431,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeller:</string>
-    <string name="today_chart_main_line_label">Kombineret</string>
+    <string name="today_chart_main_line_label">Gns.</string>
     <string name="today_chart_divergence_summary">Modellerne afviger mest kl. %1$s (Δ %2$.1f%3$s følt temp.) — primært %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->

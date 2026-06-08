@@ -274,7 +274,17 @@ private fun PerModelDiagnosticChart(
     val scrubController = LocalChartScrub.current
     val scrubBounds = rememberChartScrubBounds()
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
-    val decorations = listOf(scrubIndicator)
+    // Shaded min–max band on the default view, hidden once the per-model overlay
+    // is on. Reuses the already-picker-applied [seriesByModel] so it lands on the
+    // exact same scale as the lines.
+    val (bandMin, bandMax) = remember(seriesByModel) { envelopeFromSeries(seriesByModel) }
+    val rangeBand = rememberRangeBandDecoration(
+        minSeries = bandMin,
+        maxSeries = bandMax,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = RANGE_BAND_ALPHA),
+        visible = overlayModels.isEmpty(),
+    )
+    val decorations = listOf(rangeBand, scrubIndicator)
     val axisLabel = rememberOnSurfaceAxisLabel()
 
     Box(

@@ -453,6 +453,10 @@ class PreviewSnapshots {
     @Test fun forecast_chart_with_current_time() = capture { ForecastChartWithCurrentTimePreview() }
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }
     @Test fun forecast_card_with_model_spread() = capture { ForecastCardWithModelSpreadPreview() }
+    @Test fun forecast_card_consensus() = capture { ForecastCardConsensusPreview() }
+    @Test fun air_temperature_card_consensus() = capture { AirTemperatureCardConsensusPreview() }
+    @Test fun precipitation_card_consensus() = capture { PrecipitationCardConsensusPreview() }
+    @Test fun precipitation_amount_card_consensus() = capture { PrecipitationAmountCardConsensusPreview() }
     @Test fun forecast_card_scrubbed() = capture { ForecastCardScrubbedPreview() }
     @Test fun air_temperature_card_with_model_spread() = capture { AirTemperatureCardWithModelSpreadPreview() }
     @Test fun precipitation_card_with_model_spread() = capture { PrecipitationCardWithModelSpreadPreview() }

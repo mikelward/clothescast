@@ -107,7 +107,8 @@ class MultiModelConfidenceFetcherTest {
         val req = captured.single()
         req.url.encodedPath shouldBe "/v1/forecast"
         req.url.parameters["models"] shouldBe defaultModelsParam
-        req.url.parameters["daily"] shouldBe "apparent_temperature_max,precipitation_probability_max"
+        req.url.parameters["daily"] shouldBe
+            "apparent_temperature_max,apparent_temperature_min,precipitation_probability_max"
         req.url.parameters["hourly"] shouldBe
             "apparent_temperature,temperature_2m,precipitation_probability,precipitation," +
             "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
@@ -163,6 +164,18 @@ class MultiModelConfidenceFetcherTest {
 
         info.level shouldBe ForecastConfidence.LOW
         info.tempSpreadC shouldBe (5.0 plusOrMinus 0.0001)
+    }
+
+    @Test
+    fun `wide overnight-low spread drops confidence even when the highs agree`() = runTest {
+        // Highs cluster tightly (21.0 / 21.2 / 21.4 → 0.4°C) but the
+        // overnight lows split wide (8 / 11 / 14 → 6°C). The tier reads the
+        // wider of the two temp spreads, so the low disagreement drags it
+        // to LOW even though the peaks line up.
+        val info = fetcherWith(THREE_MODEL_LOW_SPLIT).fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
+
+        info.level shouldBe ForecastConfidence.LOW
+        info.tempSpreadC shouldBe (6.0 plusOrMinus 0.0001)
     }
 
     @Test
@@ -461,6 +474,26 @@ class MultiModelConfidenceFetcherTest {
                 "apparent_temperature_max_ecmwf_ifs025": [18.0],
                 "apparent_temperature_max_gfs_seamless": [21.0],
                 "apparent_temperature_max_icon_seamless": [23.0],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
+                "precipitation_probability_max_gfs_seamless": [15],
+                "precipitation_probability_max_icon_seamless": [20]
+              }
+            }
+        """.trimIndent()
+
+        // Highs agree (21.0 / 21.2 / 21.4) but the daily lows split wide
+        // (8.0 / 11.0 / 14.0). Exercises the low-disagreement half of the
+        // temp spread.
+        private val THREE_MODEL_LOW_SPLIT = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.2],
+                "apparent_temperature_max_icon_seamless": [21.4],
+                "apparent_temperature_min_ecmwf_ifs025": [8.0],
+                "apparent_temperature_min_gfs_seamless": [11.0],
+                "apparent_temperature_min_icon_seamless": [14.0],
                 "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]

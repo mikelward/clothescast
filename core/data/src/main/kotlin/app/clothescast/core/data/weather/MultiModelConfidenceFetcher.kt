@@ -31,10 +31,12 @@ import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDateTime
 
 /**
- * Fetches today's apparent-max temperature and peak precipitation probability from
- * several Open-Meteo models in a single request, computes the cross-model spread,
- * and maps to a [ConfidenceInfo]. When the major models agree, we surface "High
- * confidence"; when they disagree, "Low confidence — forecasts disagree".
+ * Fetches today's apparent high and low temperature and peak precipitation
+ * probability from several Open-Meteo models in a single request, computes the
+ * cross-model spread (the wider of the high- and low-temperature disagreement,
+ * plus precip), and maps to a [ConfidenceInfo]. When the major models agree, we
+ * surface "High confidence"; when they disagree, "Low confidence — forecasts
+ * disagree".
  *
  * The same call also pulls the per-model hourly apparent-temperature and
  * precipitation-probability series so the Today screen's "show model spread"
@@ -171,7 +173,7 @@ internal class MultiModelConfidenceFetcher(
                 // downstream.
                 parameter("forecast_days", 14)
                 parameter("timezone", "auto")
-                parameter("daily", "apparent_temperature_max,precipitation_probability_max")
+                parameter("daily", "apparent_temperature_max,apparent_temperature_min,precipitation_probability_max")
                 // cloud_cover_low (the deck below ~2 km) rather than total
                 // column: total picks up cirrus that looks cloudy on satellite
                 // but barely dims the sun, and the user-facing question
@@ -341,6 +343,12 @@ internal class MultiModelConfidenceFetcher(
 
     private fun readModelDaily(daily: JsonObject, model: String): ReadOutcome {
         val tempMax = numberAt(daily["apparent_temperature_max_$model"] as? JsonArray, 0)?.toDouble()
+        // Soft field: the daily low feeds the low-disagreement half of the
+        // temp spread, but a model that reports a high without a low still
+        // contributes its high. When missing it simply drops out of the
+        // low-spread calculation (see [compute]) rather than dropping the
+        // whole model.
+        val tempMin = numberAt(daily["apparent_temperature_min_$model"] as? JsonArray, 0)?.toDouble()
         val precipMax = numberAt(daily["precipitation_probability_max_$model"] as? JsonArray, 0)?.toDouble()
         return when {
             tempMax == null && precipMax == null ->
@@ -350,7 +358,7 @@ internal class MultiModelConfidenceFetcher(
             precipMax == null ->
                 ReadOutcome.Dropped("precipitation_probability_max missing or null")
             else ->
-                ReadOutcome.Usable(ModelDailyValues(tempMax, precipMax))
+                ReadOutcome.Usable(ModelDailyValues(tempMax, tempMin, precipMax))
         }
     }
 
@@ -361,9 +369,17 @@ internal class MultiModelConfidenceFetcher(
     }
 
     private fun compute(results: List<Pair<String, ModelDailyValues>>): ConfidenceInfo {
-        val temps = results.map { it.second.tempMaxC }
+        val highs = results.map { it.second.tempMaxC }
+        // Models that didn't report a daily low (older payloads, or a model
+        // that omits apparent_temperature_min) sit out the low-spread term.
+        // With fewer than two lows we can't measure low disagreement, so it
+        // contributes nothing — mirrors the precip dimension's guard.
+        val lows = results.mapNotNull { it.second.tempMinC }
         val precips = results.map { it.second.precipMaxPp }
-        val tempSpread = temps.max() - temps.min()
+        val highSpread = highs.max() - highs.min()
+        val lowSpread = if (lows.size >= 2) lows.max() - lows.min() else 0.0
+        // Disagreement on the day's high *or* its low downgrades confidence.
+        val tempSpread = maxOf(highSpread, lowSpread)
         val precipSpread = precips.max() - precips.min()
 
         val level = when {
@@ -384,7 +400,11 @@ internal class MultiModelConfidenceFetcher(
         )
     }
 
-    private data class ModelDailyValues(val tempMaxC: Double, val precipMaxPp: Double)
+    private data class ModelDailyValues(
+        val tempMaxC: Double,
+        val tempMinC: Double?,
+        val precipMaxPp: Double,
+    )
 
     private sealed class ReadOutcome {
         data class Usable(val values: ModelDailyValues) : ReadOutcome()

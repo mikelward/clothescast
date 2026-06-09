@@ -98,10 +98,12 @@ class InsightCache(
     enum class Slot { THIS_PERIOD, NEXT_PERIOD }
 
     /** Raw snapshot stored for page 1 — the 12-hour window the user is currently in. */
-    val thisPeriod: Flow<ForecastSnapshot?> = dataStore.data.map { it.readSlot(THIS_PERIOD_KEY) }
+    val thisPeriod: Flow<ForecastSnapshot?> =
+        dataStore.data.map { it.readSlot(THIS_PERIOD_KEY, LEGACY_THIS_PERIOD_V7_KEY) }
 
     /** Raw snapshot stored for page 2 — the pre-captured next 12-hour window. */
-    val nextPeriod: Flow<ForecastSnapshot?> = dataStore.data.map { it.readSlot(NEXT_PERIOD_KEY) }
+    val nextPeriod: Flow<ForecastSnapshot?> =
+        dataStore.data.map { it.readSlot(NEXT_PERIOD_KEY, LEGACY_NEXT_PERIOD_V7_KEY) }
 
     /**
      * Derives the [DailyInsightResult] for [slot] against [prefs] using the
@@ -124,7 +126,14 @@ class InsightCache(
     }
 
     suspend fun store(slot: Slot, snapshot: ForecastSnapshot) {
-        dataStore.edit { it[keyFor(slot)] = json.encodeToString(snapshot.toDto()) }
+        dataStore.edit {
+            it[keyFor(slot)] = json.encodeToString(snapshot.toDto())
+            // A fresh capture supersedes whatever the pre-update build left
+            // under the old key names; drop them so the read fallback can't
+            // resurrect a stale snapshot and the orphaned bytes don't linger.
+            it.remove(legacyKeyFor(slot))
+            it.remove(LEGACY_V6_KEYS.getValue(slot))
+        }
     }
 
     /**
@@ -161,18 +170,35 @@ class InsightCache(
         dataStore.edit {
             it.remove(THIS_PERIOD_KEY)
             it.remove(NEXT_PERIOD_KEY)
+            it.remove(LEGACY_THIS_PERIOD_V7_KEY)
+            it.remove(LEGACY_NEXT_PERIOD_V7_KEY)
+            LEGACY_V6_KEYS.values.forEach { key -> it.remove(key) }
         }
     }
 
-    private fun Preferences.readSlot(key: androidx.datastore.preferences.core.Preferences.Key<String>): ForecastSnapshot? {
-        val raw = this[key] ?: return null
+    private fun Preferences.readSlot(
+        key: Preferences.Key<String>,
+        legacyKey: Preferences.Key<String>,
+    ): ForecastSnapshot? {
+        // Fall back to the pre-update v7 payload when the live key is empty so
+        // an app update doesn't blank the Today screen / widget until the next
+        // fetch lands. The v7 shape decodes into the current DTO (the event
+        // date fields default to null and materialise against the snapshot's
+        // own date), so only the key name needs bridging.
+        val raw = this[key] ?: this[legacyKey] ?: return null
         return runCatching { json.decodeFromString<ForecastSnapshotDto>(raw).toDomain() }.getOrNull()
     }
 
-    private fun keyFor(slot: Slot): androidx.datastore.preferences.core.Preferences.Key<String> =
+    private fun keyFor(slot: Slot): Preferences.Key<String> =
         when (slot) {
             Slot.THIS_PERIOD -> THIS_PERIOD_KEY
             Slot.NEXT_PERIOD -> NEXT_PERIOD_KEY
+        }
+
+    private fun legacyKeyFor(slot: Slot): Preferences.Key<String> =
+        when (slot) {
+            Slot.THIS_PERIOD -> LEGACY_THIS_PERIOD_V7_KEY
+            Slot.NEXT_PERIOD -> LEGACY_NEXT_PERIOD_V7_KEY
         }
 
     @Serializable
@@ -184,14 +210,17 @@ class InsightCache(
         val generatedAtEpochMillis: Long,
         val historicYesterday: DailyHistoryDto? = null,
     ) {
-        fun toDomain(): ForecastSnapshot = ForecastSnapshot(
-            bundle = bundle.toDomain(),
-            events = events.map { it.toDomain() },
-            location = location?.toDomain(),
-            period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
-            generatedAt = Instant.ofEpochMilli(generatedAtEpochMillis),
-            historicYesterday = historicYesterday?.toDomain(),
-        )
+        fun toDomain(): ForecastSnapshot {
+            val domainBundle = bundle.toDomain()
+            return ForecastSnapshot(
+                bundle = domainBundle,
+                events = events.map { it.toDomain(fallbackDate = domainBundle.today.date) },
+                location = location?.toDomain(),
+                period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
+                generatedAt = Instant.ofEpochMilli(generatedAtEpochMillis),
+                historicYesterday = historicYesterday?.toDomain(),
+            )
+        }
     }
 
     @Serializable
@@ -381,6 +410,11 @@ class InsightCache(
      * [PerModelHourDto], so a midnight-crossing event round-trips with its end
      * on the next date and tomorrow's pre-dawn events keep their date.
      *
+     * The date fields default to null so the time-only v7 payload (written by
+     * pre-update builds) still decodes; materialisation then infers the dates
+     * from the snapshot's own day — see [toDomain]. v8 writers always populate
+     * them.
+     *
      * Titles and free-form location strings are deliberately dropped, matching
      * the privacy posture of the previous derived-insight cache (which stored
      * `CalendarTieInClause(item: String)` — a garment name, never the event
@@ -391,28 +425,34 @@ class InsightCache(
      */
     @Serializable
     private data class CalendarEventDto(
-        val startDateEpochDays: Long,
+        val startDateEpochDays: Long? = null,
         val startSecondOfDay: Int,
-        val endDateEpochDays: Long,
+        val endDateEpochDays: Long? = null,
         val endSecondOfDay: Int,
         val allDay: Boolean = false,
         val hasLocation: Boolean = false,
     ) {
-        fun toDomain(): CalendarEvent = CalendarEvent(
-            title = "",
-            start = LocalDateTime.of(
-                LocalDate.ofEpochDay(startDateEpochDays),
-                LocalTime.ofSecondOfDay(startSecondOfDay.toLong()),
-            ),
-            end = LocalDateTime.of(
-                LocalDate.ofEpochDay(endDateEpochDays),
-                LocalTime.ofSecondOfDay(endSecondOfDay.toLong()),
-            ),
-            location = if (hasLocation) PLACEHOLDER_LOCATION else null,
-            allDay = allDay,
-            kind = EventKind.NORMAL,
-            ownerAccount = null,
-        )
+        /**
+         * [fallbackDate] stands in for the date fields a v7 payload lacks: the
+         * start lands on the snapshot's own day, and the end rolls to the next
+         * day when its time-of-day precedes the start's (a 21:00–00:30 gig).
+         * Best effort — v7 never recorded the real dates — and only consulted
+         * until the first post-update fetch rewrites the slot in v8 form.
+         */
+        fun toDomain(fallbackDate: LocalDate): CalendarEvent {
+            val startDate = startDateEpochDays?.let(LocalDate::ofEpochDay) ?: fallbackDate
+            val endDate = endDateEpochDays?.let(LocalDate::ofEpochDay)
+                ?: if (endSecondOfDay < startSecondOfDay) startDate.plusDays(1) else startDate
+            return CalendarEvent(
+                title = "",
+                start = LocalDateTime.of(startDate, LocalTime.ofSecondOfDay(startSecondOfDay.toLong())),
+                end = LocalDateTime.of(endDate, LocalTime.ofSecondOfDay(endSecondOfDay.toLong())),
+                location = if (hasLocation) PLACEHOLDER_LOCATION else null,
+                allDay = allDay,
+                kind = EventKind.NORMAL,
+                ownerAccount = null,
+            )
+        }
     }
 
     private fun ForecastSnapshot.toDto(): ForecastSnapshotDto = ForecastSnapshotDto(
@@ -505,14 +545,26 @@ class InsightCache(
     companion object {
         // Bumped to v7 with the schema switch from a derived `Insight` payload
         // to the raw `ForecastSnapshot` (bundle + minimal events) it's derived
-        // from. The previous shape (v6) doesn't deserialise into the new DTO,
-        // so the cache drops to null on first read and the next worker run
-        // populates the v7 keys. Bumped to v8 when `CalendarEventDto` gained
-        // per-endpoint dates for the LocalDateTime event model — v7 payloads
-        // don't materialise dated events, so the cache drops to null on first
-        // read and the next worker run repopulates the v8 keys.
+        // from. Bumped to v8 when `CalendarEventDto` gained per-endpoint dates
+        // for the LocalDateTime event model. The v7→v8 bump originally dropped
+        // the cache to null on first read after an update, blanking the Today
+        // screen and widget until the next fetch — slow or offline networks
+        // made that gap user-visible — so reads now fall back to the v7 keys
+        // (see `readSlot`) and stores/clears retire them. Future schema changes
+        // should prefer defaulted fields over a key bump where possible; if a
+        // bump is unavoidable, bridge the old key the same way.
         private val THIS_PERIOD_KEY = stringPreferencesKey("this_period_snapshot_v8")
         private val NEXT_PERIOD_KEY = stringPreferencesKey("next_period_snapshot_v8")
+        private val LEGACY_THIS_PERIOD_V7_KEY = stringPreferencesKey("this_period_snapshot_v7")
+        private val LEGACY_NEXT_PERIOD_V7_KEY = stringPreferencesKey("next_period_snapshot_v7")
+
+        // v6 held the old derived-`Insight` shape — not decodable into the
+        // snapshot DTO, so never read; removed on store/clear purely so the
+        // orphaned bytes don't sit in the DataStore file forever.
+        private val LEGACY_V6_KEYS = mapOf(
+            Slot.THIS_PERIOD to stringPreferencesKey("this_period_insight_v6"),
+            Slot.NEXT_PERIOD to stringPreferencesKey("next_period_insight_v6"),
+        )
 
         // Surfaced on materialisation when the cached event had a location
         // string at fetch time. The renderer's only read of `location` is a

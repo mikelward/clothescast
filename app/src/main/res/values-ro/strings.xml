@@ -80,6 +80,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_clothes_join_many">%1$s, %2$s și %3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">peste noapte</string>
+
+    <string name="insight_precip_tonight">diseară</string>
     <string name="insight_condition_clear">Senin</string>
     <string name="insight_condition_partly_cloudy">Parțial înnorat</string>
     <string name="insight_condition_cloudy">Înnorat</string>

@@ -521,6 +521,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_chance">Vihma võimalus: %1$s.</string>
     <string name="insight_precip_overnight">öö jooksul</string>
+
+    <string name="insight_precip_tonight">täna õhtul</string>
     <string name="insight_condition_clear">Selge</string>
     <string name="insight_condition_partly_cloudy">Vahelduv pilvisus</string>
     <string name="insight_condition_cloudy">Pilves</string>

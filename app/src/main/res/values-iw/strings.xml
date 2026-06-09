@@ -88,6 +88,8 @@ standard in Israeli digital communication.
     <string name="insight_clothes_join_many">%1$s, %2$s ו%3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">בלילה</string>
+
+    <string name="insight_precip_tonight">הלילה</string>
     <string name="insight_condition_clear">בהיר</string>
     <string name="insight_condition_partly_cloudy">מעונן חלקית</string>
     <string name="insight_condition_cloudy">מעונן</string>

@@ -81,6 +81,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_clothes_join_many">%1$s, %2$s, at %3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">buong gabi</string>
+
+    <string name="insight_precip_tonight">ngayong gabi</string>
     <string name="insight_condition_clear">Maliwanag</string>
     <string name="insight_condition_partly_cloudy">Bahagyang maulap</string>
     <string name="insight_condition_cloudy">Maulap</string>

@@ -81,6 +81,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_clothes_join_many">%1$s, %2$s in %3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">čez noč</string>
+
+    <string name="insight_precip_tonight">nocoj</string>
     <string name="insight_condition_clear">Jasno</string>
     <string name="insight_condition_partly_cloudy">Delno oblačno</string>
     <string name="insight_condition_cloudy">Oblačno</string>

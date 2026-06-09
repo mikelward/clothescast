@@ -450,6 +450,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_clothes_join_many">%1$s, %2$s y %3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">durante la noche</string>
+
+    <string name="insight_precip_tonight">esta noche</string>
     <string name="insight_condition_clear">Despejado</string>
     <string name="insight_condition_partly_cloudy">Parcialmente nublado</string>
     <string name="insight_condition_cloudy">Nublado</string>

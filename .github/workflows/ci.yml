@@ -44,7 +44,12 @@ on:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancel superseded runs on PR branches, but let main runs finish: a
+  # second merge landing mid-run could otherwise cancel the first between
+  # its Firebase distribution and Play upload steps, skipping a publish.
+  # (The release-notes base logic self-heals the changelog either way; the
+  # cost was the skipped publish itself.)
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   unit-tests:
@@ -272,11 +277,14 @@ jobs:
             # marks every PNG only that root's tests record as orphaned
             # and deletes it on the next CI regen — the bug behind PR
             # #905's first regen wiping
-            # `settings_voice_app_check_debug_token.png`. A glob covers
-            # any future `testRelease`, `androidTest`, etc. without
-            # another edit here.
-            expected=$(find app/src/test app/src/test[A-Z]* -name '*.kt' -print0 2>/dev/null \
-              | xargs -0 perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }')
+            # `settings_voice_app_check_debug_token.png`. Roots are
+            # enumerated with find -name rather than a shell glob: an
+            # unmatched glob (`app/src/test[A-Z]*` with no variant roots
+            # present) passes through literally, find exits non-zero, and
+            # `set -euo pipefail` would kill the step.
+            expected=$(find app/src -maxdepth 1 -type d \( -name 'test' -o -name 'test[A-Z]*' \) -print0 \
+              | xargs -0 -r -I{} find {} -name '*.kt' -print0 \
+              | xargs -0 -r perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }')
             for png in app/snapshots/*.png; do
               [ -f "$png" ] || continue
               name=$(basename "$png" .png)
@@ -665,7 +673,7 @@ jobs:
             local sha="$1" subject non_doc_count
             subject=$(git log -1 --pretty=%s "$sha")
             case "$subject" in
-              ci:*|test:*|internal:*) return 0 ;;
+              ci:*|test:*|internal:*|docs:*) return 0 ;;
             esac
             non_doc_count=$(git show --no-renames --name-only --pretty=format: "$sha" \
               | sed '/^$/d' \

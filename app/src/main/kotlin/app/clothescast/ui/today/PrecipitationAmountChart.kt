@@ -61,9 +61,14 @@ fun PrecipitationAmountChart(
     // (dropped per-model hours, DST weeks where position ≠ naive hour offset).
     val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     val overlays = perModelHourly?.byModel.orEmpty()
+    // Only models with ≥1 plottable point (non-null mm, inside this chart's
+    // window): the pinned line provider assigns colors by position in this
+    // list against the series emitted below, so the two must stay in lockstep.
     val visibleModels = if (showModelSpread) {
         MODEL_DRAW_ORDER.filter { modelId ->
-            overlays[modelId]?.any { it.precipitationMm != null } == true
+            overlays[modelId].orEmpty().any {
+                it.precipitationMm != null && it.time in indexByTime
+            }
         }
     } else {
         emptyList()
@@ -88,13 +93,11 @@ fun PrecipitationAmountChart(
                             val idx = indexByTime[e.time] ?: return@mapNotNull null
                             e.precipitationMm?.let { idx to it }
                         }
-                        // Vico rejects an empty series; a model entirely
-                        // outside the window (shouldn't happen — per-model
-                        // data rides the same fetch as [hourly]) is skipped
-                        // rather than crashing the chart.
-                        if (points.isNotEmpty()) {
-                            series(x = points.map { it.first }, y = points.map { it.second })
-                        }
+                        // Never empty: [visibleModels] is pre-filtered to
+                        // models with ≥1 plottable in-window point, keeping
+                        // the emitted series count equal to the line
+                        // provider's color list (Vico rejects empty series).
+                        series(x = points.map { it.first }, y = points.map { it.second })
                     }
                 }
             }

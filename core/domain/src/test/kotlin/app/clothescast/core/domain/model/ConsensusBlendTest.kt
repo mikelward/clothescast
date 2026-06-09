@@ -74,6 +74,62 @@ class ConsensusBlendTest {
     }
 
     @Test
+    fun `hour missing from best-match is synthesized from the consensus`() {
+        // The mapper drops a best_match hour whose temperature_2m came back
+        // null; when at least two consulted models still cover it, the blend
+        // re-adds the hour so the day keeps its coverage at the forecast
+        // horizon, where best_match thins out before the consulted models.
+        val best = listOf(hour(12, temp = 10.0, precip = 30.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(
+                    perModel(12, apparent = 11.0, air = 12.0, precip = 40.0),
+                    perModel(13, apparent = 13.0, air = 14.0, precip = 60.0, wind = 20.0),
+                ),
+                "icon_seamless" to listOf(
+                    perModel(12, apparent = 13.0, air = 14.0, precip = 50.0),
+                    perModel(13, apparent = 15.0, air = 16.0, precip = 80.0, wind = 30.0),
+                ),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended.map { it.time } shouldBe listOf(LocalTime.of(12, 0), LocalTime.of(13, 0))
+        val synthesized = blended[1]
+        synthesized.temperatureC shouldBe (15.0 plusOrMinus 0.0001)
+        synthesized.feelsLikeC shouldBe (14.0 plusOrMinus 0.0001)
+        synthesized.precipitationProbabilityPct shouldBe (70.0 plusOrMinus 0.0001)
+        synthesized.windSpeedKmh!! shouldBe (25.0 plusOrMinus 0.0001)
+    }
+
+    @Test
+    fun `synthesis skips other days' hours and single-candidate hours`() {
+        // The per-model window spans the full 14-day fetch; only this day's
+        // hours may be synthesized into this day's list, and a lone model's
+        // hour stays out — same one-model-isn't-a-consensus bar as the
+        // replacement path.
+        val best = listOf(hour(12, temp = 10.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(
+                    perModel(12, apparent = 11.0, air = 12.0),
+                    perModel(13, apparent = 13.0, air = 14.0), // single candidate
+                    perModel(9, apparent = 9.0, air = 10.0, date = today.plusDays(1)),
+                ),
+                "icon_seamless" to listOf(
+                    perModel(12, apparent = 13.0, air = 14.0),
+                    perModel(9, apparent = 11.0, air = 12.0, date = today.plusDays(1)),
+                ),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended.map { it.time } shouldBe listOf(LocalTime.of(12, 0))
+    }
+
+    @Test
     fun `includes the best-match overlay in the consensus mean`() {
         // best_match is one of the models in [byModel] and gets folded into
         // the mean alongside the consulted models. The user picked this

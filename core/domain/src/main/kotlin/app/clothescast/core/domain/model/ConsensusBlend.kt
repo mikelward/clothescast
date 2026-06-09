@@ -26,6 +26,11 @@ package app.clothescast.core.domain.model
  *   - When two or more models reported an entry at hour t, replace
  *     best_match's value with their mean. With fewer than two, keep
  *     best_match — a one-model "consensus" isn't a consensus.
+ *   - An hour at least two models cover but [bestMatch] doesn't (its
+ *     temperature came back null upstream, so the mapper dropped the hour
+ *     rather than zero-fill it) is synthesized from the consensus, keeping
+ *     the day's coverage at the forecast horizon where best_match thins
+ *     out before the consulted models do.
  *   - [HourlyForecast.condition] (CLEAR / RAIN / etc.) is aggregated
  *     modally — most-commonly-predicted bucket across the same
  *     candidate set wins, with ties broken by severity so the
@@ -61,7 +66,7 @@ fun blendConsensusHourly(
     }
 
     var anyBlended = false
-    val out = bestMatch.map { hour ->
+    val replaced = bestMatch.map { hour ->
         val candidates = byHour[java.time.LocalDateTime.of(bestMatchDate, hour.time)].orEmpty()
         if (candidates.size < 2) {
             hour
@@ -103,7 +108,43 @@ fun blendConsensusHourly(
             )
         }
     }
-    return if (anyBlended) out else null
+
+    // Hours the consulted models cover but best_match doesn't: synthesize the
+    // consensus entry. Same ≥2-candidates bar as the replacement path; the
+    // hour must land on this day's date (byHour spans the full per-model
+    // window). Precip and amount fall back to 0.0 when no candidate reported
+    // them — those fields are non-null on [HourlyForecast] and "models
+    // reported the hour but none carried precip" is the no-data case the
+    // chart already renders as zero.
+    val covered = bestMatch.mapTo(HashSet()) { java.time.LocalDateTime.of(bestMatchDate, it.time) }
+    val synthesized = byHour.entries
+        .filter { (t, candidates) ->
+            t.toLocalDate() == bestMatchDate && candidates.size >= 2 && t !in covered
+        }
+        .map { (t, candidates) ->
+            HourlyForecast(
+                time = t.toLocalTime(),
+                temperatureC = candidates.map { it.temperatureC }.average(),
+                feelsLikeC = candidates.map { it.apparentTemperatureC }.average(),
+                precipitationProbabilityPct = candidates.mapNotNull { it.precipitationProbabilityPct }
+                    .takeIf { it.isNotEmpty() }?.average() ?: 0.0,
+                condition = consensusCondition(
+                    fallback = WeatherCondition.UNKNOWN,
+                    candidates = candidates.mapNotNull { it.condition },
+                ),
+                precipitationMm = candidates.mapNotNull { it.precipitationMm }
+                    .takeIf { it.isNotEmpty() }?.average() ?: 0.0,
+                windSpeedKmh = candidates.mapNotNull { it.windSpeedKmh }
+                    .takeIf { it.isNotEmpty() }?.average(),
+                uvIndex = candidates.mapNotNull { it.uvIndex }
+                    .takeIf { it.isNotEmpty() }?.average(),
+            )
+        }
+    if (synthesized.isNotEmpty()) anyBlended = true
+    if (!anyBlended) return null
+    // Stable sort keeps a DST fall-back day's duplicated wall-clock hour as
+    // two adjacent entries in their original order.
+    return (replaced + synthesized).sortedBy { it.time }
 }
 
 /**

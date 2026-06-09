@@ -1,5 +1,7 @@
 package app.clothescast.core.data.tts
 
+import app.clothescast.core.data.insight.InvalidApiKeyException
+import app.clothescast.core.data.insight.MissingApiKeyException
 import io.kotest.matchers.shouldBe
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CancellationException
@@ -54,6 +56,19 @@ class GeminiTtsRetryClassifierTest {
     @Test
     fun `blocked prompt is not retryable`() {
         isRetryableGeminiTtsFailure(GeminiTtsBlockedException("blocked")) shouldBe false
+    }
+
+    @Test
+    fun `missing BYOK key is not retryable`() {
+        // A cleared key won't reappear between attempts — burning the retry
+        // budget with backoff just delays the device-TTS fallback.
+        isRetryableGeminiTtsFailure(MissingApiKeyException()) shouldBe false
+    }
+
+    @Test
+    fun `unreadable BYOK key is not retryable`() {
+        // Same as missing: only the user re-entering the key can fix it.
+        isRetryableGeminiTtsFailure(InvalidApiKeyException()) shouldBe false
     }
 
     @Test

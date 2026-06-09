@@ -82,11 +82,13 @@ data class Insight(
      */
     val period: ForecastPeriod = ForecastPeriod.TODAY,
     /**
-     * True when at least one calendar event was found in the relevant window for
-     * this insight (today's events for TODAY, tonight's events for TONIGHT). Used
-     * by the tonight notifier to decide between a silent and a default-priority
-     * notification — events present means "you might need to actually leave the
-     * house tonight," which warrants a sound and TTS read-out.
+     * True when at least one away-from-home calendar event — non-all-day, with
+     * a location — was found in the relevant window for this insight (today's
+     * events for TODAY, tonight's events for TONIGHT). Locationless and
+     * all-day events don't count: they don't imply stepping outside. Used by
+     * the tonight notifier to decide between a silent and a default-priority
+     * notification — a located event means "you might need to actually leave
+     * the house tonight," which warrants a sound and TTS read-out.
      */
     val hasEvents: Boolean = false,
     /**

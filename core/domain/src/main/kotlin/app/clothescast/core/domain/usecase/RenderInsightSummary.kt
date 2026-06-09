@@ -48,8 +48,10 @@ import kotlin.math.roundToInt
  *    a noon synthesis from the day-level field — when per-model data isn't
  *    available; both fallbacks render as LIKELY (the existing behaviour).
  * 5. [CalendarTieInClause] — when clothes + precip both fired AND a calendar
- *    event overlaps the precip peak hour. Picks "umbrella" when on the clothes
- *    list, otherwise the first triggered item, mirroring rule 3's ordering.
+ *    event overlaps the precip peak hour. Names the first triggered item in
+ *    rule order, mirroring rule 3's ordering (no umbrella priority — the
+ *    formatter silences accessories, so see the inline comment where the
+ *    clause is built).
  *    **Only emitted on [ForecastPeriod.TONIGHT].** On TODAY the bare precip
  *    clause ("Rain at 3pm.") is enough — the listener already knows about
  *    their morning event, so chaining a tie-in just repeats what they heard.

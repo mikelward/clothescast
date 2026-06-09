@@ -300,10 +300,12 @@ class DeriveInsight(
      *
      * Insulating tops are warmth-aware: an evening top is "extra" only when it's
      * warmer than the day's warmest top — wearing a jacket by day already implies
-     * the lighter layers under it, so a lighter evening top isn't worth
-     * mentioning. Warmth is [Garment.warmth], not the [Garment.Layer] band, so
-     * same-band upgrades still surface: a day `jacket` doesn't suppress a warmer
-     * evening `puffer`. The [Garment.Layer.OUTER] rain shell is the exception:
+     * the lighter layers under it, so a lighter (or equally warm) evening top
+     * isn't worth mentioning. Warmth is [Garment.warmth], which equals the
+     * garment's layer count, so the heavyweight shells (`jacket`, `coat`,
+     * `puffer` — all layer 3) tie: a day `jacket` keeps an evening `puffer`
+     * quiet, deliberately — "swap one shell for another" isn't an actionable
+     * evening tip. The [Garment.Layer.OUTER] rain shell is the exception:
      * it's keyed on rain, not warmth, so it's never gated by the warmth
      * comparison — a warm daytime top must not swallow the evening's required
      * rain jacket. It's additive instead, surfacing whenever the day's outfit

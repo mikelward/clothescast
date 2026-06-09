@@ -105,9 +105,10 @@ data class DeliveryGates(
  *
  * @param prefs preferences read once at the top of the worker run
  * @param period TODAY or TONIGHT — selects which delivery-mode applies
- * @param insightHasEvents true if the calendar has at least one event
- *   in this period's window. Only consulted on TONIGHT to evaluate
- *   `tonightNotifyOnlyOnEvents`.
+ * @param insightHasEvents true if the calendar has at least one
+ *   away-from-home event (non-all-day, with a location — see
+ *   [Insight.hasEvents]) in this period's window. Only consulted on
+ *   TONIGHT to evaluate `tonightNotifyOnlyOnEvents`.
  * @param geminiAvailable pre-computed: TTS engine = Gemini AND API
  *   key configured. The worker checks the keystore once and feeds
  *   that boolean in. A later synth failure inside the worker doesn't

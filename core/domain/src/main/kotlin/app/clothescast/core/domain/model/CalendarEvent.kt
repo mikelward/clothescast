@@ -41,9 +41,9 @@ data class CalendarEvent(
     val ownerAccount: String? = null,
 ) {
     /**
-     * True when [time] falls within `[start, end)`. All-day events match every
-     * non-midnight time so the precip-peak overlap check below them never
-     * accidentally pairs an umbrella with "your all-day Public holiday".
+     * True when [time] falls within `[start, end)`. All-day events never
+     * match, so the precip-peak overlap check never accidentally pairs an
+     * umbrella with "your all-day Public holiday".
      */
     fun overlaps(time: LocalTime): Boolean {
         if (allDay) return false

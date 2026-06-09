@@ -1578,16 +1578,20 @@ internal fun PrecipitationAmountCardWithModelSpreadPreview() {
     Frame {
         PrecipitationAmountCard(
             hourly = SAMPLE_HOURLY_RAINY,
+            forDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
     }
 }
 
-// Sample anchor for per-model entries. Charts read `time.toLocalTime()` for
-// labels, so any LocalDate works — pinning today keeps preview output
-// deterministic-ish across runs (and matches SAMPLE_INSIGHT.forDate's
-// vintage).
+// Sample anchor for per-model entries. The charts resolve per-model points
+// to x positions by timestamp lookup against their hourly window (see
+// [hourlyTimestampIndices]), so every preview that pairs this fixture with a
+// chart must pass `startDate`/`forDate` = this date — a mismatched window
+// date drops the per-model series entirely. Pinned (and matching
+// SAMPLE_INSIGHT.forDate's vintage) so preview output stays deterministic
+// across runs.
 private val SAMPLE_PER_MODEL_DATE: LocalDate = LocalDate.of(2026, 4, 26)
 
 // Three model curves spread around the blended sample. Offsets are deliberate
@@ -1699,6 +1703,7 @@ internal fun WindCardConsensusPreview() {
         WindCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
         )
     }
 }
@@ -1710,6 +1715,7 @@ internal fun WindCardWithModelSpreadPreview() {
         WindCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             showModelSpread = true,
         )
     }
@@ -1726,11 +1732,12 @@ internal fun WindCardWithModelSpreadPreview() {
 @Composable
 internal fun WindCardScrubbedPreview() {
     Frame {
-        // Fixed date (a Monday) so the scrub fixture is deterministic across
-        // runs — see issue #920. The hourly chart only labels times, so the
-        // date never reaches the snapshot, but pinning it keeps the fixture
-        // free of any wall-clock dependency.
-        val today = java.time.LocalDate.of(2024, 1, 1)
+        // Fixed date so the scrub fixture is deterministic across runs — see
+        // issue #920. Must match the per-model fixture's anchor date: the
+        // chart resolves per-model points by timestamp against the window
+        // keyed off [startDate], and the readout only renders hour-of-day,
+        // so the date itself never reaches the snapshot.
+        val today = SAMPLE_PER_MODEL_DATE
         val controller = androidx.compose.runtime.remember {
             ChartScrubController().apply {
                 scrubTo(java.time.LocalDateTime.of(today, java.time.LocalTime.of(14, 30)))
@@ -1759,6 +1766,7 @@ internal fun WindCardWithModelSpreadMphPreview() {
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             windSpeedUnit = WindSpeedUnit.MPH,
+            startDate = SAMPLE_PER_MODEL_DATE,
             showModelSpread = true,
         )
     }
@@ -1771,6 +1779,7 @@ internal fun CloudCardConsensusPreview() {
         CloudCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
         )
     }
 }
@@ -1782,6 +1791,7 @@ internal fun CloudCardWithModelSpreadPreview() {
         CloudCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             showModelSpread = true,
         )
     }
@@ -1794,6 +1804,7 @@ internal fun HumidityCardConsensusPreview() {
         HumidityCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
         )
     }
 }
@@ -1805,6 +1816,7 @@ internal fun HumidityCardWithModelSpreadPreview() {
         HumidityCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             showModelSpread = true,
         )
     }
@@ -1817,6 +1829,7 @@ internal fun SolarRadiationCardConsensusPreview() {
         SolarRadiationCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
         )
     }
 }
@@ -1828,6 +1841,7 @@ internal fun SolarRadiationCardWithModelSpreadPreview() {
         SolarRadiationCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             showModelSpread = true,
         )
     }
@@ -1878,6 +1892,7 @@ internal fun UvIndexCardConsensusPreview() {
         UvIndexCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
         )
     }
 }
@@ -1889,6 +1904,7 @@ internal fun UvIndexCardWithModelSpreadPreview() {
         UvIndexCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             showModelSpread = true,
         )
     }
@@ -1915,6 +1931,7 @@ internal fun WindCardSparseTrailingPreview() {
         WindCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY_SPARSE_WIND_TRAILING,
+            startDate = SAMPLE_PER_MODEL_DATE,
             showModelSpread = true,
         )
     }
@@ -1928,6 +1945,7 @@ internal fun ForecastChartWithModelSpreadPreview() {
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
             showFeelsLike = true,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -1945,6 +1963,7 @@ internal fun ForecastCardWithModelSpreadPreview() {
         ForecastCard(
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -1959,11 +1978,11 @@ internal fun ForecastCardWithModelSpreadPreview() {
 @Composable
 internal fun ForecastCardScrubbedPreview() {
     Frame {
-        // Fixed date (a Monday) so the scrub fixture is deterministic across
-        // runs — see issue #920. The hourly chart only labels times, so the
-        // date never reaches the snapshot, but pinning it keeps the fixture
-        // free of any wall-clock dependency.
-        val today = java.time.LocalDate.of(2024, 1, 1)
+        // Fixed date so the scrub fixture is deterministic across runs — see
+        // issue #920. Must match the per-model fixture's anchor date (see
+        // [WindCardScrubbedPreview]); the readout only renders hour-of-day,
+        // so the date itself never reaches the snapshot.
+        val today = SAMPLE_PER_MODEL_DATE
         val controller = androidx.compose.runtime.remember {
             ChartScrubController().apply {
                 scrubTo(java.time.LocalDateTime.of(today, java.time.LocalTime.of(14, 30)))
@@ -1988,6 +2007,7 @@ internal fun AirTemperatureCardWithModelSpreadPreview() {
         AirTemperatureCard(
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -2000,6 +2020,7 @@ internal fun PrecipitationCardWithModelSpreadPreview() {
     Frame {
         PrecipitationCard(
             hourly = SAMPLE_HOURLY_RAINY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -2080,6 +2101,7 @@ internal fun ForecastCardWithModelSpreadAccessiblePreview() {
         ForecastCard(
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -2092,6 +2114,7 @@ internal fun PrecipitationCardWithModelSpreadAccessiblePreview() {
     Frame(colorPalette = ColorPalette.ACCESSIBLE) {
         PrecipitationCard(
             hourly = SAMPLE_HOURLY_RAINY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -2109,6 +2132,7 @@ internal fun ForecastCardWithModelSpreadHighlighterPreview() {
         ForecastCard(
             hourly = SAMPLE_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -2121,6 +2145,7 @@ internal fun PrecipitationCardWithModelSpreadHighlighterPreview() {
     Frame(colorPalette = ColorPalette.HIGHLIGHTER) {
         PrecipitationCard(
             hourly = SAMPLE_HOURLY_RAINY,
+            startDate = SAMPLE_PER_MODEL_DATE,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             showModelSpread = true,
         )
@@ -2426,10 +2451,10 @@ private val SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY: PerModelHourly = run {
 // A full two-week per-model series (days 1-14), built by concatenating the
 // first- and second-week samples per model. Mirrors what production hands the
 // "Following 7 days" page: a series that *starts at today*, not at day 8. The
-// page must slice it to its own window before plotting (the chart positions
-// per-model points by index), so feeding this to [FollowingWeekPagePreview]
-// turns the snapshot into a regression guard for that slicing — drop the slice
-// and the overlays misalign, changing the PNG.
+// page must slice it to its own window before plotting (the slice keeps the
+// off-window days 1-7 from stretching the charts' y-bounds), so feeding this
+// to [FollowingWeekPagePreview] turns the snapshot into a regression guard
+// for that slicing — drop the slice and the y-axes rescale, changing the PNG.
 private val SAMPLE_TWO_WEEK_PER_MODEL_HOURLY: PerModelHourly = PerModelHourly(
     byModel = (SAMPLE_WEEK_PER_MODEL_HOURLY.byModel.keys + SAMPLE_FOLLOWING_WEEK_PER_MODEL_HOURLY.byModel.keys)
         .associateWith { id ->

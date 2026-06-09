@@ -22,7 +22,6 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
-import java.time.LocalDateTime
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
@@ -147,6 +146,12 @@ fun ForecastChart(
 ) {
     if (hourly.isEmpty()) return
 
+    // Timestamp → list-position map for the chart's hourly window, shared by
+    // the per-model overlays and the range band so every per-model value plots
+    // at the x position the main line plots that wall-clock hour at — robust
+    // to a model dropping an hour and to DST weeks where position ≠ naive
+    // hour offset. See [hourlyTimestampIndices].
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     val overlays = perModelHourly?.byModel.orEmpty()
     val visibleModels = if (showModelSpread) {
         MODEL_DRAW_ORDER.filter { it in overlays }
@@ -166,7 +171,7 @@ fun ForecastChart(
     // the same model IDs still re-emits the series. [showModelSpread] is
     // included separately so flipping the toggle on/off re-fires the effect
     // even when [overlays] hasn't changed.
-    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays, showModelSpread) {
+    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays, showModelSpread, indexByTime) {
         producer.runTransaction {
             lineSeries {
                 // Main blended line first so it occupies series index 0 in
@@ -179,7 +184,25 @@ fun ForecastChart(
                 series(hourly.map { pickHourly(it).toUnit(temperatureUnit) })
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
-                        series(entries.map { pickModel(it).toUnit(temperatureUnit) })
+                        // Plot each per-model point at the window position of
+                        // its timestamp (explicit x) rather than letting Vico
+                        // assign x by list position — a model that dropped an
+                        // hour would otherwise draw its tail an hour early,
+                        // disagreeing with the (timestamp-keyed) range band
+                        // and the bottom axis. Entries whose timestamps fall
+                        // outside the window are skipped; in the common case
+                        // every entry maps to its old position, so the
+                        // rendered line is unchanged.
+                        val points = entries.mapNotNull { e ->
+                            indexByTime[e.time]?.let { it to pickModel(e).toUnit(temperatureUnit) }
+                        }
+                        // Vico rejects an empty series; a model entirely
+                        // outside the window (shouldn't happen — per-model
+                        // data rides the same fetch as [hourly]) is skipped
+                        // rather than crashing the chart.
+                        if (points.isNotEmpty()) {
+                            series(x = points.map { it.first }, y = points.map { it.second })
+                        }
                     }
                 }
             }
@@ -255,12 +278,11 @@ fun ForecastChart(
     // Shaded min–max range band on the default view (hidden once the per-model
     // overlay is on — the individual lines convey the spread then). Built from
     // the same picker + unit as the main line so it lands on the same scale.
-    val (bandMin, bandMax) = remember(overlays, showFeelsLike, temperatureUnit, hourly, startDate) {
-        val windowStart = hourly.firstOrNull()?.let { LocalDateTime.of(startDate, it.time) }
-        if (perModelHourly == null || windowStart == null) {
+    val (bandMin, bandMax) = remember(overlays, showFeelsLike, temperatureUnit, indexByTime) {
+        if (perModelHourly == null) {
             emptyList<Pair<Int, Double>>() to emptyList()
         } else {
-            perModelEnvelope(perModelHourly, windowStart, hourly.size) {
+            perModelEnvelope(perModelHourly, indexByTime) {
                 pickModel(it).toUnit(temperatureUnit)
             }
         }

@@ -214,17 +214,15 @@ internal fun SevenDayPage(
         if (days.size < 2) null else HorizontalAxis.ItemPlacer.aligned(spacing = { 24 }, offset = { 12 })
     }
     // Restrict the per-model series to the dates this page plots before any
-    // chart sees it. The chart cards position each per-model point by its
-    // *index* in the series against the page-local [flatHourly] window (see
-    // [PerModelDiagnosticCard] / [ForecastChart]), so the series must start on
-    // the same day as [flatHourly]. The fetched series always starts at today;
-    // on the "Following 7 days" page [flatHourly] starts at day 8, so passing
-    // the unsliced series would plot days 1-7 under the day-8 axis and push the
-    // day 8-14 points off the right edge. Slicing to the window dates realigns
-    // index 0 with the first plotted hour — and on the "Next 7 days" page it
-    // also keeps the now-14-day fetch from stretching the chart's y-bounds with
-    // values the page doesn't show. Models that don't reach the window at all
-    // (ICON past day 7) drop out here.
+    // chart sees it. The chart cards position each per-model point by looking
+    // its timestamp up against the page-local [flatHourly] window (see
+    // [hourlyTimestampIndices] / [PerModelDiagnosticCard] / [ForecastChart]),
+    // so out-of-window entries would be dropped at the chart layer anyway —
+    // but slicing here still matters: it keeps the now-14-day fetch from
+    // stretching the charts' y-bounds with values the page doesn't show
+    // (y-axis sizing reads the raw per-model values, not the positioned
+    // points), and models that don't reach the window at all (ICON past
+    // day 7) drop out of the legends and coverage gate here.
     val weekPerModelInWindow: PerModelHourly? = remember(weekPerModelHourly, days) {
         val windowDates = days.map { it.date }.toSet()
         weekPerModelHourly?.let { perModel ->

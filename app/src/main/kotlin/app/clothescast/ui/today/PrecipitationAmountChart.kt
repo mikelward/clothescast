@@ -55,6 +55,11 @@ fun PrecipitationAmountChart(
 ) {
     if (hourly.isEmpty()) return
 
+    // Timestamp → list-position map for the chart's hourly window, shared by
+    // the per-model overlays, the consensus main line, and the range band —
+    // see [ForecastChart] / [hourlyTimestampIndices] for the rationale
+    // (dropped per-model hours, DST weeks where position ≠ naive hour offset).
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     val overlays = perModelHourly?.byModel.orEmpty()
     val visibleModels = if (showModelSpread) {
         MODEL_DRAW_ORDER.filter { modelId ->
@@ -65,19 +70,31 @@ fun PrecipitationAmountChart(
     }
     val mainLineColor = AppTheme.mainLineColor
 
-    val mainLine = remember(hourly, overlays) { consensusRainfallMainLine(hourly, perModelHourly) }
+    val mainLine = remember(hourly, overlays, indexByTime) {
+        consensusRainfallMainLine(hourly, perModelHourly, indexByTime)
+    }
 
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(hourly, overlays, showModelSpread) {
+    LaunchedEffect(hourly, overlays, showModelSpread, indexByTime) {
         producer.runTransaction {
             lineSeries {
                 series(mainLine)
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->
-                        val points = entries.mapIndexedNotNull { i, e ->
-                            e.precipitationMm?.let { i to it }
+                        // Window position by timestamp lookup, not list
+                        // position — see [PrecipitationChart] for the
+                        // sparse-series x-keying rationale.
+                        val points = entries.mapNotNull { e ->
+                            val idx = indexByTime[e.time] ?: return@mapNotNull null
+                            e.precipitationMm?.let { idx to it }
                         }
-                        series(x = points.map { it.first }, y = points.map { it.second })
+                        // Vico rejects an empty series; a model entirely
+                        // outside the window (shouldn't happen — per-model
+                        // data rides the same fetch as [hourly]) is skipped
+                        // rather than crashing the chart.
+                        if (points.isNotEmpty()) {
+                            series(x = points.map { it.first }, y = points.map { it.second })
+                        }
                     }
                 }
             }
@@ -131,12 +148,11 @@ fun PrecipitationAmountChart(
     val scrubIndicator = rememberChartScrubIndicator(scrubController, scrubBounds, hourly, startDate)
     // Shaded min–max band on the default view, hidden once the per-model overlay
     // is on. Same rainfall-mm picker as the lines; shares the 0..yMax range.
-    val (bandMin, bandMax) = remember(overlays, hourly, startDate) {
-        val windowStart = hourly.firstOrNull()?.let { LocalDateTime.of(startDate, it.time) }
-        if (perModelHourly == null || windowStart == null) {
+    val (bandMin, bandMax) = remember(overlays, indexByTime) {
+        if (perModelHourly == null) {
             emptyList<Pair<Int, Double>>() to emptyList()
         } else {
-            perModelEnvelope(perModelHourly, windowStart, hourly.size) { it.precipitationMm }
+            perModelEnvelope(perModelHourly, indexByTime) { it.precipitationMm }
         }
     }
     val rangeBand = rememberRangeBandDecoration(
@@ -208,23 +224,30 @@ internal const val PRECIPITATION_AMOUNT_MIN_SPAN_MM: Double = 5.0
  * "Combined" chart line and the "X mm of rain today" figure above it
  * are always consistent — they come from the same data.
  *
- * Output length matches `hourly.size`; per-model entries are assumed to
- * align by list position (same date-sliced fetch), the convention used by
- * the existing [PerModelDiagnosticCard].
+ * Output length matches `hourly.size`; per-model entries are resolved to
+ * window positions by timestamp lookup against [indexByTime] (the map
+ * [hourlyTimestampIndices] builds from the same window), so a model that
+ * dropped an hour contributes its values to the right wall-clock hours
+ * instead of skewing every later mean — the same keying the chart's
+ * per-model lines and range band use.
  */
 internal fun consensusRainfallMainLine(
     hourly: List<HourlyForecast>,
     perModelHourly: PerModelHourly?,
+    indexByTime: Map<LocalDateTime, Int>,
 ): List<Double> {
     val overlays = perModelHourly?.byModel.orEmpty()
     val anyPerModel = overlays.values.any { entries -> entries.any { it.precipitationMm != null } }
     if (!anyPerModel) return hourly.map { it.precipitationMm }
-    return hourly.indices.map { idx ->
-        val perModelValues = overlays.values.mapNotNull { entries ->
-            entries.getOrNull(idx)?.precipitationMm
+    val byIndex = mutableMapOf<Int, MutableList<Double>>()
+    overlays.values.forEach { entries ->
+        entries.forEach { e ->
+            val idx = indexByTime[e.time] ?: return@forEach
+            e.precipitationMm?.let { byIndex.getOrPut(idx) { mutableListOf() } += it }
         }
-        if (perModelValues.isEmpty()) hourly[idx].precipitationMm
-        else perModelValues.average()
+    }
+    return hourly.indices.map { idx ->
+        byIndex[idx]?.average() ?: hourly[idx].precipitationMm
     }
 }
 

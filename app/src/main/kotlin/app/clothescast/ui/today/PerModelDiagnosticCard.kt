@@ -54,11 +54,13 @@ import kotlin.math.roundToInt
  *
  * Sparse handling: when only some of a model's hours carry the metric (the
  * upstream API can return nulls for individual hours of a model whose run
- * is still warming up), we plot the non-null hours at their original
- * indices and let Vico bridge the gap. The main consensus line is computed
- * per-index from whichever models reported at that hour, so a single
- * missing sample doesn't punch a hole in the main line either. The card
- * auto-hides when *every* consulted model is missing the metric outright.
+ * is still warming up), we plot the non-null hours at their wall-clock
+ * window positions (timestamp lookup via [hourlyTimestampIndices], robust
+ * to dropped per-model hours) and let Vico bridge the gap. The main
+ * consensus line is computed per-index from whichever models reported at
+ * that hour, so a single missing sample doesn't punch a hole in the main
+ * line either. The card auto-hides when *every* consulted model is missing
+ * the metric outright.
  *
  * Used by the [WindCard], [HumidityCard], [CloudCard], [SolarRadiationCard],
  * [UvIndexCard] and [SunshineCard] wrappers in [TodayScreen].
@@ -96,13 +98,23 @@ internal fun PerModelDiagnosticCard(
     showOverlay: Boolean = false,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
-    // Build (originalIndex, value) pairs per model so a sparse series plots at
-    // its real positions on the x-axis instead of getting compacted left and
-    // misaligned with the rest of the screen's hourly axes.
-    val seriesByModel = remember(perModelHourly, pickerKey) {
+    // Timestamp → list-position map for the card's hourly window — see
+    // [hourlyTimestampIndices]. Resolving each per-model entry by its
+    // timestamp (rather than its list position) keeps a model that dropped
+    // an hour from shifting its tail an hour early, and keeps positions
+    // honest on DST weeks where position ≠ naive hour offset.
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
+    // Build (windowIndex, value) pairs per model so a sparse series plots at
+    // its real wall-clock positions on the x-axis instead of getting compacted
+    // left and misaligned with the rest of the screen's hourly axes. Entries
+    // whose timestamps fall outside the window are skipped.
+    val seriesByModel = remember(perModelHourly, pickerKey, indexByTime) {
         perModelHourly.byModel
             .mapValues { (_, entries) ->
-                entries.mapIndexedNotNull { i, e -> picker(e)?.let { i to it } }
+                entries.mapNotNull { e ->
+                    val idx = indexByTime[e.time] ?: return@mapNotNull null
+                    picker(e)?.let { idx to it }
+                }
             }
             .filterValues { it.isNotEmpty() }
     }
@@ -110,9 +122,10 @@ internal fun PerModelDiagnosticCard(
     if (availableModels.isEmpty() || times.isEmpty()) return
 
     // Per-hour mean of [picker] across whichever models reported at that
-    // hour. Plotted at the model's original index so the main line stays
-    // aligned with the per-model overlay underneath it (when shown) and
-    // with the rest of the screen's 0..23 axes.
+    // hour. Grouped by window index — which, thanks to the timestamp keying
+    // above, means "same wall-clock hour" — so the main line stays aligned
+    // with the per-model overlay underneath it (when shown) and with the
+    // rest of the screen's 0..23 axes.
     val mainLine = remember(seriesByModel) {
         val byIndex = mutableMapOf<Int, MutableList<Double>>()
         seriesByModel.values.forEach { entries ->

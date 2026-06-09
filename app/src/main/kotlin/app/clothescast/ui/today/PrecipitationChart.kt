@@ -13,7 +13,6 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.ui.theme.AppTheme
 import java.time.LocalDate
-import java.time.LocalDateTime
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
@@ -56,6 +55,11 @@ fun PrecipitationChart(
 ) {
     if (hourly.isEmpty()) return
 
+    // Timestamp → list-position map for the chart's hourly window, shared by
+    // the per-model overlays and the range band — see [ForecastChart] /
+    // [hourlyTimestampIndices] for the rationale (dropped per-model hours,
+    // DST weeks where position ≠ naive hour offset).
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     val overlays = perModelHourly?.byModel.orEmpty()
     // A model whose precip series is all-null (Open-Meteo doesn't expose
     // `precipitation_probability_<model>` for it) has nothing to plot on
@@ -77,7 +81,7 @@ fun PrecipitationChart(
     // the same model IDs still re-emits the series. [showModelSpread] is
     // included separately so flipping the toggle on/off re-fires the effect
     // even when [overlays] hasn't changed.
-    LaunchedEffect(hourly, overlays, showModelSpread) {
+    LaunchedEffect(hourly, overlays, showModelSpread, indexByTime) {
         producer.runTransaction {
             lineSeries {
                 // Main blended line first so it stays at series index 0 in
@@ -94,19 +98,26 @@ fun PrecipitationChart(
                         // [PerModelDiagnosticCard]. A bare `series(y)` would
                         // compact surviving y values to indices 0..n which
                         // misaligns the line under the bottom axis when a
-                        // model omits its leading or trailing hours. The
-                        // x index is the entry's position in the parser's
-                        // hourly list — entries.size == hours-in-window
-                        // because the parser only drops hours when
-                        // temperature_2m itself is null, so iteration index
-                        // equals hour-since-window-start. Nulls inside the
-                        // precip series are skipped via mapIndexedNotNull;
-                        // Vico bridges the gap visually between surviving
-                        // points without drawing a fake-0 baseline.
-                        val points = entries.mapIndexedNotNull { i, e ->
-                            e.precipitationProbabilityPct?.let { i to it }
+                        // model omits its leading or trailing hours. The x
+                        // index is the window position of the entry's
+                        // timestamp ([hourlyTimestampIndices]) — not its
+                        // list position, which drifts when the parser drops
+                        // an hour whose temperature_2m is null. Entries
+                        // outside the window and nulls inside the precip
+                        // series are skipped; Vico bridges the gap visually
+                        // between surviving points without drawing a fake-0
+                        // baseline.
+                        val points = entries.mapNotNull { e ->
+                            val idx = indexByTime[e.time] ?: return@mapNotNull null
+                            e.precipitationProbabilityPct?.let { idx to it }
                         }
-                        series(x = points.map { it.first }, y = points.map { it.second })
+                        // Vico rejects an empty series; a model entirely
+                        // outside the window (shouldn't happen — per-model
+                        // data rides the same fetch as [hourly]) is skipped
+                        // rather than crashing the chart.
+                        if (points.isNotEmpty()) {
+                            series(x = points.map { it.first }, y = points.map { it.second })
+                        }
                     }
                 }
             }
@@ -156,12 +167,11 @@ fun PrecipitationChart(
     // Shaded min–max band on the default view, hidden once the per-model overlay
     // is on. Uses the same precip-probability picker as the lines; y-range is the
     // pinned 0..100.
-    val (bandMin, bandMax) = remember(overlays, hourly, startDate) {
-        val windowStart = hourly.firstOrNull()?.let { LocalDateTime.of(startDate, it.time) }
-        if (perModelHourly == null || windowStart == null) {
+    val (bandMin, bandMax) = remember(overlays, indexByTime) {
+        if (perModelHourly == null) {
             emptyList<Pair<Int, Double>>() to emptyList()
         } else {
-            perModelEnvelope(perModelHourly, windowStart, hourly.size) { it.precipitationProbabilityPct }
+            perModelEnvelope(perModelHourly, indexByTime) { it.precipitationProbabilityPct }
         }
     }
     val rangeBand = rememberRangeBandDecoration(

@@ -648,6 +648,28 @@ private fun parseDailyQuotaExhausted(body: ByteArray): GeminiTtsDailyQuotaExhaus
     return GeminiTtsDailyQuotaExhaustedException(limit = limit, resetAtUtc = resetAtUtc)
 }
 
+/**
+ * Classifies a Gemini TTS synthesis failure for the caller's retry decision.
+ *
+ * Transient failures — network timeouts, dropped connections, a 429 rate-limit
+ * or a 5xx from the shared-key proxy, and the occasional empty-candidate model
+ * hiccup — are worth another attempt before degrading to the device engine; the
+ * user picked Gemini, so a single blip shouldn't downgrade the whole briefing.
+ *
+ * Failures that won't change on a retry return false so the caller falls back
+ * immediately: the spent daily free-tier quota, a blocked prompt, and a
+ * non-retryable HTTP 4xx (auth / bad request). [CancellationException] is never
+ * retryable — it must propagate to unwind structured concurrency rather than be
+ * caught and retried.
+ */
+fun isRetryableGeminiTtsFailure(t: Throwable): Boolean = when (t) {
+    is CancellationException -> false
+    is GeminiTtsDailyQuotaExhaustedException -> false
+    is GeminiTtsBlockedException -> false
+    is GeminiTtsHttpException -> t.status.value == 429 || t.status.value in 500..599
+    else -> true
+}
+
 class GeminiTtsHttpException(val status: HttpStatusCode, body: ByteArray) :
     IllegalStateException(buildMessage(status, body)) {
 

@@ -37,6 +37,7 @@ import app.clothescast.core.domain.util.isWithin
 import app.clothescast.core.data.tts.GeminiTtsDailyQuotaExhaustedException
 import app.clothescast.core.data.tts.PcmAudio
 import app.clothescast.core.data.tts.WavEncoder
+import app.clothescast.core.data.tts.isRetryableGeminiTtsFailure
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
 import kotlinx.coroutines.Deferred
@@ -1118,11 +1119,23 @@ class FetchAndNotifyWorker(
 
     /**
      * Synthesises insight prose via Gemini TTS for the pre-alignment
-     * synth track. Returns null on any failure so downstream
-     * consumers (MQTT audio, phone speaker) can degrade gracefully:
-     * the bridge skips its audio publish, the phone speaker falls back
-     * to the device engine. Logs the failure with enough context to
-     * diagnose without spamming successes.
+     * synth track. Returns null on failure so downstream consumers
+     * (MQTT audio, phone speaker) can degrade gracefully: the bridge
+     * skips its audio publish, the phone speaker falls back to the
+     * device engine.
+     *
+     * A single transient network blip — socket timeout, dropped
+     * connection, a 429 / 5xx from the shared-key proxy — shouldn't
+     * downgrade the whole briefing to the device engine; the user
+     * picked Gemini. Retry [GEMINI_TTS_SYNTH_ATTEMPTS] times with a
+     * short exponential backoff before giving up. The synth runs
+     * pre-alignment, concurrently with the outfit render and ahead of
+     * [awaitDeliveryAlignment], so these waits are usually absorbed by
+     * the alignment barrier rather than delaying delivery. Permanent
+     * failures for this run (spent daily quota, blocked prompt, a
+     * non-retryable HTTP 4xx) skip the retries via
+     * [isRetryableGeminiTtsFailure] and fall back immediately. Logs each
+     * failure with enough context to diagnose without spamming successes.
      */
     private suspend fun synthesizeForDelivery(
         insight: Insight,
@@ -1134,38 +1147,57 @@ class FetchAndNotifyWorker(
         // holiday's voice (Father Christmas on Dec 25, a president on
         // Presidents' Day, …) and switch to a matching-gender voice.
         val selection = resolveHolidayVoice(theme?.id, prefs.geminiVoice, prefs.ttsStyle)
-        return runCatching {
-            GeminiTtsSpeaker(
-                app.geminiTtsClient,
-                voiceName = selection.voiceName,
-                style = selection.style,
-            ).synthesize(utterance.text, utterance.locale)
-        }
-            .onSuccess {
+        val speaker = GeminiTtsSpeaker(
+            app.geminiTtsClient,
+            voiceName = selection.voiceName,
+            style = selection.style,
+        )
+
+        var lastFailure: Throwable? = null
+        for (attempt in 0 until GEMINI_TTS_SYNTH_ATTEMPTS) {
+            try {
+                val pcm = speaker.synthesize(utterance.text, utterance.locale)
                 // A successful synth means the shared-key daily allowance isn't
                 // exhausted (or the user added their own key), so retire any
                 // Today limit card. Best-effort: a failed write just leaves the
                 // card up until the next success.
                 persistQuotaStatus { app.settingsRepository.clearGeminiTtsLimitExceeded() }
-            }
-            .onFailure { t ->
-                if (t is CancellationException) throw t
-                if (t is GeminiTtsDailyQuotaExhaustedException) {
-                    // The free shared-key allowance is spent for today. The cast
-                    // still plays via the device engine below; record the limit so
-                    // the Today screen can nudge the user toward Speech settings to
-                    // add their own Gemini key for unlimited casts. Persist the
-                    // reset time so the card auto-expires at the daily boundary
-                    // even before a later synth clears it.
-                    persistQuotaStatus {
-                        app.settingsRepository.setGeminiTtsLimitExceeded(
-                            resetAtMs = quotaResetAtMs(t.resetAtUtc),
-                        )
-                    }
+                return pcm
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (t: Throwable) {
+                lastFailure = t
+                if (!isRetryableGeminiTtsFailure(t)) break
+                if (attempt < GEMINI_TTS_SYNTH_ATTEMPTS - 1) {
+                    val backoffMs = GEMINI_TTS_SYNTH_BACKOFF_MS shl attempt
+                    DiagLog.w(
+                        TAG,
+                        "Gemini TTS synth attempt ${attempt + 1}/$GEMINI_TTS_SYNTH_ATTEMPTS " +
+                            "failed; retrying in ${backoffMs}ms.",
+                        t,
+                    )
+                    delay(backoffMs)
                 }
-                DiagLog.w(TAG, "Gemini TTS synth failed; downstream audio destinations degrade.", t)
             }
-            .getOrNull()
+        }
+
+        // Every attempt failed, or a permanent failure broke the loop early.
+        val failure = lastFailure
+        if (failure is GeminiTtsDailyQuotaExhaustedException) {
+            // The free shared-key allowance is spent for today. The cast
+            // still plays via the device engine below; record the limit so
+            // the Today screen can nudge the user toward Speech settings to
+            // add their own Gemini key for unlimited casts. Persist the
+            // reset time so the card auto-expires at the daily boundary
+            // even before a later synth clears it.
+            persistQuotaStatus {
+                app.settingsRepository.setGeminiTtsLimitExceeded(
+                    resetAtMs = quotaResetAtMs(failure.resetAtUtc),
+                )
+            }
+        }
+        DiagLog.w(TAG, "Gemini TTS synth failed; downstream audio destinations degrade.", failure)
+        return null
     }
 
     /**
@@ -1698,6 +1730,24 @@ class FetchAndNotifyWorker(
          * the unlucky tail where rolls bunch up.
          */
         private const val ALARM_FETCH_JITTER_MS = 30_000L
+
+        /**
+         * Total Gemini TTS synth attempts (initial try + retries) before the
+         * delivery falls back to the device engine. A single transient blip —
+         * the socket timeout in the field report that triggered this — shouldn't
+         * downgrade the briefing to the device voice the user didn't pick. Three
+         * attempts clears the common one-off timeout while staying bounded; the
+         * retries run pre-alignment, usually absorbed by the alignment barrier.
+         */
+        private const val GEMINI_TTS_SYNTH_ATTEMPTS = 3
+
+        /**
+         * Base backoff between Gemini TTS synth retries, doubled each attempt
+         * (1 s, then 2 s). Short on purpose: the synth track runs ahead of
+         * [awaitDeliveryAlignment], so a couple of seconds of retry is normally
+         * swallowed by the ~60 s alignment wait without pushing delivery later.
+         */
+        private const val GEMINI_TTS_SYNTH_BACKOFF_MS = 1_000L
 
         /** Which slice of the day this run is for; defaults to TODAY when absent. */
         internal const val KEY_PERIOD = "period"

@@ -48,12 +48,15 @@ import java.time.LocalDateTime
  * requested field once per model, suffixed with the model name (e.g.
  * `apparent_temperature_max_ecmwf_ifs04`, `apparent_temperature_ecmwf_ifs04`).
  *
- * Best-effort: any failure (network, parse error) falls through to null. Per-model
- * failures (server returns nulls or omits a model's fields) drop just that model;
- * we still return a [ConfidenceInfo] as long as at least two models reported
- * usable daily values, and a [PerModelHourly] when at least one model reported
- * usable hourly values. Every drop and every failure is reported through
- * [logger] so the caller can surface why the chip didn't render.
+ * Best-effort: any failure (network, parse error) falls through to null. A model
+ * is dropped only when its required daily field — `apparent_temperature_max`, the
+ * temperature vote — is missing or null; a model that omits the soft fields
+ * (`apparent_temperature_min`, `precipitation_probability_max`, which Open-Meteo
+ * leaves out for several models) still contributes, sitting out just the
+ * spread term it lacks. We still return a [ConfidenceInfo] as long as at least
+ * two models reported a usable daily high, and a [PerModelHourly] when at least
+ * one model reported usable hourly values. Every drop and every soft skip is
+ * reported through [logger] so the caller can surface why the chip didn't render.
  *
  * Invalid-model resilience: Open-Meteo rejects the *entire* batched request with
  * HTTP 400 if any one `models=` id is invalid or withdrawn (it names the bad one
@@ -357,14 +360,25 @@ internal class MultiModelConfidenceFetcher(
         // low-spread calculation (see [compute]) rather than dropping the
         // whole model.
         val tempMin = numberAt(daily["apparent_temperature_min_$model"] as? JsonArray, 0)?.toDouble()
+        // Soft field: Open-Meteo omits daily precipitation_probability_max for
+        // several models (verified 2026-06-09 against the live API — among
+        // DEFAULT_MODELS, ecmwf_aifs025_single returns null at all three of
+        // lat 51.5/lon -0.12, lat 40.7/lon -74.0, lat 35.7/lon 139.7; the
+        // ukmo_seamless / jma_seamless / meteofrance_seamless / arpege_seamless
+        // selections omit it everywhere too). A model that reports a high
+        // without a precip max still contributes its high (and low). When
+        // missing it drops out of the precip-spread calculation (see
+        // [compute]) rather than dropping the whole model — mirrors the hourly
+        // path's soft precip handling and the daily-low handling above.
+        // apparent_temperature_max stays the only hard requirement: without it
+        // the model has no temperature vote to cast.
         val precipMax = numberAt(daily["precipitation_probability_max_$model"] as? JsonArray, 0)?.toDouble()
-        return when {
-            tempMax == null && precipMax == null ->
-                ReadOutcome.Dropped("both apparent_temperature_max and precipitation_probability_max missing or null")
-            tempMax == null ->
+        if (precipMax == null) {
+            logger.log("model $model daily: precipitation_probability_max missing, precip-spread will skip this model")
+        }
+        return when (tempMax) {
+            null ->
                 ReadOutcome.Dropped("apparent_temperature_max missing or null")
-            precipMax == null ->
-                ReadOutcome.Dropped("precipitation_probability_max missing or null")
             else ->
                 ReadOutcome.Usable(ModelDailyValues(tempMax, tempMin, precipMax))
         }
@@ -383,12 +397,19 @@ internal class MultiModelConfidenceFetcher(
         // With fewer than two lows we can't measure low disagreement, so it
         // contributes nothing — mirrors the precip dimension's guard.
         val lows = results.mapNotNull { it.second.tempMinC }
-        val precips = results.map { it.second.precipMaxPp }
+        // Models that didn't report a daily precip max (Open-Meteo omits the
+        // per-model field for several models — see [readModelDaily]) sit out
+        // the precip-spread term. With fewer than two reporters we can't
+        // measure precip disagreement, so it contributes nothing — including a
+        // model with a fake zero would silently inflate divergence on a calm
+        // day and downgrade confidence. Mirrors the low-spread guard and
+        // [ConfidenceInfo.computeFrom]'s hourly precip handling.
+        val precips = results.mapNotNull { it.second.precipMaxPp }
         val highSpread = highs.max() - highs.min()
         val lowSpread = if (lows.size >= 2) lows.max() - lows.min() else 0.0
         // Disagreement on the day's high *or* its low downgrades confidence.
         val tempSpread = maxOf(highSpread, lowSpread)
-        val precipSpread = precips.max() - precips.min()
+        val precipSpread = if (precips.size >= 2) precips.max() - precips.min() else 0.0
 
         val level = when {
             tempSpread <= ConfidenceInfo.TEMP_HIGH_AGREEMENT_C &&
@@ -411,7 +432,7 @@ internal class MultiModelConfidenceFetcher(
     private data class ModelDailyValues(
         val tempMaxC: Double,
         val tempMinC: Double?,
-        val precipMaxPp: Double,
+        val precipMaxPp: Double?,
     )
 
     private sealed class ReadOutcome {

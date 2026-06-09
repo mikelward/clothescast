@@ -330,16 +330,63 @@ class MultiModelConfidenceFetcherTest {
     }
 
     @Test
-    fun `dropping a model logs which fields were missing`() = runTest {
+    fun `dropping a model logs the missing required field`() = runTest {
+        // ecmwf has null apparent_temperature_max (the hard requirement) and
+        // null precipitation_probability_max (now soft). The drop reason names
+        // the missing required field; the absent precip max surfaces as its own
+        // soft-skip note rather than as part of the drop reason.
         val logger = CapturingLogger()
         fetcherWith(ONE_MODEL_NULL_VALUES, logger = logger).fetch(london, fixtureModels)
 
-        val message = logger.entries.singleOrNull { "ecmwf_ifs025" in it.message }
-            .shouldNotBeNull()
-            .message
-        message shouldContain "dropped"
-        message shouldContain "apparent_temperature_max"
-        message shouldContain "precipitation_probability_max"
+        val dropMessage = logger.entries.singleOrNull {
+            "ecmwf_ifs025" in it.message && "dropped" in it.message
+        }.shouldNotBeNull().message
+        dropMessage shouldContain "apparent_temperature_max"
+
+        val softMessage = logger.entries.singleOrNull {
+            "ecmwf_ifs025" in it.message && "precip-spread will skip" in it.message
+        }.shouldNotBeNull().message
+        softMessage shouldContain "precipitation_probability_max"
+    }
+
+    @Test
+    fun `model missing daily precip max still contributes its temperature`() = runTest {
+        // Open-Meteo omits precipitation_probability_max for several models
+        // (verified live: ecmwf_aifs025_single among the defaults, plus
+        // ukmo / jma / meteofrance / arpege). Such a model must still cast its
+        // temperature vote rather than being dropped from the chip entirely.
+        // icon omits precip here and also defines the day's high (23.5 vs
+        // 21.0 / 21.5), so a temp spread of 2.5 proves icon was counted —
+        // dropping it would collapse the spread to 0.5.
+        val logger = CapturingLogger()
+        val info = fetcherWith(ONE_MODEL_NO_PRECIP_MAX, logger = logger)
+            .fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
+
+        info.modelsConsulted shouldContainExactlyInAnyOrder
+            listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless")
+        info.tempSpreadC shouldBe (2.5 plusOrMinus 0.0001)
+        // Precip spread is over the two reporters (ecmwf 10, gfs 15).
+        info.precipSpreadPp shouldBe (5.0 plusOrMinus 0.0001)
+        info.level shouldBe ForecastConfidence.MEDIUM
+        logger.entries.any {
+            "icon_seamless" in it.message && "precip-spread will skip" in it.message
+        } shouldBe true
+    }
+
+    @Test
+    fun `precip dimension is neutral when only one model reports precip max`() = runTest {
+        // Two models, only ecmwf reports a precip max. With fewer than two
+        // precip reporters the precip dimension contributes 0.0 spread (it
+        // can't downgrade confidence), so the tier is driven by temperature
+        // alone — here a tight 0.5 spread → HIGH.
+        val info = fetcherWith(TWO_MODELS_ONE_PRECIP_MAX)
+            .fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
+
+        info.modelsConsulted shouldContainExactlyInAnyOrder
+            listOf("ecmwf_ifs025", "gfs_seamless")
+        info.tempSpreadC shouldBe (0.5 plusOrMinus 0.0001)
+        info.precipSpreadPp shouldBe (0.0 plusOrMinus 0.0001)
+        info.level shouldBe ForecastConfidence.HIGH
     }
 
     @Test
@@ -554,6 +601,38 @@ class MultiModelConfidenceFetcherTest {
               "daily": {
                 "time": ["2026-05-12"],
                 "apparent_temperature_max_ecmwf_ifs025": [21.0],
+                "precipitation_probability_max_ecmwf_ifs025": [10]
+              }
+            }
+        """.trimIndent()
+
+        // icon reports its temps but omits precipitation_probability_max
+        // entirely (the case ecmwf_aifs025_single / ukmo / jma / meteofrance /
+        // arpege hit live). icon also defines the day's high (23.5), so a
+        // 2.5°C spread confirms it still contributes a temperature vote. Only
+        // ecmwf + gfs feed the precip spread.
+        private val ONE_MODEL_NO_PRECIP_MAX = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.5],
+                "apparent_temperature_max_icon_seamless": [23.5],
+                "precipitation_probability_max_ecmwf_ifs025": [10],
+                "precipitation_probability_max_gfs_seamless": [15]
+              }
+            }
+        """.trimIndent()
+
+        // Two models with tight temps (0.5°C apart); only ecmwf reports a
+        // precip max, so the precip dimension goes neutral and temperature
+        // alone decides the tier.
+        private val TWO_MODELS_ONE_PRECIP_MAX = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs025": [21.0],
+                "apparent_temperature_max_gfs_seamless": [21.5],
                 "precipitation_probability_max_ecmwf_ifs025": [10]
               }
             }

@@ -136,12 +136,16 @@ internal class NsdHomeAssistantDiscovery(context: Context) : HomeAssistantDiscov
                 override fun onServiceLost(serviceInfo: NsdServiceInfo) {
                     val type = serviceTypeOf(serviceInfo.serviceType) ?: return
                     val key = type to serviceInfo.serviceName
+                    // Always arm the lost-while-pending mark, not just when
+                    // the key was never resolved: a re-announce can queue a
+                    // second resolve while the entry is live, and a loss
+                    // arriving before that resolve completes must keep it
+                    // from re-inserting the dead service into the picker.
+                    // The next onServiceFound clears the mark, so a service
+                    // that genuinely comes back still inserts normally.
+                    lostWhilePending.add(key)
                     if (results.remove(key) != null) {
                         emit()
-                    } else {
-                        // Not yet resolved — flag the key so the eventual
-                        // resolve callback discards instead of inserting.
-                        lostWhilePending.add(key)
                     }
                 }
             }

@@ -19,10 +19,14 @@ enum class CastDeviceClass { DISPLAY, AUDIO_ONLY, UNKNOWN }
  *
  * [CastDevice.CAPABILITY_VIDEO_OUT] is the authoritative signal — it's
  * the receiver-reported capability Google's own Cast dialog uses to
- * route audio vs. video. The MediaRouter speaker device-type is a
- * fallback for when the [CastDevice] bundle isn't populated yet.
+ * route audio vs. video. When the [CastDevice] bundle isn't populated
+ * yet (the AndroidX route API allows `extras` to be null, common for
+ * speaker groups), MediaRouter's own metadata is the fallback: a route
+ * that is a group, or whose device type is a speaker, has no screen.
+ * Google Cast groups are audio-only by design — there are no video
+ * groups — so a group route never wants the image+audio MP4.
  *
- * Returns [CastDeviceClass.UNKNOWN] when neither signal is conclusive;
+ * Returns [CastDeviceClass.UNKNOWN] when no signal is conclusive;
  * callers treat UNKNOWN as a display ([mediaPlanFor]) so an
  * unidentified route keeps the proven image+audio path rather than
  * being silently downgraded to audio-only. Worst case an MP4 lands on a
@@ -31,14 +35,41 @@ enum class CastDeviceClass { DISPLAY, AUDIO_ONLY, UNKNOWN }
  */
 internal fun classifyRoute(route: MediaRouter.RouteInfo): CastDeviceClass {
     val device = route.extras?.let { CastDevice.getFromBundle(it) }
-    return when {
-        device != null && device.hasCapability(CastDevice.CAPABILITY_VIDEO_OUT) ->
-            CastDeviceClass.DISPLAY
-        device != null -> CastDeviceClass.AUDIO_ONLY
-        route.deviceType == MediaRouter.RouteInfo.DEVICE_TYPE_SPEAKER ->
-            CastDeviceClass.AUDIO_ONLY
-        else -> CastDeviceClass.UNKNOWN
-    }
+    return classifyDevice(
+        hasCastDevice = device != null,
+        hasVideoOut = device?.hasCapability(CastDevice.CAPABILITY_VIDEO_OUT) == true,
+        isGroup = route.isGroup,
+        deviceType = route.deviceType,
+    )
+}
+
+/**
+ * MediaRouter device types with no screen. The fallback when no
+ * [CastDevice] is attached — covers Cast speaker groups
+ * ([MediaRouter.RouteInfo.DEVICE_TYPE_GROUP]) and bare speakers.
+ */
+private val AUDIO_ONLY_DEVICE_TYPES = setOf(
+    MediaRouter.RouteInfo.DEVICE_TYPE_SPEAKER,
+    MediaRouter.RouteInfo.DEVICE_TYPE_REMOTE_SPEAKER,
+    MediaRouter.RouteInfo.DEVICE_TYPE_GROUP,
+)
+
+/**
+ * Pure decision behind [classifyRoute], split out so the
+ * group / speaker / video-out matrix is unit-testable without a real
+ * [MediaRouter.RouteInfo].
+ */
+internal fun classifyDevice(
+    hasCastDevice: Boolean,
+    hasVideoOut: Boolean,
+    isGroup: Boolean,
+    deviceType: Int,
+): CastDeviceClass = when {
+    hasCastDevice && hasVideoOut -> CastDeviceClass.DISPLAY
+    hasCastDevice -> CastDeviceClass.AUDIO_ONLY
+    isGroup -> CastDeviceClass.AUDIO_ONLY
+    deviceType in AUDIO_ONLY_DEVICE_TYPES -> CastDeviceClass.AUDIO_ONLY
+    else -> CastDeviceClass.UNKNOWN
 }
 
 /**

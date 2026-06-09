@@ -1,9 +1,63 @@
 package app.clothescast.cast
 
+import androidx.mediarouter.media.MediaRouter.RouteInfo
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
 class CastDeviceClassTest {
+
+    @Test
+    fun `a cast device reporting video-out is a display`() {
+        classifyDevice(
+            hasCastDevice = true,
+            hasVideoOut = true,
+            isGroup = false,
+            deviceType = RouteInfo.DEVICE_TYPE_TV,
+        ) shouldBe CastDeviceClass.DISPLAY
+    }
+
+    @Test
+    fun `a cast device with no video-out is audio-only`() {
+        classifyDevice(
+            hasCastDevice = true,
+            hasVideoOut = false,
+            isGroup = false,
+            deviceType = RouteInfo.DEVICE_TYPE_SPEAKER,
+        ) shouldBe CastDeviceClass.AUDIO_ONLY
+    }
+
+    @Test
+    fun `a group route with no cast device extras is audio-only, not unknown`() {
+        // Speaker groups often expose null extras, so the video-out check is
+        // skipped — the group signal must still route them to the WAV path
+        // rather than the padded image+audio MP4.
+        classifyDevice(
+            hasCastDevice = false,
+            hasVideoOut = false,
+            isGroup = true,
+            deviceType = RouteInfo.DEVICE_TYPE_GROUP,
+        ) shouldBe CastDeviceClass.AUDIO_ONLY
+    }
+
+    @Test
+    fun `a speaker device type with no cast device is audio-only`() {
+        classifyDevice(
+            hasCastDevice = false,
+            hasVideoOut = false,
+            isGroup = false,
+            deviceType = RouteInfo.DEVICE_TYPE_REMOTE_SPEAKER,
+        ) shouldBe CastDeviceClass.AUDIO_ONLY
+    }
+
+    @Test
+    fun `an unidentifiable route falls back to unknown`() {
+        classifyDevice(
+            hasCastDevice = false,
+            hasVideoOut = false,
+            isGroup = false,
+            deviceType = RouteInfo.DEVICE_TYPE_UNKNOWN,
+        ) shouldBe CastDeviceClass.UNKNOWN
+    }
 
     @Test
     fun `display gets the muxed MP4 regardless of audio`() {

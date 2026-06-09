@@ -57,8 +57,8 @@ class HolidayThemeResolverTest {
                 listOf(
                     CalendarEvent(
                         title = "Alex's birthday",
-                        start = LocalTime.MIDNIGHT,
-                        end = LocalTime.MIDNIGHT,
+                        start = date.atStartOfDay(),
+                        end = date.atStartOfDay(),
                         allDay = true,
                         kind = EventKind.BIRTHDAY,
                     ),

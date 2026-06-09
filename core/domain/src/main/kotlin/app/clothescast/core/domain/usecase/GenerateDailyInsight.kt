@@ -12,7 +12,8 @@ import java.time.Clock
 import java.time.LocalDate
 
 /**
- * The product. Fetches the forecast + reads today's calendar events, captures
+ * The product. Fetches the forecast + reads the calendar events for today and
+ * tomorrow (the tonight window wraps past midnight), captures
  * them as a [ForecastSnapshot], and runs [DeriveInsight] against the current
  * [UserPreferences] to produce a [DailyInsightResult].
  *
@@ -72,7 +73,7 @@ class GenerateDailyInsight(
         } else {
             fetched
         }
-        val events = readEventsForDay(bundle.today.date, prefs)
+        val events = readEvents(bundle.today.date, prefs)
         return ForecastSnapshot(
             bundle = bundle,
             events = events,
@@ -82,14 +83,23 @@ class GenerateDailyInsight(
         )
     }
 
-    private suspend fun readEventsForDay(date: LocalDate, prefs: UserPreferences): List<CalendarEvent> {
+    private suspend fun readEvents(date: LocalDate, prefs: UserPreferences): List<CalendarEvent> {
         // Failures (missing permission, provider crash) degrade to no events so
         // a misbehaving reader can never fail the insight pipeline. Reader
         // implementations are expected to log their own failures before
         // throwing; we don't have a logger in pure-Kotlin :core:domain.
         val reader = calendarEventReader
         if (!prefs.calendarEventMentionsActive || reader == null) return emptyList()
-        return coRunCatching { reader.eventsForDay(date, prefs.schedule.zoneId) }
-            .getOrDefault(emptyList())
+        return coRunCatching {
+            // Fetch today AND tomorrow: the tonight window wraps past midnight
+            // to tomorrow's morning start, and the morning insight's evening
+            // tie-in reads that same window, so both periods need tomorrow's
+            // pre-dawn events — which only the tomorrow day query returns. An
+            // instance spanning midnight is materialized by both day queries
+            // with identical absolute times, so the data-class distinct()
+            // collapses the duplicate.
+            val zone = prefs.schedule.zoneId
+            (reader.eventsForDay(date, zone) + reader.eventsForDay(date.plusDays(1), zone)).distinct()
+        }.getOrDefault(emptyList())
     }
 }

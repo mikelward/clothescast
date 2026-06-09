@@ -47,6 +47,13 @@ class RenderInsightSummaryTest {
         condition = WeatherCondition.PARTLY_CLOUDY,
     )
 
+    // The TONIGHT calendar tie-in dates the precip peak with the tonightWindow
+    // wrap convention: hours before the default 19:00 tonight start — like the
+    // 15:00 peak these fixtures use — fall on the day *after* mildToday.date,
+    // so events meant to overlap (or be compared against) that peak are dated
+    // tomorrow.
+    private val tonightPeakDate = mildToday.date.plusDays(1)
+
     @Test
     fun `band clause is always emitted`() {
         val out = subject(mildToday, yesterday, emptyList())
@@ -401,7 +408,7 @@ class RenderInsightSummaryTest {
             condition = WeatherCondition.RAIN,
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
         )
-        val event = CalendarEvent("standup", LocalTime.of(14, 30), LocalTime.of(16, 0))
+        val event = CalendarEvent("standup", mildToday.date.atTime(14, 30), mildToday.date.atTime(16, 0))
         subject(today, yesterday, listOf("umbrella"), events = listOf(event)).calendarTieIn.shouldBeNull()
     }
 
@@ -415,7 +422,7 @@ class RenderInsightSummaryTest {
             condition = WeatherCondition.CLOUDY,
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.CLOUDY)),
         )
-        val event = CalendarEvent("park run", LocalTime.of(14, 30), LocalTime.of(16, 0))
+        val event = CalendarEvent("park run", tonightPeakDate.atTime(14, 30), tonightPeakDate.atTime(16, 0))
         subject(
             today, yesterday, listOf("umbrella"),
             events = listOf(event),
@@ -464,7 +471,7 @@ class RenderInsightSummaryTest {
                 HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN),
             ),
         )
-        val event = CalendarEvent("park run", LocalTime.of(14, 30), LocalTime.of(16, 0))
+        val event = CalendarEvent("park run", tonightPeakDate.atTime(14, 30), tonightPeakDate.atTime(16, 0))
         subject(
             today, yesterday, listOf("t-shirt", "pants"),
             events = listOf(event),
@@ -484,8 +491,8 @@ class RenderInsightSummaryTest {
         )
         val event = CalendarEvent(
             title = "park run",
-            start = LocalTime.of(14, 30),
-            end = LocalTime.of(16, 0),
+            start = tonightPeakDate.atTime(14, 30),
+            end = tonightPeakDate.atTime(16, 0),
         )
         val out = subject(
             today, yesterday, listOf("umbrella"),
@@ -507,7 +514,7 @@ class RenderInsightSummaryTest {
             condition = WeatherCondition.RAIN,
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
         )
-        val event = CalendarEvent("park run", LocalTime.of(14, 0), LocalTime.of(16, 0))
+        val event = CalendarEvent("park run", tonightPeakDate.atTime(14, 0), tonightPeakDate.atTime(16, 0))
         val out = subject(
             today, yesterday, listOf("sweater", "jacket"),
             events = listOf(event),
@@ -524,7 +531,7 @@ class RenderInsightSummaryTest {
             condition = WeatherCondition.RAIN,
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
         )
-        val event = CalendarEvent("breakfast", LocalTime.of(8, 0), LocalTime.of(9, 0))
+        val event = CalendarEvent("breakfast", tonightPeakDate.atTime(8, 0), tonightPeakDate.atTime(9, 0))
         subject(
             today, yesterday, listOf("umbrella"),
             events = listOf(event),
@@ -539,7 +546,7 @@ class RenderInsightSummaryTest {
             condition = WeatherCondition.RAIN,
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
         )
-        val event = CalendarEvent("park run", LocalTime.of(14, 30), LocalTime.of(16, 0))
+        val event = CalendarEvent("park run", tonightPeakDate.atTime(14, 30), tonightPeakDate.atTime(16, 0))
         subject(
             today, yesterday, emptyList(),
             events = listOf(event),
@@ -549,7 +556,7 @@ class RenderInsightSummaryTest {
 
     @Test
     fun `calendar tie-in is omitted on a dry day even when an event exists`() {
-        val event = CalendarEvent("park run", LocalTime.of(11, 0), LocalTime.of(13, 0))
+        val event = CalendarEvent("park run", tonightPeakDate.atTime(11, 0), tonightPeakDate.atTime(13, 0))
         subject(
             mildToday, yesterday, listOf("umbrella"),
             events = listOf(event),
@@ -564,7 +571,12 @@ class RenderInsightSummaryTest {
             condition = WeatherCondition.RAIN,
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
         )
-        val holiday = CalendarEvent("public holiday", LocalTime.MIDNIGHT, LocalTime.MIDNIGHT, allDay = true)
+        val holiday = CalendarEvent(
+            "public holiday",
+            mildToday.date.atStartOfDay(),
+            mildToday.date.atStartOfDay(),
+            allDay = true,
+        )
         subject(
             today, yesterday, listOf("umbrella"),
             events = listOf(holiday),

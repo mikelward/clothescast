@@ -168,7 +168,7 @@ class InsightCacheTest {
     @Test
     fun `corrupt JSON drops to null rather than crashing`() = runTest {
         dataStore.edit {
-            it[stringPreferencesKey("this_period_snapshot_v7")] = "{not valid json"
+            it[stringPreferencesKey("this_period_snapshot_v8")] = "{not valid json"
         }
 
         subject.thisPeriod.first() shouldBe null
@@ -176,12 +176,27 @@ class InsightCacheTest {
 
     @Test
     fun `pre-v7 payloads (the old derived-Insight shape) are dropped on read`() = runTest {
-        // Old v6 cache key, old derived-insight JSON shape. The new v7 reader
-        // returns null and the next worker run repopulates the v7 keys.
+        // Old v6 cache key, old derived-insight JSON shape. The current reader
+        // returns null and the next worker run repopulates the live keys.
         dataStore.edit {
             it[stringPreferencesKey("this_period_insight_v6")] = """
                 {"summary":"placeholder","recommendedItems":[],"generatedAtEpochMillis":0,
                  "forDateEpochDays":0}
+            """.trimIndent()
+        }
+
+        subject.thisPeriod.first() shouldBe null
+    }
+
+    @Test
+    fun `v7 payloads (time-only events) are dropped on read`() = runTest {
+        // v7 stored CalendarEventDto with second-of-day fields only — it can't
+        // materialise dated events, so v8 reads from a fresh key, drops to
+        // null, and the next worker run repopulates.
+        dataStore.edit {
+            it[stringPreferencesKey("this_period_snapshot_v7")] = """
+                {"bundle":{},"events":[{"startSecondOfDay":0,"endSecondOfDay":0}],
+                 "generatedAtEpochMillis":0}
             """.trimIndent()
         }
 
@@ -196,8 +211,8 @@ class InsightCacheTest {
         // disk posture at parity with the previous derived-insight cache).
         val concertEvent = CalendarEvent(
             title = "Concert with band",
-            start = LocalTime.of(20, 0),
-            end = LocalTime.of(22, 0),
+            start = today.atTime(20, 0),
+            end = today.atTime(22, 0),
             location = "Royal Albert Hall",
             allDay = false,
         )
@@ -207,8 +222,8 @@ class InsightCacheTest {
 
         val read = subject.thisPeriod.first()
         val readEvent = read?.events?.singleOrNull()
-        readEvent?.start shouldBe LocalTime.of(20, 0)
-        readEvent?.end shouldBe LocalTime.of(22, 0)
+        readEvent?.start shouldBe today.atTime(20, 0)
+        readEvent?.end shouldBe today.atTime(22, 0)
         readEvent?.allDay shouldBe false
         // Title dropped, location replaced with a placeholder presence marker.
         readEvent?.title shouldBe ""
@@ -221,8 +236,8 @@ class InsightCacheTest {
         // a no-location event must come back as a no-location event.
         val noLocationEvent = CalendarEvent(
             title = "Internal sync",
-            start = LocalTime.of(10, 0),
-            end = LocalTime.of(11, 0),
+            start = today.atTime(10, 0),
+            end = today.atTime(11, 0),
             location = null,
             allDay = false,
         )
@@ -230,6 +245,27 @@ class InsightCacheTest {
 
         val read = subject.thisPeriod.first()
         read?.events?.singleOrNull()?.location shouldBe null
+    }
+
+    @Test
+    fun `midnight-crossing event keeps its dated endpoints across the round-trip`() = runTest {
+        // The DTO stores a date + second-of-day pair per endpoint (the
+        // PerModelHourDto pattern), so a 21:00 gig ending at 00:30 tomorrow
+        // must come back with its end still on tomorrow's date — collapsing
+        // both endpoints onto one date would resurrect the wrapped-interval
+        // ambiguity the LocalDateTime migration removed.
+        val gig = CalendarEvent(
+            title = "Late gig",
+            start = today.atTime(21, 0),
+            end = today.plusDays(1).atTime(0, 30),
+            location = "Venue",
+            allDay = false,
+        )
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample.copy(events = listOf(gig)))
+
+        val readEvent = subject.thisPeriod.first()?.events?.singleOrNull()
+        readEvent?.start shouldBe today.atTime(21, 0)
+        readEvent?.end shouldBe today.plusDays(1).atTime(0, 30)
     }
 
     @Test

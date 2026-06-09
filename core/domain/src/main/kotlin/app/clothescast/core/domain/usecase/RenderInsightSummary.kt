@@ -21,6 +21,7 @@ import app.clothescast.core.domain.model.PrecipProbability.POSSIBLE_THRESHOLD
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.isPrecipitation
+import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
 import kotlin.math.abs
@@ -116,6 +117,14 @@ class RenderInsightSummary {
         // emit "Bring a t-shirt." purely because TriggeredOutfit has
         // baseline items.
         todayRuleItems: List<String> = todayItems,
+        // Start of the tonight window, used only to date the precip peak when
+        // pairing it against the dated calendar events for the TONIGHT
+        // calendar tie-in: peak hours at/after this time fall on [today]'s
+        // date, earlier ones on the next day — the same wrap convention as
+        // [tonightWindow], via the shared [tonightDateTime] helper. Defaults
+        // to the 19:00 schedule default so existing callers/tests are
+        // unchanged; [DeriveInsight] passes the user's actual setting.
+        tonightStart: LocalTime = LocalTime.of(19, 0),
         // Diagnostic hook called once per render with a one-line summary
         // of the delta clause decision (today / yesterday inputs, picked
         // side, outcome). Pure-Kotlin module → no DiagLog dependency;
@@ -145,7 +154,11 @@ class RenderInsightSummary {
             // Threshold-rule matches only — a tier's default isn't an
             // "extra to bring," so it shouldn't be what the tie-in
             // points at.
-            calendarTieIn = if (period == ForecastPeriod.TONIGHT) calendarTieInClause(todayRuleItems, peak, events) else null,
+            calendarTieIn = if (period == ForecastPeriod.TONIGHT) {
+                calendarTieInClause(todayRuleItems, peak, events, today.date, tonightStart)
+            } else {
+                null
+            },
             eveningEventTieIn = eveningEventTieIn,
             // Carried accessories (umbrella) ride independently of the wear
             // clause: the formatter folds them into the precip clause, so they
@@ -436,13 +449,20 @@ class RenderInsightSummary {
         items: List<String>,
         peak: PeakPrecip?,
         events: List<CalendarEvent>,
+        todayDate: LocalDate,
+        tonightStart: LocalTime,
     ): CalendarTieInClause? {
         if (items.isEmpty() || peak == null || events.isEmpty()) return null
         // Need an overlapping event to motivate the clause, but we don't capture
         // the event's title or time — neither is in the rendered prose, and we
         // never want a calendar event title flowing through to off-device TTS
         // (the prose is fed to Gemini over the BYOK key).
-        events.firstOrNull { it.overlaps(peak.time) } ?: return null
+        //
+        // The peak is a wall-clock hour inside the tonight window (this clause
+        // only fires on TONIGHT); date it via the shared tonight wrap
+        // convention before pairing against the dated events.
+        val peakAt = tonightDateTime(todayDate, tonightStart, peak.time)
+        events.firstOrNull { it.overlaps(peakAt) } ?: return null
         // Pick the first triggered item, mirroring rule 3's ordering. The formatter
         // silences accessories (umbrella) before they reach the rendered prose, so
         // there's no point picking a specifically-precip-motivated item here — until

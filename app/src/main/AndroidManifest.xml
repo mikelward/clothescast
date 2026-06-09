@@ -58,10 +58,16 @@
         android:name="android.permission.SCHEDULE_EXACT_ALARM"
         android:maxSdkVersion="32" />
 
-    <!-- TTS playback while backgrounded on Android 14+ requires a short foreground service.
-         A shortService FGS needs only FOREGROUND_SERVICE — there is no separate
-         FOREGROUND_SERVICE_SHORT_SERVICE permission. -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Package visibility (API 30+ filtering applies on every supported
+         device): the device-voice path constructs TextToSpeech engines and
+         enumerates voices (AndroidTtsEngine / AndroidTtsVoiceEnumerator),
+         which requires declaring the TTS_SERVICE intent or engine resolution
+         and getEngines()/voice listing silently come up empty. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
 
     <application
         android:name=".ClothesCastApplication"
@@ -115,10 +121,13 @@
             </intent-filter>
         </receiver>
 
-        <!-- System broadcasts that should re-arm the daily alarm. -->
+        <!-- System broadcasts that should re-arm the daily alarm. All four
+             actions are protected system broadcasts, which the OS delivers
+             to unexported receivers — exported="false" just keeps other
+             apps from poking the receiver directly. -->
         <receiver
             android:name=".alarm.ScheduleRefreshReceiver"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />

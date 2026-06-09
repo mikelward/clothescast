@@ -154,7 +154,14 @@ fun ForecastChart(
     val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     val overlays = perModelHourly?.byModel.orEmpty()
     val visibleModels = if (showModelSpread) {
-        MODEL_DRAW_ORDER.filter { it in overlays }
+        // Only models with at least one point inside this chart's window.
+        // [rememberPinnedLineProvider] assigns line colors by position in
+        // this list against the series emitted below, so the two must stay
+        // in lockstep — emitting fewer series than entries here would shift
+        // every later model onto the wrong color.
+        MODEL_DRAW_ORDER.filter { modelId ->
+            overlays[modelId].orEmpty().any { it.time in indexByTime }
+        }
     } else {
         emptyList()
     }
@@ -196,13 +203,11 @@ fun ForecastChart(
                         val points = entries.mapNotNull { e ->
                             indexByTime[e.time]?.let { it to pickModel(e).toUnit(temperatureUnit) }
                         }
-                        // Vico rejects an empty series; a model entirely
-                        // outside the window (shouldn't happen — per-model
-                        // data rides the same fetch as [hourly]) is skipped
-                        // rather than crashing the chart.
-                        if (points.isNotEmpty()) {
-                            series(x = points.map { it.first }, y = points.map { it.second })
-                        }
+                        // Never empty: [visibleModels] is pre-filtered to
+                        // models with ≥1 in-window point, which keeps the
+                        // emitted series count equal to the line provider's
+                        // color list (and Vico rejects an empty series).
+                        series(x = points.map { it.first }, y = points.map { it.second })
                     }
                 }
             }

@@ -61,14 +61,20 @@ fun PrecipitationChart(
     // DST weeks where position ≠ naive hour offset).
     val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     val overlays = perModelHourly?.byModel.orEmpty()
-    // A model whose precip series is all-null (Open-Meteo doesn't expose
-    // `precipitation_probability_<model>` for it) has nothing to plot on
-    // this chart — skip it so we don't draw an empty Vico series and the
-    // legend doesn't list a phantom line. The model still appears on the
-    // temperature chart via [ForecastChart], which only needs air-temp.
+    // A model with no plottable point on this chart — precip series all-null
+    // (Open-Meteo doesn't expose `precipitation_probability_<model>` for it)
+    // or no entry inside this chart's window — is skipped so we don't draw an
+    // empty Vico series and the legend doesn't list a phantom line. The
+    // window check keeps this list in lockstep with the series emitted below:
+    // the pinned line provider assigns colors by position, so emitting fewer
+    // series than entries here would shift later models onto the wrong
+    // color. The model still appears on the temperature chart via
+    // [ForecastChart], which only needs air-temp.
     val visibleModels = if (showModelSpread) {
         MODEL_DRAW_ORDER.filter { modelId ->
-            overlays[modelId]?.any { it.precipitationProbabilityPct != null } == true
+            overlays[modelId].orEmpty().any {
+                it.precipitationProbabilityPct != null && it.time in indexByTime
+            }
         }
     } else {
         emptyList()
@@ -111,13 +117,11 @@ fun PrecipitationChart(
                             val idx = indexByTime[e.time] ?: return@mapNotNull null
                             e.precipitationProbabilityPct?.let { idx to it }
                         }
-                        // Vico rejects an empty series; a model entirely
-                        // outside the window (shouldn't happen — per-model
-                        // data rides the same fetch as [hourly]) is skipped
-                        // rather than crashing the chart.
-                        if (points.isNotEmpty()) {
-                            series(x = points.map { it.first }, y = points.map { it.second })
-                        }
+                        // Never empty: [visibleModels] is pre-filtered to
+                        // models with ≥1 plottable in-window point, keeping
+                        // the emitted series count equal to the line
+                        // provider's color list (Vico rejects empty series).
+                        series(x = points.map { it.first }, y = points.map { it.second })
                     }
                 }
             }

@@ -296,9 +296,11 @@ class ClothesCastApplication : Application() {
                 resumedActivity = WeakReference(activity)
             }
             override fun onActivityPaused(activity: Activity) {
-                // Identity check: a *new* Activity's onResume runs before the
-                // old one's onPause during a recreate, so clearing blindly
-                // would drop the fresh reference.
+                // Identity check rather than a blind clear: the standard
+                // ordering pauses the old Activity before resuming the new
+                // one, so a blind clear also works today — but the check
+                // costs nothing and stays correct if a future flow ever
+                // pauses an already-superseded instance late.
                 if (resumedActivity?.get() === activity) resumedActivity = null
             }
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}

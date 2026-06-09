@@ -361,7 +361,19 @@ class DeriveInsight(
         tonightStart: LocalTime,
     ): List<CalendarEvent> = when (period) {
         ForecastPeriod.TODAY -> events
-        ForecastPeriod.TONIGHT -> events.filter { it.allDay || !it.start.isBefore(tonightStart) }
+        // Keep any event that overlaps the night window, not just those that
+        // *start* inside it: an 18:30–21:30 dinner straddles a 19:00 tonight
+        // start, and excluding it made the 7pm notification silent (hasEvents
+        // false) and hid the away-from-home tie-in even though the user is
+        // out for most of the evening. `end <= start` means the event crosses
+        // midnight (date-less wall-clock times), which always reaches into
+        // the night window.
+        ForecastPeriod.TONIGHT -> events.filter {
+            it.allDay ||
+                !it.start.isBefore(tonightStart) ||
+                it.end.isAfter(tonightStart) ||
+                it.end.isBefore(it.start)
+        }
     }
 
     private data class PeriodView(
@@ -401,13 +413,25 @@ internal fun ForecastBundle.shiftedToTomorrow(): ForecastBundle? {
     )
 }
 
+/**
+ * Restricts each model's series to the hours in [window], keeping whatever
+ * subset of the window a model reported. A model with gaps stays in — every
+ * consumer is sparse-safe: the charts position points by timestamp lookup
+ * (not list position), and [RenderInsightSummary.pickPerModelPeak] counts
+ * per-hour reporters by design. The previous behavior evicted a model
+ * missing even one window hour, which starved the rain-tier majority logic
+ * of exactly the warming-up models its sparse handling exists for — and
+ * when *every* model had a gap, collapsed the overlay to null, dropping the
+ * confidence chip and downgrading the precip clause to the base-hourly
+ * fallback. Models with nothing in the window drop out entirely (ICON past
+ * day 7); null when none remain.
+ */
 internal fun PerModelHourly.slicedTo(window: List<LocalDateTime>): PerModelHourly? {
     if (window.isEmpty()) return null
-    val filtered = byModel.mapNotNull { (model, entries) ->
-        val byTime = entries.associateBy { it.time }
-        val sliced = window.map { byTime[it] ?: return@mapNotNull null }
-        model to sliced
-    }.toMap()
+    val windowSet = window.toSet()
+    val filtered = byModel
+        .mapValues { (_, entries) -> entries.filter { it.time in windowSet } }
+        .filterValues { it.isNotEmpty() }
     return if (filtered.isEmpty()) null else PerModelHourly(filtered)
 }
 

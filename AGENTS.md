@@ -148,7 +148,7 @@ new rule the first time something bites you, not the third.
   guides, repo tooling, project meta — takes `internal:` (e.g. `internal:
   document the internal: changelog prefix`) and CI skips it the same way
   it skips `ci:` / `test:`. Note the path-based filter already drops
-  top-level `*.md`, `docs/`, and dotfile-only commits regardless of
+  `*.md` (at any depth), `docs/`, and dotfile-only commits regardless of
   prefix (PRIVACY.md is the exception — it's treated as non-docs so
   privacy-policy updates still surface), so a pure-`AGENTS.md` change is
   dropped either way — but still prefix it so the subject's intent is
@@ -156,11 +156,12 @@ new rule the first time something bites you, not the third.
   especially when an internal-only change touches paths that *would*
   otherwise ship a bullet.
 - **Docs-only commits use a `docs:` subject prefix.** A commit touching
-  only `docs/`, top-level `*.md` (READMEs, setup guides), or dotfiles
-  takes `docs:` (e.g. `docs: fix stale Firebase Console nav`). Prefix it
-  even though the path filter already drops it from the changelog — the
-  prefix makes the intent explicit and keeps the subject from reading
-  like end-user copy. Exception: a PRIVACY.md-only change ships as a
+  only `docs/`, `*.md` files (READMEs, setup guides — any depth), or
+  dotfiles takes `docs:` (e.g. `docs: fix stale Firebase Console nav`).
+  Prefix it even though the path filter already drops it from the
+  changelog — the prefix makes the intent explicit and keeps the subject
+  from reading like end-user copy (and the subject filter now skips
+  `docs:` directly, same as `ci:` / `test:` / `internal:`). Exception: a PRIVACY.md-only change ships as a
   bullet (it's treated as non-docs), so leave that one unprefixed.
 - **Play caps `whatsnew-en-US` at 500 bytes.** When the bullet list
   exceeds that, CI truncates and appends `…`. Avoid lining up a long
@@ -404,12 +405,15 @@ new rule the first time something bites you, not the third.
   morning insight's evening tie-in clause has two emission paths. If the
   user's clothes rules fire for the evening window (e.g. it'll be cold
   enough for a jacket), the clause names the item *and* folds in the
-  per-model rain time when one's detected: "Bring a jacket tonight, rain
-  at 9pm." If no clothes rule fires but a per-model series spots rain ≥
+  per-model rain when one's detected: "Tonight, rain tonight, bring a
+  jacket." If no clothes rule fires but a per-model series spots rain ≥
   30% in the tonight window and the user has an evening event with a
   location, the clause still emits — without recommending clothes —
-  as a bare rain warning ("Rain tonight at 9pm." / "Chance of rain
-  tonight at 9pm." for the POSSIBLE tier). The principle: we *always*
+  as a bare rain warning ("Tonight, rain tonight." / the hedged
+  chance-of-rain wording for the POSSIBLE tier). The prose deliberately
+  no longer pins a peak hour ("rain at 9pm") — that claimed precision
+  the hourly forecast can't back; the peak time still rides the clause
+  data for the chart and cast card. The principle: we *always*
   surface rain when a model spots it, even when no clothes rule fires —
   e.g. the user lowered their umbrella gate, deleted the rule, or the
   probability sits below it. The umbrella itself ships as a precip-keyed

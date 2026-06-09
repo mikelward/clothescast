@@ -97,19 +97,23 @@ class GenerateDailyInsightTest {
     }
 
     private class FakeCalendarEventReader(
+        // Same list for any queried date — fine for fixtures dated inside the
+        // two-day fetch window, since the use case's distinct() collapses the
+        // duplicate the second day query returns. Use [eventsByDate] when a
+        // test cares which day a given event is materialized for.
         private val events: List<CalendarEvent> = emptyList(),
+        private val eventsByDate: Map<LocalDate, List<CalendarEvent>>? = null,
         private val throws: Throwable? = null,
     ) : CalendarEventReader {
-        var lastDate: LocalDate? = null
-            private set
+        val requestedDates = mutableListOf<LocalDate>()
         var lastZone: ZoneId? = null
             private set
 
         override suspend fun eventsForDay(date: LocalDate, zoneId: ZoneId): List<CalendarEvent> {
-            lastDate = date
+            requestedDates += date
             lastZone = zoneId
             throws?.let { throw it }
-            return events
+            return if (eventsByDate != null) eventsByDate[date].orEmpty() else events
         }
 
         override suspend fun upcomingCelebrations(
@@ -384,12 +388,12 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `calendar reader is consulted for today's date and zone when opted in`() = runTest {
+    fun `calendar reader is consulted for today and tomorrow with the user's zone when opted in`() = runTest {
         val zone = ZoneId.of("Europe/London")
         val event = CalendarEvent(
             title = "park run",
-            start = LocalTime.of(14, 30),
-            end = LocalTime.of(16, 0),
+            start = today.date.atTime(14, 30),
+            end = today.date.atTime(16, 0),
         )
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(event))
@@ -403,7 +407,10 @@ class GenerateDailyInsightTest {
             ),
         )
 
-        calendar.lastDate shouldBe today.date
+        // Tomorrow rides along because the tonight window (and the morning
+        // insight's evening tie-in) wraps past midnight into tomorrow's
+        // pre-dawn hours.
+        calendar.requestedDates shouldContainExactly listOf(today.date, today.date.plusDays(1))
         calendar.lastZone shouldBe zone
         // The morning rain tie-in is suppressed on TODAY (PR #149); the tonight
         // pass still carries the existing CalendarTieInClause — see the
@@ -416,13 +423,13 @@ class GenerateDailyInsightTest {
     fun `calendar reader is not consulted when the toggle is off`() = runTest {
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(
-            CalendarEvent("standup", LocalTime.of(9, 0), LocalTime.of(9, 30)),
+            CalendarEvent("standup", today.date.atTime(9, 0), today.date.atTime(9, 30)),
         ))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
         val result = subject(london, prefs.copy(useCalendarEvents = false))
 
-        calendar.lastDate.shouldBeNull()
+        calendar.requestedDates.shouldBeEmpty()
         result.insight.summary.calendarTieIn.shouldBeNull()
     }
 
@@ -818,8 +825,8 @@ class GenerateDailyInsightTest {
         val perModelHourly = PerModelHourly(byModel = mapOf("ecmwf_ifs04" to ecmwfFull))
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(
@@ -890,8 +897,8 @@ class GenerateDailyInsightTest {
         val perModelHourly = PerModelHourly(byModel = mapOf("ecmwf_ifs04" to ecmwfFull))
         val diner = CalendarEvent(
             title = "after-hours",
-            start = LocalTime.of(22, 0),
-            end = LocalTime.of(23, 30),
+            start = today.date.atTime(22, 0),
+            end = today.date.atTime(23, 30),
             location = "Theatre",
         )
         val weather = FakeWeatherRepository(
@@ -935,8 +942,8 @@ class GenerateDailyInsightTest {
         )
         val unlocated = CalendarEvent(
             title = "call",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(22, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(22, 0),
             location = null,
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -979,8 +986,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1027,8 +1034,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1076,8 +1083,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1129,8 +1136,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1184,8 +1191,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1235,8 +1242,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1279,8 +1286,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1326,8 +1333,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1374,8 +1381,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1424,8 +1431,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1470,8 +1477,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1515,8 +1522,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1562,8 +1569,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1612,8 +1619,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
@@ -1839,13 +1846,13 @@ class GenerateDailyInsightTest {
         )
         val morningStandup = CalendarEvent(
             title = "standup",
-            start = LocalTime.of(9, 0),
-            end = LocalTime.of(9, 30),
+            start = today.date.atTime(9, 0),
+            end = today.date.atTime(9, 30),
         )
         val eveningGig = CalendarEvent(
             title = "gig",
-            start = LocalTime.of(20, 0),
-            end = LocalTime.of(22, 0),
+            start = today.date.atTime(20, 0),
+            end = today.date.atTime(22, 0),
             location = "Brixton Academy",
         )
         val weather = FakeWeatherRepository(ForecastBundle(rainyEvening, yesterday))
@@ -1881,8 +1888,8 @@ class GenerateDailyInsightTest {
         val zone = ZoneId.of("Europe/London")
         val unlocatedHold = CalendarEvent(
             title = "block",
-            start = LocalTime.of(20, 0),
-            end = LocalTime.of(21, 0),
+            start = today.date.atTime(20, 0),
+            end = today.date.atTime(21, 0),
         )
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(unlocatedHold))
@@ -1905,15 +1912,15 @@ class GenerateDailyInsightTest {
         val zone = ZoneId.of("Europe/London")
         val christmas = CalendarEvent(
             title = "Christmas Day",
-            start = LocalTime.MIDNIGHT,
-            end = LocalTime.MIDNIGHT,
+            start = today.date.atStartOfDay(),
+            end = today.date.atStartOfDay(),
             allDay = true,
             kind = EventKind.PUBLIC_HOLIDAY,
         )
         val aliceBirthday = CalendarEvent(
             title = "Alice's birthday",
-            start = LocalTime.MIDNIGHT,
-            end = LocalTime.MIDNIGHT,
+            start = today.date.atStartOfDay(),
+            end = today.date.atStartOfDay(),
             allDay = true,
             kind = EventKind.BIRTHDAY,
         )
@@ -1935,8 +1942,8 @@ class GenerateDailyInsightTest {
         val zone = ZoneId.of("Europe/London")
         val morningOnly = CalendarEvent(
             title = "standup",
-            start = LocalTime.of(9, 0),
-            end = LocalTime.of(9, 30),
+            start = today.date.atTime(9, 0),
+            end = today.date.atTime(9, 30),
         )
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(morningOnly))
@@ -1960,8 +1967,8 @@ class GenerateDailyInsightTest {
         val zone = ZoneId.of("Europe/London")
         val dinner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(18, 30),
-            end = LocalTime.of(21, 30),
+            start = today.date.atTime(18, 30),
+            end = today.date.atTime(21, 30),
             location = "City A",
         )
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
@@ -1979,14 +1986,14 @@ class GenerateDailyInsightTest {
 
     @Test
     fun `tonight hasEvents is true for a located event crossing midnight`() = runTest {
-        // A 21:00-00:30 gig projects with end < start (date-less wall-clock
-        // times). The crossing must read as reaching into the night window,
+        // A 21:00-00:30 gig is now a plain dated interval whose end falls on
+        // tomorrow's date. It must read as reaching into the night window,
         // not as an empty interval.
         val zone = ZoneId.of("Europe/London")
         val gig = CalendarEvent(
             title = "gig",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(0, 30),
+            start = today.date.atTime(21, 0),
+            end = today.date.plusDays(1).atTime(0, 30),
             location = "City A",
         )
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
@@ -2000,6 +2007,58 @@ class GenerateDailyInsightTest {
         )
 
         result.insight.hasEvents shouldBe true
+    }
+
+    @Test
+    fun `tonight hasEvents is true for a located event in tomorrow's pre-dawn hours`() = runTest {
+        // A 00:30 event on *tomorrow's* date sits inside the tonight window
+        // [19:00 today, 07:00 tomorrow) but is only materialized by the reader
+        // for tomorrow's date — the old single-day fetch never even saw it.
+        val zone = ZoneId.of("Europe/London")
+        val tomorrow = today.date.plusDays(1)
+        val afterParty = CalendarEvent(
+            title = "after-party",
+            start = tomorrow.atTime(0, 30),
+            end = tomorrow.atTime(2, 0),
+            location = "City A",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val calendar = FakeCalendarEventReader(eventsByDate = mapOf(tomorrow to listOf(afterParty)))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(useCalendarEvents = true, schedule = Schedule.default(zone)),
+            period = ForecastPeriod.TONIGHT,
+        )
+
+        result.insight.hasEvents shouldBe true
+    }
+
+    @Test
+    fun `tonight hasEvents is false for a located event tomorrow evening`() = runTest {
+        // The two-day fetch also returns tomorrow's 19:30 dinner, but the
+        // tonight window is bounded at tomorrow's 07:00 morning start — the
+        // *next* evening's event must not light up tonight's notification.
+        val zone = ZoneId.of("Europe/London")
+        val tomorrow = today.date.plusDays(1)
+        val nextDinner = CalendarEvent(
+            title = "dinner",
+            start = tomorrow.atTime(19, 30),
+            end = tomorrow.atTime(21, 30),
+            location = "City A",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val calendar = FakeCalendarEventReader(eventsByDate = mapOf(tomorrow to listOf(nextDinner)))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(useCalendarEvents = true, schedule = Schedule.default(zone)),
+            period = ForecastPeriod.TONIGHT,
+        )
+
+        result.insight.hasEvents shouldBe false
     }
 
     @Test
@@ -2055,8 +2114,8 @@ class GenerateDailyInsightTest {
         )
         val diner = CalendarEvent(
             title = "dinner",
-            start = LocalTime.of(21, 0),
-            end = LocalTime.of(23, 0),
+            start = today.date.atTime(21, 0),
+            end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
         val weather = FakeWeatherRepository(

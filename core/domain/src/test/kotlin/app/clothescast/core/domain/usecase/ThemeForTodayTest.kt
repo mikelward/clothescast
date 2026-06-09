@@ -9,7 +9,6 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.Month
 import org.junit.jupiter.api.Test
 
@@ -20,10 +19,12 @@ class ThemeForTodayTest {
     private val random = LocalDate.of(2026, Month.MAY, 18)
     private val christmas = LocalDate.of(2026, Month.DECEMBER, 25)
 
+    // ThemeForToday reads only title/kind/ownerAccount, so the events'
+    // anchor date is irrelevant to these tests; [random] keeps it stable.
     private fun publicHoliday(title: String, ownerAccount: String? = null) = CalendarEvent(
         title = title,
-        start = LocalTime.MIDNIGHT,
-        end = LocalTime.MIDNIGHT,
+        start = random.atStartOfDay(),
+        end = random.atStartOfDay(),
         allDay = true,
         kind = EventKind.PUBLIC_HOLIDAY,
         ownerAccount = ownerAccount,
@@ -31,8 +32,8 @@ class ThemeForTodayTest {
 
     private fun birthday(title: String) = CalendarEvent(
         title = title,
-        start = LocalTime.MIDNIGHT,
-        end = LocalTime.MIDNIGHT,
+        start = random.atStartOfDay(),
+        end = random.atStartOfDay(),
         allDay = true,
         kind = EventKind.BIRTHDAY,
     )
@@ -416,8 +417,8 @@ class ThemeForTodayTest {
     fun `NORMAL kind events are ignored`() {
         val normalEvent = CalendarEvent(
             title = "Standup",
-            start = LocalTime.of(9, 0),
-            end = LocalTime.of(9, 30),
+            start = random.atTime(9, 0),
+            end = random.atTime(9, 30),
             kind = EventKind.NORMAL,
         )
         subject.resolve(

@@ -113,6 +113,31 @@ class CalendarContractEventReaderTest {
 
         events shouldHaveSize 1
         events[0].kind shouldBe EventKind.NORMAL
+        // Timed rows project to full local date-times in the queried zone.
+        events[0].start shouldBe date.atTime(12, 0)
+        events[0].end shouldBe date.atTime(13, 0)
+    }
+
+    @Test
+    fun `timed event crossing midnight keeps its end on the next date`(): Unit = runBlocking {
+        // The projection carries dates, so a 21:00 gig ending at 00:30 the
+        // next day reads as a plain interval with end > start on the next
+        // date — not the end-before-start wall-clock wrap the old LocalTime
+        // model produced.
+        provider.calendars[31L] = "user@gmail.com"
+        provider.instances += FakeInstance(
+            calendarId = 31L,
+            title = "Late gig",
+            allDay = false,
+            beginMillis = date.atTime(21, 0).toInstant(ZoneOffset.UTC).toEpochMilli(),
+            endMillis = date.plusDays(1).atTime(0, 30).toInstant(ZoneOffset.UTC).toEpochMilli(),
+        )
+
+        val events = CalendarContractEventReader(context).eventsForDay(date, zone)
+
+        events shouldHaveSize 1
+        events[0].start shouldBe date.atTime(21, 0)
+        events[0].end shouldBe date.plusDays(1).atTime(0, 30)
     }
 
     @Test

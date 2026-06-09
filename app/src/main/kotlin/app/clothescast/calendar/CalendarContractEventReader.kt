@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
@@ -143,8 +143,8 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
         data class Row(
             val date: LocalDate,
             val title: String,
-            val start: LocalTime,
-            val end: LocalTime,
+            val start: LocalDateTime,
+            val end: LocalDateTime,
             val location: String?,
             val allDay: Boolean,
             val calendarId: Long,
@@ -201,18 +201,19 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
 
                 // CalendarContract stores all-day events in UTC midnight-to-midnight; converting
                 // those into the user's zone shifts them off the day boundary. Keep them as
-                // pure all-day markers (dated by their UTC date) and project the rest into
-                // wall-clock in the user zone (dated by the begin instant in that zone).
+                // pure all-day markers (anchored at their UTC date's midnight) and project the
+                // rest into full local date-times in the user zone (dated by the begin instant
+                // in that zone), so a midnight-crossing instance keeps its end on the next date.
                 // Callers apply their own window filter on [date]: a single-day read drops
                 // adjacent-day all-day bleed (an east-of-UTC zone overlaps the previous UTC
                 // day), a forward-window read keeps every row inside its range.
                 val (date, start, finish) = if (allDay) {
                     val eventDate = Instant.ofEpochMilli(begin).atZone(ZoneOffset.UTC).toLocalDate()
-                    Triple(eventDate, LocalTime.MIDNIGHT, LocalTime.MIDNIGHT)
+                    Triple(eventDate, eventDate.atStartOfDay(), eventDate.atStartOfDay())
                 } else {
-                    val zoned = Instant.ofEpochMilli(begin).atZone(zoneId)
-                    val e = Instant.ofEpochMilli(end).atZone(zoneId).toLocalTime()
-                    Triple(zoned.toLocalDate(), zoned.toLocalTime(), e)
+                    val zonedBegin = Instant.ofEpochMilli(begin).atZone(zoneId).toLocalDateTime()
+                    val zonedEnd = Instant.ofEpochMilli(end).atZone(zoneId).toLocalDateTime()
+                    Triple(zonedBegin.toLocalDate(), zonedBegin, zonedEnd)
                 }
 
                 rows += Row(date, title, start, finish, location, allDay, calendarId, eventType, availability)

@@ -1,6 +1,6 @@
 package app.clothescast.core.domain.model
 
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 /**
  * Classification applied to each [CalendarEvent] by the reader, so downstream code
@@ -14,10 +14,14 @@ enum class EventKind {
 }
 
 /**
- * One scheduled event read from the user's device calendar, projected into the
- * local day the daily insight is being generated for. Times are wall-clock in the
- * user's zone — the reader is responsible for applying timezone conversion before
- * constructing the model so downstream code never has to think about Instants.
+ * One scheduled event read from the user's device calendar. [start]/[end] are
+ * full local date-times — wall-clock in the user's zone; the reader is
+ * responsible for applying timezone conversion before constructing the model
+ * so downstream code never has to think about Instants. Carrying the date
+ * means an event that crosses midnight is just an interval whose end falls on
+ * the next date, and a tomorrow-pre-dawn event inside tonight's window is
+ * distinguishable from today's — no wrapped-interval special casing anywhere
+ * downstream.
  *
  * Privacy posture: only the [title], [start]/[end], and an optional [location] line
  * are carried. Descriptions, attendees, organizers, and account info are not
@@ -33,8 +37,8 @@ enum class EventKind {
  */
 data class CalendarEvent(
     val title: String,
-    val start: LocalTime,
-    val end: LocalTime,
+    val start: LocalDateTime,
+    val end: LocalDateTime,
     val location: String? = null,
     val allDay: Boolean = false,
     val kind: EventKind = EventKind.NORMAL,
@@ -44,21 +48,11 @@ data class CalendarEvent(
      * True when [time] falls within `[start, end)`. All-day events never
      * match, so the precip-peak overlap check never accidentally pairs an
      * umbrella with "your all-day Public holiday".
-     *
-     * [start]/[end] are date-less wall-clock times, so an event that crosses
-     * midnight projects with `end < start` (a 21:00–00:30 gig reads as
-     * start 21:00, end 00:30). Treat that as a wrapped interval — inside is
-     * `time >= start || time < end` — rather than an empty one, or the
-     * late-evening events the tonight tie-in exists for would never overlap
-     * any peak hour.
      */
-    fun overlaps(time: LocalTime): Boolean {
+    fun overlaps(time: LocalDateTime): Boolean {
         if (allDay) return false
         if (start == end) return time == start
-        return if (end.isBefore(start)) {
-            !time.isBefore(start) || time.isBefore(end)
-        } else {
-            !time.isBefore(start) && time.isBefore(end)
-        }
+        // A defensive end-before-start interval (reader bug) never matches.
+        return !time.isBefore(start) && time.isBefore(end)
     }
 }

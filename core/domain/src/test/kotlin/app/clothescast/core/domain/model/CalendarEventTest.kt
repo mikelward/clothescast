@@ -2,51 +2,74 @@ package app.clothescast.core.domain.model
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
-import java.time.LocalTime
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class CalendarEventTest {
 
-    private fun event(start: LocalTime, end: LocalTime, allDay: Boolean = false) =
+    private val day: LocalDate = LocalDate.of(2026, 4, 25)
+
+    private fun event(start: LocalDateTime, end: LocalDateTime, allDay: Boolean = false) =
         CalendarEvent(title = "gig", start = start, end = end, allDay = allDay)
 
     @Test
     fun `overlaps is a half-open interval for a same-day event`() {
-        val e = event(LocalTime.of(20, 0), LocalTime.of(22, 0))
-        e.overlaps(LocalTime.of(19, 59)) shouldBe false
-        e.overlaps(LocalTime.of(20, 0)) shouldBe true
-        e.overlaps(LocalTime.of(21, 30)) shouldBe true
-        e.overlaps(LocalTime.of(22, 0)) shouldBe false
+        val e = event(day.atTime(20, 0), day.atTime(22, 0))
+        e.overlaps(day.atTime(19, 59)) shouldBe false
+        e.overlaps(day.atTime(20, 0)) shouldBe true
+        e.overlaps(day.atTime(21, 30)) shouldBe true
+        e.overlaps(day.atTime(22, 0)) shouldBe false
     }
 
     @Test
-    fun `midnight-crossing event overlaps both sides of midnight`() {
-        // start/end are date-less wall-clock times, so a 21:00-00:30 gig
-        // projects with end < start. It must read as a wrapped interval —
-        // the late-evening events the tonight tie-in exists for would
-        // otherwise never overlap any peak hour.
-        val gig = event(LocalTime.of(21, 0), LocalTime.of(0, 30))
-        gig.overlaps(LocalTime.of(20, 59)) shouldBe false
-        gig.overlaps(LocalTime.of(21, 0)) shouldBe true
-        gig.overlaps(LocalTime.of(23, 0)) shouldBe true
-        gig.overlaps(LocalTime.MIDNIGHT) shouldBe true
-        gig.overlaps(LocalTime.of(0, 29)) shouldBe true
-        gig.overlaps(LocalTime.of(0, 30)) shouldBe false
-        gig.overlaps(LocalTime.of(12, 0)) shouldBe false
+    fun `midnight-crossing event overlaps both sides of midnight with plain interval semantics`() {
+        // start/end carry dates, so a 21:00 gig ending at 00:30 the next day
+        // is just an interval whose end falls on the next date — no wrapped-
+        // interval special case needed for the overlap to hold on both sides
+        // of midnight.
+        val nextDay = day.plusDays(1)
+        val gig = event(day.atTime(21, 0), nextDay.atTime(0, 30))
+        gig.overlaps(day.atTime(20, 59)) shouldBe false
+        gig.overlaps(day.atTime(21, 0)) shouldBe true
+        gig.overlaps(day.atTime(23, 0)) shouldBe true
+        gig.overlaps(nextDay.atStartOfDay()) shouldBe true
+        gig.overlaps(nextDay.atTime(0, 29)) shouldBe true
+        gig.overlaps(nextDay.atTime(0, 30)) shouldBe false
+        // Same wall-clock hour on the wrong date never matches.
+        gig.overlaps(day.atTime(0, 15)) shouldBe false
+        gig.overlaps(day.atTime(12, 0)) shouldBe false
+        gig.overlaps(nextDay.atTime(21, 0)) shouldBe false
     }
 
     @Test
     fun `event ending exactly at midnight covers the evening only`() {
-        // end = 00:00 reads as "until midnight", not an empty interval.
-        val e = event(LocalTime.of(21, 0), LocalTime.MIDNIGHT)
-        e.overlaps(LocalTime.of(23, 0)) shouldBe true
-        e.overlaps(LocalTime.MIDNIGHT) shouldBe false
-        e.overlaps(LocalTime.of(20, 0)) shouldBe false
+        // end = next-day 00:00 reads as "until midnight", half-open.
+        val e = event(day.atTime(21, 0), day.plusDays(1).atStartOfDay())
+        e.overlaps(day.atTime(23, 0)) shouldBe true
+        e.overlaps(day.plusDays(1).atStartOfDay()) shouldBe false
+        e.overlaps(day.atTime(20, 0)) shouldBe false
+    }
+
+    @Test
+    fun `zero-length event matches only its own instant`() {
+        val e = event(day.atTime(9, 0), day.atTime(9, 0))
+        e.overlaps(day.atTime(9, 0)) shouldBe true
+        e.overlaps(day.atTime(9, 1)) shouldBe false
+    }
+
+    @Test
+    fun `end-before-start interval never matches`() {
+        // Defensive: a reader bug yielding end < start reads as empty, not wrapped.
+        val e = event(day.atTime(21, 0), day.atTime(20, 0))
+        e.overlaps(day.atTime(20, 30)) shouldBe false
+        e.overlaps(day.atTime(21, 0)) shouldBe false
+        e.overlaps(day.atTime(22, 0)) shouldBe false
     }
 
     @Test
     fun `all-day events never overlap`() {
-        val e = event(LocalTime.MIDNIGHT, LocalTime.MIDNIGHT, allDay = true)
-        e.overlaps(LocalTime.of(12, 0)) shouldBe false
-        e.overlaps(LocalTime.MIDNIGHT) shouldBe false
+        val e = event(day.atStartOfDay(), day.atStartOfDay(), allDay = true)
+        e.overlaps(day.atTime(12, 0)) shouldBe false
+        e.overlaps(day.atStartOfDay()) shouldBe false
     }
 }

@@ -376,7 +376,10 @@ class InsightCache(
     /**
      * Minimal projection of [CalendarEvent] for on-disk persistence: only the
      * fields `RenderInsightSummary` actually consults — `start`, `end`, `allDay`,
-     * and a `hasLocation` *presence* flag — survive the round-trip.
+     * and a `hasLocation` *presence* flag — survive the round-trip. Each
+     * endpoint is stored as a date + second-of-day pair, mirroring
+     * [PerModelHourDto], so a midnight-crossing event round-trips with its end
+     * on the next date and tomorrow's pre-dawn events keep their date.
      *
      * Titles and free-form location strings are deliberately dropped, matching
      * the privacy posture of the previous derived-insight cache (which stored
@@ -388,15 +391,23 @@ class InsightCache(
      */
     @Serializable
     private data class CalendarEventDto(
+        val startDateEpochDays: Long,
         val startSecondOfDay: Int,
+        val endDateEpochDays: Long,
         val endSecondOfDay: Int,
         val allDay: Boolean = false,
         val hasLocation: Boolean = false,
     ) {
         fun toDomain(): CalendarEvent = CalendarEvent(
             title = "",
-            start = LocalTime.ofSecondOfDay(startSecondOfDay.toLong()),
-            end = LocalTime.ofSecondOfDay(endSecondOfDay.toLong()),
+            start = LocalDateTime.of(
+                LocalDate.ofEpochDay(startDateEpochDays),
+                LocalTime.ofSecondOfDay(startSecondOfDay.toLong()),
+            ),
+            end = LocalDateTime.of(
+                LocalDate.ofEpochDay(endDateEpochDays),
+                LocalTime.ofSecondOfDay(endSecondOfDay.toLong()),
+            ),
             location = if (hasLocation) PLACEHOLDER_LOCATION else null,
             allDay = allDay,
             kind = EventKind.NORMAL,
@@ -483,8 +494,10 @@ class InsightCache(
     )
 
     private fun CalendarEvent.toDto(): CalendarEventDto = CalendarEventDto(
-        startSecondOfDay = start.toSecondOfDay(),
-        endSecondOfDay = end.toSecondOfDay(),
+        startDateEpochDays = start.toLocalDate().toEpochDay(),
+        startSecondOfDay = start.toLocalTime().toSecondOfDay(),
+        endDateEpochDays = end.toLocalDate().toEpochDay(),
+        endSecondOfDay = end.toLocalTime().toSecondOfDay(),
         allDay = allDay,
         hasLocation = !location.isNullOrBlank(),
     )
@@ -494,9 +507,12 @@ class InsightCache(
         // to the raw `ForecastSnapshot` (bundle + minimal events) it's derived
         // from. The previous shape (v6) doesn't deserialise into the new DTO,
         // so the cache drops to null on first read and the next worker run
-        // populates the v7 keys.
-        private val THIS_PERIOD_KEY = stringPreferencesKey("this_period_snapshot_v7")
-        private val NEXT_PERIOD_KEY = stringPreferencesKey("next_period_snapshot_v7")
+        // populates the v7 keys. Bumped to v8 when `CalendarEventDto` gained
+        // per-endpoint dates for the LocalDateTime event model — v7 payloads
+        // don't materialise dated events, so the cache drops to null on first
+        // read and the next worker run repopulates the v8 keys.
+        private val THIS_PERIOD_KEY = stringPreferencesKey("this_period_snapshot_v8")
+        private val NEXT_PERIOD_KEY = stringPreferencesKey("next_period_snapshot_v8")
 
         // Surfaced on materialisation when the cached event had a location
         // string at fetch time. The renderer's only read of `location` is a

@@ -126,6 +126,7 @@ class DeriveInsight(
             clothesMentionMode = prefs.clothesMentionMode,
             yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
             todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item.itemKey },
+            tonightStart = tonightStart,
             diagLog = diagLog,
         )
 
@@ -224,7 +225,7 @@ class DeriveInsight(
             forecast = periodForecast,
             nextForecast = nextForecast,
             triggeredOutfit = triggeredOutfit,
-            events = filterEventsForPeriod(events, period, tonightStart),
+            events = filterEventsForPeriod(events, period, bundle.today.date, morningStart, tonightStart),
             perModelForRender = perModelForRender,
             deltaToday = deltaToday,
             deltaYesterday = deltaYesterday,
@@ -240,7 +241,13 @@ class DeriveInsight(
         allEvents: List<CalendarEvent>,
         todayItems: List<String>,
     ): EveningEventTieInClause? {
-        val nightEvents = filterEventsForPeriod(allEvents, ForecastPeriod.TONIGHT, tonightStart)
+        val nightEvents = filterEventsForPeriod(
+            events = allEvents,
+            period = ForecastPeriod.TONIGHT,
+            todayDate = bundle.today.date,
+            morningStart = morningStart,
+            tonightStart = tonightStart,
+        )
         val awayFromHome = nightEvents.any { !it.allDay && !it.location.isNullOrBlank() }
         if (!awayFromHome) return null
 
@@ -264,6 +271,7 @@ class DeriveInsight(
             deltaThresholdC = prefs.deltaThresholdC,
             deltaFormat = prefs.deltaFormat,
             todayRuleItems = Garment.layerReduce(nightView.triggeredOutfit.rules).map { it.item.itemKey },
+            tonightStart = tonightStart,
         )
 
         // Two emission paths, either of which fires the clause: extra clothing
@@ -358,21 +366,46 @@ class DeriveInsight(
     private fun filterEventsForPeriod(
         events: List<CalendarEvent>,
         period: ForecastPeriod,
+        todayDate: LocalDate,
+        morningStart: LocalTime,
         tonightStart: LocalTime,
-    ): List<CalendarEvent> = when (period) {
-        ForecastPeriod.TODAY -> events
-        // Keep any event that overlaps the night window, not just those that
-        // *start* inside it: an 18:30–21:30 dinner straddles a 19:00 tonight
-        // start, and excluding it made the 7pm notification silent (hasEvents
-        // false) and hid the away-from-home tie-in even though the user is
-        // out for most of the evening. `end <= start` means the event crosses
-        // midnight (date-less wall-clock times), which always reaches into
-        // the night window.
-        ForecastPeriod.TONIGHT -> events.filter {
-            it.allDay ||
-                !it.start.isBefore(tonightStart) ||
-                it.end.isAfter(tonightStart) ||
-                it.end.isBefore(it.start)
+    ): List<CalendarEvent> {
+        // Real interval overlap against the period window, now that events
+        // carry dates. Keep any event that *overlaps* the window, not just
+        // those that start inside it: an 18:30–21:30 dinner straddles a 19:00
+        // tonight start, and excluding it made the 7pm notification silent
+        // (hasEvents false) and hid the away-from-home tie-in even though the
+        // user is out for most of the evening. The upper bound matters too —
+        // the two-day fetch now surfaces tomorrow's events, and a
+        // tomorrow-19:30 dinner must not count for tonight, while a
+        // tomorrow-00:30 gig must.
+        val windowStart: LocalDateTime
+        val windowEnd: LocalDateTime
+        when (period) {
+            // Whole calendar day, preserving the previous "TODAY sees every
+            // event read for the day" semantics.
+            ForecastPeriod.TODAY -> {
+                windowStart = todayDate.atStartOfDay()
+                windowEnd = todayDate.plusDays(1).atStartOfDay()
+            }
+            ForecastPeriod.TONIGHT -> {
+                windowStart = LocalDateTime.of(todayDate, tonightStart)
+                windowEnd = LocalDateTime.of(todayDate.plusDays(1), morningStart)
+            }
+        }
+        return events.filter { event ->
+            if (event.allDay) {
+                // All-day events are presence-only markers (overlaps() never
+                // matches them, and hasEvents / the away-from-home gate both
+                // exclude them): keep today's passing through both periods as
+                // before, and drop tomorrow's, which the two-day fetch now
+                // surfaces too.
+                event.start.toLocalDate() == todayDate
+            } else {
+                // Half-open interval overlap: [start, end) against
+                // [windowStart, windowEnd).
+                event.start.isBefore(windowEnd) && event.end.isAfter(windowStart)
+            }
         }
     }
 
@@ -442,10 +475,23 @@ internal fun tonightWindow(
     windowHourly: List<HourlyForecast>,
     todayDate: LocalDate,
     tonightStart: LocalTime,
-): List<LocalDateTime> = windowHourly.map { entry ->
-    val date = if (!entry.time.isBefore(tonightStart)) todayDate else todayDate.plusDays(1)
-    LocalDateTime.of(date, entry.time)
-}
+): List<LocalDateTime> = windowHourly.map { tonightDateTime(todayDate, tonightStart, it.time) }
+
+/**
+ * Dates a wall-clock [time] inside the tonight window: times at/after
+ * [tonightStart] belong to [todayDate], earlier times to the next day. The
+ * single source of truth for the tonight wrap convention — [tonightWindow]
+ * (per-model slicing) and [RenderInsightSummary] (dating the precip peak
+ * against calendar events) both go through it, so they can't drift apart.
+ */
+internal fun tonightDateTime(
+    todayDate: LocalDate,
+    tonightStart: LocalTime,
+    time: LocalTime,
+): LocalDateTime = LocalDateTime.of(
+    if (!time.isBefore(tonightStart)) todayDate else todayDate.plusDays(1),
+    time,
+)
 
 internal fun DailyForecast.slicedForToday(
     morningStart: LocalTime,

@@ -1431,18 +1431,22 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `umbrella accessory is suppressed in the evening tie-in when the peak is thunderstorm`() {
-        // No umbrella under lightning, but the clause still names the real
-        // condition ("thunderstorm") rather than mislabelling it "rain".
+    fun `umbrella accessory rides the evening tie-in when the peak is thunderstorm`() {
+        // warrantsRainAccessory deliberately includes THUNDERSTORM — a
+        // thunderstorm forecast is still a wet one — so the tie-in carries
+        // the umbrella the same way the main precip clause does, and the
+        // clause names the real condition rather than mislabelling it
+        // "rain". (An earlier version of this test asserted suppression but
+        // passed vacuously: its items list carried no umbrella to suppress.)
         umbrellaSubject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
-                    items = listOf("jacket"),
+                    items = listOf("jacket", "umbrella"),
                     rainTime = LocalTime.of(21, 0),
                     precipCondition = WeatherCondition.THUNDERSTORM,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm tonight, bring a jacket."
+        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm tonight, bring a jacket and umbrella."
     }
 
     @Test
@@ -2012,6 +2016,42 @@ class InsightFormatterTest {
             ),
         )
         out shouldBe "Today, it will be 21°. Tonight, rain tonight."
+    }
+
+    @Test
+    fun `ja — week-ahead headline keeps the ideographic full stop, no stray ASCII period`() {
+        // values-ja templates end in "。"; the join must strip those and
+        // re-terminate with "。" — not render "明日は雨。." (solo) or keep a
+        // mid-sentence 。 ahead of the separator (multi-clause).
+        val jaConfig = Configuration(context.resources.configuration).apply {
+            setLocale(Locale.JAPAN)
+        }
+        val jaContext = context.createConfigurationContext(jaConfig)
+        val ja = InsightFormatter.forRegion(jaContext, Region.SYSTEM)
+
+        ja.formatWeekAhead(
+            WeekAheadInsight(
+                rain = WeekAheadClause.Rain(
+                    date = LocalDate.of(2026, 5, 27),
+                    isTomorrow = true,
+                    condition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "明日は雨。"
+
+        ja.formatWeekAhead(
+            WeekAheadInsight(
+                firstCooler = WeekAheadClause.Cooler(
+                    date = LocalDate.of(2026, 5, 27),
+                    isTomorrow = true,
+                ),
+                rain = WeekAheadClause.Rain(
+                    date = LocalDate.of(2026, 6, 1), // Monday
+                    isTomorrow = false,
+                    condition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "明日は涼しめ, 月曜日は雨。"
     }
 
     @Test

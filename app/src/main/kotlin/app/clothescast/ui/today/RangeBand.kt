@@ -5,19 +5,57 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
+import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 import com.patrykandpatrick.vico.compose.cartesian.CartesianDrawingContext
 import com.patrykandpatrick.vico.compose.cartesian.axis.Axis
 import com.patrykandpatrick.vico.compose.cartesian.decoration.Decoration
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
 
 // Opacity of the shaded min–max range band drawn beneath the consensus line on
 // the default chart view. Low enough to read as a soft "spread" shading without
 // muddying the line or the gridlines; first-pass value to eyeball on-device.
 internal const val RANGE_BAND_ALPHA = 0.12f
+
+/**
+ * Maps each entry of a chart's hourly window to its list position, keyed by
+ * the entry's full wall-clock timestamp. [HourlyForecast] carries only a
+ * `LocalTime`, so the date is reconstructed by starting at [startDate] (the
+ * date of `hourly[0]`) and advancing it whenever the hour-of-day steps
+ * backwards relative to the previous entry — the same midnight-wrap walk
+ * `chartXToTime` uses, so the tonight window's post-midnight hours land on
+ * the next date. Walking the window's actual entries (rather than adding
+ * `i` hours to the window start) keeps positions correct on DST-transition
+ * weeks, where a 23- or 25-hour day makes "hours since window start"
+ * diverge from list position. On a fall-back day whose duplicated
+ * wall-clock hour appears twice, the first occurrence wins — the same
+ * ambiguity the per-model timestamps carry, so lookups stay consistent.
+ *
+ * Per-model series ([PerModelHour.time]) are positioned on the charts by
+ * looking their timestamps up here, so every per-model value lands on the
+ * x position the consensus main line plots that wall-clock hour at. In the
+ * common case (no dropped hours, no DST) every per-model entry resolves to
+ * exactly its list position, so the rendered output is unchanged.
+ */
+internal fun hourlyTimestampIndices(
+    hourly: List<HourlyForecast>,
+    startDate: LocalDate,
+): Map<LocalDateTime, Int> {
+    val indices = LinkedHashMap<LocalDateTime, Int>(hourly.size)
+    var date = startDate
+    var prevHour: Int? = null
+    for (i in hourly.indices) {
+        val hour = hourly[i].time.hour
+        if (prevHour != null && hour < prevHour) date = date.plusDays(1)
+        prevHour = hour
+        val timestamp = LocalDateTime.of(date, hourly[i].time)
+        if (timestamp !in indices) indices[timestamp] = i
+    }
+    return indices
+}
 
 /**
  * Per-hour min and max of [picker] across the consulted models — the envelope
@@ -35,30 +73,33 @@ internal const val RANGE_BAND_ALPHA = 0.12f
  * Values are raw: the caller passes a [picker] that already applies the same unit
  * conversion it uses for the chart's series, so the band lands on the same scale.
  *
- * Indexed against the chart's own hourly window — [windowStart] is the
- * `LocalDateTime` of `hourly[0]` and [windowSize] is `hourly.size` — by each
- * entry's whole-hour offset from the window start, not its list position. A model
- * can drop an hour (the parser omits an entry when its `temperature_2m` is null),
- * which would shift its tail and make a position-keyed band merge mismatched hours
- * across models. Offsetting from the window keeps every value under the hour the
- * consensus main line plots it at, and a leading hour that *every* consulted model
- * dropped stays an empty gap rather than sliding the band left. The full
- * `LocalDateTime` (not time-of-day) is essential for the 168 h `SevenDayPage`
- * window, where a `LocalTime` would alias every day's 09:00 onto one index. An
- * entry outside `[0, windowSize)` is skipped.
+ * Indexed against the chart's own hourly window via [indexByTime] — the
+ * timestamp → list-position map [hourlyTimestampIndices] builds from the
+ * window's entries — by looking up each entry's full [PerModelHour.time], not
+ * its list position. A model can drop an hour (the parser omits an entry when
+ * its `temperature_2m` is null), which would shift its tail and make a
+ * position-keyed band merge mismatched hours across models. The timestamp
+ * lookup keeps every value under the hour the consensus main line plots it at,
+ * and a leading hour that *every* consulted model dropped stays an empty gap
+ * rather than sliding the band left. Resolving against the window's actual
+ * entries (not naive hour arithmetic from the window start) also keeps the
+ * band aligned with the position-plotted main line on DST-transition weeks,
+ * where a 23- or 25-hour day makes position ≠ hours-since-window-start. The
+ * full `LocalDateTime` (not time-of-day) is essential for the 168 h
+ * `SevenDayPage` window, where a `LocalTime` would alias every day's 09:00
+ * onto one index. An entry whose timestamp isn't in the map (outside the
+ * window) is skipped.
  */
 internal fun perModelEnvelope(
     perModelHourly: PerModelHourly,
-    windowStart: LocalDateTime,
-    windowSize: Int,
+    indexByTime: Map<LocalDateTime, Int>,
     picker: (PerModelHour) -> Double?,
 ): Pair<List<Pair<Int, Double>>, List<Pair<Int, Double>>> {
     val byIndex = mutableMapOf<Int, MutableList<Double>>()
     perModelHourly.byModel.forEach { (model, entries) ->
         if (model == BEST_MATCH_MODEL_ID) return@forEach
         entries.forEach { entry ->
-            val idx = ChronoUnit.HOURS.between(windowStart, entry.time).toInt()
-            if (idx !in 0 until windowSize) return@forEach
+            val idx = indexByTime[entry.time] ?: return@forEach
             picker(entry)?.let { byIndex.getOrPut(idx) { mutableListOf() } += it }
         }
     }

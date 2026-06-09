@@ -2927,13 +2927,18 @@ internal fun WindCard(
     showModelSpread: Boolean = false,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
+    // Timestamp → window-position map matching the chart's keying (see
+    // [hourlyTimestampIndices]) so the peak subtitle reads off the same
+    // consensus series the chart draws — and names the right hour even
+    // when a model dropped an hour.
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     // 10 km/h floor on the y-range so a near-still day doesn't get zoomed
     // into noise — same reasoning as ForecastChart.MIN_Y_SPAN. Express the
     // floor in the user's unit so the heuristic stays equivalent (10 km/h
     // ≈ 6.2 mph) instead of shrinking to a tighter span on imperial.
     val minSpan = 10.0.toWindSpeedUnit(windSpeedUnit)
-    val peak = remember(perModelHourly, windSpeedUnit, times) {
-        perModelConsensusSeries(perModelHourly) {
+    val peak = remember(perModelHourly, windSpeedUnit, times, indexByTime) {
+        perModelConsensusSeries(perModelHourly, indexByTime) {
             it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit)
         }
             .maxByOrNull { it.second }
@@ -2981,8 +2986,11 @@ internal fun CloudCard(
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
 ) {
-    val range = remember(perModelHourly) {
-        perModelConsensusRange(perModelHourly) { it.cloudCoverPct }
+    // Timestamp → window-position map matching the chart's keying — see
+    // [WindCard] / [hourlyTimestampIndices].
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
+    val range = remember(perModelHourly, indexByTime) {
+        perModelConsensusRange(perModelHourly, indexByTime) { it.cloudCoverPct }
     }
     val subtitle = range?.let {
         stringResource(R.string.today_cloud_range, it.first, it.second)
@@ -3014,8 +3022,11 @@ internal fun HumidityCard(
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
 ) {
-    val range = remember(perModelHourly) {
-        perModelConsensusRange(perModelHourly) { it.relativeHumidityPct }
+    // Timestamp → window-position map matching the chart's keying — see
+    // [WindCard] / [hourlyTimestampIndices].
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
+    val range = remember(perModelHourly, indexByTime) {
+        perModelConsensusRange(perModelHourly, indexByTime) { it.relativeHumidityPct }
     }
     val subtitle = range?.let {
         stringResource(R.string.today_humidity_range, it.first, it.second)
@@ -3048,12 +3059,15 @@ internal fun SolarRadiationCard(
     showModelSpread: Boolean = false,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
+    // Timestamp → window-position map matching the chart's keying — see
+    // [WindCard] / [hourlyTimestampIndices].
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     // Peak irradiance across the cross-model consensus series — same blend
     // the chart draws. Suppressed when the rounded peak is below 10 W/m²
     // (night view, deep-polar winter) so the subtitle doesn't read
     // "Peak 3 W/m² at 12:00".
-    val peak = remember(perModelHourly, times) {
-        perModelConsensusSeries(perModelHourly) { it.shortwaveRadiationWm2 }
+    val peak = remember(perModelHourly, times, indexByTime) {
+        perModelConsensusSeries(perModelHourly, indexByTime) { it.shortwaveRadiationWm2 }
             .maxByOrNull { it.second }
             ?.takeIf { it.second.roundToInt() >= 10 }
             ?.let { (idx, value) ->
@@ -3168,11 +3182,14 @@ internal fun UvIndexCard(
     showModelSpread: Boolean = false,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
+    // Timestamp → window-position map matching the chart's keying — see
+    // [WindCard] / [hourlyTimestampIndices].
+    val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     // Peak UV across the cross-model consensus series — same blend the chart
     // draws. Suppressed when the rounded peak is below 1 (night view, deep
     // winter) so the subtitle doesn't read "Peak 0 at 21:00".
-    val peak = remember(perModelHourly, times) {
-        perModelConsensusSeries(perModelHourly) { it.uvIndex }
+    val peak = remember(perModelHourly, times, indexByTime) {
+        perModelConsensusSeries(perModelHourly, indexByTime) { it.uvIndex }
             .maxByOrNull { it.second }
             ?.takeIf { it.second.roundToInt() >= 1 }
             ?.let { (idx, value) ->
@@ -3317,9 +3334,12 @@ internal fun PrecipitationAmountCard(
     // best-match otherwise. Indexed by hour so the scrub readout above the
     // chart can read off the same value the line shows at that hour
     // instead of always reading best-match (which would surface a
-    // contradicting number when the consensus diverges).
-    val mainLine = remember(hourly, perModelHourly) {
-        consensusRainfallMainLine(hourly, perModelHourly)
+    // contradicting number when the consensus diverges). The timestamp →
+    // window-position map matches the one the chart builds from the same
+    // inputs, so the two series stay byte-identical.
+    val indexByTime = remember(hourly, forDate) { hourlyTimestampIndices(hourly, forDate) }
+    val mainLine = remember(hourly, perModelHourly, indexByTime) {
+        consensusRainfallMainLine(hourly, perModelHourly, indexByTime)
     }
     val totalMm = remember(mainLine) { mainLine.sum() }
     val isDry = totalMm < DRY_TOTAL_THRESHOLD_MM
@@ -3541,16 +3561,23 @@ internal fun formatMinMax(values: List<Double>, unit: TemperatureUnit): Pair<Int
 // Per-hour mean of [picker] across whichever models reported at that hour —
 // the same blend used for the diagnostic charts' main consensus line, lifted
 // out so the card subtitles can summarise the same series the chart draws.
-// Returns (originalIndex, mean) pairs sorted by index; empty when no model
-// has data for the metric.
+// Entries are resolved to window positions by timestamp lookup against
+// [indexByTime] (the [hourlyTimestampIndices] map for the card's hourly
+// window), matching [PerModelDiagnosticCard]'s keying — so a model that
+// dropped an hour doesn't merge mismatched wall-clock hours into one mean,
+// and the peak subtitles ("Peak X at H") name the right hour. Entries
+// outside the window are skipped. Returns (windowIndex, mean) pairs sorted
+// by index; empty when no model has data for the metric.
 private fun perModelConsensusSeries(
     perModelHourly: PerModelHourly,
+    indexByTime: Map<LocalDateTime, Int>,
     picker: (PerModelHour) -> Double?,
 ): List<Pair<Int, Double>> {
     val byIndex = mutableMapOf<Int, MutableList<Double>>()
     perModelHourly.byModel.values.forEach { entries ->
-        entries.forEachIndexed { i, e ->
-            picker(e)?.let { byIndex.getOrPut(i) { mutableListOf() } += it }
+        entries.forEach { e ->
+            val idx = indexByTime[e.time] ?: return@forEach
+            picker(e)?.let { byIndex.getOrPut(idx) { mutableListOf() } += it }
         }
     }
     return byIndex.entries.sortedBy { it.key }.map { (idx, vs) -> idx to vs.average() }
@@ -3558,9 +3585,10 @@ private fun perModelConsensusSeries(
 
 private fun perModelConsensusRange(
     perModelHourly: PerModelHourly,
+    indexByTime: Map<LocalDateTime, Int>,
     picker: (PerModelHour) -> Double?,
 ): Pair<Int, Int>? {
-    val values = perModelConsensusSeries(perModelHourly, picker).map { it.second }
+    val values = perModelConsensusSeries(perModelHourly, indexByTime, picker).map { it.second }
     if (values.isEmpty()) return null
     return values.min().roundToInt() to values.max().roundToInt()
 }

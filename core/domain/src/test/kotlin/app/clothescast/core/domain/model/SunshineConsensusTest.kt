@@ -104,10 +104,12 @@ class SunshineConsensusTest {
     }
 
     @Test
-    fun `partial null hours within a model still count toward its total`() {
-        // ecmwf has 1h + null = 1h total; gfs has 2h + 1h = 3h. Mean = 2h.
-        // A partial-null hour shouldn't drag the model's total to zero or
-        // disqualify it from the consensus.
+    fun `a model's missing hour drops out of that hour's mean, not counted as zero`() {
+        // Hour 10: mean(1h, 2h) = 1.5h. Hour 12: ecmwf didn't report, so
+        // gfs's 1h stands alone. Total = 2.5h. A per-model-totals mean would
+        // give (1h + 3h) / 2 = 2h — arithmetically the same as counting
+        // ecmwf's missing hour as zero sunshine, which is exactly the
+        // partial-series bias the hour-wise contract exists to avoid.
         val data = PerModelHourly(
             byModel = mapOf(
                 "ecmwf_ifs04" to listOf(
@@ -122,6 +124,6 @@ class SunshineConsensusTest {
         )
 
         val hours = data.consensusSunshineHoursFor(today).shouldNotBeNull()
-        hours shouldBe (2.0 plusOrMinus 0.0001)
+        hours shouldBe (2.5 plusOrMinus 0.0001)
     }
 }

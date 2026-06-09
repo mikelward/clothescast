@@ -109,7 +109,15 @@ internal class MultiModelConfidenceFetcher(
                     logger.log("could not read error body for status $status", readError)
                     ""
                 }
-                val rejected = remaining.filter { it.isNotBlank() && body.contains(it) }
+                // Match whole ids only: a bare substring check would also
+                // "match" a requested id that happens to be a prefix of the
+                // one the server named (Open-Meteo has such pairs, e.g.
+                // icon_d2 / icon_d2_15min) and prune a perfectly valid model
+                // alongside the bad one. Ids are word characters throughout
+                // ([a-z0-9_]), so \b anchors exactly at their edges.
+                val rejected = remaining.filter {
+                    it.isNotBlank() && Regex("""\b${Regex.escape(it)}\b""").containsMatchIn(body)
+                }
                 if (status != HTTP_BAD_REQUEST || rejected.isEmpty() || attempts > MAX_FETCH_ATTEMPTS) {
                     logger.log("confidence fetch failed (status $status)", e)
                     return null

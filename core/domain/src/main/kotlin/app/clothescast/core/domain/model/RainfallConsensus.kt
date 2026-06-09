@@ -5,16 +5,16 @@ import java.time.LocalDate
 /**
  * Day-level rainfall total averaged across the consulted models — the
  * single number behind the Today screen's "X mm of rain today" blurb.
- * Sibling of [consensusSunshineHoursFor]; same per-model-first averaging
+ * Sibling of [consensusSunshineHoursFor]; same hour-wise averaging
  * contract.
  *
- * Per-hour [PerModelHour.precipitationMm] is summed independently for each
- * model that reported precipitation on [date], and the arithmetic mean of
- * those per-model daily totals is returned in millimetres. Summing per-model
- * first (rather than averaging the per-hour values across models and then
- * summing) keeps a model with only a partial hourly series from silently
- * dragging the consensus down — its missing hours don't get counted as zero
- * rainfall.
+ * At each hour of [date], [PerModelHour.precipitationMm] is averaged over
+ * the models that reported it, and the per-hour means are summed into a
+ * daily total in millimetres. Averaging hour-wise over the reporting models
+ * (rather than summing each model first and averaging the per-model totals)
+ * keeps a model with only a partial hourly series from silently dragging
+ * the consensus down — its missing hours don't get counted as zero
+ * rainfall. See [consensusPerModelAverage].
  *
  * Treats `best_match` like any other model, matching [blendConsensusHourly]'s
  * posture and the rest of the Today-screen consensus blends. With fewer than
@@ -35,10 +35,9 @@ fun PerModelHourly.consensusRainfallMmFor(date: LocalDate): Double? =
  * (early-morning rain before the morning alarm) on the night view; this
  * variant sums the full slice instead.
  *
- * Same per-model-first averaging contract as [consensusRainfallMmFor]:
- * each consulted model's hours are summed independently, the arithmetic mean
- * of those per-model totals is returned in millimetres, and < 2 models with
- * any precipitation return null.
+ * Same hour-wise averaging contract as [consensusRainfallMmFor]: each hour's
+ * mean over the reporting models is summed into a window total in
+ * millimetres, and < 2 models with any precipitation return null.
  */
 fun PerModelHourly.consensusRainfallMm(): Double? =
     consensusPerModelAverage(dateFilter = null) { it.precipitationMm }

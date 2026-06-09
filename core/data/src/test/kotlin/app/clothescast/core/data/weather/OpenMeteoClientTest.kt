@@ -1,9 +1,11 @@
 package app.clothescast.core.data.weather
 
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.PerModelHourly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -99,6 +101,90 @@ class OpenMeteoClientTest {
         bundle.yesterday.temperatureMaxC shouldBe 18.0
         bundle.today.temperatureMaxC shouldBe 24.0
         bundle.today.hourly.size shouldBe 8
+    }
+
+    @Test
+    fun `null best_match hours do not vote synthetic zeros into the consensus blend`() = runTest {
+        // The horizon edge of the 14-day window (and a model run still warming
+        // up) returns null hourly values for best_match. The mapper turns those
+        // into 0.0 °C / 0 % for the chart; the consensus blend must not see
+        // them as real votes or a fake cold-and-dry hour drags the mean (and
+        // the recomputed daily extremes) down.
+        val primaryJson = """
+            {
+              "timezone": "Europe/London",
+              "daily": {
+                "time": ["2026-04-24", "2026-04-25"],
+                "temperature_2m_min": [12.0, 16.0],
+                "temperature_2m_max": [18.0, 24.0],
+                "apparent_temperature_min": [10.0, 15.0],
+                "apparent_temperature_max": [17.0, 23.0],
+                "precipitation_probability_max": [5, 60],
+                "precipitation_sum": [0.0, 4.5],
+                "weather_code": [2, 63]
+              },
+              "hourly": {
+                "time": ["2026-04-25T12:00", "2026-04-25T13:00"],
+                "temperature_2m": [20.0, null],
+                "apparent_temperature": [20.0, null],
+                "precipitation_probability": [40, null],
+                "weather_code": [2, null],
+                "wind_speed_10m": [10.0, null],
+                "uv_index": [4.0, null]
+              }
+            }
+        """.trimIndent()
+        val confidenceJson = """
+            {
+              "daily": {"time": ["2026-04-25"]},
+              "hourly": {
+                "time": ["2026-04-25T12:00", "2026-04-25T13:00"],
+                "temperature_2m_gfs_seamless": [21.0, 10.0],
+                "apparent_temperature_gfs_seamless": [21.0, 10.0],
+                "precipitation_probability_gfs_seamless": [50, 60],
+                "wind_speed_10m_gfs_seamless": [20.0, 20.0],
+                "temperature_2m_icon_seamless": [23.0, 20.0],
+                "apparent_temperature_icon_seamless": [23.0, 20.0],
+                "precipitation_probability_icon_seamless": [70, 80],
+                "wind_speed_10m_icon_seamless": [30.0, 30.0]
+              }
+            }
+        """.trimIndent()
+        val engine = MockEngine { request ->
+            val isPrimary = request.url.parameters["past_days"] == "1"
+            respond(
+                content = if (isPrimary) primaryJson else confidenceJson,
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val client = OpenMeteoClient(
+            HttpClient(engine) {
+                install(ContentNegotiation) {
+                    json(Json { ignoreUnknownKeys = true })
+                }
+            },
+        )
+
+        val bundle = client.fetchForecast(london)
+
+        // 12:00 — all three vote: best_match 20, GFS 21, ICON 23. Wind rides
+        // the primary call, so best_match votes there too: (10 + 20 + 30) / 3.
+        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0) / 3 plusOrMinus 1e-6)
+        bundle.today.hourly[0].windSpeedKmh!! shouldBe ((10.0 + 20.0 + 30.0) / 3 plusOrMinus 1e-6)
+        // 13:00 — best_match's hour was null upstream: it must sit the hour
+        // out, not vote the mapper's synthetic 0 °C / 0 %.
+        bundle.today.hourly[1].temperatureC shouldBe ((10.0 + 20.0) / 2 plusOrMinus 1e-6)
+        bundle.today.hourly[1].precipitationProbabilityPct shouldBe ((60.0 + 80.0) / 2 plusOrMinus 1e-6)
+
+        // The exposed per-model series reflects the same policy: the null hour
+        // is absent from best_match's series rather than zero-filled, and the
+        // primary call's wind / UV ride along.
+        val bestMatch = checkNotNull(bundle.perModelHourly)
+            .byModel.getValue(PerModelHourly.BEST_MATCH_MODEL_ID)
+        bestMatch.map { it.time.hour } shouldBe listOf(12)
+        bestMatch[0].windSpeedKmh shouldBe 10.0
+        bestMatch[0].uvIndex shouldBe 4.0
     }
 
     @Test

@@ -5,7 +5,6 @@ import app.clothescast.core.data.diag.ApiEndpoints
 import app.clothescast.core.data.diag.NoOpApiCallLogger
 import app.clothescast.core.data.diag.instrument
 import app.clothescast.core.domain.model.DailyForecast
-import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
@@ -92,7 +91,8 @@ class OpenMeteoClient(
         val models = confidenceModelsProvider(location)
         val multiModel = async { confidenceFetcher.fetch(location, models) }
 
-        val bundle = OpenMeteoMapper.toBundle(primary.await())
+        val response = primary.await()
+        val bundle = OpenMeteoMapper.toBundle(response)
         val multi = multiModel.await()
 
         // Replace today's hourly + the derived daily extremes with the
@@ -105,8 +105,6 @@ class OpenMeteoClient(
         // models reported keeps a sane backstop in regions where the
         // side-band fetch is sparse, and unconditionally when the
         // multi-model fetch failed entirely.
-        val bestMatchHourly = bundle.today.hourly
-
         // Stash best_match alongside the consulted models in [PerModelHourly]
         // before passing into the consensus blender so the blender sees it
         // as a regular model — equal-weight inclusion of best_match is the
@@ -114,27 +112,26 @@ class OpenMeteoClient(
         // ordering of these two blocks regressed that by passing the
         // pre-injection map (Codex caught it on PR review).
         //
-        // Include best_match hours for every forward day, not just today. The
-        // consulted models (ECMWF / GFS / ICON) carry the full forecast_days=14
-        // window, so best_match has to span it too or the consensus silently
-        // changes character partway through: with best_match present
-        // only for today + tomorrow, later days would average the consulted
-        // models *without* Open-Meteo's auto-pick, breaking the equal-weight
-        // policy [blendConsensusHourly] documents and making the near days and
-        // later days blend differently (Codex caught it). It also keeps best_match a real
-        // vote in [RenderInsightSummary.pickPerModelPeak]'s `majorityNeeded`
-        // bar on both sides of the midnight boundary.
+        // Built from the wire payload, not the mapped [HourlyForecast]s: the
+        // mapper substitutes 0.0 °C / 0 % for null hourly values (tolerable
+        // for the chart, which the blend overwrites on any consensus hour),
+        // and feeding those synthetic zeros into [blendConsensusHourly] would
+        // let a horizon-edge null cast a fake cold-and-dry vote into the
+        // consensus mean — exactly what MultiModelConfidenceFetcher.parseHourly
+        // avoids for the consulted models by dropping the hour / keeping
+        // precip null.
         //
-        // Sources overlap — `tomorrowHourly` is tomorrow's pre-dawn slice and
-        // `upcomingDays[0]` is tomorrow's full day — so dedupe by timestamp
-        // (first wins) to avoid double-weighting best_match on the overlapping
-        // hours. Today comes only from best_match's own hourly.
+        // The raw hourly stream spans yesterday through day 14, so best_match
+        // covers the same forecast_days=14 window the consulted models carry —
+        // the equal-weight policy [blendConsensusHourly] documents holds on
+        // every forward day (an earlier today-plus-tomorrow-only version made
+        // near and later days blend differently; Codex caught it), and
+        // best_match stays a real vote in
+        // [RenderInsightSummary.pickPerModelPeak]'s `majorityNeeded` bar on
+        // both sides of the midnight boundary.
         val tomorrowDate = bundle.today.date.plusDays(1)
         val bestMatchPerModel =
-            (bestMatchHourly.asPerModelHours(bundle.today.date) +
-                bundle.tomorrowHourly.asPerModelHours(tomorrowDate) +
-                bundle.upcomingDays.flatMap { it.hourly.asPerModelHours(it.date) })
-                .distinctBy { it.time }
+            response.hourly.asBestMatchPerModelHours(firstForecastDate = bundle.today.date)
         val perModelWithBestMatch = multi?.hourly?.let { existing ->
             existing.copy(
                 byModel = existing.byModel +
@@ -175,28 +172,38 @@ class OpenMeteoClient(
         )
     }
 
-    private fun List<HourlyForecast>.asPerModelHours(date: LocalDate): List<PerModelHour> = map {
-        // best_match's hourly comes from the primary `/v1/forecast` call which
-        // doesn't include the diagnostic fields (wind, humidity, cloud); those
-        // ride only the side-band multi-model call and aren't fetched per
-        // best_match. Surface as null so the diagnostic charts treat
-        // best_match as "no data for this metric" instead of dropping it.
-        // The weather code *is* available on the primary call (already
-        // mapped to a [WeatherCondition] in [OpenMeteoMapper]), so we pass
-        // it through — the consensus blend's modal aggregation gets a 4th
-        // vote from best_match this way.
-        PerModelHour(
-            time = LocalDateTime.of(date, it.time),
-            apparentTemperatureC = it.feelsLikeC,
-            temperatureC = it.temperatureC,
-            precipitationProbabilityPct = it.precipitationProbabilityPct,
-            // Both probability and amount come from the primary `/v1/forecast`
-            // call for best_match, so the amount chart's best_match overlay
-            // has real data on it — unlike the diagnostic fields above.
-            precipitationMm = it.precipitationMm,
-            condition = it.condition,
-        )
-    }
+    // Mirrors MultiModelConfidenceFetcher.parseHourly's null policy: an hour
+    // without temperature_2m is dropped (no synthetic 0 °C vote), apparent
+    // falls back to air, and the precipitation fields stay null when absent so
+    // precip-specific aggregates skip them instead of counting a fake dry hour.
+    private fun HourlyData.asBestMatchPerModelHours(firstForecastDate: LocalDate): List<PerModelHour> =
+        buildList {
+            for (i in time.indices) {
+                val ts = runCatching { LocalDateTime.parse(time[i]) }.getOrNull() ?: continue
+                // Yesterday is historical with no side-band per-model coverage;
+                // start best_match's series where the consulted models start.
+                if (ts.toLocalDate() < firstForecastDate) continue
+                val air = temperature.getOrNull(i) ?: continue
+                add(
+                    PerModelHour(
+                        time = ts,
+                        apparentTemperatureC = feelsLike.getOrNull(i) ?: air,
+                        temperatureC = air,
+                        precipitationProbabilityPct = precipitationProbability.getOrNull(i)?.toDouble(),
+                        precipitationMm = precipitation.getOrNull(i),
+                        // Wind and UV ride the primary call too, so best_match
+                        // votes in the wind / UV consensus and draws on those
+                        // diagnostic charts like any consulted model. Humidity,
+                        // cloud, solar, and sunshine ride only the side-band
+                        // multi-model call, so they stay null — "no data for
+                        // this metric" rather than a synthetic zero.
+                        windSpeedKmh = windSpeed.getOrNull(i),
+                        uvIndex = uvIndex.getOrNull(i),
+                        condition = weatherCode.getOrNull(i)?.let { WmoCodeMapper.map(it) },
+                    ),
+                )
+            }
+        }
 
     private suspend fun fetchPrimary(location: Location): OpenMeteoResponse =
         apiCallLogger.instrument(ApiEndpoints.OPEN_METEO_FORECAST) {

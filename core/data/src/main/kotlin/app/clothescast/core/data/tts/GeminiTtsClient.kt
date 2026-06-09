@@ -5,6 +5,8 @@ import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.diag.ApiEndpoints
 import app.clothescast.core.data.diag.NoOpApiCallLogger
 import app.clothescast.core.data.insight.GeminiCallPlanner
+import app.clothescast.core.data.insight.InvalidApiKeyException
+import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.core.domain.model.TtsStyle
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -657,15 +659,19 @@ private fun parseDailyQuotaExhausted(body: ByteArray): GeminiTtsDailyQuotaExhaus
  * user picked Gemini, so a single blip shouldn't downgrade the whole briefing.
  *
  * Failures that won't change on a retry return false so the caller falls back
- * immediately: the spent daily free-tier quota, a blocked prompt, and a
- * non-retryable HTTP 4xx (auth / bad request). [CancellationException] is never
- * retryable — it must propagate to unwind structured concurrency rather than be
- * caught and retried.
+ * immediately: the spent daily free-tier quota, a blocked prompt, a missing or
+ * unreadable BYOK key (it won't reappear between attempts — and re-keying is
+ * the user's call, not a backoff loop's), and a non-retryable HTTP 4xx
+ * (auth / bad request). [CancellationException] is never retryable — it must
+ * propagate to unwind structured concurrency rather than be caught and
+ * retried.
  */
 fun isRetryableGeminiTtsFailure(t: Throwable): Boolean = when (t) {
     is CancellationException -> false
     is GeminiTtsDailyQuotaExhaustedException -> false
     is GeminiTtsBlockedException -> false
+    is MissingApiKeyException -> false
+    is InvalidApiKeyException -> false
     is GeminiTtsHttpException -> t.status.value == 429 || t.status.value in 500..599
     else -> true
 }

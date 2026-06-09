@@ -735,19 +735,21 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `model with a missing in-window hour is dropped from the overlay`() = runTest {
+    fun `model with a missing in-window hour keeps its surviving hours in the overlay`() = runTest {
         // parseHourly drops the per-hour entry for a model whose run hasn't
-        // landed that hour (temp or precip null); the resulting series has a
-        // gap that, if surfaced, would compact the surviving points left and
-        // misalign the line with the blended hourly. Keep the model out of
-        // the overlay entirely rather than draw a silently-shifted curve.
+        // landed that hour (temp or precip null). The sparse model stays in
+        // the overlay with the hours it did report: the charts position
+        // points by timestamp lookup (a gap renders as a gap, not a shifted
+        // curve) and pickPerModelPeak counts per-hour reporters by design —
+        // evicting the whole model starved the rain-tier majority of exactly
+        // the warming-up models the sparse handling exists for.
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 12.0, 11.0, 10.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 30.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(15, 0), 22.0, 21.0, 40.0, WeatherCondition.CLEAR),
         )
         val incompleteEcmwf = listOf(
-            // 12:00 hour missing — the model is dropped from the overlay.
+            // 12:00 hour missing — the model keeps its 8:00 and 15:00 entries.
             PerModelHour(LocalDateTime.of(today.date, LocalTime.of(8, 0)), 11.5, 12.5, 9.0),
             PerModelHour(LocalDateTime.of(today.date, LocalTime.of(15, 0)), 21.5, 22.5, 38.0),
         )
@@ -770,7 +772,9 @@ class GenerateDailyInsightTest {
 
         val overlay = subject(london, prefs, ForecastPeriod.TODAY).insight.perModelHourly
             .shouldNotBeNull()
-        overlay.byModel.keys shouldContainExactlyInAnyOrder listOf("gfs_seamless")
+        overlay.byModel.keys shouldContainExactlyInAnyOrder listOf("ecmwf_ifs04", "gfs_seamless")
+        overlay.byModel.getValue("ecmwf_ifs04").map { it.time.toLocalTime() } shouldBe
+            listOf(LocalTime.of(8, 0), LocalTime.of(15, 0))
         overlay.byModel.getValue("gfs_seamless").map { it.time.toLocalTime() } shouldBe daytime.map { it.time }
     }
 
@@ -1943,6 +1947,57 @@ class GenerateDailyInsightTest {
         )
 
         result.insight.hasEvents shouldBe false
+    }
+
+    @Test
+    fun `tonight hasEvents is true for a located event straddling the tonight start`() = runTest {
+        // An 18:30-21:30 dinner overlaps most of the night window even
+        // though it *starts* before the 19:00 tonight boundary. The old
+        // start-keyed filter dropped it, posting the 7pm notification
+        // silently while the user was out.
+        val zone = ZoneId.of("Europe/London")
+        val dinner = CalendarEvent(
+            title = "dinner",
+            start = LocalTime.of(18, 30),
+            end = LocalTime.of(21, 30),
+            location = "City A",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(dinner))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(useCalendarEvents = true, schedule = Schedule.default(zone)),
+            period = ForecastPeriod.TONIGHT,
+        )
+
+        result.insight.hasEvents shouldBe true
+    }
+
+    @Test
+    fun `tonight hasEvents is true for a located event crossing midnight`() = runTest {
+        // A 21:00-00:30 gig projects with end < start (date-less wall-clock
+        // times). The crossing must read as reaching into the night window,
+        // not as an empty interval.
+        val zone = ZoneId.of("Europe/London")
+        val gig = CalendarEvent(
+            title = "gig",
+            start = LocalTime.of(21, 0),
+            end = LocalTime.of(0, 30),
+            location = "City A",
+        )
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val calendar = FakeCalendarEventReader(events = listOf(gig))
+        val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
+
+        val result = subject(
+            location = london,
+            prefs = prefs.copy(useCalendarEvents = true, schedule = Schedule.default(zone)),
+            period = ForecastPeriod.TONIGHT,
+        )
+
+        result.insight.hasEvents shouldBe true
     }
 
     @Test

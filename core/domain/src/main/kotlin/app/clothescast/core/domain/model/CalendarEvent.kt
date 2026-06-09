@@ -44,10 +44,21 @@ data class CalendarEvent(
      * True when [time] falls within `[start, end)`. All-day events never
      * match, so the precip-peak overlap check never accidentally pairs an
      * umbrella with "your all-day Public holiday".
+     *
+     * [start]/[end] are date-less wall-clock times, so an event that crosses
+     * midnight projects with `end < start` (a 21:00–00:30 gig reads as
+     * start 21:00, end 00:30). Treat that as a wrapped interval — inside is
+     * `time >= start || time < end` — rather than an empty one, or the
+     * late-evening events the tonight tie-in exists for would never overlap
+     * any peak hour.
      */
     fun overlaps(time: LocalTime): Boolean {
         if (allDay) return false
         if (start == end) return time == start
-        return !time.isBefore(start) && time.isBefore(end)
+        return if (end.isBefore(start)) {
+            !time.isBefore(start) || time.isBefore(end)
+        } else {
+            !time.isBefore(start) && time.isBefore(end)
+        }
     }
 }

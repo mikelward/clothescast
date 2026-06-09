@@ -104,6 +104,30 @@ class RainfallConsensusTest {
     }
 
     @Test
+    fun `DST fall-back duplicate timestamps sum within a model, not double-vote the mean`() {
+        // On the 25-hour fall-back day Open-Meteo's local-time array repeats
+        // a wall-clock hour; both physical hours carry the same LocalDateTime.
+        // Each model's duplicates sum into that hour's value (1.0 + 2.0 = 3.0
+        // for ecmwf), keeping the physical total, and then the hour's mean is
+        // one vote per model: mean(3.0, 1.0) = 2.0 — not a 3-way mean where
+        // ecmwf votes twice.
+        val data = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(
+                    entry(today, 2, 1.0),
+                    entry(today, 2, 2.0),
+                ),
+                "gfs_seamless" to listOf(
+                    entry(today, 2, 1.0),
+                ),
+            ),
+        )
+
+        val mm = data.consensusRainfallMmFor(today).shouldNotBeNull()
+        mm shouldBe (2.0 plusOrMinus 0.0001)
+    }
+
+    @Test
     fun `a model's missing hour drops out of that hour's mean, not counted as zero`() {
         // Hour 10: mean(1.0, 4.0) = 2.5 mm. Hour 12: ecmwf didn't report, so
         // gfs's 1.0 mm stands alone. Total = 3.5 mm. A per-model-totals mean

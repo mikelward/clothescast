@@ -30,15 +30,23 @@ internal fun PerModelHourly.consensusPerModelAverage(
     dateFilter: LocalDate?,
     select: (PerModelHour) -> Double?,
 ): Double? {
-    val perModelValues = byModel.values.map { entries ->
+    // Per model: sum values per wall-clock timestamp first. Normally that's
+    // a no-op (one entry per hour), but on the DST fall-back day Open-Meteo's
+    // local-time array repeats an hour and both physical hours land on the
+    // same LocalDateTime — summing them keeps the model's 25-hour physical
+    // total intact and stops a model with two entries from double-voting
+    // that hour's cross-model mean against models with one.
+    val perModelByHour = byModel.values.map { entries ->
         entries
             .filter { dateFilter == null || it.time.toLocalDate() == dateFilter }
             .mapNotNull { entry -> select(entry)?.let { entry.time to it } }
+            .groupBy({ it.first }, { it.second })
+            .mapValues { (_, values) -> values.sum() }
     }.filter { it.isNotEmpty() }
-    if (perModelValues.size < 2) return null
-    return perModelValues
-        .flatten()
-        .groupBy({ it.first }, { it.second })
+    if (perModelByHour.size < 2) return null
+    return perModelByHour
+        .flatMap { it.entries }
+        .groupBy({ it.key }, { it.value })
         .values
         .sumOf { it.average() }
 }

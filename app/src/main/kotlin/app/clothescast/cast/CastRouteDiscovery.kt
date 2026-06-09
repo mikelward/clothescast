@@ -60,7 +60,13 @@ class CastRouteDiscovery(private val context: Context) {
     private fun snapshot(router: MediaRouter): List<DiscoveredCastRoute> =
         router.routes
             .filter { it.matchesSelector(selector) && !it.isDefault }
-            .map { DiscoveredCastRoute(id = it.id, name = it.name) }
+            .map {
+                DiscoveredCastRoute(
+                    id = it.id,
+                    name = it.name,
+                    isAudioOnly = classifyRoute(it) == CastDeviceClass.AUDIO_ONLY,
+                )
+            }
             .sortedBy { it.name.lowercase() }
 }
 
@@ -68,6 +74,13 @@ class CastRouteDiscovery(private val context: Context) {
  * The picker's view of a single Cast route. [id] is the stable
  * MediaRouter route id we persist to [app.clothescast.data.SettingsRepository.setCastRoute];
  * [name] is the friendly label the user sees in the picker and in
- * the Settings row.
+ * the Settings row. [isAudioOnly] is true for a device with no screen
+ * (Nest Mini/Audio, Google Home, speaker groups) so the picker can flag
+ * it as a speaker; false for displays and for routes we couldn't
+ * classify (treated as displays — see [classifyRoute]).
  */
-data class DiscoveredCastRoute(val id: String, val name: String)
+data class DiscoveredCastRoute(
+    val id: String,
+    val name: String,
+    val isAudioOnly: Boolean = false,
+)

@@ -25,68 +25,81 @@ class CastMediaServerTest {
         // First eight bytes of an MP4: an `ftyp` box header. Magic is
         // arbitrary here — we just need bytes to round-trip.
         val mp4 = byteArrayOf(0, 0, 0, 0x18, 0x66, 0x74, 0x79, 0x70)
-        val urls = server.publish(host = "127.0.0.1", video = mp4)
+        val urls = server.publish(host = "127.0.0.1", media = mp4)
 
-        val resp = fetch(urls.video)
+        val resp = fetch(urls.url)
         resp.status shouldBe 200
         resp.contentType shouldBe "video/mp4"
         resp.body shouldBe mp4
     }
 
     @Test
+    fun `serves the published WAV with the audio content type at the wav path`() {
+        // RIFF/WAVE header magic — arbitrary bytes; we just round-trip them.
+        val wav = byteArrayOf(0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0)
+        val urls = server.publish(host = "127.0.0.1", media = wav, kind = CastMediaKind.WAV)
+
+        urls.url shouldMatch Regex("""http://127\.0\.0\.1:\d+/[0-9a-f]{32}/insight\.wav""")
+        val resp = fetch(urls.url)
+        resp.status shouldBe 200
+        resp.contentType shouldBe "audio/wav"
+        resp.body shouldBe wav
+    }
+
+    @Test
     fun `URL carries a 32 hex character path token`() {
-        val urls = server.publish(host = "127.0.0.1", video = ByteArray(0))
+        val urls = server.publish(host = "127.0.0.1", media = ByteArray(0))
         // http://127.0.0.1:<port>/<32 hex>/insight.mp4
-        urls.video shouldMatch Regex("""http://127\.0\.0\.1:\d+/[0-9a-f]{32}/insight\.mp4""")
+        urls.url shouldMatch Regex("""http://127\.0\.0\.1:\d+/[0-9a-f]{32}/insight\.mp4""")
     }
 
     @Test
     fun `republish rotates the path token and old URLs stop serving`() {
-        val first = server.publish(host = "127.0.0.1", video = "first".toByteArray())
-        val second = server.publish(host = "127.0.0.1", video = "second".toByteArray())
+        val first = server.publish(host = "127.0.0.1", media = "first".toByteArray())
+        val second = server.publish(host = "127.0.0.1", media = "second".toByteArray())
 
-        second.video shouldNotBe first.video
+        second.url shouldNotBe first.url
 
         // Old URL 404s — the previous publish's token no longer matches.
-        fetch(first.video).status shouldBe 404
+        fetch(first.url).status shouldBe 404
 
         // New URL serves the new buffer on the same port.
-        fetch(second.video).body shouldBe "second".toByteArray()
-        URL(second.video).port shouldBe URL(first.video).port
+        fetch(second.url).body shouldBe "second".toByteArray()
+        URL(second.url).port shouldBe URL(first.url).port
     }
 
     @Test
     fun `requests with a wrong token return 404`() {
         val mp4 = byteArrayOf(1, 2, 3, 4)
-        val urls = server.publish(host = "127.0.0.1", video = mp4)
-        val origin = URL(urls.video).let { "http://${it.host}:${it.port}" }
+        val urls = server.publish(host = "127.0.0.1", media = mp4)
+        val origin = URL(urls.url).let { "http://${it.host}:${it.port}" }
 
         fetch("$origin/deadbeefdeadbeefdeadbeefdeadbeef/insight.mp4").status shouldBe 404
     }
 
     @Test
     fun `unknown paths return 404`() {
-        val urls = server.publish(host = "127.0.0.1", video = ByteArray(0))
-        val origin = URL(urls.video).let { "http://${it.host}:${it.port}" }
+        val urls = server.publish(host = "127.0.0.1", media = ByteArray(0))
+        val origin = URL(urls.url).let { "http://${it.host}:${it.port}" }
 
         fetch("$origin/nope").status shouldBe 404
     }
 
     @Test
     fun `awaitFetch returns true once a receiver GETs the active URL`() = runBlocking {
-        val urls = server.publish(host = "127.0.0.1", video = byteArrayOf(1, 2, 3))
+        val urls = server.publish(host = "127.0.0.1", media = byteArrayOf(1, 2, 3))
 
         // Await before the GET — the deferred must not be pre-completed.
         val awaiter = async { server.awaitFetch(timeoutMs = 5_000) }
 
-        fetch(urls.video).status shouldBe 200
+        fetch(urls.url).status shouldBe 200
 
         awaiter.await() shouldBe true
     }
 
     @Test
     fun `awaitFetch returns false when no receiver fetches before the timeout`() = runTest {
-        server.publish(host = "127.0.0.1", video = byteArrayOf(0))
+        server.publish(host = "127.0.0.1", media = byteArrayOf(0))
 
         // Short timeout — nothing GETs the URL, so we expect a timeout
         // result rather than a hang. runTest's virtual time skips the
@@ -101,8 +114,8 @@ class CastMediaServerTest {
 
     @Test
     fun `awaitFetch is not satisfied by a wrong-token request`() = runBlocking {
-        val urls = server.publish(host = "127.0.0.1", video = byteArrayOf(7))
-        val origin = URL(urls.video).let { "http://${it.host}:${it.port}" }
+        val urls = server.publish(host = "127.0.0.1", media = byteArrayOf(7))
+        val origin = URL(urls.url).let { "http://${it.host}:${it.port}" }
 
         fetch("$origin/deadbeefdeadbeefdeadbeefdeadbeef/insight.mp4").status shouldBe 404
 
@@ -113,23 +126,23 @@ class CastMediaServerTest {
 
     @Test
     fun `awaitFetch returns true after a republish once the new URL is GET'd`() = runBlocking {
-        server.publish(host = "127.0.0.1", video = "first".toByteArray())
+        server.publish(host = "127.0.0.1", media = "first".toByteArray())
         // No GET on the first URL — its deferred never completes.
 
-        val second = server.publish(host = "127.0.0.1", video = "second".toByteArray())
+        val second = server.publish(host = "127.0.0.1", media = "second".toByteArray())
         val awaiter = async { server.awaitFetch(timeoutMs = 5_000) }
 
-        fetch(second.video).body shouldBe "second".toByteArray()
+        fetch(second.url).body shouldBe "second".toByteArray()
 
         awaiter.await() shouldBe true
     }
 
     @Test
     fun `stop releases the port`() {
-        val urls = server.publish(host = "127.0.0.1", video = ByteArray(0))
+        val urls = server.publish(host = "127.0.0.1", media = ByteArray(0))
         val port = server.port()
         (port > 0) shouldBe true
-        URL(urls.video).port shouldBe port
+        URL(urls.url).port shouldBe port
 
         server.stop()
         server.port() shouldBe 0

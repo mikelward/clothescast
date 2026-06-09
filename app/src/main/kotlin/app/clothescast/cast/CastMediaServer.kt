@@ -16,18 +16,20 @@ import java.net.ServerSocket
 import java.security.SecureRandom
 
 /**
- * Tiny HTTP server that exposes one MP4 (outfit image as a static video
- * track + TTS audio as the audio track) to a Cast receiver on the same
- * LAN. Cast receivers fetch media by URL — they don't accept raw bytes
- * pushed from the sender — so the phone briefly hosts the payload at a
- * per-publish, token-gated path while the cast is active.
+ * Tiny HTTP server that exposes one media buffer to a Cast receiver on
+ * the same LAN. Cast receivers fetch media by URL — they don't accept
+ * raw bytes pushed from the sender — so the phone briefly hosts the
+ * payload at a per-publish, token-gated path while the cast is active.
  *
- * Packing image + audio into a single MP4 lets the Default Media Receiver
- * render the outfit full-screen while the audio plays (a metadata
- * WebImage gets framed by audio-player chrome — a video track doesn't).
+ * Two media shapes flow through here ([CastMediaKind]): a display gets an
+ * MP4 (outfit image as a static video track + TTS audio), so the Default
+ * Media Receiver renders the outfit full-screen while the audio plays (a
+ * metadata WebImage gets framed by audio-player chrome — a video track
+ * doesn't); an audio-only speaker gets a bare WAV, since it has no screen
+ * to show the image on.
  *
  * Lifecycle:
- *   1. [publish] writes the MP4 buffer into memory, rotates a 128-bit
+ *   1. [publish] writes the media buffer into memory, rotates a 128-bit
  *      path token, and lazily starts the server. Returns an HTTP URL
  *      the receiver can fetch.
  *   2. The caller hands that URL to a `MediaInfo` and loads it via
@@ -69,7 +71,10 @@ class CastMediaServer {
     private var port: Int = 0
 
     @Volatile
-    private var video: ByteArray? = null
+    private var buffer: ByteArray? = null
+
+    @Volatile
+    private var kind: CastMediaKind = CastMediaKind.MP4
 
     @Volatile
     private var pathToken: String = ""
@@ -88,20 +93,23 @@ class CastMediaServer {
     private var fetched: CompletableDeferred<Unit>? = null
 
     /**
-     * Replaces the in-memory MP4 buffer, rotates the path token, ensures
-     * the server is running, and returns the URL the receiver should
-     * fetch.
+     * Replaces the in-memory media buffer, rotates the path token,
+     * ensures the server is running, and returns the URL the receiver
+     * should fetch.
      *
      * @param host the LAN address the receiver should reach the phone on
      *   (e.g. "192.168.1.42"). The caller resolves it from
      *   `ConnectivityManager.getLinkProperties`.
+     * @param kind the media shape — sets the URL suffix and the
+     *   `Content-Type` the handler serves it with.
      */
-    fun publish(host: String, video: ByteArray): MediaUrl {
-        this.video = video
+    fun publish(host: String, media: ByteArray, kind: CastMediaKind = CastMediaKind.MP4): MediaUrl {
+        this.buffer = media
+        this.kind = kind
         this.pathToken = generateToken()
         this.fetched = CompletableDeferred()
         if (server == null) start()
-        return MediaUrl(video = "http://$host:$port/$pathToken$VIDEO_SUFFIX")
+        return MediaUrl(url = "http://$host:$port/$pathToken${kind.suffix}")
     }
 
     /**
@@ -126,7 +134,7 @@ class CastMediaServer {
     fun stop() {
         server?.stop(gracePeriodMillis = 0, timeoutMillis = 500)
         server = null
-        video = null
+        buffer = null
         pathToken = ""
         port = 0
         // Drop the reference so any in-flight [awaitFetch] times out
@@ -141,17 +149,23 @@ class CastMediaServer {
         port = ServerSocket(0).use { it.localPort }
         val srv = embeddedServer(CIO, port = port) {
             routing {
-                get("/{token}/insight.mp4") {
-                    val buf = video
+                // Wildcard filename so the same route serves whichever
+                // suffix the active [CastMediaKind] minted (insight.mp4 /
+                // insight.wav). The receiver only ever requests the exact
+                // URL we handed it, so the token gate — not the filename —
+                // is what authorizes the serve.
+                get("/{token}/{file}") {
+                    val buf = buffer
                     val incoming = call.parameters["token"]
-                    // Capture the active fetch deferred at match time
-                    // rather than reading it again post-respondBytes — a
-                    // concurrent publish would otherwise redirect the
-                    // signal onto the new awaiter instead of the one
-                    // whose URL was just served.
+                    // Capture the active buffer kind + fetch deferred at
+                    // match time rather than re-reading post-respondBytes —
+                    // a concurrent publish would otherwise serve the new
+                    // content type or redirect the signal onto the new
+                    // awaiter instead of the one whose URL was just served.
+                    val capturedKind = kind
                     val capturedFetched = fetched
                     if (buf != null && tokenMatches(incoming)) {
-                        call.respondBytes(buf, VIDEO_CONTENT_TYPE)
+                        call.respondBytes(buf, capturedKind.contentType)
                         capturedFetched?.complete(Unit)
                     } else {
                         call.respond(HttpStatusCode.NotFound)
@@ -179,14 +193,24 @@ class CastMediaServer {
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
-    data class MediaUrl(val video: String)
+    data class MediaUrl(val url: String)
 
     companion object {
         // 128 bits of entropy in the URL path. Enough that scanning the
         // open ephemeral port for the buffer is computationally hopeless
         // even on a fast LAN; same order as a UUID4.
         private const val TOKEN_BYTES = 16
-        private const val VIDEO_SUFFIX = "/insight.mp4"
-        private val VIDEO_CONTENT_TYPE = ContentType("video", "mp4")
     }
+}
+
+/**
+ * The media shape a [CastMediaServer.publish] hosts. Pairs the URL suffix
+ * (so the receiver fetches `…/insight.mp4` vs `…/insight.wav`) with the
+ * `Content-Type` the handler serves it under. MP4 carries the muxed
+ * outfit image + audio for smart displays; WAV carries the bare spoken
+ * forecast for audio-only speakers.
+ */
+enum class CastMediaKind(val suffix: String, val contentType: ContentType) {
+    MP4("/insight.mp4", ContentType("video", "mp4")),
+    WAV("/insight.wav", ContentType("audio", "wav")),
 }

@@ -129,10 +129,10 @@ class CastInsightController(
                 )
                 val wav = WavEncoder.encode(padPcmToMinimumDuration(pcm))
                 val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
-                val urls = server.publish(host = host, video = mp4)
+                val urls = server.publish(host = host, media = mp4, kind = CastMediaKind.MP4)
                 client.load(
                     MediaLoadRequestData.Builder()
-                        .setMediaInfo(buildMediaInfo(urls, title, subtitle))
+                        .setMediaInfo(buildMediaInfo(urls.url, title, subtitle))
                         .build(),
                 )
             } catch (t: Throwable) {
@@ -187,39 +187,63 @@ class CastInsightController(
     ) {
         val route = findRoute(routeId, discoveryTimeoutMs)
             ?: throw CastFailure.DeviceNotFound
+        val deviceClass = classifyRoute(route)
         val session = ensureSession(route, sessionTimeoutMs)
         val client = session.remoteMediaClient
             ?: throw CastFailure.NoRemoteMediaClient
         val host = resolveLanIp(context)
             ?: throw CastFailure.NoLanAddress
 
-        // Speech on a cast device needs Gemini (the device voice can't be muxed
-        // into the cast media). Without a key, still cast the outfit image with
-        // a silent track instead of failing — mirrors the worker's image-only
-        // fallback. Other synth failures (network, etc.) still surface as a cast
-        // error so the user knows audio genuinely broke.
-        val wav = try {
-            val pcm = ttsClient.synthesize(
+        // Speech on a cast device needs Gemini (the device voice can't be
+        // muxed into the cast media). Without a key, a display still casts
+        // the outfit image with a silent track instead of failing — mirrors
+        // the worker's image-only fallback — but a speaker has no screen, so
+        // there's nothing to play; surface the missing voice as a cast error.
+        // Other synth failures (network, etc.) still surface as a cast error
+        // so the user knows audio genuinely broke.
+        val pcm = try {
+            ttsClient.synthesize(
                 text = prose,
                 voiceName = voiceName,
                 locale = locale,
                 style = style,
             )
-            WavEncoder.encode(padPcmToMinimumDuration(pcm))
         } catch (_: MissingApiKeyException) {
-            DiagLog.i(TAG, "Cast test: no Gemini key; casting image-only (silent).")
-            silentWavStub
+            null
         }
-        val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
-        val urls = server.publish(host = host, video = mp4)
-        DiagLog.i(
-            TAG,
-            "Cast test: hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
-                "for route $routeId; sending load command.",
-        )
-        val request = MediaLoadRequestData.Builder()
-            .setMediaInfo(buildMediaInfo(urls, title, subtitle))
-            .build()
+        val request = when (mediaPlanFor(deviceClass, hasRealAudio = pcm != null)) {
+            CastMediaPlan.SkipNoAudio -> throw CastFailure.NoAudioForSpeaker
+            CastMediaPlan.Wav -> {
+                val wav = WavEncoder.encode(pcm!!)
+                val urls = server.publish(host = host, media = wav, kind = CastMediaKind.WAV)
+                DiagLog.i(
+                    TAG,
+                    "Cast test: hosting ${wav.size}B wav on http://$host:${server.port()}/<token>/insight.wav " +
+                        "for speaker route $routeId; sending load command.",
+                )
+                MediaLoadRequestData.Builder()
+                    .setMediaInfo(buildAudioMediaInfo(urls.url, title, subtitle))
+                    .build()
+            }
+            CastMediaPlan.Mp4 -> {
+                val wav = if (pcm != null) {
+                    WavEncoder.encode(padPcmToMinimumDuration(pcm))
+                } else {
+                    DiagLog.i(TAG, "Cast test: no Gemini key; casting image-only (silent).")
+                    silentWavStub
+                }
+                val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
+                val urls = server.publish(host = host, media = mp4, kind = CastMediaKind.MP4)
+                DiagLog.i(
+                    TAG,
+                    "Cast test: hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
+                        "for route $routeId; sending load command.",
+                )
+                MediaLoadRequestData.Builder()
+                    .setMediaInfo(buildMediaInfo(urls.url, title, subtitle))
+                    .build()
+            }
+        }
         val result = awaitLoad(client, request, loadTimeoutMs)
             ?: run {
                 DiagLog.w(TAG, "Cast test: receiver did not respond to load within ${loadTimeoutMs}ms.")
@@ -273,12 +297,23 @@ class CastInsightController(
         data class PublishedButNotFetched(val reason: String) : CastWorkerOutcome
 
         /**
-         * Route id no longer resolves on the LAN — display fully off,
+         * Route id no longer resolves on the LAN — device fully off,
          * mDNS lapsed, or the user replaced the saved id with one
-         * that's no longer discoverable. Surfaces as a "Smart display
+         * that's no longer discoverable. Surfaces as a "Smart device
          * not reachable" status row in Settings.
          */
         data object SkippedNoRoute : CastWorkerOutcome
+
+        /**
+         * The picked device is an audio-only speaker but no spoken
+         * forecast was available (Gemini unavailable or synth failed).
+         * A display would still get the silent image-only carrier, but a
+         * speaker has nothing to play, so the load is skipped. Distinct
+         * from [SkippedNoRoute] (the device was reachable) and from
+         * [Failed] (nothing actually broke) so Settings can explain that
+         * the user needs a Gemini voice to cast to a speaker.
+         */
+        data object SkippedNoAudio : CastWorkerOutcome
 
         /**
          * Any other failure (no LAN IPv4 on the phone, session start
@@ -295,16 +330,24 @@ class CastInsightController(
      * worker can synthesise and render pre-alignment and load the
      * exact same buffers it fed to MQTT.
      *
-     * @param wav WAV-wrapped audio. Pass [silentWavStub] when no real
-     *   audio is available (Gemini unavailable or synth failed) —
-     *   Default Media Receiver requires some media to load, so the
-     *   silent stub is the image-only path's loading carrier.
-     *   Nothing audible plays on the receiver in that case.
+     * @param wav WAV-wrapped audio. On a **display** route, pass
+     *   [silentWavStub] when no real audio is available (Gemini
+     *   unavailable or synth failed) — Default Media Receiver requires
+     *   some media to load, so the silent stub is the image-only path's
+     *   loading carrier and the outfit image still shows. On a
+     *   **speaker** route a silent stub is meaningless, so the no-audio
+     *   case ([hasRealAudio] false) skips the load entirely — see
+     *   [CastWorkerOutcome.SkippedNoAudio].
      * @param hasRealAudio false on the image-only path, true when
-     *   [wav] carries the synth result. The worker reads this to
-     *   decide whether [castSkipPhoneSpeech] applies (image-only
-     *   casts don't suppress phone speech because the display isn't
-     *   doing the audio).
+     *   [wav] carries the synth result. Selects the speaker no-audio
+     *   skip, and the worker reads it to decide whether
+     *   [castSkipPhoneSpeech] applies (image-only / skipped casts don't
+     *   suppress phone speech because the device isn't doing the audio).
+     * @param png the outfit image to mux into the MP4 on a **display**
+     *   route. Null is allowed: a speaker plays audio only and ignores
+     *   it, so a missing render doesn't block the spoken forecast there;
+     *   only the display (MP4) branch requires it and fails with
+     *   "Outfit render unavailable" when it's absent.
      *
      * TODO(cast-edge-cases): handle the cases where casting would
      *  be disruptive — destination is a TV in standby on a different
@@ -322,8 +365,8 @@ class CastInsightController(
     suspend fun castWithPreparedMedia(
         routeId: String,
         wav: ByteArray,
-        @Suppress("UNUSED_PARAMETER") hasRealAudio: Boolean,
-        png: ByteArray,
+        hasRealAudio: Boolean,
+        png: ByteArray?,
         title: String,
         subtitle: String?,
         discoveryTimeoutMs: Long = 5_000,
@@ -340,39 +383,73 @@ class CastInsightController(
             // (resolveLanIp → ConnectivityManager, server.publish →
             // Ktor) stays outside the hop so we don't block the UI
             // thread on network I/O.
-            val routeAndClient = withContext(Dispatchers.Main.immediate) {
+            val resolved = withContext(Dispatchers.Main.immediate) {
                 val route = findRoute(routeId, discoveryTimeoutMs)
                     ?: return@withContext null
                 val session = ensureSession(route, sessionTimeoutMs)
-                session.remoteMediaClient
+                val client = session.remoteMediaClient ?: return@withContext null
+                ResolvedRoute(client, classifyRoute(route))
             }
-            val client = when (routeAndClient) {
-                null -> {
-                    DiagLog.w(TAG, "Cast route $routeId not discovered within ${discoveryTimeoutMs}ms; skipping cast.")
-                    return CastWorkerOutcome.SkippedNoRoute
-                }
-                else -> routeAndClient
+            if (resolved == null) {
+                DiagLog.w(TAG, "Cast route $routeId not discovered within ${discoveryTimeoutMs}ms; skipping cast.")
+                return CastWorkerOutcome.SkippedNoRoute
             }
+            val client = resolved.client
             val host = resolveLanIp(context)
                 ?: run {
                     DiagLog.w(TAG, "No LAN IPv4 on the phone; cannot host cast media.")
                     return CastWorkerOutcome.Failed(CastFailure.NoLanAddress.message ?: "No LAN IP")
                 }
-            val paddedWav = padWavToMinimumDuration(wav)
-            val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(png, paddedWav) }
-            val urls = server.publish(host = host, video = mp4)
-            // Concrete URL is sensitive (path token), so log only the
+            // Concrete URLs are sensitive (path token), so log only the
             // origin + bytes so a bug report can correlate the worker's
             // publish with later route-handler entries without leaking
             // the secret that gates the buffer.
-            DiagLog.i(
-                TAG,
-                "Cast hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
-                    "for route $routeId; sending load command.",
-            )
-            val request = MediaLoadRequestData.Builder()
-                .setMediaInfo(buildMediaInfo(urls, title, subtitle))
-                .build()
+            val request = when (mediaPlanFor(resolved.deviceClass, hasRealAudio = hasRealAudio)) {
+                CastMediaPlan.SkipNoAudio -> {
+                    // Audio-only device with no spoken forecast: a silent
+                    // track would just be dead air on a speaker. Skip the
+                    // load (and leave phone speech untouched — the worker
+                    // only suppresses it on a Success with real audio).
+                    DiagLog.i(
+                        TAG,
+                        "Cast route $routeId is a speaker but no spoken audio is available; skipping cast.",
+                    )
+                    return CastWorkerOutcome.SkippedNoAudio
+                }
+                CastMediaPlan.Wav -> {
+                    val urls = server.publish(host = host, media = wav, kind = CastMediaKind.WAV)
+                    DiagLog.i(
+                        TAG,
+                        "Cast hosting ${wav.size}B wav on http://$host:${server.port()}/<token>/insight.wav " +
+                            "for speaker route $routeId; sending load command.",
+                    )
+                    MediaLoadRequestData.Builder()
+                        .setMediaInfo(buildAudioMediaInfo(urls.url, title, subtitle))
+                        .build()
+                }
+                CastMediaPlan.Mp4 -> {
+                    // The display path needs the outfit image to mux into
+                    // the MP4. A speaker would have taken the Wav branch
+                    // above; reaching Mp4 with no PNG means a display (or
+                    // unknown route) with nothing to show, so fail rather
+                    // than load a blank video.
+                    if (png == null) {
+                        DiagLog.w(TAG, "Cast route $routeId needs an outfit image but none was rendered; skipping cast.")
+                        return CastWorkerOutcome.Failed("Outfit render unavailable")
+                    }
+                    val paddedWav = padWavToMinimumDuration(wav)
+                    val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(png, paddedWav) }
+                    val urls = server.publish(host = host, media = mp4, kind = CastMediaKind.MP4)
+                    DiagLog.i(
+                        TAG,
+                        "Cast hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
+                            "for route $routeId; sending load command.",
+                    )
+                    MediaLoadRequestData.Builder()
+                        .setMediaInfo(buildMediaInfo(urls.url, title, subtitle))
+                        .build()
+                }
+            }
             // Await the receiver's load result rather than reporting
             // Success on enqueue. Without this, a receiver that
             // accepts the request but later fails to fetch / decode
@@ -383,11 +460,11 @@ class CastInsightController(
             val result = awaitLoad(client, request, loadTimeoutMs)
                 ?: run {
                     DiagLog.w(TAG, "Cast receiver did not respond to load within ${loadTimeoutMs}ms.")
-                    return CastWorkerOutcome.Failed("Smart display did not respond to the load request")
+                    return CastWorkerOutcome.Failed("Smart device did not respond to the load request")
                 }
             if (!result.status.isSuccess) {
                 val message = result.status.statusMessage?.takeIf { it.isNotBlank() }
-                    ?: "Smart display rejected the media (code ${result.status.statusCode})"
+                    ?: "Smart device rejected the media (code ${result.status.statusCode})"
                 DiagLog.w(TAG, "Cast load rejected by receiver: $message")
                 return CastWorkerOutcome.Failed(message)
             }
@@ -409,7 +486,7 @@ class CastInsightController(
                         "${fetchTimeoutMs}ms — likely a LAN firewall between the display and the phone.",
                 )
                 return CastWorkerOutcome.PublishedButNotFetched(
-                    "Smart display didn't fetch the video — check that it can reach the phone on the LAN.",
+                    "Smart device didn't fetch the media — check that it can reach the phone on the LAN.",
                 )
             }
             DiagLog.i(TAG, "Cast receiver fetched the hosted URL; cast confirmed fetched.")
@@ -556,21 +633,27 @@ class CastInsightController(
      * an error.
      */
     sealed class CastFailure(message: String) : Exception(message) {
-        data object DeviceNotFound : CastFailure("Smart display not found on the network.")
-        data object SessionStartTimeout : CastFailure("Smart display did not respond in time.")
+        data object DeviceNotFound : CastFailure("Smart device not found on the network.")
+        data object SessionStartTimeout : CastFailure("Smart device did not respond in time.")
         data class SessionStartFailed(val errorCode: Int) :
-            CastFailure("Smart display rejected the session (code $errorCode).")
-        data object NoRemoteMediaClient : CastFailure("Smart display did not accept playback.")
-        data object NoLanAddress : CastFailure("Phone has no Wi-Fi address — connect to the same network as the smart display.")
-        data object LoadResponseTimeout : CastFailure("Smart display did not respond to the load request.")
+            CastFailure("Smart device rejected the session (code $errorCode).")
+        data object NoRemoteMediaClient : CastFailure("Smart device did not accept playback.")
+        data object NoLanAddress : CastFailure("Phone has no Wi-Fi address — connect to the same network as the smart device.")
+        data object LoadResponseTimeout : CastFailure("Smart device did not respond to the load request.")
         data class LoadRejected(val reason: String) : CastFailure(reason)
+        // A speaker has no screen, so the image-only fallback used for
+        // displays (silent track + outfit picture) has nothing to play.
+        // Surface the missing voice instead of casting dead air.
+        data object NoAudioForSpeaker : CastFailure(
+            "Add a Gemini voice to cast to a speaker — there's nothing to play without spoken audio.",
+        )
         // The bytes never transferred even though the receiver ACK'd the
-        // load — typically a LAN firewall blocking the display → phone
+        // load — typically a LAN firewall blocking the device → phone
         // direction. Distinguished from the load-level failures because
-        // the symptom on the display is "loading spinner forever" rather
-        // than an error code from the receiver.
+        // the symptom is "loading spinner forever" rather than an error
+        // code from the receiver.
         data object FetchNotConfirmed : CastFailure(
-            "Smart display didn't fetch the video — check that it can reach the phone on the LAN.",
+            "Smart device didn't fetch the media — check that it can reach the phone on the LAN.",
         )
     }
 
@@ -591,10 +674,10 @@ class CastInsightController(
             NetworkErrorKind.CONNECTION_REFUSED,
             NetworkErrorKind.TIMEOUT,
             ->
-                "Couldn't reach the smart display on the network — make sure the " +
-                    "phone and the display are on the same Wi-Fi and nothing's blocking the LAN."
+                "Couldn't reach the smart device on the network — make sure the " +
+                    "phone and the device are on the same Wi-Fi and nothing's blocking the LAN."
             NetworkErrorKind.TLS ->
-                "Couldn't establish a secure connection to the smart display on the network."
+                "Couldn't establish a secure connection to the smart device on the network."
             null -> null
         }
 
@@ -655,8 +738,9 @@ class CastInsightController(
             return WavEncoder.encode(PcmAudio(bytes = padded, sampleRate = info.sampleRate))
         }
 
+        /** Display path: the muxed outfit image + audio as a movie. */
         internal fun buildMediaInfo(
-            urls: CastMediaServer.MediaUrl,
+            url: String,
             title: String,
             subtitle: String?,
         ): MediaInfo {
@@ -666,11 +750,42 @@ class CastInsightController(
                     putString(MediaMetadata.KEY_SUBTITLE, subtitle)
                 }
             }
-            return MediaInfo.Builder(urls.video)
+            return MediaInfo.Builder(url)
                 .setContentType("video/mp4")
                 .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
                 .setMetadata(metadata)
                 .build()
         }
+
+        /**
+         * Speaker path: the spoken forecast as a bare audio track. No
+         * outfit image — an audio-only device has no screen to show it,
+         * and skipping the poster keeps the PNG on-device (it never
+         * crosses the LAN to the receiver) and keeps [CastMediaServer]
+         * single-buffer.
+         */
+        internal fun buildAudioMediaInfo(
+            url: String,
+            title: String,
+            subtitle: String?,
+        ): MediaInfo {
+            val metadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK).apply {
+                putString(MediaMetadata.KEY_TITLE, title)
+                if (!subtitle.isNullOrBlank()) {
+                    putString(MediaMetadata.KEY_SUBTITLE, subtitle)
+                }
+            }
+            return MediaInfo.Builder(url)
+                .setContentType("audio/wav")
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setMetadata(metadata)
+                .build()
+        }
     }
+
+    /** Resolved [RemoteMediaClient] for a route plus its [CastDeviceClass]. */
+    private data class ResolvedRoute(
+        val client: RemoteMediaClient,
+        val deviceClass: CastDeviceClass,
+    )
 }

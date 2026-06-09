@@ -329,7 +329,7 @@
     <!-- Top-of-page banners shown when a forecast was fetched but couldn't be
          delivered to a smart-home destination. -->
     <string name="today_mqtt_failed_title">Couldn\'t send to your smart home</string>
-    <string name="today_cast_failed_title">Couldn\'t cast to your display</string>
+    <string name="today_cast_failed_title">Couldn\'t cast to your device</string>
     <string name="today_publish_failed_body">We\'ll try again on the next update.</string>
     <string name="today_publish_failed_dismiss">Dismiss</string>
 
@@ -606,7 +606,7 @@
     <string name="settings_root_location_subtitle">Automatic and Manual Location</string>
     <string name="settings_root_calendar_subtitle">Events, Holidays, and Birthdays</string>
     <string name="settings_root_forecasters_subtitle">Weather Sources and Models</string>
-    <string name="settings_root_smart_home_subtitle">Smart Displays and Home Automation</string>
+    <string name="settings_root_smart_home_subtitle">Smart Devices and Home Automation</string>
     <string name="settings_root_privacy_subtitle">Crash and Usage Reports</string>
 
     <!-- Forecasters sub-page: lets the user pick which numerical weather
@@ -661,40 +661,41 @@
          device" guarantee documented in PRIVACY.md, so the description spells
          that out inline. -->
     <!-- Cast destination — Settings → Smart Home → Cast section sitting
-         above MQTT. Lets the user pick a smart display on the LAN and
-         either test a cast manually now (this PR) or have the worker
-         send each scheduled forecast there automatically (next PR). -->
+         above MQTT. Lets the user pick a smart device (display or
+         audio-only speaker) on the LAN and either test a cast manually
+         or have the worker send each scheduled forecast there. -->
     <string name="settings_smart_home_cast_title">Cast</string>
-    <string name="settings_smart_home_cast_label">Send forecast to smart display</string>
-    <string name="settings_smart_home_cast_device_label">Smart display</string>
-    <string name="settings_smart_home_cast_device_none">No display picked</string>
-    <string name="settings_smart_home_cast_choose">Choose smart display</string>
+    <string name="settings_smart_home_cast_label">Cast to smart display or speaker</string>
+    <string name="settings_smart_home_cast_device_label">Smart device</string>
+    <string name="settings_smart_home_cast_device_none">No device picked</string>
+    <string name="settings_smart_home_cast_choose">Choose smart device</string>
     <string name="settings_smart_home_cast_change">Change</string>
     <string name="settings_smart_home_cast_clear">Clear</string>
     <string name="settings_smart_home_cast_now">Cast now</string>
     <string name="settings_smart_home_cast_casting">Casting…</string>
-    <string name="settings_smart_home_cast_picker_title">Choose a smart display</string>
-    <string name="settings_smart_home_cast_picker_scanning">Scanning your network for smart displays…</string>
-    <string name="settings_smart_home_cast_picker_empty">No smart displays found yet. Make sure your display is on and on the same Wi-Fi.</string>
+    <string name="settings_smart_home_cast_picker_title">Choose a smart device</string>
+    <string name="settings_smart_home_cast_picker_scanning">Scanning your network for smart devices…</string>
+    <string name="settings_smart_home_cast_picker_empty">No smart devices found yet. Make sure your device is on and on the same Wi-Fi.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Speaker</string>
     <string name="settings_smart_home_cast_picker_cancel">Cancel</string>
     <string name="settings_smart_home_cast_last_success">Last cast %1$s</string>
     <string name="settings_smart_home_cast_last_published">Last published %1$s</string>
     <string name="settings_smart_home_cast_last_fetched">Last fetched %1$s</string>
-    <string name="settings_smart_home_cast_last_fetched_never">Display hasn\'t fetched a ClothesCast yet</string>
+    <string name="settings_smart_home_cast_last_fetched_never">Device hasn\'t fetched a ClothesCast yet</string>
     <string name="settings_smart_home_cast_never">Not cast yet</string>
     <string name="settings_smart_home_cast_last_error_title">Last cast failed</string>
     <string name="settings_smart_home_cast_morning_title">Daily ClothesCast</string>
-    <string name="settings_smart_home_cast_morning_description">Send the daily ClothesCast to the smart display when the morning alarm fires.</string>
+    <string name="settings_smart_home_cast_morning_description">Send the daily ClothesCast to the smart device when the morning alarm fires.</string>
     <string name="settings_smart_home_cast_tonight_title">Nightly ClothesCast</string>
-    <string name="settings_smart_home_cast_tonight_description">Send the nightly ClothesCast to the smart display when the tonight alarm fires.</string>
+    <string name="settings_smart_home_cast_tonight_description">Send the nightly ClothesCast to the smart device when the tonight alarm fires.</string>
     <string name="settings_smart_home_cast_skip_phone_speech_title">Skip phone speech</string>
     <string name="settings_smart_home_cast_skip_phone_speech_description">Avoid duplicate announcements at home.</string>
-    <string name="cast_error_no_route_picked">Pick a smart display first.</string>
+    <string name="cast_error_no_route_picked">Pick a smart device first.</string>
     <string name="cast_error_no_insight_yet">No forecast available yet. Wait for the next scheduled run, or tap Refresh on the Today screen.</string>
     <string name="cast_error_unknown">Cast failed.</string>
 
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
-    <string name="settings_smart_home_mqtt_label">Publish forecast to MQTT</string>
+    <string name="settings_smart_home_mqtt_label">Publish to MQTT</string>
     <string name="settings_smart_home_mqtt_host">Broker host</string>
     <string name="settings_smart_home_mqtt_host_placeholder">homeassistant.local</string>
     <string name="settings_smart_home_mqtt_port">Port</string>

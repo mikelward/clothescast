@@ -1295,17 +1295,21 @@ class FetchAndNotifyWorker(
     }
 
     /**
-     * Hands the pre-rendered media to [CastInsightController] for
-     * the smart display load. The cast destination follows the same
+     * Hands the pre-rendered media to [CastInsightController] for the
+     * load. The controller resolves the picked route's device class and
+     * sends a display the muxed image+audio MP4, a speaker the bare
+     * spoken-forecast WAV. The cast destination follows the same
      * "fire-and-forget but capture outcome" pattern as MQTT: the
      * controller swallows all failures into [CastWorkerOutcome], so
      * a route-not-found or load-rejected case doesn't cancel sibling
      * destinations.
      *
-     * When the synth buffer is null (Gemini unavailable or synth
-     * failed pre-alignment), feeds [CastInsightController.silentWavStub]
-     * as the loading carrier — the receiver still shows the outfit
-     * PNG, just without speaking. SPEC.md's image-only fallback.
+     * When the synth buffer is null (Gemini unavailable or synth failed
+     * pre-alignment), feeds [CastInsightController.silentWavStub] as the
+     * loading carrier and flags `hasRealAudio = false`. On a display the
+     * receiver still shows the outfit PNG, just without speaking
+     * (SPEC.md's image-only fallback); on a speaker there's nothing to
+     * play, so the controller skips the load (SkippedNoAudio).
      */
     private suspend fun castDestination(
         insight: Insight,
@@ -1316,17 +1320,19 @@ class FetchAndNotifyWorker(
         val controller = app.castInsightController
             ?: return CastInsightController.CastWorkerOutcome.Failed("Cast unavailable on this device")
         val routeId = prefs.castRouteId
-            ?: return CastInsightController.CastWorkerOutcome.Failed("No smart display picked")
-        val pngBytes = png
-            ?: return CastInsightController.CastWorkerOutcome.Failed("Outfit render unavailable")
-        // Silent stub keeps Default Media Receiver happy on the
-        // image-only path — receiver won't load with no audio media.
+            ?: return CastInsightController.CastWorkerOutcome.Failed("No smart device picked")
+        // A speaker plays audio only, so a missing outfit image mustn't
+        // block an otherwise-playable spoken forecast — the controller
+        // requires the PNG only on the display (MP4) branch. Pass it
+        // through nullable and let the device class decide.
+        // Silent stub keeps Default Media Receiver happy on the display
+        // image-only path — the receiver won't load with no audio media.
         val wavBytes = wav ?: CastInsightController.silentWavStub
         return controller.castWithPreparedMedia(
             routeId = routeId,
             wav = wavBytes,
             hasRealAudio = wav != null,
-            png = pngBytes,
+            png = png,
             title = applicationContext.getString(R.string.app_name),
             subtitle = insight.location?.displayName,
         )
@@ -1356,7 +1362,9 @@ class FetchAndNotifyWorker(
         is CastInsightController.CastWorkerOutcome.PublishedButNotFetched ->
             Triple(outcome.reason, nowMs, null)
         is CastInsightController.CastWorkerOutcome.SkippedNoRoute ->
-            Triple("Smart display not reachable", null, null)
+            Triple("Smart device not reachable", null, null)
+        is CastInsightController.CastWorkerOutcome.SkippedNoAudio ->
+            Triple("Add a Gemini voice to cast to a speaker", null, null)
         is CastInsightController.CastWorkerOutcome.Failed ->
             Triple(outcome.reason, null, null)
     }

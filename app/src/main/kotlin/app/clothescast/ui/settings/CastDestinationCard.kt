@@ -367,7 +367,18 @@ private fun CastPickerDialog(
                             onClick = { onPick(route) },
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text(route.name)
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Text(route.name)
+                                if (route.isAudioOnly) {
+                                    Text(
+                                        text = stringResource(
+                                            R.string.settings_smart_home_cast_picker_speaker_badge,
+                                        ),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
                         }
                     }
                 }

@@ -665,9 +665,11 @@ class InsightFormatter(
     private fun formatPrecip(precip: PrecipClause, accessoryKey: String?): String {
         val rawType = resources.getString(conditionRes(precip.condition))
         // The accessory is rain-keyed by name ("Rain accessory: Umbrella");
-        // gate it to RAIN / DRIZZLE so "Snow, bring an umbrella." doesn't slip
-        // through. THUNDERSTORM is intentionally excluded too — an umbrella
-        // under lightning is bad practice.
+        // gate it on [warrantsRainAccessory] — RAIN / DRIZZLE / THUNDERSTORM —
+        // so "Snow, bring an umbrella." doesn't slip through. Thunderstorm
+        // deliberately keeps the umbrella (see warrantsRainAccessory's KDoc:
+        // a thunderstorm forecast is still a wet one), matching the rule
+        // engine so the prose and the outfit icon can't drift.
         val accessoryPhrase = accessoryKey
             ?.takeIf { precip.condition.warrantsRainAccessory() }
             ?.let(phraser::withArticle)
@@ -722,14 +724,14 @@ class InsightFormatter(
         // the same reason they're silenced in the main wear-list: until the
         // accessory catalog lands we only name temperature-driven clothing
         // there. If the user has opted into the umbrella rule and the evening's
-        // peak condition is rain-like (RAIN / DRIZZLE), we re-inject the
-        // chosen accessory below so the existing insight_tie_in_with_rain
-        // template carries it ("…, bring a jacket and an umbrella.") and the
-        // bare-rain path is promoted to the item-led template. SNOW /
-        // THUNDERSTORM peaks (or a null condition on a pre-field cached
-        // payload) skip the injection — same gating as formatPrecip — so
-        // "Tonight, rain at 9pm, bring an umbrella." doesn't slip out when
-        // the underlying peak is actually snow.
+        // peak condition warrants one (RAIN / DRIZZLE / THUNDERSTORM — see
+        // [warrantsRainAccessory]), we re-inject the chosen accessory below so
+        // the existing insight_tie_in_with_rain template carries it ("…, bring
+        // a jacket and an umbrella.") and the bare-rain path is promoted to
+        // the item-led template. SNOW peaks (or a null condition on a
+        // pre-field cached payload) skip the injection — same gating as
+        // formatPrecip — so "Tonight, rain at 9pm, bring an umbrella."
+        // doesn't slip out when the underlying peak is actually snow.
         val filteredItems = tieIn.items.filterNot(::isAccessory)
         // The carried accessory rides in on the tie-in's own items (the fired
         // umbrella rule).
@@ -823,18 +825,22 @@ class InsightFormatter(
     fun formatWeekAhead(insight: WeekAheadInsight): String {
         // (sortKey, phrase). Persistence has no date and sorts first; the
         // remaining clauses sort by date. Phrases are stripped of their
-        // trailing "." so we can join with the locale separator and append a
-        // single final period — this relies on every today_week_ahead_*
-        // template ending in a literal ".". If a locale needs different
-        // terminal punctuation, split into terminal / non-terminal templates.
+        // trailing full stop so we can join with the locale separator and
+        // append a single final one — every today_week_ahead_* template ends
+        // in a literal "." or, in CJK locales, the ideographic "。"; the
+        // final terminator re-applies whichever the templates used, so a
+        // Japanese headline doesn't end in a stray ASCII period (or keep
+        // mid-sentence 。 the join was supposed to strip).
         val clauses = mutableListOf<Pair<LocalDate?, String>>()
         insight.persistence?.let { clauses += null to renderClause(it) }
         insight.firstWarmer?.let { clauses += clauseDate(it) to renderClause(it) }
         insight.firstCooler?.let { clauses += clauseDate(it) to renderClause(it) }
         insight.rain?.let { clauses += clauseDate(it) to renderClause(it) }
-        val sorted = clauses
+        val rawPhrases = clauses
             .sortedWith(compareBy(nullsFirst()) { it.first })
-            .map { it.second.trimEnd('.') }
+            .map { it.second }
+        val terminator = if (rawPhrases.any { it.endsWith("。") }) "。" else "."
+        val sorted = rawPhrases.map { it.trimEnd('.', '。') }
         // Lowercase the first letter of each non-leading clause so the joined
         // sentence reads naturally ("…, cooler Sunday." rather than "…,
         // Cooler Sunday."). Templates are authored with a sentence-leading
@@ -846,7 +852,7 @@ class InsightFormatter(
             if (index == 0) phrase else phrase.replaceFirstChar { it.lowercase(locale) }
         }
         val separator = resources.getString(R.string.today_week_ahead_separator)
-        return joined.joinToString(separator = separator, postfix = ".")
+        return joined.joinToString(separator = separator, postfix = terminator)
     }
 
     private fun renderClause(clause: WeekAheadClause): String = when (clause) {

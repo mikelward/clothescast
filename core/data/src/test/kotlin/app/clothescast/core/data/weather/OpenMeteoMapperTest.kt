@@ -163,7 +163,13 @@ class OpenMeteoMapperTest {
     }
 
     @Test
-    fun `null temperatures and probabilities are tolerated as zero`() {
+    fun `null daily values are tolerated as zero and null-temperature hours are dropped`() {
+        // Daily nulls degrade to zero (the daily aggregates must exist for
+        // the prose); an hourly entry without temperature_2m is dropped
+        // outright — a synthetic 0 °C hour drew a misleading chart dip and
+        // could feed a fake 0 °C into the consensus blend's fallback. The
+        // 15:00 hour here is null, the 16:00 hour is real: only 16:00
+        // survives.
         val sparse = OpenMeteoResponse(
             timezone = "UTC",
             daily = DailyData(
@@ -177,11 +183,11 @@ class OpenMeteoMapperTest {
                 weatherCode = listOf(null, 63),
             ),
             hourly = HourlyData(
-                time = listOf("2026-04-25T15:00"),
-                temperature = listOf(null),
-                feelsLike = listOf(null),
-                precipitationProbability = listOf(null),
-                weatherCode = listOf(null),
+                time = listOf("2026-04-25T15:00", "2026-04-25T16:00"),
+                temperature = listOf(null, 21.0),
+                feelsLike = listOf(null, null),
+                precipitationProbability = listOf(null, null),
+                weatherCode = listOf(null, null),
             ),
         )
 
@@ -194,9 +200,14 @@ class OpenMeteoMapperTest {
         bundle.yesterday.precipitationProbabilityMaxPct shouldBe 0.0
         bundle.yesterday.condition shouldBe WeatherCondition.UNKNOWN
         bundle.today.precipitationProbabilityMaxPct shouldBe 0.0
-        bundle.today.hourly.single().temperatureC shouldBe 0.0
-        bundle.today.hourly.single().feelsLikeC shouldBe 0.0
-        bundle.today.hourly.single().condition shouldBe WeatherCondition.UNKNOWN
+        val survivor = bundle.today.hourly.single()
+        survivor.time shouldBe LocalTime.of(16, 0)
+        survivor.temperatureC shouldBe 21.0
+        // Null apparent falls back to the raw temp; null precip prob stays a
+        // chart-friendly zero.
+        survivor.feelsLikeC shouldBe 21.0
+        survivor.precipitationProbabilityPct shouldBe 0.0
+        survivor.condition shouldBe WeatherCondition.UNKNOWN
     }
 
     @Test
@@ -368,8 +379,10 @@ class OpenMeteoMapperTest {
     fun `mismatched-length hourly parallel arrays are tolerated without throwing`() {
         // Open-Meteo always sends matching arrays, but a buggy proxy or a future
         // field-by-field rollout could produce shorter temperature/feelsLike/etc.
-        // arrays than `time`. The hourly mapper must degrade gracefully (using
-        // 0.0 / UNKNOWN defaults) rather than throwing IndexOutOfBoundsException.
+        // arrays than `time`. The hourly mapper must degrade gracefully rather
+        // than throwing IndexOutOfBoundsException: hours beyond the temperature
+        // array's reach are dropped (same policy as an in-range null — no
+        // synthetic 0 °C hour), and the in-range hours map normally.
         val mismatched = OpenMeteoResponse(
             timezone = "UTC",
             daily = DailyData(
@@ -394,14 +407,13 @@ class OpenMeteoMapperTest {
 
         val today = OpenMeteoMapper.toBundle(mismatched).today
 
-        // First hour is fully mapped; the other two fall back to zero / UNKNOWN.
-        today.hourly shouldHaveSize 3
-        today.hourly[0].temperatureC shouldBe 18.0
-        today.hourly[0].feelsLikeC shouldBe 17.0
-        today.hourly[1].temperatureC shouldBe 0.0
-        today.hourly[1].feelsLikeC shouldBe 0.0
-        today.hourly[1].condition shouldBe WeatherCondition.UNKNOWN
-        today.hourly[2].temperatureC shouldBe 0.0
+        // Only the hour the temperature array reaches survives; the two
+        // beyond it are dropped, not zero-filled.
+        val survivor = today.hourly.single()
+        survivor.time shouldBe LocalTime.of(9, 0)
+        survivor.temperatureC shouldBe 18.0
+        survivor.feelsLikeC shouldBe 17.0
+        survivor.condition shouldBe WeatherCondition.RAIN
     }
 
     @Test

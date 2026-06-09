@@ -111,7 +111,16 @@ internal object OpenMeteoMapper {
         for (i in time.indices) {
             val ts = LocalDateTime.parse(time[i])
             if (ts.toLocalDate() != date) continue
-            val raw = temperature.getOrNull(i) ?: 0.0
+            // An hour without temperature_2m (horizon edge of the 14-day
+            // window, an upstream run still warming up) is dropped, not
+            // zero-filled: a synthetic 0 °C drew a misleading dip on the
+            // chart, and [blendConsensusHourly]'s fewer-than-two-candidates
+            // fallback surfaced it verbatim — a fake 0 °C that then fed the
+            // recomputed daily extremes. Consumers handle a sparse window
+            // (timestamp-keyed charts, min/max over present hours), and the
+            // consensus blend re-covers any dropped hour that at least two
+            // consulted models still report.
+            val raw = temperature.getOrNull(i) ?: continue
             out += HourlyForecast(
                 time = LocalTime.of(ts.hour, ts.minute),
                 temperatureC = raw,

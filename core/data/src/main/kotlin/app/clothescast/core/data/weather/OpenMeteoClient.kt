@@ -113,13 +113,12 @@ class OpenMeteoClient(
         // pre-injection map (Codex caught it on PR review).
         //
         // Built from the wire payload, not the mapped [HourlyForecast]s: the
-        // mapper substitutes 0.0 °C / 0 % for null hourly values (tolerable
-        // for the chart, which the blend overwrites on any consensus hour),
-        // and feeding those synthetic zeros into [blendConsensusHourly] would
-        // let a horizon-edge null cast a fake cold-and-dry vote into the
-        // consensus mean — exactly what MultiModelConfidenceFetcher.parseHourly
-        // avoids for the consulted models by dropping the hour / keeping
-        // precip null.
+        // mapper drops hours whose temperature_2m is null but still folds
+        // null precip to 0 % for the chart, and feeding that synthetic zero
+        // into [blendConsensusHourly] would let a horizon-edge null cast a
+        // fake dry vote into the consensus mean — exactly what
+        // MultiModelConfidenceFetcher.parseHourly avoids for the consulted
+        // models by keeping precip null.
         //
         // The raw hourly stream spans yesterday through day 14, so best_match
         // covers the same forecast_days=14 window the consulted models carry —

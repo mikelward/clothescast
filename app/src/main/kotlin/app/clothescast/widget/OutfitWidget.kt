@@ -230,66 +230,78 @@ private fun SingleColumnContent(
     Column(
         modifier = GlanceModifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label, style = scaledLabelStyle(size))
-        Spacer(modifier = GlanceModifier.height(2.dp))
-        // Top-over-bottom vertical stack matches the Today screen's
-        // OutfitPreviewCard so the home-screen glance reads the same way as
-        // the in-app card the user already knows. The optional umbrella is a
-        // full-figure overlay (held at the hip, hanging past the legs), so it's
-        // laid over the whole top+bottom stack in a Box rather than on one icon.
-        Box {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(
-                    provider = ImageProvider(
-                        // The top bitmap carries the optional gloves overlay; the
-                        // gloves vector sits at the body's sides at matching scale.
-                        renderTopWithHandsBitmap(
-                            context = context,
-                            top = outfit.top,
-                            hands = outfit.hands,
-                            sizePx = iconPx,
-                            topFillArgb = topColors[outfit.top],
-                            handsFillArgb = outfit.hands?.let { handsColors[it] },
-                            outer = outfit.outer,
-                            outerFillArgb = outfit.outer?.let { outerColors[it] },
+        // Label pinned to the top, caption pinned to the bottom, and the figure
+        // centred in the weighted space between them. Centring the whole
+        // label+figure+caption group instead (the old layout) split any leftover
+        // height into equal bands above the label *and below the caption* — and
+        // because the figure reserves caption room at a looser line height than
+        // the text actually paints, the multi-line (umbrella) column always had
+        // a little slack to spare, which showed as a dead band under its wrapped
+        // second line. Pinning the caption keeps that slack as symmetric padding
+        // around the figure, so the text sits snug at the bottom regardless of
+        // how many lines it wraps to.
+        Box(
+            modifier = GlanceModifier.defaultWeight().fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            // Top-over-bottom vertical stack matches the Today screen's
+            // OutfitPreviewCard so the home-screen glance reads the same way as
+            // the in-app card the user already knows. The optional umbrella is a
+            // full-figure overlay (held at the hip, hanging past the legs), so it's
+            // laid over the whole top+bottom stack in a Box rather than on one icon.
+            Box {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Image(
+                        provider = ImageProvider(
+                            // The top bitmap carries the optional gloves overlay; the
+                            // gloves vector sits at the body's sides at matching scale.
+                            renderTopWithHandsBitmap(
+                                context = context,
+                                top = outfit.top,
+                                hands = outfit.hands,
+                                sizePx = iconPx,
+                                topFillArgb = topColors[outfit.top],
+                                handsFillArgb = outfit.hands?.let { handsColors[it] },
+                                outer = outfit.outer,
+                                outerFillArgb = outfit.outer?.let { outerColors[it] },
+                            ),
                         ),
-                    ),
-                    contentDescription = outfitContentDescription(context, outfit),
-                    modifier = GlanceModifier.size(iconSize),
-                )
-                Image(
-                    provider = ImageProvider(
-                        renderOutfitBitmap(
-                            context = context,
-                            drawableRes = bottomDrawable(outfit.bottom),
-                            defaults = outfitBottomDefaults.getValue(outfit.bottom),
-                            customFillArgb = bottomColors[outfit.bottom],
-                            sizePx = iconPx,
+                        contentDescription = outfitContentDescription(context, outfit),
+                        modifier = GlanceModifier.size(iconSize),
+                    )
+                    Image(
+                        provider = ImageProvider(
+                            renderOutfitBitmap(
+                                context = context,
+                                drawableRes = bottomDrawable(outfit.bottom),
+                                defaults = outfitBottomDefaults.getValue(outfit.bottom),
+                                customFillArgb = bottomColors[outfit.bottom],
+                                sizePx = iconPx,
+                            ),
                         ),
-                    ),
-                    contentDescription = context.getString(bottomLabelRes(outfit.bottom)),
-                    modifier = GlanceModifier.size(iconSize),
-                )
-            }
-            outfit.carried?.let { carried ->
-                Image(
-                    provider = ImageProvider(
-                        renderCarriedFigureBitmap(
-                            context = context,
-                            carried = carried,
-                            widthPx = iconPx,
-                            heightPx = iconPx * 2,
-                            customFillArgb = carriedColors[carried],
+                        contentDescription = context.getString(bottomLabelRes(outfit.bottom)),
+                        modifier = GlanceModifier.size(iconSize),
+                    )
+                }
+                outfit.carried?.let { carried ->
+                    Image(
+                        provider = ImageProvider(
+                            renderCarriedFigureBitmap(
+                                context = context,
+                                carried = carried,
+                                widthPx = iconPx,
+                                heightPx = iconPx * 2,
+                                customFillArgb = carriedColors[carried],
+                            ),
                         ),
-                    ),
-                    contentDescription = context.getString(R.string.garment_umbrella),
-                    modifier = GlanceModifier.width(iconSize).height(iconSize * 2),
-                )
+                        contentDescription = context.getString(R.string.garment_umbrella),
+                        modifier = GlanceModifier.width(iconSize).height(iconSize * 2),
+                    )
+                }
             }
         }
-        Spacer(modifier = GlanceModifier.height(2.dp))
         Text(
             text = caption,
             style = scaledSubtitleStyle(size),
@@ -397,20 +409,16 @@ private fun scaledIconSize(size: DpSize, subtitleLines: Int = 1): Dp {
     // the label, and hand the rest to the figure. The 1.45× multiplier covers a
     // Glance TextView's rendered line height (the legacy includeFontPadding adds
     // ~0.16× on top of the ~1.2× font metric, ~1.36× — 1.45× keeps a margin),
-    // and the +14 constant covers the inter-row spacers (2dp + 2dp) and the
-    // outer Box padding (2dp × 2) with a few dp to spare.
+    // and the +8 constant covers the outer Box padding (2dp × 2) plus a few dp.
     //
-    // This used to carry two stacked safety margins — a +1 phantom caption line
-    // *and* a line-count estimate biased to over-count — which together reserved
-    // room for ~4 lines on an outfit whose caption renders on 2 (the umbrella +
-    // gloves run in a halved side-by-side column). The centred Column splits any
-    // height it doesn't hand the figure into equal top/bottom padding, so that
-    // double over-reservation shrank the figure to its floor and left a big
-    // empty band below it — most visible on the left/Today column. Reserving the
-    // real line count (no +1) lets the figure grow into that reclaimed space and
-    // closes the gap; the 1.45× margin over the ~1.36× real line height keeps
-    // the final caption line from clipping. The label is always one line.
-    val reservedVertical = (labelSp + subtitleSp * subtitleLines) * 1.45f + 14f
+    // The figure sits in a weighted Box between a top-pinned label and a
+    // bottom-pinned caption (see SingleColumnContent), so this reservation just
+    // needs to stay *at or above* the label + caption's real painted height: the
+    // figure fills the weighted middle and any over-reservation lands as
+    // symmetric padding around it, never as a gap below the caption. Keeping the
+    // 1.45× margin over the ~1.36× real line height also means the last caption
+    // line never clips. The label is always one line.
+    val reservedVertical = (labelSp + subtitleSp * subtitleLines) * 1.45f + 8f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
     // Near-edge-to-edge horizontal cap: the figure (a top stacked over a
     // narrower bottom) never visually fills its square footprint, so leaving

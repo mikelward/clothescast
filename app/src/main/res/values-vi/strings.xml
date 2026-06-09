@@ -86,6 +86,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_clothes_join_many">%1$s, %2$s và %3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">suốt đêm</string>
+
+    <string name="insight_precip_tonight">tối nay</string>
     <string name="insight_condition_clear">Trời quang</string>
     <string name="insight_condition_partly_cloudy">Có mây</string>
     <string name="insight_condition_cloudy">Nhiều mây</string>

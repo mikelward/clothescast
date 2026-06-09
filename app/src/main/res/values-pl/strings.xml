@@ -419,6 +419,8 @@ is unchanged; only the displayed label localizes.
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">w nocy</string>
 
+    <string name="insight_precip_tonight">wieczorem</string>
+
     <string name="insight_condition_clear">Słonecznie</string>
     <string name="insight_condition_partly_cloudy">Częściowe zachmurzenie</string>
     <string name="insight_condition_cloudy">Pochmurno</string>

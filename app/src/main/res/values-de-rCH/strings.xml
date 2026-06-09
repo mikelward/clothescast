@@ -409,6 +409,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_lead_tomorrow">Morgen</string>
     <string name="insight_unchanged_today">Heute wird es genauso wie gestern.</string>
     <string name="insight_unchanged_tonight">Heute Abend wird es genauso wie gestern Abend.</string>
+    <string name="insight_unchanged_tonight_no_lead">Wie gestern Abend.</string>
     <string name="insight_unchanged_tomorrow">Morgen wird es genauso wie heute.</string>
     <string name="insight_lead_tonight">Heute Abend</string>
 
@@ -454,6 +455,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_precip">%1$s.</string>
     <!-- "Regen über Nacht." for the early-morning collapse. -->
     <string name="insight_precip_overnight">über Nacht</string>
+
+    <string name="insight_precip_tonight">heute Abend</string>
 
     <string name="insight_condition_clear">Klar</string>
     <string name="insight_condition_partly_cloudy">Teilweise bewölkt</string>
@@ -702,4 +705,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_page_clothes">Kleidungseinstellungen</string>
     <string name="settings_page_smart_home">Smart-Home-Einstellungen</string>
     <string name="settings_page_developer">Entwicklereinstellungen</string>
+
+    <!-- Tonight variants for precipitation, sunshine, and placeholder strings. -->
+    <string name="today_precipitation_amount_total_tonight">%1$s Regen heute Abend</string>
+    <string name="today_precipitation_amount_dry_tonight">Heute Abend wird kein Regen erwartet</string>
+    <string name="today_sunshine_total_hours_minutes_tonight">%1$d Std. %2$d Min. Sonne heute Abend</string>
+    <string name="today_sunshine_total_hours_only_tonight">%1$d Std. Sonne heute Abend</string>
+    <string name="today_sunshine_total_minutes_only_tonight">%1$d Min. Sonne heute Abend</string>
+    <string name="today_placeholder_tonight_title">Vorhersage für heute Abend</string>
 </resources>

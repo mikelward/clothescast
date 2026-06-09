@@ -93,6 +93,8 @@ What is NOT overridden, by design:
     <string name="insight_clothes_join_many">%1$s, %2$s и %3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">през нощта</string>
+
+    <string name="insight_precip_tonight">тази вечер</string>
     <string name="insight_condition_clear">Ясно</string>
     <string name="insight_condition_partly_cloudy">Частично облачно</string>
     <string name="insight_condition_cloudy">Облачно</string>

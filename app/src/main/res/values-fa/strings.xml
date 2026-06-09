@@ -87,6 +87,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_clothes_join_many">%1$s، %2$s و %3$s</string>
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">در طول شب</string>
+
+    <string name="insight_precip_tonight">امشب</string>
     <string name="insight_condition_clear">آفتابی</string>
     <string name="insight_condition_partly_cloudy">نیمه ابری</string>
     <string name="insight_condition_cloudy">ابری</string>

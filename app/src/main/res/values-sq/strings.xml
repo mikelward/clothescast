@@ -157,6 +157,8 @@
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_chance">Mundësi për %1$s.</string>
     <string name="insight_precip_overnight">gjatë natës</string>
+
+    <string name="insight_precip_tonight">sonte</string>
     <string name="insight_condition_clear">Qartë</string>
     <string name="insight_condition_partly_cloudy">Pjesërisht me re</string>
     <string name="insight_condition_cloudy">Me re</string>

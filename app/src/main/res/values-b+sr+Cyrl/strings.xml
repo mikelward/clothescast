@@ -96,6 +96,8 @@ surfaces.
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_chance">Могућа %1$s.</string>
     <string name="insight_precip_overnight">током ноћи</string>
+
+    <string name="insight_precip_tonight">вечерас</string>
     <string name="insight_condition_clear">Ведро</string>
     <string name="insight_condition_partly_cloudy">Делимично облачно</string>
     <string name="insight_condition_cloudy">Облачно</string>

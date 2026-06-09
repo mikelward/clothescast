@@ -44,6 +44,7 @@ import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
 import app.clothescast.ui.theme.ClothesCastTheme
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import java.time.LocalDate
@@ -343,17 +344,20 @@ internal fun resolveDarkTheme(context: Context, themeMode: ThemeMode): Boolean =
  * cache write (the worker) and after settings changes that affect what the
  * widgets show (temperature unit / time format / theme on the charts, outfit on
  * [OutfitWidget]). Each update is guarded independently so one widget type
- * failing to bind doesn't starve the others.
+ * failing to bind doesn't starve the others — but cancellation rethrows so a
+ * cancelled caller unwinds instead of marching through the remaining widgets.
  */
 internal suspend fun updateAllClothesCastWidgets(context: Context) {
-    runCatching { OutfitWidget().updateAll(context) }
-        .onFailure { DiagLog.w(TAG, "Outfit widget update failed.", it) }
-    runCatching { FeelsLikeWidget().updateAll(context) }
-        .onFailure { DiagLog.w(TAG, "Feels-like widget update failed.", it) }
-    runCatching { SevenDayFeelsLikeWidget().updateAll(context) }
-        .onFailure { DiagLog.w(TAG, "7-day feels-like widget update failed.", it) }
-    runCatching { ConditionsWidget().updateAll(context) }
-        .onFailure { DiagLog.w(TAG, "Conditions widget update failed.", it) }
+    suspend fun guarded(label: String, update: suspend () -> Unit) {
+        runCatching { update() }.onFailure {
+            if (it is CancellationException) throw it
+            DiagLog.w(TAG, "$label widget update failed.", it)
+        }
+    }
+    guarded("Outfit") { OutfitWidget().updateAll(context) }
+    guarded("Feels-like") { FeelsLikeWidget().updateAll(context) }
+    guarded("7-day feels-like") { SevenDayFeelsLikeWidget().updateAll(context) }
+    guarded("Conditions") { ConditionsWidget().updateAll(context) }
 }
 
 private const val TAG = "Widget"

@@ -12,6 +12,7 @@ import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -145,6 +146,11 @@ internal suspend fun castCurrentInsight(
         CastTestOutcome.publishedButNotFetched(reason = e.message ?: "")
     } catch (e: CastInsightController.CastFailure) {
         CastTestOutcome.failed(e.message ?: context.getString(R.string.cast_error_unknown))
+    } catch (ce: CancellationException) {
+        // The user navigating away cancels the calling scope mid-cast; that
+        // must unwind structured concurrency, not persist a bogus "cast
+        // failed" into the Settings status row for a cast they abandoned.
+        throw ce
     } catch (t: Throwable) {
         CastTestOutcome.failed(t.message ?: context.getString(R.string.cast_error_unknown))
     }

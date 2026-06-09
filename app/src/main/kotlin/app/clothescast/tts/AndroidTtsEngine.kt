@@ -4,6 +4,7 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 import app.clothescast.diag.DiagLog
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Locale
 import kotlin.coroutines.resume
@@ -30,6 +31,9 @@ const val GOOGLE_TTS_PACKAGE = "com.google.android.tts"
 internal suspend fun initAndroidTtsEngine(context: Context): TextToSpeech =
     runCatching { initOneAttempt(context, GOOGLE_TTS_PACKAGE) }
         .getOrElse {
+            // A cancelled caller must unwind, not bind a second engine
+            // connection inside an already-cancelled coroutine.
+            if (it is CancellationException) throw it
             DiagLog.w(INIT_TAG, "Google TTS unavailable; falling back to system default.", it)
             initOneAttempt(context, null)
         }

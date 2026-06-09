@@ -1033,7 +1033,20 @@ class FetchAndNotifyWorker(
 
             awaitDeliveryAlignment()
 
-            val notifyJob = launch { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, handsColors, outerColors, gates, forceNotify = forceNotifyAndSpeak) }
+            // Guard the launch body: a child `launch` failing inside a
+            // supervisorScope doesn't fail the scope — its exception goes to
+            // the (unset) CoroutineExceptionHandler and would kill the
+            // process. A notification post can throw for real (bitmap render,
+            // a SecurityException when POST_NOTIFICATIONS is revoked between
+            // the permission check and the post), and best-effort-per-
+            // destination is this scope's documented policy.
+            val notifyJob = launch {
+                runCatching { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, handsColors, outerColors, gates, forceNotify = forceNotifyAndSpeak) }
+                    .onFailure { t ->
+                        if (t is CancellationException) throw t
+                        DiagLog.w(TAG, "Posting the period notification failed.", t)
+                    }
+            }
 
             // Cast load — runs in parallel with notification + MQTT.
             // The phone speaker awaits this when castWillHaveAudio so
@@ -1071,14 +1084,23 @@ class FetchAndNotifyWorker(
                     .getOrNull()
             }
 
+            // Same guard as notifyJob: parts of the speaker path (utterance
+            // build, the cast-outcome await's rethrow) run outside
+            // playPhoneSpeaker's internal guards, and an unhandled child
+            // failure here would down the process, not just this destination.
             val phoneSpeakerJob = launch {
-                playPhoneSpeaker(
-                    insight, prefs, gates, pcm,
-                    wav = wav,
-                    castDeferred = castDeferred,
-                    mqttDeferred = mqttDeferred,
-                    theme = theme,
-                )
+                runCatching {
+                    playPhoneSpeaker(
+                        insight, prefs, gates, pcm,
+                        wav = wav,
+                        castDeferred = castDeferred,
+                        mqttDeferred = mqttDeferred,
+                        theme = theme,
+                    )
+                }.onFailure { t ->
+                    if (t is CancellationException) throw t
+                    DiagLog.w(TAG, "Phone speaker playback failed.", t)
+                }
             }
 
             notifyJob.join()
@@ -1099,6 +1121,12 @@ class FetchAndNotifyWorker(
                         publishedAtMs = publishedAt,
                         fetchedAtMs = fetchedAt,
                     )
+                }.onFailure { t ->
+                    // Rethrow cancellation (mid-DataStore.edit) like
+                    // persistQuotaStatus does; log other write failures —
+                    // a stale status row isn't worth failing delivery over.
+                    if (t is CancellationException) throw t
+                    DiagLog.w(TAG, "Failed to persist the cast status.", t)
                 }
             }
 
@@ -1113,6 +1141,9 @@ class FetchAndNotifyWorker(
                     is MqttPublishOutcome.Success -> app.settingsRepository.setMqttLastError(null)
                     is MqttPublishOutcome.Failure -> app.settingsRepository.setMqttLastError(mqttOutcome.message)
                 }
+            }.onFailure { t ->
+                if (t is CancellationException) throw t
+                DiagLog.w(TAG, "Failed to persist the MQTT publish status.", t)
             }
         }
     }

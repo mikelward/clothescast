@@ -188,19 +188,100 @@ class InsightCacheTest {
         subject.thisPeriod.first() shouldBe null
     }
 
+    /**
+     * The exact JSON shape the v7 (pre-update) build wrote: same snapshot DTO
+     * as v8 except `CalendarEventDto` carried second-of-day fields only — no
+     * dates — and it lived under the `_v7` key.
+     */
+    private fun v7SnapshotJson(eventsJson: String = "[]"): String {
+        fun day(date: LocalDate, minC: Double, maxC: Double) = """
+            {"dateEpochDays":${date.toEpochDay()},"temperatureMinC":${minC + 1},
+             "temperatureMaxC":${maxC + 1},"feelsLikeMinC":$minC,"feelsLikeMaxC":$maxC,
+             "precipitationProbabilityMaxPct":5.0,"precipitationMmTotal":0.0,"condition":"CLEAR"}
+        """.trimIndent()
+        return """
+            {"bundle":{"today":${day(today, 13.0, 18.0)},"yesterday":${day(yesterday, 12.0, 17.0)}},
+             "events":$eventsJson,
+             "period":"TODAY",
+             "generatedAtEpochMillis":${now.toEpochMilli()}}
+        """.trimIndent()
+    }
+
     @Test
-    fun `v7 payloads (time-only events) are dropped on read`() = runTest {
-        // v7 stored CalendarEventDto with second-of-day fields only — it can't
-        // materialise dated events, so v8 reads from a fresh key, drops to
-        // null, and the next worker run repopulates.
+    fun `v7 payloads survive the update via the legacy-key fallback`() = runTest {
+        // The v7→v8 key bump used to drop the cache on first read after an
+        // app update, blanking the Today screen and widget until the next
+        // fetch (painfully visible when the network is slow). Reads now fall
+        // back to the v7 key, inferring the event dates v7 never stored from
+        // the snapshot's own day.
         dataStore.edit {
-            it[stringPreferencesKey("this_period_snapshot_v7")] = """
-                {"bundle":{},"events":[{"startSecondOfDay":0,"endSecondOfDay":0}],
-                 "generatedAtEpochMillis":0}
-            """.trimIndent()
+            it[stringPreferencesKey("this_period_snapshot_v7")] = v7SnapshotJson(
+                """[{"startSecondOfDay":72000,"endSecondOfDay":79200,"hasLocation":true}]""",
+            )
         }
 
-        subject.thisPeriod.first() shouldBe null
+        val read = subject.thisPeriod.first()
+        read?.bundle?.today?.date shouldBe today
+        val readEvent = read?.events?.singleOrNull()
+        readEvent?.start shouldBe today.atTime(20, 0)
+        readEvent?.end shouldBe today.atTime(22, 0)
+        (readEvent?.location.isNullOrBlank()) shouldBe false
+    }
+
+    @Test
+    fun `v7 event ending before it starts rolls its end past midnight`() = runTest {
+        // v7 stored times only, so a 21:00–00:30 gig serialised as end < start.
+        // The fallback decode keeps it a forward interval by rolling the end
+        // to the next day instead of materialising a negative-length event.
+        dataStore.edit {
+            it[stringPreferencesKey("this_period_snapshot_v7")] = v7SnapshotJson(
+                """[{"startSecondOfDay":75600,"endSecondOfDay":1800}]""",
+            )
+        }
+
+        val readEvent = subject.thisPeriod.first()?.events?.singleOrNull()
+        readEvent?.start shouldBe today.atTime(21, 0)
+        readEvent?.end shouldBe today.plusDays(1).atTime(0, 30)
+    }
+
+    @Test
+    fun `v8 payload wins over a leftover v7 payload`() = runTest {
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample)
+        dataStore.edit {
+            it[stringPreferencesKey("this_period_snapshot_v7")] =
+                v7SnapshotJson("""[{"startSecondOfDay":0,"endSecondOfDay":3600}]""")
+        }
+
+        subject.thisPeriod.first() shouldBe sample
+    }
+
+    @Test
+    fun `store retires the legacy v7 and v6 keys for its slot`() = runTest {
+        // Once a fresh v8 capture lands, the pre-update payloads are stale —
+        // remove them so the fallback can't resurrect them after a clear()
+        // of the live keys and the orphaned bytes don't linger on disk.
+        dataStore.edit {
+            it[stringPreferencesKey("this_period_snapshot_v7")] = v7SnapshotJson()
+            it[stringPreferencesKey("this_period_insight_v6")] = """{"summary":"old"}"""
+        }
+
+        subject.store(InsightCache.Slot.THIS_PERIOD, sample)
+
+        val prefs = dataStore.data.first()
+        prefs[stringPreferencesKey("this_period_snapshot_v7")] shouldBe null
+        prefs[stringPreferencesKey("this_period_insight_v6")] shouldBe null
+        subject.thisPeriod.first() shouldBe sample
+    }
+
+    @Test
+    fun `clear removes legacy payloads too`() = runTest {
+        dataStore.edit {
+            it[stringPreferencesKey("next_period_snapshot_v7")] = v7SnapshotJson()
+        }
+
+        subject.clear()
+
+        subject.nextPeriod.first() shouldBe null
     }
 
     @Test

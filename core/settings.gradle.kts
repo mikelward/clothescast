@@ -42,5 +42,13 @@ rootProject.name = "core"
 
 include(":core:domain")
 include(":core:data")
+// The intermediate ":core" project exists only to give the leaf projects
+// their outer-build paths. Its default directory would be `core/` relative
+// to this settings root — i.e. the nonexistent `core/core/` — which Gradle 9
+// rejects at configuration time ("Configuring project ':core' without an
+// existing directory is not allowed"); it can't share this root directory
+// either ("Multiple projects in this build have project directory"). Park it
+// in a dedicated empty directory — it carries no build script either way.
+project(":core").projectDir = file("parent-project")
 project(":core:domain").projectDir = file("domain")
 project(":core:data").projectDir = file("data")

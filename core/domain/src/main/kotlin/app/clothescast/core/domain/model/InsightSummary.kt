@@ -146,21 +146,22 @@ data class ClothesClause(val items: List<String>) {
 
 /**
  * Peak precipitation hour: a [condition] (RAIN, SNOW, etc.) at a wall-clock [time].
- * The formatter capitalises and humanises the condition name ("Rain at 15:00.").
+ * The prose no longer speaks the hour — the formatter renders the bare
+ * condition ("Rain.") because a pinned peak hour claimed precision the
+ * hourly forecast can't back — but [time] stays on the clause for consumers
+ * that want it (the chart's scrub anchor, the Nest-Hub card).
  *
  * [likelihood] tracks how confident we are. [PrecipLikelihood.LIKELY] renders as
- * the bare condition ("Rain at 3pm."); [PrecipLikelihood.POSSIBLE] hedges
- * ("Chance of rain at 3pm.") because only a single per-model series flagged
+ * the bare condition ("Rain."); [PrecipLikelihood.POSSIBLE] hedges
+ * ("Chance of rain.") because only a single per-model series flagged
  * the hour while others stayed dry. Defaults to LIKELY so legacy cached
  * payloads — written before the field existed — keep their original wording.
  *
  * [allDay] is set when LIKELY rain runs across the whole period rather than
- * peaking at one hour — either it covers most of the window, or it falls in two
- * or more separated spells. The formatter then drops the single-hour time
- * phrase and says "Rain all day." (period-aware: "all night" on the night
- * slice) so a wet-all-day forecast doesn't get undersold as a single shower.
- * Only meaningful on the LIKELY tier; defaults to false so the POSSIBLE tier and
- * legacy cached payloads keep naming an hour.
+ * peaking at one hour — either it covers most of the window, or it falls in
+ * two or more separated spells. Carried for the same data-consumer reasons
+ * as [time]; the spoken prose reads identically either way now that the
+ * time phrase is gone.
  */
 data class PrecipClause(
     val condition: WeatherCondition,
@@ -217,11 +218,11 @@ data class CalendarTieInClause(val item: String)
  * LIKELY for back-compat with cached payloads written before the field
  * existed.
  *
- * [allDay] mirrors [PrecipClause.allDay] for the evening slice: when the night's
- * rain runs the whole window rather than peaking at one hour, the formatter
- * drops the "at 9pm" and says "all night" ("Tonight, rain all night, bring a
- * jacket."). Only meaningful when [rainTime] is set and [likelihood] is LIKELY;
- * defaults to false so the POSSIBLE tier and cached payloads keep naming an hour.
+ * [allDay] mirrors [PrecipClause.allDay] for the evening slice. Like the
+ * peak time, it's carried for data consumers rather than the prose — the
+ * formatter no longer speaks the hour or an "all night" phrase ("Tonight,
+ * rain tonight, bring a jacket." reads the same either way). Only
+ * meaningful when [rainTime] is set and [likelihood] is LIKELY.
  *
  * [precipCondition] mirrors the same per-model peak's [WeatherCondition] so
  * the formatter can decide whether a wet-weather accessory mention makes

@@ -26,8 +26,12 @@ import java.security.SecureRandom
  *
  * Security:
  *   - The random hex [token] in the URL path is the only shared secret; it's never logged.
- *   - The server only processes the first valid POST — subsequent POSTs with the same token
- *     return an "already used" page and do not call [onKeyReceived] again.
+ *   - Every valid POST with the token calls [onKeyReceived]; the last submission wins.
+ *     Deliberate: a user who pastes a truncated key and notices the TV's voice failing
+ *     can go back and resubmit the corrected key in the same session — the previous
+ *     single-shot behavior answered "Done!" while silently keeping the wrong key. The
+ *     token gates who can submit at all, and the callback's persist is idempotent, so
+ *     accepting overwrites within the session costs nothing.
  *   - The server is only reachable from the local network (LAN). It is the caller's
  *     responsibility to call [stop] promptly after success or timeout.
  */
@@ -37,7 +41,6 @@ class PairingServer(
     val token: String = generateToken()
 
     private var server: EmbeddedServer<*, *>? = null
-    private var claimed = false
 
     /**
      * Starts the HTTP server on an available local port and returns that port.
@@ -57,11 +60,10 @@ class PairingServer(
                         call.respondText(htmlForm(error = true), ContentType.Text.Html)
                         return@post
                     }
+                    // Serialize concurrent POSTs so callback invocations don't
+                    // interleave; last submission wins (see the class doc).
                     synchronized(this@PairingServer) {
-                        if (!claimed) {
-                            claimed = true
-                            onKeyReceived(key)
-                        }
+                        onKeyReceived(key)
                     }
                     call.respondText(htmlSuccess(), ContentType.Text.Html)
                 }

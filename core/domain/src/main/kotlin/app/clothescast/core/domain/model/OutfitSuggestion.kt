@@ -18,8 +18,11 @@ import java.time.LocalTime
  * icon fell through to whatever `defaultTop` the user picked (e.g. POLO).
  * Bottom tier: a firing `shorts` rule picks [Bottom.SHORTS]; `short-skirt` picks
  * [Bottom.SHORT_SKIRT]; `skirt` picks [Bottom.LONG_SKIRT]; `jeans` picks
- * [Bottom.JEANS]; otherwise the user's chosen
- * `defaultBottom` ([Bottom.LONG_PANTS] by default). The Settings "If no rules match"
+ * [Bottom.JEANS]; `pants` picks [Bottom.LONG_PANTS]; otherwise the user's chosen
+ * `defaultBottom` ([Bottom.LONG_PANTS] by default). The explicit `pants` tier
+ * mirrors the `t-shirt` one: [EvaluateClothesRules] treats a firing `pants` rule
+ * as a matched bottom, so without it the prose would name pants while the icon
+ * fell through to whatever `defaultBottom` the user picked (e.g. SHORTS). The Settings "If no rules match"
  * card lets the user point each fallback at any catalog garment so the home-screen
  * icon matches what they actually wear when no rule fires.
  *
@@ -150,10 +153,11 @@ data class OutfitSuggestion(
         // simultaneously (e.g. both coat ≤4°C and jacket ≤10°C fire at 3°C),
         // the heavier garment icon wins rather than the first match.
         // Bottom tiers: shorts → SHORTS, short-skirt → SHORT_SKIRT, skirt →
-        // LONG_SKIRT, jeans → JEANS, fallback → user's chosen defaultBottom
-        // (LONG_PANTS by default). Within the skirt family, the shorter
-        // garment is checked first so that when both a `short-skirt` and a
-        // `skirt` rule fire on the same warm day, the mini icon wins.
+        // LONG_SKIRT, jeans → JEANS, pants → LONG_PANTS, fallback → user's
+        // chosen defaultBottom (LONG_PANTS by default). Within the skirt
+        // family, the shorter garment is checked first so that when both a
+        // `short-skirt` and a `skirt` rule fire on the same warm day, the
+        // mini icon wins.
         private val THICK_JACKET_KEYS = listOf(Garment.JACKET)
         private val THICK_COAT_KEYS = listOf(Garment.COAT)
         private val PUFFER_JACKET_KEYS = listOf(Garment.PUFFER)
@@ -165,6 +169,7 @@ data class OutfitSuggestion(
         private val SHORT_SKIRT_KEYS = listOf(Garment.SHORT_SKIRT)
         private val LONG_SKIRT_KEYS = listOf(Garment.SKIRT)
         private val JEANS_KEYS = listOf(Garment.JEANS)
+        private val LONG_PANTS_KEYS = listOf(Garment.PANTS)
         // Hands tier: a firing `gloves` rule lights the optional glove icon.
         // No fallback tier — uncovered hands stay null (see the `hands` note on
         // OutfitSuggestion), so this never promotes to a default the way the top
@@ -255,6 +260,7 @@ data class OutfitSuggestion(
                 firingRules.hasKeyIn(SHORT_SKIRT_KEYS) -> Bottom.SHORT_SKIRT
                 firingRules.hasKeyIn(LONG_SKIRT_KEYS) -> Bottom.LONG_SKIRT
                 firingRules.hasKeyIn(JEANS_KEYS) -> Bottom.JEANS
+                firingRules.hasKeyIn(LONG_PANTS_KEYS) -> Bottom.LONG_PANTS
                 else -> defaultBottom
             }
             // Optional, no fallback: null unless a hands rule actually fired.
@@ -341,10 +347,12 @@ data class OutfitSuggestion(
                 ?: tempRules.firstFiring(forecast, SHORT_SKIRT_KEYS)
                 ?: tempRules.firstFiring(forecast, LONG_SKIRT_KEYS)
                 ?: tempRules.firstFiring(forecast, JEANS_KEYS)
+                ?: tempRules.firstFiring(forecast, LONG_PANTS_KEYS)
                 ?: tempRules.firstByKey(SHORTS_KEYS)
                 ?: tempRules.firstByKey(SHORT_SKIRT_KEYS)
                 ?: tempRules.firstByKey(LONG_SKIRT_KEYS)
                 ?: tempRules.firstByKey(JEANS_KEYS)
+                ?: tempRules.firstByKey(LONG_PANTS_KEYS)
                 ?: ClothesRule.DEFAULTS.first { it.item == Garment.SHORTS }
             return rule.toConditionFact(forecast, coldestHour, warmestHour)
         }

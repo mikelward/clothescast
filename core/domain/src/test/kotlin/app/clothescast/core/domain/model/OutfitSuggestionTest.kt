@@ -236,6 +236,33 @@ class OutfitSuggestionTest {
     }
 
     @Test
+    fun `firing pants rule picks LONG_PANTS over a SHORTS default`() {
+        // A user with a shorts default and a "pants below 15°C" rule: the prose
+        // names pants when the rule fires, so the icon must show long pants
+        // too rather than falling through to the shorts default.
+        val pantsRule = listOf(ClothesRule(Garment.PANTS, ClothesRule.TemperatureBelow(15.0)))
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 10.0, feelsLikeMax = 14.0),
+            pantsRule,
+            defaultBottom = OutfitSuggestion.Bottom.SHORTS,
+        )
+        outfit.bottom shouldBe OutfitSuggestion.Bottom.LONG_PANTS
+    }
+
+    @Test
+    fun `firing pants rule is cited by the bottom rationale`() {
+        // The "Why this outfit?" sheet should explain the day via the pants
+        // rule that decided it, not the un-crossed shorts threshold.
+        val pantsRule = listOf(ClothesRule(Garment.PANTS, ClothesRule.TemperatureBelow(15.0)))
+        val fact = OutfitSuggestion.explainFromForecast(
+            forecast(feelsLikeMin = 10.0, feelsLikeMax = 14.0),
+            pantsRule,
+        ).bottom.facts.single()
+        fact.ruleItem shouldBe Garment.PANTS
+        fact.thresholdC shouldBe 15.0
+    }
+
+    @Test
     fun `defaultBottom flips the fallback from LONG_PANTS to JEANS`() {
         // A denim-everyday user picks Jeans as their standard bottom. With no
         // jeans rule on file and a forecast that doesn't trigger shorts/skirt,

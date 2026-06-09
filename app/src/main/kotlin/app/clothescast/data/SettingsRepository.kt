@@ -897,7 +897,11 @@ class SettingsRepository(
     }
 
     private fun Preferences.toUserPreferences(): UserPreferences {
-        val time = this[SCHEDULE_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
+        // Parse defensively like every other stored value: a corrupt HH:mm
+        // string would otherwise throw on every preferences emission —
+        // crashing all UI collectors and pinning the worker on retry — with
+        // no recovery short of clearing app data.
+        val time = this[SCHEDULE_TIME]?.let { runCatching { LocalTime.parse(it, TIME_FORMAT) }.getOrNull() }
             ?: DEFAULT_TIME
         val days = this[SCHEDULE_DAYS]?.mapNotNull { runCatching { DayOfWeek.valueOf(it) }.getOrNull() }
             ?.toSet()
@@ -985,7 +989,7 @@ class SettingsRepository(
         val geminiPromoCardDismissed = this[GEMINI_PROMO_CARD_DISMISSED] == true
         val onboardingSkipped = this[ONBOARDING_SKIPPED] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
-        val tonightTime = this[TONIGHT_TIME]?.let { LocalTime.parse(it, TIME_FORMAT) }
+        val tonightTime = this[TONIGHT_TIME]?.let { runCatching { LocalTime.parse(it, TIME_FORMAT) }.getOrNull() }
             ?: DEFAULT_TONIGHT_TIME
         val tonightDays = this[TONIGHT_DAYS]?.mapNotNull { runCatching { DayOfWeek.valueOf(it) }.getOrNull() }
             ?.toSet()

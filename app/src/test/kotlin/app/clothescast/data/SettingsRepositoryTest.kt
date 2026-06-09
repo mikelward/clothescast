@@ -540,6 +540,25 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `rule with an unknown condition type is dropped without resetting the list`() = runTest {
+        // A future app version writes a new condition type ("wind_above"),
+        // then the user downgrades. The unrecognized rule must degrade
+        // per-item — like unknown garments do — rather than throwing and
+        // tripping the whole-list fallback that would silently reset every
+        // customized threshold to defaults.
+        dataStore.edit {
+            it[stringPreferencesKey("clothes_rules_json")] = """
+                [{"item":"jacket","type":"wind_above","value":30.0},
+                 {"item":"sweater","type":"temp_below","value":18.0}]
+            """.trimIndent()
+        }
+
+        subject.preferences.first().clothesRules shouldContainExactly listOf(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0)),
+        )
+    }
+
+    @Test
     fun `setClothesRules round-trips a fahrenheit-typed threshold`() = runTest {
         // The rule remembers what the user typed (65°F), not a converted Celsius
         // approximation — switching unit at display time is reversible.

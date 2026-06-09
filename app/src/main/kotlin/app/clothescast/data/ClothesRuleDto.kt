@@ -29,18 +29,23 @@ internal data class ClothesRuleDto(
     val value: Double,
     val unit: String? = null,
 ) {
-    /** Returns the domain rule, or `null` if [item] isn't a catalog [Garment]. */
+    /**
+     * Returns the domain rule, or `null` if [item] isn't a catalog [Garment]
+     * or [type] isn't a known condition. Unknown types degrade per-item like
+     * unknown garments do: one forward-compat rule (written by a future build,
+     * then the app downgraded) costs only itself, not the user's entire rule
+     * list — throwing here would trip the whole-list `runCatching` in
+     * `parseRules` and silently reset every threshold to defaults.
+     */
     fun toDomain(): ClothesRule? {
         val garment = Garment.fromKey(item) ?: return null
-        return ClothesRule(
-            item = garment,
-            condition = when (type) {
-                TYPE_TEMP_BELOW -> ClothesRule.TemperatureBelow(value, parseUnit(unit))
-                TYPE_TEMP_ABOVE -> ClothesRule.TemperatureAbove(value, parseUnit(unit))
-                TYPE_PRECIP_ABOVE -> ClothesRule.PrecipitationProbabilityAbove(value)
-                else -> error("Unknown clothes rule type: $type")
-            },
-        )
+        val condition = when (type) {
+            TYPE_TEMP_BELOW -> ClothesRule.TemperatureBelow(value, parseUnit(unit))
+            TYPE_TEMP_ABOVE -> ClothesRule.TemperatureAbove(value, parseUnit(unit))
+            TYPE_PRECIP_ABOVE -> ClothesRule.PrecipitationProbabilityAbove(value)
+            else -> return null
+        }
+        return ClothesRule(item = garment, condition = condition)
     }
 
     companion object {

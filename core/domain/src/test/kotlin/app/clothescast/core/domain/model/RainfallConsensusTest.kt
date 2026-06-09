@@ -104,10 +104,12 @@ class RainfallConsensusTest {
     }
 
     @Test
-    fun `partial null hours within a model still count toward its total`() {
-        // ecmwf has 1.0 + null = 1.0 mm total; gfs has 4.0 + 1.0 = 5.0 mm.
-        // Mean = 3.0 mm. A partial-null hour shouldn't drag the model's total
-        // to zero or disqualify it from the consensus.
+    fun `a model's missing hour drops out of that hour's mean, not counted as zero`() {
+        // Hour 10: mean(1.0, 4.0) = 2.5 mm. Hour 12: ecmwf didn't report, so
+        // gfs's 1.0 mm stands alone. Total = 3.5 mm. A per-model-totals mean
+        // would give (1.0 + 5.0) / 2 = 3.0 mm — arithmetically the same as
+        // counting ecmwf's missing hour as 0 mm, which is exactly the
+        // partial-series bias the hour-wise contract exists to avoid.
         val data = PerModelHourly(
             byModel = mapOf(
                 "ecmwf_ifs04" to listOf(
@@ -122,6 +124,6 @@ class RainfallConsensusTest {
         )
 
         val mm = data.consensusRainfallMmFor(today).shouldNotBeNull()
-        mm shouldBe (3.0 plusOrMinus 0.0001)
+        mm shouldBe (3.5 plusOrMinus 0.0001)
     }
 }

@@ -418,6 +418,41 @@ class MultiModelConfidenceFetcherTest {
     }
 
     @Test
+    fun `pruning matches whole model ids, not substrings`() = runTest {
+        // Open-Meteo has model ids that are prefixes of other ids (icon_d2 /
+        // icon_d2_15min). A 400 naming only the longer one must not also prune
+        // the shorter, perfectly valid model from the retry.
+        val requestedModels = mutableListOf<String?>()
+        val engine = MockEngine { request ->
+            val models = request.url.parameters["models"]
+            requestedModels += models
+            if (models != null && "icon_d2_15min" in models) {
+                respond(
+                    content = ByteReadChannel(
+                        """{"error":true,"reason":"Cannot initialize WeatherModel from String \"icon_d2_15min\""}""",
+                    ),
+                    status = HttpStatusCode.BadRequest,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            } else {
+                respond(
+                    content = ByteReadChannel(THREE_MODEL_AGREEMENT),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            }
+        }
+        fetcherWith(engine)
+            .fetch(london, listOf("icon_d2", "icon_d2_15min", "ecmwf_ifs025", "gfs_seamless"))
+            .shouldNotBeNull()
+
+        requestedModels shouldBe listOf(
+            "icon_d2,icon_d2_15min,ecmwf_ifs025,gfs_seamless",
+            "icon_d2,ecmwf_ifs025,gfs_seamless",
+        )
+    }
+
+    @Test
     fun `does not retry when the 400 names no requested model`() = runTest {
         // A 400 that isn't about a model id (bad coordinates, etc.) shouldn't
         // trigger a prune-and-retry — there's nothing to drop. Fail fast to null.

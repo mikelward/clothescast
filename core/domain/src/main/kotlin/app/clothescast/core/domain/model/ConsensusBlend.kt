@@ -81,12 +81,11 @@ fun blendConsensusHourly(
                 precipCandidates.average()
             }
             // Wind / UV: same skip-nulls-then-average treatment as precip.
-            // best_match contributes null for both (the primary forecast call
-            // doesn't carry them — see OpenMeteoClient.asPerModelHours), so the
-            // mean is over the consulted models, matching the wind / UV
-            // diagnostic charts' consensus line. Fall back to best_match's own
-            // value when no candidate reported (keeps a sane backstop rather
-            // than dropping the field to null).
+            // best_match carries both off the primary forecast call, so it
+            // votes here like any consulted model; models whose runs omit the
+            // field sit the hour out. Fall back to best_match's own value when
+            // no candidate reported (keeps a sane backstop rather than
+            // dropping the field to null).
             val windCandidates = candidates.mapNotNull { it.windSpeedKmh }
             val blendedWind = if (windCandidates.isEmpty()) hour.windSpeedKmh else windCandidates.average()
             val uvCandidates = candidates.mapNotNull { it.uvIndex }

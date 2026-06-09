@@ -6,13 +6,13 @@ import java.time.LocalDate
  * Day-level sunshine total averaged across the consulted models — the
  * single number behind the Today screen's "Xh of sun today" blurb.
  *
- * Per-hour [PerModelHour.sunshineDurationSec] is summed independently for
- * each model that reported sunshine on [date], and the arithmetic mean of
- * those per-model daily totals is returned in fractional hours. Summing
- * per-model first (rather than averaging the per-hour values across models
- * and then summing) keeps a model with only a partial hourly series from
- * silently dragging the consensus down — its missing hours don't get
- * counted as zero sunshine.
+ * At each hour of [date], [PerModelHour.sunshineDurationSec] is averaged
+ * over the models that reported it, and the per-hour means are summed into a
+ * daily total in fractional hours. Averaging hour-wise over the reporting
+ * models (rather than summing each model first and averaging the per-model
+ * totals) keeps a model with only a partial hourly series from silently
+ * dragging the consensus down — its missing hours don't get counted as zero
+ * sunshine. See [consensusPerModelAverage].
  *
  * Treats `best_match` like any other model, matching [blendConsensusHourly]'s
  * posture. With fewer than two models reporting any sunshine on [date],
@@ -34,10 +34,9 @@ fun PerModelHourly.consensusSunshineHoursFor(date: LocalDate): Double? =
  * (early-morning sun before the morning alarm) on the night view; this variant
  * sums the full slice instead.
  *
- * Same per-model-first averaging contract as [consensusSunshineHoursFor]:
- * each consulted model's hours are summed independently, the arithmetic mean
- * of those per-model totals is returned in fractional hours, and < 2 models
- * with any sunshine return null.
+ * Same hour-wise averaging contract as [consensusSunshineHoursFor]: each
+ * hour's mean over the reporting models is summed into a window total in
+ * fractional hours, and < 2 models with any sunshine return null.
  */
 fun PerModelHourly.consensusSunshineHours(): Double? =
     consensusPerModelAverage(dateFilter = null) { it.sunshineDurationSec }

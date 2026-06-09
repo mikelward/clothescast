@@ -193,10 +193,11 @@ class ConsensusBlendTest {
 
     @Test
     fun `wind and uv are averaged across the candidates that reported them`() {
-        // best_match carries no wind / UV (the primary forecast call omits
-        // them — see OpenMeteoClient.asPerModelHours), so the blend averages
-        // only the consulted models. A lone best_match spike can't survive
-        // because it isn't a candidate for these fields.
+        // A model whose per-model entry carries null wind / UV (older cached
+        // payloads; model runs that omit the field) sits the hour out — here
+        // best_match's entry has neither, so the blend averages only the
+        // consulted models and a lone spike on the [HourlyForecast] side
+        // can't survive because it isn't a candidate for these fields.
         val best = listOf(hour(12, temp = 10.0, wind = 99.0, uv = 99.0))
         val perModel = PerModelHourly(
             byModel = mapOf(

@@ -162,9 +162,20 @@ internal fun OutfitWidgetMockSideBySide(
 
 @Composable
 private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSize) {
+    val caption = outfitGarmentCaption(
+        context = LocalContext.current,
+        outfit = outfit,
+        topLabel = stringResource(topLabelResMock(outfit.top)),
+        bottomLabel = stringResource(bottomLabelResMock(outfit.bottom)),
+    )
+    val captionLines = outfitGarmentCaptionLineCount(
+        caption = caption,
+        availableWidthDp = size.width.value,
+        fontSizeSp = scaledSubtitleSpMock(size).value,
+    )
+    val iconSize = scaledIconSizeMock(size, captionLines)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize(),
     ) {
         Text(
@@ -173,56 +184,48 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
             fontSize = scaledLabelSpMock(size),
             fontWeight = FontWeight.Medium,
         )
-        Spacer(modifier = Modifier.height(2.dp))
-        // Mirrors OutfitWidget.SingleColumnContent: names every piece the icon
-        // shows (rain-jacket shell, gloves, umbrella) as one flowing "· "-joined
-        // run that soft-wraps, identical to the Today card's caption.
-        val caption = outfitGarmentCaption(
-            context = LocalContext.current,
-            outfit = outfit,
-            topLabel = stringResource(topLabelResMock(outfit.top)),
-            bottomLabel = stringResource(bottomLabelResMock(outfit.bottom)),
-        )
-        val captionLines = outfitGarmentCaptionLineCount(
-            caption = caption,
-            availableWidthDp = size.width.value,
-            fontSizeSp = scaledSubtitleSpMock(size).value,
-        )
-        val iconSize = scaledIconSizeMock(size, captionLines)
-        // The umbrella is a full-figure overlay (held at the hip, hanging past
-        // the legs), so it spans the top+bottom stack — mirror the real widget's
-        // Box-over-both-images layout (see OutfitWidget.SingleColumnContent).
-        Box(modifier = Modifier.size(width = iconSize, height = iconSize * 2)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Box(modifier = Modifier.size(iconSize), contentAlignment = Alignment.Center) {
-                    Image(
-                        painter = painterResource(id = topIconResMock(outfit.top)),
-                        contentDescription = stringResource(topLabelResMock(outfit.top)),
-                        modifier = Modifier.size(iconSize),
-                    )
-                    if (outfit.hands != null) {
+        // Mirrors OutfitWidget.SingleColumnContent: label pinned to the top,
+        // caption pinned to the bottom, figure centred in the weighted space
+        // between them so leftover height lands as padding around the figure
+        // rather than a band below the wrapped caption.
+        Box(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            // The umbrella is a full-figure overlay (held at the hip, hanging past
+            // the legs), so it spans the top+bottom stack — mirror the real widget's
+            // Box-over-both-images layout (see OutfitWidget.SingleColumnContent).
+            Box(modifier = Modifier.size(width = iconSize, height = iconSize * 2)) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(modifier = Modifier.size(iconSize), contentAlignment = Alignment.Center) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_outfit_gloves),
-                            contentDescription = stringResource(R.string.garment_gloves),
+                            painter = painterResource(id = topIconResMock(outfit.top)),
+                            contentDescription = stringResource(topLabelResMock(outfit.top)),
                             modifier = Modifier.size(iconSize),
                         )
+                        if (outfit.hands != null) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_outfit_gloves),
+                                contentDescription = stringResource(R.string.garment_gloves),
+                                modifier = Modifier.size(iconSize),
+                            )
+                        }
                     }
+                    Image(
+                        painter = painterResource(id = bottomIconResMock(outfit.bottom)),
+                        contentDescription = stringResource(bottomLabelResMock(outfit.bottom)),
+                        modifier = Modifier.size(iconSize),
+                    )
                 }
-                Image(
-                    painter = painterResource(id = bottomIconResMock(outfit.bottom)),
-                    contentDescription = stringResource(bottomLabelResMock(outfit.bottom)),
-                    modifier = Modifier.size(iconSize),
-                )
-            }
-            if (outfit.carried != null) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_outfit_umbrella),
-                    contentDescription = stringResource(R.string.garment_umbrella),
-                    modifier = Modifier.fillMaxSize(),
-                )
+                if (outfit.carried != null) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_outfit_umbrella),
+                        contentDescription = stringResource(R.string.garment_umbrella),
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
-        Spacer(modifier = Modifier.height(2.dp))
         val subtitleSp = scaledSubtitleSpMock(size)
         Text(
             text = caption,
@@ -424,6 +427,30 @@ internal fun WidgetTonightTomorrowWidePreview() {
     }
 }
 
+// Reproduces the reported case: Tonight's caption fits one line while
+// Tomorrow's (rain jacket + umbrella) wraps to two, and Tomorrow also carries
+// the full-figure umbrella overlay. Both columns are sized off the same cell,
+// so this captures whether the longer-caption + umbrella column leaves a gap
+// below its second caption line versus the shorter Tonight column.
+@Preview(name = "Widget · tonight + tomorrow · umbrella", widthDp = 392, heightDp = 232)
+@Composable
+internal fun WidgetTonightTomorrowUmbrellaWidePreview() {
+    WidgetFrame {
+        OutfitWidgetMockSideBySide(
+            primaryPeriod = ForecastPeriod.TONIGHT,
+            primary = OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.JEANS),
+            next = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_JACKET,
+                OutfitSuggestion.Bottom.JEANS,
+                carried = OutfitSuggestion.Carried.UMBRELLA,
+                outer = OutfitSuggestion.Outer.RAIN_JACKET,
+            ),
+            width = 360.dp,
+            height = 200.dp,
+        )
+    }
+}
+
 // Narrow side-by-side: a 240dp widget halves to ~120dp columns, where a full
 // accessory run ("Thick coat · Long pants · Gloves · Umbrella") wraps to three
 // lines. Captures that the per-column line budget grows so the final accessory
@@ -472,9 +499,9 @@ private fun scaledIconSizeMock(size: DpSize, subtitleLines: Int = 1): Dp {
     val labelSp = (short * 0.0875f).coerceAtLeast(13f)
     val subtitleSp = (short * 0.0688f).coerceAtLeast(10f)
     // Reserve room for exactly the rendered caption line count (no phantom
-    // extra line); the 1.45× margin keeps the final line from clipping — see
-    // OutfitWidget.scaledIconSize.
-    val reservedVertical = (labelSp + subtitleSp * subtitleLines) * 1.45f + 14f
+    // extra line); the 1.45× margin keeps the final line from clipping and the
+    // +8 constant covers the outer Box padding — see OutfitWidget.scaledIconSize.
+    val reservedVertical = (labelSp + subtitleSp * subtitleLines) * 1.45f + 8f
     val verticalBudget = (size.height.value - reservedVertical).coerceAtLeast(0f) / 2f
     val horizontalBudget = size.width.value * 0.95f
     return minOf(verticalBudget, horizontalBudget).coerceAtLeast(36f).dp

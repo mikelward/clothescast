@@ -79,6 +79,7 @@ import app.clothescast.widget.WidgetTodayTShirtShortsPreview
 import app.clothescast.widget.WidgetTonightDarkPreview
 import app.clothescast.widget.WidgetTonightSweaterPantsPreview
 import app.clothescast.widget.WidgetTonightTallPortraitPreview
+import app.clothescast.widget.WidgetTonightTomorrowUmbrellaWidePreview
 import app.clothescast.widget.WidgetTonightTomorrowWidePreview
 import com.github.takahirom.roborazzi.captureRoboImage
 import java.io.File
@@ -630,6 +631,7 @@ class PreviewSnapshots {
     @Test fun widget_today_tonight_wide() = capture { WidgetTodayTonightWidePreview() }
     @Test fun widget_side_by_side_accessories_narrow() = capture { WidgetSideBySideAccessoriesNarrowPreview() }
     @Test fun widget_tonight_tomorrow_wide() = capture { WidgetTonightTomorrowWidePreview() }
+    @Test fun widget_tonight_tomorrow_umbrella_wide() = capture { WidgetTonightTomorrowUmbrellaWidePreview() }
 
     @Test fun feels_like_widget_today() = capture { FeelsLikeWidgetTodayPreview() }
     @Test fun feels_like_widget_today_dark() = capture { FeelsLikeWidgetTodayDarkPreview() }

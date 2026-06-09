@@ -1,7 +1,5 @@
 package app.clothescast.ui.nav
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
 import androidx.compose.animation.core.tween
@@ -9,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
@@ -149,8 +146,7 @@ fun ClothesCastNavHost(
         composable<TodayRoute>(
             deepLinks = listOf(navDeepLink<TodayRoute>(basePath = MainActivity.DEEP_LINK_TODAY)),
         ) { entry ->
-            val context = LocalContext.current
-            val today: TodayViewModel = viewModel(factory = todayViewModelFactory(app, context))
+            val today: TodayViewModel = viewModel(factory = todayViewModelFactory(app))
             TodayScreen(
                 viewModel = today,
                 startPage = entry.toRoute<TodayRoute>().page,
@@ -170,14 +166,13 @@ fun ClothesCastNavHost(
         }
 
         composable<OnboardingRoute> {
-            val context = LocalContext.current
             val onboarding: OnboardingViewModel = viewModel(
                 factory = OnboardingViewModel.Factory(
                     secureKeyStore = app.secureKeyStore,
                     settingsRepository = app.settingsRepository,
                     geocodingClient = app.geocodingClient,
                     refreshLocationCache = {
-                        FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
+                        FetchAndNotifyWorker.enqueueLocationCacheRefresh(app)
                     },
                     workManager = WorkManager.getInstance(app),
                     externalScope = app.applicationScope,
@@ -369,18 +364,22 @@ private fun NavBackStackEntry.settingsViewModel(
     nav: NavController,
     app: ClothesCastApplication,
 ): SettingsViewModel {
-    val context = LocalContext.current
     val parentEntry = remember(this) { nav.getBackStackEntry<SettingsGraph>() }
-    return viewModel(viewModelStoreOwner = parentEntry, factory = settingsViewModelFactory(app, context))
+    return viewModel(viewModelStoreOwner = parentEntry, factory = settingsViewModelFactory(app))
 }
 
-private fun todayViewModelFactory(app: ClothesCastApplication, context: Context) =
+// Factory lambdas capture only [app], never an Activity context: the ViewModels
+// outlive any one Activity (they're scoped to a back-stack entry and survive
+// config changes), and `viewModel(factory = …)` consults the factory only on
+// first creation — a captured LocalContext would pin the original Activity for
+// the VM's lifetime (leak) and act on the destroyed instance after rotation.
+private fun todayViewModelFactory(app: ClothesCastApplication) =
     TodayViewModel.Factory(
         insightCache = app.insightCache,
         workManager = WorkManager.getInstance(app),
         settingsRepository = app.settingsRepository,
         refreshOutfitWidget = {
-            updateAllClothesCastWidgets(context.applicationContext)
+            updateAllClothesCastWidgets(app)
         },
         deriveInsight = app.deriveInsight,
         calendarEventReader = app.calendarEventReader,
@@ -388,7 +387,7 @@ private fun todayViewModelFactory(app: ClothesCastApplication, context: Context)
         geminiKeyNeedsReentry = app.secureKeyStore.geminiKeyNeedsReentryFlow,
     )
 
-private fun settingsViewModelFactory(app: ClothesCastApplication, context: Context) =
+private fun settingsViewModelFactory(app: ClothesCastApplication) =
     SettingsViewModel.Factory(
         settingsRepository = app.settingsRepository,
         keyStore = app.secureKeyStore,
@@ -398,10 +397,15 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         voiceEnumerator = app.androidTtsVoiceEnumerator,
         applyAppLocale = { region ->
             AppLocale.apply(app, region)
-            (context as? Activity)?.recreate()
+            // API 31/32 has no LocaleManager to recreate automatically, so the
+            // visible Activity is recreated by hand — resolved *at call time*
+            // (see the factory note above): the VM survives config changes, so
+            // a captured Activity would be the destroyed pre-rotation instance,
+            // whose recreate() is a no-op and the new locale wouldn't show.
+            app.currentResumedActivity()?.recreate()
         },
         refreshLocationCache = {
-            FetchAndNotifyWorker.enqueueLocationCacheRefresh(context)
+            FetchAndNotifyWorker.enqueueLocationCacheRefresh(app)
         },
         refreshOutfitWidget = {
             // No cache work needed — the cache holds the raw ForecastSnapshot,
@@ -410,7 +414,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
             // don't subscribe to the prefs flow themselves, so a settings write
             // that changes what they render (outfit icon, or the chart's
             // temperature unit) needs an explicit nudge to repaint the launcher.
-            updateAllClothesCastWidgets(context.applicationContext)
+            updateAllClothesCastWidgets(app)
         },
         workManager = WorkManager.getInstance(app),
         insightCache = app.insightCache,
@@ -421,7 +425,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                 ?: return@Factory app.mqttPublisher.publishTest()
             val insight = app.deriveInsight(snapshot, prefs).insight
             val formatter = InsightFormatter.forRegion(
-                context,
+                app,
                 prefs.region,
                 prefs.temperatureUnit,
                 prefs.rangeFormat,
@@ -434,13 +438,13 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
             val png: ByteArray? = insight.outfit?.let { outfit ->
                 runCatching {
                     val info = outfitCardInfoLines(
-                        context = context,
+                        context = app,
                         formatter = formatter,
                         hourly = insight.hourly,
                         temperatureUnit = prefs.temperatureUnit,
                         windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
                     )
-                    val header = context.getString(
+                    val header = app.getString(
                         if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
                         else R.string.outfit_card_header_tonight
                     )
@@ -457,7 +461,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
                     val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
                         theme?.bottomStrokeOverrides ?: emptyMap()
                     renderOutfitCard(
-                        context = context,
+                        context = app,
                         outfit = outfit,
                         header = header,
                         prose = prose,
@@ -482,7 +486,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication, context: Conte
         castNowAction = app.castInsightController?.let { controller ->
             {
                 castCurrentInsight(
-                    context = context,
+                    context = app,
                     settingsRepository = app.settingsRepository,
                     insightCache = app.insightCache,
                     deriveInsight = app.deriveInsight,

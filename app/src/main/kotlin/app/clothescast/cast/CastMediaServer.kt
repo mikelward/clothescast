@@ -61,9 +61,14 @@ import java.security.SecureRandom
  *   - Ktor CIO runs its accept / handler loop on its own threads. The
  *     buffer reference and the token are `@Volatile` so a handler
  *     racing a [publish] sees one set or the other, never a torn write.
- *   - [start] / [stop] / [publish] are intended to be called from a
- *     single thread (the cast session listener); concurrent calls
- *     aren't guarded.
+ *   - [stop] and [publish] are `@Synchronized`: in practice they arrive
+ *     on different threads — [publish] on the worker's dispatcher (the
+ *     controller deliberately keeps it off the main thread), [stop] on
+ *     the main thread via the session listener's onSessionEnded — and
+ *     a previous session's teardown can land mid-publish. The lock
+ *     keeps a stop from clearing the token/buffer a publish just
+ *     minted a URL for, and gives `server`/`port` (plain fields) their
+ *     memory visibility.
  */
 class CastMediaServer {
 
@@ -103,6 +108,7 @@ class CastMediaServer {
      * @param kind the media shape — sets the URL suffix and the
      *   `Content-Type` the handler serves it with.
      */
+    @Synchronized
     fun publish(host: String, media: ByteArray, kind: CastMediaKind = CastMediaKind.MP4): MediaUrl {
         this.buffer = media
         this.kind = kind
@@ -131,6 +137,7 @@ class CastMediaServer {
     }
 
     /** Stops the server, if running, and clears the buffered media + the path token. */
+    @Synchronized
     fun stop() {
         server?.stop(gracePeriodMillis = 0, timeoutMillis = 500)
         server = null
@@ -143,6 +150,7 @@ class CastMediaServer {
     }
 
     /** Currently-bound port, or 0 if the server isn't running. Test hook. */
+    @Synchronized
     internal fun port(): Int = port
 
     private fun start() {

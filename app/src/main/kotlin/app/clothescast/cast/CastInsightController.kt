@@ -587,7 +587,8 @@ class CastInsightController(
         if (existing != null && existing.isConnected && router.selectedRoute.id == route.id) {
             return existing
         }
-        if (router.selectedRoute.id != route.id) {
+        val routeAlreadySelected = router.selectedRoute.id == route.id
+        if (!routeAlreadySelected) {
             // selectRoute tears down any existing session on a different
             // route and starts a new one — the controller's [sessionListener]
             // catches the old session's onSessionEnded and stops the media
@@ -598,27 +599,55 @@ class CastInsightController(
         return withTimeoutOrNull(timeoutMs) {
             suspendCancellableCoroutine { cont ->
                 val listener = object : SessionManagerListener<CastSession> {
+                    // Unregister on every terminal callback, not just on
+                    // cancellation: the SessionManager lives for the process,
+                    // so a listener left behind after a *successful* start
+                    // accumulates — one per scheduled cast, each retaining its
+                    // continuation and invoked on the main thread for all
+                    // future session events.
+                    private fun complete(block: () -> Unit) {
+                        if (!cont.isActive) return
+                        sessionManager.removeSessionManagerListener(this, CastSession::class.java)
+                        block()
+                    }
                     override fun onSessionStarting(session: CastSession) {}
                     override fun onSessionStarted(session: CastSession, sessionId: String) {
-                        if (cont.isActive) cont.resume(session)
+                        complete { cont.resume(session) }
                     }
                     override fun onSessionStartFailed(session: CastSession, error: Int) {
-                        if (cont.isActive) cont.resumeWithException(CastFailure.SessionStartFailed(error))
+                        complete { cont.resumeWithException(CastFailure.SessionStartFailed(error)) }
                     }
                     override fun onSessionEnding(session: CastSession) {}
                     override fun onSessionEnded(session: CastSession, error: Int) {}
                     override fun onSessionResuming(session: CastSession, sessionId: String) {}
                     override fun onSessionResumed(session: CastSession, wasSuspended: Boolean) {
-                        if (cont.isActive) cont.resume(session)
+                        complete { cont.resume(session) }
                     }
                     override fun onSessionResumeFailed(session: CastSession, error: Int) {
-                        if (cont.isActive) cont.resumeWithException(CastFailure.SessionStartFailed(error))
+                        complete { cont.resumeWithException(CastFailure.SessionStartFailed(error)) }
                     }
                     override fun onSessionSuspended(session: CastSession, reason: Int) {}
                 }
                 sessionManager.addSessionManagerListener(listener, CastSession::class.java)
                 cont.invokeOnCancellation {
                     sessionManager.removeSessionManagerListener(listener, CastSession::class.java)
+                }
+                if (routeAlreadySelected) {
+                    // Close the registration race: a session can connect
+                    // between the [existing] snapshot above and the listener
+                    // registering, in which case no further callback fires and
+                    // the wait would time out despite a live session. Only
+                    // safe to read when no selectRoute teardown is in flight
+                    // (the route was already selected) — right after a
+                    // selectRoute the still-connected *old* session could
+                    // otherwise be returned and the insight would load on the
+                    // wrong device.
+                    sessionManager.currentCastSession?.takeIf { it.isConnected }?.let { live ->
+                        if (cont.isActive) {
+                            sessionManager.removeSessionManagerListener(listener, CastSession::class.java)
+                            cont.resume(live)
+                        }
+                    }
                 }
             }
         } ?: throw CastFailure.SessionStartTimeout

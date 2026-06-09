@@ -1,7 +1,9 @@
 package app.clothescast
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.calendar.CalendarContractEventReader
 import app.clothescast.cast.CastInsightController
@@ -51,6 +53,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -266,6 +269,18 @@ class ClothesCastApplication : Application() {
     // Telemetry) and read by the nav layer for the onboarding-skip write.
     internal val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    // Weak handle on the currently-resumed Activity, maintained by the
+    // lifecycle callbacks registered in [onCreate]. Lets long-lived lambdas
+    // (e.g. ViewModel factory closures, which outlive any one Activity across
+    // config changes) act on the *live* Activity at call time — the locale
+    // switch's recreate() on API 31/32 — without retaining a destroyed
+    // instance. WeakReference so this never extends an Activity's lifetime.
+    @Volatile
+    private var resumedActivity: WeakReference<Activity>? = null
+
+    /** The Activity currently in the resumed state, or null when none is. */
+    fun currentResumedActivity(): Activity? = resumedActivity?.get()
+
     override fun attachBaseContext(base: Context) {
         // Re-apply the persisted per-app locale before the framework caches a
         // Resources reference for the Application context (used by the worker
@@ -276,6 +291,22 @@ class ClothesCastApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityResumed(activity: Activity) {
+                resumedActivity = WeakReference(activity)
+            }
+            override fun onActivityPaused(activity: Activity) {
+                // Identity check: a *new* Activity's onResume runs before the
+                // old one's onPause during a recreate, so clearing blindly
+                // would drop the fresh reference.
+                if (resumedActivity?.get() === activity) resumedActivity = null
+            }
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+            override fun onActivityStarted(activity: Activity) {}
+            override fun onActivityStopped(activity: Activity) {}
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+            override fun onActivityDestroyed(activity: Activity) {}
+        })
         DiagLog.install(this)
         initAppCheck()
         // Bridge the user's Privacy toggle to Firebase. No-ops on builds

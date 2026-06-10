@@ -776,19 +776,26 @@ class InsightFormatter(
         return resources.getString(template, renderedItems, coarseRainWhen(rainTime), conditionNoun)
     }
 
-    // Coarse timing word for the evening tie-in's rain mention: post-midnight
-    // peaks (00:00–04:59) read "overnight", everything else "tonight". The
-    // clause already leads with "Tonight," so this reinforces the window
-    // without pinning a robotic hour the user can't act on precisely — and
-    // "overnight" still flags the post-midnight case the lead doesn't cover.
-    private fun coarseRainWhen(time: LocalTime): String =
-        resources.getString(
+    // Coarse timing fragment for the evening tie-in's rain mention. The clause
+    // already leads with "Tonight,", so an evening peak adds nothing — the
+    // English insight_precip_tonight is empty and this contributes no second
+    // "tonight" (the redundant "Tonight, rain tonight." users flagged). Only a
+    // post-midnight peak (00:00–04:59) carries information the lead doesn't
+    // cover, so "overnight" still surfaces. The separating space is supplied
+    // here rather than baked into the resource word, so the empty evening case
+    // leaves no orphan space in the template's adjacent slot. Non-English
+    // locales bake the evening reference into their own templates and ignore
+    // this slot entirely.
+    private fun coarseRainWhen(time: LocalTime): String {
+        val word = resources.getString(
             if (time.hour in OVERNIGHT_HOURS) {
                 R.string.insight_precip_overnight
             } else {
                 R.string.insight_precip_tonight
             },
         )
+        return if (word.isEmpty()) "" else " $word"
+    }
 
     private fun leadRes(period: ForecastPeriod, isFutureDay: Boolean): Int = when (period) {
         ForecastPeriod.TODAY -> if (isFutureDay) R.string.insight_lead_tomorrow else R.string.insight_lead_today

@@ -983,14 +983,14 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
+        out shouldBe "Today, it will be 21°. Tonight, rain."
     }
 
     @Test
     fun `evening event tie-in says 'overnight' for a post-midnight rain peak`() {
-        // A peak in the early hours (00:00–04:59) reads "overnight" instead of
-        // "tonight", flagging the post-midnight window the "Tonight," lead
-        // doesn't already cover.
+        // A peak in the early hours (00:00–04:59) adds "overnight", flagging
+        // the post-midnight window the "Tonight," lead doesn't already cover.
+        // (An evening peak emits no timing word at all — the lead says it.)
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1017,9 +1017,10 @@ class InsightFormatterTest {
 
     @Test
     fun `evening event tie-in ignores the all-day flag on bare evening rain`() {
-        // The coarse "tonight" / "overnight" word is keyed off the peak hour,
-        // not coverage, so an all-day evening reads the same "tonight" as a
-        // single-hour evening peak — the all-day distinction is gone.
+        // The coarse timing word is keyed off the peak hour, not coverage, so
+        // an all-day evening reads the same (no timing word — the "Tonight,"
+        // lead covers it) as a single-hour evening peak — the all-day
+        // distinction is gone.
         val out = subject.format(
             summary(
                 eveningEventTieIn = EveningEventTieInClause(
@@ -1029,7 +1030,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
+        out shouldBe "Today, it will be 21°. Tonight, rain."
     }
 
     @Test
@@ -1044,7 +1045,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, chance of rain tonight."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain."
     }
 
     @Test
@@ -1058,7 +1059,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain, bring a jacket."
     }
 
     @Test
@@ -1072,7 +1073,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, chance of rain tonight."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain."
     }
 
     @Test
@@ -1120,7 +1121,7 @@ class InsightFormatterTest {
 
     @Test
     fun `evening event tie-in folds rain time leading the items when present`() {
-        // Rain leads the item ("Tonight, rain tonight, bring a jacket.") so
+        // Rain leads the item ("Tonight, rain, bring a jacket.") so
         // the tie-in reads weather-then-action, same shape as the day insight
         // (precip clause precedes the carry).
         val out = subject.format(
@@ -1128,7 +1129,7 @@ class InsightFormatterTest {
                 eveningEventTieIn = EveningEventTieInClause(items = listOf("jacket"), rainTime = LocalTime.of(21, 0)),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain, bring a jacket."
     }
 
     @Test
@@ -1144,7 +1145,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.SNOW,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, snow tonight, bring a jacket."
+        ) shouldBe "Today, it will be 21°. Tonight, snow, bring a jacket."
 
         subject.format(
             summary(
@@ -1154,7 +1155,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.THUNDERSTORM,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm tonight."
+        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm."
     }
 
     @Test
@@ -1170,7 +1171,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.SNOW,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, chance of snow tonight."
+        ) shouldBe "Today, it will be 21°. Tonight, chance of snow."
     }
 
     @Test
@@ -1186,7 +1187,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
+        out shouldBe "Today, it will be 21°. Tonight, rain."
     }
 
     @Test
@@ -1199,7 +1200,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, rain, bring a jacket."
     }
 
     @Test
@@ -1229,7 +1230,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, chance of rain tonight, bring a jacket."
+        out shouldBe "Today, it will be 21°. Tonight, chance of rain, bring a jacket."
     }
 
     @Test
@@ -1353,12 +1354,12 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket and umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, rain, bring a jacket and umbrella."
     }
 
     @Test
     fun `umbrella accessory promotes the bare-rain evening tie-in to the item-led template`() {
-        // Without an opted-in umbrella rule this path renders "Tonight, rain tonight.".
+        // Without an opted-in umbrella rule this path renders "Tonight, rain.".
         // The umbrella choice promotes it to the item-led template with the
         // accessory as the lone item.
         umbrellaSubject.format(
@@ -1369,7 +1370,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, rain, bring an umbrella."
     }
 
     @Test
@@ -1383,7 +1384,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, chance of rain tonight, bring an umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, chance of rain, bring an umbrella."
     }
 
     @Test
@@ -1409,7 +1410,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.RAIN,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket and umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, rain, bring a jacket and umbrella."
     }
 
     @Test
@@ -1427,7 +1428,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.SNOW,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, snow tonight."
+        ) shouldBe "Today, it will be 21°. Tonight, snow."
     }
 
     @Test
@@ -1446,7 +1447,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.THUNDERSTORM,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm tonight, bring a jacket and umbrella."
+        ) shouldBe "Today, it will be 21°. Tonight, thunderstorm, bring a jacket and umbrella."
     }
 
     @Test
@@ -1462,7 +1463,7 @@ class InsightFormatterTest {
                     precipCondition = null,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Tonight, rain tonight, bring a jacket."
+        ) shouldBe "Today, it will be 21°. Tonight, rain, bring a jacket."
     }
 
     @Test
@@ -2015,7 +2016,7 @@ class InsightFormatterTest {
                 ),
             ),
         )
-        out shouldBe "Today, it will be 21°. Tonight, rain tonight."
+        out shouldBe "Today, it will be 21°. Tonight, rain."
     }
 
     @Test

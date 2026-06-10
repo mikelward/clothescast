@@ -82,7 +82,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">usiku</string>
 
-    <string name="insight_precip_tonight">usiku huu</string>
     <string name="insight_condition_clear">Angavu</string>
     <string name="insight_condition_partly_cloudy">Na mawingu kidogo</string>
     <string name="insight_condition_cloudy">Mawingu</string>

@@ -483,7 +483,6 @@ Not overridden by design:
     <string name="insight_precip">%1$s।</string>
     <string name="insight_precip_overnight">रात भर</string>
 
-    <string name="insight_precip_tonight">आज रात</string>
     <string name="insight_condition_clear">साफ़</string>
     <string name="insight_condition_partly_cloudy">आंशिक बादल</string>
     <string name="insight_condition_cloudy">बादल</string>

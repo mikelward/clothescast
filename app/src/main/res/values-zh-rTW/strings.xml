@@ -438,7 +438,6 @@ label localises.
     <string name="insight_precip">%1$s。</string>
     <string name="insight_precip_overnight">整夜</string>
 
-    <string name="insight_precip_tonight">今晚</string>
     <string name="insight_condition_clear">晴</string>
     <string name="insight_condition_partly_cloudy">多雲</string>
     <string name="insight_condition_cloudy">陰</string>

@@ -1302,14 +1302,16 @@
     %1$s = condition (downcased), %2$s = accessory phrase.
     -->
     <string name="insight_precip_chance_with_accessory">Chance of %1$s, bring %2$s.</string>
-    <!-- Coarse timing word for the morning insight's evening rain tie-in:
-         post-midnight peaks (00:00–04:59) read "overnight". The tie-in already
-         leads with "Tonight," so this only has to flag the post-midnight case
-         the lead doesn't cover. -->
+    <!-- Timing qualifier for the morning insight's evening rain tie-in,
+         appended after the condition noun ("Tonight, rain overnight, …") only
+         when the precip peak falls post-midnight (00:00–04:59). Evening peaks
+         get no qualifier at all: the clause already leads with "Tonight," so
+         repeating "tonight" mid-sentence stuttered ("Tonight, rain tonight").
+         The formatter joins this word onto the qualifier slot with a leading
+         space (the templates butt the slot up against the condition so an
+         empty qualifier leaves no stray gap). Base English is the only locale
+         that renders the qualifier slot — translations dropped it. -->
     <string name="insight_precip_overnight">overnight</string>
-    <!-- Coarse timing word for the evening rain tie-in when the peak is this
-         evening rather than post-midnight — "Tonight, rain tonight." -->
-    <string name="insight_precip_tonight">tonight</string>
 
     <!--
     Spoken-time vocabulary used by InsightFormatter.spokenTime to emit forms
@@ -1371,49 +1373,50 @@
     the same sentence so the morning insight mentions the evening weather
     alongside the evening clothing tip, without emitting a second precip clause
     that would compete with the morning slice's own. The precip clause leads the
-    item ("Tonight, rain tonight, bring a jacket.") so the sentence reads
+    item ("Tonight, rain, bring a jacket.") so the sentence reads
     weather-then-action, mirroring how the day insight orders precip before the
     carry. "umbrella" is stripped from the items by the formatter when this
     template is used — the precip mention already covers what an umbrella's for
-    — so the template never has to apologise for "bring an umbrella, rain
-    tonight." %1$s = item phrase, %2$s = coarse timing word ("tonight" /
-    "overnight"), %3$s = condition noun (the same insight_condition_* label the
-    main clause uses, lowercased mid-sentence) so a stormy / snowy evening names
-    the real condition ("Tonight, snow overnight, …") instead of always saying
-    "rain".
+    — so the template never has to apologise for "bring an umbrella, rain."
+    %1$s = item phrase, %2$s = timing qualifier (empty for evening
+    peaks; " overnight" with its leading space for post-midnight ones — see
+    insight_precip_overnight), %3$s = condition noun (the same
+    insight_condition_* label the main clause uses, lowercased mid-sentence) so
+    a stormy / snowy evening names the real condition ("Tonight, snow
+    overnight, …") instead of always saying "rain".
     -->
-    <string name="insight_tie_in_with_rain">Tonight, %3$s %2$s, bring %1$s.</string>
+    <string name="insight_tie_in_with_rain">Tonight, %3$s%2$s, bring %1$s.</string>
     <!--
     POSSIBLE-tier counterpart of insight_tie_in_with_rain: a clothes rule
     triggered for the evening but only one per-model series flagged the
     precip at ≥ 30%. Hedges the wording so a single-model reading doesn't
     render with the same definite tone as a majority-of-models agreement.
-    %1$s = item phrase, %2$s = coarse timing word ("tonight" / "overnight"),
+    %1$s = item phrase, %2$s = timing qualifier (empty / " overnight"),
     %3$s = condition noun (lowercased), so the hedge reads "chance of snow" /
     "chance of thunderstorm" when the peak isn't plain rain.
     -->
-    <string name="insight_tie_in_with_rain_chance">Tonight, chance of %3$s %2$s, bring %1$s.</string>
+    <string name="insight_tie_in_with_rain_chance">Tonight, chance of %3$s%2$s, bring %1$s.</string>
     <!--
     Bare-precip variant of the evening tie-in for the morning insight: emitted
     when the user has an evening event with a location and the per-model
     forecast tier spots precip ≥ 50% (majority of models agree) at some hour in
     the tonight window, but no clothes rule fired for that period. The
     morning insight stays silent on clothing because nothing's been picked
-    yet — the precip mention itself is the point. %1$s = coarse timing word
-    ("tonight" / "overnight"), %2$s = condition noun (lowercased) so a snowy /
+    yet — the precip mention itself is the point. %1$s = timing qualifier
+    (empty / " overnight"), %2$s = condition noun (lowercased) so a snowy /
     stormy evening names the real condition ("Tonight, snow overnight.")
     instead of always saying "rain". Fronts the "Tonight," time marker so the
     sentence reads in the same "<time>, <content>." shape as the band lead and
     the item-led tie-in templates.
     -->
-    <string name="insight_evening_rain">Tonight, %2$s %1$s.</string>
+    <string name="insight_evening_rain">Tonight, %2$s%1$s.</string>
     <!--
     POSSIBLE-tier counterpart of insight_evening_rain: only one per-model
     series flagged the tonight hour ≥ 30%, so we hedge the wording. Matches
-    insight_precip_chance's "Chance of rain" pattern. %1$s = coarse timing word
-    ("tonight" / "overnight"), %2$s = condition noun (lowercased).
+    insight_precip_chance's "Chance of rain" pattern. %1$s = timing qualifier
+    (empty / " overnight"), %2$s = condition noun (lowercased).
     -->
-    <string name="insight_evening_rain_chance">Tonight, chance of %2$s %1$s.</string>
+    <string name="insight_evening_rain_chance">Tonight, chance of %2$s%1$s.</string>
 
     <!--
     Holidays sub-page: per-holiday opt-in toggles. On the matching calendar

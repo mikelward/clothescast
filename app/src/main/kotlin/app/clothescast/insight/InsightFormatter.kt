@@ -730,7 +730,7 @@ class InsightFormatter(
         // a jacket and an umbrella.") and the bare-rain path is promoted to
         // the item-led template. SNOW peaks (or a null condition on a
         // pre-field cached payload) skip the injection — same gating as
-        // formatPrecip — so "Tonight, rain at 9pm, bring an umbrella."
+        // formatPrecip — so "Tonight, rain, bring an umbrella."
         // doesn't slip out when the underlying peak is actually snow.
         val filteredItems = tieIn.items.filterNot(::isAccessory)
         // The carried accessory rides in on the tie-in's own items (the fired
@@ -760,7 +760,7 @@ class InsightFormatter(
                 PrecipLikelihood.LIKELY -> R.string.insight_evening_rain
                 PrecipLikelihood.POSSIBLE -> R.string.insight_evening_rain_chance
             }
-            return resources.getString(template, coarseRainWhen(rainTime), conditionNoun)
+            return resources.getString(template, overnightQualifier(rainTime), conditionNoun)
         }
         // No rain — bare item-led sentence. Always uses the TODAY-context
         // "Tonight, bring …" template because the evening tie-in only fires
@@ -773,22 +773,24 @@ class InsightFormatter(
             PrecipLikelihood.LIKELY -> R.string.insight_tie_in_with_rain
             PrecipLikelihood.POSSIBLE -> R.string.insight_tie_in_with_rain_chance
         }
-        return resources.getString(template, renderedItems, coarseRainWhen(rainTime), conditionNoun)
+        return resources.getString(template, renderedItems, overnightQualifier(rainTime), conditionNoun)
     }
 
-    // Coarse timing word for the evening tie-in's rain mention: post-midnight
-    // peaks (00:00–04:59) read "overnight", everything else "tonight". The
-    // clause already leads with "Tonight," so this reinforces the window
-    // without pinning a robotic hour the user can't act on precisely — and
-    // "overnight" still flags the post-midnight case the lead doesn't cover.
-    private fun coarseRainWhen(time: LocalTime): String =
-        resources.getString(
-            if (time.hour in OVERNIGHT_HOURS) {
-                R.string.insight_precip_overnight
-            } else {
-                R.string.insight_precip_tonight
-            },
-        )
+    // Timing qualifier for the evening tie-in's rain mention: post-midnight
+    // peaks (00:00–04:59) read " overnight" — the one case the clause's
+    // "Tonight," lead doesn't cover — and everything else gets no qualifier
+    // at all, because repeating "tonight" mid-sentence stuttered ("Tonight,
+    // drizzle tonight, bring an umbrella."). The leading space is joined here
+    // rather than in the template (the templates butt the qualifier slot up
+    // against the condition noun so the empty case leaves no stray gap);
+    // base English is the only locale that renders the slot — every
+    // translation dropped it — so the join needs no locale template.
+    private fun overnightQualifier(time: LocalTime): String =
+        if (time.hour in OVERNIGHT_HOURS) {
+            " " + resources.getString(R.string.insight_precip_overnight)
+        } else {
+            ""
+        }
 
     private fun leadRes(period: ForecastPeriod, isFutureDay: Boolean): Int = when (period) {
         ForecastPeriod.TODAY -> if (isFutureDay) R.string.insight_lead_tomorrow else R.string.insight_lead_today

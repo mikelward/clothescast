@@ -1108,7 +1108,7 @@ class GenerateDailyInsightTest {
         tie.rainTime shouldBe LocalTime.of(21, 0)
         // Both evening hours sit ≥ 50%, so the whole-window flag is set. The
         // prose no longer speaks it (the formatter dropped the hour / "all
-        // night" phrasing — "Tonight, rain tonight, bring a jacket." reads
+        // night" phrasing — "Tonight, rain, bring a jacket." reads
         // the same either way), but the flag still rides the clause for data
         // consumers, so pin that the derivation sets it.
         tie.allDay shouldBe true

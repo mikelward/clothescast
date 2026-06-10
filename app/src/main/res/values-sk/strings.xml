@@ -577,7 +577,6 @@ What is NOT overridden, by design:
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">v noci</string>
 
-    <string name="insight_precip_tonight">dnes večer</string>
     <string name="insight_precip_chance">Možnosť %1$s.</string>
     <string name="insight_condition_clear">Jasno</string>
     <string name="insight_condition_partly_cloudy">Polooblačno</string>

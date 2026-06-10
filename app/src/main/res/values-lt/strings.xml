@@ -88,7 +88,6 @@ What is NOT overridden, by design:
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">naktį</string>
 
-    <string name="insight_precip_tonight">šįvakar</string>
     <string name="insight_condition_clear">Giedra</string>
     <string name="insight_condition_partly_cloudy">Mažai debesuota</string>
     <string name="insight_condition_cloudy">Debesuota</string>

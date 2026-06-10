@@ -414,6 +414,49 @@ class MultiModelConfidenceFetcherTest {
     }
 
     @Test
+    fun `retries a transient network timeout and then succeeds`() = runTest {
+        // A socket timeout on this best-effort side-band fetch is swallowed
+        // before it can reach the worker's WorkManager retry, so one 7am
+        // timeout would otherwise drop the confidence card and every per-model
+        // chart for the whole period. Verify the internal retry clears a
+        // one-off timeout: first request times out, the retry succeeds.
+        var calls = 0
+        val engine = MockEngine {
+            calls++
+            if (calls == 1) throw java.net.SocketTimeoutException("timeout")
+            respond(
+                content = ByteReadChannel(THREE_MODEL_AGREEMENT),
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val logger = CapturingLogger()
+        fetcherWith(engine, logger = logger).fetch(london, fixtureModels).shouldNotBeNull()
+
+        calls shouldBe 2
+        logger.entries.any { "transient" in it.message } shouldBe true
+        // No terminal give-up once the retry succeeds.
+        logger.entries.none { it.message == "confidence fetch failed" } shouldBe true
+    }
+
+    @Test
+    fun `gives up and returns null after exhausting the transient retry budget`() = runTest {
+        // A persistent timeout (network genuinely down) must terminate rather
+        // than loop forever, and still log the final give-up.
+        var calls = 0
+        val engine = MockEngine {
+            calls++
+            throw java.net.SocketTimeoutException("timeout")
+        }
+        val logger = CapturingLogger()
+        fetcherWith(engine, logger = logger).fetch(london, fixtureModels).shouldBeNull()
+
+        // Initial attempt + 2 transient retries = 3 requests, then give up.
+        calls shouldBe 3
+        logger.entries.last().message shouldBe "confidence fetch failed"
+    }
+
+    @Test
     fun `successful fetch logs nothing`() = runTest {
         val logger = CapturingLogger()
         fetcherWith(THREE_MODEL_AGREEMENT, logger = logger).fetch(london, fixtureModels).shouldNotBeNull()

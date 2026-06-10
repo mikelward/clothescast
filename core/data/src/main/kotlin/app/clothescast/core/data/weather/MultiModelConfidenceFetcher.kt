@@ -19,6 +19,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -28,6 +29,7 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonPrimitive
+import java.io.IOException
 import java.time.LocalDateTime
 
 /**
@@ -79,6 +81,7 @@ internal class MultiModelConfidenceFetcher(
         // a hand-edited-DataStore safety net more than a user-reachable path.
         var remaining = models.takeIf { it.isNotEmpty() } ?: DEFAULT_MODELS
         var attempts = 0
+        var transientAttempts = 0
         while (true) {
             attempts++
             val response = try {
@@ -134,6 +137,28 @@ internal class MultiModelConfidenceFetcher(
                 remaining = pruned
                 continue
             } catch (t: Throwable) {
+                // A transient network failure — a socket / connect / request
+                // timeout or a mid-flight IO drop — shouldn't cost the whole
+                // per-model feature for the period. The primary forecast
+                // retries these via WorkManager, but this side-band fetch is
+                // deliberately best-effort: its failure is swallowed (returns
+                // null) so it never reaches the worker's retry path. A single
+                // timeout on the 7am round-trip would otherwise drop the
+                // confidence card *and* every per-model chart until the next
+                // scheduled run. Retry a couple of times with a short backoff
+                // here instead. Parse errors and the like aren't IOExceptions,
+                // so they fall straight through to null — a malformed body
+                // won't fix itself on a retry.
+                if (transientAttempts < MAX_TRANSIENT_RETRIES && t.isTransientNetworkFailure()) {
+                    transientAttempts++
+                    logger.log(
+                        "confidence fetch transient failure " +
+                            "(retry $transientAttempts/$MAX_TRANSIENT_RETRIES)",
+                        t,
+                    )
+                    delay(TRANSIENT_RETRY_BACKOFF_MS * transientAttempts)
+                    continue
+                }
                 logger.log("confidence fetch failed", t)
                 return null
             }
@@ -458,8 +483,26 @@ internal class MultiModelConfidenceFetcher(
         // belt-and-suspenders bound against a pathological model list (and
         // keeps a worst case of a handful of requests, not an unbounded storm).
         private const val MAX_FETCH_ATTEMPTS = 6
+
+        // Transient-network retry budget. A socket timeout on this best-effort
+        // side-band fetch is swallowed before it can reach the worker's
+        // WorkManager retry, so without an internal retry one 7am timeout drops
+        // the confidence card and every per-model chart for the whole period.
+        // Two extra attempts with a short linear backoff clear the common
+        // one-off timeout without stalling the round-trip for long when the
+        // network is genuinely down.
+        private const val MAX_TRANSIENT_RETRIES = 2
+        private const val TRANSIENT_RETRY_BACKOFF_MS = 500L
     }
 }
+
+// True when [this] (or any cause in its chain) is an IOException — the socket /
+// connect / request timeouts and generic network drops a retry might clear.
+// java.net.SocketTimeoutException, Ktor's socket/connect timeout types, and
+// HttpRequestTimeoutException all extend IOException; a SerializationException
+// or other parse failure does not, so it isn't retried.
+private fun Throwable.isTransientNetworkFailure(): Boolean =
+    generateSequence(this) { it.cause }.any { it is IOException }
 
 internal data class MultiModelData(
     val confidence: ConfidenceInfo?,

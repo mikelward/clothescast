@@ -182,7 +182,7 @@ new rule the first time something bites you, not the third.
   update the title and body via `mcp__github__update_pull_request` so
   they describe the *current* state — not the state at PR creation.
   Subject line stays Play-Store-ready (sentence case, end-user copy, ≤
-  ~80 chars, matches the squash-merge subject); body covers scope,
+  ~80 chars, matches the rebase-merge subject); body covers scope,
   rationale, privacy-relevant changes, and test plan for everything now
   in the diff. If nothing material changed, no update is needed — but
   check, don't assume.
@@ -443,9 +443,8 @@ new rule the first time something bites you, not the third.
   + build-tools;35.0.0). `ANDROID_HOME` / `ANDROID_SDK_ROOT` are exported via
   `~/.bashrc`; source it or `export ANDROID_HOME=/opt/android-sdk` before
   running Gradle if your shell hasn't picked it up.
-- **All three modules build and test on this VM.** Unlike the AGENTS.md note
-  about agent sandboxes lacking the SDK, the Cursor Cloud VM has it. You can
-  run the full CI-equivalent locally:
+- **All three modules build and test on this VM.** The Cursor Cloud VM has
+  the Android SDK installed, so you can run the full CI-equivalent locally:
   ```
   export ANDROID_HOME=/opt/android-sdk
   ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest

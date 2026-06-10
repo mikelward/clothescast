@@ -454,7 +454,6 @@ the displayed label localizes.
     <string name="insight_precip">%1$s。</string>
     <string name="insight_precip_overnight">夜通し</string>
 
-    <string name="insight_precip_tonight">今夜</string>
     <string name="insight_condition_clear">晴れ</string>
     <string name="insight_condition_partly_cloudy">晴れのち曇り</string>
     <string name="insight_condition_cloudy">曇り</string>

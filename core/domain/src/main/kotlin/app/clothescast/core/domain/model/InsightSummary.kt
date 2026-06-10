@@ -221,7 +221,7 @@ data class CalendarTieInClause(val item: String)
  * [allDay] mirrors [PrecipClause.allDay] for the evening slice. Like the
  * peak time, it's carried for data consumers rather than the prose — the
  * formatter no longer speaks the hour or an "all night" phrase ("Tonight,
- * rain tonight, bring a jacket." reads the same either way). Only
+ * rain, bring a jacket." reads the same either way). Only
  * meaningful when [rainTime] is set and [likelihood] is LIKELY.
  *
  * [precipCondition] mirrors the same per-model peak's [WeatherCondition] so

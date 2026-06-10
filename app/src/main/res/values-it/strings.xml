@@ -440,7 +440,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">durante la notte</string>
 
-    <string name="insight_precip_tonight">stasera</string>
     <string name="insight_condition_clear">Sereno</string>
     <string name="insight_condition_partly_cloudy">Parzialmente nuvoloso</string>
     <string name="insight_condition_cloudy">Nuvoloso</string>

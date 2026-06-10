@@ -516,7 +516,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_precip_chance">Possibilitat de %1$s.</string>
     <string name="insight_precip_overnight">durant la nit</string>
 
-    <string name="insight_precip_tonight">aquesta nit</string>
     <string name="insight_condition_clear">Cel serè</string>
     <string name="insight_condition_partly_cloudy">Parcialment ennuvolat</string>
     <string name="insight_condition_cloudy">Ennuvolat</string>

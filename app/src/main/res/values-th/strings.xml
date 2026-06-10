@@ -82,7 +82,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_precip">%1$s</string>
     <string name="insight_precip_overnight">ตลอดทั้งคืน</string>
 
-    <string name="insight_precip_tonight">คืนนี้</string>
     <string name="insight_condition_clear">ท้องฟ้าแจ่มใส</string>
     <string name="insight_condition_partly_cloudy">มีเมฆบางส่วน</string>
     <string name="insight_condition_cloudy">มีเมฆมาก</string>

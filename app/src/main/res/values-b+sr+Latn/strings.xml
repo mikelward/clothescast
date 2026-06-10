@@ -109,7 +109,6 @@ default English (matching values-pl / values-uk).
     <string name="insight_precip_chance">Moguća %1$s.</string>
     <string name="insight_precip_overnight">tokom noći</string>
 
-    <string name="insight_precip_tonight">večeras</string>
     <string name="insight_condition_clear">Vedro</string>
     <string name="insight_condition_partly_cloudy">Delimično oblačno</string>
     <string name="insight_condition_cloudy">Oblačno</string>

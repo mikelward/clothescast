@@ -84,7 +84,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_precip">%1$s।</string>
     <string name="insight_precip_overnight">সারারাত</string>
 
-    <string name="insight_precip_tonight">আজ রাতে</string>
     <string name="insight_condition_clear">পরিষ্কার</string>
     <string name="insight_condition_partly_cloudy">আংশিক মেঘলা</string>
     <string name="insight_condition_cloudy">মেঘলা</string>

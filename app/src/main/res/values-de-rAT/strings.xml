@@ -451,8 +451,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- "Regen über Nacht." for the early-morning collapse. -->
     <string name="insight_precip_overnight">über Nacht</string>
 
-    <string name="insight_precip_tonight">heute Abend</string>
-
     <string name="insight_condition_clear">Klar</string>
     <string name="insight_condition_partly_cloudy">Teilweise bewölkt</string>
     <string name="insight_condition_cloudy">Bewölkt</string>

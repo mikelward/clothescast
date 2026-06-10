@@ -84,7 +84,6 @@ to values/strings.xml (English).
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">semalam</string>
 
-    <string name="insight_precip_tonight">malam ini</string>
     <string name="insight_condition_clear">Cerah</string>
     <string name="insight_condition_partly_cloudy">Sebagian berawan</string>
     <string name="insight_condition_cloudy">Berawan</string>

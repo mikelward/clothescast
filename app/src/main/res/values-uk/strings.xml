@@ -576,7 +576,6 @@ only the displayed label localizes.
     <string name="insight_precip_chance">Можливий %1$s.</string>
     <string name="insight_precip_overnight">вночі</string>
 
-    <string name="insight_precip_tonight">сьогодні ввечері</string>
     <string name="insight_condition_clear">Ясно</string>
     <string name="insight_condition_partly_cloudy">Мінлива хмарність</string>
     <string name="insight_condition_cloudy">Хмарно</string>

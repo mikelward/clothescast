@@ -422,7 +422,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">noću</string>
 
-    <string name="insight_precip_tonight">večeras</string>
     <string name="insight_condition_clear">Vedro</string>
     <string name="insight_condition_partly_cloudy">Djelomično oblačno</string>
     <string name="insight_condition_cloudy">Oblačno</string>

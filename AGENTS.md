@@ -405,15 +405,17 @@ new rule the first time something bites you, not the third.
   morning insight's evening tie-in clause has two emission paths. If the
   user's clothes rules fire for the evening window (e.g. it'll be cold
   enough for a jacket), the clause names the item *and* folds in the
-  per-model rain when one's detected: "Tonight, rain tonight, bring a
+  per-model rain when one's detected: "Tonight, rain, bring a
   jacket." If no clothes rule fires but a per-model series spots rain ≥
   30% in the tonight window and the user has an evening event with a
   location, the clause still emits — without recommending clothes —
-  as a bare rain warning ("Tonight, rain tonight." / the hedged
+  as a bare rain warning ("Tonight, rain." / the hedged
   chance-of-rain wording for the POSSIBLE tier). The prose deliberately
   no longer pins a peak hour ("rain at 9pm") — that claimed precision
   the hourly forecast can't back; the peak time still rides the clause
-  data for the chart and cast card. The principle: we *always*
+  data for the chart and cast card. A post-midnight peak appends
+  "overnight" ("Tonight, rain overnight."); an evening peak adds no
+  timing word — the "Tonight," lead already carries it. The principle: we *always*
   surface rain when a model spots it, even when no clothes rule fires —
   e.g. the user lowered their umbrella gate, deleted the rule, or the
   probability sits below it. The umbrella itself ships as a precip-keyed

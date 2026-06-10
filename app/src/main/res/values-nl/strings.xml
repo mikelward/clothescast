@@ -421,8 +421,6 @@ the displayed label localizes.
     <!-- Apostrophe before s-genitive in Dutch: "'s nachts" = at night. -->
     <string name="insight_precip_overnight">\'s nachts</string>
 
-    <string name="insight_precip_tonight">vanavond</string>
-
     <string name="insight_condition_clear">Helder</string>
     <string name="insight_condition_partly_cloudy">Gedeeltelijk bewolkt</string>
     <string name="insight_condition_cloudy">Bewolkt</string>

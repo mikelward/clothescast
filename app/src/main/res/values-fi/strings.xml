@@ -377,8 +377,6 @@ displayed label localizes.
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">yön aikana</string>
 
-    <string name="insight_precip_tonight">tänä iltana</string>
-
     <string name="insight_condition_clear">Selkeää</string>
     <string name="insight_condition_partly_cloudy">Puolipilvistä</string>
     <string name="insight_condition_cloudy">Pilvistä</string>

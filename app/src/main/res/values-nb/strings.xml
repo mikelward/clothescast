@@ -572,7 +572,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="insight_precip">%1$s.</string>
     <string name="insight_precip_overnight">i natt</string>
 
-    <string name="insight_precip_tonight">i kveld</string>
     <string name="insight_precip_chance">Sjanse for %1$s.</string>
 
     <string name="insight_condition_clear">Klart</string>

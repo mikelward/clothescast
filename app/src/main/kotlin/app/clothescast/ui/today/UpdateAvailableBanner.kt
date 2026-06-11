@@ -204,7 +204,17 @@ internal fun UpdateAvailableBannerCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
             ) {
-                TextButton(onClick = onDismiss) {
+                TextButton(
+                    onClick = onDismiss,
+                    // Default TextButton content is `primary`, the same palette
+                    // the card's `primaryContainer` background is drawn from, so
+                    // the two can sit a hair apart under Material You dynamic
+                    // color and the label washes out. `onPrimaryContainer` is
+                    // the role M3 guarantees contrasts with the card.
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+                ) {
                     // "Cancel" in Downloading reads as a change-of-mind action,
                     // distinct from the initial "Not now" the user has already
                     // logically passed. Same dismiss semantics under the hood
@@ -223,10 +233,18 @@ internal fun UpdateAvailableBannerCard(
                     onClick = onAction,
                     enabled = phase !is UpdatePhase.Downloading,
                     modifier = Modifier.padding(start = 8.dp),
-                    // Default disabled colors derive from onSurface, which is
-                    // near-invisible against the card's primaryContainer
-                    // background. Anchor to onPrimaryContainer instead.
+                    // The filled button defaults to `primary` on `onPrimary`,
+                    // but it sits on a `primaryContainer` card — same palette,
+                    // so under Material You dynamic color the button can blend
+                    // into the card and read as low-contrast. Fill it with
+                    // `onPrimaryContainer` (the card's guaranteed-contrast role)
+                    // and label it `primaryContainer` so the action stands out
+                    // as a solid block in every scheme. Disabled colors stay
+                    // anchored to onPrimaryContainer too — the M3 default
+                    // derives them from onSurface, near-invisible on this card.
                     colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        contentColor = MaterialTheme.colorScheme.primaryContainer,
                         disabledContainerColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.12f),
                         disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.38f),
                     ),

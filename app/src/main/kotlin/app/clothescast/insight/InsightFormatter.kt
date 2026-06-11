@@ -269,13 +269,28 @@ class InsightFormatter(
                 add(formatPrecip(it, summary.carriedAccessories.firstOrNull()))
             }
         }
+        // The carried accessory the main precip clause already named ("Drizzle,
+        // bring an umbrella.") — gated exactly as formatPrecip gates it, so we
+        // only treat it as "mentioned" when it actually rendered. The evening
+        // tie-in re-injects the umbrella from its own fired rule; without this
+        // it double-names it ("…, bring an umbrella. Tonight, drizzle, bring an
+        // umbrella."). Suppressing the second mention drops the tie-in back to
+        // the bare-rain wording so the evening rain still surfaces.
+        val precipAccessoryKeys = buildSet {
+            summary.precip
+                ?.takeIf { it.condition.warrantsRainAccessory() }
+                ?.let { summary.carriedAccessories.firstOrNull() }
+                ?.let { add(normalizeItemKey(it)) }
+        }
         val tieInClauses = buildList {
             summary.calendarTieIn?.let { tieIn ->
                 if (isAccessory(tieIn.item)) return@let
                 if (normalizeItemKey(tieIn.item) in mentionedKeys) return@let
                 formatTieIn(summary.period, tieIn.item)?.let(::add)
             }
-            summary.eveningEventTieIn?.let(::formatEveningEventTieIn)?.let(::add)
+            summary.eveningEventTieIn
+                ?.let { formatEveningEventTieIn(it, precipAccessoryKeys) }
+                ?.let(::add)
         }
         // Whether a leading temperature sentence exists to carry the period
         // lead. The band callout is one (it renders "Today, it will be hot."),
@@ -718,7 +733,10 @@ class InsightFormatter(
         return resources.getString(template, renderedItem)
     }
 
-    private fun formatEveningEventTieIn(tieIn: EveningEventTieInClause): String? {
+    private fun formatEveningEventTieIn(
+        tieIn: EveningEventTieInClause,
+        alreadyMentionedAccessories: Set<String> = emptySet(),
+    ): String? {
         val rainTime = tieIn.rainTime
         // Accessories (umbrella) are silenced from the incoming items list for
         // the same reason they're silenced in the main wear-list: until the
@@ -734,9 +752,15 @@ class InsightFormatter(
         // doesn't slip out when the underlying peak is actually snow.
         val filteredItems = tieIn.items.filterNot(::isAccessory)
         // The carried accessory rides in on the tie-in's own items (the fired
-        // umbrella rule).
+        // umbrella rule), unless the daytime precip clause already named it —
+        // re-naming the same umbrella the morning sentence carried adds nothing
+        // ("…, bring an umbrella. Tonight, drizzle, bring an umbrella."). When
+        // it's already mentioned the injection drops and the clause falls back
+        // to the bare-rain wording ("Tonight, chance of drizzle.") so the
+        // evening rain still surfaces without the redundant carry.
         val accessoryKey = tieIn.items.firstOrNull(::isAccessory)
             ?.takeIf { rainTime != null && tieIn.precipCondition?.warrantsRainAccessory() == true }
+            ?.takeIf { normalizeItemKey(it) !in alreadyMentionedAccessories }
         val items = if (accessoryKey != null) filteredItems + accessoryKey else filteredItems
         val renderedItems = if (items.isEmpty()) "" else phraser.joinItems(items)
         // The condition noun the evening clause names — the same conditionRes()

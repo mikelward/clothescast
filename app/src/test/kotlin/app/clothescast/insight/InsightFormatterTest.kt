@@ -1467,6 +1467,78 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `evening tie-in drops the umbrella the main precip clause already named`() {
+        // Bug: the morning precip clause ("Drizzle, bring an umbrella.") and the
+        // evening tie-in both carry the same fired umbrella rule, so the prose
+        // said "bring an umbrella" twice. The tie-in now suppresses the repeat
+        // and falls back to the bare-rain wording — the evening rain still
+        // surfaces, just without re-naming the carry.
+        umbrellaSubject.format(
+            summary(
+                carriedAccessories = listOf("umbrella"),
+                precip = PrecipClause(WeatherCondition.DRIZZLE, LocalTime.of(15, 0)),
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.POSSIBLE,
+                    precipCondition = WeatherCondition.DRIZZLE,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Drizzle, bring an umbrella. Tonight, chance of drizzle."
+    }
+
+    @Test
+    fun `evening tie-in keeps a clothing item but drops the already-named umbrella`() {
+        // Only the redundant carry is suppressed — a genuine evening clothes
+        // delta (jacket) still rides the item-led template.
+        umbrellaSubject.format(
+            summary(
+                carriedAccessories = listOf("umbrella"),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket", "umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Rain, bring an umbrella. Tonight, rain, bring a jacket."
+    }
+
+    @Test
+    fun `evening tie-in still names the umbrella when the main precip clause did not`() {
+        // No daytime precip clause means the umbrella was never named, so the
+        // evening tie-in keeps its carry — the per-model evening warning is the
+        // only place the umbrella surfaces.
+        umbrellaSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain, bring an umbrella."
+    }
+
+    @Test
+    fun `evening tie-in keeps the umbrella when the daytime peak was snow`() {
+        // The umbrella isn't "already mentioned" when the daytime precip is snow
+        // — formatPrecip gates the carry on warrantsRainAccessory, so a snowy
+        // day never named it. An evening rain warning re-introduces it.
+        umbrellaSubject.format(
+            summary(
+                carriedAccessories = listOf("umbrella"),
+                precip = PrecipClause(WeatherCondition.SNOW, LocalTime.of(15, 0)),
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Snow. Tonight, rain, bring an umbrella."
+    }
+
+    @Test
     fun `de — umbrella accessory renders Regenschirm via the German phraser`() {
         val germanUmbrellaSubject = InsightFormatter.forContext(
             context,

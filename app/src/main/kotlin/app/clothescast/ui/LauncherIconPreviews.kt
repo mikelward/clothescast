@@ -2,6 +2,7 @@ package app.clothescast.ui
 
 import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,6 +11,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,6 +68,32 @@ internal fun LauncherIconPreview() {
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize(),
         )
+    }
+}
+
+// Approximates the themed (monochrome) icon launchers render on Android 13+
+// when the user turns on themed app icons: a single tintable silhouette laid
+// over a tinted background, both drawn from the user's wallpaper palette. The
+// real tints come from the system; the stand-in colors here just verify the
+// monochrome layer's silhouette (t-shirt with the sun knocked out) reads.
+@Preview(name = "Launcher icon · themed (monochrome)", widthDp = 120)
+@Composable
+internal fun LauncherIconMonochromePreview() {
+    Box(modifier = Modifier.padding(24.dp)) {
+        Box(
+            modifier = Modifier
+                .size(72.dp)
+                .clip(CircleShape)
+                .background(Color(0xFF004A77)),
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_monochrome),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                colorFilter = ColorFilter.tint(Color(0xFFC2E7FF)),
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
     }
 }
 

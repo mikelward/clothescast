@@ -12,6 +12,7 @@ import app.clothescast.notification.NotificationIconSweaterPreview
 import app.clothescast.notification.NotificationIconTShirtPreview
 import app.clothescast.notification.NotificationIconThickJacketPreview
 import app.clothescast.ui.LauncherIconDevPreview
+import app.clothescast.ui.LauncherIconMonochromePreview
 import app.clothescast.ui.LauncherIconPreview
 import app.clothescast.ui.garment.ClothingJeansPreview
 import app.clothescast.ui.garment.ClothingLongPantsPreview
@@ -592,6 +593,7 @@ class PreviewSnapshots {
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 
     @Test fun launcher_icon() = capture { LauncherIconPreview() }
+    @Test fun launcher_icon_monochrome() = capture { LauncherIconMonochromePreview() }
     @Test fun launcher_icon_dev() = capture { LauncherIconDevPreview() }
 
     @Test fun notification_icon_tshirt() = capture { NotificationIconTShirtPreview() }

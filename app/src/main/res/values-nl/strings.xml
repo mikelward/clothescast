@@ -1289,7 +1289,7 @@ the displayed label localizes.
     <string name="today_gemini_key_invalid_title">Gemini-sleutel moet opnieuw worden ingevoerd</string>
     <string name="today_gemini_key_invalid_body">Je opgeslagen Gemini-sleutel kon niet worden gelezen op dit apparaat, dus ClothesCast gebruikt geen gedeelde Gemini-stemmen totdat je deze opnieuw invoert of wist.</string>
     <string name="today_gemini_key_invalid_cta">Spraakinstellingen</string>
-    <string name="settings_api_key_status_unset">Elke dag 2 gratis, haal een sleutel voor meer.</string>
+    <string name="settings_api_key_status_unset">Elke dag 4 gratis, haal een sleutel voor meer.</string>
     <string name="settings_tts_stop">Stoppen</string>
     <string name="garment_rain_jacket">Regenjas</string>
 

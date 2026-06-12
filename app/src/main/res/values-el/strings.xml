@@ -1361,7 +1361,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_gemini_key_invalid_title">Το κλειδί Gemini χρειάζεται επανεισαγωγή</string>
     <string name="today_gemini_key_invalid_body">Δεν ήταν δυνατή η ανάγνωση του αποθηκευμένου κλειδιού Gemini σε αυτήν τη συσκευή, επομένως το ClothesCast δεν θα χρησιμοποιεί κοινόχρηστες φωνές Gemini μέχρι να το εισαγάγεις ξανά ή να το διαγράψεις.</string>
     <string name="today_gemini_key_invalid_cta">Ρυθμίσεις ομιλίας</string>
-    <string name="settings_api_key_status_unset">2 δωρεάν κάθε μέρα, πάρε κλειδί για περισσότερα.</string>
+    <string name="settings_api_key_status_unset">4 δωρεάν κάθε μέρα, πάρε κλειδί για περισσότερα.</string>
     <string name="settings_tts_stop">Διακοπή</string>
     <string name="garment_rain_jacket">Αδιάβροχο μπουφάν</string>
 

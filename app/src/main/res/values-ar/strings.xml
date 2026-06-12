@@ -1241,7 +1241,7 @@ they work correctly in both the single-band and range templates.
     <string name="today_gemini_key_invalid_title">يحتاج مفتاح Gemini إلى إدخاله من جديد</string>
     <string name="today_gemini_key_invalid_body">تعذر قراءة مفتاح Gemini المحفوظ على هذا الجهاز، لذلك لن يستخدم ClothesCast أصوات Gemini المشتركة حتى تعيد إدخاله أو تمسحه.</string>
     <string name="today_gemini_key_invalid_cta">إعدادات الكلام</string>
-    <string name="settings_api_key_status_unset">2 مجانًا كل يوم، احصل على مفتاح للمزيد.</string>
+    <string name="settings_api_key_status_unset">4 مجانًا كل يوم، احصل على مفتاح للمزيد.</string>
     <string name="settings_tts_stop">إيقاف</string>
     <string name="garment_rain_jacket">سترة مطر</string>
 

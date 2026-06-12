@@ -1219,7 +1219,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_gemini_key_invalid_title">Cheia Gemini trebuie reintrodusă</string>
     <string name="today_gemini_key_invalid_body">Cheia Gemini salvată nu a putut fi citită pe acest dispozitiv, așa că ClothesCast nu va folosi vocile Gemini partajate până când o reintroduci sau o ștergi.</string>
     <string name="today_gemini_key_invalid_cta">Setări vorbire</string>
-    <string name="settings_api_key_status_unset">2 gratuite în fiecare zi, obține o cheie pentru mai multe.</string>
+    <string name="settings_api_key_status_unset">4 gratuite în fiecare zi, obține o cheie pentru mai multe.</string>
     <string name="settings_tts_stop">Oprește</string>
     <string name="garment_rain_jacket">Jachetă de ploaie</string>
 

@@ -1370,7 +1370,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_gemini_key_invalid_title">A chave Gemini tem de ser introduzida novamente</string>
     <string name="today_gemini_key_invalid_body">A tua chave Gemini guardada não pôde ser lida neste dispositivo, por isso o ClothesCast não usará vozes Gemini partilhadas até a introduzires novamente ou apagares.</string>
     <string name="today_gemini_key_invalid_cta">Definições de fala</string>
-    <string name="settings_api_key_status_unset">2 grátis por dia, obtém uma chave para mais.</string>
+    <string name="settings_api_key_status_unset">4 grátis por dia, obtém uma chave para mais.</string>
     <string name="settings_tts_stop">Parar</string>
     <string name="garment_rain_jacket">Casaco impermeável</string>
 

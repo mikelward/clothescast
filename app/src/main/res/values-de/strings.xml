@@ -1398,7 +1398,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_gemini_key_invalid_title">Gemini-Schlüssel muss erneut eingegeben werden</string>
     <string name="today_gemini_key_invalid_body">Dein gespeicherter Gemini-Schlüssel konnte auf diesem Gerät nicht gelesen werden, daher verwendet ClothesCast keine geteilten Gemini-Stimmen, bis du ihn erneut eingibst oder löschst.</string>
     <string name="today_gemini_key_invalid_cta">Spracheinstellungen</string>
-    <string name="settings_api_key_status_unset">2 kostenlos pro Tag, hol dir einen Schlüssel für mehr.</string>
+    <string name="settings_api_key_status_unset">4 kostenlos pro Tag, hol dir einen Schlüssel für mehr.</string>
     <string name="settings_tts_stop">Stopp</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row

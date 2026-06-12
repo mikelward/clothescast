@@ -1313,7 +1313,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_gemini_key_invalid_title">Gemini কী আবার দিতে হবে</string>
     <string name="today_gemini_key_invalid_body">আপনার সংরক্ষিত Gemini কী এই ডিভাইসে পড়া যায়নি, তাই আপনি সেটি আবার না দিলে বা মুছে না দিলে ClothesCast শেয়ার করা Gemini ভয়েস ব্যবহার করবে না।</string>
     <string name="today_gemini_key_invalid_cta">স্পিচ সেটিংস</string>
-    <string name="settings_api_key_status_unset">প্রতিদিন ২টি বিনামূল্যে, আরও পেতে একটি কী নিন।</string>
+    <string name="settings_api_key_status_unset">প্রতিদিন ৪টি বিনামূল্যে, আরও পেতে একটি কী নিন।</string>
     <string name="settings_tts_stop">থামান</string>
     <string name="garment_rain_jacket">রেইন জ্যাকেট</string>
 

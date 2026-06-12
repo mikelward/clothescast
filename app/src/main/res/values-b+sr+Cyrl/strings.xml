@@ -1219,7 +1219,7 @@ surfaces.
     <string name="today_gemini_key_invalid_title">Gemini кључ треба поново унети</string>
     <string name="today_gemini_key_invalid_body">Сачувани Gemini кључ није могао да се прочита на овом уређају, па ClothesCast неће користити дељене Gemini гласове док га поново не унесеш или обришеш.</string>
     <string name="today_gemini_key_invalid_cta">Подешавања говора</string>
-    <string name="settings_api_key_status_unset">2 бесплатно сваког дана, набави кључ за више.</string>
+    <string name="settings_api_key_status_unset">4 бесплатно сваког дана, набави кључ за више.</string>
     <string name="settings_tts_stop">Заустави</string>
     <string name="garment_rain_jacket">Кишна јакна</string>
 

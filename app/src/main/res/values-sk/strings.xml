@@ -1265,7 +1265,7 @@ What is NOT overridden, by design:
     <string name="today_gemini_key_invalid_title">Kľúč Gemini treba zadať znova</string>
     <string name="today_gemini_key_invalid_body">Uložený kľúč Gemini sa na tomto zariadení nepodarilo prečítať, takže ClothesCast nebude používať zdieľané hlasy Gemini, kým ho znova nezadáš alebo nevymažeš.</string>
     <string name="today_gemini_key_invalid_cta">Nastavenia reči</string>
-    <string name="settings_api_key_status_unset">2 zadarmo každý deň, získaj kľúč pre ďalšie.</string>
+    <string name="settings_api_key_status_unset">4 zadarmo každý deň, získaj kľúč pre ďalšie.</string>
     <string name="settings_tts_stop">Zastaviť</string>
     <string name="garment_rain_jacket">Bunda do dažďa</string>
 

@@ -1271,7 +1271,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_gemini_key_invalid_title">Gemini-nøglen skal indtastes igen</string>
     <string name="today_gemini_key_invalid_body">Din gemte Gemini-nøgle kunne ikke læses på denne enhed, så ClothesCast bruger ikke delte Gemini-stemmer, før du indtaster den igen eller rydder den.</string>
     <string name="today_gemini_key_invalid_cta">Taleindstillinger</string>
-    <string name="settings_api_key_status_unset">2 gratis hver dag, få en nøgle til mere.</string>
+    <string name="settings_api_key_status_unset">4 gratis hver dag, få en nøgle til mere.</string>
     <string name="settings_tts_stop">Stop</string>
     <string name="garment_rain_jacket">Regnjakke</string>
 

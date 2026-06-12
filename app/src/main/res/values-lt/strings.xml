@@ -1231,7 +1231,7 @@ What is NOT overridden, by design:
     <string name="today_gemini_key_invalid_title">Gemini raktą reikia įvesti iš naujo</string>
     <string name="today_gemini_key_invalid_body">Išsaugoto Gemini rakto šiame įrenginyje nepavyko perskaityti, todėl ClothesCast nenaudos bendrinamų Gemini balsų, kol jo neįvesi iš naujo arba neišvalysi.</string>
     <string name="today_gemini_key_invalid_cta">Kalbos nustatymai</string>
-    <string name="settings_api_key_status_unset">Kasdien 2 nemokamai, gauk raktą daugiau.</string>
+    <string name="settings_api_key_status_unset">Kasdien 4 nemokamai, gauk raktą daugiau.</string>
     <string name="settings_tts_stop">Stabdyti</string>
     <string name="garment_rain_jacket">Lietaus striukė</string>
 

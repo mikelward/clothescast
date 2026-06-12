@@ -1210,7 +1210,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_key_invalid_title">Ufunguo wa Gemini unahitaji kuingizwa tena</string>
     <string name="today_gemini_key_invalid_body">Ufunguo wako wa Gemini uliohifadhiwa haukuweza kusomwa kwenye kifaa hiki, kwa hivyo ClothesCast haitatumia sauti za Gemini zilizoshirikiwa hadi uuingize tena au kuufuta.</string>
     <string name="today_gemini_key_invalid_cta">Mipangilio ya usemi</string>
-    <string name="settings_api_key_status_unset">2 bila malipo kila siku, pata ufunguo kwa zaidi.</string>
+    <string name="settings_api_key_status_unset">4 bila malipo kila siku, pata ufunguo kwa zaidi.</string>
     <string name="settings_tts_stop">Simamisha</string>
     <string name="garment_rain_jacket">Jacket ya mvua</string>
 

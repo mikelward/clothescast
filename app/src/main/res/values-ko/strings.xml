@@ -1394,7 +1394,7 @@ displayed label localizes.
     <string name="today_gemini_key_invalid_title">Gemini 키를 다시 입력해야 합니다</string>
     <string name="today_gemini_key_invalid_body">저장된 Gemini 키를 이 기기에서 읽을 수 없어, 다시 입력하거나 지울 때까지 ClothesCast는 공유 Gemini 음성을 사용하지 않습니다.</string>
     <string name="today_gemini_key_invalid_cta">음성 설정</string>
-    <string name="settings_api_key_status_unset">매일 2개 무료, 더 사용하려면 키를 받으세요.</string>
+    <string name="settings_api_key_status_unset">매일 4개 무료, 더 사용하려면 키를 받으세요.</string>
     <string name="settings_tts_stop">중지</string>
     <string name="garment_rain_jacket">비 재킷</string>
 

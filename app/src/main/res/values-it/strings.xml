@@ -1355,7 +1355,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_gemini_key_invalid_title">La chiave Gemini deve essere reinserita</string>
     <string name="today_gemini_key_invalid_body">La tua chiave Gemini salvata non può essere letta su questo dispositivo, quindi ClothesCast non userà le voci Gemini condivise finché non la reinserisci o la cancelli.</string>
     <string name="today_gemini_key_invalid_cta">Impostazioni voce</string>
-    <string name="settings_api_key_status_unset">2 gratis ogni giorno, ottieni una chiave per averne di più.</string>
+    <string name="settings_api_key_status_unset">4 gratis ogni giorno, ottieni una chiave per averne di più.</string>
     <string name="settings_tts_stop">Interrompi</string>
     <string name="garment_rain_jacket">Giacca antipioggia</string>
 

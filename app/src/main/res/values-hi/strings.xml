@@ -1272,7 +1272,7 @@ Not overridden by design:
     <string name="today_gemini_key_invalid_title">Gemini कुंजी फिर से दर्ज करनी होगी</string>
     <string name="today_gemini_key_invalid_body">आपकी सहेजी गई Gemini कुंजी इस डिवाइस पर पढ़ी नहीं जा सकी, इसलिए ClothesCast साझा Gemini आवाज़ों का उपयोग तब तक नहीं करेगा जब तक आप उसे फिर से दर्ज या साफ़ नहीं करते।</string>
     <string name="today_gemini_key_invalid_cta">बोली सेटिंग</string>
-    <string name="settings_api_key_status_unset">हर दिन 2 मुफ़्त, और के लिए कुंजी लें।</string>
+    <string name="settings_api_key_status_unset">हर दिन 4 मुफ़्त, और के लिए कुंजी लें।</string>
     <string name="settings_tts_stop">रोकें</string>
     <string name="garment_rain_jacket">रेन जैकेट</string>
 

@@ -1236,7 +1236,7 @@ standard in Israeli digital communication.
     <string name="today_gemini_key_invalid_title">צריך להזין מחדש את מפתח Gemini</string>
     <string name="today_gemini_key_invalid_body">לא ניתן היה לקרוא את מפתח Gemini השמור במכשיר הזה, לכן ClothesCast לא ישתמש בקולות Gemini משותפים עד שתזינו אותו מחדש או תמחקו אותו.</string>
     <string name="today_gemini_key_invalid_cta">הגדרות דיבור</string>
-    <string name="settings_api_key_status_unset">2 בחינם בכל יום, קבלו מפתח לעוד.</string>
+    <string name="settings_api_key_status_unset">4 בחינם בכל יום, קבלו מפתח לעוד.</string>
     <string name="settings_tts_stop">עצירה</string>
     <string name="garment_rain_jacket">מעיל גשם</string>
 

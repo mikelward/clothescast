@@ -1240,7 +1240,7 @@ only the displayed label localizes.
     <string name="today_gemini_key_invalid_title">Ключ Gemini потрібно ввести знову</string>
     <string name="today_gemini_key_invalid_body">Збережений ключ Gemini не вдалося прочитати на цьому пристрої, тому ClothesCast не використовуватиме спільні голоси Gemini, доки ти не введеш його знову або не очистиш.</string>
     <string name="today_gemini_key_invalid_cta">Налаштування мовлення</string>
-    <string name="settings_api_key_status_unset">2 безкоштовно щодня, отримай ключ для більшого.</string>
+    <string name="settings_api_key_status_unset">4 безкоштовно щодня, отримай ключ для більшого.</string>
     <string name="settings_tts_stop">Зупинити</string>
     <string name="garment_rain_jacket">Дощова куртка</string>
 

@@ -1240,7 +1240,7 @@ to values/strings.xml (English).
     <string name="today_gemini_key_invalid_title">Kunci Gemini perlu dimasukkan ulang</string>
     <string name="today_gemini_key_invalid_body">Kunci Gemini tersimpanmu tidak dapat dibaca di perangkat ini, jadi ClothesCast tidak akan memakai suara Gemini bersama sampai kamu memasukkannya ulang atau menghapusnya.</string>
     <string name="today_gemini_key_invalid_cta">Setelan ucapan</string>
-    <string name="settings_api_key_status_unset">2 gratis setiap hari, dapatkan kunci untuk lebih banyak.</string>
+    <string name="settings_api_key_status_unset">4 gratis setiap hari, dapatkan kunci untuk lebih banyak.</string>
     <string name="settings_tts_stop">Berhenti</string>
     <string name="garment_rain_jacket">Jaket hujan</string>
 

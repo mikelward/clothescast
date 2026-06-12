@@ -1185,7 +1185,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_gemini_key_invalid_title">Gemini võti tuleb uuesti sisestada</string>
     <string name="today_gemini_key_invalid_body">Salvestatud Gemini võtit ei saanud selles seadmes lugeda, seega ClothesCast ei kasuta jagatud Gemini hääli enne, kui sisestad selle uuesti või kustutad.</string>
     <string name="today_gemini_key_invalid_cta">Kõne seaded</string>
-    <string name="settings_api_key_status_unset">Iga päev 2 tasuta, rohkema jaoks hangi võti.</string>
+    <string name="settings_api_key_status_unset">Iga päev 4 tasuta, rohkema jaoks hangi võti.</string>
     <string name="settings_tts_stop">Peata</string>
     <string name="garment_rain_jacket">Vihmajope</string>
 

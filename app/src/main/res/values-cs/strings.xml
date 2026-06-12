@@ -1251,7 +1251,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_gemini_key_invalid_title">Klíč Gemini je potřeba zadat znovu</string>
     <string name="today_gemini_key_invalid_body">Uložený klíč Gemini se na tomto zařízení nepodařilo přečíst, takže ClothesCast nebude používat sdílené hlasy Gemini, dokud ho znovu nezadáš nebo nevymažeš.</string>
     <string name="today_gemini_key_invalid_cta">Nastavení řeči</string>
-    <string name="settings_api_key_status_unset">2 zdarma každý den, získej klíč pro další.</string>
+    <string name="settings_api_key_status_unset">4 zdarma každý den, získej klíč pro další.</string>
     <string name="settings_tts_stop">Zastavit</string>
     <string name="garment_rain_jacket">Bunda do deště</string>
 

@@ -1241,7 +1241,7 @@ displayed label localizes.
     <string name="today_gemini_key_invalid_title">Gemini anahtarının yeniden girilmesi gerekiyor</string>
     <string name="today_gemini_key_invalid_body">Kayıtlı Gemini anahtarın bu cihazda okunamadı, bu yüzden ClothesCast sen yeniden girene veya temizleyene kadar paylaşılan Gemini seslerini kullanmayacak.</string>
     <string name="today_gemini_key_invalid_cta">Konuşma ayarları</string>
-    <string name="settings_api_key_status_unset">Her gün 2 ücretsiz, daha fazlası için anahtar al.</string>
+    <string name="settings_api_key_status_unset">Her gün 4 ücretsiz, daha fazlası için anahtar al.</string>
     <string name="settings_tts_stop">Durdur</string>
     <string name="garment_rain_jacket">Yağmurluk</string>
 

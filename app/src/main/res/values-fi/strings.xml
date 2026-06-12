@@ -1248,7 +1248,7 @@ displayed label localizes.
     <string name="today_gemini_key_invalid_title">Gemini-avain pitää syöttää uudelleen</string>
     <string name="today_gemini_key_invalid_body">Tallennettua Gemini-avaintasi ei voitu lukea tällä laitteella, joten ClothesCast ei käytä jaettuja Gemini-ääniä ennen kuin syötät sen uudelleen tai tyhjennät sen.</string>
     <string name="today_gemini_key_invalid_cta">Puheasetukset</string>
-    <string name="settings_api_key_status_unset">2 ilmaista joka päivä, hanki avain saadaksesi lisää.</string>
+    <string name="settings_api_key_status_unset">4 ilmaista joka päivä, hanki avain saadaksesi lisää.</string>
     <string name="settings_tts_stop">Pysäytä</string>
     <string name="garment_rain_jacket">Sadetakki</string>
 

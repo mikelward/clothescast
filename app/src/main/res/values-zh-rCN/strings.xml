@@ -1389,7 +1389,7 @@ label localizes.
     <string name="today_gemini_key_invalid_title">需要重新输入 Gemini 密钥</string>
     <string name="today_gemini_key_invalid_body">无法在此设备上读取你保存的 Gemini 密钥，因此 ClothesCast 在你重新输入或清除它之前不会使用共享 Gemini 语音。</string>
     <string name="today_gemini_key_invalid_cta">语音设置</string>
-    <string name="settings_api_key_status_unset">每天 2 次免费，获取密钥可使用更多。</string>
+    <string name="settings_api_key_status_unset">每天 4 次免费，获取密钥可使用更多。</string>
     <string name="settings_tts_stop">停止</string>
     <string name="garment_rain_jacket">雨衣</string>
 

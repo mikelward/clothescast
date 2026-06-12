@@ -1302,7 +1302,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_gemini_key_invalid_title">Cần nhập lại khóa Gemini</string>
     <string name="today_gemini_key_invalid_body">Không thể đọc khóa Gemini đã lưu trên thiết bị này, nên ClothesCast sẽ không dùng giọng Gemini dùng chung cho đến khi bạn nhập lại hoặc xóa khóa đó.</string>
     <string name="today_gemini_key_invalid_cta">Cài đặt giọng nói</string>
-    <string name="settings_api_key_status_unset">Mỗi ngày miễn phí 2 lần, lấy khóa để dùng thêm.</string>
+    <string name="settings_api_key_status_unset">Mỗi ngày miễn phí 4 lần, lấy khóa để dùng thêm.</string>
     <string name="settings_tts_stop">Dừng</string>
     <string name="garment_rain_jacket">Áo mưa</string>
 

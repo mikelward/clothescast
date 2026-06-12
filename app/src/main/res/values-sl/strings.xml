@@ -1228,7 +1228,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_gemini_key_invalid_title">Ključ Gemini je treba znova vnesti</string>
     <string name="today_gemini_key_invalid_body">Shranjeni ključ Gemini ni bilo mogoče prebrati v tej napravi, zato ClothesCast ne bo uporabljal deljenih glasov Gemini, dokler ga znova ne vneseš ali počistiš.</string>
     <string name="today_gemini_key_invalid_cta">Nastavitve govora</string>
-    <string name="settings_api_key_status_unset">2 brezplačno vsak dan, pridobi ključ za več.</string>
+    <string name="settings_api_key_status_unset">4 brezplačno vsak dan, pridobi ključ za več.</string>
     <string name="settings_tts_stop">Ustavi</string>
     <string name="garment_rain_jacket">Dežna jakna</string>
 

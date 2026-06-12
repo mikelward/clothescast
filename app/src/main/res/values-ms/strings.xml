@@ -1247,7 +1247,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_gemini_key_invalid_title">Kunci Gemini perlu dimasukkan semula</string>
     <string name="today_gemini_key_invalid_body">Kunci Gemini tersimpan anda tidak dapat dibaca pada peranti ini, jadi ClothesCast tidak akan menggunakan suara Gemini berkongsi sehingga anda memasukkannya semula atau mengosongkannya.</string>
     <string name="today_gemini_key_invalid_cta">Tetapan pertuturan</string>
-    <string name="settings_api_key_status_unset">2 percuma setiap hari, dapatkan kunci untuk lebih banyak.</string>
+    <string name="settings_api_key_status_unset">4 percuma setiap hari, dapatkan kunci untuk lebih banyak.</string>
     <string name="settings_tts_stop">Henti</string>
     <string name="garment_rain_jacket">Jaket hujan</string>
 

@@ -1241,7 +1241,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_key_invalid_title">ต้องป้อนคีย์ Gemini อีกครั้ง</string>
     <string name="today_gemini_key_invalid_body">ไม่สามารถอ่านคีย์ Gemini ที่บันทึกไว้บนอุปกรณ์นี้ได้ ดังนั้น ClothesCast จะไม่ใช้เสียง Gemini ที่แชร์จนกว่าคุณจะป้อนใหม่หรือล้างออก</string>
     <string name="today_gemini_key_invalid_cta">การตั้งค่าเสียงพูด</string>
-    <string name="settings_api_key_status_unset">ฟรีวันละ 2 ครั้ง รับคีย์เพื่อใช้เพิ่ม</string>
+    <string name="settings_api_key_status_unset">ฟรีวันละ 4 ครั้ง รับคีย์เพื่อใช้เพิ่ม</string>
     <string name="settings_tts_stop">หยุด</string>
     <string name="garment_rain_jacket">เสื้อกันฝน</string>
 

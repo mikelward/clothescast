@@ -1231,7 +1231,7 @@ default English (matching values-pl / values-uk).
     <string name="today_gemini_key_invalid_title">Gemini ključ treba ponovo uneti</string>
     <string name="today_gemini_key_invalid_body">Sačuvani Gemini ključ nije mogao da se pročita na ovom uređaju, pa ClothesCast neće koristiti deljene Gemini glasove dok ga ponovo ne uneseš ili obrišeš.</string>
     <string name="today_gemini_key_invalid_cta">Podešavanja govora</string>
-    <string name="settings_api_key_status_unset">2 besplatno svakog dana, nabavi ključ za više.</string>
+    <string name="settings_api_key_status_unset">4 besplatno svakog dana, nabavi ključ za više.</string>
     <string name="settings_tts_stop">Zaustavi</string>
     <string name="garment_rain_jacket">Kišna jakna</string>
 

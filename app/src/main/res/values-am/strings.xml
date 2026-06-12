@@ -1209,7 +1209,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_key_invalid_title">የGemini ቁልፍ እንደገና መግባት ያስፈልገዋል</string>
     <string name="today_gemini_key_invalid_body">የተቀመጠው የGemini ቁልፍህ በዚህ መሣሪያ ሊነበብ አልቻለም፣ ስለዚህ ClothesCast እስክታስገባው ወይም እስክታጸዳው ድረስ የጋራ Gemini ድምፆችን አይጠቀምም።</string>
     <string name="today_gemini_key_invalid_cta">የንግግር ቅንብሮች</string>
-    <string name="settings_api_key_status_unset">በየቀኑ 2 ነፃ፣ ለተጨማሪ ቁልፍ አግኝ።</string>
+    <string name="settings_api_key_status_unset">በየቀኑ 4 ነፃ፣ ለተጨማሪ ቁልፍ አግኝ።</string>
     <string name="settings_tts_stop">አቁም</string>
     <string name="garment_rain_jacket">የዝናብ ጃኬት</string>
 

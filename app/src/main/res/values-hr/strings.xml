@@ -1311,7 +1311,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_gemini_key_invalid_title">Gemini ključ treba ponovno unijeti</string>
     <string name="today_gemini_key_invalid_body">Spremljeni Gemini ključ nije se mogao pročitati na ovom uređaju, pa ClothesCast neće koristiti dijeljene Gemini glasove dok ga ponovno ne uneseš ili izbrišeš.</string>
     <string name="today_gemini_key_invalid_cta">Postavke govora</string>
-    <string name="settings_api_key_status_unset">2 besplatno svaki dan, nabavi ključ za više.</string>
+    <string name="settings_api_key_status_unset">4 besplatno svaki dan, nabavi ključ za više.</string>
     <string name="settings_tts_stop">Zaustavi</string>
     <string name="garment_rain_jacket">Kišna jakna</string>
 

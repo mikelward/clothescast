@@ -1229,7 +1229,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_gemini_key_invalid_title">کلید Gemini باید دوباره وارد شود</string>
     <string name="today_gemini_key_invalid_body">کلید Gemini ذخیره‌شده‌تان در این دستگاه خوانده نشد، بنابراین ClothesCast تا وقتی آن را دوباره وارد یا پاک نکنید از صداهای مشترک Gemini استفاده نمی‌کند.</string>
     <string name="today_gemini_key_invalid_cta">تنظیمات گفتار</string>
-    <string name="settings_api_key_status_unset">هر روز ۲ مورد رایگان، برای بیشتر کلید بگیرید.</string>
+    <string name="settings_api_key_status_unset">هر روز ۴ مورد رایگان، برای بیشتر کلید بگیرید.</string>
     <string name="settings_tts_stop">توقف</string>
     <string name="garment_rain_jacket">کاپشن بارانی</string>
 

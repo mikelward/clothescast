@@ -561,7 +561,7 @@
     <string name="settings_api_key_gemini_header">Zëra cilësorë përmes serverëve të ClothesCast dhe Gemini.</string>
     <string name="settings_tts_device_header">Zëra me cilësi të ulët të integruar në telefonin tënd.</string>
     <string name="settings_api_key_status_set">Një çelës Gemini është i konfiguruar.</string>
-    <string name="settings_api_key_status_unset">2 falas çdo ditë, merr një çelës për më shumë.</string>
+    <string name="settings_api_key_status_unset">4 falas çdo ditë, merr një çelës për më shumë.</string>
     <string name="settings_api_key_placeholder">Ngjit çelësin tënd të API-së së Gemini-t</string>
     <string name="settings_api_key_save">Ruaj çelësin e Gemini-t</string>
     <string name="settings_api_key_replace">Zëvendëso çelësin e Gemini-t</string>

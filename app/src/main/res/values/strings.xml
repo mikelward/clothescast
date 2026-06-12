@@ -741,11 +741,12 @@
          tier the user can use right now and the upgrade their own key buys.
          "get a key" is linkified by LinkifiedText to AI Studio's API-key page
          (see AISTUDIO_LINK_LABEL in SettingsCommon.kt) — keep that exact
-         substring intact when editing. The "2" is conservative against the
+         substring intact when editing. The "4" is conservative against the
          proxy's actual DAILY_LIMIT in functions/src/index.ts (currently 5);
-         promising less and delivering more is the safe direction, and the
-         cap can move quietly in the proxy without re-translating. -->
-    <string name="settings_api_key_status_unset">2 free each day, get a key for more.</string>
+         promising less and delivering more is the safe direction (one spare
+         slot absorbs the odd retry / bug), and the cap can move quietly in
+         the proxy without re-translating. -->
+    <string name="settings_api_key_status_unset">4 free each day, get a key for more.</string>
     <string name="settings_api_key_placeholder">Paste your Gemini API key</string>
     <string name="settings_api_key_save">Save Gemini key</string>
     <string name="settings_api_key_replace">Replace Gemini key</string>

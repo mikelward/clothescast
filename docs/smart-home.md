@@ -30,17 +30,31 @@ yourself; no developer-operated service ever sees the payload.
 4. Optionally enter a username + password. The password is stored
    encrypted on-device under the same Tink-AEAD slot the Gemini API
    key uses.
-5. Topic prefix defaults to `clothescast/default`. Today's forecast
-   publishes to `<prefix>/today/text`; tonight's to `<prefix>/tonight/text`.
-   The outfit image, the TTS audio, and a combined card-plus-announcement
-   MP4 (when published) land on `<prefix>/<period>/image`,
-   `<prefix>/<period>/audio`, and `<prefix>/<period>/video` respectively.
-   Each fully-successful publish is also mirrored to `<prefix>/now/<kind>` —
-   `<prefix>/now/text`, `<prefix>/now/image`, `<prefix>/now/audio`,
-   `<prefix>/now/video`, and `<prefix>/now/timestamp` — so a consumer can
-   subscribe to a single "latest" topic without having to switch on today
-   vs tonight. Whichever period most recently published is what `now`
-   reflects.
+5. Topic prefix defaults to `clothescast/default`. The daytime forecast
+   publishes to `<prefix>/day/text`; the overnight one to
+   `<prefix>/night/text`. The outfit image, the TTS audio, and a combined
+   card-plus-announcement MP4 (when published) land on
+   `<prefix>/<period>/image`, `<prefix>/<period>/audio`, and
+   `<prefix>/<period>/video` respectively (where `<period>` is `day` or
+   `night`). **Each scheduled run publishes both windows** — the current one
+   and the next — so `day` and `night` always carry the current and upcoming
+   cast rather than one going stale. Each `day`/`night` bundle is
+   self-coherent: when a window has no audio or video this run (you're on
+   device TTS, or a render/synth failed), its `<prefix>/<period>/audio` and
+   `<prefix>/<period>/video` are cleared with an empty retained payload, so a
+   consumer reading the bundle directly never pairs fresh text with a previous
+   run's leftover clip. Each bundle also carries its own commit marker,
+   `<prefix>/<period>/timestamp` (epoch-millis), written **last** and only once
+   the whole `day`/`night` set has settled — the per-period equivalent of
+   `now/timestamp`. **If you read `day`/`night` directly, trigger on
+   `<prefix>/<period>/timestamp`** and dedupe on its value, exactly as you would
+   on `now/timestamp`. The current window's bundle is also
+   mirrored to `<prefix>/now/<kind>` — `<prefix>/now/text`,
+   `<prefix>/now/image`, `<prefix>/now/audio`, `<prefix>/now/video`, and
+   `<prefix>/now/timestamp` — so a consumer can subscribe to a single
+   "latest" topic without having to switch on day vs night. `now` always
+   reflects the *current* window; the next window lands only on its own
+   `day`/`night` segment.
 
    **Trigger your automations on `<prefix>/now/timestamp`.** The `now`
    set updates as an atomic bundle, and `now/timestamp` (epoch
@@ -73,9 +87,9 @@ yourself; no developer-operated service ever sees the payload.
    write — and gating reads on its updates sidesteps this.
 6. Tap **Save**.
 
-The next scheduled refresh (07:00 by default for today, 19:00 for
-tonight — configurable in Settings → Schedule) will publish retained
-MQTT messages to each topic. After a successful forecast publish,
+The next scheduled refresh (07:00 by default for the daytime window, 19:00
+for the overnight one — configurable in Settings → Schedule) will publish
+retained MQTT messages to each topic. After a successful forecast publish,
 ClothesCast also publishes retained Home Assistant MQTT discovery
 configs under `homeassistant/.../config`, so HA can create the text,
 timestamp, and image entities automatically. The discovery configs point
@@ -160,12 +174,14 @@ With MQTT discovery enabled in Home Assistant (the default for the MQTT
 integration), ClothesCast creates these entities automatically after the
 next successful publish:
 
-- `sensor.clothescast_today` from `<prefix>/today/text`
-- `sensor.clothescast_tonight` from `<prefix>/tonight/text`
+- `sensor.clothescast_day` from `<prefix>/day/text`
+- `sensor.clothescast_night` from `<prefix>/night/text`
 - `sensor.clothescast_now` from `<prefix>/now/text`
 - `sensor.clothescast_now_updated` from `<prefix>/now/timestamp`
-- `image.clothescast_today_image` from `<prefix>/today/image`
-- `image.clothescast_tonight_image` from `<prefix>/tonight/image`
+- `sensor.clothescast_day_updated` from `<prefix>/day/timestamp`
+- `sensor.clothescast_night_updated` from `<prefix>/night/timestamp`
+- `image.clothescast_day_image` from `<prefix>/day/image`
+- `image.clothescast_night_image` from `<prefix>/night/image`
 - `image.clothescast_now_image` from `<prefix>/now/image`
 
 All entities are grouped under a single ClothesCast device in Home
@@ -187,17 +203,16 @@ endraw verbatim. -->
 ```yaml
 mqtt:
   sensor:
-    - name: "Clothescast today"
-      unique_id: clothescast_today
-      state_topic: "clothescast/default/today/text"
+    - name: "Clothescast day"
+      unique_id: clothescast_day
+      state_topic: "clothescast/default/day/text"
       value_template: "{{ value }}"
-    - name: "Clothescast tonight"
-      unique_id: clothescast_tonight
-      state_topic: "clothescast/default/tonight/text"
+    - name: "Clothescast night"
+      unique_id: clothescast_night
+      state_topic: "clothescast/default/night/text"
       value_template: "{{ value }}"
-    # Single "latest" sensor — mirrors whichever period last published, so
-    # an automation can speak the most recent forecast without branching
-    # on today vs tonight.
+    # Single "latest" sensor — mirrors the current window, so an automation
+    # can speak the most recent forecast without branching on day vs night.
     - name: "Clothescast now"
       unique_id: clothescast_now
       state_topic: "clothescast/default/now/text"
@@ -313,7 +328,7 @@ so the dashboard and your spoken briefing agree on what counts as stale.
 ## Home Assistant — outfit image on Nest Hub
 
 Alongside the prose sensor, ClothesCast publishes a PNG outfit card to
-`<prefix>/<period>/image` (e.g. `clothescast/default/today/image`). The
+`<prefix>/<period>/image` (e.g. `clothescast/default/day/image`). The
 card is 800 × 480 px (Nest Hub 7" native resolution) and shows:
 
 - Period label ("TODAY" / "TONIGHT") in Roboto Bold at the top
@@ -336,15 +351,15 @@ is implied when the entry sits under `mqtt:`):
 ```yaml
 mqtt:
   camera:
-    - name: "Clothescast today outfit"
-      topic: "clothescast/default/today/image"
-    - name: "Clothescast tonight outfit"
-      topic: "clothescast/default/tonight/image"
+    - name: "Clothescast day outfit"
+      topic: "clothescast/default/day/image"
+    - name: "Clothescast night outfit"
+      topic: "clothescast/default/night/image"
 ```
 
 Reload MQTT (Developer Tools → YAML → Reload MQTT) or restart HA so
-the entities appear as `camera.clothescast_today_outfit` and
-`camera.clothescast_tonight_outfit`.
+the entities appear as `camera.clothescast_day_outfit` and
+`camera.clothescast_night_outfit`.
 
 Then find each entity's access token in Developer Tools → States →
 search `camera.clothescast` → open Details. Copy the `access_token`
@@ -368,7 +383,7 @@ actions:
     target:
       entity_id: media_player.kitchen_hub
     data:
-      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_day_outfit?token=<access_token>"
       media_content_type: image/jpeg
 ```
 
@@ -443,7 +458,7 @@ actions:
 
 When the Gemini TTS engine is selected (Settings → Voice → Gemini),
 ClothesCast publishes the synthesised audio as a WAV clip to
-`<prefix>/<period>/audio` (e.g. `clothescast/default/today/audio`).
+`<prefix>/<period>/audio` (e.g. `clothescast/default/day/audio`).
 The payload is signed 16-bit mono PCM at the sample rate Gemini
 returned, wrapped in a canonical 44-byte RIFF/WAVE header — playable
 as-is by ffmpeg, browsers, and `media_player.play_media` when handed
@@ -590,7 +605,7 @@ conditions: []
 actions:
   - action: notify.google_assistant_sdk
     data:
-      message: "{{ states('sensor.clothescast_today') }}"
+      message: "{{ states('sensor.clothescast_day') }}"
       target:
         - Master Bathroom
 ```
@@ -666,7 +681,7 @@ actions:
       entity_id: tts.home_assistant_cloud
     data:
       media_player_entity_id: media_player.master_bathroom_display
-      message: "{{ states('sensor.clothescast_today') }}"
+      message: "{{ states('sensor.clothescast_day') }}"
 ```
 
 `tts.home_assistant_cloud` is the canonical entity for Nabu Casa
@@ -719,7 +734,7 @@ actions:
   - action: tts.cloud_say
     data:
       entity_id: media_player.master_bathroom_display
-      message: "{{ states('sensor.clothescast_today') }}"
+      message: "{{ states('sensor.clothescast_day') }}"
 ```
 
 (`tts.google_translate_say` is the free alternative if you don't have
@@ -758,14 +773,14 @@ triggers:
 actions:
   - action: notify.google_assistant_sdk
     data:
-      message: "{{ states('sensor.clothescast_today') }}"
+      message: "{{ states('sensor.clothescast_day') }}"
       target:
         - Kitchen
   - action: media_player.play_media
     target:
       entity_id: media_player.kitchen_hub
     data:
-      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_day_outfit?token=<access_token>"
       media_content_type: image/jpeg
 ```
 
@@ -791,7 +806,7 @@ actions:
   # 1. Speak the forecast.
   - action: notify.google_assistant_sdk
     data:
-      message: "{{ states('sensor.clothescast_today') }}"
+      message: "{{ states('sensor.clothescast_day') }}"
       target:
         - Kitchen
 
@@ -805,7 +820,7 @@ actions:
     target:
       entity_id: media_player.kitchen_hub
     data:
-      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_today_outfit?token=<access_token>"
+      media_content_id: "http://192.168.x.x:8123/api/camera_proxy/camera.clothescast_day_outfit?token=<access_token>"
       media_content_type: image/jpeg
 ```
 {% endraw %}

@@ -42,6 +42,7 @@ import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -328,6 +329,49 @@ class FetchAndNotifyWorker(
             return runCatching { deliver(cachedInsight, prefs, formatProse(cachedInsight, prefs)) }
                 .map {
                     recordDailyHistory(cachedInsight)
+                    // Redeliver-from-cache still owes both MQTT windows: deliver()
+                    // above republished the active period to /now + its segment,
+                    // so also push the pre-captured next window (cached in
+                    // NEXT_PERIOD by the fresh run that seeded this slot) to its
+                    // own segment. Without this a same-day cache hit — common
+                    // once a silent refresh has populated the cache — would leave
+                    // the other day/night topic stale.
+                    //
+                    // Guard against a stale sibling: generatePairedInsight() is
+                    // best-effort and can fail on the seeding run, leaving an
+                    // older NEXT_PERIOD behind while THIS_PERIOD refreshed (only
+                    // deliveredForToday() validated THIS_PERIOD's date/period).
+                    // Publish only when the cached next snapshot is the expected
+                    // opposite window for this date — night same-day after a day
+                    // run, tomorrow's day after a night run — else skip rather
+                    // than push a stale bundle to the day/night topic.
+                    // `today` is the base date deliveredForToday() just confirmed
+                    // THIS_PERIOD is for, so the expected next-window date is it
+                    // (day run) or the day after (night run -> tomorrow's day).
+                    // Also require the cached sibling to be for *this run's*
+                    // location: a refresh can update THIS_PERIOD to a new city
+                    // while a failed generatePairedInsight() leaves a same-date
+                    // sibling for the old one, which we must not publish.
+                    val expectedPeriod = period.opposite()
+                    val expectedDate = today.plusDays(if (period == ForecastPeriod.TONIGHT) 1L else 0L)
+                    val nextSnapshot = runCatching { app.insightCache.nextPeriod.first() }
+                        .onFailure { t -> if (t is CancellationException) throw t }
+                        .getOrNull()
+                    if (nextSnapshot != null &&
+                        nextSnapshot.period == expectedPeriod &&
+                        nextSnapshot.bundle.today.date == expectedDate &&
+                        nextSnapshot.location == location
+                    ) {
+                        publishNextWindowFromSnapshot(nextSnapshot, prefs)
+                    } else {
+                        DiagLog.i(
+                            TAG,
+                            "Skipping next-window MQTT publish on cache hit: NEXT_PERIOD " +
+                                "(${nextSnapshot?.period}/${nextSnapshot?.bundle?.today?.date}) isn't the " +
+                                "expected $expectedPeriod/$expectedDate sibling for the current location — " +
+                                "stale, unrefreshed, or from a previous location.",
+                        )
+                    }
                     Result.success()
                 }
                 .getOrElse {
@@ -535,7 +579,7 @@ class FetchAndNotifyWorker(
             // consults Slot.THIS_PERIOD so the next morning's fresh fetch
             // isn't suppressed by yesterday-evening's tomorrow-daytime
             // pre-render.
-            generatePairedInsight(location, prefs, period)
+            val pairedSnapshot = generatePairedInsight(location, prefs, period)
             // Render once per delivery so notification, TTS, and the audit log
             // all share the same string and we don't reconfigure the
             // Configuration-overridden Resources three times per fire.
@@ -565,6 +609,13 @@ class FetchAndNotifyWorker(
                 // KEY_PLAY_FORCE unset and keep honouring the mode.
                 deliver(insight, prefs, prose, forceNotifyAndSpeak = inputData.getBoolean(KEY_PLAY_FORCE, false))
                 DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
+                // With the active period delivered, publish the *next* window's
+                // full bundle to its own day/night MQTT segment so a consumer
+                // always finds both the current and upcoming cast. Strictly
+                // after deliver() returns — nothing here touches the first
+                // period's alignment / notification / TTS — and a no-op unless
+                // the MQTT bridge is enabled.
+                publishNextWindowFromSnapshot(pairedSnapshot, prefs)
             }
             recordDailyHistory(insight)
             Result.success()
@@ -639,20 +690,21 @@ class FetchAndNotifyWorker(
         location: Location,
         prefs: UserPreferences,
         primaryPeriod: ForecastPeriod,
-    ) {
+    ): ForecastSnapshot? {
         val nextWindowPeriod = when (primaryPeriod) {
             ForecastPeriod.TODAY -> ForecastPeriod.TONIGHT
             ForecastPeriod.TONIGHT -> ForecastPeriod.TODAY
         }
         val dayOffset = if (primaryPeriod == ForecastPeriod.TONIGHT) 1 else 0
-        runCatching {
+        return runCatching {
             val snapshot = capturedSnapshot(location, prefs, nextWindowPeriod, dayOffset)
             app.insightCache.store(InsightCache.Slot.NEXT_PERIOD, snapshot)
             DiagLog.i(TAG, "Next-window $nextWindowPeriod snapshot cached for ${snapshot.bundle.today.date}.")
+            snapshot
         }.onFailure {
             if (it is CancellationException) throw it
             DiagLog.w(TAG, "Next-window $nextWindowPeriod insight generation failed; not blocking $primaryPeriod delivery.", it)
-        }
+        }.getOrNull()
     }
 
     /**
@@ -902,6 +954,142 @@ class FetchAndNotifyWorker(
     }
 
     /**
+     * Resolves the holiday theme for [date] and merges it onto the user's
+     * persisted outfit colour customisations, so every off-screen renderer
+     * (notification large icon, MQTT outfit card) matches what the Today screen
+     * draws on themed days — birthday yellows / Christmas reds, plus the
+     * tricolour stroke accents on themes like July 4 / Bastille Day. Shared by
+     * [deliver] and [publishPairedPeriodToMqtt]; the latter passes the next
+     * window's own date so a Dec-24 evening run themes the Dec-25 day bundle by
+     * Dec 25, not by the run's wall-clock day. Gloves, the umbrella, and the
+     * rain jacket aren't holiday-themed, so those take the user's picked colour
+     * only.
+     */
+    private suspend fun resolveThemedOutfitColors(
+        prefs: UserPreferences,
+        date: LocalDate = LocalDate.now(prefs.schedule.zoneId),
+    ): ThemedOutfitColors {
+        val theme = resolveHolidayTheme(prefs, app.calendarEventReader, today = date)
+        return ThemedOutfitColors(
+            theme = theme,
+            topColors = prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap()),
+            bottomColors = prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap()),
+            handsColors = prefs.outfitHandsColors,
+            carriedColors = prefs.outfitCarriedColors,
+            outerColors = prefs.outfitOuterColors,
+            topStrokes = theme?.topStrokeOverrides ?: emptyMap(),
+            bottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap(),
+        )
+    }
+
+    private data class ThemedOutfitColors(
+        val theme: HolidayTheme?,
+        val topColors: Map<OutfitSuggestion.Top, Long>,
+        val bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+        val handsColors: Map<OutfitSuggestion.Hands, Long>,
+        val carriedColors: Map<OutfitSuggestion.Carried, Long>,
+        val outerColors: Map<OutfitSuggestion.Outer, Long>,
+        val topStrokes: Map<OutfitSuggestion.Top, Long>,
+        val bottomStrokes: Map<OutfitSuggestion.Bottom, Long>,
+    )
+
+    /**
+     * Publishes the *next* window's full bundle (prose + outfit card + TTS
+     * audio + muxed video) to its own day/night MQTT segment — never to
+     * `/now`, which stays on the period the run just delivered. Called strictly
+     * after the active period's [deliver] returns, so nothing here can delay
+     * the current period's alignment, notification, or speech.
+     *
+     * MQTT is the only consumer of this bundle, so the whole thing — including
+     * the Gemini TTS synth that crosses the device boundary — is gated on the
+     * bridge being enabled: with the bridge off this is a no-op and no extra
+     * prose leaves the device. Audio (and therefore video) is only produced
+     * when Gemini can synth; device TTS yields no WAV bytes, matching the
+     * active path's behaviour for the audio/video topics.
+     */
+    private suspend fun publishPairedPeriodToMqtt(insight: Insight, prefs: UserPreferences) {
+        if (!isMqttPublishable(prefs)) return
+        runCatching {
+            // Theme by the next window's own date, not the run's wall-clock day,
+            // so the cross-day evening->tomorrow bundle gets tomorrow's holiday
+            // theme / voice.
+            val colors = resolveThemedOutfitColors(prefs, insight.forDate)
+            val prose = formatProse(insight, prefs)
+            val png = withContext(Dispatchers.Default) {
+                renderOutfitPngIfPossible(
+                    insight = insight,
+                    prefs = prefs,
+                    prose = prose,
+                    topColors = colors.topColors,
+                    bottomColors = colors.bottomColors,
+                    handsColors = colors.handsColors,
+                    carriedColors = colors.carriedColors,
+                    outerColors = colors.outerColors,
+                    topStrokes = colors.topStrokes,
+                    bottomStrokes = colors.bottomStrokes,
+                )
+            }
+            val geminiAvailable = isGeminiEngineSelected(prefs) && (
+                runCatching { app.secureKeyStore.geminiKeyConfiguredFlow.first() }.getOrDefault(false) ||
+                    app.sharedTtsAvailable
+                )
+            val wav: ByteArray? = if (geminiAvailable) {
+                withContext(Dispatchers.IO) {
+                    synthesizeForDelivery(insight, prefs, colors.theme)?.let { WavEncoder.encode(it) }
+                }
+            } else null
+            val video: ByteArray? = if (png != null && wav != null) {
+                withContext(Dispatchers.Default) {
+                    runCatching { Mp4Encoder.encode(png, wav) }
+                        .onFailure { t ->
+                            if (t is CancellationException) throw t
+                            DiagLog.w(TAG, "Next-window MQTT video mux failed; publishing bundle without video.", t)
+                        }
+                        .getOrNull()
+                }
+            } else null
+            app.mqttPublisher.publishIfEnabled(
+                insight.period,
+                prose,
+                image = png,
+                audio = wav,
+                video = video,
+                mirrorToNow = false,
+            )
+            DiagLog.i(
+                TAG,
+                "Next-window ${insight.period} MQTT bundle published " +
+                    "(image=${png != null}, audio=${wav != null}, video=${video != null}).",
+            )
+        }.onFailure { t ->
+            if (t is CancellationException) throw t
+            DiagLog.w(TAG, "Next-window MQTT publish failed.", t)
+        }
+    }
+
+    /**
+     * Derives [snapshot] into the next window's insight and publishes its
+     * bundle via [publishPairedPeriodToMqtt]. Null snapshot or a derive failure
+     * is logged and skipped — the next window's MQTT segment keeps its last
+     * value rather than failing the run. Shared by the fresh-fetch path (which
+     * passes the snapshot it just captured) and the same-day cache-hit redeliver
+     * path (which passes the pre-captured [InsightCache.Slot.NEXT_PERIOD]
+     * snapshot), so both honour the "each scheduled run publishes both windows"
+     * contract.
+     */
+    private suspend fun publishNextWindowFromSnapshot(snapshot: ForecastSnapshot?, prefs: UserPreferences) {
+        val insight = snapshot?.let {
+            runCatching { app.deriveInsight(it, prefs).insight }
+                .onFailure { t ->
+                    if (t is CancellationException) throw t
+                    DiagLog.w(TAG, "Next-window insight derive failed; skipping its MQTT publish.", t)
+                }
+                .getOrNull()
+        } ?: return
+        publishPairedPeriodToMqtt(insight, prefs)
+    }
+
+    /**
      * @param forceNotifyAndSpeak the user tapped the Today screen's Play
      *   button, an explicit "do it now" that posts the notification *and*
      *   speaks regardless of the period's delivery mode — a SILENT /
@@ -917,32 +1105,14 @@ class FetchAndNotifyWorker(
         forceNotifyAndSpeak: Boolean = false,
     ) {
         // Apply today's holiday theme on top of the user's persisted outfit
-        // colour customisations so the notification's large icon and the
-        // Home-Assistant outfit card match what the Today screen renders —
-        // birthday yellows / Christmas reds, plus the tricolour stroke
-        // accents on themes like July 4 / Bastille Day / Italy / Germany /
-        // New Year's. The screen's TodayViewModel does the same merge;
-        // without it the off-screen renderers would silently fall back to
-        // user defaults (or the auto-derived darker-shade stroke) on
-        // themed days. The manual "Publish now" path in MainActivity uses
-        // the same helper so the retained MQTT image stays themed after a
-        // user-initiated refresh too.
-        val theme = resolveHolidayTheme(prefs, app.calendarEventReader)
-        val topColors: Map<OutfitSuggestion.Top, Long> =
-            prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
-        val bottomColors: Map<OutfitSuggestion.Bottom, Long> =
-            prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
-        // Gloves aren't holiday-themed, so the hands overlay just takes the
-        // user's picked colour (empty = baked-in gloves colours).
-        val handsColors: Map<OutfitSuggestion.Hands, Long> = prefs.outfitHandsColors
-        // The umbrella isn't holiday-themed either — just the user's picked colour.
-        val carriedColors: Map<OutfitSuggestion.Carried, Long> = prefs.outfitCarriedColors
-        // The rain jacket isn't holiday-themed either — just the user's picked colour.
-        val outerColors: Map<OutfitSuggestion.Outer, Long> = prefs.outfitOuterColors
-        val topStrokes: Map<OutfitSuggestion.Top, Long> =
-            theme?.topStrokeOverrides ?: emptyMap()
-        val bottomStrokes: Map<OutfitSuggestion.Bottom, Long> =
-            theme?.bottomStrokeOverrides ?: emptyMap()
+        // colours (see resolveThemedOutfitColors). Destructured here so the
+        // existing call sites below read the same locals as before; the same
+        // helper feeds the next-window MQTT publish so both windows render
+        // identically.
+        val (
+            theme, topColors, bottomColors, handsColors,
+            carriedColors, outerColors, topStrokes, bottomStrokes,
+        ) = resolveThemedOutfitColors(prefs)
 
         // Compute every "should this fire?" decision from one snapshot
         // of prefs so the pre- and post-alignment fan-outs stay

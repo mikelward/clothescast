@@ -65,14 +65,33 @@ class MqttPublisher(
      * Publishes a delivery's prose, optional outfit image, optional TTS
      * audio, and optional muxed video (PNG frame + TTS audio as an MP4) as a
      * single coordinated bundle. The period-specific topics
-     * (`${baseTopic}/${period.lowercased()}/{text,image,audio,video}`) fan out
-     * in parallel — they're independent surfaces and a slow image upload
-     * shouldn't hold up the prose.
+     * (`${baseTopic}/{day,night}/{text,image,audio,video}` — the segment maps
+     * from [ForecastPeriod] via [topicSegment]) fan out in parallel — they're
+     * independent surfaces and a slow image upload shouldn't hold up the prose.
+     *
+     * [mirrorToNow] controls the `/now` mirror. The run's *current* period
+     * publishes with `mirrorToNow = true` (the default) so the `/now` topics
+     * reflect the cast in play; the *next* window publishes with `mirrorToNow = false`
+     * so its bundle lands only on its own day/night segment and leaves `/now`
+     * pointing at the current period.
+     *
+     * Every period topic is always written so the per-period bundle is
+     * self-coherent: prose carries its payload, and `image` / `audio` / `video`
+     * carry their bytes when present or an empty retained clear when absent.
+     * A `${baseTopic}/<period>/timestamp` commit marker is then written **last**,
+     * and only when text + image + audio + video all settled — the day/night
+     * equivalent of `now/timestamp`. A consumer reading a day/night bundle
+     * directly (the next window has no `/now` backstop) triggers on that marker
+     * and dedupes on its value, so it never pairs fresh text with a previous
+     * run's leftover audio or video clip (e.g. a failed media clear), and
+     * doesn't replay a retained bundle on reconnect. The marker is held back
+     * whenever any period publish fails.
      *
      * The `${baseTopic}/now/{text,image,audio,video,timestamp}` mirrors are
-     * treated as an atomic bundle. They fire only when every **gating**
-     * modality's period publish (prose + any submitted image / audio)
-     * succeeded; then `now/image`, `now/audio` and `now/video` publish in
+     * treated as an atomic bundle. They fire only when the whole period
+     * bundle — prose plus every image / audio / video publish, payloads and
+     * absent-media clears alike — succeeded; then `now/image`, `now/audio` and
+     * `now/video` publish in
      * parallel, `now/text` lands after them, and `now/timestamp` lands
      * **last** of all. `now/timestamp` is the bundle's commit marker —
      * epoch-millis written only once the gating content mirrors have settled,
@@ -105,8 +124,8 @@ class MqttPublisher(
      * `now/text` update always implies a coherent `now/image` and
      * `now/audio` settled successfully.
      *
-     * If any submitted modality's *period* publish fails, the entire
-     * `now` mirror is skipped: a stale-but-coherent retained bundle from
+     * If any period publish (a payload or an absent-media clear) fails, the
+     * entire `now` mirror is skipped: a stale-but-coherent retained bundle from
      * the last fully-successful run is more honest than a half-updated mix
      * of new and old payloads on the unified surface. Mirror failures on
      * any of the `now` topics themselves do not override the returned
@@ -140,6 +159,7 @@ class MqttPublisher(
         image: ByteArray? = null,
         audio: ByteArray? = null,
         video: ByteArray? = null,
+        mirrorToNow: Boolean = true,
     ): MqttPublishOutcome = coroutineScope {
         val prepared = preparePublish(context = period.name.lowercase())
             ?: return@coroutineScope MqttPublishOutcome.NotConfigured
@@ -148,6 +168,7 @@ class MqttPublisher(
         val imageTopic = imageTopicFor(prepared.baseTopic, period)
         val audioTopic = audioTopicFor(prepared.baseTopic, period)
         val videoTopic = videoTopicFor(prepared.baseTopic, period)
+        val periodTimestampTopic = timestampTopicFor(prepared.baseTopic, period)
         val nowTextTopic = nowTopicFor(prepared.baseTopic)
         val nowImageTopic = nowImageTopicFor(prepared.baseTopic)
         val nowAudioTopic = nowAudioTopicFor(prepared.baseTopic)
@@ -173,25 +194,77 @@ class MqttPublisher(
                 "payload=${prose.length} chars).",
         )
 
+        // Every period topic is always written so the `<period>/*` bundle is
+        // self-coherent: prose carries the payload, and image/audio/video carry
+        // their bytes when present or an empty retained payload (the MQTT
+        // "delete the retained message" convention) when absent. Without the
+        // clears, a later bundle with no audio/video — engine switched to device
+        // TTS, a synth/quota failure, a render miss — would leave the *previous*
+        // run's clip on `<period>/audio` or `<period>/video`, and a consumer
+        // reading the day/night bundle directly (the next window has no `/now`
+        // backstop) would play stale media for the new forecast. `/now` applies
+        // the same clear convention in its block below.
+        val emptyPayload = ByteArray(0)
         val proseDeferred = async { executePublish(prepared, proseTopic, proseBytes) }
-        val imageDeferred = image?.let { bytes -> async { executePublish(prepared, imageTopic, bytes) } }
-        val audioDeferred = audio?.let { bytes -> async { executePublish(prepared, audioTopic, bytes) } }
-        // The period today/video publish is attempted only when a video was
-        // produced this delivery (videoOutcome stays null otherwise) and gates
-        // the now mirror the same way image/audio do. The now/video clear for a
-        // no-video delivery — and its gating — lives in the now block below.
-        val videoDeferred = video?.let { bytes -> async { executePublish(prepared, videoTopic, bytes) } }
+        val imageDeferred = async { executePublish(prepared, imageTopic, image ?: emptyPayload) }
+        val audioDeferred = async { executePublish(prepared, audioTopic, audio ?: emptyPayload) }
+        val videoDeferred = async { executePublish(prepared, videoTopic, video ?: emptyPayload) }
         val proseOutcome = proseDeferred.await()
-        val imageOutcome = imageDeferred?.await()
-        val audioOutcome = audioDeferred?.await()
-        val videoOutcome = videoDeferred?.await()
+        val imageOutcome = imageDeferred.await()
+        val audioOutcome = audioDeferred.await()
+        val videoOutcome = videoDeferred.await()
 
-        val everySubmittedSucceeded = proseOutcome is MqttPublishOutcome.Success &&
-            (imageOutcome == null || imageOutcome is MqttPublishOutcome.Success) &&
-            (audioOutcome == null || audioOutcome is MqttPublishOutcome.Success) &&
-            (videoOutcome == null || videoOutcome is MqttPublishOutcome.Success)
+        // /now mirrors only when the whole period bundle — payloads and clears
+        // alike — published cleanly, so the mirror never advances past a period
+        // surface that's itself half-updated.
+        val everyPeriodPublishSucceeded = proseOutcome is MqttPublishOutcome.Success &&
+            imageOutcome is MqttPublishOutcome.Success &&
+            audioOutcome is MqttPublishOutcome.Success &&
+            videoOutcome is MqttPublishOutcome.Success
 
-        if (everySubmittedSucceeded) {
+        // Per-period commit marker, written **last** of the `<period>/*` bundle
+        // and only once text + image + audio + video (payloads and clears) have
+        // all settled. It gives the day/night surface the same trigger contract
+        // as `/now/timestamp`: a consumer reading `<prefix>/<period>` directly —
+        // the next window has no `/now` backstop — triggers on
+        // `<prefix>/<period>/timestamp` and dedupes on its value, so it never
+        // acts on a half-updated bundle (e.g. fresh text still paired with a
+        // failed audio/video clear) and doesn't replay a retained bundle on
+        // reconnect. Held back when any period publish failed, so the marker
+        // never advances past an incoherent `<period>/*` set.
+        if (everyPeriodPublishSucceeded) {
+            val periodTimestampOutcome = executePublish(prepared, periodTimestampTopic, timestampBytes)
+            if (periodTimestampOutcome !is MqttPublishOutcome.Success) {
+                DiagLog.w(
+                    TAG,
+                    "Period commit marker $periodTimestampTopic failed for " +
+                        "${period.name.lowercase()} bundle ($periodTimestampOutcome); the " +
+                        "${topicSegment(period)}/* content advanced but its marker did not, so " +
+                        "consumers triggering on it will skip this bundle until the next publish.",
+                )
+            }
+        } else {
+            DiagLog.i(
+                TAG,
+                "Holding back $periodTimestampTopic for ${period.name.lowercase()} bundle " +
+                    "(prose=$proseOutcome, image=$imageOutcome, audio=$audioOutcome, " +
+                    "video=$videoOutcome); the ${topicSegment(period)}/* marker stays at the " +
+                    "previous bundle so a consumer doesn't act on a half-updated set.",
+            )
+        }
+
+        if (!mirrorToNow) {
+            // Next-window publish: only the period topics (day/night) are
+            // written, never `/now`. `/now` is reserved for the *current*
+            // period the run is actually delivering, so a consumer subscribed
+            // to a single `/now/*` surface keeps seeing the active cast while
+            // the upcoming window lands on its own segment.
+            DiagLog.i(
+                TAG,
+                "Published ${period.name.lowercase()} (${topicSegment(period)}) bundle without /now mirror " +
+                    "(mirrorToNow=false); /now stays on the current period.",
+            )
+        } else if (everyPeriodPublishSucceeded) {
             // The now surface is treated as an atomic three-topic bundle. Any
             // modality absent from this delivery clears its retained slot via
             // an empty-payload publish (the MQTT convention for "delete the
@@ -201,7 +274,6 @@ class MqttPublisher(
             // and audio mirrors settle successfully, so an automation
             // subscribing to now/text never sees the trigger advance before
             // the rest of the now bundle is coherent.
-            val emptyPayload = ByteArray(0)
             val nowImageMirror = async {
                 executePublish(prepared, nowImageTopic, image ?: emptyPayload)
             }
@@ -279,9 +351,9 @@ class MqttPublisher(
             // can correlate "no /now update" with "primary publishes failed."
             val failed = listOfNotNull(
                 if (proseOutcome !is MqttPublishOutcome.Success) "prose" else null,
-                if (imageOutcome != null && imageOutcome !is MqttPublishOutcome.Success) "image" else null,
-                if (audioOutcome != null && audioOutcome !is MqttPublishOutcome.Success) "audio" else null,
-                if (videoOutcome != null && videoOutcome !is MqttPublishOutcome.Success) "video" else null,
+                if (imageOutcome !is MqttPublishOutcome.Success) "image" else null,
+                if (audioOutcome !is MqttPublishOutcome.Success) "audio" else null,
+                if (videoOutcome !is MqttPublishOutcome.Success) "video" else null,
             ).joinToString("/")
             DiagLog.i(
                 TAG,
@@ -460,6 +532,19 @@ class MqttPublisher(
                 )
             }
         }
+        // Clear the pre-rename today/tonight discovery configs (empty retained
+        // payload = HA "remove entity") so upgrading users don't keep orphaned
+        // today/tonight entities alongside the new day/night ones.
+        homeAssistantDiscoveryTombstones(prepared.baseTopic).forEach { topic ->
+            val outcome = executePublish(prepared = prepared, topic = topic, payload = ByteArray(0))
+            if (outcome !is MqttPublishOutcome.Success) {
+                DiagLog.w(
+                    TAG,
+                    "Clearing stale discovery config $topic failed ($outcome); an orphaned " +
+                        "today/tonight entity may linger in Home Assistant.",
+                )
+            }
+        }
     }
 
     private data class PreparedPublish(
@@ -510,10 +595,18 @@ class MqttPublisher(
         fun videoTopicFor(baseTopic: String, period: ForecastPeriod): String =
             periodTopicFor(baseTopic, period, "video")
 
-        // `<base>/now/<kind>` mirrors the most recently published period
-        // payload (today or tonight) so a consumer can subscribe to a single
-        // topic without having to reason about which window is "current" or
-        // chase recency timestamps across the two period topics.
+        // Epoch-millis (decimal string) commit marker for the `<period>/*`
+        // bundle, written last and only when the whole bundle settled — the
+        // day/night equivalent of `now/timestamp`. A consumer reading a day or
+        // night bundle directly triggers on this and dedupes on its value.
+        fun timestampTopicFor(baseTopic: String, period: ForecastPeriod): String =
+            periodTopicFor(baseTopic, period, "timestamp")
+
+        // `<base>/now/<kind>` mirrors the period payload of the *current*
+        // window (day or night) so a consumer can subscribe to a single topic
+        // without having to reason about which window is "current" or chase
+        // recency timestamps across the two period topics. The next window is
+        // published to its own segment but never mirrored here.
         fun nowTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "text")
 
         fun nowImageTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "image")
@@ -529,12 +622,7 @@ class MqttPublisher(
 
         internal fun homeAssistantDiscoveryEntries(baseTopic: String): List<HomeAssistantDiscoveryEntry> {
             val base = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
-            val suffix = discoveryIdSuffix(base)
-            val idPrefix = if (base == UserPreferences.DEFAULT_MQTT_TOPIC) {
-                "clothescast"
-            } else {
-                "clothescast_$suffix"
-            }
+            val idPrefix = discoveryIdPrefix(baseTopic)
             val device = JsonObject(
                 mapOf(
                     "identifiers" to JsonArray(listOf(JsonPrimitive(idPrefix))),
@@ -575,8 +663,8 @@ class MqttPublisher(
                 }.toString(),
             )
             return listOf(
-                sensor("today", "Today", topicFor(base, ForecastPeriod.TODAY), icon = "mdi:tshirt-crew"),
-                sensor("tonight", "Tonight", topicFor(base, ForecastPeriod.TONIGHT), icon = "mdi:tshirt-crew"),
+                sensor("day", "Day", topicFor(base, ForecastPeriod.TODAY), icon = "mdi:tshirt-crew"),
+                sensor("night", "Night", topicFor(base, ForecastPeriod.TONIGHT), icon = "mdi:tshirt-crew"),
                 sensor("now", "Now", nowTopicFor(base), icon = "mdi:tshirt-crew"),
                 sensor(
                     id = "now_updated",
@@ -586,20 +674,72 @@ class MqttPublisher(
                     deviceClass = "timestamp",
                     valueTemplate = "{{ as_datetime((value | int) / 1000) }}",
                 ),
-                image("today_image", "Today image", imageTopicFor(base, ForecastPeriod.TODAY)),
-                image("tonight_image", "Tonight image", imageTopicFor(base, ForecastPeriod.TONIGHT)),
+                sensor(
+                    id = "day_updated",
+                    name = "Day updated",
+                    stateTopic = timestampTopicFor(base, ForecastPeriod.TODAY),
+                    icon = "mdi:clock-outline",
+                    deviceClass = "timestamp",
+                    valueTemplate = "{{ as_datetime((value | int) / 1000) }}",
+                ),
+                sensor(
+                    id = "night_updated",
+                    name = "Night updated",
+                    stateTopic = timestampTopicFor(base, ForecastPeriod.TONIGHT),
+                    icon = "mdi:clock-outline",
+                    deviceClass = "timestamp",
+                    valueTemplate = "{{ as_datetime((value | int) / 1000) }}",
+                ),
+                image("day_image", "Day image", imageTopicFor(base, ForecastPeriod.TODAY)),
+                image("night_image", "Night image", imageTopicFor(base, ForecastPeriod.TONIGHT)),
                 image("now_image", "Now image", nowImageTopicFor(base)),
             )
         }
 
         private fun periodTopicFor(baseTopic: String, period: ForecastPeriod, kind: String): String {
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
-            return "$trimmed/${period.name.lowercase()}/$kind"
+            return "$trimmed/${topicSegment(period)}/$kind"
+        }
+
+        // The topic segment for a period is decoupled from the enum name so the
+        // wire surface reads as wall-clock windows — `day` (the daytime cast)
+        // and `night` (the overnight cast) — rather than the `today`/`tonight`
+        // the enum constants are named for. Each scheduled run publishes both:
+        // the active period on `/now`, the next window on its own segment, so a
+        // consumer always finds the current and upcoming cast on stable topics.
+        internal fun topicSegment(period: ForecastPeriod): String = when (period) {
+            ForecastPeriod.TODAY -> "day"
+            ForecastPeriod.TONIGHT -> "night"
         }
 
         private fun nowTopicForKind(baseTopic: String, kind: String): String {
             val trimmed = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
             return "$trimmed/now/$kind"
+        }
+
+        private fun discoveryIdPrefix(baseTopic: String): String {
+            val base = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+            return if (base == UserPreferences.DEFAULT_MQTT_TOPIC) {
+                "clothescast"
+            } else {
+                "clothescast_${discoveryIdSuffix(base)}"
+            }
+        }
+
+        // Config topics for the pre-rename today/tonight discovery entities.
+        // Published with an empty retained payload — Home Assistant's "remove
+        // this entity" signal — so an upgrading user doesn't keep orphaned
+        // today/tonight entities (subscribed to topics we no longer update)
+        // alongside the new day/night ones. Harmless no-ops on a fresh install
+        // that never had them.
+        internal fun homeAssistantDiscoveryTombstones(baseTopic: String): List<String> {
+            val idPrefix = discoveryIdPrefix(baseTopic)
+            return listOf(
+                "homeassistant/sensor/${idPrefix}_today/config",
+                "homeassistant/sensor/${idPrefix}_tonight/config",
+                "homeassistant/image/${idPrefix}_today_image/config",
+                "homeassistant/image/${idPrefix}_tonight_image/config",
+            )
         }
 
         private fun discoveryIdSuffix(baseTopic: String): String =

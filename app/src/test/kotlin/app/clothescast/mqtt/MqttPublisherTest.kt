@@ -71,7 +71,7 @@ class MqttPublisherTest {
 
         val topics = captured.map { it.topic }
         topics shouldContainAll listOf(
-            "clothescast/default/today/text",
+            "clothescast/default/day/text",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
             "clothescast/default/now/text",
@@ -107,11 +107,110 @@ class MqttPublisherTest {
         subject.publishIfEnabled(ForecastPeriod.TONIGHT, "Tonight, clear and cool.")
 
         captured.map { it.topic } shouldContainAll listOf(
-            "home/forecast/tonight/text",
+            "home/forecast/night/text",
             "home/forecast/now/image",
             "home/forecast/now/audio",
             "home/forecast/now/text",
         )
+    }
+
+    @Test
+    fun `next-window publish writes the period topics but never mirrors to now`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "home/forecast",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+        val fakeImage = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47)
+
+        // The next window (e.g. tomorrow's day cast published at the evening
+        // run) lands on its own segment with mirrorToNow = false so /now keeps
+        // reflecting the current period.
+        subject.publishIfEnabled(
+            ForecastPeriod.TODAY,
+            "Tomorrow, sunny.",
+            image = fakeImage,
+            mirrorToNow = false,
+        )
+
+        captured.map { it.topic } shouldContainAll listOf(
+            "home/forecast/day/text",
+            "home/forecast/day/image",
+        )
+        captured.none { it.topic.contains("/now/") }.shouldBeTrue()
+    }
+
+    @Test
+    fun `next-window publish clears absent period media so the day-night bundle stays coherent`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "home/forecast",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+        val fakeImage = byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47)
+
+        // Image only — no audio/video. The next window has no /now backstop, so
+        // its own day/audio and day/video must be cleared with empty retained
+        // payloads or a consumer reading the day bundle would play a previous
+        // run's clip.
+        subject.publishIfEnabled(
+            ForecastPeriod.TODAY,
+            "Tomorrow, sunny.",
+            image = fakeImage,
+            mirrorToNow = false,
+        )
+
+        captured.first { it.topic == "home/forecast/day/image" }.payload.size shouldBeGreaterThan 0
+        captured.first { it.topic == "home/forecast/day/audio" }.payload.size shouldBe 0
+        captured.first { it.topic == "home/forecast/day/video" }.payload.size shouldBe 0
+        captured.none { it.topic.contains("/now/") }.shouldBeTrue()
+    }
+
+    @Test
+    fun `period bundle writes its own timestamp marker, held back when a period publish fails`() = runTest {
+        // Success: the next-window bundle gets a <period>/timestamp commit
+        // marker so a direct day/night consumer can trigger on it.
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local", mqttTopic = "home/forecast"),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+        subject.publishIfEnabled(ForecastPeriod.TONIGHT, "Tonight, clear.", mirrorToNow = false)
+        captured.any { it.topic == "home/forecast/night/timestamp" }.shouldBeTrue()
+
+        // Failure: a rejected period audio clear holds the marker back so a
+        // consumer never acts on a half-updated <period>/* set.
+        val capturedFail = mutableListOf<PublishCall>()
+        val failing = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local", mqttTopic = "home/forecast"),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload ->
+                capturedFail.add(PublishCall(config, topic, payload))
+                if (topic == "home/forecast/night/audio") error("audio clear rejected")
+            },
+            retryDelayMs = 1L,
+        )
+        failing.publishIfEnabled(ForecastPeriod.TONIGHT, "Tonight, clear.", mirrorToNow = false)
+        capturedFail.none { it.topic == "home/forecast/night/timestamp" }.shouldBeTrue()
     }
 
     @Test
@@ -132,10 +231,12 @@ class MqttPublisherTest {
         val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
 
         outcome.shouldBeInstanceOf<MqttPublishOutcome.Failure>()
-        // Both retry attempts target the period topic; the /now mirror is
-        // deliberately skipped so a stale-but-truthful retained payload
-        // survives instead of being overwritten by a half-failed run.
-        captured.map { it.topic }.distinct() shouldBe listOf("clothescast/default/today/text")
+        // Only the period topics (prose + image/audio/video clears) are
+        // attempted; the /now mirror is deliberately skipped so a
+        // stale-but-truthful retained payload survives instead of being
+        // overwritten by a half-failed run.
+        captured.none { it.topic.contains("/now/") }.shouldBeTrue()
+        captured.any { it.topic == "clothescast/default/day/text" }.shouldBeTrue()
     }
 
     @Test
@@ -479,23 +580,23 @@ class MqttPublisherTest {
     @Test
     fun `topic prefix is sanitised — leading and trailing slashes trimmed`() {
         MqttPublisher.topicFor("/clothescast/default/", ForecastPeriod.TODAY) shouldBe
-            "clothescast/default/today/text"
+            "clothescast/default/day/text"
         MqttPublisher.topicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
-            "home/forecast/tonight/text"
+            "home/forecast/night/text"
         // Empty / blank base falls back to the documented default so a
-        // hand-edited DataStore can't produce a bare "/today/text" topic.
-        MqttPublisher.topicFor("", ForecastPeriod.TODAY) shouldBe "clothescast/default/today/text"
-        MqttPublisher.topicFor("   ", ForecastPeriod.TONIGHT) shouldBe "clothescast/default/tonight/text"
+        // hand-edited DataStore can't produce a bare "/day/text" topic.
+        MqttPublisher.topicFor("", ForecastPeriod.TODAY) shouldBe "clothescast/default/day/text"
+        MqttPublisher.topicFor("   ", ForecastPeriod.TONIGHT) shouldBe "clothescast/default/night/text"
     }
 
     @Test
     fun `imageTopicFor builds image-suffixed topic`() {
         MqttPublisher.imageTopicFor("clothescast/default", ForecastPeriod.TODAY) shouldBe
-            "clothescast/default/today/image"
+            "clothescast/default/day/image"
         MqttPublisher.imageTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
-            "home/forecast/tonight/image"
+            "home/forecast/night/image"
         MqttPublisher.imageTopicFor("", ForecastPeriod.TODAY) shouldBe
-            "clothescast/default/today/image"
+            "clothescast/default/day/image"
     }
 
     @Test
@@ -511,21 +612,21 @@ class MqttPublisherTest {
     @Test
     fun `audioTopicFor builds audio-suffixed topic`() {
         MqttPublisher.audioTopicFor("clothescast/default", ForecastPeriod.TODAY) shouldBe
-            "clothescast/default/today/audio"
+            "clothescast/default/day/audio"
         MqttPublisher.audioTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
-            "home/forecast/tonight/audio"
+            "home/forecast/night/audio"
         MqttPublisher.audioTopicFor("", ForecastPeriod.TODAY) shouldBe
-            "clothescast/default/today/audio"
+            "clothescast/default/day/audio"
     }
 
     @Test
     fun `videoTopicFor and nowVideoTopicFor build video-suffixed topics`() {
         MqttPublisher.videoTopicFor("clothescast/default", ForecastPeriod.TODAY) shouldBe
-            "clothescast/default/today/video"
+            "clothescast/default/day/video"
         MqttPublisher.videoTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
-            "home/forecast/tonight/video"
+            "home/forecast/night/video"
         MqttPublisher.videoTopicFor("", ForecastPeriod.TODAY) shouldBe
-            "clothescast/default/today/video"
+            "clothescast/default/day/video"
         MqttPublisher.nowVideoTopicFor("/clothescast/default/") shouldBe
             "clothescast/default/now/video"
     }
@@ -558,18 +659,18 @@ class MqttPublisherTest {
 
         val discovery = captured.filter { isDiscoveryTopic(it.topic) }
         discovery.map { it.topic } shouldContainAll listOf(
-            "homeassistant/sensor/clothescast_home_forecast_today/config",
-            "homeassistant/sensor/clothescast_home_forecast_tonight/config",
+            "homeassistant/sensor/clothescast_home_forecast_day/config",
+            "homeassistant/sensor/clothescast_home_forecast_night/config",
             "homeassistant/sensor/clothescast_home_forecast_now/config",
             "homeassistant/sensor/clothescast_home_forecast_now_updated/config",
-            "homeassistant/image/clothescast_home_forecast_today_image/config",
-            "homeassistant/image/clothescast_home_forecast_tonight_image/config",
+            "homeassistant/image/clothescast_home_forecast_day_image/config",
+            "homeassistant/image/clothescast_home_forecast_night_image/config",
             "homeassistant/image/clothescast_home_forecast_now_image/config",
         )
-        val today = discoveryPayload(discovery, "homeassistant/sensor/clothescast_home_forecast_today/config")
-        today["unique_id"]!!.jsonPrimitive.content shouldBe "clothescast_home_forecast_today"
-        today["default_entity_id"]!!.jsonPrimitive.content shouldBe "sensor.clothescast_home_forecast_today"
-        today["state_topic"]!!.jsonPrimitive.content shouldBe "home/forecast/today/text"
+        val today = discoveryPayload(discovery, "homeassistant/sensor/clothescast_home_forecast_day/config")
+        today["unique_id"]!!.jsonPrimitive.content shouldBe "clothescast_home_forecast_day"
+        today["default_entity_id"]!!.jsonPrimitive.content shouldBe "sensor.clothescast_home_forecast_day"
+        today["state_topic"]!!.jsonPrimitive.content shouldBe "home/forecast/day/text"
         today["device"]!!.jsonObject["name"]!!.jsonPrimitive.content shouldBe "ClothesCast"
 
         val updated = discoveryPayload(discovery, "homeassistant/sensor/clothescast_home_forecast_now_updated/config")
@@ -584,12 +685,41 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `successful publish clears the pre-rename today and tonight discovery configs`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "home/forecast",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        // Each old discovery config is cleared with an empty retained payload so
+        // HA removes the orphaned today/tonight entities after the rename.
+        listOf(
+            "homeassistant/sensor/clothescast_home_forecast_today/config",
+            "homeassistant/sensor/clothescast_home_forecast_tonight/config",
+            "homeassistant/image/clothescast_home_forecast_today_image/config",
+            "homeassistant/image/clothescast_home_forecast_tonight_image/config",
+        ).forEach { topic ->
+            captured.first { it.topic == topic }.payload.size shouldBe 0
+        }
+    }
+
+    @Test
     fun `default Home Assistant discovery ids omit the default topic suffix`() {
         val entries = MqttPublisher.homeAssistantDiscoveryEntries("clothescast/default")
 
         entries.map { it.configTopic } shouldContainAll listOf(
-            "homeassistant/sensor/clothescast_today/config",
-            "homeassistant/sensor/clothescast_tonight/config",
+            "homeassistant/sensor/clothescast_day/config",
+            "homeassistant/sensor/clothescast_night/config",
             "homeassistant/sensor/clothescast_now/config",
             "homeassistant/sensor/clothescast_now_updated/config",
             "homeassistant/image/clothescast_now_image/config",
@@ -618,7 +748,7 @@ class MqttPublisherTest {
         val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
 
         outcome shouldBe MqttPublishOutcome.Success
-        captured.any { it.topic == "clothescast/default/today/text" }.shouldBeTrue()
+        captured.any { it.topic == "clothescast/default/day/text" }.shouldBeTrue()
         captured.any { it.topic.startsWith("homeassistant/") }.shouldBeTrue()
     }
 
@@ -642,8 +772,8 @@ class MqttPublisherTest {
 
         val topics = captured.map { it.topic }
         topics shouldContainAll listOf(
-            "clothescast/default/today/text",
-            "clothescast/default/today/image",
+            "clothescast/default/day/text",
+            "clothescast/default/day/image",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
             "clothescast/default/now/text",
@@ -653,7 +783,7 @@ class MqttPublisherTest {
         val nowTextIdx = topics.indexOf("clothescast/default/now/text")
         nowTextIdx shouldBeGreaterThan topics.indexOf("clothescast/default/now/image")
         nowTextIdx shouldBeGreaterThan topics.indexOf("clothescast/default/now/audio")
-        captured.first { it.topic == "clothescast/default/today/image" }.payload contentEquals fakeImage shouldBe true
+        captured.first { it.topic == "clothescast/default/day/image" }.payload contentEquals fakeImage shouldBe true
         captured.first { it.topic == "clothescast/default/now/image" }.payload contentEquals fakeImage shouldBe true
         // Audio absent from the bundle → /now/audio cleared with empty payload.
         captured.first { it.topic == "clothescast/default/now/audio" }.payload.size shouldBe 0
@@ -680,9 +810,9 @@ class MqttPublisherTest {
 
         val topics = captured.map { it.topic }
         topics shouldContainAll listOf(
-            "clothescast/default/tonight/text",
-            "clothescast/default/tonight/image",
-            "clothescast/default/tonight/audio",
+            "clothescast/default/night/text",
+            "clothescast/default/night/image",
+            "clothescast/default/night/audio",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
             "clothescast/default/now/text",
@@ -720,7 +850,7 @@ class MqttPublisherTest {
 
         val topics = captured.map { it.topic }
         topics shouldContainAll listOf(
-            "clothescast/default/today/video",
+            "clothescast/default/day/video",
             "clothescast/default/now/video",
             "clothescast/default/now/timestamp",
             "clothescast/default/now/text",
@@ -732,7 +862,7 @@ class MqttPublisherTest {
         nowTextIdx shouldBeGreaterThan topics.indexOf("clothescast/default/now/video")
         topics.indexOf("clothescast/default/now/timestamp") shouldBeGreaterThan nowTextIdx
         // Period + now video carry the muxed MP4 bytes verbatim.
-        captured.first { it.topic == "clothescast/default/today/video" }.payload contentEquals fakeMp4 shouldBe true
+        captured.first { it.topic == "clothescast/default/day/video" }.payload contentEquals fakeMp4 shouldBe true
         captured.first { it.topic == "clothescast/default/now/video" }.payload contentEquals fakeMp4 shouldBe true
         // Timestamp is a non-empty decimal epoch-millis string.
         val ts = captured.first { it.topic == "clothescast/default/now/timestamp" }.payload.decodeToString()
@@ -752,9 +882,10 @@ class MqttPublisherTest {
 
         subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
 
-        // No period video topic is touched when no video is submitted, but the
-        // now/video mirror is cleared so a stale clip can't outlive its bundle.
-        captured.none { it.topic == "clothescast/default/today/video" }.shouldBeTrue()
+        // With no video submitted, both the period and now video topics are
+        // cleared with an empty retained payload so a stale clip can't outlive
+        // its bundle on either surface.
+        captured.first { it.topic == "clothescast/default/day/video" }.payload.size shouldBe 0
         captured.first { it.topic == "clothescast/default/now/video" }.payload.size shouldBe 0
     }
 
@@ -851,7 +982,7 @@ class MqttPublisherTest {
             passwordProvider = { null },
             publish = { config, topic, payload ->
                 captured.add(PublishCall(config, topic, payload))
-                if (topic.endsWith("/today/image")) error("image broker rejection")
+                if (topic.endsWith("/day/image")) error("image broker rejection")
             },
             retryDelayMs = 1L,
         )
@@ -880,7 +1011,7 @@ class MqttPublisherTest {
             passwordProvider = { null },
             publish = { config, topic, payload ->
                 captured.add(PublishCall(config, topic, payload))
-                if (topic.endsWith("/today/audio")) error("audio broker rejection")
+                if (topic.endsWith("/day/audio")) error("audio broker rejection")
             },
             retryDelayMs = 1L,
         )
@@ -1016,6 +1147,7 @@ class MqttPublisherTest {
     @Test
     fun `failed first attempt is retried and a successful second attempt returns Success`() = runTest {
         val attempts = mutableListOf<PublishCall>()
+        var dayTextCalls = 0
         val subject = MqttPublisher(
             preferences = flowOf(
                 basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
@@ -1023,7 +1155,11 @@ class MqttPublisherTest {
             passwordProvider = { null },
             publish = { config, topic, payload ->
                 attempts.add(PublishCall(config, topic, payload))
-                if (attempts.size == 1) error("first-attempt failure")
+                // Fail the period prose's first attempt only; everything else
+                // (the other period topics + the /now bundle) succeeds.
+                if (topic == "clothescast/default/day/text" && ++dayTextCalls == 1) {
+                    error("first-attempt failure")
+                }
             },
             retryDelayMs = 1L,
         )
@@ -1031,32 +1167,34 @@ class MqttPublisherTest {
         val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
 
         outcome shouldBe MqttPublishOutcome.Success
-        // Period prose retries once, then the /now bundle (image/audio/video
-        // clears, text, then timestamp last as the commit marker) all succeed.
-        // First two attempts are the retried period publish; the rest are the
-        // coordinated /now mirrors.
-        nonDiscoveryTopics(attempts) shouldBe listOf(
-            "clothescast/default/today/text",
-            "clothescast/default/today/text",
+        val topics = nonDiscoveryTopics(attempts)
+        // Period prose retried once (two day/text attempts); the other period
+        // topics published once each, then the /now bundle settled with
+        // timestamp last as the commit marker.
+        topics.count { it == "clothescast/default/day/text" } shouldBe 2
+        topics.last() shouldBe "clothescast/default/now/timestamp"
+        topics.toSet() shouldContainAll listOf(
+            "clothescast/default/day/image",
+            "clothescast/default/day/audio",
+            "clothescast/default/day/video",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
             "clothescast/default/now/video",
             "clothescast/default/now/text",
-            "clothescast/default/now/timestamp",
         )
     }
 
     @Test
     fun `both attempts failing returns the last attempt's Failure message`() = runTest {
-        var attempts = 0
+        val attempts = mutableListOf<String>()
         val subject = MqttPublisher(
             preferences = flowOf(
                 basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
             ),
             passwordProvider = { null },
-            publish = { _, _, _ ->
-                attempts += 1
-                error("attempt $attempts failure")
+            publish = { _, topic, _ ->
+                attempts += topic
+                error("broker down")
             },
             retryDelayMs = 1L,
         )
@@ -1064,8 +1202,11 @@ class MqttPublisherTest {
         val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
 
         val failure = outcome.shouldBeInstanceOf<MqttPublishOutcome.Failure>()
-        attempts shouldBe 2
-        failure.message shouldBe "IllegalStateException: attempt 2 failure"
+        failure.message shouldBe "IllegalStateException: broker down"
+        // The returned outcome is the period prose's: it exhausts both attempts.
+        attempts.count { it == "clothescast/default/day/text" } shouldBe 2
+        // The /now mirror is skipped entirely when the period publish fails.
+        attempts.none { it.contains("/now/") }.shouldBeTrue()
     }
 
     @Test
@@ -1081,11 +1222,16 @@ class MqttPublisherTest {
         )
 
         subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.Success
-        // No retries on the period publish; the remaining attempts are the
-        // coordinated /now bundle (image/audio/video clears, text, then
-        // timestamp last as the commit marker).
+        // No retries: the period bundle publishes all four topics once (prose
+        // plus image/audio/video clears, since no media was submitted) then its
+        // own timestamp commit marker, then the coordinated /now bundle
+        // (image/audio/video clears, text, then timestamp last).
         attempts.filterNot(::isDiscoveryTopic) shouldBe listOf(
-            "clothescast/default/today/text",
+            "clothescast/default/day/text",
+            "clothescast/default/day/image",
+            "clothescast/default/day/audio",
+            "clothescast/default/day/video",
+            "clothescast/default/day/timestamp",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
             "clothescast/default/now/video",

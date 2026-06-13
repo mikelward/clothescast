@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Holiday banner / display-name strings and per-country labels are resolved
+  at runtime by name via Resources.getIdentifier — the theme catalogue lives
+  in :core:domain (pure Kotlin) and can't hold compile-time R ids, so the
+  string keys ("holiday_banner_uk_kings_birthday", "holiday_name_…",
+  "settings_holiday_country_gb") are data, never @string/… references the
+  resource shrinker can see. In minified builds (isShrinkResources = true on
+  both debug and release) the shrinker therefore counts them as unused and
+  strips them; getIdentifier then returns 0 and the banner falls back to the
+  raw HolidayId enum name (e.g. "UK_KINGS_BIRTHDAY" instead of "God save the
+  King"). Keep the three dynamically-referenced families so the lookup
+  resolves. See TodayScreen.resolveBannerString, HolidayGreeting, and
+  HolidaySettings.resolveHolidayString.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@string/holiday_name_*,@string/holiday_banner_*,@string/settings_holiday_country_*" />

@@ -3175,15 +3175,18 @@ internal fun SunshineCard(
     // midnight; the per-date filter would drop pre-alarm tomorrow-morning sun
     // and the "Xh of sun tonight" total would be short. Use the window-total
     // variant for TONIGHT and keep the date-filtered call for TODAY (whose
-    // slice is single-date by construction).
-    val totalHours = remember(perModelHourly, forDate, period) {
-        when (period) {
-            ForecastPeriod.TODAY -> perModelHourly.consensusSunshineHoursFor(forDate)
-            ForecastPeriod.TONIGHT -> perModelHourly.consensusSunshineHours()
+    // slice is single-date by construction). On the 7-day deck the per-model
+    // data is already sliced to the visible week, so the window total is the
+    // week's sunshine — date-filtering to forDate would show only day one.
+    val weekView = isWeekView()
+    val totalHours = remember(perModelHourly, forDate, period, weekView) {
+        when {
+            weekView || period == ForecastPeriod.TONIGHT -> perModelHourly.consensusSunshineHours()
+            else -> perModelHourly.consensusSunshineHoursFor(forDate)
         }
     }
     val totalBlurb = if (totalHours != null) {
-        formatSunshineTotal(totalHours, period)
+        formatSunshineTotal(totalHours, period, weekView)
     } else {
         stringResource(R.string.today_sunshine_subtitle)
     }
@@ -3202,17 +3205,26 @@ internal fun SunshineCard(
 }
 
 @Composable
-private fun formatSunshineTotal(hours: Double, period: ForecastPeriod): String {
+private fun formatSunshineTotal(
+    hours: Double,
+    period: ForecastPeriod,
+    weekView: Boolean,
+): String {
     val totalMinutes = (hours * 60.0).roundToInt()
     val h = totalMinutes / 60
     val m = totalMinutes % 60
-    val res = when (period) {
-        ForecastPeriod.TODAY -> Triple(
+    val res = when {
+        weekView -> Triple(
+            R.string.today_sunshine_total_minutes_only_week,
+            R.string.today_sunshine_total_hours_only_week,
+            R.string.today_sunshine_total_hours_minutes_week,
+        )
+        period == ForecastPeriod.TODAY -> Triple(
             R.string.today_sunshine_total_minutes_only,
             R.string.today_sunshine_total_hours_only,
             R.string.today_sunshine_total_hours_minutes,
         )
-        ForecastPeriod.TONIGHT -> Triple(
+        else -> Triple(
             R.string.today_sunshine_total_minutes_only_tonight,
             R.string.today_sunshine_total_hours_only_tonight,
             R.string.today_sunshine_total_hours_minutes_tonight,

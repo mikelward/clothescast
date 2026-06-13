@@ -737,6 +737,9 @@ the displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">本日の日照時間 %1$d時間%2$d分</string>
     <string name="today_sunshine_total_hours_only">本日の日照時間 %1$d時間</string>
     <string name="today_sunshine_total_minutes_only">本日の日照時間 %1$d分</string>
+    <string name="today_sunshine_total_hours_minutes_week">日照時間 %1$d時間%2$d分</string>
+    <string name="today_sunshine_total_hours_only_week">日照時間 %1$d時間</string>
+    <string name="today_sunshine_total_minutes_only_week">日照時間 %1$d分</string>
     <string name="today_sunshine_total_hours_minutes_tonight">今夜の日照時間 %1$d時間%2$d分</string>
     <string name="today_sunshine_total_hours_only_tonight">今夜の日照時間 %1$d時間</string>
     <string name="today_sunshine_total_minutes_only_tonight">今夜の日照時間 %1$d分</string>

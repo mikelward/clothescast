@@ -671,6 +671,9 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_sunshine_total_hours_minutes">আজ %1$d ঘণ্টা %2$d মিনিট রোদ</string>
     <string name="today_sunshine_total_hours_only">আজ %1$d ঘণ্টা রোদ</string>
     <string name="today_sunshine_total_minutes_only">আজ %1$d মিনিট রোদ</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d ঘণ্টা %2$d মিনিট রোদ</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d ঘণ্টা রোদ</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d মিনিট রোদ</string>
     <string name="today_sunshine_total_hours_minutes_tonight">আজ রাতে %1$d ঘণ্টা %2$d মিনিট রোদ</string>
     <string name="today_sunshine_total_hours_only_tonight">আজ রাতে %1$d ঘণ্টা রোদ</string>
     <string name="today_sunshine_total_minutes_only_tonight">আজ রাতে %1$d মিনিট রোদ</string>

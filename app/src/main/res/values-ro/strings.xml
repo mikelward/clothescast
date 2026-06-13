@@ -604,6 +604,9 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min soare azi</string>
     <string name="today_sunshine_total_hours_only">%1$d h soare azi</string>
     <string name="today_sunshine_total_minutes_only">%1$d min soare azi</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d h %2$d min soare</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d h soare</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d min soare</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$d h %2$d min soare diseară</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$d h soare diseară</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min soare diseară</string>

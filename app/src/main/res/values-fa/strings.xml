@@ -476,6 +476,9 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_sunshine_total_hours_minutes">%1$d ساعت %2$d دقیقه آفتاب امروز</string>
     <string name="today_sunshine_total_hours_only">%1$d ساعت آفتاب امروز</string>
     <string name="today_sunshine_total_minutes_only">%1$d دقیقه آفتاب امروز</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d ساعت %2$d دقیقه آفتاب</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d ساعت آفتاب</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d دقیقه آفتاب</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$d ساعت %2$d دقیقه آفتاب امشب</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$d ساعت آفتاب امشب</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d دقیقه آفتاب امشب</string>

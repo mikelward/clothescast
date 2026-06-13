@@ -651,6 +651,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm ng araw ngayon</string>
     <string name="today_sunshine_total_hours_only">%1$dh ng araw ngayon</string>
     <string name="today_sunshine_total_minutes_only">%1$dm ng araw ngayon</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$dh %2$dm ng araw</string>
+    <string name="today_sunshine_total_hours_only_week">%1$dh ng araw</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$dm ng araw</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm ng araw ngayong gabi</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$dh ng araw ngayong gabi</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm ng araw ngayong gabi</string>

@@ -608,6 +608,9 @@ displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">Bugün %1$d sa %2$d dk güneş</string>
     <string name="today_sunshine_total_hours_only">Bugün %1$d sa güneş</string>
     <string name="today_sunshine_total_minutes_only">Bugün %1$d dk güneş</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d sa %2$d dk güneş</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d sa güneş</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d dk güneş</string>
     <string name="today_sunshine_total_hours_minutes_tonight">Bu gece %1$d sa %2$d dk güneş</string>
     <string name="today_sunshine_total_hours_only_tonight">Bu gece %1$d sa güneş</string>
     <string name="today_sunshine_total_minutes_only_tonight">Bu gece %1$d dk güneş</string>

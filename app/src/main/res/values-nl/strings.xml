@@ -676,6 +676,9 @@ the displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$du %2$dm zon vandaag</string>
     <string name="today_sunshine_total_hours_only">%1$du zon vandaag</string>
     <string name="today_sunshine_total_minutes_only">%1$dm zon vandaag</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$du %2$dm zon</string>
+    <string name="today_sunshine_total_hours_only_week">%1$du zon</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$dm zon</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$du %2$dm zon vanavond</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$du zon vanavond</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm zon vanavond</string>

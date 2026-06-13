@@ -741,6 +741,9 @@ displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">오늘 햇빛 %1$d시간 %2$d분</string>
     <string name="today_sunshine_total_hours_only">오늘 햇빛 %1$d시간</string>
     <string name="today_sunshine_total_minutes_only">오늘 햇빛 %1$d분</string>
+    <string name="today_sunshine_total_hours_minutes_week">햇빛 %1$d시간 %2$d분</string>
+    <string name="today_sunshine_total_hours_only_week">햇빛 %1$d시간</string>
+    <string name="today_sunshine_total_minutes_only_week">햇빛 %1$d분</string>
     <string name="today_sunshine_total_hours_minutes_tonight">오늘 밤 햇빛 %1$d시간 %2$d분</string>
     <string name="today_sunshine_total_hours_only_tonight">오늘 밤 햇빛 %1$d시간</string>
     <string name="today_sunshine_total_minutes_only_tonight">오늘 밤 햇빛 %1$d분</string>

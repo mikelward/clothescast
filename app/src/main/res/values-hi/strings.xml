@@ -630,6 +630,9 @@ Not overridden by design:
     <string name="today_sunshine_total_hours_minutes">आज %1$d घंटे %2$d मिनट धूप</string>
     <string name="today_sunshine_total_hours_only">आज %1$d घंटे धूप</string>
     <string name="today_sunshine_total_minutes_only">आज %1$d मिनट धूप</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d घंटे %2$d मिनट धूप</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d घंटे धूप</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d मिनट धूप</string>
     <string name="today_sunshine_total_hours_minutes_tonight">आज रात %1$d घंटे %2$d मिनट धूप</string>
     <string name="today_sunshine_total_hours_only_tonight">आज रात %1$d घंटे धूप</string>
     <string name="today_sunshine_total_minutes_only_tonight">आज रात %1$d मिनट धूप</string>

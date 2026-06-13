@@ -343,6 +343,9 @@
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm me diell sot</string>
     <string name="today_sunshine_total_hours_only">%1$dh me diell sot</string>
     <string name="today_sunshine_total_minutes_only">%1$dm me diell sot</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$dh %2$dm me diell</string>
+    <string name="today_sunshine_total_hours_only_week">%1$dh me diell</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$dm me diell</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm me diell sonte</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$dh me diell sonte</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm me diell sonte</string>

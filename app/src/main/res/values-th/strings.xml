@@ -601,6 +601,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_hours_minutes">แดดวันนี้ %1$d ชม. %2$d นาที</string>
     <string name="today_sunshine_total_hours_only">แดดวันนี้ %1$d ชม.</string>
     <string name="today_sunshine_total_minutes_only">แดดวันนี้ %1$d นาที</string>
+    <string name="today_sunshine_total_hours_minutes_week">แดด %1$d ชม. %2$d นาที</string>
+    <string name="today_sunshine_total_hours_only_week">แดด %1$d ชม.</string>
+    <string name="today_sunshine_total_minutes_only_week">แดด %1$d นาที</string>
     <string name="today_sunshine_total_hours_minutes_tonight">แดดคืนนี้ %1$d ชม. %2$d นาที</string>
     <string name="today_sunshine_total_hours_only_tonight">แดดคืนนี้ %1$d ชม.</string>
     <string name="today_sunshine_total_minutes_only_tonight">แดดคืนนี้ %1$d นาที</string>

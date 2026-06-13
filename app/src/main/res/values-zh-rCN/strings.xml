@@ -730,6 +730,9 @@ label localizes.
     <string name="today_sunshine_total_hours_minutes">今日日照 %1$d小时%2$d分钟</string>
     <string name="today_sunshine_total_hours_only">今日日照 %1$d小时</string>
     <string name="today_sunshine_total_minutes_only">今日日照 %1$d分钟</string>
+    <string name="today_sunshine_total_hours_minutes_week">日照 %1$d小时%2$d分钟</string>
+    <string name="today_sunshine_total_hours_only_week">日照 %1$d小时</string>
+    <string name="today_sunshine_total_minutes_only_week">日照 %1$d分钟</string>
     <string name="today_sunshine_total_hours_minutes_tonight">今晚日照 %1$d小时%2$d分钟</string>
     <string name="today_sunshine_total_hours_only_tonight">今晚日照 %1$d小时</string>
     <string name="today_sunshine_total_minutes_only_tonight">今晚日照 %1$d分钟</string>

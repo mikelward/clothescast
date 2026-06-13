@@ -605,6 +605,9 @@ surfaces.
     <string name="today_sunshine_total_hours_minutes">%1$dх %2$dм сунца данас</string>
     <string name="today_sunshine_total_hours_only">%1$dх сунца данас</string>
     <string name="today_sunshine_total_minutes_only">%1$dм сунца данас</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$dх %2$dм сунца</string>
+    <string name="today_sunshine_total_hours_only_week">%1$dх сунца</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$dм сунца</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$dх %2$dм сунца вечерас</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$dх сунца вечерас</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$dм сунца вечерас</string>

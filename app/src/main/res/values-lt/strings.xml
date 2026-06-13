@@ -620,6 +620,9 @@ What is NOT overridden, by design:
     <string name="today_sunshine_total_hours_minutes">%1$d val %2$d min saulės šiandien</string>
     <string name="today_sunshine_total_hours_only">%1$d val saulės šiandien</string>
     <string name="today_sunshine_total_minutes_only">%1$d min saulės šiandien</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d val %2$d min saulės</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d val saulės</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d min saulės</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$d val %2$d min saulės šįvakar</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$d val saulės šįvakar</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min saulės šįvakar</string>

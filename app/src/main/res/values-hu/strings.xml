@@ -621,6 +621,9 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_sunshine_total_hours_minutes">%1$d ó %2$d p napsütés ma</string>
     <string name="today_sunshine_total_hours_only">%1$d ó napsütés ma</string>
     <string name="today_sunshine_total_minutes_only">%1$d p napsütés ma</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d ó %2$d p napsütés</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d ó napsütés</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d p napsütés</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$d ó %2$d p napsütés ma este</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$d ó napsütés ma este</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d p napsütés ma este</string>

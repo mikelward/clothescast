@@ -482,6 +482,9 @@ standard in Israeli digital communication.
     <string name="today_sunshine_total_hours_minutes">%1$d ש׳ %2$d ד׳ שמש היום</string>
     <string name="today_sunshine_total_hours_only">%1$d שעות שמש היום</string>
     <string name="today_sunshine_total_minutes_only">%1$d דקות שמש היום</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d ש׳ %2$d ד׳ שמש</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d שעות שמש</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d דקות שמש</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$d ש׳ %2$d ד׳ שמש הלילה</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$d שעות שמש הלילה</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d דקות שמש הלילה</string>

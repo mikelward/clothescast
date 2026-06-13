@@ -304,6 +304,11 @@
     <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm of sun tonight</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$dh of sun tonight</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm of sun tonight</string>
+    <!-- 7-day deck variants: the total spans the week (not a single day), so
+         the "today" / "tonight" qualifier is dropped. -->
+    <string name="today_sunshine_total_hours_minutes_week">%1$dh %2$dm of sun</string>
+    <string name="today_sunshine_total_hours_only_week">%1$dh of sun</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$dm of sun</string>
 
     <!-- UV-index diagnostic card. Cheap actionable signal (hat / sunscreen /
          sunglasses) even when the temperature itself doesn't trigger a

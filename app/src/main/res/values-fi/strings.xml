@@ -609,6 +609,9 @@ displayed label localizes.
     <string name="today_sunshine_total_hours_minutes">%1$d h %2$d min aurinkoa tänään</string>
     <string name="today_sunshine_total_hours_only">%1$d h aurinkoa tänään</string>
     <string name="today_sunshine_total_minutes_only">%1$d min aurinkoa tänään</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d h %2$d min aurinkoa</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d h aurinkoa</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d min aurinkoa</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$d h %2$d min aurinkoa tänä iltana</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$d h aurinkoa tänä iltana</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min aurinkoa tänä iltana</string>

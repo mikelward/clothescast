@@ -573,6 +573,9 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_sunshine_total_hours_minutes">%1$d st %2$d min saules šodien</string>
     <string name="today_sunshine_total_hours_only">%1$d st saules šodien</string>
     <string name="today_sunshine_total_minutes_only">%1$d min saules šodien</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$d st %2$d min saules</string>
+    <string name="today_sunshine_total_hours_only_week">%1$d st saules</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$d min saules</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$d st %2$d min saules šovakar</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$d st saules šovakar</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min saules šovakar</string>

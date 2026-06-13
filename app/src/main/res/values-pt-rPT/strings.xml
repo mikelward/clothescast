@@ -758,6 +758,9 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm de sol hoje</string>
     <string name="today_sunshine_total_hours_only">%1$dh de sol hoje</string>
     <string name="today_sunshine_total_minutes_only">%1$dm de sol hoje</string>
+    <string name="today_sunshine_total_hours_minutes_week">%1$dh %2$dm de sol</string>
+    <string name="today_sunshine_total_hours_only_week">%1$dh de sol</string>
+    <string name="today_sunshine_total_minutes_only_week">%1$dm de sol</string>
     <string name="today_sunshine_total_hours_minutes_tonight">%1$dh %2$dm de sol esta noite</string>
     <string name="today_sunshine_total_hours_only_tonight">%1$dh de sol esta noite</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm de sol esta noite</string>

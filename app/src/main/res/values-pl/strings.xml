@@ -913,7 +913,7 @@ is unchanged; only the displayed label localizes.
     <string name="holiday_banner_st_georges_day">Wesołego Dnia Świętego Jerzego</string>
     <string name="holiday_banner_anzac_day">Wspominamy poległych</string>
     <string name="holiday_banner_uk_bank_holiday">Wesołego dnia wolnego</string>
-    <string name="holiday_banner_uk_kings_birthday">Niech żyje Król</string>
+    <string name="holiday_banner_uk_kings_birthday">Wszystkiego najlepszego dla Króla</string>
     <string name="holiday_banner_japan_greenery_day">Wesołego Dnia Zieleni</string>
     <string name="holiday_banner_croatia_statehood_day">Wesołego Dnia Państwowości Chorwacji</string>
     <string name="holiday_banner_us_memorial_day">Wspominamy poległych</string>
@@ -1037,7 +1037,7 @@ is unchanged; only the displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">Wesołego Dnia Niepodległości Argentyny</string>
     <string name="holiday_banner_argentina_may_revolution">Wesołej Rewolucji Majowej</string>
     <string name="holiday_banner_ascension_day">Wesołego Wniebowstąpienia</string>
-    <string name="holiday_banner_ash_wednesday">Pamiętaj, że prochem jesteś</string>
+    <string name="holiday_banner_ash_wednesday">Środa Popielcowa</string>
     <string name="holiday_banner_bangladesh_independence_day">Wesołego Dnia Niepodległości</string>
     <string name="holiday_banner_bangladesh_victory_day">Wesołego Dnia Zwycięstwa</string>
     <string name="holiday_banner_brazil_black_awareness">Dzień Świadomości Czarnych</string>
@@ -1060,7 +1060,7 @@ is unchanged; only the displayed label localizes.
     <string name="holiday_banner_malaysia_day">Wesołego Dnia Malezji</string>
     <string name="holiday_banner_malaysia_independence_day">Wesołego Dnia Merdeka</string>
     <string name="holiday_banner_mardi_gras">Wesołego Ostatków</string>
-    <string name="holiday_banner_maundy_thursday">Nowe przykazanie</string>
+    <string name="holiday_banner_maundy_thursday">Wielki Czwartek</string>
     <string name="holiday_banner_melbourne_cup_day">Wyścig, który zatrzymuje naród</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Ku czci Benita Juáreza</string>
     <string name="holiday_banner_mexico_constitution_day">Wesołego Dnia Konstytucji</string>
@@ -1072,7 +1072,7 @@ is unchanged; only the displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">Wesołych Świąt Prawosławnego Bożego Narodzenia</string>
     <string name="holiday_banner_pakistan_day">Wesołego Dnia Pakistanu</string>
     <string name="holiday_banner_pakistan_independence_day">Wesołego Dnia Niepodległości</string>
-    <string name="holiday_banner_palm_sunday">Hosanna na wysokościach</string>
+    <string name="holiday_banner_palm_sunday">Niedziela Palmowa</string>
     <string name="holiday_banner_pentecost">Wesołej Zesłania Ducha Świętego</string>
     <string name="holiday_banner_philippines_bonifacio_day">Wesołego Dnia Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Wesołego Dnia Niepodległości Filipin</string>

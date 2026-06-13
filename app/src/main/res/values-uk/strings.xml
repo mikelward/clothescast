@@ -864,7 +864,7 @@ only the displayed label localizes.
     <string name="holiday_banner_st_georges_day">З Днем святого Георгія</string>
     <string name="holiday_banner_anzac_day">Пам\'ятаємо</string>
     <string name="holiday_banner_uk_bank_holiday">З банківським святом</string>
-    <string name="holiday_banner_uk_kings_birthday">Боже, бережи Короля</string>
+    <string name="holiday_banner_uk_kings_birthday">З Днем народження Короля</string>
     <string name="holiday_banner_japan_greenery_day">З японським Днем зелені</string>
     <string name="holiday_banner_croatia_statehood_day">З Днем державності Хорватії</string>
     <string name="holiday_banner_us_memorial_day">Вшановуємо полеглих</string>
@@ -988,7 +988,7 @@ only the displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">Зі святом Дня незалежності Аргентини</string>
     <string name="holiday_banner_argentina_may_revolution">Зі святом Травневої революції</string>
     <string name="holiday_banner_ascension_day">Зі святом Вознесіння</string>
-    <string name="holiday_banner_ash_wednesday">Памʼятай, що ти прах</string>
+    <string name="holiday_banner_ash_wednesday">Попільна середа</string>
     <string name="holiday_banner_bangladesh_independence_day">Зі святом Дня незалежності</string>
     <string name="holiday_banner_bangladesh_victory_day">Зі святом Дня перемоги</string>
     <string name="holiday_banner_brazil_black_awareness">День чорної свідомості</string>
@@ -1011,7 +1011,7 @@ only the displayed label localizes.
     <string name="holiday_banner_malaysia_day">Зі святом Дня Малайзії</string>
     <string name="holiday_banner_malaysia_independence_day">Зі святом Дня Мердека</string>
     <string name="holiday_banner_mardi_gras">Веселого Жирного вівторка</string>
-    <string name="holiday_banner_maundy_thursday">Нова заповідь</string>
+    <string name="holiday_banner_maundy_thursday">Великий четвер</string>
     <string name="holiday_banner_melbourne_cup_day">Перегони, що зупиняють націю</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">На честь Беніто Хуареса</string>
     <string name="holiday_banner_mexico_constitution_day">Зі святом Дня Конституції</string>
@@ -1023,7 +1023,7 @@ only the displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">З Різдвом Христовим</string>
     <string name="holiday_banner_pakistan_day">Зі святом Дня Пакистану</string>
     <string name="holiday_banner_pakistan_independence_day">Зі святом Дня незалежності</string>
-    <string name="holiday_banner_palm_sunday">Осанна у вишніх</string>
+    <string name="holiday_banner_palm_sunday">Вербна неділя</string>
     <string name="holiday_banner_pentecost">Зі святом Трійці</string>
     <string name="holiday_banner_philippines_bonifacio_day">Зі святом Дня Боніфасіо</string>
     <string name="holiday_banner_philippines_independence_day">Зі святом Дня незалежності Філіппін</string>

@@ -940,7 +940,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_st_georges_day">Feliz Día de San Jorge</string>
     <string name="holiday_banner_st_andrews_day">Feliz Día de San Andrés</string>
     <string name="holiday_banner_uk_bank_holiday">Feliz día festivo</string>
-    <string name="holiday_banner_uk_kings_birthday">Dios salve al rey</string>
+    <string name="holiday_banner_uk_kings_birthday">Feliz cumpleaños del Rey</string>
     <string name="holiday_banner_uk_mothering_sunday">Feliz Día de la Madre</string>
     <string name="holiday_banner_austria_national_day">Feliz Día Nacional de Austria</string>
     <string name="holiday_banner_german_unity_day">Feliz Día de la Unidad Alemana</string>
@@ -1119,7 +1119,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">¡Feliz Día de la Independencia!</string>
     <string name="holiday_banner_argentina_may_revolution">¡Feliz Día de la Revolución de Mayo!</string>
     <string name="holiday_banner_ascension_day">Feliz Ascensión</string>
-    <string name="holiday_banner_ash_wednesday">Recuerda que eres polvo</string>
+    <string name="holiday_banner_ash_wednesday">Miércoles de Ceniza</string>
     <string name="holiday_banner_bangladesh_independence_day">Feliz Día de la Independencia</string>
     <string name="holiday_banner_bangladesh_victory_day">Feliz Día de la Victoria</string>
     <string name="holiday_banner_brazil_black_awareness">Día de la Conciencia Negra</string>
@@ -1142,7 +1142,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_malaysia_day">Feliz Día de Malasia</string>
     <string name="holiday_banner_malaysia_independence_day">Feliz Día de la Independencia (Merdeka)</string>
     <string name="holiday_banner_mardi_gras">Feliz Martes de Carnaval</string>
-    <string name="holiday_banner_maundy_thursday">Un mandamiento nuevo</string>
+    <string name="holiday_banner_maundy_thursday">Jueves Santo</string>
     <string name="holiday_banner_melbourne_cup_day">La carrera que detiene a una nación</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Honrando a Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Feliz Día de la Constitución</string>
@@ -1154,7 +1154,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">Feliz Navidad ortodoxa</string>
     <string name="holiday_banner_pakistan_day">Feliz Día de Pakistán</string>
     <string name="holiday_banner_pakistan_independence_day">Feliz Día de la Independencia</string>
-    <string name="holiday_banner_palm_sunday">Hosanna en el cielo</string>
+    <string name="holiday_banner_palm_sunday">Domingo de Ramos</string>
     <string name="holiday_banner_pentecost">Feliz Pentecostés</string>
     <string name="holiday_banner_philippines_bonifacio_day">Feliz Día de Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Feliz Día de la Independencia de Filipinas</string>

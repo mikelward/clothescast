@@ -705,7 +705,7 @@ they work correctly in both the single-band and range templates.
     <string name="holiday_banner_st_georges_day">يوم القديس جورج المبارك</string>
     <string name="holiday_banner_st_patricks_day">يوم القديس باتريك المبارك</string>
     <string name="holiday_banner_uk_bank_holiday">إجازة بنكية مباركة</string>
-    <string name="holiday_banner_uk_kings_birthday">الله يحفظ الملك</string>
+    <string name="holiday_banner_uk_kings_birthday">عيد ميلاد سعيد للملك</string>
     <string name="holiday_banner_uk_mothering_sunday">يوم الأمومة المبارك</string>
     <string name="holiday_banner_us_independence_day">عيد الرابع من يوليو المبارك</string>
     <string name="holiday_banner_us_memorial_day">تكريماً لشهدائنا</string>
@@ -987,7 +987,7 @@ they work correctly in both the single-band and range templates.
     <string name="holiday_banner_argentina_independence_day">عيد استقلال الأرجنتين سعيد</string>
     <string name="holiday_banner_argentina_may_revolution">ذكرى ثورة مايو سعيدة</string>
     <string name="holiday_banner_ascension_day">عيد الصعود سعيد</string>
-    <string name="holiday_banner_ash_wednesday">تذكر أنك تراب</string>
+    <string name="holiday_banner_ash_wednesday">أربعاء الرماد</string>
     <string name="holiday_banner_bangladesh_independence_day">عيد استقلال سعيد</string>
     <string name="holiday_banner_bangladesh_victory_day">عيد النصر سعيد</string>
     <string name="holiday_banner_brazil_black_awareness">يوم الوعي الأسود</string>
@@ -1010,7 +1010,7 @@ they work correctly in both the single-band and range templates.
     <string name="holiday_banner_malaysia_day">عيد ماليزيا سعيد</string>
     <string name="holiday_banner_malaysia_independence_day">عيد مرديكا سعيد</string>
     <string name="holiday_banner_mardi_gras">ثلاثاء المرفع سعيد</string>
-    <string name="holiday_banner_maundy_thursday">وصية جديدة</string>
+    <string name="holiday_banner_maundy_thursday">خميس العهد</string>
     <string name="holiday_banner_melbourne_cup_day">السباق الذي يوقف الأمة</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">تكريمًا لبينيتو خواريز</string>
     <string name="holiday_banner_mexico_constitution_day">عيد الدستور سعيد</string>
@@ -1022,7 +1022,7 @@ they work correctly in both the single-band and range templates.
     <string name="holiday_banner_orthodox_christmas">ميلاد مجيد للأرثوذكس</string>
     <string name="holiday_banner_pakistan_day">عيد باكستان سعيد</string>
     <string name="holiday_banner_pakistan_independence_day">عيد استقلال سعيد</string>
-    <string name="holiday_banner_palm_sunday">هوشعنا في الأعالي</string>
+    <string name="holiday_banner_palm_sunday">أحد الشعانين</string>
     <string name="holiday_banner_pentecost">عيد العنصرة سعيد</string>
     <string name="holiday_banner_philippines_bonifacio_day">عيد بونيفاسيو سعيد</string>
     <string name="holiday_banner_philippines_independence_day">عيد استقلال الفلبين سعيد</string>

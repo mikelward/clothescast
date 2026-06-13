@@ -824,7 +824,7 @@ Not overridden by design:
     <string name="holiday_banner_st_georges_day">सेंट जॉर्ज दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_st_patricks_day">सेंट पैट्रिक दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_uk_bank_holiday">बैंक हॉलिडे की शुभकामनाएँ</string>
-    <string name="holiday_banner_uk_kings_birthday">ईश्वर राजा की रक्षा करे</string>
+    <string name="holiday_banner_uk_kings_birthday">राजा को जन्मदिन की शुभकामनाएं</string>
     <string name="holiday_banner_uk_mothering_sunday">मदरिंग संडे की शुभकामनाएँ</string>
     <string name="holiday_banner_us_independence_day">4 जुलाई की शुभकामनाएँ</string>
     <string name="holiday_banner_us_memorial_day">हमारे शहीदों को नमन</string>
@@ -1022,7 +1022,7 @@ Not overridden by design:
     <string name="holiday_banner_argentina_independence_day">अर्जेंटीना स्वतंत्रता दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_argentina_may_revolution">मई क्रांति दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_ascension_day">स्वर्गारोहण दिवस की शुभकामनाएं</string>
-    <string name="holiday_banner_ash_wednesday">याद रखो कि तुम धूल हो</string>
+    <string name="holiday_banner_ash_wednesday">ऐश बुधवार</string>
     <string name="holiday_banner_bangladesh_independence_day">स्वतंत्रता दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_bangladesh_victory_day">विजय दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_brazil_black_awareness">अश्वेत जागरूकता दिवस</string>
@@ -1045,7 +1045,7 @@ Not overridden by design:
     <string name="holiday_banner_malaysia_day">मलेशिया दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_malaysia_independence_day">मरडेका दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_mardi_gras">मार्डी ग्रास की शुभकामनाएं</string>
-    <string name="holiday_banner_maundy_thursday">एक नई आज्ञा</string>
+    <string name="holiday_banner_maundy_thursday">पवित्र गुरुवार</string>
     <string name="holiday_banner_melbourne_cup_day">वह दौड़ जो एक राष्ट्र को रोक देती है</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">बेनिटो जुआरेज़ के सम्मान में</string>
     <string name="holiday_banner_mexico_constitution_day">संविधान दिवस की शुभकामनाएं</string>
@@ -1057,7 +1057,7 @@ Not overridden by design:
     <string name="holiday_banner_orthodox_christmas">ऑर्थोडॉक्स क्रिसमस की शुभकामनाएं</string>
     <string name="holiday_banner_pakistan_day">पाकिस्तान दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_pakistan_independence_day">स्वतंत्रता दिवस की शुभकामनाएं</string>
-    <string name="holiday_banner_palm_sunday">उच्चतम में होशन्ना</string>
+    <string name="holiday_banner_palm_sunday">पाम संडे</string>
     <string name="holiday_banner_pentecost">पेंटेकोस्ट की शुभकामनाएं</string>
     <string name="holiday_banner_philippines_bonifacio_day">बोनिफासियो दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_philippines_independence_day">फिलीपींस स्वतंत्रता दिवस की शुभकामनाएं</string>

@@ -949,7 +949,7 @@ label localises.
     <string name="holiday_banner_st_georges_day">聖喬治節快樂</string>
     <string name="holiday_banner_st_patricks_day">聖派翠克節快樂</string>
     <string name="holiday_banner_uk_bank_holiday">公假日快樂</string>
-    <string name="holiday_banner_uk_kings_birthday">天佑吾王</string>
+    <string name="holiday_banner_uk_kings_birthday">國王生日快樂</string>
     <string name="holiday_banner_uk_mothering_sunday">母親節快樂</string>
     <string name="holiday_banner_us_independence_day">7月4日快樂</string>
     <string name="holiday_banner_us_memorial_day">銘記英烈</string>
@@ -1155,7 +1155,7 @@ label localises.
     <string name="holiday_banner_argentina_independence_day">阿根廷獨立日快樂</string>
     <string name="holiday_banner_argentina_may_revolution">五月革命紀念日快樂</string>
     <string name="holiday_banner_ascension_day">耶穌升天節快樂</string>
-    <string name="holiday_banner_ash_wednesday">記住你本是塵土</string>
+    <string name="holiday_banner_ash_wednesday">聖灰星期三</string>
     <string name="holiday_banner_bangladesh_independence_day">獨立日快樂</string>
     <string name="holiday_banner_bangladesh_victory_day">勝利日快樂</string>
     <string name="holiday_banner_brazil_black_awareness">黑人意識日</string>
@@ -1178,7 +1178,7 @@ label localises.
     <string name="holiday_banner_malaysia_day">馬來西亞日快樂</string>
     <string name="holiday_banner_malaysia_independence_day">默迪卡日快樂</string>
     <string name="holiday_banner_mardi_gras">肥美星期二快樂</string>
-    <string name="holiday_banner_maundy_thursday">一條新的命令</string>
+    <string name="holiday_banner_maundy_thursday">聖星期四</string>
     <string name="holiday_banner_melbourne_cup_day">讓全國停擺的賽馬</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">紀念貝尼托·華雷斯</string>
     <string name="holiday_banner_mexico_constitution_day">憲法日快樂</string>
@@ -1190,7 +1190,7 @@ label localises.
     <string name="holiday_banner_orthodox_christmas">東正教聖誕節快樂</string>
     <string name="holiday_banner_pakistan_day">巴基斯坦日快樂</string>
     <string name="holiday_banner_pakistan_independence_day">獨立日快樂</string>
-    <string name="holiday_banner_palm_sunday">和散那歸於至高之處</string>
+    <string name="holiday_banner_palm_sunday">棕枝主日</string>
     <string name="holiday_banner_pentecost">聖靈降臨節快樂</string>
     <string name="holiday_banner_philippines_bonifacio_day">博尼法西奧日快樂</string>
     <string name="holiday_banner_philippines_independence_day">菲律賓獨立日快樂</string>

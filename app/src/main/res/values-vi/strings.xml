@@ -856,7 +856,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_st_georges_day">Chúc mừng Ngày Thánh George</string>
     <string name="holiday_banner_st_patricks_day">Chúc mừng Ngày Thánh Patrick</string>
     <string name="holiday_banner_uk_bank_holiday">Chúc mừng ngày nghỉ lễ</string>
-    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_kings_birthday">Chúc mừng Sinh nhật Nhà vua</string>
     <string name="holiday_banner_uk_mothering_sunday">Chúc mừng Chủ nhật Tôn vinh Mẹ</string>
     <string name="holiday_banner_us_independence_day">Chúc mừng Ngày 4 tháng 7</string>
     <string name="holiday_banner_us_memorial_day">Tưởng niệm những người đã ngã xuống</string>
@@ -1053,7 +1053,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_argentina_independence_day">Chúc mừng Quốc khánh Argentina</string>
     <string name="holiday_banner_argentina_may_revolution">Chúc mừng Cách mạng tháng Năm</string>
     <string name="holiday_banner_ascension_day">Chúc mừng Lễ Thăng Thiên</string>
-    <string name="holiday_banner_ash_wednesday">Hãy nhớ rằng bạn là cát bụi</string>
+    <string name="holiday_banner_ash_wednesday">Thứ Tư Lễ Tro</string>
     <string name="holiday_banner_bangladesh_independence_day">Chúc mừng Ngày Độc lập</string>
     <string name="holiday_banner_bangladesh_victory_day">Chúc mừng Ngày Chiến thắng</string>
     <string name="holiday_banner_brazil_black_awareness">Ngày Nhận thức Người Da đen</string>
@@ -1076,7 +1076,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_malaysia_day">Chúc mừng Ngày Malaysia</string>
     <string name="holiday_banner_malaysia_independence_day">Chúc mừng Ngày Merdeka</string>
     <string name="holiday_banner_mardi_gras">Chúc mừng Mardi Gras</string>
-    <string name="holiday_banner_maundy_thursday">Một điều răn mới</string>
+    <string name="holiday_banner_maundy_thursday">Thứ Năm Tuần Thánh</string>
     <string name="holiday_banner_melbourne_cup_day">Cuộc đua làm cả quốc gia dừng lại</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Tưởng nhớ Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Chúc mừng Ngày Hiến pháp</string>
@@ -1088,7 +1088,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_orthodox_christmas">Chúc mừng Giáng sinh Chính thống</string>
     <string name="holiday_banner_pakistan_day">Chúc mừng Ngày Pakistan</string>
     <string name="holiday_banner_pakistan_independence_day">Chúc mừng Ngày Độc lập</string>
-    <string name="holiday_banner_palm_sunday">Hosanna trên trời cao</string>
+    <string name="holiday_banner_palm_sunday">Chúa Nhật Lễ Lá</string>
     <string name="holiday_banner_pentecost">Chúc mừng Lễ Hiện Xuống</string>
     <string name="holiday_banner_philippines_bonifacio_day">Chúc mừng Ngày Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Chúc mừng Quốc khánh Philippines</string>

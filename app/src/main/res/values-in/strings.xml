@@ -794,7 +794,7 @@ to values/strings.xml (English).
     <string name="holiday_banner_st_georges_day">Selamat Hari Santo George</string>
     <string name="holiday_banner_st_patricks_day">Selamat Hari Santo Patrick</string>
     <string name="holiday_banner_uk_bank_holiday">Selamat hari libur bank</string>
-    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_kings_birthday">Selamat Ulang Tahun Raja</string>
     <string name="holiday_banner_uk_mothering_sunday">Selamat Hari Ibu</string>
     <string name="holiday_banner_us_independence_day">Selamat 4 Juli</string>
     <string name="holiday_banner_us_memorial_day">Menghormati pahlawan kita</string>
@@ -991,7 +991,7 @@ to values/strings.xml (English).
     <string name="holiday_banner_argentina_independence_day">Selamat Hari Kemerdekaan Argentina</string>
     <string name="holiday_banner_argentina_may_revolution">Selamat Hari Revolusi Mei</string>
     <string name="holiday_banner_ascension_day">Selamat Hari Kenaikan</string>
-    <string name="holiday_banner_ash_wednesday">Ingatlah bahwa kau adalah debu</string>
+    <string name="holiday_banner_ash_wednesday">Rabu Abu</string>
     <string name="holiday_banner_bangladesh_independence_day">Selamat Hari Kemerdekaan</string>
     <string name="holiday_banner_bangladesh_victory_day">Selamat Hari Kemenangan</string>
     <string name="holiday_banner_brazil_black_awareness">Hari Kesadaran Kulit Hitam</string>
@@ -1014,7 +1014,7 @@ to values/strings.xml (English).
     <string name="holiday_banner_malaysia_day">Selamat Hari Malaysia</string>
     <string name="holiday_banner_malaysia_independence_day">Selamat Hari Merdeka</string>
     <string name="holiday_banner_mardi_gras">Selamat Mardi Gras</string>
-    <string name="holiday_banner_maundy_thursday">Perintah baru</string>
+    <string name="holiday_banner_maundy_thursday">Kamis Putih</string>
     <string name="holiday_banner_melbourne_cup_day">Lomba yang menghentikan bangsa</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Mengenang Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Selamat Hari Konstitusi</string>
@@ -1026,7 +1026,7 @@ to values/strings.xml (English).
     <string name="holiday_banner_orthodox_christmas">Selamat Natal Ortodoks</string>
     <string name="holiday_banner_pakistan_day">Selamat Hari Pakistan</string>
     <string name="holiday_banner_pakistan_independence_day">Selamat Hari Kemerdekaan</string>
-    <string name="holiday_banner_palm_sunday">Hosana di tempat yang tertinggi</string>
+    <string name="holiday_banner_palm_sunday">Minggu Palma</string>
     <string name="holiday_banner_pentecost">Selamat Pentakosta</string>
     <string name="holiday_banner_philippines_bonifacio_day">Selamat Hari Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Selamat Hari Kemerdekaan Filipina</string>

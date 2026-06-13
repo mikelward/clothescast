@@ -935,7 +935,7 @@ the displayed label localizes.
     <string name="holiday_banner_st_davids_day">Fijne Sint-Daviddag</string>
     <string name="holiday_banner_st_georges_day">Fijne Sint-Jorisddag</string>
     <string name="holiday_banner_uk_bank_holiday">Fijne bankfeestdag</string>
-    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_kings_birthday">Fijne verjaardag van de Koning</string>
     <string name="holiday_banner_uk_mothering_sunday">Fijne Moederzondag</string>
     <string name="holiday_banner_us_independence_day">Fijne Vierde Juli</string>
     <string name="holiday_banner_us_memorial_day">Wij herdenken onze gevallenen</string>
@@ -1039,7 +1039,7 @@ the displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">Fijne Onafhankelijkheidsdag van Argentinië</string>
     <string name="holiday_banner_argentina_may_revolution">Fijne Meirevolutie</string>
     <string name="holiday_banner_ascension_day">Fijne Hemelvaartsdag</string>
-    <string name="holiday_banner_ash_wednesday">Gedenk dat je stof bent</string>
+    <string name="holiday_banner_ash_wednesday">Aswoensdag</string>
     <string name="holiday_banner_bangladesh_independence_day">Fijne Onafhankelijkheidsdag</string>
     <string name="holiday_banner_bangladesh_victory_day">Fijne Overwinningsdag</string>
     <string name="holiday_banner_brazil_black_awareness">Dag van het Zwarte Bewustzijn</string>
@@ -1062,7 +1062,7 @@ the displayed label localizes.
     <string name="holiday_banner_malaysia_day">Fijne Dag van Maleisië</string>
     <string name="holiday_banner_malaysia_independence_day">Fijne Merdeka-dag</string>
     <string name="holiday_banner_mardi_gras">Fijne Vastenavond</string>
-    <string name="holiday_banner_maundy_thursday">Een nieuw gebod</string>
+    <string name="holiday_banner_maundy_thursday">Witte Donderdag</string>
     <string name="holiday_banner_melbourne_cup_day">De race die een natie stilzet</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Ter ere van Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Fijne Dag van de Grondwet</string>
@@ -1074,7 +1074,7 @@ the displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">Vrolijk Orthodox Kerstfeest</string>
     <string name="holiday_banner_pakistan_day">Fijne Pakistandag</string>
     <string name="holiday_banner_pakistan_independence_day">Fijne Onafhankelijkheidsdag</string>
-    <string name="holiday_banner_palm_sunday">Hosanna in den hoge</string>
+    <string name="holiday_banner_palm_sunday">Palmzondag</string>
     <string name="holiday_banner_pentecost">Fijne Pinksteren</string>
     <string name="holiday_banner_philippines_bonifacio_day">Fijne Bonifacio-dag</string>
     <string name="holiday_banner_philippines_independence_day">Fijne Filipijnse Onafhankelijkheidsdag</string>

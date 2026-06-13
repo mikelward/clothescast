@@ -940,7 +940,7 @@ displayed label localizes.
     <string name="holiday_banner_st_georges_day">성 조지의 날을 기념합니다</string>
     <string name="holiday_banner_st_patricks_day">성 패트릭의 날을 기념합니다</string>
     <string name="holiday_banner_uk_bank_holiday">공휴일을 기념합니다</string>
-    <string name="holiday_banner_uk_kings_birthday">국왕 폐하 만세</string>
+    <string name="holiday_banner_uk_kings_birthday">국왕 생신을 축하합니다</string>
     <string name="holiday_banner_uk_mothering_sunday">어머니 주일을 기념합니다</string>
     <string name="holiday_banner_us_independence_day">미국 독립기념일을 기념합니다</string>
     <string name="holiday_banner_us_memorial_day">전몰용사를 기립니다</string>
@@ -1145,7 +1145,7 @@ displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">아르헨티나 독립기념일을 축하합니다</string>
     <string name="holiday_banner_argentina_may_revolution">5월 혁명 기념일을 축하합니다</string>
     <string name="holiday_banner_ascension_day">예수 승천 대축일을 축하합니다</string>
-    <string name="holiday_banner_ash_wednesday">그대가 흙임을 기억하라</string>
+    <string name="holiday_banner_ash_wednesday">재의 수요일</string>
     <string name="holiday_banner_bangladesh_independence_day">독립기념일을 축하합니다</string>
     <string name="holiday_banner_bangladesh_victory_day">승전기념일을 축하합니다</string>
     <string name="holiday_banner_brazil_black_awareness">흑인 의식의 날</string>
@@ -1168,7 +1168,7 @@ displayed label localizes.
     <string name="holiday_banner_malaysia_day">말레이시아의 날을 축하합니다</string>
     <string name="holiday_banner_malaysia_independence_day">므르데카의 날을 축하합니다</string>
     <string name="holiday_banner_mardi_gras">마르디 그라를 즐기세요</string>
-    <string name="holiday_banner_maundy_thursday">새로운 계명</string>
+    <string name="holiday_banner_maundy_thursday">성목요일</string>
     <string name="holiday_banner_melbourne_cup_day">온 나라를 멈추는 경마</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">베니토 후아레스를 기리며</string>
     <string name="holiday_banner_mexico_constitution_day">헌법의 날을 축하합니다</string>
@@ -1180,7 +1180,7 @@ displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">정교회 성탄절을 축하합니다</string>
     <string name="holiday_banner_pakistan_day">파키스탄의 날을 축하합니다</string>
     <string name="holiday_banner_pakistan_independence_day">독립기념일을 축하합니다</string>
-    <string name="holiday_banner_palm_sunday">지극히 높은 곳에 호산나</string>
+    <string name="holiday_banner_palm_sunday">성지주일</string>
     <string name="holiday_banner_pentecost">성령강림 대축일을 축하합니다</string>
     <string name="holiday_banner_philippines_bonifacio_day">보니파시오의 날을 축하합니다</string>
     <string name="holiday_banner_philippines_independence_day">필리핀 독립기념일을 축하합니다</string>

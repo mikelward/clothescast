@@ -806,7 +806,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_st_georges_day">Feliç Dia de Sant Jordi</string>
     <string name="holiday_banner_anzac_day">Per no oblidar</string>
     <string name="holiday_banner_uk_bank_holiday">Feliç festiu bancari</string>
-    <string name="holiday_banner_uk_kings_birthday">Déu salvi el Rei</string>
+    <string name="holiday_banner_uk_kings_birthday">Bon aniversari del Rei</string>
     <string name="holiday_banner_japan_greenery_day">Feliç Dia japonès de la Verdor</string>
     <string name="holiday_banner_croatia_statehood_day">Feliç Dia de l\'Estat Croat</string>
     <string name="holiday_banner_us_memorial_day">Honorant els caiguts</string>
@@ -931,7 +931,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_argentina_independence_day">Bon Dia de la Independència d\'Argentina</string>
     <string name="holiday_banner_argentina_may_revolution">Bona Revolució de Maig</string>
     <string name="holiday_banner_ascension_day">Bona Ascensió</string>
-    <string name="holiday_banner_ash_wednesday">Recorda que ets pols</string>
+    <string name="holiday_banner_ash_wednesday">Dimecres de Cendra</string>
     <string name="holiday_banner_bangladesh_independence_day">Bon Dia de la Independència</string>
     <string name="holiday_banner_bangladesh_victory_day">Bon Dia de la Victòria</string>
     <string name="holiday_banner_brazil_black_awareness">Dia de la Consciència Negra</string>
@@ -954,7 +954,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_malaysia_day">Bon Dia de Malàisia</string>
     <string name="holiday_banner_malaysia_independence_day">Bon Dia de la Merdeka</string>
     <string name="holiday_banner_mardi_gras">Bon Carnestoltes</string>
-    <string name="holiday_banner_maundy_thursday">Un manament nou</string>
+    <string name="holiday_banner_maundy_thursday">Dijous Sant</string>
     <string name="holiday_banner_melbourne_cup_day">La cursa que atura una nació</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Honorant Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Bon Dia de la Constitució</string>
@@ -966,7 +966,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_orthodox_christmas">Bon Nadal ortodox</string>
     <string name="holiday_banner_pakistan_day">Bon Dia del Pakistan</string>
     <string name="holiday_banner_pakistan_independence_day">Bon Dia de la Independència</string>
-    <string name="holiday_banner_palm_sunday">Hosanna a les altures</string>
+    <string name="holiday_banner_palm_sunday">Diumenge de Rams</string>
     <string name="holiday_banner_pentecost">Bona Pentecosta</string>
     <string name="holiday_banner_philippines_bonifacio_day">Bon Dia de Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Bon Dia de la Independència de les Filipines</string>

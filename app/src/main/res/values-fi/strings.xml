@@ -895,7 +895,7 @@ displayed label localizes.
     <string name="holiday_banner_st_davids_day">Hyvää Pyhän Daavidin päivää</string>
     <string name="holiday_banner_st_georges_day">Hyvää Pyhän Yrjön päivää</string>
     <string name="holiday_banner_uk_bank_holiday">Hyvää vapaapäivää</string>
-    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_kings_birthday">Hyvää kuninkaan syntymäpäivää</string>
     <string name="holiday_banner_uk_mothering_sunday">Hyvää äitienpäivää (UK)</string>
     <string name="holiday_banner_us_independence_day">Hyvää 4. heinäkuuta</string>
     <string name="holiday_banner_us_memorial_day">Kunnioitamme kaatuneita</string>
@@ -998,7 +998,7 @@ displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">Hyvää Argentiinan itsenäisyyspäivää</string>
     <string name="holiday_banner_argentina_may_revolution">Hyvää toukokuun vallankumouksen päivää</string>
     <string name="holiday_banner_ascension_day">Hyvää helatorstaita</string>
-    <string name="holiday_banner_ash_wednesday">Muista, että olet tomua</string>
+    <string name="holiday_banner_ash_wednesday">Tuhkakeskiviikko</string>
     <string name="holiday_banner_bangladesh_independence_day">Hyvää itsenäisyyspäivää</string>
     <string name="holiday_banner_bangladesh_victory_day">Hyvää voitonpäivää</string>
     <string name="holiday_banner_brazil_black_awareness">Mustien tietoisuuden päivä</string>
@@ -1021,7 +1021,7 @@ displayed label localizes.
     <string name="holiday_banner_malaysia_day">Hyvää Malesian päivää</string>
     <string name="holiday_banner_malaysia_independence_day">Hyvää Merdeka-päivää</string>
     <string name="holiday_banner_mardi_gras">Hyvää laskiaista</string>
-    <string name="holiday_banner_maundy_thursday">Uusi käsky</string>
+    <string name="holiday_banner_maundy_thursday">Kiirastorstai</string>
     <string name="holiday_banner_melbourne_cup_day">Kilpailu, joka pysäyttää kansakunnan</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Benito Juárezin kunniaksi</string>
     <string name="holiday_banner_mexico_constitution_day">Hyvää perustuslain päivää</string>
@@ -1033,7 +1033,7 @@ displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">Hyvää ortodoksista joulua</string>
     <string name="holiday_banner_pakistan_day">Hyvää Pakistanin päivää</string>
     <string name="holiday_banner_pakistan_independence_day">Hyvää itsenäisyyspäivää</string>
-    <string name="holiday_banner_palm_sunday">Hoosianna korkeuksissa</string>
+    <string name="holiday_banner_palm_sunday">Palmusunnuntai</string>
     <string name="holiday_banner_pentecost">Hyvää helluntaita</string>
     <string name="holiday_banner_philippines_bonifacio_day">Hyvää Bonifacion päivää</string>
     <string name="holiday_banner_philippines_independence_day">Hyvää Filippiinien itsenäisyyspäivää</string>

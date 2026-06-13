@@ -681,7 +681,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_st_georges_day">Siku ya Mtakatifu George</string>
     <string name="holiday_banner_st_patricks_day">Siku ya Mtakatifu Patrick</string>
     <string name="holiday_banner_uk_bank_holiday">Heri ya likizo ya benki</string>
-    <string name="holiday_banner_uk_kings_birthday">Mungu Amlinde Mfalme</string>
+    <string name="holiday_banner_uk_kings_birthday">Heri ya Kuzaliwa kwa Mfalme</string>
     <string name="holiday_banner_uk_mothering_sunday">Heri ya Jumapili ya Mama</string>
     <string name="holiday_banner_us_independence_day">Heri ya Julai 4</string>
     <string name="holiday_banner_us_memorial_day">Heshima kwa walioanguka wetu</string>
@@ -960,7 +960,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_argentina_independence_day">Heri ya Siku ya Uhuru wa Argentina</string>
     <string name="holiday_banner_argentina_may_revolution">Heri ya Mapinduzi ya Mei</string>
     <string name="holiday_banner_ascension_day">Heri ya Siku ya Kupaa</string>
-    <string name="holiday_banner_ash_wednesday">Kumbuka kuwa wewe ni mavumbi</string>
+    <string name="holiday_banner_ash_wednesday">Jumatano ya Majivu</string>
     <string name="holiday_banner_bangladesh_independence_day">Heri ya Siku ya Uhuru</string>
     <string name="holiday_banner_bangladesh_victory_day">Heri ya Siku ya Ushindi</string>
     <string name="holiday_banner_brazil_black_awareness">Siku ya Uelewa wa Watu Weusi</string>
@@ -983,7 +983,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_malaysia_day">Heri ya Siku ya Malaysia</string>
     <string name="holiday_banner_malaysia_independence_day">Heri ya Siku ya Merdeka</string>
     <string name="holiday_banner_mardi_gras">Heri ya Mardi Gras</string>
-    <string name="holiday_banner_maundy_thursday">Amri mpya</string>
+    <string name="holiday_banner_maundy_thursday">Alhamisi Kuu</string>
     <string name="holiday_banner_melbourne_cup_day">Mbio zinazosimamisha taifa</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Kumheshimu Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Heri ya Siku ya Katiba</string>
@@ -995,7 +995,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_orthodox_christmas">Heri ya Krismasi ya Othodoksi</string>
     <string name="holiday_banner_pakistan_day">Heri ya Siku ya Pakistan</string>
     <string name="holiday_banner_pakistan_independence_day">Heri ya Siku ya Uhuru</string>
-    <string name="holiday_banner_palm_sunday">Hosana juu mbinguni</string>
+    <string name="holiday_banner_palm_sunday">Jumapili ya Matawi</string>
     <string name="holiday_banner_pentecost">Heri ya Pentekoste</string>
     <string name="holiday_banner_philippines_bonifacio_day">Heri ya Siku ya Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Heri ya Siku ya Uhuru wa Ufilipino</string>

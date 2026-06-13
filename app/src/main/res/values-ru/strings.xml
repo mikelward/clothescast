@@ -921,7 +921,7 @@ only the displayed label localizes.
     <string name="holiday_banner_st_georges_day">С Днём святого Георгия</string>
     <string name="holiday_banner_anzac_day">Помним</string>
     <string name="holiday_banner_uk_bank_holiday">С банковским праздником</string>
-    <string name="holiday_banner_uk_kings_birthday">Боже, храни Короля</string>
+    <string name="holiday_banner_uk_kings_birthday">С Днём рождения Короля</string>
     <string name="holiday_banner_japan_greenery_day">С японским Днём зелени</string>
     <string name="holiday_banner_croatia_statehood_day">С Днём государственности Хорватии</string>
     <string name="holiday_banner_us_memorial_day">Чтим память павших</string>
@@ -1045,7 +1045,7 @@ only the displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">С Днём независимости Аргентины</string>
     <string name="holiday_banner_argentina_may_revolution">С Майской революцией</string>
     <string name="holiday_banner_ascension_day">С Вознесением Господним</string>
-    <string name="holiday_banner_ash_wednesday">Помни, что ты — прах</string>
+    <string name="holiday_banner_ash_wednesday">Пепельная среда</string>
     <string name="holiday_banner_bangladesh_independence_day">С Днём независимости</string>
     <string name="holiday_banner_bangladesh_victory_day">С Днём Победы</string>
     <string name="holiday_banner_brazil_black_awareness">День чёрного самосознания</string>
@@ -1068,7 +1068,7 @@ only the displayed label localizes.
     <string name="holiday_banner_malaysia_day">С Днём Малайзии</string>
     <string name="holiday_banner_malaysia_independence_day">С Днём Мердека</string>
     <string name="holiday_banner_mardi_gras">С Жирным вторником</string>
-    <string name="holiday_banner_maundy_thursday">Заповедь новую даю вам</string>
+    <string name="holiday_banner_maundy_thursday">Великий четверг</string>
     <string name="holiday_banner_melbourne_cup_day">Гонка, останавливающая нацию</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">В честь Бенито Хуареса</string>
     <string name="holiday_banner_mexico_constitution_day">С Днём Конституции</string>
@@ -1080,7 +1080,7 @@ only the displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">С Рождеством Христовым</string>
     <string name="holiday_banner_pakistan_day">С Днём Пакистана</string>
     <string name="holiday_banner_pakistan_independence_day">С Днём независимости</string>
-    <string name="holiday_banner_palm_sunday">Осанна в вышних</string>
+    <string name="holiday_banner_palm_sunday">Вербное воскресенье</string>
     <string name="holiday_banner_pentecost">С Днём Святой Троицы</string>
     <string name="holiday_banner_philippines_bonifacio_day">С Днём Бонифасио</string>
     <string name="holiday_banner_philippines_independence_day">С Днём независимости Филиппин</string>

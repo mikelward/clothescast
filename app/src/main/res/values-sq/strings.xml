@@ -945,7 +945,7 @@
     <string name="holiday_banner_anzac_day">Që të mos harrojmë</string>
     <string name="holiday_banner_labour_day">Gëzuar Ditën e Punës</string>
     <string name="holiday_banner_uk_bank_holiday">Gëzuar ditën e pushimit</string>
-    <string name="holiday_banner_uk_kings_birthday">Zoti e ruajtë Mbretin</string>
+    <string name="holiday_banner_uk_kings_birthday">Gëzuar ditëlindjen e Mbretit</string>
     <string name="holiday_banner_mothers_day">Gëzuar Ditën e Nënës</string>
     <string name="holiday_banner_japan_greenery_day">Gëzuar Ditën Japoneze të Gjelbërimit</string>
     <string name="holiday_banner_cinco_de_mayo">¡Feliz Cinco de Mayo!</string>
@@ -1102,11 +1102,11 @@
     <string name="holiday_name_mardi_gras">Mardi Gras / E marta e Karnavaleve</string>
     <string name="holiday_banner_mardi_gras">Laissez les bons temps rouler</string>
     <string name="holiday_name_ash_wednesday">E Mërkura e Përhirit</string>
-    <string name="holiday_banner_ash_wednesday">Kujto se je pluhur</string>
+    <string name="holiday_banner_ash_wednesday">E Mërkura e Përhirit</string>
     <string name="holiday_name_palm_sunday">E diela e Palmave</string>
-    <string name="holiday_banner_palm_sunday">Hosana në lartësitë</string>
+    <string name="holiday_banner_palm_sunday">E diela e Palmave</string>
     <string name="holiday_name_maundy_thursday">E enjtja e Madhe</string>
-    <string name="holiday_banner_maundy_thursday">Një urdhërim i ri</string>
+    <string name="holiday_banner_maundy_thursday">E enjtja e Madhe</string>
     <string name="holiday_name_ascension_day">Dita e Të Ngjiturit</string>
     <string name="holiday_banner_ascension_day">Gëzuar Ditën e Ngjitjes</string>
     <string name="holiday_name_pentecost">Rrëshajët</string>

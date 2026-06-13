@@ -865,7 +865,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_st_georges_day">সেন্ট জর্জ দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_st_patricks_day">সেন্ট প্যাট্রিক দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_uk_bank_holiday">শুভ ব্যাংক হলিডে</string>
-    <string name="holiday_banner_uk_kings_birthday">ঈশ্বর রাজাকে রক্ষা করুন</string>
+    <string name="holiday_banner_uk_kings_birthday">রাজার জন্মদিন শুভ হোক</string>
     <string name="holiday_banner_uk_mothering_sunday">শুভ মাদারিং সানডে</string>
     <string name="holiday_banner_us_independence_day">শুভ ৪ জুলাই</string>
     <string name="holiday_banner_us_memorial_day">আমাদের শহীদদের প্রতি শ্রদ্ধা</string>
@@ -1063,7 +1063,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_argentina_independence_day">আর্জেন্টিনার স্বাধীনতা দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_argentina_may_revolution">মে বিপ্লব দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_ascension_day">যিশুর স্বর্গারোহণ দিবসের শুভেচ্ছা</string>
-    <string name="holiday_banner_ash_wednesday">মনে রেখো তুমি ধূলিকণা</string>
+    <string name="holiday_banner_ash_wednesday">অ্যাশ বুধবার</string>
     <string name="holiday_banner_bangladesh_independence_day">স্বাধীনতা দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_bangladesh_victory_day">বিজয় দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_brazil_black_awareness">কৃষ্ণাঙ্গ সচেতনতা দিবস</string>
@@ -1086,7 +1086,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_malaysia_day">মালয়েশিয়া দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_malaysia_independence_day">মারডেকা দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_mardi_gras">শুভ মার্ডি গ্রা</string>
-    <string name="holiday_banner_maundy_thursday">একটি নতুন আদেশ</string>
+    <string name="holiday_banner_maundy_thursday">মন্দি বৃহস্পতিবার</string>
     <string name="holiday_banner_melbourne_cup_day">যে দৌড় একটি জাতিকে থামিয়ে দেয়</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">বেনিতো হুয়ারেজের সম্মানে</string>
     <string name="holiday_banner_mexico_constitution_day">সংবিধান দিবসের শুভেচ্ছা</string>
@@ -1098,7 +1098,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_orthodox_christmas">অর্থোডক্স বড়দিনের শুভেচ্ছা</string>
     <string name="holiday_banner_pakistan_day">পাকিস্তান দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_pakistan_independence_day">স্বাধীনতা দিবসের শুভেচ্ছা</string>
-    <string name="holiday_banner_palm_sunday">ঊর্ধ্বে হোসান্না</string>
+    <string name="holiday_banner_palm_sunday">পাম রবিবার</string>
     <string name="holiday_banner_pentecost">পঞ্চাশত্তমীর শুভেচ্ছা</string>
     <string name="holiday_banner_philippines_bonifacio_day">বনিফাসিও দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_philippines_independence_day">ফিলিপাইন স্বাধীনতা দিবসের শুভেচ্ছা</string>

@@ -697,7 +697,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="holiday_banner_st_georges_day">روز سنت جورج مبارک</string>
     <string name="holiday_banner_st_patricks_day">روز سنت پاتریک مبارک</string>
     <string name="holiday_banner_uk_bank_holiday">تعطیلات عمومی مبارک</string>
-    <string name="holiday_banner_uk_kings_birthday">خدا نگهدار پادشاه</string>
+    <string name="holiday_banner_uk_kings_birthday">تولد پادشاه مبارک</string>
     <string name="holiday_banner_uk_mothering_sunday">یکشنبه مادران مبارک</string>
     <string name="holiday_banner_us_independence_day">چهارم ژوئیه مبارک</string>
     <string name="holiday_banner_us_memorial_day">گرامی‌داشت شهدای ما</string>
@@ -979,7 +979,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="holiday_banner_argentina_independence_day">روز استقلال آرژانتین مبارک</string>
     <string name="holiday_banner_argentina_may_revolution">سالگرد انقلاب مه مبارک</string>
     <string name="holiday_banner_ascension_day">عید عروج مبارک</string>
-    <string name="holiday_banner_ash_wednesday">به یاد آور که خاک هستی</string>
+    <string name="holiday_banner_ash_wednesday">چهارشنبه خاکستر</string>
     <string name="holiday_banner_bangladesh_independence_day">روز استقلال مبارک</string>
     <string name="holiday_banner_bangladesh_victory_day">روز پیروزی مبارک</string>
     <string name="holiday_banner_brazil_black_awareness">روز آگاهی سیاه‌پوستان</string>
@@ -1002,7 +1002,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="holiday_banner_malaysia_day">روز مالزی مبارک</string>
     <string name="holiday_banner_malaysia_independence_day">روز مرکا مبارک</string>
     <string name="holiday_banner_mardi_gras">ماردی گرا مبارک</string>
-    <string name="holiday_banner_maundy_thursday">فرمانی نو</string>
+    <string name="holiday_banner_maundy_thursday">پنج‌شنبه مقدس</string>
     <string name="holiday_banner_melbourne_cup_day">مسابقه‌ای که ملتی را متوقف می‌کند</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">به یاد بنیتو خوارز</string>
     <string name="holiday_banner_mexico_constitution_day">روز قانون اساسی مبارک</string>
@@ -1014,7 +1014,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="holiday_banner_orthodox_christmas">کریسمس ارتدوکس مبارک</string>
     <string name="holiday_banner_pakistan_day">روز پاکستان مبارک</string>
     <string name="holiday_banner_pakistan_independence_day">روز استقلال مبارک</string>
-    <string name="holiday_banner_palm_sunday">هوسانا در اعالی</string>
+    <string name="holiday_banner_palm_sunday">یکشنبه نخل</string>
     <string name="holiday_banner_pentecost">عید پنطیکاست مبارک</string>
     <string name="holiday_banner_philippines_bonifacio_day">روز بونیفاسیو مبارک</string>
     <string name="holiday_banner_philippines_independence_day">روز استقلال فیلیپین مبارک</string>

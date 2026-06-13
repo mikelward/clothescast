@@ -936,7 +936,7 @@ the displayed label localizes.
     <string name="holiday_banner_st_georges_day">聖ジョージの日おめでとうございます</string>
     <string name="holiday_banner_st_patricks_day">聖パトリックの日おめでとうございます</string>
     <string name="holiday_banner_uk_bank_holiday">祝日おめでとうございます</string>
-    <string name="holiday_banner_uk_kings_birthday">国王陛下万歳</string>
+    <string name="holiday_banner_uk_kings_birthday">国王誕生日おめでとう</string>
     <string name="holiday_banner_uk_mothering_sunday">母の日おめでとうございます</string>
     <string name="holiday_banner_us_independence_day">独立記念日おめでとうございます</string>
     <string name="holiday_banner_us_memorial_day">先人の勇気を称えます</string>
@@ -1141,7 +1141,7 @@ the displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">アルゼンチン独立記念日おめでとう</string>
     <string name="holiday_banner_argentina_may_revolution">五月革命の日おめでとう</string>
     <string name="holiday_banner_ascension_day">昇天祭おめでとう</string>
-    <string name="holiday_banner_ash_wednesday">あなたが塵であることを思い起こせ</string>
+    <string name="holiday_banner_ash_wednesday">灰の水曜日</string>
     <string name="holiday_banner_bangladesh_independence_day">独立記念日おめでとう</string>
     <string name="holiday_banner_bangladesh_victory_day">戦勝記念日おめでとう</string>
     <string name="holiday_banner_brazil_black_awareness">黒人意識の日</string>
@@ -1164,7 +1164,7 @@ the displayed label localizes.
     <string name="holiday_banner_malaysia_day">マレーシアの日おめでとう</string>
     <string name="holiday_banner_malaysia_independence_day">ムルデカおめでとう</string>
     <string name="holiday_banner_mardi_gras">マルディグラおめでとう</string>
-    <string name="holiday_banner_maundy_thursday">新しい戒め</string>
+    <string name="holiday_banner_maundy_thursday">聖木曜日</string>
     <string name="holiday_banner_melbourne_cup_day">国を止めるレース</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">ベニート・フアレスを称えて</string>
     <string name="holiday_banner_mexico_constitution_day">憲法記念日おめでとう</string>
@@ -1176,7 +1176,7 @@ the displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">東方正教会のクリスマスおめでとう</string>
     <string name="holiday_banner_pakistan_day">パキスタンの日おめでとう</string>
     <string name="holiday_banner_pakistan_independence_day">独立記念日おめでとう</string>
-    <string name="holiday_banner_palm_sunday">天のいと高きところにホサナ</string>
+    <string name="holiday_banner_palm_sunday">枝の主日</string>
     <string name="holiday_banner_pentecost">聖霊降臨祭おめでとう</string>
     <string name="holiday_banner_philippines_bonifacio_day">ボニファシオの日おめでとう</string>
     <string name="holiday_banner_philippines_independence_day">フィリピン独立記念日おめでとう</string>

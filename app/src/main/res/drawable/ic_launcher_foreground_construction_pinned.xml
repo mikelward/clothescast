@@ -14,8 +14,7 @@
 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/ic_launcher_foreground_pinned" />
-    <item
-        android:drawable="@drawable/ic_construction_badge"
-        android:gravity="bottom|fill_horizontal"
-        android:height="14dp" />
+    <!-- Badge fills the layer and positions itself within the safe zone; see
+         the shipping ic_launcher_foreground_construction. -->
+    <item android:drawable="@drawable/ic_construction_badge" />
 </layer-list>

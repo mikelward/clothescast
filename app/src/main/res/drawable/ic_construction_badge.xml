@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  "DEV" badge overlaid on the local/debug build's launcher icon (see
+  ic_launcher_foreground_construction). Drawn on the full 108x108dp adaptive-icon
+  canvas and positioned within the central safe zone — the 66dp-diameter circle
+  every launcher mask preserves — so it survives a Pixel circle / squircle crop.
+  An earlier version pinned the banner to the bottom edge (gravity="bottom"),
+  which sat entirely in the outer 18dp bleed the system always clips, so the
+  badge vanished on every masked launcher. The banner (x 36..72, y 61..75) and
+  its "DEV" text stay inside the safe circle.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
-    android:height="14dp"
+    android:height="108dp"
     android:viewportWidth="108"
-    android:viewportHeight="14">
+    android:viewportHeight="108">
 
     <path
         android:fillColor="#FFC107"
-        android:pathData="M0,0 H108 V14 H0 Z" />
+        android:pathData="M36,61 H72 V75 H36 Z" />
 
-    <path
-        android:fillColor="#1A1A1A"
-        android:fillType="evenOdd"
-        android:pathData="M44.38,10.5 H46.00 Q46.51,10.50 46.94,10.38 Q47.38,10.26 47.72,10.05 Q48.05,9.84 48.31,9.55 Q48.58,9.25 48.75,8.89 Q48.92,8.55 49.01,8.13 Q49.10,7.72 49.10,7.26 V6.75 Q49.09,6.26 49.0,5.84 Q48.91,5.42 48.73,5.06 Q48.53,4.64 48.20,4.32 Q47.87,4.00 47.44,3.81 Q47.14,3.66 46.77,3.58 Q46.41,3.50 46.00,3.5 H44.38 Z M45.29,4.23 H46.00 Q46.33,4.24 46.61,4.31 Q46.89,4.38 47.12,4.5 Q47.44,4.67 47.65,4.94 Q47.87,5.21 48.00,5.55 Q48.10,5.81 48.15,6.11 Q48.20,6.41 48.21,6.74 V7.26 Q48.20,7.58 48.16,7.88 Q48.11,8.17 48.01,8.43 Q47.90,8.74 47.71,8.99 Q47.52,9.25 47.26,9.42 Q47.02,9.59 46.70,9.68 Q46.39,9.77 46.00,9.77 H45.29 Z" />
+    <!--
+      "DEV" text, authored in a 0..14 band and shifted down into the banner by
+      the group's translateY. Keeping the glyphs in their original coordinates
+      (rather than baking the offset in) lets the badge and its monochrome
+      sibling share the same source paths.
+    -->
+    <group android:translateY="61">
+        <path
+            android:fillColor="#1A1A1A"
+            android:fillType="evenOdd"
+            android:pathData="M44.38,10.5 H46.00 Q46.51,10.50 46.94,10.38 Q47.38,10.26 47.72,10.05 Q48.05,9.84 48.31,9.55 Q48.58,9.25 48.75,8.89 Q48.92,8.55 49.01,8.13 Q49.10,7.72 49.10,7.26 V6.75 Q49.09,6.26 49.0,5.84 Q48.91,5.42 48.73,5.06 Q48.53,4.64 48.20,4.32 Q47.87,4.00 47.44,3.81 Q47.14,3.66 46.77,3.58 Q46.41,3.50 46.00,3.5 H44.38 Z M45.29,4.23 H46.00 Q46.33,4.24 46.61,4.31 Q46.89,4.38 47.12,4.5 Q47.44,4.67 47.65,4.94 Q47.87,5.21 48.00,5.55 Q48.10,5.81 48.15,6.11 Q48.20,6.41 48.21,6.74 V7.26 Q48.20,7.58 48.16,7.88 Q48.11,8.17 48.01,8.43 Q47.90,8.74 47.71,8.99 Q47.52,9.25 47.26,9.42 Q47.02,9.59 46.70,9.68 Q46.39,9.77 46.00,9.77 H45.29 Z" />
 
-    <path
-        android:fillColor="#1A1A1A"
-        android:pathData="M55.73,7.26 V6.51 H52.81 V4.26 H56.18 V3.5 H51.92 V10.5 H56.22 V9.75 H52.81 V7.26 Z" />
+        <path
+            android:fillColor="#1A1A1A"
+            android:pathData="M55.73,7.26 V6.51 H52.81 V4.26 H56.18 V3.5 H51.92 V10.5 H56.22 V9.75 H52.81 V7.26 Z" />
 
-    <path
-        android:fillColor="#1A1A1A"
-        android:pathData="M61.01,10.5 H61.78 L63.99,3.5 H63.04 L61.49,8.72 L61.39,9.07 L61.29,8.73 L59.75,3.5 H58.80 Z" />
+        <path
+            android:fillColor="#1A1A1A"
+            android:pathData="M61.01,10.5 H61.78 L63.99,3.5 H63.04 L61.49,8.72 L61.39,9.07 L61.29,8.73 L59.75,3.5 H58.80 Z" />
+    </group>
 
 </vector>

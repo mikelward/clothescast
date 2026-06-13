@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@mipmap/ic_launcher_foreground" />
-    <item
-        android:drawable="@drawable/ic_construction_badge"
-        android:gravity="bottom|fill_horizontal"
-        android:height="14dp" />
+    <!-- The badge now positions itself within the 108x108 safe zone (see
+         ic_construction_badge), so it fills the layer rather than pinning to
+         the bottom edge where every launcher mask would clip it. -->
+    <item android:drawable="@drawable/ic_construction_badge" />
 </layer-list>

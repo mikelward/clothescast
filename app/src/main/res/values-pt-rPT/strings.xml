@@ -658,6 +658,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 
     <string name="today_precipitation_title">Possibilidade de chuva</string>
     <string name="today_precipitation_peak">Pico de %1$d%% às %2$s</string>
+    <string name="today_precipitation_peak_day">Pico de %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Sem chuva prevista hoje</string>
 
     <string name="today_chart_model_legend_label">Modelos:</string>
@@ -761,8 +762,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm de sol esta noite</string>
     <string name="today_uv_subtitle">Índice UV por hora</string>
     <string name="today_uv_peak">Pico de %1$d às %2$s</string>
+    <string name="today_uv_peak_day">Pico de %1$d (%2$s)</string>
     <string name="today_uv_title">Índice UV</string>
     <string name="today_wind_peak">Pico de %1$d %2$s às %3$s</string>
+    <string name="today_wind_peak_day">Pico de %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1345,10 +1348,12 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_play_toast_nightly">A reproduzir o teu ClothesCast noturno.</string>
     <string name="today_precipitation_amount_dry_today">Sem chuva prevista hoje</string>
     <string name="today_precipitation_amount_dry_tonight">Sem chuva prevista esta noite</string>
-    <string name="today_precipitation_amount_title">Chuva à hora</string>
+    <string name="today_precipitation_amount_title">Chuva</string>
+    <string name="today_precipitation_amount_peak_day">Pico de %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s de chuva hoje</string>
     <string name="today_precipitation_amount_total_tonight">%1$s de chuva esta noite</string>
     <string name="today_solar_peak">Pico %1$d W/m² às %2$s</string>
+    <string name="today_solar_peak_day">Pico %1$d W/m² (%2$s)</string>
     <string name="today_title_week">Próximos 7 dias</string>
     <string name="today_week_ahead_cooler">Mais fresco %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

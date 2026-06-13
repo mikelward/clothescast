@@ -82,8 +82,10 @@
     <string name="today_forecast_legend_air">Temperatura e ajrit (%1$s) sipas orës</string>
     <string name="today_precipitation_title">Mundësi shiu</string>
     <string name="today_precipitation_peak">Kulmi %1$d%% në %2$s</string>
+    <string name="today_precipitation_peak_day">Kulmi %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Nuk pritet shi sot</string>
-    <string name="today_precipitation_amount_title">Reshje për orë</string>
+    <string name="today_precipitation_amount_title">Reshje</string>
+    <string name="today_precipitation_amount_peak_day">Kulmi %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s shi sot</string>
     <string name="today_precipitation_amount_total_tonight">%1$s shi sonte</string>
     <string name="today_precipitation_amount_dry_today">Nuk priten reshje sot</string>
@@ -91,6 +93,7 @@
     <string name="today_wind_title">Shpejtësia e erës</string>
     <string name="today_wind_subtitle">Shpejtësia e erës (%1$s) sipas orës</string>
     <string name="today_wind_peak">Kulmi %1$d %2$s në %3$s</string>
+    <string name="today_wind_peak_day">Kulmi %1$d %2$s (%3$s)</string>
     <string name="today_cloud_title">Mbulesa me re</string>
     <string name="today_cloud_subtitle">Mbulesa me re të ulëta (%) sipas orës</string>
     <string name="today_cloud_range">Re %1$d – %2$d%%</string>
@@ -100,11 +103,13 @@
     <string name="today_solar_title">Rrezatimi diellor</string>
     <string name="today_solar_subtitle">Rrezatim në sipërfaqe (W/m²)</string>
     <string name="today_solar_peak">Kulmi %1$d W/m² në %2$s</string>
+    <string name="today_solar_peak_day">Kulmi %1$d W/m² (%2$s)</string>
     <string name="today_sunshine_title">Diell</string>
     <string name="today_sunshine_subtitle">Minuta dielli për orë</string>
     <string name="today_uv_title">Indeksi UV</string>
     <string name="today_uv_subtitle">Indeksi UV</string>
     <string name="today_uv_peak">Kulmi %1$d në %2$s</string>
+    <string name="today_uv_peak_day">Kulmi %1$d (%2$s)</string>
     <string name="today_confidence_high">Parashikuesit pajtohen</string>
     <string name="today_confidence_medium">Parashikuesit nuk pajtohen pak</string>
     <string name="today_confidence_low">Parashikuesit nuk pajtohen shumë</string>

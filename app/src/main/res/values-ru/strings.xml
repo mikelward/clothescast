@@ -451,6 +451,7 @@ only the displayed label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Вероятность дождя</string>
     <string name="today_precipitation_peak">Пик %1$d%% в %2$s</string>
+    <string name="today_precipitation_peak_day">Пик %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Дождя сегодня не ожидается</string>
 
     <!-- Chart labels. -->
@@ -689,8 +690,10 @@ only the displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">%1$d мин солнца сегодня вечером</string>
     <string name="today_uv_subtitle">УФ-индекс по часам</string>
     <string name="today_uv_peak">Максимум %1$d в %2$s</string>
+    <string name="today_uv_peak_day">Максимум %1$d (%2$s)</string>
     <string name="today_uv_title">УФ-индекс</string>
     <string name="today_wind_peak">Максимум %1$d %2$s в %3$s</string>
+    <string name="today_wind_peak_day">Максимум %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1272,10 +1275,12 @@ only the displayed label localizes.
     <string name="today_play_toast_nightly">Воспроизвожу твой вечерний ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Сегодня без осадков</string>
     <string name="today_precipitation_amount_dry_tonight">Сегодня вечером без осадков</string>
-    <string name="today_precipitation_amount_title">Осадки по часам</string>
+    <string name="today_precipitation_amount_title">Осадки</string>
+    <string name="today_precipitation_amount_peak_day">Пик %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">Осадки сегодня: %1$s</string>
     <string name="today_precipitation_amount_total_tonight">Осадки этой ночью: %1$s</string>
     <string name="today_solar_peak">Пик %1$d Вт/м² в %2$s</string>
+    <string name="today_solar_peak_day">Пик %1$d Вт/м² (%2$s)</string>
     <string name="today_title_week">Ближайшие 7 дней</string>
     <string name="today_week_ahead_cooler">Прохладнее %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

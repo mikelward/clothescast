@@ -581,6 +581,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Vjerojatnost kiše</string>
     <string name="today_precipitation_peak">Vrh %1$d%% u %2$s</string>
+    <string name="today_precipitation_peak_day">Vrh %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Danas se ne očekuje kiša</string>
 
     <!-- Chart labels. -->
@@ -700,8 +701,10 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm sunca večeras</string>
     <string name="today_uv_subtitle">UV indeks po satu</string>
     <string name="today_uv_peak">Vršna vrijednost %1$d u %2$s</string>
+    <string name="today_uv_peak_day">Vršna vrijednost %1$d (%2$s)</string>
     <string name="today_uv_title">UV indeks</string>
     <string name="today_wind_peak">Vršna vrijednost %1$d %2$s u %3$s</string>
+    <string name="today_wind_peak_day">Vršna vrijednost %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1286,10 +1289,12 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_play_toast_nightly">Puštam tvoj večernji ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Danas se ne očekuje kiša</string>
     <string name="today_precipitation_amount_dry_tonight">Večeras se ne očekuje kiša</string>
-    <string name="today_precipitation_amount_title">Količina kiše po satu</string>
+    <string name="today_precipitation_amount_title">Količina kiše</string>
+    <string name="today_precipitation_amount_peak_day">Vrh %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s kiše danas</string>
     <string name="today_precipitation_amount_total_tonight">%1$s kiše večeras</string>
     <string name="today_solar_peak">Vrh %1$d W/m² u %2$s</string>
+    <string name="today_solar_peak_day">Vrh %1$d W/m² (%2$s)</string>
     <string name="today_title_week">Sljedećih 7 dana</string>
     <string name="today_week_ahead_cooler">Hladnije %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

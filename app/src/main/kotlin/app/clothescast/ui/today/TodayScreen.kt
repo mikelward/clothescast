@@ -2905,6 +2905,51 @@ private fun formatTopFactorRange(
 }
 
 /**
+ * The day-of-week name for the peak at [hourIndex] in [hourly], used by the
+ * 7-day-page peak subtitles. The peak's date is reconstructed from its index
+ * via [chartXToTime] so it survives the flattened 168-hour week (and the
+ * ~10 days/year a window straddles a DST shift) rather than assuming a fixed
+ * 24-hour stride. Full style ("Friday") reads better in a subtitle than the
+ * scrub readout's short style ("Fri").
+ */
+@Composable
+private fun peakDayLabel(
+    hourly: List<HourlyForecast>,
+    startDate: LocalDate,
+    hourIndex: Int,
+): String {
+    val moment = chartXToTime(hourly, startDate, hourIndex.toDouble())
+        ?: LocalDateTime.of(startDate, hourly[hourIndex].time)
+    val locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]
+    return moment.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, locale)
+}
+
+/**
+ * Builds a chart card's "peak" subtitle, naming the hour ("Peak 18% at
+ * 23:00") on the per-period pages and the day of week ("Peak 18% on Friday")
+ * on the 7-day deck — keyed off [LocalScrubMomentFormat], the same signal the
+ * scrub readout uses to disambiguate a repeated hour-of-day across the week.
+ *
+ * [leadingArgs] are the value placeholders that precede the time/day token in
+ * both string templates (e.g. the rounded value, or speed + unit symbol); the
+ * token itself is appended as the final format argument.
+ */
+@Composable
+private fun peakSubtitle(
+    hourly: List<HourlyForecast>,
+    startDate: LocalDate,
+    hourIndex: Int,
+    @androidx.annotation.StringRes atTimeRes: Int,
+    @androidx.annotation.StringRes onDayRes: Int,
+    vararg leadingArgs: Any,
+): String =
+    if (LocalScrubMomentFormat.current == ScrubMomentFormat.DayPlusHour) {
+        stringResource(onDayRes, *leadingArgs, peakDayLabel(hourly, startDate, hourIndex))
+    } else {
+        stringResource(atTimeRes, *leadingArgs, formatScrubHour(hourly[hourIndex].time))
+    }
+
+/**
  * Diagnostic wind-speed card. Renders a per-hour consensus main line drawn
  * from the cross-model mean (the temp / precip cards' "main line" pattern,
  * applied uniformly to every diagnostic chart); when [showModelSpread] is
@@ -2942,16 +2987,17 @@ internal fun WindCard(
             it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit)
         }
             .maxByOrNull { it.second }
-            ?.let { (idx, value) ->
-                times.getOrNull(idx)?.let { time -> time to value }
-            }
+            ?.takeIf { it.first in times.indices }
     }
-    val subtitle = peak?.let { (time, value) ->
-        stringResource(
-            R.string.today_wind_peak,
+    val subtitle = peak?.let { (idx, value) ->
+        peakSubtitle(
+            hourly = hourly,
+            startDate = startDate,
+            hourIndex = idx,
+            atTimeRes = R.string.today_wind_peak,
+            onDayRes = R.string.today_wind_peak_day,
             value.roundToInt(),
             windSpeedUnit.symbol(),
-            formatScrubHour(time),
         )
     } ?: stringResource(R.string.today_wind_subtitle, windSpeedUnit.symbol())
     val unitSymbol = windSpeedUnit.symbol()
@@ -3069,16 +3115,16 @@ internal fun SolarRadiationCard(
     val peak = remember(perModelHourly, times, indexByTime) {
         perModelConsensusSeries(perModelHourly, indexByTime) { it.shortwaveRadiationWm2 }
             .maxByOrNull { it.second }
-            ?.takeIf { it.second.roundToInt() >= 10 }
-            ?.let { (idx, value) ->
-                times.getOrNull(idx)?.let { time -> time to value }
-            }
+            ?.takeIf { it.second.roundToInt() >= 10 && it.first in times.indices }
     }
-    val subtitle = peak?.let { (time, value) ->
-        stringResource(
-            R.string.today_solar_peak,
+    val subtitle = peak?.let { (idx, value) ->
+        peakSubtitle(
+            hourly = hourly,
+            startDate = startDate,
+            hourIndex = idx,
+            atTimeRes = R.string.today_solar_peak,
+            onDayRes = R.string.today_solar_peak_day,
             value.roundToInt(),
-            formatScrubHour(time),
         )
     } ?: stringResource(R.string.today_solar_subtitle)
     PerModelDiagnosticCard(
@@ -3191,16 +3237,16 @@ internal fun UvIndexCard(
     val peak = remember(perModelHourly, times, indexByTime) {
         perModelConsensusSeries(perModelHourly, indexByTime) { it.uvIndex }
             .maxByOrNull { it.second }
-            ?.takeIf { it.second.roundToInt() >= 1 }
-            ?.let { (idx, value) ->
-                times.getOrNull(idx)?.let { time -> time to value }
-            }
+            ?.takeIf { it.second.roundToInt() >= 1 && it.first in times.indices }
     }
-    val subtitle = peak?.let { (time, value) ->
-        stringResource(
-            R.string.today_uv_peak,
+    val subtitle = peak?.let { (idx, value) ->
+        peakSubtitle(
+            hourly = hourly,
+            startDate = startDate,
+            hourIndex = idx,
+            atTimeRes = R.string.today_uv_peak,
+            onDayRes = R.string.today_uv_peak_day,
             value.roundToInt(),
-            formatScrubHour(time),
         )
     } ?: stringResource(R.string.today_uv_subtitle)
     PerModelDiagnosticCard(
@@ -3234,16 +3280,22 @@ internal fun PrecipitationCard(
     // own kind of information ("nothing coming"). The summary line above the
     // chart switches between a peak callout and a "no rain" message so the
     // chart itself is just the visualisation, not the only signal.
-    val peak = remember(hourly) { hourly.maxByOrNull { it.precipitationProbabilityPct } }
-    val isDry = peak == null || peak.precipitationProbabilityPct < DRY_THRESHOLD_PCT
+    val peakIdx = remember(hourly) {
+        hourly.indices.maxByOrNull { hourly[it].precipitationProbabilityPct }
+    }
+    val isDry = peakIdx == null ||
+        hourly[peakIdx].precipitationProbabilityPct < DRY_THRESHOLD_PCT
     val scrubController = LocalChartScrub.current
-    val subtitleText = if (isDry || peak == null) {
+    val subtitleText = if (isDry || peakIdx == null) {
         stringResource(R.string.today_precipitation_dry)
     } else {
-        stringResource(
-            R.string.today_precipitation_peak,
-            peak.precipitationProbabilityPct.roundToInt(),
-            formatScrubHour(peak.time),
+        peakSubtitle(
+            hourly = hourly,
+            startDate = startDate,
+            hourIndex = peakIdx,
+            atTimeRes = R.string.today_precipitation_peak,
+            onDayRes = R.string.today_precipitation_peak_day,
+            hourly[peakIdx].precipitationProbabilityPct.roundToInt(),
         )
     }
     val readout = rememberChartReadout(hourly, startDate) { idx, moment ->
@@ -3342,6 +3394,7 @@ internal fun PrecipitationAmountCard(
         consensusRainfallMainLine(hourly, perModelHourly, indexByTime)
     }
     val totalMm = remember(mainLine) { mainLine.sum() }
+    val rainPeakIdx = remember(mainLine) { mainLine.indices.maxByOrNull { mainLine[it] } }
     val isDry = totalMm < DRY_TOTAL_THRESHOLD_MM
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry) {
@@ -3350,6 +3403,22 @@ internal fun PrecipitationAmountCard(
                 ForecastPeriod.TODAY -> R.string.today_precipitation_amount_dry_today
                 ForecastPeriod.TONIGHT -> R.string.today_precipitation_amount_dry_tonight
             },
+        )
+    } else if (LocalScrubMomentFormat.current == ScrubMomentFormat.DayPlusHour &&
+        rainPeakIdx != null &&
+        mainLine[rainPeakIdx] >= TRACE_MM_FLOOR
+    ) {
+        // 7-day page: a per-period "X of rain today" total doesn't apply to a
+        // week-wide window, so surface the wettest hour and name its day —
+        // matching the Chance of rain / Wind / Solar / UV peak subtitles. The
+        // peak-amount gate avoids "Peak 0.0 mm on …" when a week clears the
+        // dry total only through trace hours that each round to zero
+        // (formatPrecipitationMmAxis shows one decimal, so < 0.05 mm renders
+        // as "0.0 mm"); those fall through to the weekly total below.
+        stringResource(
+            R.string.today_precipitation_amount_peak_day,
+            formatPrecipitationMmAxis(mainLine[rainPeakIdx]),
+            peakDayLabel(hourly, forDate, rainPeakIdx),
         )
     } else {
         stringResource(
@@ -3551,6 +3620,12 @@ private const val DRY_THRESHOLD_PCT = 5.0
 // across the day still rounds to "no rainfall expected today" here, even
 // though the probability card surfaces the peak.
 private const val DRY_TOTAL_THRESHOLD_MM = 0.1
+
+// Smallest single-hour amount that still renders as a non-zero "X mm" through
+// [formatPrecipitationMmAxis] (one decimal, so anything below 0.05 mm shows as
+// "0.0 mm"). The 7-day Rainfall card gates its peak-day subtitle on this so a
+// week of trace hours doesn't read "Peak 0.0 mm on Friday".
+private const val TRACE_MM_FLOOR = 0.05
 
 internal fun formatMinMax(values: List<Double>, unit: TemperatureUnit): Pair<Int, Int>? {
     if (values.isEmpty()) return null

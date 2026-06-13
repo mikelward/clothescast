@@ -613,6 +613,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Risque de pluie</string>
     <string name="today_precipitation_peak">Pic %1$d%% à %2$s</string>
+    <string name="today_precipitation_peak_day">Pic %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Aucune pluie prévue aujourd\'hui</string>
 
     <!-- Chart labels. -->
@@ -731,8 +732,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm de soleil ce soir</string>
     <string name="today_uv_subtitle">Indice UV par heure</string>
     <string name="today_uv_peak">Pointe %1$d à %2$s</string>
+    <string name="today_uv_peak_day">Pointe %1$d (%2$s)</string>
     <string name="today_uv_title">Indice UV</string>
     <string name="today_wind_peak">Pointe %1$d %2$s à %3$s</string>
+    <string name="today_wind_peak_day">Pointe %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1344,10 +1347,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_play_toast_nightly">Lecture de ton ClothesCast du soir.</string>
     <string name="today_precipitation_amount_dry_today">Pas de pluie prévue aujourd\'hui</string>
     <string name="today_precipitation_amount_dry_tonight">Pas de pluie prévue ce soir</string>
-    <string name="today_precipitation_amount_title">Pluie horaire</string>
+    <string name="today_precipitation_amount_title">Pluie</string>
+    <string name="today_precipitation_amount_peak_day">Pic %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s de pluie aujourd\'hui</string>
     <string name="today_precipitation_amount_total_tonight">%1$s de pluie ce soir</string>
     <string name="today_solar_peak">Max %1$d W/m² à %2$s</string>
+    <string name="today_solar_peak_day">Max %1$d W/m² (%2$s)</string>
     <string name="today_title_week">7 prochains jours</string>
     <string name="today_week_ahead_cooler">Plus frais %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

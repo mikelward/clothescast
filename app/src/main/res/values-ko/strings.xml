@@ -626,6 +626,7 @@ displayed label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">강수 확률</string>
     <string name="today_precipitation_peak">최고 %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">최고 %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">오늘은 비 예보 없음</string>
 
     <!-- Chart labels. -->
@@ -744,8 +745,10 @@ displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">오늘 밤 햇빛 %1$d분</string>
     <string name="today_uv_subtitle">시간당 자외선 지수</string>
     <string name="today_uv_peak">최대 %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">최대 %1$d (%2$s)</string>
     <string name="today_uv_title">자외선 지수</string>
     <string name="today_wind_peak">최대 %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">최대 %1$d %2$s (%3$s)</string>
 
     <!-- Today screen pager — second page (other-period forecast) and the
          placeholder shown before the worker has generated either insight. -->
@@ -1369,10 +1372,12 @@ displayed label localizes.
     <string name="today_play_toast_nightly">야간 ClothesCast를 재생 중.</string>
     <string name="today_precipitation_amount_dry_today">오늘은 비 예보 없음</string>
     <string name="today_precipitation_amount_dry_tonight">오늘 밤은 비 예보 없음</string>
-    <string name="today_precipitation_amount_title">시간별 강우량</string>
+    <string name="today_precipitation_amount_title">강우량</string>
+    <string name="today_precipitation_amount_peak_day">최고 %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">오늘 비 %1$s</string>
     <string name="today_precipitation_amount_total_tonight">오늘 밤 비 %1$s</string>
     <string name="today_solar_peak">최대 %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">최대 %1$d W/m² (%2$s)</string>
     <string name="today_title_week">다음 7일</string>
     <string name="today_week_ahead_cooler">%1$s 더 시원함.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

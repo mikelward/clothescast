@@ -74,6 +74,7 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="today_precipitation_title">Probabilitat de pluja</string>
     <string name="today_precipitation_peak">Màxim %1$d%% a les %2$s</string>
+    <string name="today_precipitation_peak_day">Màxim %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">No s\'espera pluja avui</string>
 
     <string name="today_chart_model_legend_label">Models:</string>
@@ -571,8 +572,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm de sol aquesta nit</string>
     <string name="today_uv_subtitle">Índex UV per hora</string>
     <string name="today_uv_peak">Pic %1$d a les %2$s</string>
+    <string name="today_uv_peak_day">Pic %1$d (%2$s)</string>
     <string name="today_uv_title">Índex UV</string>
     <string name="today_wind_peak">Pic %1$d %2$s a les %3$s</string>
+    <string name="today_wind_peak_day">Pic %1$d %2$s (%3$s)</string>
 
     <string name="settings_tts_test">Prova la veu</string>
     <string name="settings_tts_test_in_flight">Provant — espera…</string>
@@ -1157,10 +1160,12 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_play_toast_nightly">Reproduint el teu ClothesCast nocturn.</string>
     <string name="today_precipitation_amount_dry_today">No s\'espera pluja avui</string>
     <string name="today_precipitation_amount_dry_tonight">No s\'espera pluja aquesta nit</string>
-    <string name="today_precipitation_amount_title">Pluja horària</string>
+    <string name="today_precipitation_amount_title">Pluja</string>
+    <string name="today_precipitation_amount_peak_day">Màxim %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s de pluja avui</string>
     <string name="today_precipitation_amount_total_tonight">%1$s de pluja aquesta nit</string>
     <string name="today_solar_peak">Màxim %1$d W/m² a les %2$s</string>
+    <string name="today_solar_peak_day">Màxim %1$d W/m² (%2$s)</string>
     <string name="today_title_week">Pròxims 7 dies</string>
     <string name="today_week_ahead_cooler">Més fresc %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

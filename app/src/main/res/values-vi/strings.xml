@@ -175,6 +175,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <!-- Precipitation card -->
     <string name="today_precipitation_title">Khả năng mưa</string>
     <string name="today_precipitation_peak">Đỉnh %1$d%% lúc %2$s</string>
+    <string name="today_precipitation_peak_day">Đỉnh %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Hôm nay không có mưa</string>
 
     <!-- Chart labels -->
@@ -665,8 +666,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm nắng tối nay</string>
     <string name="today_uv_subtitle">Chỉ số UV theo giờ</string>
     <string name="today_uv_peak">Đỉnh %1$d lúc %2$s</string>
+    <string name="today_uv_peak_day">Đỉnh %1$d (%2$s)</string>
     <string name="today_uv_title">Chỉ số UV</string>
     <string name="today_wind_peak">Đỉnh %1$d %2$s lúc %3$s</string>
+    <string name="today_wind_peak_day">Đỉnh %1$d %2$s (%3$s)</string>
 
     <!-- Today screen pager. -->
     <string name="today_view_other_period">Xem dự báo khác</string>
@@ -1277,10 +1280,12 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_play_toast_nightly">Đang phát ClothesCast buổi tối của bạn.</string>
     <string name="today_precipitation_amount_dry_today">Không có mưa dự báo hôm nay</string>
     <string name="today_precipitation_amount_dry_tonight">Không có mưa dự báo tối nay</string>
-    <string name="today_precipitation_amount_title">Mưa theo giờ</string>
+    <string name="today_precipitation_amount_title">Mưa</string>
+    <string name="today_precipitation_amount_peak_day">Đỉnh %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s mưa hôm nay</string>
     <string name="today_precipitation_amount_total_tonight">%1$s mưa tối nay</string>
     <string name="today_solar_peak">Đỉnh %1$d W/m² lúc %2$s</string>
+    <string name="today_solar_peak_day">Đỉnh %1$d W/m² (%2$s)</string>
     <string name="today_title_week">7 ngày tới</string>
     <string name="today_week_ahead_cooler">Mát hơn %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

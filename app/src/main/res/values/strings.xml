@@ -118,9 +118,12 @@
          either calls out the peak hour or — on dry days where the peak is
          under ~5% — switches to "No rain expected today" so the user isn't
          misled by Open-Meteo's 1–3% noise. %1$d = rounded peak probability,
-         %2$s = peak hour formatted as HH:00. -->
+         %2$s = peak hour formatted as HH:00. The "_day" variant replaces the
+         hour with a day-of-week name on the 7-day page, where a bare hour
+         can't say which of the seven days the peak lands on. -->
     <string name="today_precipitation_title">Chance of rain</string>
     <string name="today_precipitation_peak">Peak %1$d%% at %2$s</string>
+    <string name="today_precipitation_peak_day">Peak %1$d%% on %2$s</string>
     <string name="today_precipitation_dry">No rain expected today</string>
 
     <!-- Hourly precipitation amount card, rendered immediately below the
@@ -132,10 +135,15 @@
          threshold the subtitle switches to "No rainfall expected today"
          (or tonight) so the chart's flat baseline isn't misread as "we
          forgot to fetch it". %1$s = formatted amount (1 decimal under a
-         millimetre, whole mm above — see formatPrecipitationMmAxis). -->
-    <string name="today_precipitation_amount_title">Hourly rainfall</string>
+         millimetre, whole mm above — see formatPrecipitationMmAxis). On the
+         7-day page the total ("today" / "tonight") doesn't apply, so the
+         subtitle switches to the wettest hour and names its day via
+         today_precipitation_amount_peak_day: %1$s = formatted amount,
+         %2$s = day-of-week name. -->
+    <string name="today_precipitation_amount_title">Rainfall</string>
     <string name="today_precipitation_amount_total_today">%1$s of rain today</string>
     <string name="today_precipitation_amount_total_tonight">%1$s of rain tonight</string>
+    <string name="today_precipitation_amount_peak_day">Peak %1$s on %2$s</string>
     <string name="today_precipitation_amount_dry_today">No rainfall expected today</string>
     <string name="today_precipitation_amount_dry_tonight">No rainfall expected tonight</string>
 
@@ -221,8 +229,10 @@
     <!-- Replaces [today_wind_subtitle] when the consensus series has data: peak
          consensus wind speed for the day. %1$d = value rounded to the user's
          wind-speed unit, %2$s = unit symbol ("km/h" / "mph"), %3$s = hour
-         formatted as HH:00. -->
+         formatted as HH:00. The "_day" variant names the day instead of the
+         hour on the 7-day page. -->
     <string name="today_wind_peak">Peak %1$d %2$s at %3$s</string>
+    <string name="today_wind_peak_day">Peak %1$d %2$s on %3$s</string>
 
     <!-- Cloud-cover diagnostic card. Sits below the wind card; cloud cover
          is the upstream driver of air-temperature divergence between models
@@ -261,6 +271,7 @@
          information-free. Units stay in the format string because the
          card title ("Solar radiation") doesn't name them. -->
     <string name="today_solar_peak">Peak %1$d W/m² at %2$s</string>
+    <string name="today_solar_peak_day">Peak %1$d W/m² on %2$s</string>
 
     <!-- Sunshine-duration diagnostic card. The chart plots minutes of sun
          per hour (0..60) per model; the card's subtitle replaces the static
@@ -295,6 +306,7 @@
          the static subtitle — a "Peak 0 at 21:00" reading on the night
          view is information-free. -->
     <string name="today_uv_peak">Peak %1$d at %2$s</string>
+    <string name="today_uv_peak_day">Peak %1$d on %2$s</string>
 
     <string name="today_confidence_high">Forecasters agree</string>
     <string name="today_confidence_medium">Forecasters disagree a bit</string>

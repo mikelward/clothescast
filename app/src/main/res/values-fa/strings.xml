@@ -174,6 +174,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_forecast_legend_air">دمای هوا (%1$s) به ازای ساعت</string>
     <string name="today_precipitation_title">احتمال بارندگی</string>
     <string name="today_precipitation_peak">اوج %1$d%% در ساعت %2$s</string>
+    <string name="today_precipitation_peak_day">اوج %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">امروز بارندگی انتظار نمی‌رود</string>
     <string name="today_chart_model_legend_label">مدل‌ها:</string>
     <string name="today_chart_main_line_label">میانگین</string>
@@ -479,8 +480,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_sunshine_total_minutes_only_tonight">%1$d دقیقه آفتاب امشب</string>
     <string name="today_uv_subtitle">شاخص UV به ازای ساعت</string>
     <string name="today_uv_peak">اوج %1$d ساعت %2$s</string>
+    <string name="today_uv_peak_day">اوج %1$d (%2$s)</string>
     <string name="today_uv_title">شاخص UV</string>
     <string name="today_wind_peak">اوج %1$d %2$s ساعت %3$s</string>
+    <string name="today_wind_peak_day">اوج %1$d %2$s (%3$s)</string>
     <string name="settings_region_language_en_us">انگلیسی (ایالات متحده)</string>
     <string name="settings_tts_voice_locale_en_us">انگلیسی (ایالات متحده)</string>
     <string name="settings_region_language_en_gb">انگلیسی (بریتانیا)</string>
@@ -1204,10 +1207,12 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_play_toast_nightly">در حال پخش ClothesCast شبانه‌ات.</string>
     <string name="today_precipitation_amount_dry_today">امروز باران پیش‌بینی نمی‌شود</string>
     <string name="today_precipitation_amount_dry_tonight">امشب باران پیش‌بینی نمی‌شود</string>
-    <string name="today_precipitation_amount_title">بارش ساعتی</string>
+    <string name="today_precipitation_amount_title">بارش</string>
+    <string name="today_precipitation_amount_peak_day">اوج %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s باران امروز</string>
     <string name="today_precipitation_amount_total_tonight">%1$s باران امشب</string>
     <string name="today_solar_peak">اوج %1$d وات/متر مربع در %2$s</string>
+    <string name="today_solar_peak_day">اوج %1$d وات/متر مربع (%2$s)</string>
     <string name="today_title_week">۷ روز آینده</string>
     <string name="today_week_ahead_cooler">خنک‌تر %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

@@ -845,7 +845,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_st_georges_day">Maligayang Araw ni San George</string>
     <string name="holiday_banner_st_patricks_day">Maligayang Araw ni San Patrick</string>
     <string name="holiday_banner_uk_bank_holiday">Maligayang bank holiday</string>
-    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_kings_birthday">Maligayang Kaarawan ng Hari</string>
     <string name="holiday_banner_uk_mothering_sunday">Maligayang Linggo ng Ina</string>
     <string name="holiday_banner_us_independence_day">Maligayang Ika-4 ng Hulyo</string>
     <string name="holiday_banner_us_memorial_day">Nagbibigay-pugay sa ating mga bayani</string>
@@ -1042,7 +1042,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_argentina_independence_day">Maligayang Araw ng Kalayaan ng Argentina</string>
     <string name="holiday_banner_argentina_may_revolution">Maligayang Rebolusyon ng Mayo</string>
     <string name="holiday_banner_ascension_day">Maligayang Pag-akyat sa Langit</string>
-    <string name="holiday_banner_ash_wednesday">Tandaan na ikaw ay alikabok</string>
+    <string name="holiday_banner_ash_wednesday">Miyerkules ng Abo</string>
     <string name="holiday_banner_bangladesh_independence_day">Maligayang Araw ng Kalayaan</string>
     <string name="holiday_banner_bangladesh_victory_day">Maligayang Araw ng Tagumpay</string>
     <string name="holiday_banner_brazil_black_awareness">Araw ng Kamalayan ng Itim</string>
@@ -1065,7 +1065,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_malaysia_day">Maligayang Araw ng Malaysia</string>
     <string name="holiday_banner_malaysia_independence_day">Maligayang Araw ng Merdeka</string>
     <string name="holiday_banner_mardi_gras">Maligayang Mardi Gras</string>
-    <string name="holiday_banner_maundy_thursday">Isang bagong utos</string>
+    <string name="holiday_banner_maundy_thursday">Huwebes Santo</string>
     <string name="holiday_banner_melbourne_cup_day">Ang karera na pumipigil sa isang bansa</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Pagpaparangal kay Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Maligayang Araw ng Konstitusyon</string>
@@ -1077,7 +1077,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_orthodox_christmas">Maligayang Pasko ng Ortodokso</string>
     <string name="holiday_banner_pakistan_day">Maligayang Araw ng Pakistan</string>
     <string name="holiday_banner_pakistan_independence_day">Maligayang Araw ng Kalayaan</string>
-    <string name="holiday_banner_palm_sunday">Hosanna sa kaitaasan</string>
+    <string name="holiday_banner_palm_sunday">Linggo ng Palaspas</string>
     <string name="holiday_banner_pentecost">Maligayang Pentecost</string>
     <string name="holiday_banner_philippines_bonifacio_day">Maligayang Araw ni Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Maligayang Araw ng Kalayaan</string>

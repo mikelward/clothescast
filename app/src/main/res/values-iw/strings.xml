@@ -703,7 +703,7 @@ standard in Israeli digital communication.
     <string name="holiday_banner_st_georges_day">יום סנט ג׳ורג׳ שמח</string>
     <string name="holiday_banner_st_patricks_day">יום סנט פטריק שמח</string>
     <string name="holiday_banner_uk_bank_holiday">חג בנקאי שמח</string>
-    <string name="holiday_banner_uk_kings_birthday">יחי המלך</string>
+    <string name="holiday_banner_uk_kings_birthday">יום הולדת שמח למלך</string>
     <string name="holiday_banner_uk_mothering_sunday">יום האמהות שמח</string>
     <string name="holiday_banner_us_independence_day">חג הרביעי ביולי שמח</string>
     <string name="holiday_banner_us_memorial_day">מכבדים את נופלינו</string>
@@ -985,7 +985,7 @@ standard in Israeli digital communication.
     <string name="holiday_banner_argentina_independence_day">יום עצמאות שמח לארגנטינה</string>
     <string name="holiday_banner_argentina_may_revolution">יום שמח למהפכת מאי</string>
     <string name="holiday_banner_ascension_day">חג עלייה שמח</string>
-    <string name="holiday_banner_ash_wednesday">זכור שאתה עפר</string>
+    <string name="holiday_banner_ash_wednesday">יום רביעי של אפר</string>
     <string name="holiday_banner_bangladesh_independence_day">יום עצמאות שמח</string>
     <string name="holiday_banner_bangladesh_victory_day">יום ניצחון שמח</string>
     <string name="holiday_banner_brazil_black_awareness">יום המודעות השחורה</string>
@@ -1008,7 +1008,7 @@ standard in Israeli digital communication.
     <string name="holiday_banner_malaysia_day">יום שמח למלזיה</string>
     <string name="holiday_banner_malaysia_independence_day">יום מרדקה שמח</string>
     <string name="holiday_banner_mardi_gras">יום הקרנבל שמח</string>
-    <string name="holiday_banner_maundy_thursday">מצווה חדשה</string>
+    <string name="holiday_banner_maundy_thursday">יום חמישי הקדוש</string>
     <string name="holiday_banner_melbourne_cup_day">המרוץ שעוצר אומה</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">לזכר בניטו חוארס</string>
     <string name="holiday_banner_mexico_constitution_day">יום החוקה שמח</string>
@@ -1020,7 +1020,7 @@ standard in Israeli digital communication.
     <string name="holiday_banner_orthodox_christmas">חג מולד אורתודוקסי שמח</string>
     <string name="holiday_banner_pakistan_day">יום פקיסטן שמח</string>
     <string name="holiday_banner_pakistan_independence_day">יום עצמאות שמח</string>
-    <string name="holiday_banner_palm_sunday">הושענא במרומים</string>
+    <string name="holiday_banner_palm_sunday">יום ראשון של ההושענות</string>
     <string name="holiday_banner_pentecost">חג שבועות שמח</string>
     <string name="holiday_banner_philippines_bonifacio_day">יום בוניפסיו שמח</string>
     <string name="holiday_banner_philippines_independence_day">יום עצמאות שמח לפיליפינים</string>

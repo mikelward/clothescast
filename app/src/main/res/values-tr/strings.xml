@@ -713,7 +713,7 @@ displayed label localizes.
     <string name="holiday_banner_st_georges_day">Aziz Georgios Günün kutlu olsun</string>
     <string name="holiday_banner_st_patricks_day">Aziz Patrick Günün kutlu olsun</string>
     <string name="holiday_banner_uk_bank_holiday">Resmî tatil kutlu olsun</string>
-    <string name="holiday_banner_uk_kings_birthday">Tanrı Kral\'ı korusun</string>
+    <string name="holiday_banner_uk_kings_birthday">Kral\'ın Doğum Günü kutlu olsun</string>
     <string name="holiday_banner_uk_mothering_sunday">Anneler Pazar Günün kutlu olsun</string>
     <string name="holiday_banner_us_independence_day">4 Temmuz\'unuz kutlu olsun</string>
     <string name="holiday_banner_us_memorial_day">Şehitlerimizi anıyoruz</string>
@@ -991,7 +991,7 @@ displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">Arjantin Bağımsızlık Günü kutlu olsun</string>
     <string name="holiday_banner_argentina_may_revolution">Mayıs Devrimi kutlu olsun</string>
     <string name="holiday_banner_ascension_day">İyi Bayramlar</string>
-    <string name="holiday_banner_ash_wednesday">Topraktan geldiğini unutma</string>
+    <string name="holiday_banner_ash_wednesday">Kül Çarşambası</string>
     <string name="holiday_banner_bangladesh_independence_day">Bağımsızlık Günü kutlu olsun</string>
     <string name="holiday_banner_bangladesh_victory_day">Zafer Günü kutlu olsun</string>
     <string name="holiday_banner_brazil_black_awareness">Siyahların Bilinçlenme Günü</string>
@@ -1014,7 +1014,7 @@ displayed label localizes.
     <string name="holiday_banner_malaysia_day">Malezya Günü kutlu olsun</string>
     <string name="holiday_banner_malaysia_independence_day">Merdeka Günü kutlu olsun</string>
     <string name="holiday_banner_mardi_gras">İyi Mardi Gras</string>
-    <string name="holiday_banner_maundy_thursday">Yeni bir buyruk</string>
+    <string name="holiday_banner_maundy_thursday">Kutsal Perşembe</string>
     <string name="holiday_banner_melbourne_cup_day">Ulusu durduran yarış</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Benito Juárez anısına</string>
     <string name="holiday_banner_mexico_constitution_day">Anayasa Günü kutlu olsun</string>
@@ -1026,7 +1026,7 @@ displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">Mutlu Ortodoks Noeli</string>
     <string name="holiday_banner_pakistan_day">Pakistan Günü kutlu olsun</string>
     <string name="holiday_banner_pakistan_independence_day">Bağımsızlık Günü kutlu olsun</string>
-    <string name="holiday_banner_palm_sunday">Göklerin yücesinde hozana</string>
+    <string name="holiday_banner_palm_sunday">Hurma Pazarı</string>
     <string name="holiday_banner_pentecost">Mutlu Pentekost</string>
     <string name="holiday_banner_philippines_bonifacio_day">Bonifacio Günü kutlu olsun</string>
     <string name="holiday_banner_philippines_independence_day">Filipinler Bağımsızlık Günü kutlu olsun</string>

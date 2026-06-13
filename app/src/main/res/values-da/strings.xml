@@ -917,7 +917,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="holiday_banner_st_davids_day">Glædelig Sankt Davids dag</string>
     <string name="holiday_banner_st_georges_day">Glædelig Sankt Georgs dag</string>
     <string name="holiday_banner_uk_bank_holiday">Glædelig helligdag</string>
-    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_kings_birthday">Tillykke med kongens fødselsdag</string>
     <string name="holiday_banner_uk_mothering_sunday">Glædelig Moders Søndag</string>
     <string name="holiday_banner_us_independence_day">Glædelig 4. juli</string>
     <string name="holiday_banner_us_memorial_day">Vi ærer vores faldne</string>
@@ -1021,7 +1021,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="holiday_banner_argentina_independence_day">Glædelig argentinsk uafhængighedsdag</string>
     <string name="holiday_banner_argentina_may_revolution">Glædelig majrevolution</string>
     <string name="holiday_banner_ascension_day">Glædelig Kristi himmelfartsdag</string>
-    <string name="holiday_banner_ash_wednesday">Husk, at du er støv</string>
+    <string name="holiday_banner_ash_wednesday">Askeonsdag</string>
     <string name="holiday_banner_bangladesh_independence_day">Glædelig uafhængighedsdag</string>
     <string name="holiday_banner_bangladesh_victory_day">Glædelig sejrsdag</string>
     <string name="holiday_banner_brazil_black_awareness">Dag for sort bevidsthed</string>
@@ -1044,7 +1044,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="holiday_banner_malaysia_day">Glædelig Malaysia-dag</string>
     <string name="holiday_banner_malaysia_independence_day">Glædelig Merdeka-dag</string>
     <string name="holiday_banner_mardi_gras">Glædelig fastelavn</string>
-    <string name="holiday_banner_maundy_thursday">Et nyt bud</string>
+    <string name="holiday_banner_maundy_thursday">Skærtorsdag</string>
     <string name="holiday_banner_melbourne_cup_day">Løbet der stopper en nation</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Til ære for Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Glædelig forfatningsdag</string>
@@ -1056,7 +1056,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="holiday_banner_orthodox_christmas">Glædelig ortodoks jul</string>
     <string name="holiday_banner_pakistan_day">Glædelig Pakistan-dag</string>
     <string name="holiday_banner_pakistan_independence_day">Glædelig uafhængighedsdag</string>
-    <string name="holiday_banner_palm_sunday">Hosianna i det højeste</string>
+    <string name="holiday_banner_palm_sunday">Palmesøndag</string>
     <string name="holiday_banner_pentecost">Glædelig pinse</string>
     <string name="holiday_banner_philippines_bonifacio_day">Glædelig Bonifacio-dag</string>
     <string name="holiday_banner_philippines_independence_day">Glædelig filippinsk uafhængighedsdag</string>

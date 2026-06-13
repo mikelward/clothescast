@@ -1683,7 +1683,7 @@
          Summer). Each entry's HolidayTheme references this same key
          rather than a per-bank-holiday string. -->
     <string name="holiday_banner_uk_bank_holiday">Happy bank holiday</string>
-    <string name="holiday_banner_uk_kings_birthday">God save the King</string>
+    <string name="holiday_banner_uk_kings_birthday">Happy King\'s Birthday</string>
     <string name="holiday_banner_mothers_day">Happy Mother\'s Day</string>
     <string name="holiday_banner_japan_greenery_day">Happy Japanese Greenery Day</string>
     <string name="holiday_banner_cinco_de_mayo">¡Feliz Cinco de Mayo!</string>
@@ -1905,11 +1905,11 @@
     <string name="holiday_name_mardi_gras">Mardi Gras / Shrove Tuesday</string>
     <string name="holiday_banner_mardi_gras">Laissez les bons temps rouler</string>
     <string name="holiday_name_ash_wednesday">Ash Wednesday</string>
-    <string name="holiday_banner_ash_wednesday">Remember that you are dust</string>
+    <string name="holiday_banner_ash_wednesday">Ash Wednesday</string>
     <string name="holiday_name_palm_sunday">Palm Sunday</string>
-    <string name="holiday_banner_palm_sunday">Hosanna in the highest</string>
+    <string name="holiday_banner_palm_sunday">Palm Sunday</string>
     <string name="holiday_name_maundy_thursday">Maundy Thursday</string>
-    <string name="holiday_banner_maundy_thursday">A new commandment</string>
+    <string name="holiday_banner_maundy_thursday">Maundy Thursday</string>
     <string name="holiday_name_ascension_day">Ascension Day</string>
     <string name="holiday_banner_ascension_day">Happy Ascension Day</string>
     <string name="holiday_name_pentecost">Pentecost</string>

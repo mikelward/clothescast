@@ -804,7 +804,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="holiday_banner_st_davids_day">Boldog Szent Dávid napját</string>
     <string name="holiday_banner_st_georges_day">Boldog Szent György napját</string>
     <string name="holiday_banner_uk_bank_holiday">Boldog banki ünnepet</string>
-    <string name="holiday_banner_uk_kings_birthday">Boldog A király születésnapját</string>
+    <string name="holiday_banner_uk_kings_birthday">Boldog születésnapot, Király!</string>
     <string name="holiday_banner_uk_mothering_sunday">Boldog Anyák vasárnapját</string>
     <string name="holiday_banner_us_independence_day">Boldog Függetlenség napját</string>
     <string name="holiday_banner_us_memorial_day">Emlékezünk az elesettekre</string>
@@ -984,7 +984,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="holiday_banner_argentina_independence_day">Boldog argentin függetlenség napját</string>
     <string name="holiday_banner_argentina_may_revolution">Boldog Májusi forradalom napját</string>
     <string name="holiday_banner_ascension_day">Boldog Áldozócsütörtököt</string>
-    <string name="holiday_banner_ash_wednesday">Emlékezz, hogy por vagy</string>
+    <string name="holiday_banner_ash_wednesday">Hamvazószerda</string>
     <string name="holiday_banner_bangladesh_independence_day">Boldog függetlenség napját</string>
     <string name="holiday_banner_bangladesh_victory_day">Boldog győzelem napját</string>
     <string name="holiday_banner_brazil_black_awareness">A fekete tudatosság napja</string>
@@ -1007,7 +1007,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="holiday_banner_malaysia_day">Boldog Malajzia napját</string>
     <string name="holiday_banner_malaysia_independence_day">Boldog Merdeka napját</string>
     <string name="holiday_banner_mardi_gras">Boldog farsang utolját</string>
-    <string name="holiday_banner_maundy_thursday">Új parancsolat</string>
+    <string name="holiday_banner_maundy_thursday">Nagycsütörtök</string>
     <string name="holiday_banner_melbourne_cup_day">A nemzetet megállító verseny</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Benito Juárez tiszteletére</string>
     <string name="holiday_banner_mexico_constitution_day">Boldog alkotmány napját</string>
@@ -1019,7 +1019,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="holiday_banner_orthodox_christmas">Boldog ortodox karácsonyt</string>
     <string name="holiday_banner_pakistan_day">Boldog Pakisztán napját</string>
     <string name="holiday_banner_pakistan_independence_day">Boldog függetlenség napját</string>
-    <string name="holiday_banner_palm_sunday">Hozsanna a magasságban</string>
+    <string name="holiday_banner_palm_sunday">Virágvasárnap</string>
     <string name="holiday_banner_pentecost">Boldog Pünkösdöt</string>
     <string name="holiday_banner_philippines_bonifacio_day">Boldog Bonifacio napját</string>
     <string name="holiday_banner_philippines_independence_day">Boldog Fülöp-szigeteki függetlenség napját</string>

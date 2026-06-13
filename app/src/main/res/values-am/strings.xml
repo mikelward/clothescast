@@ -680,7 +680,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_st_georges_day">የቅዱስ ጊዮርጊስ ቀን</string>
     <string name="holiday_banner_st_patricks_day">የቅዱስ ፓትሪክ ቀን</string>
     <string name="holiday_banner_uk_bank_holiday">ብሔራዊ ዕረፍት</string>
-    <string name="holiday_banner_uk_kings_birthday">ሞናርኩ ይጠብቅ</string>
+    <string name="holiday_banner_uk_kings_birthday">የንጉሡ ልደት መልካም ይሁን</string>
     <string name="holiday_banner_uk_mothering_sunday">የእናቶች እሁድ</string>
     <string name="holiday_banner_us_independence_day">ሐምሌ 4 ደስ ይሁንዎ</string>
     <string name="holiday_banner_us_memorial_day">ለወደቁ ወታደሮቻችን</string>
@@ -959,7 +959,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_argentina_independence_day">የአርጀንቲና የነፃነት ቀን መልካም ይሁን</string>
     <string name="holiday_banner_argentina_may_revolution">የግንቦት አብዮት ቀን መልካም ይሁን</string>
     <string name="holiday_banner_ascension_day">የእርገት በዓል መልካም ይሁን</string>
-    <string name="holiday_banner_ash_wednesday">አፈር መሆንህን አስታውስ</string>
+    <string name="holiday_banner_ash_wednesday">የአመድ ረቡዕ</string>
     <string name="holiday_banner_bangladesh_independence_day">የነፃነት ቀን መልካም ይሁን</string>
     <string name="holiday_banner_bangladesh_victory_day">የድል ቀን መልካም ይሁን</string>
     <string name="holiday_banner_brazil_black_awareness">የጥቁር ግንዛቤ ቀን</string>
@@ -982,7 +982,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_malaysia_day">የማሌዢያ ቀን መልካም ይሁን</string>
     <string name="holiday_banner_malaysia_independence_day">የመርዴካ ቀን መልካም ይሁን</string>
     <string name="holiday_banner_mardi_gras">ማርዲ ግራ መልካም ይሁን</string>
-    <string name="holiday_banner_maundy_thursday">አዲስ ትዕዛዝ</string>
+    <string name="holiday_banner_maundy_thursday">ጸሎተ ሐሙስ</string>
     <string name="holiday_banner_melbourne_cup_day">ሀገርን የሚያቆም ውድድር</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">ቤኒቶ ሁዋሬዝን በማስታወስ</string>
     <string name="holiday_banner_mexico_constitution_day">የሕገ መንግሥት ቀን መልካም ይሁን</string>
@@ -994,7 +994,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_orthodox_christmas">የኦርቶዶክስ ገና መልካም ይሁን</string>
     <string name="holiday_banner_pakistan_day">የፓኪስታን ቀን መልካም ይሁን</string>
     <string name="holiday_banner_pakistan_independence_day">የነፃነት ቀን መልካም ይሁን</string>
-    <string name="holiday_banner_palm_sunday">ሆሳዕና በላይኛው</string>
+    <string name="holiday_banner_palm_sunday">የቅርንጫፍ እሁድ</string>
     <string name="holiday_banner_pentecost">የጴንጤቆስጤ መልካም ይሁን</string>
     <string name="holiday_banner_philippines_bonifacio_day">የቦኒፋሲዮ ቀን መልካም ይሁን</string>
     <string name="holiday_banner_philippines_independence_day">የፊሊፒንስ የነፃነት ቀን መልካም ይሁን</string>

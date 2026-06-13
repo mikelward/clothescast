@@ -889,7 +889,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_st_georges_day">Šťastný Deň svätého Juraja</string>
     <string name="holiday_banner_anzac_day">Uctievame padlých</string>
     <string name="holiday_banner_uk_bank_holiday">Šťastný štátny sviatok</string>
-    <string name="holiday_banner_uk_kings_birthday">Boh ochraňuj kráľa</string>
+    <string name="holiday_banner_uk_kings_birthday">Všetko najlepšie k narodeninám kráľa</string>
     <string name="holiday_banner_japan_greenery_day">Šťastný japonský Deň zelene</string>
     <string name="holiday_banner_croatia_statehood_day">Šťastný Deň chorvátskej štátnosti</string>
     <string name="holiday_banner_us_memorial_day">Uctievame padlých</string>
@@ -1013,7 +1013,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_argentina_independence_day">Šťastný Deň nezávislosti Argentíny</string>
     <string name="holiday_banner_argentina_may_revolution">Šťastná Májová revolúcia</string>
     <string name="holiday_banner_ascension_day">Šťastné Nanebovstúpenie</string>
-    <string name="holiday_banner_ash_wednesday">Pamätaj, že si prach</string>
+    <string name="holiday_banner_ash_wednesday">Popolcová streda</string>
     <string name="holiday_banner_bangladesh_independence_day">Šťastný Deň nezávislosti</string>
     <string name="holiday_banner_bangladesh_victory_day">Šťastný Deň víťazstva</string>
     <string name="holiday_banner_brazil_black_awareness">Deň čierneho povedomia</string>
@@ -1036,7 +1036,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_malaysia_day">Šťastný Deň Malajzie</string>
     <string name="holiday_banner_malaysia_independence_day">Šťastný Deň Merdeka</string>
     <string name="holiday_banner_mardi_gras">Veselé Fašiangy</string>
-    <string name="holiday_banner_maundy_thursday">Nové prikázanie</string>
+    <string name="holiday_banner_maundy_thursday">Zelený štvrtok</string>
     <string name="holiday_banner_melbourne_cup_day">Preteky, ktoré zastavujú národ</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Na počesť Benita Juáreza</string>
     <string name="holiday_banner_mexico_constitution_day">Šťastný Deň ústavy</string>
@@ -1048,7 +1048,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_orthodox_christmas">Veselé pravoslávne Vianoce</string>
     <string name="holiday_banner_pakistan_day">Šťastný Deň Pakistanu</string>
     <string name="holiday_banner_pakistan_independence_day">Šťastný Deň nezávislosti</string>
-    <string name="holiday_banner_palm_sunday">Hosanna na výsostiach</string>
+    <string name="holiday_banner_palm_sunday">Kvetná nedeľa</string>
     <string name="holiday_banner_pentecost">Veselé Turíce</string>
     <string name="holiday_banner_philippines_bonifacio_day">Šťastný Deň Bonifacia</string>
     <string name="holiday_banner_philippines_independence_day">Šťastný Deň nezávislosti Filipín</string>

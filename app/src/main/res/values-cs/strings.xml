@@ -875,7 +875,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_banner_st_georges_day">Šťastný Den svatého Jiří</string>
     <string name="holiday_banner_anzac_day">Uctíváme padlé</string>
     <string name="holiday_banner_uk_bank_holiday">Šťastný státní svátek</string>
-    <string name="holiday_banner_uk_kings_birthday">Bůh ochraňuj krále</string>
+    <string name="holiday_banner_uk_kings_birthday">Vše nejlepší k narozeninám krále</string>
     <string name="holiday_banner_japan_greenery_day">Šťastný japonský Den zeleně</string>
     <string name="holiday_banner_croatia_statehood_day">Šťastný Den chorvatské státnosti</string>
     <string name="holiday_banner_us_memorial_day">Uctíváme padlé</string>
@@ -999,7 +999,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_banner_argentina_independence_day">Šťastný den nezávislosti Argentiny</string>
     <string name="holiday_banner_argentina_may_revolution">Šťastné výročí Květnové revoluce</string>
     <string name="holiday_banner_ascension_day">Šťastné Nanebevstoupení</string>
-    <string name="holiday_banner_ash_wednesday">Pamatuj, že jsi prach</string>
+    <string name="holiday_banner_ash_wednesday">Popeleční středa</string>
     <string name="holiday_banner_bangladesh_independence_day">Šťastný den nezávislosti</string>
     <string name="holiday_banner_bangladesh_victory_day">Šťastný Den vítězství</string>
     <string name="holiday_banner_brazil_black_awareness">Den černého povědomí</string>
@@ -1022,7 +1022,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_banner_malaysia_day">Šťastný den Malajsie</string>
     <string name="holiday_banner_malaysia_independence_day">Šťastný den Merdeka</string>
     <string name="holiday_banner_mardi_gras">Veselé Masopustní úterý</string>
-    <string name="holiday_banner_maundy_thursday">Nové přikázání</string>
+    <string name="holiday_banner_maundy_thursday">Zelený čtvrtek</string>
     <string name="holiday_banner_melbourne_cup_day">Závod, který zastaví národ</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Na počest Benita Juáreze</string>
     <string name="holiday_banner_mexico_constitution_day">Šťastný Den ústavy</string>
@@ -1034,7 +1034,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_banner_orthodox_christmas">Veselé pravoslavné Vánoce</string>
     <string name="holiday_banner_pakistan_day">Šťastný den Pákistánu</string>
     <string name="holiday_banner_pakistan_independence_day">Šťastný den nezávislosti</string>
-    <string name="holiday_banner_palm_sunday">Hosana na výsostech</string>
+    <string name="holiday_banner_palm_sunday">Květná neděle</string>
     <string name="holiday_banner_pentecost">Veselé Letnice</string>
     <string name="holiday_banner_philippines_bonifacio_day">Šťastný Bonifaciův den</string>
     <string name="holiday_banner_philippines_independence_day">Šťastný den nezávislosti Filipín</string>

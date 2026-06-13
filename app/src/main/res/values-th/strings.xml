@@ -795,7 +795,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_st_georges_day">สุขสันต์วันนักบุญจอร์จ</string>
     <string name="holiday_banner_st_patricks_day">สุขสันต์วันนักบุญแพทริก</string>
     <string name="holiday_banner_uk_bank_holiday">สุขสันต์วันหยุดธนาคาร</string>
-    <string name="holiday_banner_uk_kings_birthday">ทรงพระเจริญ</string>
+    <string name="holiday_banner_uk_kings_birthday">สุขสันต์วันคล้ายวันพระราชสมภพ</string>
     <string name="holiday_banner_uk_mothering_sunday">สุขสันต์วันแม่</string>
     <string name="holiday_banner_us_independence_day">สุขสันต์วันที่ 4 กรกฎาคม</string>
     <string name="holiday_banner_us_memorial_day">รำลึกถึงวีรชน</string>
@@ -992,7 +992,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_argentina_independence_day">สุขสันต์วันประกาศอิสรภาพอาร์เจนตินา</string>
     <string name="holiday_banner_argentina_may_revolution">สุขสันต์วันปฏิวัติเดือนพฤษภาคม</string>
     <string name="holiday_banner_ascension_day">สุขสันต์วันเสด็จขึ้นสวรรค์</string>
-    <string name="holiday_banner_ash_wednesday">จงระลึกว่าเจ้าเป็นผงคลีดิน</string>
+    <string name="holiday_banner_ash_wednesday">วันพุธรับเถ้า</string>
     <string name="holiday_banner_bangladesh_independence_day">สุขสันต์วันประกาศอิสรภาพ</string>
     <string name="holiday_banner_bangladesh_victory_day">สุขสันต์วันแห่งชัยชนะ</string>
     <string name="holiday_banner_brazil_black_awareness">วันแห่งการตระหนักรู้ของคนผิวดำ</string>
@@ -1015,7 +1015,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_malaysia_day">สุขสันต์วันมาเลเซีย</string>
     <string name="holiday_banner_malaysia_independence_day">สุขสันต์วันแมร์เดก้า</string>
     <string name="holiday_banner_mardi_gras">สุขสันต์วันมาร์ดิกรา</string>
-    <string name="holiday_banner_maundy_thursday">บัญญัติใหม่</string>
+    <string name="holiday_banner_maundy_thursday">วันพฤหัสบดีศักดิ์สิทธิ์</string>
     <string name="holiday_banner_melbourne_cup_day">การแข่งขันที่หยุดทั้งชาติ</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">ระลึกถึงเบนิโต ฮัวเรซ</string>
     <string name="holiday_banner_mexico_constitution_day">สุขสันต์วันรัฐธรรมนูญ</string>
@@ -1027,7 +1027,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_orthodox_christmas">สุขสันต์วันคริสต์มาสออร์โธดอกซ์</string>
     <string name="holiday_banner_pakistan_day">สุขสันต์วันปากีสถาน</string>
     <string name="holiday_banner_pakistan_independence_day">สุขสันต์วันประกาศอิสรภาพ</string>
-    <string name="holiday_banner_palm_sunday">โฮซันนาในสวรรค์</string>
+    <string name="holiday_banner_palm_sunday">วันอาทิตย์ใบลาน</string>
     <string name="holiday_banner_pentecost">สุขสันต์วันเพ็นเทคอสต์</string>
     <string name="holiday_banner_philippines_bonifacio_day">สุขสันต์วันโบนิฟาซิโอ</string>
     <string name="holiday_banner_philippines_independence_day">สุขสันต์วันประกาศอิสรภาพฟิลิปปินส์</string>

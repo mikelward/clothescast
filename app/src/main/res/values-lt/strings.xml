@@ -855,7 +855,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_st_georges_day">Su šv. Jurgio diena</string>
     <string name="holiday_banner_anzac_day">Tegul neužmirštama</string>
     <string name="holiday_banner_uk_bank_holiday">Su banko švente</string>
-    <string name="holiday_banner_uk_kings_birthday">Dieve, saugok Karalių</string>
+    <string name="holiday_banner_uk_kings_birthday">Sveikiname Karalių su gimtadieniu</string>
     <string name="holiday_banner_japan_greenery_day">Su japonų žalumos diena</string>
     <string name="holiday_banner_croatia_statehood_day">Su Kroatijos valstybingumo diena</string>
     <string name="holiday_banner_us_memorial_day">Gerbiame žuvusius</string>
@@ -979,7 +979,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_argentina_independence_day">Su Argentinos Nepriklausomybės diena</string>
     <string name="holiday_banner_argentina_may_revolution">Su Gegužės revoliucijos diena</string>
     <string name="holiday_banner_ascension_day">Su Šeštinėmis</string>
-    <string name="holiday_banner_ash_wednesday">Atmink, kad esi dulkė</string>
+    <string name="holiday_banner_ash_wednesday">Pelenų trečiadienis</string>
     <string name="holiday_banner_bangladesh_independence_day">Su Nepriklausomybės diena</string>
     <string name="holiday_banner_bangladesh_victory_day">Su Pergalės diena</string>
     <string name="holiday_banner_brazil_black_awareness">Juodosios sąmonės diena</string>
@@ -1002,7 +1002,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_malaysia_day">Su Malaizijos diena</string>
     <string name="holiday_banner_malaysia_independence_day">Su Merdeka diena</string>
     <string name="holiday_banner_mardi_gras">Linksmos Užgavėnės</string>
-    <string name="holiday_banner_maundy_thursday">Naujas įsakymas</string>
+    <string name="holiday_banner_maundy_thursday">Didysis ketvirtadienis</string>
     <string name="holiday_banner_melbourne_cup_day">Lenktynės, sustabdančios tautą</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">Pagerbiant Benito Juárezą</string>
     <string name="holiday_banner_mexico_constitution_day">Su Konstitucijos diena</string>
@@ -1014,7 +1014,7 @@ What is NOT overridden, by design:
     <string name="holiday_banner_orthodox_christmas">Su Stačiatikių Kalėdomis</string>
     <string name="holiday_banner_pakistan_day">Su Pakistano diena</string>
     <string name="holiday_banner_pakistan_independence_day">Su Nepriklausomybės diena</string>
-    <string name="holiday_banner_palm_sunday">Osana aukštybėse</string>
+    <string name="holiday_banner_palm_sunday">Verbų sekmadienis</string>
     <string name="holiday_banner_pentecost">Su Sekminėmis</string>
     <string name="holiday_banner_philippines_bonifacio_day">Su Bonifacio diena</string>
     <string name="holiday_banner_philippines_independence_day">Su Filipinų Nepriklausomybės diena</string>

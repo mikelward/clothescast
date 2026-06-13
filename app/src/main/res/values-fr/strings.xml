@@ -940,7 +940,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_st_georges_day">Bonne Saint-Georges</string>
     <string name="holiday_banner_st_andrews_day">Bonne Saint-André</string>
     <string name="holiday_banner_uk_bank_holiday">Bon jour férié</string>
-    <string name="holiday_banner_uk_kings_birthday">Vive le roi</string>
+    <string name="holiday_banner_uk_kings_birthday">Joyeux anniversaire au roi</string>
     <string name="holiday_banner_uk_mothering_sunday">Bonne fête des Mères</string>
     <string name="holiday_banner_austria_national_day">Bonne fête nationale autrichienne</string>
     <string name="holiday_banner_german_unity_day">Bonne Journée de l\'Unité allemande</string>
@@ -1118,7 +1118,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_argentina_independence_day">Bonne fête de l\'Indépendance de l\'Argentine</string>
     <string name="holiday_banner_argentina_may_revolution">Bonne fête de la Révolution de Mai</string>
     <string name="holiday_banner_ascension_day">Bonne Ascension</string>
-    <string name="holiday_banner_ash_wednesday">Souviens-toi que tu es poussière</string>
+    <string name="holiday_banner_ash_wednesday">Mercredi des Cendres</string>
     <string name="holiday_banner_bangladesh_independence_day">Bonne fête de l\'Indépendance</string>
     <string name="holiday_banner_bangladesh_victory_day">Bonne fête de la Victoire</string>
     <string name="holiday_banner_brazil_black_awareness">Journée de la conscience noire</string>
@@ -1141,7 +1141,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_malaysia_day">Bonne fête de la Malaisie</string>
     <string name="holiday_banner_malaysia_independence_day">Bonne fête de la Merdeka</string>
     <string name="holiday_banner_mardi_gras">Laissez les bons temps rouler</string>
-    <string name="holiday_banner_maundy_thursday">Un commandement nouveau</string>
+    <string name="holiday_banner_maundy_thursday">Jeudi saint</string>
     <string name="holiday_banner_melbourne_cup_day">La course qui arrête une nation</string>
     <string name="holiday_banner_mexico_benito_juarez_birthday">En l\'honneur de Benito Juárez</string>
     <string name="holiday_banner_mexico_constitution_day">Bonne fête de la Constitution</string>
@@ -1153,7 +1153,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_orthodox_christmas">Joyeux Noël orthodoxe</string>
     <string name="holiday_banner_pakistan_day">Bonne fête du Pakistan</string>
     <string name="holiday_banner_pakistan_independence_day">Bonne fête de l\'Indépendance</string>
-    <string name="holiday_banner_palm_sunday">Hosanna au plus haut des cieux</string>
+    <string name="holiday_banner_palm_sunday">Dimanche des Rameaux</string>
     <string name="holiday_banner_pentecost">Bonne Pentecôte</string>
     <string name="holiday_banner_philippines_bonifacio_day">Bonne fête de Bonifacio</string>
     <string name="holiday_banner_philippines_independence_day">Bonne fête de l\'Indépendance des Philippines</string>

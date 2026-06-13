@@ -52,6 +52,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import app.clothescast.ui.AppMenuShape
 import app.clothescast.R
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.FallbackRange
@@ -1285,10 +1286,16 @@ private fun GarmentDropdown(
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
+            shape = AppMenuShape,
         ) {
             Garment.entries.forEach { entry ->
                 DropdownMenuItem(
-                    text = { Text(stringResource(garmentLabelRes(entry))) },
+                    text = {
+                        Text(
+                            stringResource(garmentLabelRes(entry)),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    },
                     onClick = {
                         onSelect(entry)
                         expanded = false

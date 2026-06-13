@@ -50,6 +50,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import app.clothescast.ui.AppMenuShape
 import app.clothescast.R
 import app.clothescast.calendar.CalendarPermission
 import app.clothescast.diag.findActivity
@@ -760,28 +761,32 @@ private fun OverrideDropdown(
         HolidayOverride.OFF -> offLabel
     }
     TextButton(onClick = { expanded = true }) {
-        Text(triggerLabel)
+        Text(triggerLabel, style = MaterialTheme.typography.bodyLarge)
         Icon(
             imageVector = Icons.Filled.KeyboardArrowDown,
             contentDescription = null,
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            shape = AppMenuShape,
+        ) {
             DropdownMenuItem(
-                text = { Text(autoLabel) },
+                text = { Text(autoLabel, style = MaterialTheme.typography.bodyLarge) },
                 onClick = {
                     expanded = false
                     onChange(HolidayOverride.AUTO)
                 },
             )
             DropdownMenuItem(
-                text = { Text(onLabel) },
+                text = { Text(onLabel, style = MaterialTheme.typography.bodyLarge) },
                 onClick = {
                     expanded = false
                     onChange(HolidayOverride.ON)
                 },
             )
             DropdownMenuItem(
-                text = { Text(offLabel) },
+                text = { Text(offLabel, style = MaterialTheme.typography.bodyLarge) },
                 onClick = {
                     expanded = false
                     onChange(HolidayOverride.OFF)

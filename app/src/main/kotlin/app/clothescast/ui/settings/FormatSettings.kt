@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.clothescast.ui.AppMenuShape
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.BottomsFormat
@@ -427,13 +428,17 @@ private fun <T> FormatDropdownRow(
         Text(text = label, modifier = Modifier.weight(1f))
         Box {
             TextButton(onClick = { expanded = true }) {
-                Text(optionLabel(selected))
+                Text(optionLabel(selected), style = MaterialTheme.typography.bodyLarge)
                 Icon(imageVector = Icons.Filled.KeyboardArrowDown, contentDescription = null)
             }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                shape = AppMenuShape,
+            ) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(optionLabel(option)) },
+                        text = { Text(optionLabel(option), style = MaterialTheme.typography.bodyLarge) },
                         onClick = {
                             expanded = false
                             onSelect(option)

@@ -11,6 +11,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.clothescast.notification.NotificationIconSweaterPreview
 import app.clothescast.notification.NotificationIconTShirtPreview
 import app.clothescast.notification.NotificationIconThickJacketPreview
+import app.clothescast.ui.OverflowMenuStylePreview
+import app.clothescast.ui.SettingsMenuStylePreview
 import app.clothescast.ui.LauncherIconDevPreview
 import app.clothescast.ui.LauncherIconMonochromePreview
 import app.clothescast.ui.LauncherIconPreview
@@ -592,6 +594,8 @@ class PreviewSnapshots {
     @Test fun gemini_tts_limit_card() = capture { GeminiTtsLimitCardPreview() }
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 
+    @Test fun overflow_menu_style() = capture { OverflowMenuStylePreview() }
+    @Test fun settings_menu_style() = capture { SettingsMenuStylePreview() }
     @Test fun launcher_icon() = capture { LauncherIconPreview() }
     @Test fun launcher_icon_monochrome() = capture { LauncherIconMonochromePreview() }
     @Test fun launcher_icon_dev() = capture { LauncherIconDevPreview() }
@@ -768,6 +772,7 @@ class PreviewSnapshots {
     @Test fun no_preview_without_snapshot() {
         val previewClasses = listOf(
             "app.clothescast.ui.LauncherIconPreviewsKt",
+            "app.clothescast.ui.MenuPreviewsKt",
             "app.clothescast.ui.today.TodayPreviewsKt",
             "app.clothescast.ui.onboarding.OnboardingPreviewsKt",
             "app.clothescast.ui.settings.SettingsPreviewsKt",

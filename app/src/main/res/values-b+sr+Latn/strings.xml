@@ -474,7 +474,7 @@ default English (matching values-pl / values-uk).
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Verovatnoća kiše</string>
     <string name="today_precipitation_peak">Vrhunac %1$d%% u %2$s</string>
-    <string name="today_precipitation_peak_day">Vrhunac %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Vrhunac %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Danas se ne očekuje kiša</string>
     <string name="today_precipitation_dry_week">Ne očekuje se kiša</string>
 
@@ -625,10 +625,10 @@ default English (matching values-pl / values-uk).
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm sunca večeras</string>
     <string name="today_uv_subtitle">UV indeks po satu</string>
     <string name="today_uv_peak">Vrhunac %1$d u %2$s</string>
-    <string name="today_uv_peak_day">Vrhunac %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Vrhunac %1$d %2$s</string>
     <string name="today_uv_title">UV indeks</string>
     <string name="today_wind_peak">Vrhunac %1$d %2$s u %3$s</string>
-    <string name="today_wind_peak_day">Vrhunac %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Vrhunac %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1216,11 +1216,11 @@ default English (matching values-pl / values-uk).
     <string name="today_precipitation_amount_dry_week">Ne očekuje se kiša</string>
     <string name="today_precipitation_amount_total_week">%1$s kiše</string>
     <string name="today_precipitation_amount_title">Padavine</string>
-    <string name="today_precipitation_amount_peak_day">Vrhunac %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Vrhunac %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s kiše danas</string>
     <string name="today_precipitation_amount_total_tonight">%1$s kiše večeras</string>
     <string name="today_solar_peak">Vrh %1$d W/m² u %2$s</string>
-    <string name="today_solar_peak_day">Vrh %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Vrh %1$d W/m² %2$s</string>
     <string name="today_title_week">Sledećih 7 dana</string>
     <string name="today_week_ahead_cooler">Hladnije %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

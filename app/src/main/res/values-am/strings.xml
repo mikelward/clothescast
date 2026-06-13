@@ -100,7 +100,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_forecast_legend_air">የአየር ሙቀት (%1$s) በሰዓት</string>
     <string name="today_precipitation_title">የዝናብ ዕድል</string>
     <string name="today_precipitation_peak">ከፍተኛ %1$d%% በ%2$s ሰዓት</string>
-    <string name="today_precipitation_peak_day">ከፍተኛ %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">ከፍተኛ %1$d%% %2$s</string>
     <string name="today_precipitation_dry">ዛሬ ዝናብ አይጠበቅም</string>
     <string name="today_precipitation_dry_week">ዝናብ አይጠበቅም</string>
     <string name="today_chart_model_legend_label">ሞዴሎች:</string>
@@ -467,10 +467,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_minutes_only_tonight">ዛሬ ምሽት %1$d ደቂቃ ፀሐይ</string>
     <string name="today_uv_subtitle">UV ጠቋሚ በሰዓት</string>
     <string name="today_uv_peak">ከፍተኛ %1$d በ %2$s</string>
-    <string name="today_uv_peak_day">ከፍተኛ %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">ከፍተኛ %1$d %2$s</string>
     <string name="today_uv_title">UV ጠቋሚ</string>
     <string name="today_wind_peak">ከፍተኛ %1$d %2$s በ %3$s</string>
-    <string name="today_wind_peak_day">ከፍተኛ %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">ከፍተኛ %1$d %2$s %3$s</string>
     <string name="settings_region_language_en_us">እንግሊዝኛ (አሜሪካ)</string>
     <string name="settings_tts_voice_locale_en_us">እንግሊዝኛ (አሜሪካ)</string>
     <string name="settings_region_language_en_gb">እንግሊዝኛ (ብሪታኒያ)</string>
@@ -1194,11 +1194,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_week">ዝናብ አይጠበቅም</string>
     <string name="today_precipitation_amount_total_week">%1$s ዝናብ</string>
     <string name="today_precipitation_amount_title">ዝናብ</string>
-    <string name="today_precipitation_amount_peak_day">ከፍተኛ %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">ከፍተኛ %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">ዛሬ %1$s ዝናብ</string>
     <string name="today_precipitation_amount_total_tonight">ዛሬ ምሽት %1$s ዝናብ</string>
     <string name="today_solar_peak">ከፍተኛ %1$d W/m² በ%2$s</string>
-    <string name="today_solar_peak_day">ከፍተኛ %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">ከፍተኛ %1$d W/m² %2$s</string>
     <string name="today_title_week">ቀጣዮቹ 7 ቀኖች</string>
     <string name="today_week_ahead_cooler">ቀዝቃዛ %1$s።</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

@@ -2905,14 +2905,6 @@ private fun formatTopFactorRange(
 }
 
 /**
- * The day-of-week name for the peak at [hourIndex] in [hourly], used by the
- * 7-day-page peak subtitles. The peak's date is reconstructed from its index
- * via [chartXToTime] so it survives the flattened 168-hour week (and the
- * ~10 days/year a window straddles a DST shift) rather than assuming a fixed
- * 24-hour stride. Full style ("Friday") reads better in a subtitle than the
- * scrub readout's short style ("Fri").
- */
-/**
  * True on the multi-day chart deck (the 7-day / following-week pages), where
  * a per-period "today" / "tonight" subtitle qualifier doesn't apply. Keyed off
  * [LocalScrubMomentFormat] — the same `DayPlusHour` signal the peak subtitles
@@ -2922,6 +2914,23 @@ private fun formatTopFactorRange(
 private fun isWeekView(): Boolean =
     LocalScrubMomentFormat.current == ScrubMomentFormat.DayPlusHour
 
+/**
+ * The bare day word for the peak at [hourIndex] in [hourly] — the 7-day deck's
+ * peak subtitles read "Peak 18% Friday", or "today" / "tomorrow" when the peak
+ * lands on the current or next day (per [LocalForecastToday]). The peak's date
+ * is reconstructed from its index via [chartXToTime] so it survives the
+ * flattened 168-hour week (and the ~10 days/year a window straddles a DST
+ * shift) rather than assuming a fixed 24-hour stride.
+ *
+ * The token is bare — no "on", no parentheses — because that's the only form
+ * that ports cleanly across locales: an idiomatic "on <day>" needs a
+ * preposition (de "am", es "el") or case inflection (Slavic accusative,
+ * Finnish essive) that [java.time.format.TextStyle.FULL] / `getDisplayName`
+ * can't produce. today / tomorrow reuse the localized outfit-card labels,
+ * lower-cased to their adverb form ("Heute" → "heute") so they sit
+ * mid-subtitle; the weekday keeps the locale's own casing (capital
+ * "Friday"/"Freitag", lower-case Romance "vendredi").
+ */
 @Composable
 private fun peakDayLabel(
     hourly: List<HourlyForecast>,
@@ -2930,8 +2939,16 @@ private fun peakDayLabel(
 ): String {
     val moment = chartXToTime(hourly, startDate, hourIndex.toDouble())
         ?: LocalDateTime.of(startDate, hourly[hourIndex].time)
+    val peakDate = moment.toLocalDate()
+    val today = LocalForecastToday.current
     val locale = androidx.compose.ui.platform.LocalConfiguration.current.locales[0]
-    return moment.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, locale)
+    return when {
+        today != null && peakDate == today ->
+            stringResource(R.string.today_outfit_label_today).replaceFirstChar { it.lowercaseChar() }
+        today != null && peakDate == today.plusDays(1) ->
+            stringResource(R.string.today_outfit_label_tomorrow).replaceFirstChar { it.lowercaseChar() }
+        else -> moment.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, locale)
+    }
 }
 
 /**

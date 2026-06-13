@@ -40,6 +40,7 @@ import app.clothescast.core.domain.usecase.DeriveWeekAheadInsight
 import app.clothescast.insight.InsightFormatter
 import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.TextStyle
@@ -502,6 +503,11 @@ internal fun SevenDayPage(
             LocalChartBottomItemPlacer provides dayItemPlacer,
             LocalChartScrub provides scrubController,
             LocalScrubMomentFormat provides ScrubMomentFormat.DayPlusHour,
+            // Relativise peak-day labels to "today" / "tomorrow" in the
+            // forecast zone. On the following-week page this date sits before
+            // the window, so the relativisation never fires and labels stay on
+            // the weekday name.
+            LocalForecastToday provides LocalDate.now(zone),
         ) {
             // Tap-hint card matching the affordance the per-period pages
             // surface inside the confidence chip ("Tap to see / hide each

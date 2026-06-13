@@ -615,7 +615,7 @@ label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">降雨概率</string>
     <string name="today_precipitation_peak">峰值 %1$d%%（%2$s）</string>
-    <string name="today_precipitation_peak_day">峰值 %1$d%%（%2$s）</string>
+    <string name="today_precipitation_peak_day">峰值 %1$d%% %2$s</string>
     <string name="today_precipitation_dry">今日预计无雨</string>
     <string name="today_precipitation_dry_week">预计无雨</string>
 
@@ -738,10 +738,10 @@ label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">今晚日照 %1$d分钟</string>
     <string name="today_uv_subtitle">每小时紫外线指数</string>
     <string name="today_uv_peak">最高 %1$d（%2$s）</string>
-    <string name="today_uv_peak_day">最高 %1$d（%2$s）</string>
+    <string name="today_uv_peak_day">最高 %1$d %2$s</string>
     <string name="today_uv_title">紫外线指数</string>
     <string name="today_wind_peak">最高 %1$d %2$s（%3$s）</string>
-    <string name="today_wind_peak_day">最高 %1$d %2$s（%3$s）</string>
+    <string name="today_wind_peak_day">最高 %1$d %2$s %3$s</string>
 
     <!-- Today screen pager — second page (other-period forecast) and the
          placeholder shown before the worker has generated either insight. -->
@@ -1374,11 +1374,11 @@ label localizes.
     <string name="today_precipitation_amount_dry_week">预计无降雨</string>
     <string name="today_precipitation_amount_total_week">降雨 %1$s</string>
     <string name="today_precipitation_amount_title">降水</string>
-    <string name="today_precipitation_amount_peak_day">峰值 %1$s（%2$s）</string>
+    <string name="today_precipitation_amount_peak_day">峰值 %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">今天降雨 %1$s</string>
     <string name="today_precipitation_amount_total_tonight">今晚降雨 %1$s</string>
     <string name="today_solar_peak">%2$s 峰值 %1$d W/m²</string>
-    <string name="today_solar_peak_day">峰值 %1$d W/m²（%2$s）</string>
+    <string name="today_solar_peak_day">峰值 %1$d W/m² %2$s</string>
     <string name="today_title_week">未来 7 天</string>
     <string name="today_week_ahead_cooler">%1$s 转凉。</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

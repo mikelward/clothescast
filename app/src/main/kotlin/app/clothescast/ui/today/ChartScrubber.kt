@@ -555,6 +555,16 @@ internal enum class ScrubMomentFormat { HourOnly, DayPlusHour }
 internal val LocalScrubMomentFormat = compositionLocalOf { ScrubMomentFormat.HourOnly }
 
 /**
+ * The forecast-zone "today" on the multi-day deck, used to relativise peak-day
+ * labels — a peak landing on this date reads "today", the next day "tomorrow",
+ * otherwise the weekday name (see `peakDayLabel`). Null on the per-period pages
+ * and in previews that don't set it, where the label always uses the weekday.
+ * The following-week page may set it too; its window never contains today /
+ * tomorrow, so the relativisation simply never fires there.
+ */
+internal val LocalForecastToday = compositionLocalOf<LocalDate?> { null }
+
+/**
  * Formats the indicator's wall-clock moment for the readout line. Picks
  * the right variant by [LocalScrubMomentFormat]; on the 7-day page that
  * prepends a short day-of-week label so a Wednesday 2pm reading doesn't

@@ -412,7 +412,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Pravděpodobnost srážek</string>
     <string name="today_precipitation_peak">Vrchol %1$d%% v %2$s</string>
-    <string name="today_precipitation_peak_day">Vrchol %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Vrchol %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Dnes se srážky neočekávají</string>
     <string name="today_precipitation_dry_week">Srážky se neočekávají</string>
 
@@ -626,10 +626,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min slunce dnes večer</string>
     <string name="today_uv_subtitle">UV index za hodinu</string>
     <string name="today_uv_peak">Vrchol %1$d v %2$s</string>
-    <string name="today_uv_peak_day">Vrchol %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Vrchol %1$d %2$s</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Vrchol %1$d %2$s v %3$s</string>
-    <string name="today_wind_peak_day">Vrchol %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Vrchol %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1236,11 +1236,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_precipitation_amount_dry_week">Nečeká se déšť</string>
     <string name="today_precipitation_amount_total_week">%1$s deště</string>
     <string name="today_precipitation_amount_title">Srážky</string>
-    <string name="today_precipitation_amount_peak_day">Vrchol %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Vrchol %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s deště dnes</string>
     <string name="today_precipitation_amount_total_tonight">%1$s deště dnes večer</string>
     <string name="today_solar_peak">Vrchol %1$d W/m² v %2$s</string>
-    <string name="today_solar_peak_day">Vrchol %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Vrchol %1$d W/m² %2$s</string>
     <string name="today_title_week">Příštích 7 dní</string>
     <string name="today_week_ahead_cooler">Chladněji %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

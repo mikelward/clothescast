@@ -567,7 +567,7 @@ is unchanged; only the displayed label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Prawdopodobieństwo opadów</string>
     <string name="today_precipitation_peak">Szczyt %1$d%% o %2$s</string>
-    <string name="today_precipitation_peak_day">Szczyt %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Szczyt %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Dziś nie spodziewamy się deszczu</string>
     <string name="today_precipitation_dry_week">Nie spodziewamy się deszczu</string>
 
@@ -682,10 +682,10 @@ is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm słońca wieczorem</string>
     <string name="today_uv_subtitle">Indeks UV na godzinę</string>
     <string name="today_uv_peak">Szczyt %1$d o %2$s</string>
-    <string name="today_uv_peak_day">Szczyt %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Szczyt %1$d %2$s</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Szczyt %1$d %2$s o %3$s</string>
-    <string name="today_wind_peak_day">Szczyt %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Szczyt %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1274,11 +1274,11 @@ is unchanged; only the displayed label localizes.
     <string name="today_precipitation_amount_dry_week">Bez deszczu</string>
     <string name="today_precipitation_amount_total_week">%1$s deszczu</string>
     <string name="today_precipitation_amount_title">Opady</string>
-    <string name="today_precipitation_amount_peak_day">Szczyt %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Szczyt %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s deszczu dziś</string>
     <string name="today_precipitation_amount_total_tonight">%1$s deszczu w nocy</string>
     <string name="today_solar_peak">Maks. %1$d W/m² o %2$s</string>
-    <string name="today_solar_peak_day">Maks. %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Maks. %1$d W/m² %2$s</string>
     <string name="today_title_week">Następne 7 dni</string>
     <string name="today_week_ahead_cooler">Chłodniej %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

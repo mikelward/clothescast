@@ -164,7 +164,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_forecast_legend_air">Joto la hewa (%1$s) kwa saa</string>
     <string name="today_precipitation_title">Uwezekano wa mvua</string>
     <string name="today_precipitation_peak">Kilele %1$d%% saa %2$s</string>
-    <string name="today_precipitation_peak_day">Kilele %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Kilele %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Hakuna mvua inayotarajiwa leo</string>
     <string name="today_precipitation_dry_week">Hakuna mvua inayotarajiwa</string>
     <string name="today_chart_model_legend_label">Mifano:</string>
@@ -468,10 +468,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_minutes_only_tonight">Dakika %1$d za jua usiku huu</string>
     <string name="today_uv_subtitle">Kiwango cha UV kwa saa</string>
     <string name="today_uv_peak">Kilele %1$d saa %2$s</string>
-    <string name="today_uv_peak_day">Kilele %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Kilele %1$d %2$s</string>
     <string name="today_uv_title">Kiwango cha UV</string>
     <string name="today_wind_peak">Kilele %1$d %2$s saa %3$s</string>
-    <string name="today_wind_peak_day">Kilele %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Kilele %1$d %2$s %3$s</string>
     <string name="settings_region_language_en_us">Kiingereza (Marekani)</string>
     <string name="settings_tts_voice_locale_en_us">Kiingereza (Marekani)</string>
     <string name="settings_region_language_en_gb">Kiingereza (Uingereza)</string>
@@ -1195,11 +1195,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_week">Hakuna mvua inayotarajiwa</string>
     <string name="today_precipitation_amount_total_week">%1$s ya mvua</string>
     <string name="today_precipitation_amount_title">Mvua</string>
-    <string name="today_precipitation_amount_peak_day">Kilele %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Kilele %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s ya mvua leo</string>
     <string name="today_precipitation_amount_total_tonight">%1$s ya mvua usiku huu</string>
     <string name="today_solar_peak">Kilele %1$d W/m² saa %2$s</string>
-    <string name="today_solar_peak_day">Kilele %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Kilele %1$d W/m² %2$s</string>
     <string name="today_title_week">Siku 7 zijazo</string>
     <string name="today_week_ahead_cooler">Baridi zaidi %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

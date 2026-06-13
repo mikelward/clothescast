@@ -123,7 +123,7 @@
          can't say which of the seven days the peak lands on. -->
     <string name="today_precipitation_title">Chance of rain</string>
     <string name="today_precipitation_peak">Peak %1$d%% at %2$s</string>
-    <string name="today_precipitation_peak_day">Peak %1$d%% on %2$s</string>
+    <string name="today_precipitation_peak_day">Peak %1$d%% %2$s</string>
     <string name="today_precipitation_dry">No rain expected today</string>
     <!-- Dry-day subtitle on the 7-day deck, which spans a week so "today"
          doesn't apply; the qualifier is dropped rather than guessing
@@ -147,7 +147,7 @@
     <string name="today_precipitation_amount_title">Rainfall</string>
     <string name="today_precipitation_amount_total_today">%1$s of rain today</string>
     <string name="today_precipitation_amount_total_tonight">%1$s of rain tonight</string>
-    <string name="today_precipitation_amount_peak_day">Peak %1$s on %2$s</string>
+    <string name="today_precipitation_amount_peak_day">Peak %1$s %2$s</string>
     <string name="today_precipitation_amount_dry_today">No rainfall expected today</string>
     <string name="today_precipitation_amount_dry_tonight">No rainfall expected tonight</string>
     <!-- 7-day deck variants of the dry / total subtitles: the "today" /
@@ -242,7 +242,7 @@
          formatted as HH:00. The "_day" variant names the day instead of the
          hour on the 7-day page. -->
     <string name="today_wind_peak">Peak %1$d %2$s at %3$s</string>
-    <string name="today_wind_peak_day">Peak %1$d %2$s on %3$s</string>
+    <string name="today_wind_peak_day">Peak %1$d %2$s %3$s</string>
 
     <!-- Cloud-cover diagnostic card. Sits below the wind card; cloud cover
          is the upstream driver of air-temperature divergence between models
@@ -281,7 +281,7 @@
          information-free. Units stay in the format string because the
          card title ("Solar radiation") doesn't name them. -->
     <string name="today_solar_peak">Peak %1$d W/m² at %2$s</string>
-    <string name="today_solar_peak_day">Peak %1$d W/m² on %2$s</string>
+    <string name="today_solar_peak_day">Peak %1$d W/m² %2$s</string>
 
     <!-- Sunshine-duration diagnostic card. The chart plots minutes of sun
          per hour (0..60) per model; the card's subtitle replaces the static
@@ -321,7 +321,7 @@
          the static subtitle — a "Peak 0 at 21:00" reading on the night
          view is information-free. -->
     <string name="today_uv_peak">Peak %1$d at %2$s</string>
-    <string name="today_uv_peak_day">Peak %1$d on %2$s</string>
+    <string name="today_uv_peak_day">Peak %1$d %2$s</string>
 
     <string name="today_confidence_high">Forecasters agree</string>
     <string name="today_confidence_medium">Forecasters disagree a bit</string>

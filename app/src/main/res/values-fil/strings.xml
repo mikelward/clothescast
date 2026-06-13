@@ -169,7 +169,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Precipitation card -->
     <string name="today_precipitation_title">Tsansa ng ulan</string>
     <string name="today_precipitation_peak">Pinakamataas na %1$d%% ng %2$s</string>
-    <string name="today_precipitation_peak_day">Pinakamataas na %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Pinakamataas na %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Walang inaasahang ulan ngayon</string>
     <string name="today_precipitation_dry_week">Walang inaasahang ulan</string>
 
@@ -659,10 +659,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm ng araw ngayong gabi</string>
     <string name="today_uv_subtitle">UV index bawat oras</string>
     <string name="today_uv_peak">Pinakamataas na %1$d sa %2$s</string>
-    <string name="today_uv_peak_day">Pinakamataas na %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Pinakamataas na %1$d %2$s</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Pinakamataas na %1$d %2$s sa %3$s</string>
-    <string name="today_wind_peak_day">Pinakamataas na %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Pinakamataas na %1$d %2$s %3$s</string>
 
     <!-- Today screen pager. -->
     <string name="today_view_other_period">Tingnan ang ibang forecast</string>
@@ -1277,11 +1277,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_week">Walang inaasahang ulan</string>
     <string name="today_precipitation_amount_total_week">%1$s ng ulan</string>
     <string name="today_precipitation_amount_title">Ulan</string>
-    <string name="today_precipitation_amount_peak_day">Pinakamataas na %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Pinakamataas na %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s ng ulan ngayong araw</string>
     <string name="today_precipitation_amount_total_tonight">%1$s ng ulan ngayong gabi</string>
     <string name="today_solar_peak">Pinakatampok na %1$d W/m² sa %2$s</string>
-    <string name="today_solar_peak_day">Pinakatampok na %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Pinakatampok na %1$d W/m² %2$s</string>
     <string name="today_title_week">Susunod na 7 araw</string>
     <string name="today_week_ahead_cooler">Mas malamig %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

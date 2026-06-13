@@ -427,7 +427,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Regnsannolikhet</string>
     <string name="today_precipitation_peak">Topp %1$d%% klockan %2$s</string>
-    <string name="today_precipitation_peak_day">Topp %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Topp %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Inget regn väntas idag</string>
     <string name="today_precipitation_dry_week">Inget regn väntas</string>
 
@@ -638,10 +638,10 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min sol i kväll</string>
     <string name="today_uv_subtitle">UV-index per timme</string>
     <string name="today_uv_peak">Topp %1$d kl. %2$s</string>
-    <string name="today_uv_peak_day">Topp %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Topp %1$d %2$s</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Topphastighet %1$d %2$s kl. %3$s</string>
-    <string name="today_wind_peak_day">Topphastighet %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Topphastighet %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1255,11 +1255,11 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_precipitation_amount_dry_week">Inget regn väntas</string>
     <string name="today_precipitation_amount_total_week">%1$s regn</string>
     <string name="today_precipitation_amount_title">Nederbörd</string>
-    <string name="today_precipitation_amount_peak_day">Topp %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Topp %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s regn i dag</string>
     <string name="today_precipitation_amount_total_tonight">%1$s regn i kväll</string>
     <string name="today_solar_peak">Topp %1$d W/m² kl. %2$s</string>
-    <string name="today_solar_peak_day">Topp %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Topp %1$d W/m² %2$s</string>
     <string name="today_title_week">Nästa 7 dagar</string>
     <string name="today_week_ahead_cooler">Kallare %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

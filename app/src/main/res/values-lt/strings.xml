@@ -172,7 +172,7 @@ What is NOT overridden, by design:
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Lietaus tikimybė</string>
     <string name="today_precipitation_peak">Pikas %1$d%% %2$s val.</string>
-    <string name="today_precipitation_peak_day">Pikas %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Pikas %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Šiandien lietaus nesitikima</string>
     <string name="today_precipitation_dry_week">Lietaus nesitikima</string>
 
@@ -628,10 +628,10 @@ What is NOT overridden, by design:
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min saulės šįvakar</string>
     <string name="today_uv_subtitle">UV indeksas per valandą</string>
     <string name="today_uv_peak">Smaigas %1$d %2$s val.</string>
-    <string name="today_uv_peak_day">Smaigas %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Smaigas %1$d %2$s</string>
     <string name="today_uv_title">UV indeksas</string>
     <string name="today_wind_peak">Smaigas %1$d %2$s %3$s val.</string>
-    <string name="today_wind_peak_day">Smaigas %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Smaigas %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1216,11 +1216,11 @@ What is NOT overridden, by design:
     <string name="today_precipitation_amount_dry_week">Lietaus neprognozuojama</string>
     <string name="today_precipitation_amount_total_week">%1$s lietaus</string>
     <string name="today_precipitation_amount_title">Kritulių kiekis</string>
-    <string name="today_precipitation_amount_peak_day">Pikas %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Pikas %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s lietaus šiandien</string>
     <string name="today_precipitation_amount_total_tonight">%1$s lietaus šįvakar</string>
     <string name="today_solar_peak">Pikas %1$d W/m² %2$s</string>
-    <string name="today_solar_peak_day">Pikas %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Pikas %1$d W/m² %2$s</string>
     <string name="today_title_week">Kitos 7 dienos</string>
     <string name="today_week_ahead_cooler">Vėsiau %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

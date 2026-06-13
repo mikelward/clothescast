@@ -512,7 +512,7 @@ displayed label localizes.
 
     <string name="today_precipitation_title">Yağış ihtimali</string>
     <string name="today_precipitation_peak">Zirve %1$d%%, saat %2$s</string>
-    <string name="today_precipitation_peak_day">Zirve %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Zirve %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Bugün yağış beklenmez</string>
     <string name="today_precipitation_dry_week">Yağış beklenmez</string>
 
@@ -616,10 +616,10 @@ displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">Bu gece %1$d dk güneş</string>
     <string name="today_uv_subtitle">Saate göre UV endeksi</string>
     <string name="today_uv_peak">Tepe %1$d, saat %2$s</string>
-    <string name="today_uv_peak_day">Tepe %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Tepe %1$d %2$s</string>
     <string name="today_uv_title">UV endeksi</string>
     <string name="today_wind_peak">Tepe %1$d %2$s, saat %3$s</string>
-    <string name="today_wind_peak_day">Tepe %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Tepe %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1226,11 +1226,11 @@ displayed label localizes.
     <string name="today_precipitation_amount_dry_week">Yağmur beklenmiyor</string>
     <string name="today_precipitation_amount_total_week">%1$s yağmur</string>
     <string name="today_precipitation_amount_title">Yağış</string>
-    <string name="today_precipitation_amount_peak_day">Zirve %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Zirve %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">Bugün %1$s yağmur</string>
     <string name="today_precipitation_amount_total_tonight">Bu gece %1$s yağmur</string>
     <string name="today_solar_peak">Tepe %1$d W/m² (%2$s)</string>
-    <string name="today_solar_peak_day">Tepe %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Tepe %1$d W/m² %2$s</string>
     <string name="today_title_week">Önümüzdeki 7 gün</string>
     <string name="today_week_ahead_cooler">%1$s daha serin.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

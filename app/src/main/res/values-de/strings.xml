@@ -647,6 +647,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_peak">Spitze %1$d%% um %2$s</string>
     <string name="today_precipitation_peak_day">Spitze %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Heute kein Regen erwartet</string>
+    <string name="today_precipitation_dry_week">Kein Regen erwartet</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modelle:</string>
@@ -1376,6 +1377,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_play_toast_nightly">Dein abendlicher ClothesCast wird abgespielt.</string>
     <string name="today_precipitation_amount_dry_today">Heute wird kein Regen erwartet</string>
     <string name="today_precipitation_amount_dry_tonight">Heute Abend wird kein Regen erwartet</string>
+    <string name="today_precipitation_amount_dry_week">Kein Regen erwartet</string>
+    <string name="today_precipitation_amount_total_week">%1$s Regen</string>
     <string name="today_precipitation_amount_title">Niederschlag</string>
     <string name="today_precipitation_amount_peak_day">Spitze %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s Regen heute</string>

@@ -182,6 +182,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_precipitation_peak">Vrh %1$d%% ob %2$s</string>
     <string name="today_precipitation_peak_day">Vrh %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Danes dežja ni pričakovati</string>
+    <string name="today_precipitation_dry_week">Dežja ni pričakovati</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>
@@ -1206,6 +1207,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_play_toast_nightly">Predvajam tvoj večerni ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Danes dež ni pričakovan</string>
     <string name="today_precipitation_amount_dry_tonight">Nocoj dež ni pričakovan</string>
+    <string name="today_precipitation_amount_dry_week">Dež ni pričakovan</string>
+    <string name="today_precipitation_amount_total_week">%1$s dežja</string>
     <string name="today_precipitation_amount_title">Padavine</string>
     <string name="today_precipitation_amount_peak_day">Vrh %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s dežja danes</string>

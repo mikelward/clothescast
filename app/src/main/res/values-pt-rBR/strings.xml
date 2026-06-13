@@ -618,6 +618,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_peak">Pico de %1$d%% às %2$s</string>
     <string name="today_precipitation_peak_day">Pico de %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Sem chuva prevista hoje</string>
+    <string name="today_precipitation_dry_week">Sem chuva prevista</string>
 
     <string name="today_chart_model_legend_label">Modelos:</string>
     <string name="today_chart_main_line_label">Média</string>
@@ -1305,6 +1306,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_play_toast_nightly">Reproduzindo seu ClothesCast noturno.</string>
     <string name="today_precipitation_amount_dry_today">Sem chuva prevista hoje</string>
     <string name="today_precipitation_amount_dry_tonight">Sem chuva prevista esta noite</string>
+    <string name="today_precipitation_amount_dry_week">Sem chuva prevista</string>
+    <string name="today_precipitation_amount_total_week">%1$s de chuva</string>
     <string name="today_precipitation_amount_title">Chuva</string>
     <string name="today_precipitation_amount_peak_day">Pico de %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s de chuva hoje</string>

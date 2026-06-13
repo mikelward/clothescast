@@ -514,6 +514,7 @@ displayed label localizes.
     <string name="today_precipitation_peak">Zirve %1$d%%, saat %2$s</string>
     <string name="today_precipitation_peak_day">Zirve %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Bugün yağış beklenmez</string>
+    <string name="today_precipitation_dry_week">Yağış beklenmez</string>
 
     <string name="today_chart_model_legend_label">Modeller:</string>
     <string name="today_chart_main_line_label">Ortalama</string>
@@ -1219,6 +1220,8 @@ displayed label localizes.
     <string name="today_play_toast_nightly">Gece ClothesCast\'in oynatılıyor.</string>
     <string name="today_precipitation_amount_dry_today">Bugün yağmur beklenmiyor</string>
     <string name="today_precipitation_amount_dry_tonight">Bu gece yağmur beklenmiyor</string>
+    <string name="today_precipitation_amount_dry_week">Yağmur beklenmiyor</string>
+    <string name="today_precipitation_amount_total_week">%1$s yağmur</string>
     <string name="today_precipitation_amount_title">Yağış</string>
     <string name="today_precipitation_amount_peak_day">Zirve %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">Bugün %1$s yağmur</string>

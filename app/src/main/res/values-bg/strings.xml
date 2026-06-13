@@ -187,6 +187,7 @@ What is NOT overridden, by design:
     <string name="today_precipitation_peak">Пик %1$d%% в %2$s</string>
     <string name="today_precipitation_peak_day">Пик %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Без очакван дъжд днес</string>
+    <string name="today_precipitation_dry_week">Без очакван дъжд</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Модели:</string>
@@ -1206,6 +1207,8 @@ What is NOT overridden, by design:
     <string name="today_play_toast_nightly">Възпроизвеждам твоя вечерен ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Днес не се очаква дъжд</string>
     <string name="today_precipitation_amount_dry_tonight">Тази вечер не се очаква дъжд</string>
+    <string name="today_precipitation_amount_dry_week">Не се очаква дъжд</string>
+    <string name="today_precipitation_amount_total_week">%1$s дъжд</string>
     <string name="today_precipitation_amount_title">Валежи</string>
     <string name="today_precipitation_amount_peak_day">Пик %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s дъжд днес</string>

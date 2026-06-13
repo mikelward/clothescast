@@ -76,6 +76,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_precipitation_peak">Tipp %1$d%% kell %2$s</string>
     <string name="today_precipitation_peak_day">Tipp %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Täna vihma ei oodata</string>
+    <string name="today_precipitation_dry_week">Vihma ei oodata</string>
 
     <string name="today_chart_model_legend_label">Mudelid:</string>
     <string name="today_chart_main_line_label">Keskmine</string>
@@ -1163,6 +1164,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_play_toast_nightly">Esitan sinu õhtust ClothesCasti.</string>
     <string name="today_precipitation_amount_dry_today">Täna vihma ei oodata</string>
     <string name="today_precipitation_amount_dry_tonight">Õhtul vihma ei oodata</string>
+    <string name="today_precipitation_amount_dry_week">Vihma ei oodata</string>
+    <string name="today_precipitation_amount_total_week">%1$s vihma</string>
     <string name="today_precipitation_amount_title">Sademete hulk</string>
     <string name="today_precipitation_amount_peak_day">Tipp %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s vihma täna</string>

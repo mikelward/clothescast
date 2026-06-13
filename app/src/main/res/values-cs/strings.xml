@@ -414,6 +414,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_precipitation_peak">Vrchol %1$d%% v %2$s</string>
     <string name="today_precipitation_peak_day">Vrchol %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Dnes se srážky neočekávají</string>
+    <string name="today_precipitation_dry_week">Srážky se neočekávají</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modely:</string>
@@ -1229,6 +1230,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_play_toast_nightly">Přehrávám tvůj noční ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Dnes se nečeká déšť</string>
     <string name="today_precipitation_amount_dry_tonight">Dnes večer se nečeká déšť</string>
+    <string name="today_precipitation_amount_dry_week">Nečeká se déšť</string>
+    <string name="today_precipitation_amount_total_week">%1$s deště</string>
     <string name="today_precipitation_amount_title">Srážky</string>
     <string name="today_precipitation_amount_peak_day">Vrchol %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s deště dnes</string>

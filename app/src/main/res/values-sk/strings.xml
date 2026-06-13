@@ -426,6 +426,7 @@ What is NOT overridden, by design:
     <string name="today_precipitation_peak">Vrchol %1$d%% o %2$s</string>
     <string name="today_precipitation_peak_day">Vrchol %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Dnes sa zrážky neočakávajú</string>
+    <string name="today_precipitation_dry_week">Zrážky sa neočakávajú</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modely:</string>
@@ -1243,6 +1244,8 @@ What is NOT overridden, by design:
     <string name="today_play_toast_nightly">Prehrávam tvoj nočný ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Dnes sa nečaká dážď</string>
     <string name="today_precipitation_amount_dry_tonight">Dnes večer sa nečaká dážď</string>
+    <string name="today_precipitation_amount_dry_week">Nečaká sa dážď</string>
+    <string name="today_precipitation_amount_total_week">%1$s dažďa</string>
     <string name="today_precipitation_amount_title">Zrážky</string>
     <string name="today_precipitation_amount_peak_day">Vrchol %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s dažďa dnes</string>

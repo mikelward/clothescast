@@ -571,6 +571,7 @@ the displayed label localizes.
     <string name="today_precipitation_peak">Piek %1$d%% om %2$s</string>
     <string name="today_precipitation_peak_day">Piek %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Geen regen verwacht vandaag</string>
+    <string name="today_precipitation_dry_week">Geen regen verwacht</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modellen:</string>
@@ -1267,6 +1268,8 @@ the displayed label localizes.
     <string name="today_play_toast_nightly">Je nachtelijke ClothesCast wordt afgespeeld.</string>
     <string name="today_precipitation_amount_dry_today">Geen regen verwacht vandaag</string>
     <string name="today_precipitation_amount_dry_tonight">Geen regen verwacht vanavond</string>
+    <string name="today_precipitation_amount_dry_week">Geen regen verwacht</string>
+    <string name="today_precipitation_amount_total_week">%1$s regen</string>
     <string name="today_precipitation_amount_title">Regenval</string>
     <string name="today_precipitation_amount_peak_day">Piek %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s regen vandaag</string>

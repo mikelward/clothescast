@@ -171,6 +171,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak">Pinakamataas na %1$d%% ng %2$s</string>
     <string name="today_precipitation_peak_day">Pinakamataas na %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Walang inaasahang ulan ngayon</string>
+    <string name="today_precipitation_dry_week">Walang inaasahang ulan</string>
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Mga modelo:</string>
@@ -1270,6 +1271,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_play_toast_nightly">Pino-play ang iyong gabi-gabing ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Walang inaasahang ulan ngayong araw</string>
     <string name="today_precipitation_amount_dry_tonight">Walang inaasahang ulan ngayong gabi</string>
+    <string name="today_precipitation_amount_dry_week">Walang inaasahang ulan</string>
+    <string name="today_precipitation_amount_total_week">%1$s ng ulan</string>
     <string name="today_precipitation_amount_title">Ulan</string>
     <string name="today_precipitation_amount_peak_day">Pinakamataas na %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s ng ulan ngayong araw</string>

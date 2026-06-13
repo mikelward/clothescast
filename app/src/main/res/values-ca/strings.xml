@@ -76,6 +76,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_precipitation_peak">Màxim %1$d%% a les %2$s</string>
     <string name="today_precipitation_peak_day">Màxim %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">No s\'espera pluja avui</string>
+    <string name="today_precipitation_dry_week">No s\'espera pluja</string>
 
     <string name="today_chart_model_legend_label">Models:</string>
     <string name="today_chart_main_line_label">Mitjana</string>
@@ -1160,6 +1161,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_play_toast_nightly">Reproduint el teu ClothesCast nocturn.</string>
     <string name="today_precipitation_amount_dry_today">No s\'espera pluja avui</string>
     <string name="today_precipitation_amount_dry_tonight">No s\'espera pluja aquesta nit</string>
+    <string name="today_precipitation_amount_dry_week">No s\'espera pluja</string>
+    <string name="today_precipitation_amount_total_week">%1$s de pluja</string>
     <string name="today_precipitation_amount_title">Pluja</string>
     <string name="today_precipitation_amount_peak_day">Màxim %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s de pluja avui</string>

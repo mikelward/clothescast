@@ -125,6 +125,10 @@
     <string name="today_precipitation_peak">Peak %1$d%% at %2$s</string>
     <string name="today_precipitation_peak_day">Peak %1$d%% on %2$s</string>
     <string name="today_precipitation_dry">No rain expected today</string>
+    <!-- Dry-day subtitle on the 7-day deck, which spans a week so "today"
+         doesn't apply; the qualifier is dropped rather than guessing
+         "this week" (the deck also serves the days-8–14 page). -->
+    <string name="today_precipitation_dry_week">No rain expected</string>
 
     <!-- Hourly precipitation amount card, rendered immediately below the
          chance-of-rain card. The chart plots mm per hour over the current
@@ -146,6 +150,12 @@
     <string name="today_precipitation_amount_peak_day">Peak %1$s on %2$s</string>
     <string name="today_precipitation_amount_dry_today">No rainfall expected today</string>
     <string name="today_precipitation_amount_dry_tonight">No rainfall expected tonight</string>
+    <!-- 7-day deck variants of the dry / total subtitles: the "today" /
+         "tonight" qualifier is dropped because the deck spans a week. The
+         total ("%1$s of rain") covers the trace-week fall-through where no
+         single hour rounds to a non-zero peak. -->
+    <string name="today_precipitation_amount_dry_week">No rainfall expected</string>
+    <string name="today_precipitation_amount_total_week">%1$s of rain</string>
 
     <!-- Low–high feels-like temperature row shown on the Nest-Hub outfit card.
          %1$d = rounded low, %2$d = rounded high, %3$s = unit symbol (e.g. °C). -->

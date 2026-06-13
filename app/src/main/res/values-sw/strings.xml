@@ -166,6 +166,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak">Kilele %1$d%% saa %2$s</string>
     <string name="today_precipitation_peak_day">Kilele %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Hakuna mvua inayotarajiwa leo</string>
+    <string name="today_precipitation_dry_week">Hakuna mvua inayotarajiwa</string>
     <string name="today_chart_model_legend_label">Mifano:</string>
     <string name="today_chart_main_line_label">Wastani</string>
     <string name="today_chart_divergence_summary">Mifano inayotofautiana zaidi saa %1$s (Δ %2$.1f%3$s inayohisi) — hasa %4$s, %5$s</string>
@@ -1188,6 +1189,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_play_toast_nightly">Ninacheza ClothesCast yako ya usiku.</string>
     <string name="today_precipitation_amount_dry_today">Hakuna mvua inayotarajiwa leo</string>
     <string name="today_precipitation_amount_dry_tonight">Hakuna mvua inayotarajiwa usiku huu</string>
+    <string name="today_precipitation_amount_dry_week">Hakuna mvua inayotarajiwa</string>
+    <string name="today_precipitation_amount_total_week">%1$s ya mvua</string>
     <string name="today_precipitation_amount_title">Mvua</string>
     <string name="today_precipitation_amount_peak_day">Kilele %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s ya mvua leo</string>

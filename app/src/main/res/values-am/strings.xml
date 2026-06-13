@@ -102,6 +102,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak">ከፍተኛ %1$d%% በ%2$s ሰዓት</string>
     <string name="today_precipitation_peak_day">ከፍተኛ %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">ዛሬ ዝናብ አይጠበቅም</string>
+    <string name="today_precipitation_dry_week">ዝናብ አይጠበቅም</string>
     <string name="today_chart_model_legend_label">ሞዴሎች:</string>
     <string name="today_chart_main_line_label">አማካይ</string>
     <string name="today_chart_divergence_summary">ሞዴሎቹ በ%1$s ሰዓት ይለያያሉ (Δ %2$.1f%3$s የሚሰማ) — ብዙውን ጊዜ %4$s፣ %5$s</string>
@@ -1187,6 +1188,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_play_toast_nightly">የሌሊት ClothesCastህን እያጫወትኩ ነው።</string>
     <string name="today_precipitation_amount_dry_today">ዛሬ ዝናብ አይጠበቅም</string>
     <string name="today_precipitation_amount_dry_tonight">ዛሬ ምሽት ዝናብ አይጠበቅም</string>
+    <string name="today_precipitation_amount_dry_week">ዝናብ አይጠበቅም</string>
+    <string name="today_precipitation_amount_total_week">%1$s ዝናብ</string>
     <string name="today_precipitation_amount_title">ዝናብ</string>
     <string name="today_precipitation_amount_peak_day">ከፍተኛ %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">ዛሬ %1$s ዝናብ</string>

@@ -177,6 +177,7 @@ they work correctly in both the single-band and range templates.
     <string name="today_precipitation_peak">الذروة %1$d%% الساعة %2$s</string>
     <string name="today_precipitation_peak_day">الذروة %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">لا أمطار متوقعة اليوم</string>
+    <string name="today_precipitation_dry_week">لا أمطار متوقعة</string>
 
     <!-- Today — model/chart -->
     <string name="today_chart_model_legend_label">النماذج:</string>
@@ -1219,6 +1220,8 @@ they work correctly in both the single-band and range templates.
     <string name="today_play_toast_nightly">جاري تشغيل ClothesCast الليلي.</string>
     <string name="today_precipitation_amount_dry_today">لا يُتوقع هطول مطر اليوم</string>
     <string name="today_precipitation_amount_dry_tonight">لا يُتوقع هطول مطر الليلة</string>
+    <string name="today_precipitation_amount_dry_week">لا يُتوقع هطول مطر</string>
+    <string name="today_precipitation_amount_total_week">%1$s من المطر</string>
     <string name="today_precipitation_amount_title">هطول</string>
     <string name="today_precipitation_amount_peak_day">الذروة %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s من المطر اليوم</string>

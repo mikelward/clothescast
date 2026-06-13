@@ -2912,6 +2912,16 @@ private fun formatTopFactorRange(
  * 24-hour stride. Full style ("Friday") reads better in a subtitle than the
  * scrub readout's short style ("Fri").
  */
+/**
+ * True on the multi-day chart deck (the 7-day / following-week pages), where
+ * a per-period "today" / "tonight" subtitle qualifier doesn't apply. Keyed off
+ * [LocalScrubMomentFormat] — the same `DayPlusHour` signal the peak subtitles
+ * and scrub readout use.
+ */
+@Composable
+private fun isWeekView(): Boolean =
+    LocalScrubMomentFormat.current == ScrubMomentFormat.DayPlusHour
+
 @Composable
 private fun peakDayLabel(
     hourly: List<HourlyForecast>,
@@ -3287,7 +3297,10 @@ internal fun PrecipitationCard(
         hourly[peakIdx].precipitationProbabilityPct < DRY_THRESHOLD_PCT
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry || peakIdx == null) {
-        stringResource(R.string.today_precipitation_dry)
+        stringResource(
+            if (isWeekView()) R.string.today_precipitation_dry_week
+            else R.string.today_precipitation_dry,
+        )
     } else {
         peakSubtitle(
             hourly = hourly,
@@ -3399,12 +3412,13 @@ internal fun PrecipitationAmountCard(
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry) {
         stringResource(
-            when (period) {
-                ForecastPeriod.TODAY -> R.string.today_precipitation_amount_dry_today
-                ForecastPeriod.TONIGHT -> R.string.today_precipitation_amount_dry_tonight
+            when {
+                isWeekView() -> R.string.today_precipitation_amount_dry_week
+                period == ForecastPeriod.TODAY -> R.string.today_precipitation_amount_dry_today
+                else -> R.string.today_precipitation_amount_dry_tonight
             },
         )
-    } else if (LocalScrubMomentFormat.current == ScrubMomentFormat.DayPlusHour &&
+    } else if (isWeekView() &&
         rainPeakIdx != null &&
         mainLine[rainPeakIdx] >= TRACE_MM_FLOOR
     ) {
@@ -3422,9 +3436,10 @@ internal fun PrecipitationAmountCard(
         )
     } else {
         stringResource(
-            when (period) {
-                ForecastPeriod.TODAY -> R.string.today_precipitation_amount_total_today
-                ForecastPeriod.TONIGHT -> R.string.today_precipitation_amount_total_tonight
+            when {
+                isWeekView() -> R.string.today_precipitation_amount_total_week
+                period == ForecastPeriod.TODAY -> R.string.today_precipitation_amount_total_today
+                else -> R.string.today_precipitation_amount_total_tonight
             },
             formatPrecipitationMmAxis(totalMm),
         )

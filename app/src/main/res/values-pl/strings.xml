@@ -569,6 +569,7 @@ is unchanged; only the displayed label localizes.
     <string name="today_precipitation_peak">Szczyt %1$d%% o %2$s</string>
     <string name="today_precipitation_peak_day">Szczyt %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Dziś nie spodziewamy się deszczu</string>
+    <string name="today_precipitation_dry_week">Nie spodziewamy się deszczu</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modele:</string>
@@ -1267,6 +1268,8 @@ is unchanged; only the displayed label localizes.
     <string name="today_play_toast_nightly">Odtwarzanie twojego wieczornego ClothesCasta.</string>
     <string name="today_precipitation_amount_dry_today">Dziś bez deszczu</string>
     <string name="today_precipitation_amount_dry_tonight">W nocy bez deszczu</string>
+    <string name="today_precipitation_amount_dry_week">Bez deszczu</string>
+    <string name="today_precipitation_amount_total_week">%1$s deszczu</string>
     <string name="today_precipitation_amount_title">Opady</string>
     <string name="today_precipitation_amount_peak_day">Szczyt %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s deszczu dziś</string>

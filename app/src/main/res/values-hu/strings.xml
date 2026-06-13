@@ -416,6 +416,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_precipitation_peak">Csúcs %1$d%% %2$s órakor</string>
     <string name="today_precipitation_peak_day">Csúcs %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Ma nem várható csapadék</string>
+    <string name="today_precipitation_dry_week">Nem várható csapadék</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modellek:</string>
@@ -1212,6 +1213,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_play_toast_nightly">Lejátszom az esti ClothesCastod.</string>
     <string name="today_precipitation_amount_dry_today">Ma nem várható eső</string>
     <string name="today_precipitation_amount_dry_tonight">Estére nem várható eső</string>
+    <string name="today_precipitation_amount_dry_week">Nem várható eső</string>
+    <string name="today_precipitation_amount_total_week">%1$s eső</string>
     <string name="today_precipitation_amount_title">Csapadék</string>
     <string name="today_precipitation_amount_peak_day">Csúcs %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s eső ma</string>

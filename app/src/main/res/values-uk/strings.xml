@@ -430,6 +430,7 @@ only the displayed label localizes.
     <string name="today_precipitation_peak">Пік %1$d%% о %2$s</string>
     <string name="today_precipitation_peak_day">Пік %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Дощу сьогодні не очікується</string>
+    <string name="today_precipitation_dry_week">Дощу не очікується</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Моделі:</string>
@@ -1218,6 +1219,8 @@ only the displayed label localizes.
     <string name="today_play_toast_nightly">Відтворюю твій вечірній ClothesCast.</string>
     <string name="today_precipitation_amount_dry_today">Сьогодні дощу не очікується</string>
     <string name="today_precipitation_amount_dry_tonight">Сьогодні ввечері дощу не очікується</string>
+    <string name="today_precipitation_amount_dry_week">Дощу не очікується</string>
+    <string name="today_precipitation_amount_total_week">%1$s дощу</string>
     <string name="today_precipitation_amount_title">Опади</string>
     <string name="today_precipitation_amount_peak_day">Пік %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s дощу сьогодні</string>

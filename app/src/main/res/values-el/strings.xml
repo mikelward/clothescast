@@ -595,6 +595,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_peak">Αιχμή %1$d%% στις %2$s</string>
     <string name="today_precipitation_peak_day">Αιχμή %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Δεν αναμένεται βροχή σήμερα</string>
+    <string name="today_precipitation_dry_week">Δεν αναμένεται βροχή</string>
 
     <!-- Model spread / chart strings. -->
     <string name="today_chart_model_legend_label">Μοντέλα:</string>
@@ -1339,6 +1340,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_play_toast_nightly">Αναπαραγωγή του βραδινού ClothesCast σου.</string>
     <string name="today_precipitation_amount_dry_today">Δεν αναμένεται βροχή σήμερα</string>
     <string name="today_precipitation_amount_dry_tonight">Δεν αναμένεται βροχή απόψε</string>
+    <string name="today_precipitation_amount_dry_week">Δεν αναμένεται βροχή</string>
+    <string name="today_precipitation_amount_total_week">%1$s βροχής</string>
     <string name="today_precipitation_amount_title">Βροχόπτωση</string>
     <string name="today_precipitation_amount_peak_day">Αιχμή %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s βροχής σήμερα</string>

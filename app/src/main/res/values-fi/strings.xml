@@ -515,6 +515,7 @@ displayed label localizes.
     <string name="today_precipitation_peak">Huippu %1$d%% kello %2$s</string>
     <string name="today_precipitation_peak_day">Huippu %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Ei sadetta odotettavissa tänään</string>
+    <string name="today_precipitation_dry_week">Ei sadetta odotettavissa</string>
 
     <string name="today_chart_model_legend_label">Mallit:</string>
     <string name="today_chart_main_line_label">Ka.</string>
@@ -1226,6 +1227,8 @@ displayed label localizes.
     <string name="today_play_toast_nightly">Toistetaan illan ClothesCastia.</string>
     <string name="today_precipitation_amount_dry_today">Tänään ei odoteta sadetta</string>
     <string name="today_precipitation_amount_dry_tonight">Illalle ei odoteta sadetta</string>
+    <string name="today_precipitation_amount_dry_week">Ei odoteta sadetta</string>
+    <string name="today_precipitation_amount_total_week">Sadetta %1$s</string>
     <string name="today_precipitation_amount_title">Sade</string>
     <string name="today_precipitation_amount_peak_day">Huippu %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">Sadetta tänään %1$s</string>

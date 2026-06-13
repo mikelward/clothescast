@@ -617,6 +617,7 @@ label localizes.
     <string name="today_precipitation_peak">峰值 %1$d%%（%2$s）</string>
     <string name="today_precipitation_peak_day">峰值 %1$d%%（%2$s）</string>
     <string name="today_precipitation_dry">今日预计无雨</string>
+    <string name="today_precipitation_dry_week">预计无雨</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">模型：</string>
@@ -1367,6 +1368,8 @@ label localizes.
     <string name="today_play_toast_nightly">正在播放夜间 ClothesCast。</string>
     <string name="today_precipitation_amount_dry_today">今天预计无降雨</string>
     <string name="today_precipitation_amount_dry_tonight">今晚预计无降雨</string>
+    <string name="today_precipitation_amount_dry_week">预计无降雨</string>
+    <string name="today_precipitation_amount_total_week">降雨 %1$s</string>
     <string name="today_precipitation_amount_title">降水</string>
     <string name="today_precipitation_amount_peak_day">峰值 %1$s（%2$s）</string>
     <string name="today_precipitation_amount_total_today">今天降雨 %1$s</string>

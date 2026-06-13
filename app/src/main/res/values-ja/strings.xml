@@ -624,6 +624,7 @@ the displayed label localizes.
     <string name="today_precipitation_peak">ピーク %1$d%%（%2$s）</string>
     <string name="today_precipitation_peak_day">ピーク %1$d%%（%2$s）</string>
     <string name="today_precipitation_dry">今日は雨の予報なし</string>
+    <string name="today_precipitation_dry_week">雨の予報なし</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">モデル:</string>
@@ -1368,6 +1369,8 @@ the displayed label localizes.
     <string name="today_play_toast_nightly">ナイトリーClothesCastを再生中。</string>
     <string name="today_precipitation_amount_dry_today">今日は降雨予報なし</string>
     <string name="today_precipitation_amount_dry_tonight">今夜は降雨予報なし</string>
+    <string name="today_precipitation_amount_dry_week">降雨予報なし</string>
+    <string name="today_precipitation_amount_total_week">%1$sの雨</string>
     <string name="today_precipitation_amount_title">降水量</string>
     <string name="today_precipitation_amount_peak_day">ピーク %1$s（%2$s）</string>
     <string name="today_precipitation_amount_total_today">今日は%1$sの雨</string>

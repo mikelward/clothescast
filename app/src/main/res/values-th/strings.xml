@@ -178,6 +178,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak">สูงสุด %1$d%% เวลา %2$s</string>
     <string name="today_precipitation_peak_day">สูงสุด %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">ไม่คาดว่าจะมีฝนวันนี้</string>
+    <string name="today_precipitation_dry_week">ไม่คาดว่าจะมีฝน</string>
 
     <!-- Model spread / chart labels -->
     <string name="today_chart_model_legend_label">แบบจำลอง:</string>
@@ -1219,6 +1220,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_play_toast_nightly">กำลังเล่น ClothesCast ตอนกลางคืนของคุณ</string>
     <string name="today_precipitation_amount_dry_today">วันนี้คาดว่าไม่มีฝน</string>
     <string name="today_precipitation_amount_dry_tonight">คืนนี้คาดว่าไม่มีฝน</string>
+    <string name="today_precipitation_amount_dry_week">คาดว่าไม่มีฝน</string>
+    <string name="today_precipitation_amount_total_week">%1$s ของฝน</string>
     <string name="today_precipitation_amount_title">ฝน</string>
     <string name="today_precipitation_amount_peak_day">สูงสุด %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s ของฝนวันนี้</string>

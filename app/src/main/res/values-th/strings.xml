@@ -176,6 +176,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Precipitation card -->
     <string name="today_precipitation_title">โอกาสฝนตก</string>
     <string name="today_precipitation_peak">สูงสุด %1$d%% เวลา %2$s</string>
+    <string name="today_precipitation_peak_day">สูงสุด %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">ไม่คาดว่าจะมีฝนวันนี้</string>
 
     <!-- Model spread / chart labels -->
@@ -604,8 +605,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_sunshine_total_minutes_only_tonight">แดดคืนนี้ %1$d นาที</string>
     <string name="today_uv_subtitle">ดัชนี UV ต่อชั่วโมง</string>
     <string name="today_uv_peak">สูงสุด %1$d เวลา %2$s</string>
+    <string name="today_uv_peak_day">สูงสุด %1$d (%2$s)</string>
     <string name="today_uv_title">ดัชนี UV</string>
     <string name="today_wind_peak">สูงสุด %1$d %2$s เวลา %3$s</string>
+    <string name="today_wind_peak_day">สูงสุด %1$d %2$s (%3$s)</string>
 
     <!-- Today screen pager. -->
     <string name="today_view_other_period">ดูพยากรณ์อื่น</string>
@@ -1216,10 +1219,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_play_toast_nightly">กำลังเล่น ClothesCast ตอนกลางคืนของคุณ</string>
     <string name="today_precipitation_amount_dry_today">วันนี้คาดว่าไม่มีฝน</string>
     <string name="today_precipitation_amount_dry_tonight">คืนนี้คาดว่าไม่มีฝน</string>
-    <string name="today_precipitation_amount_title">ฝนรายชั่วโมง</string>
+    <string name="today_precipitation_amount_title">ฝน</string>
+    <string name="today_precipitation_amount_peak_day">สูงสุด %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s ของฝนวันนี้</string>
     <string name="today_precipitation_amount_total_tonight">%1$s ของฝนคืนนี้</string>
     <string name="today_solar_peak">สูงสุด %1$d W/m² เวลา %2$s</string>
+    <string name="today_solar_peak_day">สูงสุด %1$d W/m² (%2$s)</string>
     <string name="today_title_week">7 วันถัดไป</string>
     <string name="today_week_ahead_cooler">เย็นขึ้น %1$s</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

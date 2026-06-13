@@ -569,6 +569,7 @@ the displayed label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Kans op regen</string>
     <string name="today_precipitation_peak">Piek %1$d%% om %2$s</string>
+    <string name="today_precipitation_peak_day">Piek %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Geen regen verwacht vandaag</string>
 
     <!-- Chart labels. -->
@@ -679,8 +680,10 @@ the displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">%1$dm zon vanavond</string>
     <string name="today_uv_subtitle">UV-index per uur</string>
     <string name="today_uv_peak">Piek %1$d om %2$s</string>
+    <string name="today_uv_peak_day">Piek %1$d (%2$s)</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Piek %1$d %2$s om %3$s</string>
+    <string name="today_wind_peak_day">Piek %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1264,10 +1267,12 @@ the displayed label localizes.
     <string name="today_play_toast_nightly">Je nachtelijke ClothesCast wordt afgespeeld.</string>
     <string name="today_precipitation_amount_dry_today">Geen regen verwacht vandaag</string>
     <string name="today_precipitation_amount_dry_tonight">Geen regen verwacht vanavond</string>
-    <string name="today_precipitation_amount_title">Uurlijkse regenval</string>
+    <string name="today_precipitation_amount_title">Regenval</string>
+    <string name="today_precipitation_amount_peak_day">Piek %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s regen vandaag</string>
     <string name="today_precipitation_amount_total_tonight">%1$s regen vanavond</string>
     <string name="today_solar_peak">Piek %1$d W/m² om %2$s</string>
+    <string name="today_solar_peak_day">Piek %1$d W/m² (%2$s)</string>
     <string name="today_title_week">Komende 7 dagen</string>
     <string name="today_week_ahead_cooler">Koeler %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

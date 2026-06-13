@@ -74,6 +74,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="today_precipitation_title">Vihma tõenäosus</string>
     <string name="today_precipitation_peak">Tipp %1$d%% kell %2$s</string>
+    <string name="today_precipitation_peak_day">Tipp %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Täna vihma ei oodata</string>
 
     <string name="today_chart_model_legend_label">Mudelid:</string>
@@ -579,8 +580,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min päikest täna õhtul</string>
     <string name="today_uv_subtitle">UV-indeks tunnis</string>
     <string name="today_uv_peak">Tipp %1$d kell %2$s</string>
+    <string name="today_uv_peak_day">Tipp %1$d (%2$s)</string>
     <string name="today_uv_title">UV-indeks</string>
     <string name="today_wind_peak">Tipp %1$d %2$s kell %3$s</string>
+    <string name="today_wind_peak_day">Tipp %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1160,10 +1163,12 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_play_toast_nightly">Esitan sinu õhtust ClothesCasti.</string>
     <string name="today_precipitation_amount_dry_today">Täna vihma ei oodata</string>
     <string name="today_precipitation_amount_dry_tonight">Õhtul vihma ei oodata</string>
-    <string name="today_precipitation_amount_title">Tunnine sademete hulk</string>
+    <string name="today_precipitation_amount_title">Sademete hulk</string>
+    <string name="today_precipitation_amount_peak_day">Tipp %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s vihma täna</string>
     <string name="today_precipitation_amount_total_tonight">%1$s vihma õhtul</string>
     <string name="today_solar_peak">Tipp %1$d W/m² kell %2$s</string>
+    <string name="today_solar_peak_day">Tipp %1$d W/m² (%2$s)</string>
     <string name="today_title_week">Järgmised 7 päeva</string>
     <string name="today_week_ahead_cooler">Jahedam %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

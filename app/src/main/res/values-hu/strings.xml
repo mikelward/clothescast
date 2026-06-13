@@ -414,6 +414,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Csapadék valószínűsége</string>
     <string name="today_precipitation_peak">Csúcs %1$d%% %2$s órakor</string>
+    <string name="today_precipitation_peak_day">Csúcs %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Ma nem várható csapadék</string>
 
     <!-- Chart labels. -->
@@ -624,8 +625,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_sunshine_total_minutes_only_tonight">%1$d p napsütés ma este</string>
     <string name="today_uv_subtitle">UV-index óránként</string>
     <string name="today_uv_peak">Csúcs %1$d, %2$s-kor</string>
+    <string name="today_uv_peak_day">Csúcs %1$d (%2$s)</string>
     <string name="today_uv_title">UV-index</string>
     <string name="today_wind_peak">Csúcs %1$d %2$s, %3$s-kor</string>
+    <string name="today_wind_peak_day">Csúcs %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1209,10 +1212,12 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_play_toast_nightly">Lejátszom az esti ClothesCastod.</string>
     <string name="today_precipitation_amount_dry_today">Ma nem várható eső</string>
     <string name="today_precipitation_amount_dry_tonight">Estére nem várható eső</string>
-    <string name="today_precipitation_amount_title">Óránkénti csapadék</string>
+    <string name="today_precipitation_amount_title">Csapadék</string>
+    <string name="today_precipitation_amount_peak_day">Csúcs %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s eső ma</string>
     <string name="today_precipitation_amount_total_tonight">%1$s eső este</string>
     <string name="today_solar_peak">Csúcs %1$d W/m² %2$s-kor</string>
+    <string name="today_solar_peak_day">Csúcs %1$d W/m² (%2$s)</string>
     <string name="today_title_week">Következő 7 nap</string>
     <string name="today_week_ahead_cooler">Hűvösebb %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

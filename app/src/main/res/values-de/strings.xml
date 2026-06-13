@@ -645,6 +645,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Regenwahrscheinlichkeit</string>
     <string name="today_precipitation_peak">Spitze %1$d%% um %2$s</string>
+    <string name="today_precipitation_peak_day">Spitze %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Heute kein Regen erwartet</string>
 
     <!-- Chart labels. -->
@@ -765,8 +766,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">%1$d Min. Sonne heute Abend</string>
     <string name="today_uv_subtitle">UV-Index pro Stunde</string>
     <string name="today_uv_peak">Spitze %1$d um %2$s</string>
+    <string name="today_uv_peak_day">Spitze %1$d (%2$s)</string>
     <string name="today_uv_title">UV-Index</string>
     <string name="today_wind_peak">Spitze %1$d %2$s um %3$s</string>
+    <string name="today_wind_peak_day">Spitze %1$d %2$s (%3$s)</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1373,10 +1376,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_play_toast_nightly">Dein abendlicher ClothesCast wird abgespielt.</string>
     <string name="today_precipitation_amount_dry_today">Heute wird kein Regen erwartet</string>
     <string name="today_precipitation_amount_dry_tonight">Heute Abend wird kein Regen erwartet</string>
-    <string name="today_precipitation_amount_title">Stündlicher Niederschlag</string>
+    <string name="today_precipitation_amount_title">Niederschlag</string>
+    <string name="today_precipitation_amount_peak_day">Spitze %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s Regen heute</string>
     <string name="today_precipitation_amount_total_tonight">%1$s Regen heute Abend</string>
     <string name="today_solar_peak">Maximum %1$d W/m² um %2$s</string>
+    <string name="today_solar_peak_day">Maximum %1$d W/m² (%2$s)</string>
     <string name="today_title_week">Nächste 7 Tage</string>
     <string name="today_week_ahead_cooler">Kühler %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

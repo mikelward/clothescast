@@ -163,6 +163,7 @@ West Bengal vocabulary differences in a future PR.
     <!-- Precipitation card -->
     <string name="today_precipitation_title">বৃষ্টির সম্ভাবনা</string>
     <string name="today_precipitation_peak">%2$s-এ সর্বোচ্চ %1$d%%</string>
+    <string name="today_precipitation_peak_day">সর্বোচ্চ %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">আজ বৃষ্টির সম্ভাবনা নেই</string>
 
     <!-- Model spread / charts -->
@@ -674,8 +675,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_sunshine_total_minutes_only_tonight">আজ রাতে %1$d মিনিট রোদ</string>
     <string name="today_uv_subtitle">প্রতি ঘণ্টায় UV সূচক</string>
     <string name="today_uv_peak">সর্বোচ্চ %1$d সময় %2$s</string>
+    <string name="today_uv_peak_day">সর্বোচ্চ %1$d (%2$s)</string>
     <string name="today_uv_title">UV সূচক</string>
     <string name="today_wind_peak">সর্বোচ্চ %1$d %2$s সময় %3$s</string>
+    <string name="today_wind_peak_day">সর্বোচ্চ %1$d %2$s (%3$s)</string>
 
     <!-- Today screen pager. -->
     <string name="today_view_other_period">অন্য পূর্বাভাস দেখুন</string>
@@ -1288,10 +1291,12 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_play_toast_nightly">তোমার রাত্রিকালীন ClothesCast চালাচ্ছি।</string>
     <string name="today_precipitation_amount_dry_today">আজ বৃষ্টির সম্ভাবনা নেই</string>
     <string name="today_precipitation_amount_dry_tonight">আজ রাতে বৃষ্টির সম্ভাবনা নেই</string>
-    <string name="today_precipitation_amount_title">ঘণ্টাপ্রতি বৃষ্টিপাত</string>
+    <string name="today_precipitation_amount_title">বৃষ্টিপাত</string>
+    <string name="today_precipitation_amount_peak_day">সর্বোচ্চ %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">আজ %1$s বৃষ্টি</string>
     <string name="today_precipitation_amount_total_tonight">আজ রাতে %1$s বৃষ্টি</string>
     <string name="today_solar_peak">শিখর %1$d W/m² %2$s সময়ে</string>
+    <string name="today_solar_peak_day">শিখর %1$d W/m² (%2$s)</string>
     <string name="today_title_week">পরবর্তী 7 দিন</string>
     <string name="today_week_ahead_cooler">শীতল %1$s।</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

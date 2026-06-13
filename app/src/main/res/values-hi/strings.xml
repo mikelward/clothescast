@@ -515,6 +515,7 @@ Not overridden by design:
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">बारिश की संभावना</string>
     <string name="today_precipitation_peak">सर्वोच्च %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">सर्वोच्च %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">आज बारिश की उम्मीद नहीं</string>
 
     <!-- Chart labels. -->
@@ -633,8 +634,10 @@ Not overridden by design:
     <string name="today_sunshine_total_minutes_only_tonight">आज रात %1$d मिनट धूप</string>
     <string name="today_uv_subtitle">प्रति घंटे UV सूचकांक</string>
     <string name="today_uv_peak">अधिकतम %1$d %2$s बजे</string>
+    <string name="today_uv_peak_day">अधिकतम %1$d (%2$s)</string>
     <string name="today_uv_title">UV सूचकांक</string>
     <string name="today_wind_peak">अधिकतम %1$d %2$s %3$s बजे</string>
+    <string name="today_wind_peak_day">अधिकतम %1$d %2$s (%3$s)</string>
 
     <!-- Today screen pager. -->
     <string name="today_view_other_period">अन्य पूर्वानुमान देखें</string>
@@ -1247,10 +1250,12 @@ Not overridden by design:
     <string name="today_play_toast_nightly">आपका रात्रिकालीन ClothesCast चला रहे हैं।</string>
     <string name="today_precipitation_amount_dry_today">आज बारिश की संभावना नहीं</string>
     <string name="today_precipitation_amount_dry_tonight">आज रात बारिश की संभावना नहीं</string>
-    <string name="today_precipitation_amount_title">प्रति घंटे वर्षा</string>
+    <string name="today_precipitation_amount_title">वर्षा</string>
+    <string name="today_precipitation_amount_peak_day">सर्वोच्च %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">आज %1$s बारिश</string>
     <string name="today_precipitation_amount_total_tonight">आज रात %1$s बारिश</string>
     <string name="today_solar_peak">शिखर %1$d W/m² %2$s पर</string>
+    <string name="today_solar_peak_day">शिखर %1$d W/m² (%2$s)</string>
     <string name="today_title_week">अगले 7 दिन</string>
     <string name="today_week_ahead_cooler">ठंडा %1$s।</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

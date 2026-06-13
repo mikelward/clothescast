@@ -170,6 +170,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- Precipitation card -->
     <string name="today_precipitation_title">Kebarangkalian hujan</string>
     <string name="today_precipitation_peak">Puncak %1$d%% pada %2$s</string>
+    <string name="today_precipitation_peak_day">Puncak %1$d%% (%2$s)</string>
     <string name="today_precipitation_dry">Tiada hujan dijangka hari ini</string>
 
     <!-- Chart labels -->
@@ -610,8 +611,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min cerah malam ini</string>
     <string name="today_uv_subtitle">Indeks UV per jam</string>
     <string name="today_uv_peak">Puncak %1$d pukul %2$s</string>
+    <string name="today_uv_peak_day">Puncak %1$d (%2$s)</string>
     <string name="today_uv_title">Indeks UV</string>
     <string name="today_wind_peak">Puncak %1$d %2$s pukul %3$s</string>
+    <string name="today_wind_peak_day">Puncak %1$d %2$s (%3$s)</string>
 
     <!-- Today screen pager. -->
     <string name="today_view_other_period">Lihat ramalan lain</string>
@@ -1222,10 +1225,12 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_play_toast_nightly">Memainkan ClothesCast malam anda.</string>
     <string name="today_precipitation_amount_dry_today">Tiada hujan dijangka hari ini</string>
     <string name="today_precipitation_amount_dry_tonight">Tiada hujan dijangka malam ini</string>
-    <string name="today_precipitation_amount_title">Hujan setiap jam</string>
+    <string name="today_precipitation_amount_title">Hujan</string>
+    <string name="today_precipitation_amount_peak_day">Puncak %1$s (%2$s)</string>
     <string name="today_precipitation_amount_total_today">%1$s hujan hari ini</string>
     <string name="today_precipitation_amount_total_tonight">%1$s hujan malam ini</string>
     <string name="today_solar_peak">Puncak %1$d W/m² pada %2$s</string>
+    <string name="today_solar_peak_day">Puncak %1$d W/m² (%2$s)</string>
     <string name="today_title_week">7 hari akan datang</string>
     <string name="today_week_ahead_cooler">Lebih sejuk %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

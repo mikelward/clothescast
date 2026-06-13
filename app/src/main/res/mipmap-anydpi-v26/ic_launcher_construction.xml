@@ -3,11 +3,12 @@
     <background android:drawable="@drawable/ic_launcher_background" />
     <foreground android:drawable="@drawable/ic_launcher_foreground_construction" />
     <!--
-      No <monochrome> here on purpose. The construction variant is the
-      local/debug build's icon and must stay visually distinct from release
-      (it carries the under-construction badge). A monochrome layer would let
-      Android 13+ themed icons tint it to the same badge-less silhouette as
-      release, erasing that distinction — so the dev variant opts out of
-      themed icons and falls back to its full-color badged icon instead.
+      The construction variant is the local/debug build's icon and must stay
+      visually distinct from release. Its monochrome layer knocks "DEV" out of
+      the t-shirt silhouette (see ic_launcher_monochrome_construction), so a
+      themed icon still reads as a dev build rather than tinting to the same
+      badge-less silhouette as release. The badge sits in the safe zone, so it
+      survives a circle / squircle crop in both the full-color and themed icons.
     -->
+    <monochrome android:drawable="@drawable/ic_launcher_monochrome_construction" />
 </adaptive-icon>

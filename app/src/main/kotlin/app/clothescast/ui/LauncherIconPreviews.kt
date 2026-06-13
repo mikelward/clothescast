@@ -135,3 +135,22 @@ internal fun LauncherIconDevPreview() {
         )
     }
 }
+
+// The dev icon under themed icons: same monochrome treatment as the release
+// preview above, but rendering the construction silhouette so the "DEV"
+// knockout in the lower torso is reviewable and its safe-zone placement is
+// confirmed to survive the circle crop.
+@Preview(name = "Launcher icon · dev themed (monochrome)", widthDp = 120)
+@Composable
+internal fun LauncherIconDevMonochromePreview() {
+    AdaptiveIconMask {
+        Box(modifier = Modifier.requiredSize(LayerSize).background(Color(0xFF004A77)))
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_monochrome_construction),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            colorFilter = ColorFilter.tint(Color(0xFFC2E7FF)),
+            modifier = Modifier.requiredSize(LayerSize),
+        )
+    }
+}

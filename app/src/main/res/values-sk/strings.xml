@@ -424,7 +424,7 @@ What is NOT overridden, by design:
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Pravdepodobnosť zrážok</string>
     <string name="today_precipitation_peak">Vrchol %1$d%% o %2$s</string>
-    <string name="today_precipitation_peak_day">Vrchol %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Vrchol %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Dnes sa zrážky neočakávajú</string>
     <string name="today_precipitation_dry_week">Zrážky sa neočakávajú</string>
 
@@ -640,10 +640,10 @@ What is NOT overridden, by design:
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min slnka dnes večer</string>
     <string name="today_uv_subtitle">UV index za hodinu</string>
     <string name="today_uv_peak">Vrchol %1$d o %2$s</string>
-    <string name="today_uv_peak_day">Vrchol %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Vrchol %1$d %2$s</string>
     <string name="today_uv_title">UV index</string>
     <string name="today_wind_peak">Vrchol %1$d %2$s o %3$s</string>
-    <string name="today_wind_peak_day">Vrchol %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Vrchol %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1250,11 +1250,11 @@ What is NOT overridden, by design:
     <string name="today_precipitation_amount_dry_week">Nečaká sa dážď</string>
     <string name="today_precipitation_amount_total_week">%1$s dažďa</string>
     <string name="today_precipitation_amount_title">Zrážky</string>
-    <string name="today_precipitation_amount_peak_day">Vrchol %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Vrchol %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s dažďa dnes</string>
     <string name="today_precipitation_amount_total_tonight">%1$s dažďa dnes večer</string>
     <string name="today_solar_peak">Vrchol %1$d W/m² o %2$s</string>
-    <string name="today_solar_peak_day">Vrchol %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Vrchol %1$d W/m² %2$s</string>
     <string name="today_title_week">Najbližších 7 dní</string>
     <string name="today_week_ahead_cooler">Chladnejšie %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

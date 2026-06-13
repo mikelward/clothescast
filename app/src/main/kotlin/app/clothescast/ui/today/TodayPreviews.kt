@@ -2545,9 +2545,12 @@ internal fun FollowingWeekChartDeckPreview() {
         CompositionLocalProvider(
             LocalChartBottomFormatter provides dayFormatter,
             LocalChartBottomItemPlacer provides placer,
-            // Match SevenDayPage: peak subtitles name the day ("Peak X on
-            // Friday") rather than an hour-of-day that can't say which day.
+            // Match SevenDayPage: peak subtitles name the day ("Peak X Friday")
+            // rather than an hour-of-day that can't say which day. Pin "today"
+            // to the deck's first day so the snapshot exercises the relative
+            // "today" / "tomorrow" labels alongside the bare weekday ones.
             LocalScrubMomentFormat provides ScrubMomentFormat.DayPlusHour,
+            LocalForecastToday provides startDate,
         ) {
             ForecastCard(
                 hourly = flat,

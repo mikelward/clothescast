@@ -593,7 +593,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Πιθανότητα βροχής</string>
     <string name="today_precipitation_peak">Αιχμή %1$d%% στις %2$s</string>
-    <string name="today_precipitation_peak_day">Αιχμή %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Αιχμή %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Δεν αναμένεται βροχή σήμερα</string>
     <string name="today_precipitation_dry_week">Δεν αναμένεται βροχή</string>
 
@@ -756,10 +756,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_minutes_only_tonight">%1$d λ. ηλιοφάνεια απόψε</string>
     <string name="today_uv_subtitle">Δείκτης UV ανά ώρα</string>
     <string name="today_uv_peak">Μέγιστο %1$d στις %2$s</string>
-    <string name="today_uv_peak_day">Μέγιστο %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Μέγιστο %1$d %2$s</string>
     <string name="today_uv_title">Δείκτης UV</string>
     <string name="today_wind_peak">Μέγιστο %1$d %2$s στις %3$s</string>
-    <string name="today_wind_peak_day">Μέγιστο %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Μέγιστο %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1346,11 +1346,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_amount_dry_week">Δεν αναμένεται βροχή</string>
     <string name="today_precipitation_amount_total_week">%1$s βροχής</string>
     <string name="today_precipitation_amount_title">Βροχόπτωση</string>
-    <string name="today_precipitation_amount_peak_day">Αιχμή %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Αιχμή %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s βροχής σήμερα</string>
     <string name="today_precipitation_amount_total_tonight">%1$s βροχής απόψε</string>
     <string name="today_solar_peak">Κορυφή %1$d W/m² στις %2$s</string>
-    <string name="today_solar_peak_day">Κορυφή %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Κορυφή %1$d W/m² %2$s</string>
     <string name="today_title_week">Επόμενες 7 ημέρες</string>
     <string name="today_week_ahead_cooler">Πιο δροσερά %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

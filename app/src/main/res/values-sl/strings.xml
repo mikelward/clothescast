@@ -180,7 +180,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Verjetnost dežja</string>
     <string name="today_precipitation_peak">Vrh %1$d%% ob %2$s</string>
-    <string name="today_precipitation_peak_day">Vrh %1$d%% (%2$s)</string>
+    <string name="today_precipitation_peak_day">Vrh %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Danes dežja ni pričakovati</string>
     <string name="today_precipitation_dry_week">Dežja ni pričakovati</string>
 
@@ -621,10 +621,10 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_sunshine_total_minutes_only_tonight">%1$d min sonca nocoj</string>
     <string name="today_uv_subtitle">UV indeks po urah</string>
     <string name="today_uv_peak">Vrh %1$d ob %2$s</string>
-    <string name="today_uv_peak_day">Vrh %1$d (%2$s)</string>
+    <string name="today_uv_peak_day">Vrh %1$d %2$s</string>
     <string name="today_uv_title">UV indeks</string>
     <string name="today_wind_peak">Vrh %1$d %2$s ob %3$s</string>
-    <string name="today_wind_peak_day">Vrh %1$d %2$s (%3$s)</string>
+    <string name="today_wind_peak_day">Vrh %1$d %2$s %3$s</string>
 
     <!-- Strings added to match base — forecasters picker, garment-colour picker,
          update-downloading banner, placeholder cards, Open-Meteo credit. -->
@@ -1213,11 +1213,11 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_precipitation_amount_dry_week">Dež ni pričakovan</string>
     <string name="today_precipitation_amount_total_week">%1$s dežja</string>
     <string name="today_precipitation_amount_title">Padavine</string>
-    <string name="today_precipitation_amount_peak_day">Vrh %1$s (%2$s)</string>
+    <string name="today_precipitation_amount_peak_day">Vrh %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s dežja danes</string>
     <string name="today_precipitation_amount_total_tonight">%1$s dežja nocoj</string>
     <string name="today_solar_peak">Vrh %1$d W/m² ob %2$s</string>
-    <string name="today_solar_peak_day">Vrh %1$d W/m² (%2$s)</string>
+    <string name="today_solar_peak_day">Vrh %1$d W/m² %2$s</string>
     <string name="today_title_week">Naslednjih 7 dni</string>
     <string name="today_week_ahead_cooler">Hladneje %1$s.</string>
     <string name="today_week_ahead_day_on_named">%1$s</string>

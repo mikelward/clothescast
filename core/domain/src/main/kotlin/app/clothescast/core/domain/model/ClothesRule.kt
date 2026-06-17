@@ -83,6 +83,19 @@ data class ClothesRule(
         // TODO(rain-accessory-variants): broaden the carried-accessory rules
         //  beyond the umbrella (rain jacket, hood, rain boots, …) once the
         //  resource strings and per-locale phrasers cover them.
+        // TODO(umbrella-on-precip-code): the umbrella gate is probability-only,
+        //  so drizzle never triggers it — probability-of-precip is the chance of
+        //  *measurable* rain (≥ ~0.1 mm) and light drizzle slips under it (one
+        //  model, ecmwf_aifs025_single, even reports a drizzle code + 0.1 mm with
+        //  no probability at all). RenderInsightSummary now *mentions* drizzle
+        //  from the weather code / precip amount, but the umbrella itself stays
+        //  silent. Consider hard-coding the umbrella whenever any model reports a
+        //  rain or drizzle weather code (independent of POP). This reverses the
+        //  "per-model rain doesn't pick clothes" convention and needs a per-model
+        //  precip signal plumbed into rule evaluation (which today only sees the
+        //  daily-aggregate DailyForecast), plus care against false umbrellas on
+        //  grey-but-dry days — so deferred. See the coded drizzle tier in
+        //  RenderInsightSummary.pickPerModelPeak.
         val DEFAULTS: List<ClothesRule> = listOf(
             ClothesRule(Garment.SWEATER, TemperatureBelow(16.0)),
             ClothesRule(Garment.JACKET, TemperatureBelow(10.0)),

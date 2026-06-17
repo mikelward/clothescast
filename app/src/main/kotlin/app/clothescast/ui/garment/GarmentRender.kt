@@ -16,10 +16,12 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
+import app.clothescast.core.domain.model.warrantsRainAccessory
 import app.clothescast.insight.InsightFormatter
 import java.io.ByteArrayOutputStream
 import kotlin.math.pow
@@ -496,7 +498,7 @@ internal fun renderCarriedFigureBitmap(
  * │  [bot icon]  t-shirt and shorts. High…   │
  * │  [        ]                               │
  * │              🌡 18–28°C   🌬 35 km/h      │  ← feels-like low/high · wind
- * │              💧 60% at 3pm  ☀ UV 8        │  ← rain ≥ 30% · UV ≥ 6
+ * │              💧 60% at 3pm  ☀ UV 8        │  ← rain ≥ 20% or coded · UV ≥ 6
  * └──────────────────────────────────────────┘
  * ```
  * [header] is the localised, mixed-case "Today's ClothesCast" string from
@@ -735,8 +737,9 @@ private fun drawThermometerIcon(
 /**
  * Draws a coloured rain droplet at ([x], [y]) sized [size]×[size]. The
  * droplet fills from the bottom upward in proportion to [fillFraction]
- * (clamped to 0..1) — at the 30 % display threshold the droplet still
- * carries a clear sliver of blue; at 100 % the whole droplet is filled.
+ * (clamped to 0..1) — at low peak chances (a drizzle-coded hour, or a peak just
+ * over the 20 % gate) the droplet shows only a faint sliver of blue (the outline
+ * and the "%" label carry the reading); at 100 % the whole droplet is filled.
  *
  * The teardrop's area is concentrated in the rounded bottom and tapers
  * to a narrow point at the top, so a linear y-fill made high values
@@ -855,7 +858,9 @@ private fun drawSolidGlyph(
  * same min/max feels-like and peak-rain logic. Returns `tempLine` empty
  * when [hourly] is empty (no horizontal info to show), and `rainLine`
  * null when the windowed peak rain probability is below
- * [RAIN_PEAK_THRESHOLD_PCT] — the renderer then hides that row entirely.
+ * [RAIN_PEAK_THRESHOLD_PCT] *and* no hour carries a rain-shaped weather code —
+ * the renderer then hides that row entirely. A rain-shaped code shows the cell
+ * even at a rounded 0% chance.
  */
 internal data class OutfitCardInfoLines(
     val tempLine: String,
@@ -864,10 +869,11 @@ internal data class OutfitCardInfoLines(
     // the user's display unit (which only affects [tempLine]).
     val tempFillFraction: Float,
     // Peak precipitation probability / 100 — drives the droplet's blue fill.
-    // Null whenever [rainLineShort] is null (cell hidden below the 30 % threshold).
+    // Null whenever [rainLineShort] is null (cell hidden when neither the 20 %
+    // probability gate nor a rain-shaped code fires).
     val rainFillFraction: Float?,
-    // Peak chance-of-rain label ("60%"), shown on the conditions strip. Null
-    // below the 30 % threshold. Default null for callers that don't compute it.
+    // Peak chance-of-rain label ("60%"), shown on the conditions strip. Null when
+    // the cell is hidden. Default null for callers that don't compute it.
     val rainLineShort: String? = null,
     // Wind / UV cells. Each label is null unless the period's peak is "notable"
     // (wind >= WIND_NOTABLE_KMH; UV once it rounds to >= UV_NOTABLE, matching the
@@ -899,11 +905,30 @@ internal fun outfitCardInfoLines(
         ""
     }
     val tempFillFraction = highC?.let { thermometerFillFractionFor(it) } ?: 0f
-    val peak = hourly.maxByOrNull { it.precipitationProbabilityPct }
-    val peakPct = peak?.precipitationProbabilityPct?.roundToInt()
+    // Peak *chance of rain*: snow is excluded so a snowy day never lights the
+    // rain droplet. Open-Meteo's precipitation_probability is general (rain or
+    // snow), and snow WMO codes map to WeatherCondition.SNOW, so taking the peak
+    // over non-snow hours keeps a 25%-snow hour from reading as "25% rain". A
+    // dry-coded but likely hour (the "overcast at 88%" case) is still a chance of
+    // rain and stays in.
+    val rainPeak = hourly
+        .filter { it.condition != WeatherCondition.SNOW }
+        .maxByOrNull { it.precipitationProbabilityPct }
+    val peakPct = rainPeak?.precipitationProbabilityPct?.roundToInt()
+    // Show the rain cell on the same composite-OR the clothes rules use: a peak
+    // chance at/above the probability gate, *or* any hour coded as rain-shaped
+    // (drizzle / rain / thunderstorm — [warrantsRainAccessory], which excludes
+    // snow). The code arm catches drizzle that sits below the probability gate;
+    // the label still shows the honest peak chance, so a drizzle-coded hour reads
+    // as the low percentage it is rather than overstating it.
+    val rainCoded = hourly.any { it.condition.warrantsRainAccessory() }
     val rainLineShort: String?
     val rainFillFraction: Float?
-    if (peak != null && peakPct != null && peakPct >= RAIN_PEAK_THRESHOLD_PCT) {
+    // A rain-shaped code shows the droplet regardless of probability — even at a
+    // rounded 0% — by design: a model coding drizzle/rain with ~0% measurable-rain
+    // probability is exactly the light-rain heads-up the code arm exists to
+    // surface, so we'd rather show "💧 0%" and let the reader judge than hide it.
+    if (rainPeak != null && peakPct != null && (peakPct >= RAIN_PEAK_THRESHOLD_PCT || rainCoded)) {
         rainLineShort = formatter.formatPeakRainShort(peakPct)
         rainFillFraction = (peakPct / 100f).coerceIn(0f, 1f)
     } else {
@@ -1154,7 +1179,13 @@ private const val STRIP_LIGHT_TEXT_ARGB = 0xFF1A1A1A.toInt()
 internal const val STRIP_SURFACE_LIGHT_ARGB = 0xFFFEF7FF.toInt()
 internal const val STRIP_SURFACE_DARK_ARGB = 0xFF1C1B1F.toInt()
 
-private const val RAIN_PEAK_THRESHOLD_PCT = 30
+// Probability arm of the conditions strip's rain cell: the cell shows when the
+// peak chance of rain is at/above this, OR when any hour carries a rain-shaped
+// weather code (see the rainCoded check in [outfitCardInfoLines]). 20% on the
+// probability side catches likely-enough rain; the code arm catches drizzle that
+// slips under it. The cell always shows the actual peak percentage, so it never
+// overstates a low chance. Below both arms the row is hidden entirely.
+private const val RAIN_PEAK_THRESHOLD_PCT = 20
 
 // "Notable" thresholds — below these the wind / UV cells are hidden, matching
 // the strip's principle of surfacing a metric only when it's worth acting on.

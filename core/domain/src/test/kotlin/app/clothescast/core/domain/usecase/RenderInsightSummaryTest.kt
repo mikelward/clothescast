@@ -679,7 +679,7 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `precip clause is omitted when every model stays below 30 percent`() {
+    fun `precip clause is omitted when every model stays below 20 percent`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 10.0,
             condition = WeatherCondition.PARTLY_CLOUDY,
@@ -688,11 +688,59 @@ class RenderInsightSummaryTest {
             ),
         )
         val perModel = perModelHourly(
-            "gfs_seamless" to listOf(perModelHour(LocalTime.of(10, 0), 20.0)),
-            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(10, 0), 25.0)),
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(10, 0), 10.0)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(10, 0), 15.0)),
             "icon_seamless" to listOf(perModelHour(LocalTime.of(10, 0), 5.0)),
         )
         subject(today, yesterday, emptyList(), perModelHourly = perModel).precip.shouldBeNull()
+    }
+
+    @Test
+    fun `base fallback hedges a sub-50 percent rain code as a chance`() {
+        // No per-model data (failed multi-model call / older cache): the base
+        // hourly carries a 25% rain code. That's the chance-of-rain band, so the
+        // clause must be POSSIBLE ("Chance of rain"), not a definite LIKELY "Rain".
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 25.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 18.0, 18.0, 25.0, WeatherCondition.RAIN)),
+        )
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `base fallback calls a majority-probability rain code LIKELY`() {
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 60.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 18.0, 18.0, 60.0, WeatherCondition.RAIN)),
+        )
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.likelihood shouldBe PrecipLikelihood.LIKELY
+    }
+
+    @Test
+    fun `possible tier keeps a per-model drizzle code instead of defaulting to rain`() {
+        // 25% sits in the chance band (>= 20%); the model codes drizzle while the
+        // blended/base hour is dry. The clause must say "chance of drizzle", not
+        // default to rain via the base-only perModelConditionAt.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 10.0,
+            condition = WeatherCondition.CLOUDY,
+            hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 18.0, 18.0, 10.0, WeatherCondition.CLOUDY)),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(
+                perModelHour(LocalTime.of(15, 0), precipPct = 25.0, condition = WeatherCondition.DRIZZLE),
+            ),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.DRIZZLE
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
     }
 
     @Test
@@ -1057,7 +1105,7 @@ class RenderInsightSummaryTest {
         // precip code or measurable amount, not a grey sky.
         val today = mildToday.copy(precipitationProbabilityMaxPct = 10.0, condition = WeatherCondition.CLOUDY)
         val perModel = perModelHourly(
-            "gfs_seamless" to listOf(perModelHour(LocalTime.of(10, 0), precipPct = 20.0, condition = WeatherCondition.CLOUDY)),
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(10, 0), precipPct = 18.0, condition = WeatherCondition.CLOUDY)),
             "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(10, 0), precipPct = 15.0, condition = WeatherCondition.PARTLY_CLOUDY)),
         )
         subject(today, yesterday, emptyList(), perModelHourly = perModel).precip.shouldBeNull()

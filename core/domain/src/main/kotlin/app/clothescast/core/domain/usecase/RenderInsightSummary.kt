@@ -47,7 +47,7 @@ import kotlin.math.roundToInt
  * 4. [PrecipClause] — fires in tiers driven by cross-model agreement:
  *    [PrecipLikelihood.LIKELY] when a majority of consulted models hit ≥ 50%
  *    at the same hour ("Rain at 3pm."), [PrecipLikelihood.POSSIBLE] when at
- *    least one model hits ≥ 30% but the majority bar isn't cleared ("Chance
+ *    least one model hits ≥ 20% but the majority bar isn't cleared ("Chance
  *    of rain at 3pm."). When no model clears the probability bars at all, a
  *    final POSSIBLE tier fires on a precipitating *weather code* (WMO
  *    51/53/55 drizzle, or any rain/snow/storm code) or a non-zero precip
@@ -337,9 +337,12 @@ class RenderInsightSummary {
      *    The hour carrying the single biggest per-model reading wins.
      *
      * Falls back to the base hourly series (and finally a noon synthesis from
-     * the day-level field) when per-model data isn't available. Both fallback
-     * paths emit LIKELY so legacy behaviour and cached payloads keep their
-     * original wording. The 30% bar matches the historical fallback threshold.
+     * the day-level field) when per-model data isn't available. The fallback
+     * grades by probability like the per-model tiers — LIKELY at/above
+     * [LIKELY_THRESHOLD] (≥ 50%), POSSIBLE in the [POSSIBLE_THRESHOLD]–49% chance
+     * band — so a sub-50% base-only forecast reads "Chance of rain", not a
+     * definite "Rain". The [POSSIBLE_THRESHOLD] bar is aligned with the umbrella
+     * default's gate and the conditions strip, so all three surface rain together.
      *
      * Condition resolution: prefers the base hour's weather code at the peak
      * time when it's a precipitating type; falls back to the day-level
@@ -360,22 +363,32 @@ class RenderInsightSummary {
         val peak = today.hourly.maxByOrNull { it.precipitationProbabilityPct }
         val time: LocalTime
         val condition: WeatherCondition
+        val peakProb: Double
         if (peak == null || peak.precipitationProbabilityPct < POSSIBLE_THRESHOLD) {
             if (today.precipitationProbabilityMaxPct < POSSIBLE_THRESHOLD) return null
             time = LocalTime.NOON
             condition = today.condition
+            peakProb = today.precipitationProbabilityMaxPct
         } else {
             time = peak.time
             condition = if (peak.condition == WeatherCondition.UNKNOWN) today.condition else peak.condition
+            peakProb = peak.precipitationProbabilityPct
         }
         if (!condition.isPrecipitation()) return null
-        // All-day is measured against the LIKELY bar (≥ 50%), not the 30% peak
+        // All-day is measured against the LIKELY bar (≥ 50%), not the 20% peak
         // threshold above — "rain all day" should mean confident rain, so a day
-        // that only ever nudges 30–49% still names its single peak hour. The base
+        // that only ever nudges 20–49% still names its single peak hour. The base
         // hourly list is already in window order, so adjacency in the list is
         // adjacency in time (no LocalTime midnight-wrap aliasing).
         val allDay = isAllDayRain(today.hourly.map { it.precipitationProbabilityPct >= LIKELY_THRESHOLD })
-        return PeakPrecip(time, condition, PrecipLikelihood.LIKELY, allDay)
+        // Grade the base/no-per-model fallback by probability, mirroring the
+        // per-model tiers: a confident "Rain" only at/above LIKELY (≥ 50%), a
+        // hedged "Chance of rain" in the 20–49% band. Without this the fallback
+        // would assert definite rain for a sub-50% chance — overstating exactly
+        // the low-confidence forecasts the lowered 20% bar now surfaces.
+        val likelihood =
+            if (peakProb >= LIKELY_THRESHOLD) PrecipLikelihood.LIKELY else PrecipLikelihood.POSSIBLE
+        return PeakPrecip(time, condition, likelihood, allDay)
     }
 
     private fun pickPerModelPeak(today: DailyForecast, perModelHourly: PerModelHourly): PeakPrecip? {
@@ -429,14 +442,20 @@ class RenderInsightSummary {
             return PeakPrecip(likelyHour, perModelConditionAt(likelyHour, today), PrecipLikelihood.LIKELY, allDay)
         }
 
-        val possibleHour = models.asSequence()
+        val possibleReading = models.asSequence()
             .flatten()
             .filter { (it.precipitationProbabilityPct ?: 0.0) >= POSSIBLE_THRESHOLD }
             .maxByOrNull { it.precipitationProbabilityPct ?: 0.0 }
-            ?.time
-            ?.toLocalTime()
-        if (possibleHour != null) {
-            return PeakPrecip(possibleHour, perModelConditionAt(possibleHour, today), PrecipLikelihood.POSSIBLE)
+        if (possibleReading != null) {
+            val possibleHour = possibleReading.time.toLocalTime()
+            // Keep the driving model's own precip *type*: a 20–49% drizzle / snow
+            // reading should read "chance of drizzle / snow", not default to rain.
+            // perModelConditionAt only sees the base hourly/daily code (which can
+            // be dry while a model quietly codes drizzle), so prefer the reading's
+            // effective condition and fall back to the base only when it has none.
+            val condition = possibleReading.effectivePrecipCondition()
+                ?: perModelConditionAt(possibleHour, today)
+            return PeakPrecip(possibleHour, condition, PrecipLikelihood.POSSIBLE)
         }
 
         // Drizzle / light-precip fallback, keyed off the weather code and precip
@@ -448,7 +467,7 @@ class RenderInsightSummary {
         // precipitation_probability. The two POP tiers above are blind to
         // exactly that signal: AIFS contributes a drizzle code + 0.1 mm but no
         // probability, so it never counts toward a per-hour majority and never
-        // clears the 30% possible bar. Surface it as POSSIBLE — one model's
+        // clears the 20% possible bar. Surface it as POSSIBLE — one model's
         // drizzle code is a hedged "chance of drizzle" heads-up, not a confident
         // call. We scan the whole window rather than pinning an hour: drizzle
         // timing is too fuzzy to claim precision, and a precip code anywhere in

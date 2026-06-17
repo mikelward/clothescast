@@ -1411,7 +1411,7 @@
     <string name="insight_tie_in_at_night">Bring %1$s.</string>
     <!--
     Variant of insight_tie_in for the morning insight's evening tie-in when the
-    evening forecast also has precipitation ≥ 30%. Folds the precip mention into
+    evening forecast also has precipitation ≥ 20%. Folds the precip mention into
     the same sentence so the morning insight mentions the evening weather
     alongside the evening clothing tip, without emitting a second precip clause
     that would compete with the morning slice's own. The precip clause leads the
@@ -1431,7 +1431,7 @@
     <!--
     POSSIBLE-tier counterpart of insight_tie_in_with_rain: a clothes rule
     triggered for the evening but only one per-model series flagged the
-    precip at ≥ 30%. Hedges the wording so a single-model reading doesn't
+    precip at ≥ 20%. Hedges the wording so a single-model reading doesn't
     render with the same definite tone as a majority-of-models agreement.
     %1$s = item phrase, %2$s = timing qualifier (empty / " overnight"),
     %3$s = condition noun (lowercased), so the hedge reads "chance of snow" /
@@ -1454,7 +1454,7 @@
     <string name="insight_evening_rain">Tonight, %2$s%1$s.</string>
     <!--
     POSSIBLE-tier counterpart of insight_evening_rain: only one per-model
-    series flagged the tonight hour ≥ 30%, so we hedge the wording. Matches
+    series flagged the tonight hour ≥ 20%, so we hedge the wording. Matches
     insight_precip_chance's "Chance of rain" pattern. %1$s = timing qualifier
     (empty / " overnight"), %2$s = condition noun (lowercased).
     -->

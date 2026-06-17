@@ -407,7 +407,7 @@ new rule the first time something bites you, not the third.
   enough for a jacket), the clause names the item *and* folds in the
   per-model rain when one's detected: "Tonight, rain, bring a
   jacket." If no clothes rule fires but a per-model series spots rain ≥
-  30% in the tonight window and the user has an evening event with a
+  20% in the tonight window and the user has an evening event with a
   location, the clause still emits — without recommending clothes —
   as a bare rain warning ("Tonight, rain." / the hedged
   chance-of-rain wording for the POSSIBLE tier). The prose deliberately
@@ -419,8 +419,8 @@ new rule the first time something bites you, not the third.
   surface rain when a model spots it, even when no clothes rule fires —
   e.g. the user lowered their umbrella gate, deleted the rule, or the
   probability sits below it. The umbrella itself ships as a precip-keyed
-  default (peak probability above 30% — see the comment on
-  `ClothesRule.DEFAULTS`), so on a default setup the evening clause names
+  default (peak probability above 20%, OR a drizzle weather code — see the
+  comment on `ClothesRule.DEFAULTS`), so on a default setup the evening clause names
   it; the bare-rain path is the fallback for when it doesn't. Staying
   silent on evening rain because no rule happened to trigger is exactly
   the case the per-model tier exists to catch.

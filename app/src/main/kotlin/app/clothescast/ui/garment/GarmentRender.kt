@@ -891,6 +891,15 @@ internal fun outfitCardInfoLines(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
+    // The insight's rain-clause condition ([InsightSummary.precip]) when the prose
+    // detected rain — the *same* per-model signal the clothes rules and prose use.
+    // The blended [hourly] codes are a per-hour consensus (modal vote, severity
+    // tiebreak only among the tied winners), so a minority of models coding rain
+    // loses to a unified dry plurality and the blend reads clear — yet the rules
+    // still fire the umbrella and the prose still says "chance of drizzle". Passing
+    // this in keeps the strip in lockstep with the prose: if the insight surfaces
+    // rain, the droplet shows. Null when the prose found no rain.
+    precipCondition: WeatherCondition? = null,
 ): OutfitCardInfoLines {
     val lowC = hourly.minOfOrNull { it.feelsLikeC }
     val highC = hourly.maxOfOrNull { it.feelsLikeC }
@@ -916,12 +925,14 @@ internal fun outfitCardInfoLines(
         .maxByOrNull { it.precipitationProbabilityPct }
     val peakPct = rainPeak?.precipitationProbabilityPct?.roundToInt()
     // Show the rain cell on the same composite-OR the clothes rules use: a peak
-    // chance at/above the probability gate, *or* any hour coded as rain-shaped
-    // (drizzle / rain / thunderstorm — [warrantsRainAccessory], which excludes
-    // snow). The code arm catches drizzle that sits below the probability gate;
-    // the label still shows the honest peak chance, so a drizzle-coded hour reads
-    // as the low percentage it is rather than overstating it.
-    val rainCoded = hourly.any { it.condition.warrantsRainAccessory() }
+    // chance at/above the probability gate, *or* a rain-shaped code (drizzle /
+    // rain / thunderstorm — [warrantsRainAccessory], which excludes snow) from
+    // either the insight's own rain clause ([precipCondition], the per-model
+    // signal the consensus blend can hide) or any blended [hourly] code. The label
+    // still shows the honest peak chance, so a drizzle hour reads as the low
+    // percentage it is rather than overstating it.
+    val rainCoded = precipCondition?.warrantsRainAccessory() == true ||
+        hourly.any { it.condition.warrantsRainAccessory() }
     val rainLineShort: String?
     val rainFillFraction: Float?
     // A rain-shaped code shows the droplet regardless of probability — even at a

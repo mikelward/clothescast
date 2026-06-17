@@ -952,6 +952,117 @@ class RenderInsightSummaryTest {
         out.allDay shouldBe false
     }
 
+    @Test
+    fun `precip clause surfaces drizzle from a weather code when the model omits probability`() {
+        // The real bug: ecmwf_aifs025_single forecasts drizzle (WMO 51) with a
+        // 0.1 mm trace but reports no precipitation_probability at all, while the
+        // other models sit well under 30%. Both POP tiers stay silent; the coded
+        // fallback must still warn so the user hears about the drizzle.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 16.0,
+            condition = WeatherCondition.CLOUDY,
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(7, 0), 16.0, 16.0, 16.0, WeatherCondition.CLOUDY),
+            ),
+        )
+        val perModel = perModelHourly(
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(7, 0), precipPct = 8.0, condition = WeatherCondition.CLOUDY)),
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(7, 0), precipPct = 19.0, condition = WeatherCondition.CLOUDY)),
+            "ecmwf_aifs025_single" to listOf(
+                perModelHour(LocalTime.of(7, 0), precipPct = null, condition = WeatherCondition.DRIZZLE, precipMm = 0.1),
+            ),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.DRIZZLE
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
+        out.time shouldBe LocalTime.of(7, 0)
+    }
+
+    @Test
+    fun `precip clause surfaces drizzle from a trace precip amount under a dry code`() {
+        // A model deposits 0.2 mm but codes the hour cloudy and reports a low
+        // probability — a few tenths of a millimetre is light drizzle, so the
+        // amount alone earns the hedged clause, defaulting the type to DRIZZLE.
+        val today = mildToday.copy(precipitationProbabilityMaxPct = 10.0, condition = WeatherCondition.CLOUDY)
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(9, 0), precipPct = 10.0, condition = WeatherCondition.CLOUDY, precipMm = 0.2)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(9, 0), precipPct = 5.0, condition = WeatherCondition.CLOUDY)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.DRIZZLE
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
+        out.time shouldBe LocalTime.of(9, 0)
+    }
+
+    @Test
+    fun `coded precip fallback names the most severe condition across models`() {
+        // One model codes drizzle in the morning, another codes rain in the
+        // afternoon — both below every probability bar. The clause should name
+        // rain (the heavier code), at rain's hour.
+        val today = mildToday.copy(precipitationProbabilityMaxPct = 12.0, condition = WeatherCondition.CLOUDY)
+        val perModel = perModelHourly(
+            "ecmwf_aifs025_single" to listOf(perModelHour(LocalTime.of(6, 0), precipPct = null, condition = WeatherCondition.DRIZZLE, precipMm = 0.1)),
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(15, 0), precipPct = 12.0, condition = WeatherCondition.RAIN, precipMm = 0.3)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.RAIN
+        out.time shouldBe LocalTime.of(15, 0)
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `probability tier takes precedence over the coded drizzle fallback`() {
+        // A model clearing 30% drives the probability-led POSSIBLE at its own
+        // hour; a drizzle code elsewhere must not override the stronger signal.
+        val today = mildToday.copy(
+            precipitationProbabilityMaxPct = 35.0,
+            condition = WeatherCondition.RAIN,
+            hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 18.0, 18.0, 35.0, WeatherCondition.RAIN)),
+        )
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(15, 0), precipPct = 40.0, condition = WeatherCondition.RAIN)),
+            "ecmwf_aifs025_single" to listOf(perModelHour(LocalTime.of(6, 0), precipPct = null, condition = WeatherCondition.DRIZZLE, precipMm = 0.1)),
+            "icon_seamless" to listOf(perModelHour(LocalTime.of(15, 0), precipPct = 5.0, condition = WeatherCondition.RAIN)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.time shouldBe LocalTime.of(15, 0)
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `coded fallback reads a large amount-only hit as rain not drizzle`() {
+        // A model expects several mm but omits its weather code (a model without
+        // the field, or an older cached payload). Classifying by amount keeps it
+        // honest: 4 mm is rain, not "a chance of drizzle".
+        val today = mildToday.copy(precipitationProbabilityMaxPct = 10.0, condition = WeatherCondition.CLOUDY)
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(14, 0), precipPct = 10.0, condition = null, precipMm = 4.0)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(14, 0), precipPct = 5.0, condition = WeatherCondition.CLOUDY)),
+        )
+        val out = subject(today, yesterday, emptyList(), perModelHourly = perModel).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.RAIN
+        out.time shouldBe LocalTime.of(14, 0)
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
+    }
+
+    @Test
+    fun `coded fallback stays silent when every model reports a dry code and no precip`() {
+        // Overcast but dry: low probabilities, non-precipitating codes, no
+        // amount. Nothing should fire — the fallback only reacts to a genuine
+        // precip code or measurable amount, not a grey sky.
+        val today = mildToday.copy(precipitationProbabilityMaxPct = 10.0, condition = WeatherCondition.CLOUDY)
+        val perModel = perModelHourly(
+            "gfs_seamless" to listOf(perModelHour(LocalTime.of(10, 0), precipPct = 20.0, condition = WeatherCondition.CLOUDY)),
+            "ecmwf_ifs04" to listOf(perModelHour(LocalTime.of(10, 0), precipPct = 15.0, condition = WeatherCondition.PARTLY_CLOUDY)),
+        )
+        subject(today, yesterday, emptyList(), perModelHourly = perModel).precip.shouldBeNull()
+    }
+
     // PerModelHour now carries a LocalDateTime — paired against an arbitrary
     // anchor date so the test fixtures don't have to thread a date through
     // every call. The renderer reads `time.toLocalTime()` at output points;
@@ -959,12 +1070,19 @@ class RenderInsightSummaryTest {
     // which these tests don't exercise.
     private val perModelDate: java.time.LocalDate = java.time.LocalDate.of(2026, 5, 13)
 
-    private fun perModelHour(time: LocalTime, precipPct: Double): PerModelHour =
+    private fun perModelHour(
+        time: LocalTime,
+        precipPct: Double? = null,
+        condition: WeatherCondition? = null,
+        precipMm: Double? = null,
+    ): PerModelHour =
         PerModelHour(
             time = java.time.LocalDateTime.of(perModelDate, time),
             apparentTemperatureC = 18.0,
             temperatureC = 18.0,
             precipitationProbabilityPct = precipPct,
+            condition = condition,
+            precipitationMm = precipMm,
         )
 
     private fun perModelHourly(vararg models: Pair<String, List<PerModelHour>>): PerModelHourly =

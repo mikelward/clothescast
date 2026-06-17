@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.EveningEventTieInClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.InsightSummary
+import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipClause
 import app.clothescast.core.domain.model.PrecipLikelihood
@@ -41,11 +42,17 @@ import kotlin.math.roundToInt
  *    feels-like delta is ≥ 3°C, and only for [ForecastPeriod.TODAY] (yesterday's
  *    overnight comparison isn't useful, and the morning pass already covers it).
  * 3. [ClothesClause] — items triggered by the user's rule list, in rule order.
- * 4. [PrecipClause] — fires in two tiers driven by cross-model agreement:
+ * 4. [PrecipClause] — fires in tiers driven by cross-model agreement:
  *    [PrecipLikelihood.LIKELY] when a majority of consulted models hit ≥ 50%
  *    at the same hour ("Rain at 3pm."), [PrecipLikelihood.POSSIBLE] when at
  *    least one model hits ≥ 30% but the majority bar isn't cleared ("Chance
- *    of rain at 3pm."). Falls back to the base hourly series — and ultimately
+ *    of rain at 3pm."). When no model clears the probability bars at all, a
+ *    final POSSIBLE tier fires on a precipitating *weather code* (WMO
+ *    51/53/55 drizzle, or any rain/snow/storm code) or a non-zero precip
+ *    amount from any model — this is the drizzle path: probability-of-precip
+ *    is the chance of *measurable* rain, which light drizzle slips under, and
+ *    one model (the AI model) supplies a code + trace amount but no
+ *    probability at all. Falls back to the base hourly series — and ultimately
  *    a noon synthesis from the day-level field — when per-model data isn't
  *    available; both fallbacks render as LIKELY (the existing behaviour).
  * 5. [CalendarTieInClause] — when clothes + precip both fired AND a calendar
@@ -429,7 +436,86 @@ class RenderInsightSummary {
         if (possibleHour != null) {
             return PeakPrecip(possibleHour, perModelConditionAt(possibleHour, today), PrecipLikelihood.POSSIBLE)
         }
+
+        // Drizzle / light-precip fallback, keyed off the weather code and precip
+        // amount instead of probability. Probability of precipitation is the
+        // chance of *measurable* rain (≥ ~0.1 mm); drizzle from shallow stratus
+        // routinely falls below that bar, so a model can forecast it via its WMO
+        // weather code (51/53/55) and a trace amount while reporting a low — or,
+        // for the AI model ecmwf_aifs025_single, entirely absent —
+        // precipitation_probability. The two POP tiers above are blind to
+        // exactly that signal: AIFS contributes a drizzle code + 0.1 mm but no
+        // probability, so it never counts toward a per-hour majority and never
+        // clears the 30% possible bar. Surface it as POSSIBLE — one model's
+        // drizzle code is a hedged "chance of drizzle" heads-up, not a confident
+        // call. We scan the whole window rather than pinning an hour: drizzle
+        // timing is too fuzzy to claim precision, and a precip code anywhere in
+        // the period is enough to warn the user it'll be damp (CLAUDE.md domain
+        // convention: always surface rain a model spots, even when no clothes
+        // rule fires and probability sits below every threshold).
+        val codedHit = models.asSequence()
+            .flatten()
+            .filter { effectivePrecipCondition(it) != null }
+            // Most-severe condition first (rain over drizzle, storm over rain),
+            // then the wettest hour as a stable tiebreak. Severity is taken from
+            // the *effective* condition so an amount-only heavy hour (no code)
+            // ranks as rain, not below a trivial drizzle code elsewhere.
+            .maxWithOrNull(
+                compareBy({ precipSeverity(effectivePrecipCondition(it)) }, { it.precipitationMm ?: 0.0 }),
+            )
+        if (codedHit != null) {
+            return PeakPrecip(
+                codedHit.time.toLocalTime(),
+                effectivePrecipCondition(codedHit)!!,
+                PrecipLikelihood.POSSIBLE,
+            )
+        }
         return null
+    }
+
+    /**
+     * The precipitating condition a per-model hour implies for the coded drizzle
+     * fallback, or null when the hour carries no precip signal. Prefers the
+     * model's own weather code when it's precipitating; otherwise infers from the
+     * expected amount — a trace (≤ [DRIZZLE_AMOUNT_CEILING_MM]) reads as drizzle,
+     * anything heavier as plain rain, so a coverage-less multi-millimetre hour (a
+     * model that omitted weather_code, or an older cached payload) isn't
+     * undersold as "chance of drizzle". Snow can't be told from rain by amount
+     * alone, but a genuine snow hour almost always carries its own code, so rain
+     * is the safe less-specific default for an amount-only hit.
+     */
+    private fun effectivePrecipCondition(hour: PerModelHour): WeatherCondition? {
+        hour.condition?.takeIf { it.isPrecipitation() }?.let { return it }
+        val mm = hour.precipitationMm ?: 0.0
+        return when {
+            mm <= 0.0 -> null
+            mm <= DRIZZLE_AMOUNT_CEILING_MM -> WeatherCondition.DRIZZLE
+            else -> WeatherCondition.RAIN
+        }
+    }
+
+    /**
+     * Orders precipitating conditions by severity so the coded drizzle fallback
+     * names the heaviest condition any model implied (rain over drizzle, storm
+     * over rain) rather than whichever hour happened to sort first. Non-precip
+     * conditions (and null) score 0 and never win — the caller pre-filters them
+     * out, so this only ever ranks among genuine precip hits.
+     */
+    private fun precipSeverity(condition: WeatherCondition?): Int = when (condition) {
+        WeatherCondition.THUNDERSTORM -> 4
+        WeatherCondition.SNOW -> 3
+        WeatherCondition.RAIN -> 2
+        WeatherCondition.DRIZZLE -> 1
+        else -> 0
+    }
+
+    private companion object {
+        // Hourly precip amount (mm) at/under which an amount-only signal — a
+        // positive expected amount with no precipitating weather code — is read
+        // as drizzle rather than rain. Light drizzle deposits only a few tenths
+        // of a millimetre an hour (WMO light-drizzle intensity tops out around
+        // here); above it the amount is too heavy to call "drizzle".
+        const val DRIZZLE_AMOUNT_CEILING_MM = 0.5
     }
 
     private fun perModelConditionAt(time: LocalTime, today: DailyForecast): WeatherCondition {

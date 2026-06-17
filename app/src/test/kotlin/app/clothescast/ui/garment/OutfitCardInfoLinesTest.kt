@@ -53,6 +53,17 @@ class OutfitCardInfoLinesTest {
     private fun rainLineFor(pct: Double, condition: WeatherCondition = WeatherCondition.CLEAR): String? =
         infoFor(listOf(rainHour(pct, condition))).rainLineShort
 
+    // The strip cell when the blended hourly is dry but the insight's prose rain
+    // clause carries [precipCondition] (the per-model signal the consensus hides).
+    private fun rainLineForPrecip(precipCondition: WeatherCondition?): String? =
+        outfitCardInfoLines(
+            ctx,
+            formatter,
+            listOf(rainHour(5.0, WeatherCondition.CLOUDY)),
+            TemperatureUnit.CELSIUS,
+            precipCondition = precipCondition,
+        ).rainLineShort
+
     // --- Rain (shown at >= 20% peak chance OR a rain-shaped weather code) ---
 
     @Test
@@ -93,6 +104,24 @@ class OutfitCardInfoLinesTest {
         assertNull(rainLineFor(10.0, WeatherCondition.SNOW))
         assertNull(rainLineFor(25.0, WeatherCondition.SNOW))
         assertNull(rainLineFor(80.0, WeatherCondition.SNOW))
+    }
+
+    @Test
+    fun `rain cell shows when the prose rain clause is rain-shaped though the blend is dry`() {
+        // The minority-model case: blended hourly is cloudy at 5% (consensus hid
+        // the rain), but the insight's prose clause carries drizzle/rain — the
+        // same per-model signal the rules use. The strip must match the prose.
+        assertNotNull(rainLineForPrecip(WeatherCondition.DRIZZLE))
+        assertNotNull(rainLineForPrecip(WeatherCondition.RAIN))
+        assertNotNull(rainLineForPrecip(WeatherCondition.THUNDERSTORM))
+    }
+
+    @Test
+    fun `prose rain clause of snow or none leaves the dry cell hidden`() {
+        // Snow isn't a rain droplet, and a null clause adds nothing — the dry,
+        // sub-gate blend keeps the cell hidden.
+        assertNull(rainLineForPrecip(WeatherCondition.SNOW))
+        assertNull(rainLineForPrecip(null))
     }
 
     // --- UV (notable >= 6, gated on the rounded peak) ---

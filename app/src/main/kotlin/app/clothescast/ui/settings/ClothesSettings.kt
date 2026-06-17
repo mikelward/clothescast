@@ -60,6 +60,7 @@ import app.clothescast.core.domain.model.FallbackTier
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.fallbackRange
 import app.clothescast.core.domain.model.fromUnit
 import app.clothescast.core.domain.model.symbol
@@ -896,7 +897,43 @@ private fun describeCondition(
         )
     is ClothesRule.PrecipitationProbabilityAbove ->
         stringResource(R.string.settings_clothes_cond_precip_above, condition.percent)
+    is ClothesRule.RainCode ->
+        stringResource(R.string.settings_clothes_cond_rain_code, rainFloorNoun(condition.floor))
+    is ClothesRule.AnyOf -> describeAnyOf(condition, temperatureUnit)
 }
+
+/**
+ * Summarises an [ClothesRule.AnyOf]. The default rain-gear shape — a probability
+ * arm OR'd with a single rain-code arm — gets a purpose-built one-liner ("when
+ * chance of rain is above 20%, or drizzle is forecast"); any other composite
+ * falls back to joining its arms' own descriptions with ", or ".
+ */
+@Composable
+private fun describeAnyOf(
+    condition: ClothesRule.AnyOf,
+    temperatureUnit: TemperatureUnit,
+): String {
+    val prob = condition.conditions
+        .firstNotNullOfOrNull { (it as? ClothesRule.PrecipitationProbabilityAbove)?.percent }
+    val floor = condition.conditions.firstNotNullOfOrNull { (it as? ClothesRule.RainCode)?.floor }
+    if (prob != null && floor != null && condition.conditions.size == 2) {
+        return stringResource(R.string.settings_clothes_cond_precip_or_code, prob, rainFloorNoun(floor))
+    }
+    return condition.conditions
+        .map { describeCondition(it, temperatureUnit) }
+        .reduceOrNull { a, b -> stringResource(R.string.settings_clothes_cond_or, a, b) }
+        .orEmpty()
+}
+
+/** The lower-case noun ("drizzle" / "rain") for a rain-code [floor]'s row summary. */
+@Composable
+private fun rainFloorNoun(floor: WeatherCondition): String = stringResource(
+    if (floor == WeatherCondition.DRIZZLE) {
+        R.string.settings_clothes_rain_floor_drizzle
+    } else {
+        R.string.settings_clothes_rain_floor_rain
+    },
+)
 
 /**
  * Formats a temperature threshold for display. The user's currently-selected
@@ -921,6 +958,54 @@ private enum class ConditionType(@StringRes val labelRes: Int) {
     TEMP_BELOW(R.string.settings_clothes_cond_type_temp_below),
     TEMP_ABOVE(R.string.settings_clothes_cond_type_temp_above),
     PRECIP_ABOVE(R.string.settings_clothes_cond_type_precip_above),
+}
+
+/**
+ * The rain-code arm a precipitation rule can OR onto its probability gate. [NONE]
+ * is "probability only" (a bare [ClothesRule.PrecipitationProbabilityAbove]); the
+ * others add a [ClothesRule.RainCode] floor so the rule also fires on a forecast
+ * weather code — catching drizzle that the probability gate misses.
+ */
+private enum class RainCodeFloor(@StringRes val labelRes: Int, val condition: WeatherCondition?) {
+    NONE(R.string.settings_clothes_rain_code_none, null),
+    DRIZZLE(R.string.settings_clothes_rain_code_drizzle, WeatherCondition.DRIZZLE),
+    RAIN(R.string.settings_clothes_rain_code_rain, WeatherCondition.RAIN),
+}
+
+/** The editor floor for a stored rain-code [WeatherCondition] (drizzle vs. rain). */
+private fun rainCodeFloorOf(condition: WeatherCondition): RainCodeFloor =
+    if (condition == WeatherCondition.DRIZZLE) RainCodeFloor.DRIZZLE else RainCodeFloor.RAIN
+
+/**
+ * Splits a precipitation condition into the editor's two controls: the
+ * probability-gate percent (or null when the stored rule had no probability arm)
+ * and the rain-code [RainCodeFloor]. Handles the bare probability rule, a bare
+ * rain-code rule, and the default `prob OR code` composite.
+ */
+private fun ClothesRule.Condition.precipParts(): Pair<Double?, RainCodeFloor> = when (this) {
+    is ClothesRule.PrecipitationProbabilityAbove -> percent to RainCodeFloor.NONE
+    is ClothesRule.RainCode -> null to rainCodeFloorOf(floor)
+    is ClothesRule.AnyOf -> {
+        val pct = conditions.firstNotNullOfOrNull {
+            (it as? ClothesRule.PrecipitationProbabilityAbove)?.percent
+        }
+        val floor = conditions.firstNotNullOfOrNull { (it as? ClothesRule.RainCode)?.floor }
+        pct to (floor?.let(::rainCodeFloorOf) ?: RainCodeFloor.NONE)
+    }
+    // Temperature conditions never reach here (the dialog routes them through the
+    // temperature branch); return the probability-only default defensively.
+    else -> null to RainCodeFloor.NONE
+}
+
+/**
+ * Builds the precipitation condition from the editor's controls: a bare
+ * probability rule when no rain-code floor is chosen, otherwise the probability
+ * gate OR'd with the rain-code floor.
+ */
+private fun buildPrecipCondition(percent: Double, floor: RainCodeFloor): ClothesRule.Condition {
+    val probability = ClothesRule.PrecipitationProbabilityAbove(percent)
+    val code = floor.condition?.let { ClothesRule.RainCode(it) }
+    return if (code == null) probability else ClothesRule.AnyOf(listOf(probability, code))
 }
 
 /** Maps a [Garment] enum entry to its localised display label resource. */
@@ -980,10 +1065,15 @@ internal fun ClothesRuleDialog(
     val initialType = when (initial?.condition) {
         is ClothesRule.TemperatureBelow -> ConditionType.TEMP_BELOW
         is ClothesRule.TemperatureAbove -> ConditionType.TEMP_ABOVE
-        is ClothesRule.PrecipitationProbabilityAbove -> ConditionType.PRECIP_ABOVE
         null -> ConditionType.TEMP_BELOW
+        // Every precip-keyed condition (probability, rain code, or the composite)
+        // edits through the one precipitation trigger.
+        else -> ConditionType.PRECIP_ABOVE
     }
     var type by remember { mutableStateOf(initialType) }
+    // The rain-code arm for a precipitation rule; ignored for temperature types.
+    val initialFloor = initial?.condition?.precipParts()?.second ?: RainCodeFloor.NONE
+    var rainFloor by remember { mutableStateOf(initialFloor) }
     // A carried accessory (umbrella) is only ever named off a rain/drizzle
     // precip clause, so a temperature-keyed umbrella rule would fire but render
     // nothing. Restrict carried gear to the precipitation condition and force
@@ -1001,8 +1091,10 @@ internal fun ClothesRuleDialog(
     val initialValue = when (val c = initial?.condition) {
         is ClothesRule.TemperatureBelow -> c.value.fromUnit(c.unit).toUnit(temperatureUnit)
         is ClothesRule.TemperatureAbove -> c.value.fromUnit(c.unit).toUnit(temperatureUnit)
-        is ClothesRule.PrecipitationProbabilityAbove -> c.percent
         null -> 18.0.toUnit(temperatureUnit)
+        // Precip rule: pre-fill the probability gate (30% when the stored rule was
+        // rain-code-only and so carried no probability arm).
+        else -> c.precipParts().first ?: 30.0
     }
     val initialInt = initialValue.roundToInt()
     // Whole-number input only. Keeps the row label (rendered with %.0f) in
@@ -1042,9 +1134,9 @@ internal fun ClothesRuleDialog(
                         ConditionType.TEMP_ABOVE ->
                             if (unchanged && initialCond is ClothesRule.TemperatureAbove) initialCond
                             else ClothesRule.TemperatureAbove(v, temperatureUnit)
-                        ConditionType.PRECIP_ABOVE ->
-                            if (unchanged && initialCond is ClothesRule.PrecipitationProbabilityAbove) initialCond
-                            else ClothesRule.PrecipitationProbabilityAbove(v)
+                        // Precip has no unit to preserve, so always build fresh from
+                        // the probability gate + the chosen rain-code floor.
+                        ConditionType.PRECIP_ABOVE -> buildPrecipCondition(v, rainFloor)
                     }
                     onConfirm(ClothesRule(garment, condition))
                 },
@@ -1098,6 +1190,8 @@ internal fun ClothesRuleDialog(
                 } else {
                     stringResource(R.string.settings_clothes_value_label_temp, temperatureUnit.symbol())
                 },
+                rainFloor = rainFloor,
+                onRainFloorChange = { rainFloor = it },
             )
         },
     )
@@ -1151,6 +1245,8 @@ private fun ClothesRuleFields(
     onValueChange: (String) -> Unit,
     valueValid: Boolean,
     valueLabel: String,
+    rainFloor: RainCodeFloor,
+    onRainFloorChange: (RainCodeFloor) -> Unit,
 ) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -1186,6 +1282,22 @@ private fun ClothesRuleFields(
             isError = !valueValid,
             modifier = Modifier.fillMaxWidth(),
         )
+        // The rain-code arm only applies to precipitation rules: it OR's a
+        // forecast-weather-code trigger onto the probability gate so the rule
+        // also fires on drizzle the probability misses.
+        if (type == ConditionType.PRECIP_ABOVE) {
+            Text(
+                text = stringResource(R.string.settings_clothes_rain_code_label),
+                style = MaterialTheme.typography.labelLarge,
+            )
+            RainCodeFloor.entries.forEach { entry ->
+                RadioRow(
+                    label = stringResource(entry.labelRes),
+                    selected = rainFloor == entry,
+                    onSelect = { onRainFloorChange(entry) },
+                )
+            }
+        }
     }
 }
 
@@ -1237,7 +1349,7 @@ internal fun ClothesRuleEditPreviewCard(
                 allowedTypes = ConditionType.entries.toList(),
                 type = type,
                 onTypeChange = {},
-                valueText = if (precip) "30" else "16",
+                valueText = if (precip) "20" else "16",
                 onValueChange = {},
                 valueValid = true,
                 // Mirror [ClothesRuleDialog]'s label selection so the preview
@@ -1250,6 +1362,10 @@ internal fun ClothesRuleEditPreviewCard(
                         TemperatureUnit.CELSIUS.symbol(),
                     )
                 },
+                // Show the umbrella's default drizzle floor in the precip preview
+                // so the snapshot regresses the rain-code selector layout.
+                rainFloor = if (precip) RainCodeFloor.DRIZZLE else RainCodeFloor.NONE,
+                onRainFloorChange = {},
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),

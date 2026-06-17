@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.peakRainCondition
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TriggeredOutfit
 import app.clothescast.core.domain.model.UserPreferences
@@ -196,15 +197,48 @@ class DeriveInsight(
             } else {
                 bundle.today to bundle.yesterday
             }
-        val nextForecast = when (period) {
+        val rawNextForecast = when (period) {
             ForecastPeriod.TODAY -> tonightForecast.takeIf { it.hourly.isNotEmpty() }
             ForecastPeriod.TONIGHT -> bundle.tomorrow?.slicedForToday(
                 morningStart = morningStart,
                 eveningEnd = tonightStart,
             )
         }
+        // Carry the same per-model rain-code enrichment onto the *next* period's
+        // forecast, sliced to that period's own window. Without it the Today card
+        // / widget next-outfit icon (computed via OutfitSuggestion.fromForecast,
+        // which has no pre-evaluated TriggeredOutfit) would miss a per-model
+        // drizzle / rain code the blended next-period condition hides — surfacing
+        // the umbrella / rain jacket this period but dropping it next period.
+        val nextForecast = rawNextForecast?.let { next ->
+            val nextWindow = when (period) {
+                ForecastPeriod.TODAY -> tonightWindow(next.hourly, bundle.today.date, tonightStart)
+                ForecastPeriod.TONIGHT -> todayWindow(next.hourly, next.date)
+            }
+            next.copy(
+                peakRainCondition = bundle.perModelHourly?.slicedTo(nextWindow)?.peakRainCondition()
+                    ?: WeatherCondition.UNKNOWN,
+            )
+        }
+        val perModelForRender = bundle.perModelHourly?.slicedTo(
+            when (period) {
+                ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
+                ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, bundle.today.date, tonightStart)
+            },
+        )
+        // Enrich the forecast the rule engine sees with the per-model rain-code
+        // evidence the daily-aggregate condition hides — a single model's drizzle
+        // (a code + a trace, no probability) never survives the blend, so without
+        // this the umbrella / rain-jacket precip-*code* arms would stay silent on
+        // exactly the drizzle days the prose's per-model tier already calls. Feeds
+        // the same window the prose renders from, so icon, recommendations, and
+        // prose agree on the rain. yesterday has no per-model slice and keeps the
+        // UNKNOWN default — its code arms fall back to its own condition / hourly.
+        val forecastForRules = periodForecast.copy(
+            peakRainCondition = perModelForRender?.peakRainCondition() ?: WeatherCondition.UNKNOWN,
+        )
         val triggeredOutfit = evaluateClothesRules(
-            periodForecast,
+            forecastForRules,
             prefs.clothesRules,
             prefs.defaultTop,
             prefs.defaultBottom,
@@ -215,12 +249,6 @@ class DeriveInsight(
             prefs.defaultTop,
             prefs.defaultBottom,
         ).items
-        val perModelForRender = bundle.perModelHourly?.slicedTo(
-            when (period) {
-                ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
-                ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, bundle.today.date, tonightStart)
-            },
-        )
         return PeriodView(
             forecast = periodForecast,
             nextForecast = nextForecast,

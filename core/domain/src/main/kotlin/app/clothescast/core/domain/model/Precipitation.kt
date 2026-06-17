@@ -45,6 +45,32 @@ fun WeatherCondition.warrantsRainAccessory(): Boolean = when (this) {
 }
 
 /**
+ * Rank of this condition on the *rain* intensity scale the precipitation-code
+ * clothes rules ([ClothesRule.PrecipitationCode]) compare against: drizzle <
+ * rain < thunderstorm. Everything that isn't rain-shaped — snow, fog, the dry
+ * sky states, and the unknown sentinel — scores 0 and never satisfies a code
+ * floor, so a `code ≥ drizzle` umbrella rule stays silent on a snowy day (you
+ * don't umbrella snow, mirroring [isFrozenPrecipitation]). Thunderstorm ranks
+ * above plain rain so a `code ≥ rain` rain-jacket rule fires on a storm too.
+ *
+ * Deliberately distinct from the prose path's `precipSeverity`
+ * (RenderInsightSummary), which ranks snow *among* the precip types because it
+ * picks the most severe condition to *name*; here we're deciding whether to
+ * recommend *rain* gear, so snow is off the scale entirely.
+ */
+internal fun WeatherCondition.rainShapedSeverity(): Int = when (this) {
+    WeatherCondition.THUNDERSTORM -> 3
+    WeatherCondition.RAIN -> 2
+    WeatherCondition.DRIZZLE -> 1
+    WeatherCondition.SNOW,
+    WeatherCondition.FOG,
+    WeatherCondition.CLEAR,
+    WeatherCondition.PARTLY_CLOUDY,
+    WeatherCondition.CLOUDY,
+    WeatherCondition.UNKNOWN -> 0
+}
+
+/**
  * True when this condition is frozen precipitation — snow — which an umbrella
  * doesn't shelter against.
  *
@@ -66,6 +92,83 @@ fun WeatherCondition.warrantsRainAccessory(): Boolean = when (this) {
  * keeps the umbrella, so the card and the prose agree.
  */
 internal fun WeatherCondition.isFrozenPrecipitation(): Boolean = this == WeatherCondition.SNOW
+
+/**
+ * Hourly precip amount (mm) at/under which an amount-only signal — a positive
+ * expected amount with no precipitating weather code — reads as drizzle rather
+ * than rain. Light drizzle deposits only a few tenths of a millimetre an hour
+ * (WMO light-drizzle intensity tops out around here); above it the amount is too
+ * heavy to call "drizzle". Shared by [effectivePrecipCondition].
+ */
+internal const val DRIZZLE_AMOUNT_CEILING_MM: Double = 0.5
+
+/**
+ * Severity ordering over the precipitating conditions, snow *included* — used
+ * when picking the single most-severe condition any model implies, for the
+ * insight prose ("storm over rain over drizzle") and for [PerModelHourly.peakPrecipCondition].
+ * Non-precip conditions (and the unknown sentinel) score 0 and never win.
+ *
+ * Contrast [rainShapedSeverity], which drops snow off the scale entirely
+ * because it gates *rain* gear (umbrella / rain jacket), not "is it
+ * precipitating at all".
+ */
+internal fun WeatherCondition.precipSeverity(): Int = when (this) {
+    WeatherCondition.THUNDERSTORM -> 4
+    WeatherCondition.SNOW -> 3
+    WeatherCondition.RAIN -> 2
+    WeatherCondition.DRIZZLE -> 1
+    else -> 0
+}
+
+/**
+ * The precipitating condition a per-model hour implies, or null when the hour
+ * carries no precip signal. Prefers the model's own weather code when it's
+ * precipitating; otherwise infers from the expected amount — a trace
+ * (≤ [DRIZZLE_AMOUNT_CEILING_MM]) reads as drizzle, anything heavier as plain
+ * rain, so a coverage-less multi-millimetre hour (a model that omitted
+ * weather_code, or an older cached payload) isn't undersold as "chance of
+ * drizzle". Snow can't be told from rain by amount alone, but a genuine snow
+ * hour almost always carries its own code, so rain is the safe less-specific
+ * default for an amount-only hit.
+ *
+ * Shared by the insight prose ([RenderInsightSummary]'s coded drizzle
+ * fallback) and the clothes-rule precip-code signal
+ * ([PerModelHourly.peakPrecipCondition]) so the umbrella the prose names and
+ * the umbrella the rule fires read off the same per-model evidence.
+ */
+internal fun PerModelHour.effectivePrecipCondition(): WeatherCondition? {
+    condition?.takeIf { it.isPrecipitation() }?.let { return it }
+    val mm = precipitationMm ?: 0.0
+    return when {
+        mm <= 0.0 -> null
+        mm <= DRIZZLE_AMOUNT_CEILING_MM -> WeatherCondition.DRIZZLE
+        else -> WeatherCondition.RAIN
+    }
+}
+
+/**
+ * The most-severe *rain-shaped* condition (drizzle < rain < thunderstorm) any
+ * model reports anywhere in this per-model window, or [WeatherCondition.UNKNOWN]
+ * when no model carries a rain signal. This is the per-model rain evidence the
+ * clothes-rule engine can't get from the daily-aggregate [DailyForecast.condition]
+ * alone — a single model's drizzle code (the AIFS case: a drizzle code + a trace
+ * of rain but no probability) is invisible in the blended daily condition yet
+ * shows up here, so a `code ≥ drizzle` umbrella rule can fire on it.
+ *
+ * Snow is deliberately excluded ([rainShapedSeverity] scores it 0): the rain-gear
+ * rules this feeds (umbrella, rain jacket) don't apply to snow, and the prose
+ * names snow on its own [precipSeverity] path. TODO(snow-gear): when frozen-precip
+ * gear lands (snow boots, a heavier coat keyed off snow), give it a parallel
+ * `peakSnowCondition` signal and snow-keyed rules rather than folding snow back
+ * into this rain-shaped peak.
+ */
+internal fun PerModelHourly.peakRainCondition(): WeatherCondition =
+    byModel.values.asSequence()
+        .flatten()
+        .mapNotNull { it.effectivePrecipCondition() }
+        .filter { it.rainShapedSeverity() > 0 }
+        .maxByOrNull { it.rainShapedSeverity() }
+        ?: WeatherCondition.UNKNOWN
 
 /**
  * Per-model agreement thresholds for surfacing rain, in precipitation-

@@ -102,6 +102,16 @@ enum class Garment(
      */
     val warmth: Int get() = layerCount
 
+    /**
+     * Rain gear — the umbrella (a carried accessory) and the rain jacket (a
+     * waterproof [Layer.OUTER] shell). The snow gate in [EvaluateClothesRules]
+     * (mirrored in [OutfitSuggestion.fromForecast]) drops these on a snowy day:
+     * you don't umbrella or rain-jacket snow. Worn warmth garments — even one a
+     * user keys off the precipitation gate (e.g. "gloves when rain ≥ 80%") — are
+     * deliberately *not* rain gear and stay put on a snowy forecast.
+     */
+    val isRainGear: Boolean get() = slot == Slot.CARRIED || layer == Layer.OUTER
+
     /** Which outfit slot this garment occupies. Drives "does any matched rule
      *  cover this slot?" decisions in [EvaluateClothesRules] and "what
      *  temperature window does the fallback apply in?" in [FallbackRange],

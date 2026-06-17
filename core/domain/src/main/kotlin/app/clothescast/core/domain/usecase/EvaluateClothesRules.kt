@@ -35,21 +35,23 @@ class EvaluateClothesRules {
         defaultBottom: OutfitSuggestion.Bottom = OutfitSuggestion.Bottom.LONG_PANTS,
     ): TriggeredOutfit {
         val matched = rules.filter { it.appliesTo(forecast) }
-            // A carried accessory (the umbrella) is rain gear: it surfaces once
-            // its probability gate clears, *unless* the precipitation is frozen.
-            // The umbrella default keys off aggregate precipitation *probability*,
-            // which can clear its gate on a snowy day — and you don't umbrella
-            // snow — so gate the carried slot on snow here, at the single
-            // rule-evaluation chokepoint the icon, the recommendations, and the
-            // prose all read from. We deliberately exclude *only* snow rather
+            // Rain gear (the umbrella, the rain jacket — see [Garment.isRainGear])
+            // surfaces once its gate clears, *unless* the precipitation is frozen.
+            // Both default rain-gear rules key off aggregate precipitation
+            // probability, which can clear their gate on a snowy day — and you
+            // don't umbrella or rain-jacket snow — so gate the rain-gear *items*
+            // on snow here, at the single rule-evaluation chokepoint the icon, the
+            // recommendations, and the prose all read from. Worn warmth garments
+            // are unaffected — even a user's own precip-keyed worn rule (e.g.
+            // "gloves when rain ≥ 80%") still fires on a snowy day; only the
+            // umbrella / rain jacket are rain gear. We exclude *only* snow rather
             // than requiring a wet code ([warrantsRainAccessory]): the raw daily
             // condition is the peak-*probability* hour's weather code, which can
             // read "overcast" at 88% chance of rain when accumulation is ~0, and
-            // requiring a wet code there would drop the umbrella on exactly the
+            // requiring a wet code there would drop the rain gear on exactly the
             // day the prose still announces rain. See [isFrozenPrecipitation].
-            // Worn garments (tops/bottoms/gloves) are unaffected.
             .filterNot {
-                it.item.slot == Garment.Slot.CARRIED && forecast.condition.isFrozenPrecipitation()
+                it.item.isRainGear && forecast.condition.isFrozenPrecipitation()
             }
         // Every [ClothesRule.item] is a catalog [Garment], so each matched rule
         // claims a known slot. A slot covered by a matched rule (whether keyed

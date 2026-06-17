@@ -132,18 +132,19 @@ class GenerateDailyInsightTest {
 
         // today: feels-like 6→25 → cold to warm; +8°C high vs yesterday → 8° warmer;
         // clothes defaults at this temperature: sweater, jacket, shorts, plus the
-        // umbrella (60% precip clears its 30% default gate). The formatter folds
-        // the umbrella into the precip clause; here it rides in the resolved items.
+        // rain-gear defaults (60% rain / RAIN code clears the umbrella's 20% and
+        // the rain jacket's 50% gates). The formatter folds the umbrella into the
+        // precip clause; here both ride in the resolved items.
         // 60% precipitation → noon fallback (no hourly entries on `today`).
         insight.summary.band.low shouldBe TemperatureBand.COLD
         insight.summary.band.high shouldBe TemperatureBand.WARM
         insight.summary.delta.shouldNotBeNull()
         insight.summary.delta!!.degrees shouldBe 8
         insight.summary.delta!!.direction shouldBe DeltaClause.Direction.WARMER
-        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "rain-jacket", "umbrella", "shorts")
         insight.summary.precip!!.condition shouldBe WeatherCondition.RAIN
         insight.summary.precip!!.time shouldBe LocalTime.NOON
-        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
+        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "rain-jacket", "umbrella", "shorts")
         insight.generatedAt shouldBe clockInstant
         insight.forDate shouldBe today.date
     }
@@ -175,13 +176,14 @@ class GenerateDailyInsightTest {
     @Test
     fun `IF_CHANGED emits the clothes clause when clothing differs from yesterday`() = runTest {
         // yesterday (10→17) triggers only sweater; today (6→25) adds jacket and
-        // shorts, plus the umbrella (60% precip clears its 30% default gate).
+        // shorts, plus the rain-gear defaults (60% rain / RAIN code clears both
+        // the umbrella's 20% and the rain jacket's 50% gates).
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
 
         val insight = subject(london, prefs.copy(clothesMentionMode = ClothesMentionMode.IF_CHANGED)).insight
 
-        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
+        insight.summary.clothes!!.items.shouldContainExactly("sweater", "jacket", "rain-jacket", "umbrella", "shorts")
     }
 
     @Test
@@ -192,7 +194,7 @@ class GenerateDailyInsightTest {
         val insight = subject(london, prefs.copy(clothesMentionMode = ClothesMentionMode.NEVER)).insight
 
         insight.summary.clothes.shouldBeNull()
-        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "umbrella", "shorts")
+        insight.recommendedItems.shouldContainExactly("sweater", "jacket", "rain-jacket", "umbrella", "shorts")
         insight.outfit.shouldNotBeNull()
     }
 
@@ -218,6 +220,10 @@ class GenerateDailyInsightTest {
             feelsLikeMinC = 19.0,
             feelsLikeMaxC = 22.0,
             precipitationProbabilityMaxPct = 10.0,
+            // Dry comfort-gap day: override the shared `today` fixture's RAIN
+            // condition so the precip-keyed rain-gear defaults stay silent and
+            // this exercises the temperature tiers only.
+            condition = WeatherCondition.PARTLY_CLOUDY,
         )
         val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
@@ -242,6 +248,10 @@ class GenerateDailyInsightTest {
             feelsLikeMinC = 19.0,
             feelsLikeMaxC = 22.0,
             precipitationProbabilityMaxPct = 10.0,
+            // Dry comfort-gap day: override the shared `today` fixture's RAIN
+            // condition so the precip-keyed rain-gear defaults stay silent and
+            // this exercises the temperature tiers only.
+            condition = WeatherCondition.PARTLY_CLOUDY,
         )
         val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
@@ -271,6 +281,9 @@ class GenerateDailyInsightTest {
             feelsLikeMinC = 22.0,
             feelsLikeMaxC = 28.0,
             precipitationProbabilityMaxPct = 10.0,
+            // Dry day: override the shared fixture's RAIN condition so the
+            // rain-gear defaults stay silent (testing the warm tiers only).
+            condition = WeatherCondition.CLEAR,
         )
         val weather = FakeWeatherRepository(ForecastBundle(hotToday, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
@@ -293,6 +306,10 @@ class GenerateDailyInsightTest {
             feelsLikeMinC = 19.0,
             feelsLikeMaxC = 22.0,
             precipitationProbabilityMaxPct = 10.0,
+            // Dry comfort-gap day: override the shared `today` fixture's RAIN
+            // condition so the precip-keyed rain-gear defaults stay silent and
+            // this exercises the temperature tiers only.
+            condition = WeatherCondition.PARTLY_CLOUDY,
         )
         val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
@@ -350,6 +367,9 @@ class GenerateDailyInsightTest {
             feelsLikeMinC = 2.0,
             feelsLikeMaxC = 8.0,
             precipitationProbabilityMaxPct = 10.0,
+            // Dry cold day: override the shared fixture's RAIN condition so the
+            // rain-gear defaults stay silent (testing the cold tiers only).
+            condition = WeatherCondition.CLEAR,
         )
         val weather = FakeWeatherRepository(ForecastBundle(freezingToday, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
@@ -385,6 +405,60 @@ class GenerateDailyInsightTest {
         val result = subject(london, prefs)
 
         result.insight.hourly.shouldContainExactly(hourly)
+    }
+
+    @Test
+    fun `next-period outfit picks up a per-model drizzle code the blend hides`() = runTest {
+        // The tonight window's only rain signal is a single model's drizzle code:
+        // the blended tonight condition stays cloudy and POP sits below the 20%
+        // umbrella gate. The next-outfit icon goes through OutfitSuggestion
+        // .fromForecast (no pre-evaluated outfit), so it must get the same
+        // per-model enrichment the current period does, or it'd drop the umbrella
+        // the current period / prose surface.
+        val tonightHour = LocalTime.of(21, 0)
+        val drizzleModel = listOf(
+            PerModelHour(
+                time = LocalDateTime.of(today.date, tonightHour),
+                apparentTemperatureC = 12.0,
+                temperatureC = 12.0,
+                precipitationProbabilityPct = 10.0,
+                condition = WeatherCondition.DRIZZLE,
+            ),
+        )
+        val dryModel = listOf(
+            PerModelHour(
+                time = LocalDateTime.of(today.date, tonightHour),
+                apparentTemperatureC = 12.0,
+                temperatureC = 12.0,
+                precipitationProbabilityPct = 10.0,
+                condition = WeatherCondition.CLOUDY,
+            ),
+        )
+        val todayWithTonight = today.copy(
+            // A dry daytime hour plus a cloudy, low-POP tonight hour — so the
+            // tonight slice (the next period) is non-empty but carries no rain in
+            // its own blended condition.
+            hourly = listOf(
+                HourlyForecast(LocalTime.of(10, 0), 18.0, 18.0, 5.0, WeatherCondition.CLEAR),
+                HourlyForecast(tonightHour, 12.0, 12.0, 10.0, WeatherCondition.CLOUDY),
+            ),
+        )
+        val weather = FakeWeatherRepository(
+            ForecastBundle(
+                todayWithTonight,
+                yesterday,
+                perModelHourly = PerModelHourly(
+                    byModel = mapOf("ecmwf_aifs025_single" to drizzleModel, "gfs_seamless" to dryModel),
+                ),
+            ),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val insight = subject(london, prefs).insight
+
+        // The next-period (tonight) outfit surfaces the umbrella off the per-model
+        // drizzle code, even though tonight's blended condition is cloudy at 10%.
+        insight.nextOutfit?.carried shouldBe OutfitSuggestion.Carried.UMBRELLA
     }
 
     @Test

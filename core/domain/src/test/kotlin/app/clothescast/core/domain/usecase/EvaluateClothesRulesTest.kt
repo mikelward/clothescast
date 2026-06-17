@@ -90,18 +90,21 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
-    fun `wet cold day matches cold-weather rules plus the umbrella default, bottom slot resolves to the default`() {
-        // 70% rain clears the umbrella default's 30% gate, so it fires alongside
-        // the cold-weather tops; the umbrella rides in the wear list as a carried
-        // accessory (the formatter folds it into the rain clause downstream).
+    fun `wet cold day matches cold-weather rules plus both rain-gear defaults, bottom slot resolves to the default`() {
+        // 70% rain clears both rain-gear defaults' probability gates (umbrella
+        // 20%, rain jacket 50%) and the RAIN code clears their code arms, so both
+        // fire alongside the cold-weather tops. The umbrella rides in the wear
+        // list as a carried accessory; the rain jacket is an OUTER shell over the
+        // base top (the formatter folds the umbrella into the rain clause).
         val out = subject(
             forecast(min = 9.0, max = 15.0, precip = 70.0, condition = WeatherCondition.RAIN),
             ClothesRule.DEFAULTS,
         )
-        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "umbrella")
-        // items floats only bottoms to the end, so the umbrella (unclassified)
-        // stays ahead of the default-fallback pants.
-        out.items.shouldContainExactly("sweater", "jacket", "umbrella", "pants")
+        out.rules.map { it.item.itemKey }
+            .shouldContainExactly("sweater", "jacket", "umbrella", "rain-jacket")
+        // items groups reading order: warmth tops, then the OUTER rain shell,
+        // then the carried umbrella, then bottoms last.
+        out.items.shouldContainExactly("sweater", "jacket", "rain-jacket", "umbrella", "pants")
     }
 
     @Test
@@ -168,17 +171,32 @@ class EvaluateClothesRulesTest {
     }
 
     @Test
-    fun `snowy day above the umbrella gate suppresses the carried umbrella`() {
-        // The umbrella default keys off aggregate precip probability, so an 80%
-        // snowy day clears its gate — but snow doesn't warrant an umbrella, so
-        // the carried rule is filtered out while the worn cold-weather rules
-        // still fire. Keeps the icon, recommendations, and prose consistent.
+    fun `snowy day above the rain-gear gate suppresses the umbrella and rain jacket`() {
+        // Both rain-gear defaults key off aggregate precip probability, so an 80%
+        // snowy day clears their gates — but snow doesn't warrant rain gear, so
+        // both precip-keyed rules are filtered out while the worn cold-weather
+        // rules still fire. Keeps the icon, recommendations, and prose consistent.
         val out = subject(
             forecast(min = -2.0, max = 2.0, precip = 80.0, condition = WeatherCondition.SNOW),
             ClothesRule.DEFAULTS,
         )
         out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "coat", "gloves")
         out.items.shouldNotContain("umbrella")
+        out.items.shouldNotContain("rain-jacket")
+    }
+
+    @Test
+    fun `snow gate spares a user's precip-keyed worn garment`() {
+        // The snow gate targets rain-gear items (umbrella / rain jacket), not
+        // every precipitation-keyed rule. A user's own worn garment keyed off the
+        // rain gate — "gloves when rain chance is high" — still fires on a snowy
+        // day; only rain gear is dropped.
+        val rules = listOf(ClothesRule(Garment.GLOVES, ClothesRule.PrecipitationProbabilityAbove(50.0)))
+        val out = subject(
+            forecast(min = -2.0, max = 2.0, precip = 80.0, condition = WeatherCondition.SNOW),
+            rules,
+        )
+        out.rules.map { it.item.itemKey }.shouldContain("gloves")
     }
 
     @Test

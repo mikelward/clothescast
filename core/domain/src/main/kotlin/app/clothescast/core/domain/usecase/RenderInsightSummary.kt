@@ -21,7 +21,9 @@ import app.clothescast.core.domain.model.PrecipProbability.LIKELY_THRESHOLD
 import app.clothescast.core.domain.model.PrecipProbability.POSSIBLE_THRESHOLD
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.model.effectivePrecipCondition
 import app.clothescast.core.domain.model.isPrecipitation
+import app.clothescast.core.domain.model.precipSeverity
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
@@ -455,67 +457,25 @@ class RenderInsightSummary {
         // rule fires and probability sits below every threshold).
         val codedHit = models.asSequence()
             .flatten()
-            .filter { effectivePrecipCondition(it) != null }
+            .filter { it.effectivePrecipCondition() != null }
             // Most-severe condition first (rain over drizzle, storm over rain),
             // then the wettest hour as a stable tiebreak. Severity is taken from
             // the *effective* condition so an amount-only heavy hour (no code)
             // ranks as rain, not below a trivial drizzle code elsewhere.
             .maxWithOrNull(
-                compareBy({ precipSeverity(effectivePrecipCondition(it)) }, { it.precipitationMm ?: 0.0 }),
+                compareBy(
+                    { it.effectivePrecipCondition()?.precipSeverity() ?: 0 },
+                    { it.precipitationMm ?: 0.0 },
+                ),
             )
         if (codedHit != null) {
             return PeakPrecip(
                 codedHit.time.toLocalTime(),
-                effectivePrecipCondition(codedHit)!!,
+                codedHit.effectivePrecipCondition()!!,
                 PrecipLikelihood.POSSIBLE,
             )
         }
         return null
-    }
-
-    /**
-     * The precipitating condition a per-model hour implies for the coded drizzle
-     * fallback, or null when the hour carries no precip signal. Prefers the
-     * model's own weather code when it's precipitating; otherwise infers from the
-     * expected amount — a trace (≤ [DRIZZLE_AMOUNT_CEILING_MM]) reads as drizzle,
-     * anything heavier as plain rain, so a coverage-less multi-millimetre hour (a
-     * model that omitted weather_code, or an older cached payload) isn't
-     * undersold as "chance of drizzle". Snow can't be told from rain by amount
-     * alone, but a genuine snow hour almost always carries its own code, so rain
-     * is the safe less-specific default for an amount-only hit.
-     */
-    private fun effectivePrecipCondition(hour: PerModelHour): WeatherCondition? {
-        hour.condition?.takeIf { it.isPrecipitation() }?.let { return it }
-        val mm = hour.precipitationMm ?: 0.0
-        return when {
-            mm <= 0.0 -> null
-            mm <= DRIZZLE_AMOUNT_CEILING_MM -> WeatherCondition.DRIZZLE
-            else -> WeatherCondition.RAIN
-        }
-    }
-
-    /**
-     * Orders precipitating conditions by severity so the coded drizzle fallback
-     * names the heaviest condition any model implied (rain over drizzle, storm
-     * over rain) rather than whichever hour happened to sort first. Non-precip
-     * conditions (and null) score 0 and never win — the caller pre-filters them
-     * out, so this only ever ranks among genuine precip hits.
-     */
-    private fun precipSeverity(condition: WeatherCondition?): Int = when (condition) {
-        WeatherCondition.THUNDERSTORM -> 4
-        WeatherCondition.SNOW -> 3
-        WeatherCondition.RAIN -> 2
-        WeatherCondition.DRIZZLE -> 1
-        else -> 0
-    }
-
-    private companion object {
-        // Hourly precip amount (mm) at/under which an amount-only signal — a
-        // positive expected amount with no precipitating weather code — is read
-        // as drizzle rather than rain. Light drizzle deposits only a few tenths
-        // of a millimetre an hour (WMO light-drizzle intensity tops out around
-        // here); above it the amount is too heavy to call "drizzle".
-        const val DRIZZLE_AMOUNT_CEILING_MM = 0.5
     }
 
     private fun perModelConditionAt(time: LocalTime, today: DailyForecast): WeatherCondition {

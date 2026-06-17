@@ -42,6 +42,7 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -235,7 +236,9 @@ class SettingsRepositoryTest {
         val rules = decodeStoredRules(result[clothesRulesKey])
         rules.map { it.item } shouldBe listOf(Garment.SWEATER, Garment.UMBRELLA)
         val umbrellaRule = rules.first { it.item == Garment.UMBRELLA }
-        (umbrellaRule.condition is ClothesRule.PrecipitationProbabilityAbove) shouldBe true
+        // The appended umbrella is the current default — a composite of a
+        // probability gate OR'd with a drizzle-code arm.
+        (umbrellaRule.condition is ClothesRule.AnyOf) shouldBe true
     }
 
     @Test
@@ -290,6 +293,72 @@ class SettingsRepositoryTest {
         migration.shouldMigrate(
             mutablePreferencesOf(booleanPreferencesKey("umbrella_default_migrated_v1") to true),
         ) shouldBe false
+    }
+
+    @Test
+    fun `rain-gear migration appends the rain jacket and upgrades an old-default umbrella`() = runTest {
+        // An existing user on the old rain-gear setup: a customised sweater plus
+        // the old probability-only umbrella default and no rain jacket.
+        val before = mutablePreferencesOf(
+            clothesRulesKey to encodeRules(
+                ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+                ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(30.0)),
+            ),
+        )
+
+        val result = rainGearDefaultsMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        rules.map { it.item } shouldBe listOf(Garment.SWEATER, Garment.UMBRELLA, Garment.RAIN_JACKET)
+        // The old-default umbrella is upgraded to the new composite.
+        (rules.first { it.item == Garment.UMBRELLA }.condition is ClothesRule.AnyOf) shouldBe true
+        (rules.first { it.item == Garment.RAIN_JACKET }.condition is ClothesRule.AnyOf) shouldBe true
+    }
+
+    @Test
+    fun `rain-gear migration leaves a customised umbrella gate untouched`() = runTest {
+        val before = mutablePreferencesOf(
+            clothesRulesKey to encodeRules(
+                ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+                ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(70.0)),
+                ClothesRule(Garment.RAIN_JACKET, ClothesRule.PrecipitationProbabilityAbove(40.0)),
+            ),
+        )
+
+        val result = rainGearDefaultsMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        // Customised umbrella (70%) survives, and no second rain jacket is added.
+        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 70.0
+        rules.count { it.item == Garment.RAIN_JACKET } shouldBe 1
+    }
+
+    @Test
+    fun `rain-gear migration runs once, gated by its sentinel`() = runTest {
+        val migration = rainGearDefaultsMigration()
+        migration.shouldMigrate(emptyPreferences()) shouldBe true
+        migration.shouldMigrate(
+            mutablePreferencesOf(booleanPreferencesKey("rain_gear_defaults_migrated_v1") to true),
+        ) shouldBe false
+    }
+
+    @Test
+    fun `clothes-rule DTO round-trips the composite rain-gear defaults`() {
+        // The new RainCode / AnyOf rows survive an encode/decode cycle through the
+        // production write+read path, so a stored composite umbrella/rain jacket
+        // comes back identical rather than being dropped as unknown.
+        decodeStoredRules(encodeRules(*ClothesRule.DEFAULTS.toTypedArray())) shouldBe ClothesRule.DEFAULTS
+    }
+
+    @Test
+    fun `composite rain-gear rows keep value encoded so a downgrade drops only the unknown row`() {
+        // value is meaningless for an any_of row, but an older build's DTO requires
+        // it — a missing required field would fail the whole-list decode and reset
+        // every threshold, not just skip the one unknown rule. So it must stay in
+        // the JSON even at its default 0.0.
+        val json = encodeRules(ClothesRule.DEFAULTS.first { it.item == Garment.UMBRELLA })
+        json shouldContain "\"value\""
     }
 
     @Test

@@ -405,14 +405,20 @@ What's sent:
 - **Clothes-rule customisation snapshot:** same cadence as the settings
   snapshot — once per app process start, then again whenever the user
   edits their clothes rules in the same process. One event carries:
-  the count of catalog defaults the user has changed (the four
-  `sweater` / `jacket` / `coat` / `shorts` rules); the count of extra
+  the count of catalog defaults the user has changed; the count of extra
   rules added beyond the catalog defaults; a sorted comma-joined list
   of which catalog categories were customised; an `all_defaults` flag;
-  and per-category integer Celsius deltas from the default threshold,
-  clamped to ±5°C (so e.g. moving the jacket threshold from 10°C down
-  to 8°C reports `-2`). No raw thresholds, no user-added rule items,
-  no precipitation thresholds.
+  per-category integer Celsius deltas from the default threshold for the
+  temperature rules (`sweater` / `jacket` / `coat` / `gloves` / `shorts`),
+  clamped to ±5°C (so e.g. moving the jacket threshold from 10°C down to
+  8°C reports `-2`); and, for the two rain-gear rules (`umbrella`,
+  `rain jacket`), a signed percentage-point delta of their rain-probability
+  gate from the default, rounded to the nearest 10 and clamped to ±50 (so
+  raising the umbrella gate from 20% to 60% reports `+40`). A rain-gear
+  rule whose only change is its weather-code floor (drizzle / rain / off)
+  still shows up in the customised-categories list, but the floor value
+  itself is never sent. No raw thresholds, no weather-code values, no
+  user-added rule items.
 
 What's **not** sent — these are hard limits, not "best-effort":
 
@@ -463,6 +469,14 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-06-17** — Rain gear (umbrella, rain jacket) now also fires on the
+  forecast weather code, catching drizzle the probability gate misses. The
+  `clothes_rules_snapshot` analytics event gained one aggregate param,
+  `rain_jacket_delta_pct`: the rain jacket's rain-probability gate as a
+  signed percentage-point delta from its 50% default, bucketed exactly like
+  `umbrella_delta_pct` (rounded to the nearest 10, clamped to ±50, `MISSING`
+  if deleted). No raw thresholds, no weather-code values, no calendar /
+  location / insight content — same hard limits as the rest of the event.
 - **2026-06-01** — The umbrella is now a default clothes rule keyed on
   rain probability. The `clothes_rules_snapshot` analytics event gained
   one aggregate param, `umbrella_delta_pct`: the user's umbrella

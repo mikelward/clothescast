@@ -664,11 +664,13 @@ class OutfitSuggestionTest {
 
     @Test
     fun `outer stays null when no rain-jacket rule fires`() {
-        // Outer is opt-in with no fallback: a default rule set (no rain-jacket
-        // rule) leaves the slot null and no rain-jacket overlay shows.
+        // Outer is opt-in with no fallback: a rule set without a rain-jacket rule
+        // leaves the slot null and no rain-jacket overlay shows, even on a very
+        // wet day. (The defaults now ship a rain-jacket rule, so drop it here to
+        // exercise the no-rule case.)
         val outfit = OutfitSuggestion.fromForecast(
             forecast(feelsLikeMin = 12.0, feelsLikeMax = 15.0, precipMaxPct = 90.0),
-            rules,
+            rules.filterNot { it.item == Garment.RAIN_JACKET },
         )
         outfit.outer shouldBe null
     }

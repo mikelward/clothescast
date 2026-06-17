@@ -22,13 +22,16 @@ class ClothesRulesSnapshotTest {
         snap.glovesDeltaC shouldBe "0"
         snap.shortsDeltaC shouldBe "0"
         snap.umbrellaDeltaPct shouldBe "0"
+        snap.rainJacketDeltaPct shouldBe "0"
     }
 
     @Test
     fun `umbrella gate customisation is bucketed as a percentage-point delta`() {
-        // The umbrella default is precip-keyed (>30%). Raising the gate to 60%
-        // is a +30pp change that must register as a customised category — not
-        // silently report "0" the way routing it through the °C bucket would.
+        // The umbrella default is precip-keyed (probability arm at 20%, OR'd with
+        // a drizzle-code arm). Raising the gate to 60% is a +40pp change that must
+        // register as a customised category — not silently report "0" the way
+        // routing it through the °C bucket would. The probability gate is read out
+        // of the composite, so a plain-probability replacement compares cleanly.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == Garment.UMBRELLA) {
                 rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(60.0))
@@ -39,7 +42,7 @@ class ClothesRulesSnapshotTest {
 
         val snap = ClothesRulesSnapshot.from(rules)
 
-        snap.umbrellaDeltaPct shouldBe "+30"
+        snap.umbrellaDeltaPct shouldBe "+40"
         snap.customisedCount shouldBe 1
         snap.categoriesCustomised shouldBe "umbrella"
         snap.allDefaults shouldBe false
@@ -47,7 +50,7 @@ class ClothesRulesSnapshotTest {
 
     @Test
     fun `lowering the umbrella gate reports a signed negative bucket`() {
-        // Default 30% → 10% is a -20pp change.
+        // Default probability arm 20% → 10% is a -10pp change.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == Garment.UMBRELLA) {
                 rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(10.0))
@@ -58,8 +61,53 @@ class ClothesRulesSnapshotTest {
 
         val snap = ClothesRulesSnapshot.from(rules)
 
-        snap.umbrellaDeltaPct shouldBe "-20"
+        snap.umbrellaDeltaPct shouldBe "-10"
         snap.customisedCount shouldBe 1
+    }
+
+    @Test
+    fun `rain jacket gate customisation is bucketed like the umbrella`() {
+        // The rain jacket ships as a precip-keyed default too (probability arm at
+        // 50%, OR'd with a rain-code arm). Lowering the gate to 30% is a -20pp
+        // change that registers the same way the umbrella's does.
+        val rules = ClothesRule.DEFAULTS.map { rule ->
+            if (rule.item == Garment.RAIN_JACKET) {
+                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(30.0))
+            } else {
+                rule
+            }
+        }
+
+        val snap = ClothesRulesSnapshot.from(rules)
+
+        snap.rainJacketDeltaPct shouldBe "-20"
+        snap.customisedCount shouldBe 1
+        snap.categoriesCustomised shouldBe "rain-jacket"
+        snap.allDefaults shouldBe false
+    }
+
+    @Test
+    fun `changing only the rain-code floor counts as a customisation`() {
+        // The umbrella default is `≥20% OR drizzle code`. Switching the rain-code
+        // floor off (a bare probability rule at the same 20% gate) leaves the
+        // probability delta at "0", but the selector edit must still register —
+        // otherwise it vanishes from the aggregate and reports all_defaults=true.
+        val rules = ClothesRule.DEFAULTS.map { rule ->
+            if (rule.item == Garment.UMBRELLA) {
+                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(20.0))
+            } else {
+                rule
+            }
+        }
+
+        val snap = ClothesRulesSnapshot.from(rules)
+
+        // Probability gate unchanged, so the reported pct delta stays "0"...
+        snap.umbrellaDeltaPct shouldBe "0"
+        // ...but the floor edit still surfaces as a customisation.
+        snap.customisedCount shouldBe 1
+        snap.categoriesCustomised shouldBe "umbrella"
+        snap.allDefaults shouldBe false
     }
 
     @Test

@@ -202,14 +202,15 @@ data class OutfitSuggestion(
             defaultTop: Top = Top.TSHIRT,
         ): OutfitSuggestion =
             pickOutfit(
-                // Mirror EvaluateClothesRules' carried-accessory gate: the
-                // umbrella surfaces once its probability gate clears unless the
-                // precipitation is frozen (snow), so the next-period icon agrees
-                // with the primary path. See [isFrozenPrecipitation] for why this
-                // excludes only snow rather than requiring a wet weather code.
+                // Mirror EvaluateClothesRules' rain-gear gate: rain gear (umbrella,
+                // rain jacket — see [Garment.isRainGear]) surfaces once its gate
+                // clears unless the precipitation is frozen (snow), so the
+                // next-period icon agrees with the primary path. Worn garments —
+                // even precip-keyed ones — are unaffected. See [isFrozenPrecipitation]
+                // for why this excludes only snow rather than requiring a wet code.
                 clothesRules.filter {
                     it.appliesTo(forecast) &&
-                        !(it.item.slot == Garment.Slot.CARRIED && forecast.condition.isFrozenPrecipitation())
+                        !(it.item.isRainGear && forecast.condition.isFrozenPrecipitation())
                 },
                 defaultTop,
                 defaultBottom,

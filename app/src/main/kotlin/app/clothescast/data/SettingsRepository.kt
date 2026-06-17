@@ -1543,6 +1543,7 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
             castEnabledOptInMigration(),
             glovesDefaultMigration(),
             umbrellaDefaultMigration(),
+            rainGearDefaultsMigration(),
         )
     },
 )
@@ -1748,6 +1749,77 @@ internal fun umbrellaDefaultMigration(): DataMigration<Preferences> {
                 // Corrupt JSON: leave the stored value untouched and still set the
                 // sentinel below — parseRules falls back to DEFAULTS (which include
                 // the umbrella) when it can't decode this value.
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
+
+/**
+ * One-time migration bringing existing installs onto the rain-gear defaults that
+ * key off the forecast weather code, not just probability:
+ *  - **Rain jacket:** appended when the stored list has real catalog rules but no
+ *    rain-jacket rule, mirroring [glovesDefaultMigration] / [umbrellaDefaultMigration].
+ *  - **Umbrella upgrade:** an umbrella rule still on the *old* probability-only
+ *    default (`PrecipitationProbabilityAbove(30%)`) is swapped for the new
+ *    composite default (≥ 20% OR a drizzle code) so existing users get the
+ *    drizzle catch too. A user who customised their umbrella gate keeps it
+ *    verbatim — only the exact old default is touched, matching the
+ *    "customised survives, default upgrades" rule the umbrella migration set.
+ *
+ * Fresh installs with no stored list need neither change — parseRules reads the
+ * new [ClothesRule.DEFAULTS] directly. Runs once via the
+ * `rain_gear_defaults_migrated_v1` sentinel. Internal for unit testing.
+ */
+internal fun rainGearDefaultsMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("rain_gear_defaults_migrated_v1")
+    val clothesRules = stringPreferencesKey("clothes_rules_json")
+    val json = Json { ignoreUnknownKeys = true }
+    // The exact old umbrella default we upgrade; a gate the user moved off this
+    // value (or wrapped in their own composite) is left untouched.
+    val oldUmbrellaCondition = ClothesRule.PrecipitationProbabilityAbove(30.0)
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            val stored = currentData[clothesRules]
+            if (!stored.isNullOrBlank()) {
+                runCatching {
+                    val dtos = json.decodeFromString<List<ClothesRuleDto>>(stored)
+                    val newUmbrellaDto = ClothesRule.DEFAULTS.first { it.item == Garment.UMBRELLA }.toDto()
+                    var changed = false
+                    // Upgrade an untouched-default umbrella in place, preserving
+                    // every other DTO (incl. legacy free-form ones) and list order.
+                    var rebuilt = dtos.map { dto ->
+                        val domain = dto.toDomain()
+                        if (domain?.item == Garment.UMBRELLA && domain.condition == oldUmbrellaCondition) {
+                            changed = true
+                            newUmbrellaDto
+                        } else {
+                            dto
+                        }
+                    }
+                    // Append the rain jacket when the list holds real catalog rules
+                    // but none is a rain jacket (same guard as the gloves/umbrella
+                    // append: a legacy-only list decodes to nothing and is left be).
+                    val domainRules = dtos.mapNotNull { it.toDomain() }
+                    if (domainRules.isNotEmpty() && domainRules.none { it.item == Garment.RAIN_JACKET }) {
+                        rebuilt = rebuilt + ClothesRule.DEFAULTS.first { it.item == Garment.RAIN_JACKET }.toDto()
+                        changed = true
+                    }
+                    if (changed) result[clothesRules] = json.encodeToString(rebuilt)
+                }
+                // Corrupt JSON: leave it untouched and still set the sentinel —
+                // parseRules falls back to the new DEFAULTS when it can't decode.
             }
             result[migrated] = true
             return result

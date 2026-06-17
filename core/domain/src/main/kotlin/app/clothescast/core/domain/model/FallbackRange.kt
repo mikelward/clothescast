@@ -64,7 +64,12 @@ fun fallbackRange(rules: List<ClothesRule>, tier: FallbackTier): FallbackRange {
             is ClothesRule.TemperatureAbove -> {
                 if (upper == null || threshold < upper) upper = threshold
             }
+            // Precip-keyed rules have a null thresholdC and are skipped above
+            // (the `?: continue`), so these arms are unreachable — present only
+            // to keep the `when` exhaustive over the sealed condition hierarchy.
             is ClothesRule.PrecipitationProbabilityAbove -> Unit
+            is ClothesRule.RainCode -> Unit
+            is ClothesRule.AnyOf -> Unit
         }
     }
     return FallbackRange(lowerC = lower, upperC = upper)

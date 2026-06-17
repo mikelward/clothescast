@@ -281,13 +281,15 @@ object BugReport {
         }
     }
 
-    private fun describeRule(rule: ClothesRule): String {
-        val cond = when (val c = rule.condition) {
-            is ClothesRule.TemperatureBelow -> "feelsLikeMin < ${c.value}${c.unit.symbol()}"
-            is ClothesRule.TemperatureAbove -> "feelsLikeMax > ${c.value}${c.unit.symbol()}"
-            is ClothesRule.PrecipitationProbabilityAbove -> "precipMaxPct > ${c.percent}"
-        }
-        return "${rule.item.itemKey} when $cond"
+    private fun describeRule(rule: ClothesRule): String =
+        "${rule.item.itemKey} when ${describeCondition(rule.condition)}"
+
+    private fun describeCondition(c: ClothesRule.Condition): String = when (c) {
+        is ClothesRule.TemperatureBelow -> "feelsLikeMin < ${c.value}${c.unit.symbol()}"
+        is ClothesRule.TemperatureAbove -> "feelsLikeMax > ${c.value}${c.unit.symbol()}"
+        is ClothesRule.PrecipitationProbabilityAbove -> "precipMaxPct > ${c.percent}"
+        is ClothesRule.RainCode -> "rainCode >= ${c.floor.name}"
+        is ClothesRule.AnyOf -> c.conditions.joinToString(" OR ", "(", ")") { describeCondition(it) }
     }
 
     private fun StringBuilder.appendInsight(

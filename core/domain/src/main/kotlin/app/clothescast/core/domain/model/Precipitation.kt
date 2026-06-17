@@ -105,7 +105,7 @@ internal const val DRIZZLE_AMOUNT_CEILING_MM: Double = 0.5
 /**
  * Severity ordering over the precipitating conditions, snow *included* — used
  * when picking the single most-severe condition any model implies, for the
- * insight prose ("storm over rain over drizzle") and for [PerModelHourly.peakPrecipCondition].
+ * insight prose ("storm over rain over drizzle").
  * Non-precip conditions (and the unknown sentinel) score 0 and never win.
  *
  * Contrast [rainShapedSeverity], which drops snow off the scale entirely
@@ -133,7 +133,7 @@ internal fun WeatherCondition.precipSeverity(): Int = when (this) {
  *
  * Shared by the insight prose ([RenderInsightSummary]'s coded drizzle
  * fallback) and the clothes-rule precip-code signal
- * ([PerModelHourly.peakPrecipCondition]) so the umbrella the prose names and
+ * ([PerModelHourly.peakRainCondition]) so the umbrella the prose names and
  * the umbrella the rule fires read off the same per-model evidence.
  */
 internal fun PerModelHour.effectivePrecipCondition(): WeatherCondition? {
@@ -161,6 +161,18 @@ internal fun PerModelHour.effectivePrecipCondition(): WeatherCondition? {
  * gear lands (snow boots, a heavier coat keyed off snow), give it a parallel
  * `peakSnowCondition` signal and snow-keyed rules rather than folding snow back
  * into this rain-shaped peak.
+ *
+ * This is an *any-model* signal with no confidence gradation: one model's
+ * rain-shaped code fires the rain-gear rules ([ClothesRule.RainCode]) as firmly
+ * as a unanimous downpour. The insight prose, by contrast, hedges the same
+ * single-model code as a *chance* (POSSIBLE) and reserves a confident "rain" for
+ * a majority of models clearing [PrecipProbability.LIKELY_THRESHOLD] (see
+ * RenderInsightSummary.pickPerModelPeak), and the conditions strip keys on the
+ * blended/modal condition, which needs rough agreement to show at all — so the
+ * three surfaces disagree on a lone-model drizzle. TODO(rain-confidence-reconcile):
+ * unify how rules, prose, and strip treat single-model vs. majority rain — either
+ * grade the rule (e.g. only the umbrella fires on one model; the heavier rain
+ * jacket wants agreement) or accept the asymmetry explicitly and document why.
  */
 internal fun PerModelHourly.peakRainCondition(): WeatherCondition =
     byModel.values.asSequence()

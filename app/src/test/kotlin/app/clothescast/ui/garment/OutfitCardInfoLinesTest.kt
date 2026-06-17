@@ -8,6 +8,7 @@ import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.insight.InsightFormatter
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,11 +16,12 @@ import org.robolectric.annotation.Config
 import java.time.LocalTime
 
 /**
- * Unit coverage for the UV / wind gating in [outfitCardInfoLines] — the logic
- * that decides whether the conditions strip surfaces each cell. The hourly
+ * Unit coverage for the rain / UV / wind gating in [outfitCardInfoLines] — the
+ * logic that decides whether the conditions strip surfaces each cell. The hourly
  * series fed in is already the cross-model consensus blend (wind / UV folded in
  * at fetch time — see blendConsensusHourly), so the strip just takes the peak
- * over it; these tests pin the thresholds and the UV rounding boundary.
+ * over it; these tests pin the thresholds, the rain probability-or-code gate,
+ * and the UV rounding boundary.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [33])
@@ -44,6 +46,54 @@ class OutfitCardInfoLinesTest {
     private fun uvLabelFor(peakUv: Double?): String? = infoFor(listOf(hour(uv = peakUv))).uvLabel
 
     private fun windLabelFor(peakWind: Double?): String? = infoFor(listOf(hour(wind = peakWind))).windLabel
+
+    private fun rainHour(pct: Double, condition: WeatherCondition = WeatherCondition.CLEAR) =
+        hour().copy(precipitationProbabilityPct = pct, condition = condition)
+
+    private fun rainLineFor(pct: Double, condition: WeatherCondition = WeatherCondition.CLEAR): String? =
+        infoFor(listOf(rainHour(pct, condition))).rainLineShort
+
+    // --- Rain (shown at >= 20% peak chance OR a rain-shaped weather code) ---
+
+    @Test
+    fun `rain cell shows at or above the probability gate`() {
+        assertNotNull(rainLineFor(20.0))
+        assertNotNull(rainLineFor(60.0))
+    }
+
+    @Test
+    fun `rain cell hides below the gate on a dry code`() {
+        assertNull(rainLineFor(10.0))
+        assertNull(rainLineFor(0.0))
+    }
+
+    @Test
+    fun `rain cell shows on a drizzle or rain code even below the gate`() {
+        // The code arm catches light rain the probability gate misses.
+        assertNotNull(rainLineFor(5.0, WeatherCondition.DRIZZLE))
+        assertNotNull(rainLineFor(8.0, WeatherCondition.RAIN))
+    }
+
+    @Test
+    fun `rain cell shows a rain code even at a rounded zero percent`() {
+        // A model coding drizzle/rain with ~0% measurable-rain probability is the
+        // light-rain heads-up the code arm exists for, so the droplet shows even
+        // when the chance rounds to 0% — we surface it and let the reader judge
+        // rather than hide it.
+        assertNotNull(rainLineFor(0.0, WeatherCondition.DRIZZLE))
+        assertNotNull(rainLineFor(0.4, WeatherCondition.RAIN)) // rounds to 0%, still shown
+    }
+
+    @Test
+    fun `rain cell stays hidden for snow even above the probability gate`() {
+        // The probability field is general precipitation; snow maps to SNOW. A
+        // rain droplet would mislead, so a snowy hour keeps the cell hidden both
+        // below and above the 20% gate (the latter is the regression a lowered
+        // gate would otherwise introduce).
+        assertNull(rainLineFor(10.0, WeatherCondition.SNOW))
+        assertNull(rainLineFor(25.0, WeatherCondition.SNOW))
+        assertNull(rainLineFor(80.0, WeatherCondition.SNOW))
+    }
 
     // --- UV (notable >= 6, gated on the rounded peak) ---
 

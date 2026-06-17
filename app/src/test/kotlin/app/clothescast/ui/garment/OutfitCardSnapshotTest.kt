@@ -2,7 +2,11 @@ package app.clothescast.ui.garment
 
 import androidx.test.core.app.ApplicationProvider
 import android.content.Context
+import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.insight.InsightFormatter
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestName
@@ -78,6 +82,33 @@ class OutfitCardSnapshotTest {
                     tempFillFraction = thermometerFillFractionFor(18.0),
                     rainFillFraction = null,
                 ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+            ),
+        )
+    }
+
+    @Test
+    fun outfit_card_drizzle_low_chance_shows_rain() {
+        // Demonstrates the lowered, code-aware rain gate: a drizzle-coded hour at
+        // just 12% chance — below both the old 30% and the new 20% probability
+        // gate — now lights the rain cell via the code arm. Drives the *real*
+        // outfitCardInfoLines threshold path (not a hand-built OutfitCardInfoLines)
+        // so the snapshot regresses the gate decision end-to-end. Before this
+        // change the same day showed no rain cell at all.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val formatter = InsightFormatter(ctx.resources)
+        val hourly = listOf(
+            HourlyForecast(java.time.LocalTime.of(8, 0), 16.0, 16.0, 5.0, WeatherCondition.CLOUDY),
+            HourlyForecast(java.time.LocalTime.of(15, 0), 17.0, 17.0, 12.0, WeatherCondition.DRIZZLE),
+        )
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.LONG_PANTS),
+                header = "Today's ClothesCast",
+                prose = "Today, mild with a chance of drizzle. Wear a t-shirt and long pants.",
+                info = outfitCardInfoLines(ctx, formatter, hourly, TemperatureUnit.CELSIUS),
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
             ),

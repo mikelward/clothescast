@@ -93,10 +93,13 @@ class ClothesRuleTest {
     }
 
     @Test
-    fun `precipitation rule uses peak probability`() {
+    fun `precipitation rule uses peak probability and is inclusive at the gate`() {
         val rule = ClothesRule(Garment.JACKET, ClothesRule.PrecipitationProbabilityAbove(50.0))
         rule.appliesTo(forecast(min = 10.0, max = 18.0, precip = 65.0)) shouldBe true
         rule.appliesTo(forecast(min = 10.0, max = 18.0, precip = 30.0)) shouldBe false
+        // Inclusive (≥) so the boundary matches the prose / strip: a forecast
+        // exactly on the gate fires.
+        rule.appliesTo(forecast(min = 10.0, max = 18.0, precip = 50.0)) shouldBe true
     }
 
     @Test

@@ -185,13 +185,19 @@ internal fun PerModelHourly.peakRainCondition(): WeatherCondition =
 /**
  * Per-model agreement thresholds for surfacing rain, in precipitation-
  * probability percent. The user's mental model is "1 model says rain → hedge
- * it as a chance; majority of models say a lot of rain → just say rain". 30%
- * is the historical base-only trigger threshold; 50% is the per-model bar for
- * a *confident* announcement. Shared so the week-ahead headline only mentions
+ * it as a chance; majority of models say a lot of rain → just say rain". 20%
+ * is the chance-of-rain ("possible") bar; 50% is the per-model bar for a
+ * *confident* announcement. Shared so the week-ahead headline only mentions
  * rain the today / tonight insight would also call.
+ *
+ * [POSSIBLE_THRESHOLD] is deliberately aligned with the umbrella default's
+ * probability gate ([ClothesRule.DEFAULTS]) and the conditions strip's rain-cell
+ * gate ([app.clothescast.ui.garment] `RAIN_PEAK_THRESHOLD_PCT`), so the prose
+ * mentions rain on exactly the days the umbrella fires and the strip shows a
+ * droplet — no surface flags rain the others stay silent on.
  */
 object PrecipProbability {
-    const val POSSIBLE_THRESHOLD: Double = 30.0
+    const val POSSIBLE_THRESHOLD: Double = 20.0
     const val LIKELY_THRESHOLD: Double = 50.0
 
     /**

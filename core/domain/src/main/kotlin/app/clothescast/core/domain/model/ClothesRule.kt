@@ -64,8 +64,16 @@ data class ClothesRule(
             forecast.feelsLikeMaxC > value.fromUnit(unit)
     }
 
+    /**
+     * Fires when the day's peak rain probability is at least [percent]. The
+     * comparison is inclusive (≥) so the boundary lines up exactly with the
+     * prose's chance-of-rain bar ([PrecipProbability.POSSIBLE_THRESHOLD]) and the
+     * conditions strip — a forecast sitting right on the gate (e.g. 20%) fires the
+     * umbrella the same moment the prose says "chance of rain" and the strip shows
+     * a droplet. (So a `> N` reading of "above" is really "at or above N".)
+     */
     data class PrecipitationProbabilityAbove(val percent: Double) : Condition {
-        override fun matches(forecast: DailyForecast) = forecast.precipitationProbabilityMaxPct > percent
+        override fun matches(forecast: DailyForecast) = forecast.precipitationProbabilityMaxPct >= percent
     }
 
     /**

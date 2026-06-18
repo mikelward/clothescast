@@ -28,7 +28,6 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import app.clothescast.ClothesCastApplication
 import app.clothescast.R
 import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.insight.InsightFormatter
@@ -38,7 +37,6 @@ import app.clothescast.ui.garment.STRIP_SURFACE_LIGHT_ARGB
 import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderConditionsStripBitmap
-import kotlinx.coroutines.flow.first
 
 /**
  * A glanceable home-screen widget showing the day's conditions as a horizontal
@@ -61,18 +59,15 @@ class ConditionsWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val app = context.applicationContext as ClothesCastApplication
-        // Mirror OutfitWidget: read snapshot + prefs once, derive against the
-        // current prefs so a unit / theme change reflects without the cache
-        // moving. THIS_PERIOD specifically — NEXT_PERIOD is a pre-render of the
-        // upcoming window and would surface tomorrow's range mid-afternoon.
-        val prefs = runCatching { app.settingsRepository.preferences.first() }.getOrNull()
-        val snapshot = runCatching { app.insightCache.thisPeriod.first() }.getOrNull()
-        val insight = if (snapshot != null && prefs != null) {
-            runCatching { app.deriveInsight(snapshot, prefs).insight }.getOrNull()
-        } else {
-            null
-        }
+        // Shared loader: reads the THIS_PERIOD snapshot + prefs and derives
+        // against the current prefs (so a unit / theme change reflects without
+        // the cache moving), and returns null when the cached window has wholly
+        // elapsed — so a day-stale snapshot shows the empty state and self-heals
+        // rather than surfacing yesterday's range. NEXT_PERIOD is deliberately
+        // not consulted: it's a pre-render of the upcoming window.
+        val loaded = loadCurrentInsight(context)
+        val insight = loaded?.first
+        val prefs = loaded?.second
         // Compute the strip's labels / fill fractions here (off the composition)
         // so the temperature + peak-rain math runs on this dispatcher, reusing
         // the exact helper the outfit card uses.

@@ -17,6 +17,51 @@ after each cache write / relevant settings change (no per-widget polling):
 | `FeelsLikeWidget` | Current 12-hour feels-like line (pager page 0) | Off-screen Compose render of the real chart |
 | `SevenDayFeelsLikeWidget` | Next-7-days feels-like line (pager page 2) | Off-screen Compose render of the real chart |
 
+### Freshness gate
+
+There's no per-widget polling (`updatePeriodMillis=0`), so the cache only moves
+when the fetch worker writes it: on a scheduled morning/tonight alarm, on
+app-open, or on a manual refresh. With scheduled delivery off, a user who hasn't
+opened the app since yesterday would otherwise see *yesterday's* forecast
+plotted as today's — the per-period feels-like chart plots hour-of-day points
+for the snapshot's own date, so a day-old snapshot draws a previous day's curve
+under today's axis.
+
+So every widget loads through `loadCurrentInsight` (`WidgetInsightLoader.kt`),
+which calls `widgetCacheAction` to pick one of three actions. The cached
+snapshot is the *current window* when its `(period, date)` is what a silent
+refresh kicked right now would target — computed with the same
+`currentPeriodForSchedule` / `playTargetDate` the worker uses (the same
+`bundle.today.date == playTargetDate(...)` test the worker's own cache match
+runs), in the device's wall clock:
+
+- **`RENDER`** — it's the current window (or freshly written, see below); draw it.
+- **`REFRESH`** — stale and a refresh can replace it: draw the empty state and
+  kick a silent refresh. A day-old snapshot fails the date match; an evening
+  glance at a still-cached daytime snapshot fails the period match and self-heals
+  to tonight; the wrapping tonight window and customized wake / evening cutoffs
+  all fall out of the shared schedule logic. The worker's cache write then fires
+  `updateAllClothesCastWidgets`, re-rendering off the fresh snapshot — so it
+  self-heals on the next glance without the user opening the app.
+- **`KEEP`** — stale, but a `dayOffset = 0` refresh can't reach the current
+  window, so draw the last-known snapshot *without* refreshing. The only such
+  case is the ongoing overnight window in the post-midnight tail: it's dated
+  yesterday and would need a `dayOffset = -1` the worker doesn't support, so a
+  refresh would write the *upcoming* night instead. Keeping the last render until
+  the morning cutoff makes the daytime window reachable beats both blanking and
+  churning toward a future-night snapshot.
+
+A leading age check is the loop-breaker: the worker stamps `forDate` from the
+*forecast location's* zone but picks the period from the *device* clock, so for
+a manual location whose calendar date differs from the device's the period/date
+match can disagree with what a refresh just wrote — and re-kicking on that would
+churn. Rendering any snapshot younger than `SILENT_REFRESH_MIN_AGE` guarantees a
+freshly written one ends the staleness instead of feeding a loop. (In the common
+case — device location, so forecast zone == device zone — `forDate` and the
+device date never diverge, the age gate is moot, and the only `KEEP` is the
+genuine post-midnight overnight window.) The pure period/date logic is
+unit-tested (`WidgetInsightFreshnessTest`); the render plumbing stays on-device.
+
 Glance emits `RemoteViews`, so it **cannot host Compose or Vico directly**.
 Anything richer than Glance's own `Text`/`Image`/layout primitives has to be
 rasterized to a `Bitmap` first and shown via `ImageProvider`. The two charts

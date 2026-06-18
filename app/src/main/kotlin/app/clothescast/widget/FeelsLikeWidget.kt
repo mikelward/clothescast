@@ -34,18 +34,14 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
-import app.clothescast.ClothesCastApplication
 import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.HourlyForecast
-import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.ThemeMode
-import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
 import app.clothescast.ui.theme.ClothesCastTheme
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -198,7 +194,7 @@ private fun chartTapIntent(context: Context, page: Int): Intent =
 // cached forecast yet or the render fails / times out, so a flaky render
 // degrades to "tap to open" rather than crashing the launcher.
 private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boolean): Bitmap? {
-    val (insight, prefs) = loadInsight(context) ?: return null
+    val (insight, prefs) = loadCurrentInsight(context) ?: return null
 
     val hourly: List<HourlyForecast>
     val days: List<DailyForecast>?
@@ -310,24 +306,6 @@ private fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
     widthPx = (widthPx * scale).roundToInt()
     heightPx = (heightPx * scale).roundToInt()
     return widthPx to heightPx
-}
-
-private suspend fun loadInsight(context: Context): Pair<Insight, UserPreferences>? {
-    val app = context.applicationContext as ClothesCastApplication
-    val prefs = runCatching { app.settingsRepository.preferences.first() }
-        .onFailure { DiagLog.w(TAG, "Widget: reading preferences failed", it) }
-        .getOrNull() ?: return null
-    val snapshot = runCatching { app.insightCache.thisPeriod.first() }
-        .onFailure { DiagLog.w(TAG, "Widget: reading cached snapshot failed", it) }
-        .getOrNull()
-    if (snapshot == null) {
-        DiagLog.i(TAG, "Widget: no cached forecast yet — showing empty state")
-        return null
-    }
-    val insight = runCatching { app.deriveInsight(snapshot, prefs).insight }
-        .onFailure { DiagLog.w(TAG, "Widget: deriveInsight failed", it) }
-        .getOrNull() ?: return null
-    return insight to prefs
 }
 
 // Mirrors MainActivity's theme resolution so the widget's dark mode tracks the

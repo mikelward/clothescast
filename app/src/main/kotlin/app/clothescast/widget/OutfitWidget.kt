@@ -40,7 +40,6 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import app.clothescast.ClothesCastApplication
 import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -53,7 +52,6 @@ import app.clothescast.ui.garment.outfitGarmentCaptionLineCount
 import app.clothescast.ui.garment.renderOutfitBitmap
 import app.clothescast.ui.garment.renderCarriedFigureBitmap
 import app.clothescast.ui.garment.renderTopWithHandsBitmap
-import kotlinx.coroutines.flow.first
 
 /**
  * A glanceable home-screen widget showing the current period's outfit — top icon,
@@ -77,22 +75,18 @@ class OutfitWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val app = context.applicationContext as ClothesCastApplication
-        // Read snapshot + prefs once per provideGlance() pass and derive the
-        // insight against the current prefs — so a settings change picked up
-        // by an updateAll() reflects the new outfit / mention mode without
-        // the cache itself having moved. We read THIS_PERIOD specifically
-        // (not "freshest of either slot") because NEXT_PERIOD is a pre-
-        // render of the upcoming window — taking the newer-generated-at
-        // would surface "Tonight" while the user is still in the daytime
-        // window the morning worker just delivered.
-        val prefs = runCatching { app.settingsRepository.preferences.first() }.getOrNull()
-        val snapshot = runCatching { app.insightCache.thisPeriod.first() }.getOrNull()
-        val insight = if (snapshot != null && prefs != null) {
-            runCatching { app.deriveInsight(snapshot, prefs).insight }.getOrNull()
-        } else {
-            null
-        }
+        // Shared loader: reads the THIS_PERIOD snapshot + prefs and derives the
+        // insight against the current prefs — so a settings change picked up by
+        // an updateAll() reflects the new outfit / mention mode without the cache
+        // itself having moved — and returns null when the cached window has
+        // wholly elapsed, so a day-stale snapshot shows the empty state and
+        // self-heals rather than surfacing the wrong outfit. THIS_PERIOD
+        // specifically (not "freshest of either slot"): NEXT_PERIOD is a
+        // pre-render of the upcoming window and would surface "Tonight" while
+        // the user is still in the daytime window the morning worker delivered.
+        val loaded = loadCurrentInsight(context)
+        val insight = loaded?.first
+        val prefs = loaded?.second
         // Per-garment colour overrides — empty when the user hasn't customised.
         // Pulled here (not inside the Composable) so the bitmap rasterizer can
         // run on this dispatcher rather than during composition.

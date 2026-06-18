@@ -2251,13 +2251,24 @@ class FetchAndNotifyWorker(
         fun currentPeriodForSchedule(
             prefs: UserPreferences,
             now: LocalTime = LocalTime.now(),
+        ): ForecastPeriod = currentPeriodForSchedule(prefs.schedule.time, prefs.tonightSchedule.time, now)
+
+        /**
+         * [currentPeriodForSchedule] over raw cutoff times rather than the whole
+         * [UserPreferences] — so callers that already hold the schedule times
+         * (e.g. the widget freshness gate) can share the exact tonight-window
+         * test without threading prefs through, and without re-deriving the
+         * wrap-past-midnight logic by hand.
+         */
+        fun currentPeriodForSchedule(
+            morningTime: LocalTime,
+            tonightTime: LocalTime,
+            now: LocalTime,
         ): ForecastPeriod {
-            val morning = prefs.schedule.time
-            val tonight = prefs.tonightSchedule.time
-            val inTonightWindow = if (tonight > morning) {
-                now >= tonight || now < morning
+            val inTonightWindow = if (tonightTime > morningTime) {
+                now >= tonightTime || now < morningTime
             } else {
-                now >= tonight && now < morning
+                now >= tonightTime && now < morningTime
             }
             return if (inTonightWindow) ForecastPeriod.TONIGHT else ForecastPeriod.TODAY
         }

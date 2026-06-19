@@ -38,8 +38,17 @@ class TonightInsightNotifier(private val context: Context) {
         topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
         handsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
         outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
-    ) {
-        if (!NotificationPermission.isGranted(context)) return
+        // Set on a scheduled spoken run: this notification doubles as the
+        // playback foreground service's notification, and swiping it away
+        // cancels the on-device speech (see SpeechDismissReceiver). Null for
+        // notification-only / non-spoken posts — there's nothing to cancel.
+        deleteIntent: PendingIntent? = null,
+        // True for a TTS-only run, where this is only the forced foreground-service
+        // notification shown during speech (removed afterward): suppress
+        // sound/heads-up so it doesn't chime on top of the spoken briefing.
+        silent: Boolean = false,
+    ): Boolean {
+        if (!NotificationPermission.isGranted(context)) return false
 
         val pendingIntent = PendingIntent.getActivity(
             context,
@@ -48,8 +57,17 @@ class TonightInsightNotifier(private val context: Context) {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
-        val channel = if (insight.hasEvents) CHANNEL_TONIGHT_INSIGHT_DEFAULT else CHANNEL_TONIGHT_INSIGHT_SILENT
-        val priority = if (insight.hasEvents) NotificationCompat.PRIORITY_DEFAULT else NotificationCompat.PRIORITY_LOW
+        // A spoken run (deleteIntent != null) always uses the DEFAULT channel.
+        // Two reasons: the briefing is read aloud, so an alerting notification is
+        // consistent with "alert when speech starts"; and the playback foreground
+        // service posts its placeholder on the DEFAULT channel — Android won't
+        // move an already-posted notification to a different channel, so a
+        // no-events spoken run must not try to land the forecast on the SILENT
+        // channel or it would be stuck on DEFAULT with a mismatched silent flag.
+        val spokenRun = deleteIntent != null
+        val alerting = insight.hasEvents || spokenRun
+        val channel = if (alerting) CHANNEL_TONIGHT_INSIGHT_DEFAULT else CHANNEL_TONIGHT_INSIGHT_SILENT
+        val priority = if (alerting) NotificationCompat.PRIORITY_DEFAULT else NotificationCompat.PRIORITY_LOW
 
         val top = insight.outfit?.top
         val notification = NotificationCompat.Builder(context, channel)
@@ -71,18 +89,27 @@ class TonightInsightNotifier(private val context: Context) {
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))
             .setPriority(priority)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setAutoCancel(true)
+            // On a spoken run (deleteIntent set) don't auto-cancel: the delete
+            // intent stops speech, and auto-cancelling on tap could remove the
+            // notification mid-briefing (and risk firing that intent), so tapping
+            // just opens the app. Only a swipe stops speech.
+            .setAutoCancel(deleteIntent == null)
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(deleteIntent)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .apply {
                 // Belt-and-braces: even if a downstream OEM ignores the silent
                 // channel's importance, the per-notification flag still suppresses
-                // sound + heads-up for the no-events case.
-                if (!insight.hasEvents) setSilent(true)
+                // sound + heads-up. Silence the no-events case, and a TTS-only run
+                // (silent = true) even though it's on the DEFAULT channel — its
+                // forecast is the forced FGS notification, not an alert the user
+                // asked for.
+                if (!alerting || silent) setSilent(true)
             }
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_TONIGHT_INSIGHT, notification)
+        return true
     }
 
     companion object {

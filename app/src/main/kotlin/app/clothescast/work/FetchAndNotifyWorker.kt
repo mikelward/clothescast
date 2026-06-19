@@ -1,17 +1,16 @@
 package app.clothescast.work
 
+import android.app.PendingIntent
 import android.content.Context
-import android.content.pm.ServiceInfo
+import android.content.Intent
 import android.location.LocationManager
 import app.clothescast.diag.DiagLog
-import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
-import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -44,7 +43,11 @@ import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.core.data.tts.isRetryableGeminiTtsFailure
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
-import app.clothescast.notification.CHANNEL_PLAYBACK
+import androidx.core.app.NotificationManagerCompat
+import app.clothescast.notification.InsightNotifier
+import app.clothescast.notification.SpeechDismissReceiver
+import app.clothescast.notification.TonightInsightNotifier
+import app.clothescast.tts.ActiveSpeechSession
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -74,6 +77,8 @@ import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import java.io.IOException
@@ -104,6 +109,16 @@ class FetchAndNotifyWorker(
     private val app: ClothesCastApplication
         get() = applicationContext as ClothesCastApplication
 
+    // True once this run promoted itself to the playback foreground service
+    // ([promoteToPlaybackServiceIfNeeded]); gates tearing it down at the end.
+    private var startedPlaybackService = false
+
+    // True once a forecast notification the user's mode actually wants has been
+    // posted on this run. Tells the playback service whether to *detach* its
+    // notification (keep the forecast in the shade) or *remove* it (TTS-only
+    // transient post, or nothing delivered — drop it) when we finish it.
+    private var persistNotificationAfterRun = false
+
     override suspend fun doWork(): Result {
         val isCacheOnly = inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)
         val isSilent = inputData.getBoolean(KEY_SILENT_REFRESH, false)
@@ -131,6 +146,29 @@ class FetchAndNotifyWorker(
                 )
             }
             throw ce
+        } finally {
+            // Always tear down the playback foreground service we started, on
+            // success, failure, or cancellation — leaving one foreground would
+            // strand a "Preparing…"/forecast notification and hold the process
+            // foreground. Detach (keep the forecast in the shade) only when the
+            // mode wanted a persistent notification; otherwise remove it (the
+            // placeholder, or a TTS-only run's transient forecast).
+            if (startedPlaybackService) {
+                PlaybackForegroundService.finish(applicationContext, detach = persistNotificationAfterRun)
+                // Backstop: the start request was accepted, but if the service
+                // then couldn't actually go foreground its finish() can't remove
+                // a transient TTS-only forecast we already posted. Cancel it here
+                // so a run the user opted out of a notification for never leaves
+                // one behind. A no-op when the service did run (it removed the
+                // notification on finish) or nothing was posted.
+                if (!persistNotificationAfterRun) {
+                    val id = when (period) {
+                        ForecastPeriod.TODAY -> InsightNotifier.NOTIFICATION_ID_DAILY_INSIGHT
+                        ForecastPeriod.TONIGHT -> TonightInsightNotifier.NOTIFICATION_ID_TONIGHT_INSIGHT
+                    }
+                    NotificationManagerCompat.from(applicationContext).cancel(id)
+                }
+            }
         }
     }
 
@@ -1633,15 +1671,77 @@ class FetchAndNotifyWorker(
         // forceNotify: the Today screen's Play button posts the notification
         // even on SILENT / TTS-only — an explicit tap means "show it now."
         val canNotify = forceNotify || mode.postsNotification
-        if (!canNotify) return
-        when (insight.period) {
+        // A spoken foreground-service run must keep a visible notification while
+        // it speaks (Android requires one for background audio), so replace the
+        // service's "Preparing…" placeholder with the forecast even on TTS-only —
+        // otherwise the user hears speech under a stuck placeholder with no
+        // swipe-to-stop. It just won't *persist* afterward unless the mode
+        // actually posts a notification (see persistNotificationAfterRun / the
+        // detach gate in doWork). When neither applies, there's nothing to post.
+        val showForecast = canNotify || startedPlaybackService
+        if (!showForecast) return
+        // On a spoken run this notification *is* the playback foreground service's
+        // notification, so swiping it away should stop the speech (see
+        // SpeechDismissReceiver). Notification-only / non-spoken posts have no
+        // speech to cancel, so no delete intent.
+        val deleteIntent = if (startedPlaybackService) stopSpeechDeleteIntent() else null
+        // A TTS-only run posts no notification of its own — the one we show is
+        // the forced FGS notification — so keep it silent, matching the old
+        // silent playback notification. Modes that do post a notification alert
+        // normally (the "alert when speech starts" behavior).
+        val silent = !canNotify
+        val posted = when (insight.period) {
             ForecastPeriod.TODAY ->
-                app.insightNotifier.notify(insight, prose, topColors, topStrokes, handsColors, outerColors)
+                app.insightNotifier.notify(insight, prose, topColors, topStrokes, handsColors, outerColors, deleteIntent, silent)
             ForecastPeriod.TONIGHT ->
-                app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes, handsColors, outerColors)
+                app.tonightInsightNotifier.notify(insight, prose, topColors, topStrokes, handsColors, outerColors, deleteIntent, silent)
         }
-        recordDeliveryDelay(insight.period)
+        // Keep the notification in the shade after the run only when the mode
+        // wants one *and* the forecast actually posted. If POST_NOTIFICATIONS is
+        // denied the notifier no-ops, so detaching would strand the placeholder —
+        // leave persistNotificationAfterRun false there so finish() removes it.
+        // A TTS-only run shows the forecast transiently during speech and clears
+        // it when the service stops — honoring "speak, don't leave a notification."
+        persistNotificationAfterRun = canNotify && posted
+        // The delivery-delay metric measures an *intended* notification post;
+        // skip it for a TTS-only run or a denied-permission no-op.
+        if (canNotify && posted) recordDeliveryDelay(insight.period)
     }
+
+    /**
+     * Broadcast PendingIntent fired when the user swipes the spoken-briefing
+     * notification away — [SpeechDismissReceiver] cancels the on-device speech
+     * (but not the MQTT / cast publishes). Carries the run's [speechToken] so the
+     * receiver only stops speech that's still this briefing's; a distinct
+     * per-run request code keeps each run's (immutable) PendingIntent its own, so
+     * a persisted older notification keeps firing its *own* token rather than a
+     * later run's.
+     */
+    private fun stopSpeechDeleteIntent(): PendingIntent {
+        val token = speechToken
+        val intent = Intent(applicationContext, SpeechDismissReceiver::class.java)
+            .setAction(SpeechDismissReceiver.ACTION_DISMISS)
+            .putExtra(SpeechDismissReceiver.EXTRA_TOKEN, token)
+        // Request code is the token's Int hash (Long.hashCode folds the high and
+        // low 32-bit halves of the millisecond timestamp): well-distributed and
+        // stable past 2038, unlike a raw .toInt() (low 32 bits truncate/wrap) or
+        // seconds-since-epoch (which overflows Int.MAX in 2038). Distinct per run,
+        // so each run's immutable PendingIntent — and its baked-in token extra —
+        // stays its own; the same formula in PlaybackForegroundService keeps
+        // placeholder + forecast sharing one.
+        return PendingIntent.getBroadcast(
+            applicationContext,
+            token.hashCode(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+    }
+
+    // Per-run identifier for the spoken-briefing notification's dismiss path: the
+    // alarm-fire timestamp, which is unique per scheduled run and is always
+    // non-zero whenever a delete intent is built (the playback service only
+    // starts on alarm-driven runs — see promoteToPlaybackServiceIfNeeded).
+    private val speechToken: Long get() = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L)
 
     /**
      * Plays the spoken briefing on the phone speaker (or skips it).
@@ -1678,64 +1778,88 @@ class FetchAndNotifyWorker(
         }
         if (!gates.phoneTtsConfigured) return
 
-        // Cast suppression: only when this cast is genuinely playing
-        // audio (willCast AND a synth buffer exists). An image-only
-        // cast (Gemini unavailable / synth failed → silent WAV stub)
-        // doesn't trigger suppression — the smart display isn't the
-        // speaker in that path. gates.castSuppressesPhone folds in
-        // castSkipPhoneSpeech and the forced-Play override: a tapped
-        // Play always speaks on this phone even when a cast is playing.
-        val castHasAudio = gates.castSuppressesPhone && wav != null
-        if (castHasAudio && castDeferred != null) {
-            val castOutcome = castDeferred.await()
-            if (castOutcome is CastInsightController.CastWorkerOutcome.Success) {
-                DiagLog.i(TAG, "Phone speech suppressed — smart display is playing the forecast.")
-                return
-            }
+        // Register this playback coroutine *before* the cast/MQTT suppression
+        // awaits, not just before the audio. A dismissal during those waits must
+        // cancel pending speech too: otherwise a publish that later fails would
+        // fall through the suppression checks and start speaking after the user
+        // already swiped the notification away (see ActiveSpeechSession /
+        // SpeechDismissReceiver). Cancellation propagates into the suspending
+        // awaits and the play/speak below, stopping the AudioTrack / TextToSpeech
+        // via their invokeOnCancellation hooks; the sibling MQTT / cast jobs in
+        // deliver()'s supervisorScope are untouched, so the smart-home publish
+        // still happens.
+        // Only the spoken FGS path has a dismissible notification, so only it
+        // registers for cancellation (keyed by the run's token so a stale
+        // notification's swipe can't stop a later briefing).
+        val speechJob = if (startedPlaybackService) currentCoroutineContext()[Job] else null
+        if (speechJob != null && !ActiveSpeechSession.register(speechToken, speechJob)) {
+            // The user swiped the notification (its "Preparing…" placeholder)
+            // before playback started — honour the dismissal and don't speak.
+            DiagLog.i(TAG, "Spoken forecast dismissed before playback started; skipping speech.")
+            return
         }
-
-        // MQTT suppression: mirror of the cast block above. The MQTT
-        // bridge publishes the rendered audio to the broker; we trust
-        // the user's HA-side automation to play it. Only suppresses
-        // when the publish included audio (synth succeeded) — without
-        // a buffer the broker has nothing to speak, so the phone needs
-        // to. gates.mqttSuppressesPhone folds in mqttSkipPhoneSpeech and
-        // the forced-Play override, so a tapped Play isn't silenced just
-        // because the bridge published the forecast.
-        val mqttHasAudio = gates.mqttSuppressesPhone && wav != null
-        if (mqttHasAudio) {
-            val mqttOutcome = mqttDeferred.await()
-            if (mqttOutcome is MqttPublishOutcome.Success) {
-                DiagLog.i(TAG, "Phone speech suppressed — MQTT bridge published the forecast.")
-                return
+        try {
+            // Cast suppression: only when this cast is genuinely playing
+            // audio (willCast AND a synth buffer exists). An image-only
+            // cast (Gemini unavailable / synth failed → silent WAV stub)
+            // doesn't trigger suppression — the smart display isn't the
+            // speaker in that path. gates.castSuppressesPhone folds in
+            // castSkipPhoneSpeech and the forced-Play override: a tapped
+            // Play always speaks on this phone even when a cast is playing.
+            val castHasAudio = gates.castSuppressesPhone && wav != null
+            if (castHasAudio && castDeferred != null) {
+                val castOutcome = castDeferred.await()
+                if (castOutcome is CastInsightController.CastWorkerOutcome.Success) {
+                    DiagLog.i(TAG, "Phone speech suppressed — smart display is playing the forecast.")
+                    return
+                }
             }
-        }
 
-        val utterance = ttsUtterance(insight, prefs, theme)
-        withSpeechAudioFocus(applicationContext) {
-            if (prefs.ttsEngine == TtsEngine.GEMINI && pcm != null) {
+            // MQTT suppression: mirror of the cast block above. The MQTT
+            // bridge publishes the rendered audio to the broker; we trust
+            // the user's HA-side automation to play it. Only suppresses
+            // when the publish included audio (synth succeeded) — without
+            // a buffer the broker has nothing to speak, so the phone needs
+            // to. gates.mqttSuppressesPhone folds in mqttSkipPhoneSpeech and
+            // the forced-Play override, so a tapped Play isn't silenced just
+            // because the bridge published the forecast.
+            val mqttHasAudio = gates.mqttSuppressesPhone && wav != null
+            if (mqttHasAudio) {
+                val mqttOutcome = mqttDeferred.await()
+                if (mqttOutcome is MqttPublishOutcome.Success) {
+                    DiagLog.i(TAG, "Phone speech suppressed — MQTT bridge published the forecast.")
+                    return
+                }
+            }
+
+            val utterance = ttsUtterance(insight, prefs, theme)
+            withSpeechAudioFocus(applicationContext) {
+                if (prefs.ttsEngine == TtsEngine.GEMINI && pcm != null) {
+                    runCatching {
+                        GeminiTtsSpeaker(
+                            app.geminiTtsClient,
+                            voiceName = prefs.geminiVoice,
+                            style = prefs.ttsStyle,
+                        ).play(pcm)
+                    }.onFailure { t ->
+                        if (t is CancellationException) throw t
+                        DiagLog.w(TAG, "Gemini playback failed; insight is still posted as notification.", t)
+                    }
+                    return@withSpeechAudioFocus
+                }
+                // Device engine, or Gemini synth failed pre-alignment.
+                // Either way, on-device TTS synthesises at playback time
+                // and gets the user audio without burning another Gemini
+                // call.
                 runCatching {
-                    GeminiTtsSpeaker(
-                        app.geminiTtsClient,
-                        voiceName = prefs.geminiVoice,
-                        style = prefs.ttsStyle,
-                    ).play(pcm)
+                    app.deviceTtsSpeaker(prefs.deviceVoice).speak(utterance.text, utterance.locale)
                 }.onFailure { t ->
                     if (t is CancellationException) throw t
-                    DiagLog.w(TAG, "Gemini playback failed; insight is still posted as notification.", t)
+                    DiagLog.w(TAG, "Device TTS failed; insight is still posted as notification.", t)
                 }
-                return@withSpeechAudioFocus
             }
-            // Device engine, or Gemini synth failed pre-alignment.
-            // Either way, on-device TTS synthesises at playback time
-            // and gets the user audio without burning another Gemini
-            // call.
-            runCatching {
-                app.deviceTtsSpeaker(prefs.deviceVoice).speak(utterance.text, utterance.locale)
-            }.onFailure { t ->
-                if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Device TTS failed; insight is still posted as notification.", t)
-            }
+        } finally {
+            speechJob?.let { ActiveSpeechSession.clear(speechToken, it) }
         }
     }
 
@@ -1772,12 +1896,16 @@ class FetchAndNotifyWorker(
      * runs while the app is the top app (focus works without a service), and
      * the exact-alarm exemption that lets us *start* a foreground service from
      * the background only covers the alarm fire. We also skip it when the
-     * period's delivery mode won't speak, so notification-only users don't see
-     * a service notification for nothing. Best-effort: if the system refuses
-     * the start (e.g. the exemption window lapsed), log and continue in the
-     * background rather than failing the whole run.
+     * period's delivery mode won't speak, so notification-only users don't get
+     * a foreground service for nothing.
+     *
+     * The service ([PlaybackForegroundService]) owns the run's single
+     * notification: it posts a silent "Preparing…" placeholder now, the worker
+     * replaces it with the forecast at delivery, and the service detaches it on
+     * finish so it persists after speech. Best-effort: a refused start is logged
+     * inside the service and the run continues in the background.
      */
-    private suspend fun promoteToPlaybackServiceIfNeeded(prefs: UserPreferences) {
+    private fun promoteToPlaybackServiceIfNeeded(prefs: UserPreferences) {
         val alarmTriggered = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L) != 0L
         if (!alarmTriggered) return
         val period = inputData.getString(KEY_PERIOD)
@@ -1788,34 +1916,12 @@ class FetchAndNotifyWorker(
             ForecastPeriod.TONIGHT -> prefs.tonightDeliveryMode
         }
         if (!mode.playsSpeech) return
-        runCatching { setForeground(playbackForegroundInfo()) }
-            .onFailure { t ->
-                if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Couldn't start the playback foreground service; speech may be inaudible from the background.", t)
-            }
-    }
-
-    /**
-     * The notification carried by the playback foreground service (see
-     * [promoteToPlaybackServiceIfNeeded]). Silent and LOW-importance — it's a
-     * platform requirement for background audio, not a user-actionable post —
-     * and tagged `mediaPlayback` so the foreground-service type matches the
-     * permission and manifest declaration.
-     */
-    private fun playbackForegroundInfo(): ForegroundInfo {
-        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_PLAYBACK)
-            .setSmallIcon(R.drawable.ic_notification_insight)
-            .setContentTitle(applicationContext.getString(R.string.notification_playback_title))
-            .setOngoing(true)
-            .setSilent(true)
-            .build()
-        // minSdk is 31, so the typed ForegroundInfo constructor (foreground
-        // service type, applied on API 29+) is always available here.
-        return ForegroundInfo(
-            PLAYBACK_NOTIFICATION_ID,
-            notification,
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK,
-        )
+        // Only enable the transient-notification path if the start request was
+        // actually accepted: a background startForegroundService is rejected
+        // synchronously once the exact-alarm exemption lapses, and we mustn't
+        // then post (and rely on the service to remove) a TTS-only notification
+        // with no service behind it.
+        startedPlaybackService = PlaybackForegroundService.start(applicationContext, period, speechToken)
     }
 
     private suspend fun awaitDeliveryAlignment() {
@@ -1934,11 +2040,6 @@ class FetchAndNotifyWorker(
         // fresh forecast. Race vs. concurrent plays is handled in the
         // UI gate — see TodayState.anyWorkActive.
         const val UNIQUE_WORK_NAME_PLAY = "insight_play"
-
-        // Foreground-service notification ID for the playback service. Distinct
-        // from the insight notification IDs (1001 daily, 1003 tonight) so the
-        // service notification and the delivered insight don't clobber each other.
-        private const val PLAYBACK_NOTIFICATION_ID = 1005
 
         // Output Data keys for surfacing failure reasons in the UI.
         const val KEY_REASON = "reason"

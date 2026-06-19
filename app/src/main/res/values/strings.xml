@@ -1123,9 +1123,10 @@
     <string name="notification_channel_tonight_insight_silent_description">The evening weather summary when your evening is empty. Posted silently — you can glance at it on the lock screen, but it won\'t make a sound.</string>
     <string name="notification_tonight_insight_title">Tonight\'s ClothesCast</string>
 
-    <string name="notification_channel_playback_name">Speaking the forecast</string>
-    <string name="notification_channel_playback_description">Shown briefly while ClothesCast reads your scheduled forecast aloud. Required by Android so the audio can play from the background.</string>
-    <string name="notification_playback_title">Reading your forecast aloud…</string>
+    <!-- Brief placeholder shown on the spoken-briefing notification while the
+         forecast is still being fetched, before it's replaced in place by the
+         forecast itself. -->
+    <string name="notification_preparing_title">Preparing your forecast…</string>
 
 
     <string name="settings_notification_permission_title">Notifications are blocked</string>

@@ -32,8 +32,17 @@ class InsightNotifier(private val context: Context) {
         topStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
         handsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
         outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
-    ) {
-        if (!NotificationPermission.isGranted(context)) return
+        // Set on a scheduled spoken run: this notification doubles as the
+        // playback foreground service's notification, and swiping it away
+        // cancels the on-device speech (see SpeechDismissReceiver). Null for
+        // notification-only / non-spoken posts — there's nothing to cancel.
+        deleteIntent: PendingIntent? = null,
+        // True for a TTS-only run, where this is only the forced foreground-service
+        // notification shown during speech (removed afterward): suppress
+        // sound/heads-up so it doesn't chime on top of the spoken briefing.
+        silent: Boolean = false,
+    ): Boolean {
+        if (!NotificationPermission.isGranted(context)) return false
 
         val pendingIntent = PendingIntent.getActivity(
             context,
@@ -67,12 +76,19 @@ class InsightNotifier(private val context: Context) {
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setAutoCancel(true)
+            // On a spoken run (deleteIntent set) don't auto-cancel: the delete
+            // intent stops speech, and auto-cancelling on tap could remove the
+            // notification mid-briefing (and risk firing that intent), so tapping
+            // just opens the app. Only a swipe stops speech.
+            .setAutoCancel(deleteIntent == null)
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(deleteIntent)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
+            .setSilent(silent)
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_DAILY_INSIGHT, notification)
+        return true
     }
 
     companion object {

@@ -13,7 +13,6 @@ import app.clothescast.R
 internal const val CHANNEL_DAILY_INSIGHT = "daily_insight_v1"
 internal const val CHANNEL_TONIGHT_INSIGHT_DEFAULT = "tonight_insight_default_v1"
 internal const val CHANNEL_TONIGHT_INSIGHT_SILENT = "tonight_insight_silent_v1"
-internal const val CHANNEL_PLAYBACK = "playback_v1"
 
 // Retired channel IDs to delete on upgrade. Android persists channels by ID
 // until the app explicitly deletes them, so dropping the create call alone
@@ -21,6 +20,12 @@ internal const val CHANNEL_PLAYBACK = "playback_v1"
 // installs. deleteNotificationChannel is a no-op when the ID was never
 // registered (fresh installs), so this is safe to call unconditionally.
 private const val CHANNEL_WEATHER_ALERTS_RETIRED = "weather_alerts_v1"
+
+// Retired: the spoken briefing's playback foreground service used to show its
+// own "Speaking the forecast" notification on this channel. It now reuses the
+// forecast's own daily/tonight channel (the foreground-service notification *is*
+// the forecast), so this dedicated channel is gone.
+private const val CHANNEL_PLAYBACK_RETIRED = "playback_v1"
 
 /**
  * Registers the notification channel(s) used by the app. Idempotent — safe to call from
@@ -44,9 +49,12 @@ object NotificationChannelRegistrar {
     fun register(context: Context) {
         val manager = context.getSystemService<NotificationManager>() ?: return
 
-        // Remove the retired severe-weather-alerts channel from installs that
-        // previously registered it (the feature is gone); see the const above.
+        // Remove retired channels from installs that previously registered them
+        // (the severe-weather-alerts feature is gone; the spoken-briefing
+        // playback notification now lives on the forecast's own channel); see
+        // the consts above.
         manager.deleteNotificationChannel(CHANNEL_WEATHER_ALERTS_RETIRED)
+        manager.deleteNotificationChannel(CHANNEL_PLAYBACK_RETIRED)
 
         val daily = NotificationChannel(
             CHANNEL_DAILY_INSIGHT,
@@ -80,25 +88,8 @@ object NotificationChannelRegistrar {
             lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
         }
 
-        // The foreground-service notification shown while a scheduled briefing
-        // speaks (see FetchAndNotifyWorker). LOW + no sound/vibration: it's a
-        // policy requirement for background audio, not a notification the user
-        // needs to act on, so it stays quiet and unobtrusive.
-        val playback = NotificationChannel(
-            CHANNEL_PLAYBACK,
-            context.getString(R.string.notification_channel_playback_name),
-            NotificationManager.IMPORTANCE_LOW,
-        ).apply {
-            description = context.getString(R.string.notification_channel_playback_description)
-            setShowBadge(false)
-            setSound(null, null)
-            enableVibration(false)
-            lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
-        }
-
         manager.createNotificationChannel(daily)
         manager.createNotificationChannel(tonightWithEvents)
         manager.createNotificationChannel(tonightSilent)
-        manager.createNotificationChannel(playback)
     }
 }

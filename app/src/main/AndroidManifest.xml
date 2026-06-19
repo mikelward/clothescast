@@ -217,14 +217,22 @@
                 android:resource="@xml/conditions_widget_info" />
         </receiver>
 
-        <!-- WorkManager hosts foreground workers in its own SystemForegroundService.
-             API 34+ requires the service to declare every foregroundServiceType it
-             runs with; merge the media-playback type onto WorkManager's declaration
-             so FetchAndNotifyWorker.setForeground(...) can use it for spoken delivery. -->
+        <!-- Owns the single notification for a scheduled spoken briefing and holds
+             the process foreground (type mediaPlayback) so the worker's TTS is
+             audible on Android 15+. We run our own service rather than
+             WorkManager's setForeground so we can stopForeground(DETACH) when
+             speech ends, leaving the forecast notification in the shade instead
+             of having WorkManager remove it. See PlaybackForegroundService. -->
         <service
-            android:name="androidx.work.impl.foreground.SystemForegroundService"
-            android:foregroundServiceType="mediaPlayback"
-            tools:node="merge" />
+            android:name=".work.PlaybackForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <!-- Delete-intent target: swiping the spoken-briefing notification away
+             cancels on-device speech (without aborting MQTT / cast delivery). -->
+        <receiver
+            android:name=".notification.SpeechDismissReceiver"
+            android:exported="false" />
 
     </application>
 

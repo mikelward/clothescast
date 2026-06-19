@@ -65,10 +65,11 @@ data class ClothesRule(
     }
 
     /**
-     * Fires when the day's peak rain probability is at least [percent]. The
+     * Fires when the day's blended-consensus chance of rain
+     * ([DailyForecast.precipitationProbabilityMaxPct]) is at least [percent]. The
      * comparison is inclusive (≥) so the boundary lines up exactly with the
-     * prose's chance-of-rain bar ([PrecipProbability.POSSIBLE_THRESHOLD]) and the
-     * conditions strip — a forecast sitting right on the gate (e.g. 20%) fires the
+     * prose's chance-of-rain bar ([PrecipProbability.POSSIBLE_THRESHOLD], 10%) and
+     * the conditions strip — a forecast sitting right on the gate fires the
      * umbrella the same moment the prose says "chance of rain" and the strip shows
      * a droplet. (So a `> N` reading of "above" is really "at or above N".)
      */
@@ -76,80 +77,22 @@ data class ClothesRule(
         override fun matches(forecast: DailyForecast) = forecast.precipitationProbabilityMaxPct >= percent
     }
 
-    /**
-     * Fires when the day's per-model rain is at least as heavy as [floor] on the
-     * drizzle < rain < thunderstorm scale ([rainShapedSeverity]). [floor] is a
-     * [WeatherCondition] — only [WeatherCondition.DRIZZLE] or [WeatherCondition.RAIN]
-     * are meaningful (the editor offers just those two); any non-rain-shaped floor
-     * (snow, a dry-sky state) ranks 0 and so matches any rainy day, which is why
-     * the editor never authors one.
-     *
-     * Unlike [PrecipitationProbabilityAbove] — which only sees the daily aggregate
-     * probability — this reads the *weather code*, so it catches drizzle that sits
-     * below every probability gate (drizzle from shallow stratus routinely reports
-     * a code + a trace of rain but a low or absent probability of *measurable*
-     * rain).
-     *
-     * It keys **only** on [DailyForecast.peakRainCondition] — the per-model coded
-     * evidence the morning insight's drizzle tier renders
-     * ([RenderInsightSummary]'s coded fallback) — deliberately *not* the base daily
-     * [DailyForecast.condition] or [DailyForecast.hourly] codes. Reading the base
-     * code would fire rain gear in the exact case the prose stays silent: per-model
-     * data missing (a failed multi-model fetch or a pre-per-model cached bundle)
-     * and a base drizzle/rain code below the prose's probability threshold — the
-     * umbrella would drop out of speech and the rain jacket would be suggested with
-     * no rain clause. Keying on the same evidence the summary renders keeps the
-     * outfit, recommendations, and prose in agreement; when there's no per-model
-     * signal [peakRainCondition] is [WeatherCondition.UNKNOWN] and the rule leans on
-     * its probability arm alone.
-     *
-     * Snow scores 0 on the rain scale, so a snowy day never fires a rain-gear
-     * rule (you don't umbrella snow — mirrors [isFrozenPrecipitation], the gate in
-     * [EvaluateClothesRules]). TODO(snow-gear): snow is out of scope here by
-     * design; frozen-precip gear should arrive as its own snow-keyed condition,
-     * not by widening this rain floor to rank snow.
-     */
-    data class RainCode(val floor: WeatherCondition) : Condition {
-        override fun matches(forecast: DailyForecast): Boolean {
-            val floorSeverity = floor.rainShapedSeverity()
-            return floorSeverity > 0 && forecast.peakRainCondition.rainShapedSeverity() >= floorSeverity
-        }
-    }
-
-    /**
-     * Composite OR: matches when *any* child condition matches. Lets a single
-     * rule fire on either of two independent signals — e.g. the umbrella's "≥ 20%
-     * chance of rain *or* a drizzle weather code", which catches both the
-     * confident-but-probability-driven day and the quiet drizzle day probability
-     * alone misses. Empty list never matches (no arm to satisfy). Children can be
-     * any [Condition], including nested composites, though the editor only ever
-     * builds the two-arm probability-or-rain-code shape.
-     */
-    data class AnyOf(val conditions: List<Condition>) : Condition {
-        override fun matches(forecast: DailyForecast) = conditions.any { it.matches(forecast) }
-    }
-
     companion object {
         // Item keys are en-US-flavoured ("sweater", not "jumper") so they
         // align with the `today_outfit_top_*` labels in values/strings.xml.
         // Per-language phrasers translate at format time
         // (e.g. GermanClothesPhraser maps "sweater" → "Pullover").
-        // Two rain-gear defaults ship as precip-keyed rules, each an OR of a
-        // probability gate and a weather-code floor ([AnyOf]):
-        //  - Umbrella (carried): ≥ 20% chance OR a drizzle-or-worse code. Light
-        //    rain you carry an umbrella for starts low, and drizzle slips under
-        //    every probability gate (probability-of-precip is the chance of
-        //    *measurable* rain ≥ ~0.1 mm; shallow-stratus drizzle reports a code
-        //    + a trace but a low / absent probability — the AIFS case), so the
-        //    code arm catches what the 20% arm can't. Folded into the insight's
-        //    rain clause ("Tonight, rain, bring an umbrella.").
-        //  - Rain jacket (outer shell): ≥ 50% chance OR a rain-or-worse code.
-        //    A heavier bar than the umbrella — you reach for a jacket when rain
-        //    is likely or already coded as real rain, not for a passing drizzle.
-        // The code arm reads rain-shaped severity ([rainShapedSeverity]), so snow
-        // never fires either rule. Like every default both are editable — the
-        // user can retune the percent, change the code floor (drizzle / rain /
-        // none), or delete the rule from the clothes-rule editor.
+        // Both rain-gear defaults key off the single blended-consensus chance of
+        // rain ([DailyForecast.precipitationProbabilityMaxPct]):
+        //  - Umbrella (carried): ≥ 10% — the chance-of-rain bar. Folded into the
+        //    insight's rain clause ("Tonight, rain, bring an umbrella.").
+        //  - Rain jacket (outer shell): ≥ 50% — the confident-rain bar. A heavier
+        //    bar than the umbrella; you reach for a jacket when rain is likely.
+        // Snow never fires either rule: the rule engine's snow gate
+        // ([EvaluateClothesRules], via [isFrozenPrecipitation]) suppresses rain
+        // gear on snow days even when snow clears the probability gate. Like every
+        // default both are editable — the user can retune the percent or delete
+        // the rule from the clothes-rule editor.
         // TODO(rain-accessory-variants): broaden the rain-gear rules further
         //  (hood, rain boots, …) once the resource strings and per-locale
         //  phrasers cover them.
@@ -159,24 +102,8 @@ data class ClothesRule(
             ClothesRule(Garment.COAT, TemperatureBelow(4.0)),
             ClothesRule(Garment.GLOVES, TemperatureBelow(4.0)),
             ClothesRule(Garment.SHORTS, TemperatureAbove(23.0)),
-            ClothesRule(
-                Garment.UMBRELLA,
-                AnyOf(
-                    listOf(
-                        PrecipitationProbabilityAbove(20.0),
-                        RainCode(WeatherCondition.DRIZZLE),
-                    ),
-                ),
-            ),
-            ClothesRule(
-                Garment.RAIN_JACKET,
-                AnyOf(
-                    listOf(
-                        PrecipitationProbabilityAbove(50.0),
-                        RainCode(WeatherCondition.RAIN),
-                    ),
-                ),
-            ),
+            ClothesRule(Garment.UMBRELLA, PrecipitationProbabilityAbove(10.0)),
+            ClothesRule(Garment.RAIN_JACKET, PrecipitationProbabilityAbove(50.0)),
         )
 
         /** Sanity bounds in °C for the rationale dialog's `+1°` / `−1°` taps. Wide enough
@@ -192,17 +119,13 @@ data class ClothesRule(
 /**
  * The Celsius-equivalent threshold of a temperature-keyed rule, regardless of
  * which unit the user typed it in. Returns `null` for the precip-keyed
- * conditions ([ClothesRule.PrecipitationProbabilityAbove],
- * [ClothesRule.RainCode], [ClothesRule.AnyOf]), which carry no
- * temperature.
+ * [ClothesRule.PrecipitationProbabilityAbove], which carries no temperature.
  */
 fun ClothesRule.thresholdC(): Double? = when (val c = condition) {
     is ClothesRule.TemperatureBelow -> c.value.fromUnit(c.unit)
     is ClothesRule.TemperatureAbove -> c.value.fromUnit(c.unit)
-    is ClothesRule.PrecipitationProbabilityAbove -> null
     // Precip-keyed conditions carry no temperature; the rationale / fallback-range
-    // callers drop them (a composite rain rule has no single °C cutoff to show).
-    is ClothesRule.RainCode -> null
-    is ClothesRule.AnyOf -> null
+    // callers drop them (a rain probability rule has no °C cutoff to show).
+    is ClothesRule.PrecipitationProbabilityAbove -> null
 }
 

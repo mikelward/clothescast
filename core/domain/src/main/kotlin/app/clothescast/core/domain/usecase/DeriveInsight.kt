@@ -12,7 +12,6 @@ import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.core.domain.model.peakRainCondition
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TriggeredOutfit
 import app.clothescast.core.domain.model.UserPreferences
@@ -126,7 +125,6 @@ class DeriveInsight(
             events = periodView.events,
             period = period,
             todayForDelta = periodView.deltaToday,
-            perModelHourly = periodView.perModelForRender,
             eveningEventTieIn = eveningEventTieIn,
             deltaThresholdC = prefs.deltaThresholdC,
             deltaFormat = prefs.deltaFormat,
@@ -229,22 +227,11 @@ class DeriveInsight(
                     )
                 }
         }
-        // Carry the same per-model rain-code enrichment onto the *next* period's
-        // forecast, sliced to that period's own window. Without it the Today card
-        // / widget next-outfit icon (computed via OutfitSuggestion.fromForecast,
-        // which has no pre-evaluated TriggeredOutfit) would miss a per-model
-        // drizzle / rain code the blended next-period condition hides — surfacing
-        // the umbrella / rain jacket this period but dropping it next period.
-        val nextForecast = rawNextForecast?.let { next ->
-            val nextWindow = when (period) {
-                ForecastPeriod.TODAY -> tonightWindow(next.hourly, bundle.today.date, tonightStart)
-                ForecastPeriod.TONIGHT -> todayWindow(next.hourly, next.date)
-            }
-            next.copy(
-                peakRainCondition = bundle.perModelHourly?.slicedTo(nextWindow)?.peakRainCondition()
-                    ?: WeatherCondition.UNKNOWN,
-            )
-        }
+        // The next period's forecast drives the Today card / widget next-outfit
+        // icon (via OutfitSuggestion.fromForecast). Its rain gear keys off the
+        // blended-consensus probability already on the sliced forecast, so no
+        // per-model enrichment is needed.
+        val nextForecast = rawNextForecast
         val perModelForRender = bundle.perModelHourly?.slicedTo(
             when (period) {
                 ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
@@ -253,19 +240,12 @@ class DeriveInsight(
                 ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, nightBase.date, tonightStart)
             },
         )
-        // Enrich the forecast the rule engine sees with the per-model rain-code
-        // evidence the daily-aggregate condition hides — a single model's drizzle
-        // (a code + a trace, no probability) never survives the blend, so without
-        // this the umbrella / rain-jacket precip-*code* arms would stay silent on
-        // exactly the drizzle days the prose's per-model tier already calls. Feeds
-        // the same window the prose renders from, so icon, recommendations, and
-        // prose agree on the rain. yesterday has no per-model slice and keeps the
-        // UNKNOWN default — its code arms fall back to its own condition / hourly.
-        val forecastForRules = periodForecast.copy(
-            peakRainCondition = perModelForRender?.peakRainCondition() ?: WeatherCondition.UNKNOWN,
-        )
+        // The rule engine reads the blended-consensus chance of rain already on
+        // the sliced forecast (precipitationProbabilityMaxPct), so the umbrella /
+        // rain-jacket rules fire off the same number the prose and strip use — no
+        // per-model enrichment needed.
         val triggeredOutfit = evaluateClothesRules(
-            forecastForRules,
+            periodForecast,
             prefs.clothesRules,
             prefs.defaultTop,
             prefs.defaultBottom,
@@ -324,7 +304,6 @@ class DeriveInsight(
             events = nightView.events,
             period = ForecastPeriod.TONIGHT,
             todayForDelta = nightView.deltaToday,
-            perModelHourly = nightView.perModelForRender,
             eveningEventTieIn = null,
             deltaThresholdC = prefs.deltaThresholdC,
             deltaFormat = prefs.deltaFormat,
@@ -508,13 +487,12 @@ internal fun ForecastBundle.shiftedToTomorrow(): ForecastBundle? {
  * Restricts each model's series to the hours in [window], keeping whatever
  * subset of the window a model reported. A model with gaps stays in — every
  * consumer is sparse-safe: the charts position points by timestamp lookup
- * (not list position), and [RenderInsightSummary.pickPerModelPeak] counts
- * per-hour reporters by design. The previous behavior evicted a model
- * missing even one window hour, which starved the rain-tier majority logic
+ * (not list position), and the confidence computation tolerates per-hour
+ * gaps by design. The previous behavior evicted a model
+ * missing even one window hour, which starved the confidence computation
  * of exactly the warming-up models its sparse handling exists for — and
  * when *every* model had a gap, collapsed the overlay to null, dropping the
- * confidence chip and downgrading the precip clause to the base-hourly
- * fallback. Models with nothing in the window drop out entirely (ICON past
+ * confidence chip. Models with nothing in the window drop out entirely (ICON past
  * day 7); null when none remain.
  */
 internal fun PerModelHourly.slicedTo(window: List<LocalDateTime>): PerModelHourly? {

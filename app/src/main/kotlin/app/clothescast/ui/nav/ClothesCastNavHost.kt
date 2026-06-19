@@ -443,7 +443,6 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                         hourly = insight.hourly,
                         temperatureUnit = prefs.temperatureUnit,
                         windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
-                        precipCondition = insight.summary.precip?.condition,
                     )
                     val header = app.getString(
                         if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today

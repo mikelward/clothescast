@@ -124,10 +124,9 @@ class OpenMeteoClient(
         // covers the same forecast_days=14 window the consulted models carry —
         // the equal-weight policy [blendConsensusHourly] documents holds on
         // every forward day (an earlier today-plus-tomorrow-only version made
-        // near and later days blend differently; Codex caught it), and
-        // best_match stays a real vote in
-        // [RenderInsightSummary.pickPerModelPeak]'s `majorityNeeded` bar on
-        // both sides of the midnight boundary.
+        // near and later days blend differently; Codex caught it), so
+        // best_match stays a real vote in the consensus blend on both sides of
+        // the midnight boundary.
         val tomorrowDate = bundle.today.date.plusDays(1)
         val bestMatchPerModel =
             response.hourly.asBestMatchPerModelHours(firstForecastDate = bundle.today.date)

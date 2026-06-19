@@ -20,6 +20,16 @@ data class Insight(
     val summary: InsightSummary,
     val recommendedItems: List<String>,
     val generatedAt: Instant,
+    /**
+     * The calendar date this insight's period is *about*. Normally
+     * `currentDay.date`. The exception is the ongoing overnight
+     * ([InsightSummary.overnight]): its night began yesterday evening, so
+     * `forDate` is **yesterday** even though [currentDay] / [upcomingDays] stay
+     * anchored to the real today (the night-in-progress shifts the period's
+     * date, not the calendar anchor). Don't assume [upcomingDays] is "after
+     * `forDate`" — for an overnight it starts the day after [currentDay], which
+     * is `forDate.plusDays(2)`.
+     */
     val forDate: LocalDate,
     /**
      * The location the forecast was generated for. UI-only — the home screen

@@ -27,6 +27,7 @@ import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.ForecastBundle
 import app.clothescast.core.domain.repository.WeatherRepository
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -405,6 +406,111 @@ class GenerateDailyInsightTest {
         val result = subject(london, prefs)
 
         result.insight.hourly.shouldContainExactly(hourly)
+    }
+
+    @Test
+    fun `overnight (TONIGHT) renders the ongoing night dated yesterday, anchored on today`() = runTest {
+        // The post-midnight tail: the night "now" sits in began yesterday evening
+        // and ends this morning. overnight = true slices the night off yesterday
+        // (>=19:00) -> today-pre-dawn (<07:00) and dates the insight to yesterday,
+        // while the calendar anchor (currentDay / upcomingDays) stays on today.
+        val yesterdayEvening = HourlyForecast(
+            time = LocalTime.of(20, 0),
+            temperatureC = 11.0,
+            feelsLikeC = 9.0,
+            precipitationProbabilityPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val preDawn3 = HourlyForecast(
+            time = LocalTime.of(3, 0),
+            temperatureC = 6.0,
+            feelsLikeC = 3.0,
+            precipitationProbabilityPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val preDawn6 = HourlyForecast(
+            time = LocalTime.of(6, 0),
+            temperatureC = 7.0,
+            feelsLikeC = 4.0,
+            precipitationProbabilityPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val daytimeNoon = HourlyForecast(
+            time = LocalTime.of(12, 0),
+            temperatureC = 20.0,
+            feelsLikeC = 20.0,
+            precipitationProbabilityPct = 5.0,
+            condition = WeatherCondition.CLEAR,
+        )
+        val tomorrowDay = today.copy(date = today.date.plusDays(1))
+        val dayAfter = today.copy(date = today.date.plusDays(2))
+        val weather = FakeWeatherRepository(
+            ForecastBundle(
+                today = today.copy(hourly = listOf(preDawn3, preDawn6, daytimeNoon)),
+                yesterday = yesterday.copy(hourly = listOf(yesterdayEvening)),
+                tomorrow = tomorrowDay,
+                // upcomingDays starts at the original tomorrow, per the bundle's
+                // duplication convention.
+                upcomingDays = listOf(tomorrowDay, dayAfter),
+            ),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val result = subject(london, prefs, ForecastPeriod.TONIGHT, overnight = true).insight
+
+        result.period shouldBe ForecastPeriod.TONIGHT
+        result.summary.overnight shouldBe true
+        // Dated yesterday — that's what the "Overnight" wording and the morning
+        // delta keys off — even though the calendar anchor stays on today.
+        result.forDate shouldBe yesterday.date
+        // The slice is yesterday-evening + today-pre-dawn; today's daytime noon
+        // hour is excluded.
+        result.hourly.map { it.time } shouldContainExactly listOf(
+            LocalTime.of(20, 0),
+            LocalTime.of(3, 0),
+            LocalTime.of(6, 0),
+        )
+        // The calendar anchor stays on the real today: currentDay is today and
+        // upcomingDays is the unshifted forward week, so the 7/14-day pages stay
+        // correct (no empty week, no off-by-one).
+        result.currentDay?.date shouldBe today.date
+        result.upcomingDays.map { it.date } shouldContainExactly listOf(
+            tomorrowDay.date,
+            dayAfter.date,
+        )
+        // The overnight leads into *today's* daytime, so the in-card "next"
+        // outfit comes from today's noon hour, not tomorrow.
+        result.nextOutfit.shouldNotBeNull()
+    }
+
+    @Test
+    fun `the coming night (TONIGHT, not overnight) is dated today`() = runTest {
+        val weather = FakeWeatherRepository(
+            ForecastBundle(
+                today = today.copy(
+                    hourly = listOf(
+                        HourlyForecast(LocalTime.of(20, 0), 11.0, 9.0, 5.0, WeatherCondition.CLEAR),
+                    ),
+                ),
+                yesterday = yesterday,
+            ),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val result = subject(london, prefs, ForecastPeriod.TONIGHT).insight
+
+        result.forDate shouldBe today.date
+        result.summary.overnight shouldBe false
+    }
+
+    @Test
+    fun `overnight is rejected for the TODAY period`() = runTest {
+        val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        shouldThrow<IllegalArgumentException> {
+            subject.snapshot(london, prefs, ForecastPeriod.TODAY, overnight = true)
+        }
     }
 
     @Test

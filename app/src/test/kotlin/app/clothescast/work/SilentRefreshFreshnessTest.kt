@@ -133,4 +133,25 @@ class SilentRefreshFreshnessTest {
         FetchAndNotifyWorker.currentPeriodForSchedule(prefs, LocalTime.of(2, 0)) shouldBe ForecastPeriod.TONIGHT
         FetchAndNotifyWorker.currentPeriodForSchedule(prefs, LocalTime.of(9, 0)) shouldBe ForecastPeriod.TODAY
     }
+
+    @Test
+    fun `post-midnight TONIGHT is the ongoing overnight`() {
+        // Before the morning run, the TONIGHT window "now" is in began yesterday
+        // evening — flag it as overnight so the pager leads with "Overnight" +
+        // "Today" rather than "Tonight" + "Tomorrow".
+        val prefs = basePrefs
+        FetchAndNotifyWorker.currentWindowIsOvernight(prefs, ForecastPeriod.TONIGHT, LocalTime.of(2, 0)) shouldBe true
+        FetchAndNotifyWorker.currentWindowIsOvernight(prefs, ForecastPeriod.TONIGHT, LocalTime.of(6, 59)) shouldBe true
+    }
+
+    @Test
+    fun `evening TONIGHT and daytime TODAY are not overnight`() {
+        val prefs = basePrefs
+        // Evening tonight is the coming night, not overnight.
+        FetchAndNotifyWorker.currentWindowIsOvernight(prefs, ForecastPeriod.TONIGHT, LocalTime.of(21, 0)) shouldBe false
+        // At the morning cutoff TONIGHT no longer applies; TODAY is never overnight.
+        FetchAndNotifyWorker.currentWindowIsOvernight(prefs, ForecastPeriod.TONIGHT, LocalTime.of(7, 0)) shouldBe false
+        FetchAndNotifyWorker.currentWindowIsOvernight(prefs, ForecastPeriod.TODAY, LocalTime.of(2, 0)) shouldBe false
+        FetchAndNotifyWorker.currentWindowIsOvernight(prefs, ForecastPeriod.TODAY, LocalTime.of(9, 0)) shouldBe false
+    }
 }

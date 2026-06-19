@@ -247,7 +247,13 @@ class FetchAndNotifyWorker(
         }
 
         val isSilentRefresh = inputData.getBoolean(KEY_SILENT_REFRESH, false)
-        val today = LocalDate.now()
+        // Read wall-clock time once and derive both the date and every
+        // schedule-relative decision (period selection + day-offset) from the
+        // same instant. Two separate now() reads can straddle the morning cutoff
+        // mid-run (e.g. 06:59 → 07:00), which would pick the period for one side
+        // of the boundary and the day-offset for the other.
+        val now = LocalDateTime.now()
+        val today = now.toLocalDate()
         // Silent refreshes — app-open, onboarding, and the manual Refresh tap —
         // derive the window from the user's schedule against wall-clock time at
         // *run* time, so they refresh whichever 12-hour window the user is
@@ -257,12 +263,17 @@ class FetchAndNotifyWorker(
         // window choice ignores them — the Today screen shows both windows from
         // the cache regardless.
         val period = if (isSilentRefresh) {
-            currentPeriodForSchedule(prefs)
+            currentPeriodForSchedule(prefs, now.toLocalTime())
         } else {
             inputData.getString(KEY_PERIOD)
                 ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
                 ?: ForecastPeriod.TODAY
         }
+
+        // True when the current TONIGHT window is the ongoing overnight (the
+        // post-midnight tail). Same [now] as the period selection so the two
+        // can't disagree across the morning cutoff. See [currentWindowIsOvernight].
+        val overnight = currentWindowIsOvernight(prefs, period, now.toLocalTime())
 
         // The enable toggles gate *scheduled* delivery only: the tonight alarm
         // rearms blindly via AlarmReceiver, so the toggle is honoured here to stop
@@ -391,11 +402,11 @@ class FetchAndNotifyWorker(
                 .getOrElse {
                     if (it is CancellationException) throw it
                     DiagLog.e(TAG, "Cached delivery failed; falling through to fresh generate.", it)
-                    fresh(location, prefs, period)
+                    fresh(location, prefs, period, overnight)
                 }
         }
 
-        return fresh(location, prefs, period)
+        return fresh(location, prefs, period, overnight)
     }
 
     /**
@@ -418,9 +429,9 @@ class FetchAndNotifyWorker(
         val currentPeriod = currentPeriodForSchedule(prefs, now.toLocalTime())
         // The calendar date the [requestedPeriod] cast the user wants is dated
         // for. Accounts for the nightly window wrapping past midnight (see
-        // [playTargetDate]): in the post-midnight tail of the night the current
-        // nightly snapshot is still dated *yesterday*, and the next daytime cast
-        // is *this* morning (today), not tomorrow.
+        // [playTargetDate]): in the post-midnight tail the next daytime cast is
+        // *this* morning (today), not tomorrow. The nightly cast is always
+        // today's — the ongoing overnight snapshot stays anchored on today.
         val targetDate = playTargetDate(
             requestedPeriod,
             now,
@@ -464,23 +475,29 @@ class FetchAndNotifyWorker(
         // When the requested period IS the current window, route through the
         // full fresh() path so the fetched snapshot lands in the cache (+
         // next-window pre-capture, + history): an empty-cache Play populates
-        // the Today screen as a side effect. (Current-window play always has
-        // dayOffset 0, which fresh() uses internally.) When it's the *other*
+        // the Today screen as a side effect. Current-window play carries the same
+        // overnight flag the silent refresh would ([currentWindowIsOvernight]) so
+        // a post-midnight Play of the ongoing overnight casts the night "now"
+        // sits in, matching what the Today screen shows. When it's the *other*
         // window (e.g. "Play now" on Nightly tapped in the morning, or on Daily
         // tapped at night), fetch ephemerally for the right day and DON'T
         // store — fresh() always writes THIS_PERIOD, which would clobber the
         // current window's snapshot the Today screen is showing.
         if (requestedPeriod == currentPeriod) {
             DiagLog.i(TAG, "Play cache miss for current window $requestedPeriod; fetching fresh.")
-            return fresh(location, prefs, requestedPeriod)
+            return fresh(
+                location,
+                prefs,
+                requestedPeriod,
+                currentWindowIsOvernight(prefs, requestedPeriod, now.toLocalTime()),
+            )
         }
-        // capturedSnapshot only supports dayOffset 0 (either period) or 1
-        // (TODAY = tomorrow's daytime). The non-current ephemeral path only ever
-        // needs tomorrow's daytime (+1, when Daily is tapped in the evening);
-        // every other non-current case is today (0). The overnight "current
-        // night dated yesterday" can't be fetched — Open-Meteo anchors to the
-        // real calendar day — but that case is the *current* window, so it goes
-        // through the cache hit or the fresh() branch above, never here.
+        // capturedSnapshot supports dayOffset 0 (either period) and 1 (TODAY =
+        // tomorrow's daytime). The non-current ephemeral path only ever needs
+        // tomorrow's daytime (+1, when Daily is tapped in the evening); every
+        // other non-current case is today (0). The overnight is always the
+        // *current* window, so it goes through the cache hit or the fresh()
+        // branch above, never here (and isn't an ephemeral fetch).
         val fetchDayOffset =
             if (requestedPeriod == ForecastPeriod.TODAY && targetDate.isAfter(now.toLocalDate())) 1 else 0
         DiagLog.i(TAG, "Play cache miss for non-current window $requestedPeriod (+${fetchDayOffset}d); ephemeral fetch.")
@@ -529,6 +546,7 @@ class FetchAndNotifyWorker(
         location: Location,
         prefs: UserPreferences,
         period: ForecastPeriod,
+        overnight: Boolean = false,
     ): Result {
         // Spread alarm-triggered fetches across a small window so multiple
         // devices on the same home IP (alarms armed for the same wall-clock
@@ -559,7 +577,7 @@ class FetchAndNotifyWorker(
             // lands in the cache so any later settings change re-renders
             // off the same upstream data for free; the derive call here is the
             // one we deliver on this run.
-            val snapshot = capturedSnapshot(location, prefs, period, dayOffset = 0)
+            val snapshot = capturedSnapshot(location, prefs, period, dayOffset = 0, overnight = overnight)
             val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
             val isSilentRun = inputData.getBoolean(KEY_SILENT_REFRESH, false)
             runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, snapshot) }
@@ -593,7 +611,7 @@ class FetchAndNotifyWorker(
             // consults Slot.THIS_PERIOD so the next morning's fresh fetch
             // isn't suppressed by yesterday-evening's tomorrow-daytime
             // pre-render.
-            val pairedSnapshot = generatePairedInsight(location, prefs, period)
+            val pairedSnapshot = generatePairedInsight(location, prefs, period, overnight)
             // Render once per delivery so notification, TTS, and the audit log
             // all share the same string and we don't reconfigure the
             // Configuration-overridden Resources three times per fire.
@@ -695,6 +713,10 @@ class FetchAndNotifyWorker(
      *    daytime — generated with `dayOffset = 1`, `period = TODAY`. The
      *    bundle's `forecast_days=2` response carries tomorrow's full daily
      *    aggregates + hourly, so no extra fetch is needed.
+     *  - Post-midnight overnight (`primaryPeriod = TONIGHT`, [primaryOvernight]
+     *    = true): the primary is the ongoing night, so the next window is
+     *    *today's* daytime — `period = TODAY` at `dayOffset = 0`. This is what
+     *    makes the 6am pager read "Overnight" + "Today".
      *
      * Silent — no notification, no TTS, no widget update. Failures are
      * logged and swallowed; the Today screen's pager falls back to its
@@ -704,12 +726,16 @@ class FetchAndNotifyWorker(
         location: Location,
         prefs: UserPreferences,
         primaryPeriod: ForecastPeriod,
+        primaryOvernight: Boolean,
     ): ForecastSnapshot? {
-        val nextWindowPeriod = when (primaryPeriod) {
-            ForecastPeriod.TODAY -> ForecastPeriod.TONIGHT
-            ForecastPeriod.TONIGHT -> ForecastPeriod.TODAY
+        // The overnight pairs with today's daytime (dayOffset 0); the coming
+        // night with tomorrow's (dayOffset 1); the morning with that evening's
+        // night (dayOffset 0). The paired window is never itself an overnight.
+        val (nextWindowPeriod, dayOffset) = when {
+            primaryOvernight -> ForecastPeriod.TODAY to 0
+            primaryPeriod == ForecastPeriod.TODAY -> ForecastPeriod.TONIGHT to 0
+            else -> ForecastPeriod.TODAY to 1
         }
-        val dayOffset = if (primaryPeriod == ForecastPeriod.TONIGHT) 1 else 0
         return runCatching {
             val snapshot = capturedSnapshot(location, prefs, nextWindowPeriod, dayOffset)
             app.insightCache.store(InsightCache.Slot.NEXT_PERIOD, snapshot)
@@ -737,8 +763,9 @@ class FetchAndNotifyWorker(
         prefs: UserPreferences,
         period: ForecastPeriod,
         dayOffset: Int,
+        overnight: Boolean = false,
     ): ForecastSnapshot {
-        val raw = app.generateDailyInsight.snapshot(location, prefs, period, dayOffset)
+        val raw = app.generateDailyInsight.snapshot(location, prefs, period, dayOffset, overnight)
         val historic = runCatching {
             app.dailyHistoryStore.entryFor(raw.bundle.today.date.minusDays(1))
         }.getOrElse {
@@ -2353,6 +2380,37 @@ class FetchAndNotifyWorker(
         }
 
         /**
+         * Whether the *current* TONIGHT window is the **ongoing overnight** — the
+         * night that began yesterday evening and ends this morning — rather than
+         * the coming night. True only in the post-midnight tail: before the
+         * morning run, with the usual schedule shape (evening time later than
+         * morning time). The overnight slices its night off yesterday → today
+         * pre-dawn, dates itself to yesterday, and pairs with *today's* daytime,
+         * so the 6am pager reads "Overnight" + "Today" instead of "Tonight" +
+         * "Tomorrow" (which skipped today's daytime entirely). The calendar
+         * anchor stays on the real today regardless — see [ForecastSnapshot.overnight].
+         *
+         * Purely time-based, not trigger-based: scheduled alarms fire at the
+         * morning / evening times and never land in the tail, and a TONIGHT alarm
+         * *delayed* past midnight genuinely IS the ongoing overnight. TODAY is
+         * never overnight; the degenerate crossed schedule (tonight not after
+         * morning) falls back to false.
+         *
+         * TODO(overnight): revisit leading with "Overnight" late in the window —
+         * by ~6am the ongoing night is nearly spent (an hour to the morning run),
+         * so past some cutoff we may prefer to lead with "Today". A deliberate
+         * follow-up; "overnight leads" is the agreed behaviour for now.
+         */
+        fun currentWindowIsOvernight(
+            prefs: UserPreferences,
+            period: ForecastPeriod,
+            now: LocalTime = LocalTime.now(),
+        ): Boolean =
+            period == ForecastPeriod.TONIGHT &&
+                prefs.tonightSchedule.time > prefs.schedule.time &&
+                now < prefs.schedule.time
+
+        /**
          * The calendar date the [requestedPeriod] cast that on-demand play
          * should target is dated for, given wall-clock [now] and the schedule
          * [morningTime] / [tonightTime]. This is the date the desired snapshot's
@@ -2367,9 +2425,12 @@ class FetchAndNotifyWorker(
          *    one is tomorrow's. Crucially, in the post-midnight tail of the night
          *    (before the morning cutoff) the next daytime cast is *this* morning,
          *    i.e. today — not tomorrow.
-         *  - **Nightly cast (TONIGHT):** today's, except in that same
-         *    post-midnight tail, where the *current* (ongoing) night began the
-         *    previous evening and so is dated *yesterday*.
+         *  - **Nightly cast (TONIGHT):** always today's. The snapshot's
+         *    `bundle.today` is the real current day in every case — the coming
+         *    night and the post-midnight ongoing overnight are both anchored on
+         *    today (the overnight only dates its *derived* insight to yesterday
+         *    via [ForecastSnapshot.overnight]; its bundle stays today-anchored),
+         *    so the cache always matches on today's date.
          *
          * Assumes the usual schedule shape (tonightTime later than morningTime);
          * the degenerate crossed config falls back to "today", same window the
@@ -2386,8 +2447,7 @@ class FetchAndNotifyWorker(
             return when (requestedPeriod) {
                 ForecastPeriod.TODAY ->
                     if (tonightTime > morningTime && time >= tonightTime) date.plusDays(1) else date
-                ForecastPeriod.TONIGHT ->
-                    if (tonightTime > morningTime && time < morningTime) date.minusDays(1) else date
+                ForecastPeriod.TONIGHT -> date
             }
         }
     }

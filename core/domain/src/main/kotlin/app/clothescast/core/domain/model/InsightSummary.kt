@@ -56,6 +56,17 @@ data class InsightSummary(
      * rainy day even when the wear clause is suppressed.
      */
     val carriedAccessories: List<String> = emptyList(),
+    /**
+     * Marks the *ongoing overnight* window — the night that began yesterday
+     * evening and ends this morning (post-midnight tail), as opposed to the
+     * coming night ("tonight"). Always with [period] == TONIGHT. Carried on the
+     * summary (not just the [Insight]) so the formatter — which receives the
+     * summary, not the full insight — leads the prose with "Overnight" instead
+     * of "Tonight" on every surface (card, notification, TTS, cast) without each
+     * call site having to thread a separate flag. Drives the "Overnight" page /
+     * outfit labels too, so the visible/spoken wording can't contradict them.
+     */
+    val overnight: Boolean = false,
 )
 
 /**

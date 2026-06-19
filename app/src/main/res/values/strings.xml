@@ -46,6 +46,7 @@
     <string name="today_outfit_title">What to wear</string>
     <string name="today_outfit_label_today">Today</string>
     <string name="today_outfit_label_tonight">Tonight</string>
+    <string name="today_outfit_label_overnight">Overnight</string>
     <string name="today_outfit_label_tomorrow">Tomorrow</string>
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_polo">Polo</string>
@@ -1219,6 +1220,7 @@
          shows "Today". -->
     <string name="insight_lead_today">Today</string>
     <string name="insight_lead_tonight">Tonight</string>
+    <string name="insight_lead_overnight">Overnight</string>
     <string name="insight_lead_tomorrow">Tomorrow</string>
 
     <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$d = feels-like

@@ -240,11 +240,11 @@ class InsightFormatter(
         val primaryClauses = buildList {
             when {
                 bandCallout != null ->
-                    add(formatBandAbsolute(summary.period, bandCallout, isFutureDay, omitLead))
+                    add(formatBandAbsolute(summary.period, bandCallout, isFutureDay, omitLead, summary.overnight))
                 else -> when (rangeFormat) {
                     RangeFormat.NONE -> Unit
-                    RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay, omitLead))
-                    RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay, omitLead))
+                    RangeFormat.DEGREES -> add(formatBand(summary.period, summary.band, isFutureDay, omitLead, summary.overnight))
+                    RangeFormat.BANDS -> add(formatBandWords(summary.period, summary.band, isFutureDay, omitLead, summary.overnight))
                 }
             }
             // When the range is omitted there's no band sentence ahead of the
@@ -303,7 +303,7 @@ class InsightFormatter(
             // present it's the first primary clause. It renders as the
             // self-introducing "it will be …" fragment (insight_delta_*_lead)
             // that the period lead folds into ("Today, it will be 5° warmer …").
-            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, omitLead)
+            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, omitLead, summary.overnight)
         } else {
             (primaryClauses + tieInClauses).joinToString(" ")
         }
@@ -345,6 +345,7 @@ class InsightFormatter(
         primaryClauses: List<String>,
         tieInClauses: List<String>,
         omitLead: Boolean,
+        overnight: Boolean,
     ): String {
         if (primaryClauses.isEmpty()) {
             return tieInClauses.joinToString(" ")
@@ -358,7 +359,7 @@ class InsightFormatter(
             val first = capitalize(primaryClauses.first())
             return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
         }
-        val lead = resources.getString(leadRes(period, isFutureDay))
+        val lead = resources.getString(leadRes(period, isFutureDay, overnight))
         val first = resources.getString(
             R.string.insight_lead_continues,
             lead,
@@ -461,7 +462,7 @@ class InsightFormatter(
 
     private fun normalizeItemKey(item: String): String = item.trim().lowercase(Locale.ROOT)
 
-    private fun formatBand(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean, omitLead: Boolean): String {
+    private fun formatBand(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean, omitLead: Boolean, overnight: Boolean): String {
         val low = band.feelsLikeMinC.toUnit(temperatureUnit).roundToInt()
         val high = band.feelsLikeMaxC.toUnit(temperatureUnit).roundToInt()
         if (omitLead) {
@@ -471,7 +472,7 @@ class InsightFormatter(
                 resources.getString(R.string.insight_band_range_no_lead, low, high)
             }
         }
-        val lead = resources.getString(leadRes(period, isFutureDay))
+        val lead = resources.getString(leadRes(period, isFutureDay, overnight))
         return if (low == high) {
             resources.getString(R.string.insight_band_single, lead, low)
         } else {
@@ -479,7 +480,7 @@ class InsightFormatter(
         }
     }
 
-    private fun formatBandWords(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean, omitLead: Boolean): String {
+    private fun formatBandWords(period: ForecastPeriod, band: BandClause, isFutureDay: Boolean, omitLead: Boolean, overnight: Boolean): String {
         val low = resources.getString(bandRes(band.low))
         val high = resources.getString(bandRes(band.high))
         if (omitLead) {
@@ -491,7 +492,7 @@ class InsightFormatter(
                 resources.getString(R.string.insight_band_words_range_no_lead, capitalize(low), high)
             }
         }
-        val lead = resources.getString(leadRes(period, isFutureDay))
+        val lead = resources.getString(leadRes(period, isFutureDay, overnight))
         return if (band.low == band.high) {
             resources.getString(R.string.insight_band_words_single, lead, low)
         } else {
@@ -574,6 +575,7 @@ class InsightFormatter(
         band: TemperatureBand,
         isFutureDay: Boolean,
         omitLead: Boolean,
+        overnight: Boolean,
     ): String {
         val word = resources.getString(bandRes(band))
         if (omitLead) {
@@ -581,7 +583,7 @@ class InsightFormatter(
             // sentence opens like a sentence ("Hot.").
             return resources.getString(R.string.insight_band_words_single_no_lead, capitalize(word))
         }
-        val lead = resources.getString(leadRes(period, isFutureDay))
+        val lead = resources.getString(leadRes(period, isFutureDay, overnight))
         return resources.getString(R.string.insight_band_words_single, lead, word)
     }
 
@@ -816,9 +818,12 @@ class InsightFormatter(
             ""
         }
 
-    private fun leadRes(period: ForecastPeriod, isFutureDay: Boolean): Int = when (period) {
+    private fun leadRes(period: ForecastPeriod, isFutureDay: Boolean, overnight: Boolean): Int = when (period) {
         ForecastPeriod.TODAY -> if (isFutureDay) R.string.insight_lead_tomorrow else R.string.insight_lead_today
-        ForecastPeriod.TONIGHT -> R.string.insight_lead_tonight
+        // The ongoing overnight leads with "Overnight", not "Tonight", so the
+        // spoken / written prose matches the "Overnight" page + outfit labels.
+        ForecastPeriod.TONIGHT ->
+            if (overnight) R.string.insight_lead_overnight else R.string.insight_lead_tonight
     }
 
     private fun conditionRes(condition: WeatherCondition): Int = when (condition) {

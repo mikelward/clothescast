@@ -21,7 +21,6 @@ import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
-import app.clothescast.core.domain.model.warrantsRainAccessory
 import app.clothescast.insight.InsightFormatter
 import java.io.ByteArrayOutputStream
 import kotlin.math.pow
@@ -858,9 +857,7 @@ private fun drawSolidGlyph(
  * same min/max feels-like and peak-rain logic. Returns `tempLine` empty
  * when [hourly] is empty (no horizontal info to show), and `rainLine`
  * null when the windowed peak rain probability is below
- * [RAIN_PEAK_THRESHOLD_PCT] *and* no hour carries a rain-shaped weather code —
- * the renderer then hides that row entirely. A rain-shaped code shows the cell
- * even at a rounded 0% chance.
+ * [RAIN_PEAK_THRESHOLD_PCT] — the renderer then hides that row entirely.
  */
 internal data class OutfitCardInfoLines(
     val tempLine: String,
@@ -869,8 +866,8 @@ internal data class OutfitCardInfoLines(
     // the user's display unit (which only affects [tempLine]).
     val tempFillFraction: Float,
     // Peak precipitation probability / 100 — drives the droplet's blue fill.
-    // Null whenever [rainLineShort] is null (cell hidden when neither the 20 %
-    // probability gate nor a rain-shaped code fires).
+    // Null whenever [rainLineShort] is null (cell hidden when the peak chance of
+    // rain is below the probability gate).
     val rainFillFraction: Float?,
     // Peak chance-of-rain label ("60%"), shown on the conditions strip. Null when
     // the cell is hidden. Default null for callers that don't compute it.
@@ -891,15 +888,6 @@ internal fun outfitCardInfoLines(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
     windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
-    // The insight's rain-clause condition ([InsightSummary.precip]) when the prose
-    // detected rain — the *same* per-model signal the clothes rules and prose use.
-    // The blended [hourly] codes are a per-hour consensus (modal vote, severity
-    // tiebreak only among the tied winners), so a minority of models coding rain
-    // loses to a unified dry plurality and the blend reads clear — yet the rules
-    // still fire the umbrella and the prose still says "chance of drizzle". Passing
-    // this in keeps the strip in lockstep with the prose: if the insight surfaces
-    // rain, the droplet shows. Null when the prose found no rain.
-    precipCondition: WeatherCondition? = null,
 ): OutfitCardInfoLines {
     val lowC = hourly.minOfOrNull { it.feelsLikeC }
     val highC = hourly.maxOfOrNull { it.feelsLikeC }
@@ -924,22 +912,13 @@ internal fun outfitCardInfoLines(
         .filter { it.condition != WeatherCondition.SNOW }
         .maxByOrNull { it.precipitationProbabilityPct }
     val peakPct = rainPeak?.precipitationProbabilityPct?.roundToInt()
-    // Show the rain cell on the same composite-OR the clothes rules use: a peak
-    // chance at/above the probability gate, *or* a rain-shaped code (drizzle /
-    // rain / thunderstorm — [warrantsRainAccessory], which excludes snow) from
-    // either the insight's own rain clause ([precipCondition], the per-model
-    // signal the consensus blend can hide) or any blended [hourly] code. The label
-    // still shows the honest peak chance, so a drizzle hour reads as the low
-    // percentage it is rather than overstating it.
-    val rainCoded = precipCondition?.warrantsRainAccessory() == true ||
-        hourly.any { it.condition.warrantsRainAccessory() }
     val rainLineShort: String?
     val rainFillFraction: Float?
-    // A rain-shaped code shows the droplet regardless of probability — even at a
-    // rounded 0% — by design: a model coding drizzle/rain with ~0% measurable-rain
-    // probability is exactly the light-rain heads-up the code arm exists to
-    // surface, so we'd rather show "💧 0%" and let the reader judge than hide it.
-    if (rainPeak != null && peakPct != null && (peakPct >= RAIN_PEAK_THRESHOLD_PCT || rainCoded)) {
+    // Show the rain cell purely on the blended-consensus peak chance of rain at/above
+    // the gate — the same number the prose's chance-of-rain bar and the umbrella
+    // default key off, so all three surface rain together. The label shows the
+    // honest peak chance, so a low-probability hour reads as the percentage it is.
+    if (rainPeak != null && peakPct != null && peakPct >= RAIN_PEAK_THRESHOLD_PCT) {
         rainLineShort = formatter.formatPeakRainShort(peakPct)
         rainFillFraction = (peakPct / 100f).coerceIn(0f, 1f)
     } else {
@@ -1190,13 +1169,12 @@ private const val STRIP_LIGHT_TEXT_ARGB = 0xFF1A1A1A.toInt()
 internal const val STRIP_SURFACE_LIGHT_ARGB = 0xFFFEF7FF.toInt()
 internal const val STRIP_SURFACE_DARK_ARGB = 0xFF1C1B1F.toInt()
 
-// Probability arm of the conditions strip's rain cell: the cell shows when the
-// peak chance of rain is at/above this, OR when any hour carries a rain-shaped
-// weather code (see the rainCoded check in [outfitCardInfoLines]). 20% on the
-// probability side catches likely-enough rain; the code arm catches drizzle that
-// slips under it. The cell always shows the actual peak percentage, so it never
-// overstates a low chance. Below both arms the row is hidden entirely.
-private const val RAIN_PEAK_THRESHOLD_PCT = 20
+// The conditions strip's rain cell shows when the blended-consensus peak chance
+// of rain is at/above this — the same 10% bar the prose's chance-of-rain wording
+// and the umbrella default ([ClothesRule.DEFAULTS]) key off, so all three surface
+// rain together. The cell always shows the actual peak percentage, so it never
+// overstates a low chance. Below the gate the row is hidden entirely.
+private const val RAIN_PEAK_THRESHOLD_PCT = 10
 
 // "Notable" thresholds — below these the wind / UV cells are hidden, matching
 // the strip's principle of surfacing a metric only when it's worth acting on.

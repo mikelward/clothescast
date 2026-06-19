@@ -115,7 +115,6 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.BottomsFormat
@@ -923,10 +922,6 @@ internal fun HomePageScaffold(
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
     conditionsHourly: List<HourlyForecast>? = null,
-    // This page's rain-clause condition (insight.summary.precip), so the strip's
-    // droplet matches the prose even when a minority of models codes the rain and
-    // the blended [conditionsHourly] consensus reads dry. Null when no rain clause.
-    conditionsPrecipCondition: WeatherCondition? = null,
     confidenceSlot: (@Composable ColumnScope.() -> Unit)? = null,
     chartsSlot: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
@@ -944,7 +939,6 @@ internal fun HomePageScaffold(
     val tvScrollStepPx = with(LocalDensity.current) { 240.dp.toPx() }
     val conditionsInfo: OutfitCardInfoLines? = remember(
         conditionsHourly,
-        conditionsPrecipCondition,
         state.region,
         state.temperatureUnit,
         state.distanceUnit,
@@ -958,7 +952,6 @@ internal fun HomePageScaffold(
                     hourly = hourly,
                     temperatureUnit = state.temperatureUnit,
                     windSpeedUnit = state.distanceUnit.windSpeedUnit(),
-                    precipCondition = conditionsPrecipCondition,
                 )
             }.onFailure { t ->
                 // Explicit fallback: a formatter/resource failure hides the
@@ -1244,9 +1237,6 @@ private fun TodayPage(
         // page's insight (this period on page 0, the next period on page 1), so
         // each page's strip shows its own feels-like range / rain / wind / UV.
         conditionsHourly = insight?.hourly,
-        // Pair the strip's hourly with this page's rain-clause condition so the
-        // droplet matches the prose on a minority-model drizzle the blend hides.
-        conditionsPrecipCondition = insight?.summary?.precip?.condition,
         // The insight card — its own reorderable section. The confidence chip
         // that used to ride along with it is now [confidenceSlot]; the chart
         // deck is [chartsSlot]. Renders only when this period has an insight;

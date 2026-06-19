@@ -1,7 +1,6 @@
 package app.clothescast.diag
 
 import app.clothescast.core.domain.model.ClothesRule
-import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.thresholdC
 import kotlin.math.roundToInt
 
@@ -66,9 +65,8 @@ data class ClothesRulesSnapshot(
                 when {
                     userRule == null -> MISSING
                     // The rain-gear defaults (umbrella, rain jacket) are precip-keyed
-                    // (no Celsius threshold — a probability gate, possibly wrapped in
-                    // an AnyOf alongside a rain-code arm), so bucket their
-                    // probability-gate delta separately — routing them through
+                    // (no Celsius threshold — a single probability gate), so bucket
+                    // their probability-gate delta separately — routing them through
                     // deltaBucket would always report "0" and hide every gate
                     // customisation. See precipDeltaBucket.
                     defaultRule.condition.probabilityGatePercent() != null ->
@@ -78,16 +76,9 @@ data class ClothesRulesSnapshot(
             }
             val customisedKeys = perCategory.entries
                 // A category counts as customised when its bucketed delta moved
-                // off "0" (or is MISSING) — or, for a precip rule, when only the
-                // rain-code floor changed (e.g. drizzle → off / rain) with the
-                // probability gate left alone. That floor edit is invisible to the
-                // probability-delta bucket, so check it explicitly; otherwise a
-                // selector-only customisation would vanish from the aggregate and
-                // wrongly report all_defaults=true. No weather-code value is sent —
-                // only the fact that the category differs from its default.
-                .filter { (key, value) ->
-                    value != "0" || rainFloorCustomised(byItem[key], defaults[key])
-                }
+                // off "0" (or is MISSING). For a rain-gear rule that's the
+                // probability-gate delta; no weather-code value is sent.
+                .filter { (_, value) -> value != "0" }
                 .map { it.key }
                 .sorted()
             val extras = rules.count { it.item.itemKey !in defaults }
@@ -108,19 +99,11 @@ data class ClothesRulesSnapshot(
 
         /**
          * The probability gate (rain-percent) of a precip-keyed condition, or
-         * `null` for anything without one. Reads a bare
-         * [ClothesRule.PrecipitationProbabilityAbove] directly and digs the first
-         * such arm out of an [ClothesRule.AnyOf] (the umbrella / rain-jacket
-         * default shape: a probability arm OR'd with a rain-code arm). Used both
-         * to detect a precip-keyed default and to compute its delta, so the rain
-         * gear's gate customisation stays measurable even though the rule is a
-         * composite.
+         * `null` for anything without one. Used both to detect a precip-keyed
+         * default (the umbrella / rain jacket) and to compute its delta.
          */
-        private fun ClothesRule.Condition.probabilityGatePercent(): Double? = when (this) {
-            is ClothesRule.PrecipitationProbabilityAbove -> percent
-            is ClothesRule.AnyOf -> conditions.firstNotNullOfOrNull { it.probabilityGatePercent() }
-            else -> null
-        }
+        private fun ClothesRule.Condition.probabilityGatePercent(): Double? =
+            (this as? ClothesRule.PrecipitationProbabilityAbove)?.percent
 
         /**
          * Integer °C delta of [userRule] from [defaultRule], formatted as a signed
@@ -162,25 +145,6 @@ data class ClothesRulesSnapshot(
                 bucketed < 0 -> "$bucketed"
                 else -> "0"
             }
-        }
-
-        /**
-         * True when the user's rain-code floor differs from the default's — a
-         * code-floor edit the probability-delta bucket can't see. Both null
-         * (e.g. a temperature rule, or a precip rule with no code arm on either
-         * side) counts as unchanged. A deleted rule ([userRule] null) is already
-         * surfaced as MISSING, so it's not re-counted here.
-         */
-        private fun rainFloorCustomised(userRule: ClothesRule?, defaultRule: ClothesRule?): Boolean {
-            if (userRule == null || defaultRule == null) return false
-            return rainCodeFloorOf(userRule.condition) != rainCodeFloorOf(defaultRule.condition)
-        }
-
-        /** The rain-code floor of a condition (digging through an [ClothesRule.AnyOf]), or null. */
-        private fun rainCodeFloorOf(condition: ClothesRule.Condition): WeatherCondition? = when (condition) {
-            is ClothesRule.RainCode -> condition.floor
-            is ClothesRule.AnyOf -> condition.conditions.firstNotNullOfOrNull { rainCodeFloorOf(it) }
-            else -> null
         }
 
         private fun String.takeCategories(): String =

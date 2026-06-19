@@ -1544,6 +1544,7 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
             glovesDefaultMigration(),
             umbrellaDefaultMigration(),
             rainGearDefaultsMigration(),
+            rainGearProbabilityMigration(),
         )
     },
 )
@@ -1817,6 +1818,77 @@ internal fun rainGearDefaultsMigration(): DataMigration<Preferences> {
                         changed = true
                     }
                     if (changed) result[clothesRules] = json.encodeToString(rebuilt)
+                }
+                // Corrupt JSON: leave it untouched and still set the sentinel —
+                // parseRules falls back to the new DEFAULTS when it can't decode.
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
+
+/**
+ * One-time migration collapsing every rain-gear rule onto a single blended-consensus
+ * probability gate, retiring the `rain_code` / `any_of` weather-code shapes now that
+ * the prose, the umbrella / rain-jacket defaults, and the conditions strip all key
+ * off the same probability. Each stored row is rewritten in place, preserving list
+ * order:
+ *  - An `any_of` composite collapses to its probability arm
+ *    (`PrecipitationProbabilityAbove`).
+ *  - A bare `rain_code`, or an `any_of` with no probability arm, substitutes the new
+ *    default for the umbrella (10%) / rain jacket (50%); for any other item the rule
+ *    is dropped (a code-only rule on a non-rain-gear item has no probability to keep).
+ *  - Every other row — including legacy temperature rules and bare probability rules
+ *    — is left byte-identical.
+ *
+ * This persists what [ClothesRuleDto.toDomain] already collapses at read time, so the
+ * stored JSON stops carrying the dead `codeFloor` / `any` fields. Fresh installs with
+ * no stored list need no change — parseRules reads the new [ClothesRule.DEFAULTS].
+ * Runs once via the `rain_gear_probability_migrated_v1` sentinel. Internal for unit
+ * testing.
+ */
+internal fun rainGearProbabilityMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("rain_gear_probability_migrated_v1")
+    val clothesRules = stringPreferencesKey("clothes_rules_json")
+    val json = Json { ignoreUnknownKeys = true }
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            val stored = currentData[clothesRules]
+            if (!stored.isNullOrBlank()) {
+                runCatching {
+                    val dtos = json.decodeFromString<List<ClothesRuleDto>>(stored)
+                    // Only touch the rows that carry a retired shape; everything else
+                    // (temperature rules, bare probability rules) re-encodes
+                    // byte-identical via mapNotNull dropping nothing.
+                    val needsRewrite = dtos.any {
+                        it.type == ClothesRuleDto.TYPE_RAIN_CODE || it.type == ClothesRuleDto.TYPE_ANY_OF
+                    }
+                    if (needsRewrite) {
+                        val rebuilt = dtos.mapNotNull { dto ->
+                            if (dto.type == ClothesRuleDto.TYPE_RAIN_CODE ||
+                                dto.type == ClothesRuleDto.TYPE_ANY_OF
+                            ) {
+                                // toDomain collapses the legacy shape onto the
+                                // probability gate (or drops a code-only rule on a
+                                // non-rain-gear item); re-encode the survivor cleanly.
+                                dto.toDomain()?.toDto()
+                            } else {
+                                dto
+                            }
+                        }
+                        result[clothesRules] = json.encodeToString(rebuilt)
+                    }
                 }
                 // Corrupt JSON: leave it untouched and still set the sentinel —
                 // parseRules falls back to the new DEFAULTS when it can't decode.

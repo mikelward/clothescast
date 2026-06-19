@@ -1509,7 +1509,6 @@ class FetchAndNotifyWorker(
                 hourly = insight.hourly,
                 temperatureUnit = prefs.temperatureUnit,
                 windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
-                precipCondition = insight.summary.precip?.condition,
             )
             val header = applicationContext.getString(
                 if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today

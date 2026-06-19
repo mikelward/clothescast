@@ -68,8 +68,6 @@ fun fallbackRange(rules: List<ClothesRule>, tier: FallbackTier): FallbackRange {
             // (the `?: continue`), so these arms are unreachable — present only
             // to keep the `when` exhaustive over the sealed condition hierarchy.
             is ClothesRule.PrecipitationProbabilityAbove -> Unit
-            is ClothesRule.RainCode -> Unit
-            is ClothesRule.AnyOf -> Unit
         }
     }
     return FallbackRange(lowerC = lower, upperC = upper)

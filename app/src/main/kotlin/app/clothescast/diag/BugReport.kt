@@ -289,8 +289,6 @@ object BugReport {
         is ClothesRule.TemperatureBelow -> "feelsLikeMin < ${c.value}${c.unit.symbol()}"
         is ClothesRule.TemperatureAbove -> "feelsLikeMax > ${c.value}${c.unit.symbol()}"
         is ClothesRule.PrecipitationProbabilityAbove -> "precipMaxPct > ${c.percent}"
-        is ClothesRule.RainCode -> "rainCode >= ${c.floor.name}"
-        is ClothesRule.AnyOf -> c.conditions.joinToString(" OR ", "(", ")") { describeCondition(it) }
     }
 
     private fun StringBuilder.appendInsight(

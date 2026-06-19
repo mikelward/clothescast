@@ -5,7 +5,6 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.TemperatureBand
-import app.clothescast.widget.WidgetCacheAction.KEEP
 import app.clothescast.widget.WidgetCacheAction.REFRESH
 import app.clothescast.widget.WidgetCacheAction.RENDER
 import org.junit.Assert.assertEquals
@@ -20,14 +19,14 @@ import java.time.ZoneId
  * Unit coverage for [widgetCacheAction] — the gate that stops the home-screen
  * widgets plotting a previous window as the current one (the "Feels like
  * 17 – 22°C" bug, where a day-stale daytime snapshot drew yesterday's curve
- * under today's axis). It renders the cache when it's the current window,
- * [REFRESH]es (empty + kick) when a refresh can replace it, and [KEEP]s the
- * last-known render when a refresh can't reach the current window (the
- * post-midnight overnight window) — never churning. A snapshot younger than the
- * silent-refresh threshold is always rendered, so it can't settle into a loop.
- * The render path itself needs a real display and is verified on-device; this
- * locks the pure period/date logic. The default 07:00 / 19:00 cutoffs match the
- * app's default morning / tonight schedule.
+ * under today's axis). It renders the cache when it's the current window —
+ * including the ongoing post-midnight overnight, matched on its overnight flag
+ * since that window's insight dates to yesterday while its bundle stays
+ * today-anchored — and [REFRESH]es (empty + kick) otherwise. A snapshot younger
+ * than the silent-refresh threshold is always rendered, so it can't settle into
+ * a loop. The render path itself needs a real display and is verified on-device;
+ * this locks the pure period/date logic. The default 07:00 / 19:00 cutoffs match
+ * the app's default morning / tonight schedule.
  */
 class WidgetInsightFreshnessTest {
 
@@ -54,9 +53,29 @@ class WidgetInsightFreshnessTest {
 
     @Test
     fun `ongoing tonight snapshot renders in the small hours after midnight`() {
-        // Generated the evening of the 18th; at 01:00 on the 19th the current
-        // tonight window is still dated the 18th, so it matches.
-        assertEquals(RENDER, action(nightInsight(LocalDate.of(2026, 6, 18)), at(2026, 6, 19, 1, 0)))
+        // Captured post-midnight (00:30, how an overnight snapshot really arises)
+        // and dated the 18th; at 02:00 on the 19th the current window is still
+        // that ongoing overnight, recognised by its overnight flag + the 18th
+        // date. generatedAt is >1h old so the age gate doesn't mask the match.
+        val overnight = nightInsight(
+            LocalDate.of(2026, 6, 18),
+            generatedAt = at(2026, 6, 19, 0, 30),
+            overnight = true,
+        )
+        assertEquals(RENDER, action(overnight, at(2026, 6, 19, 2, 0)))
+    }
+
+    @Test
+    fun `a day-old overnight snapshot refreshes instead of rendering stale`() {
+        // An overnight from the night of the 17th, still cached at 02:00 on the
+        // 19th: its flag is set but its date (the 17th) isn't the night now in
+        // progress (the 18th), so it must refresh, not render two-day-old data.
+        val staleOvernight = nightInsight(
+            LocalDate.of(2026, 6, 17),
+            generatedAt = at(2026, 6, 18, 0, 30),
+            overnight = true,
+        )
+        assertEquals(REFRESH, action(staleOvernight, at(2026, 6, 19, 2, 0)))
     }
 
     @Test
@@ -65,25 +84,31 @@ class WidgetInsightFreshnessTest {
     }
 
     @Test
-    fun `post-midnight, a stale daytime snapshot is kept without refreshing`() {
-        // Codex P2: between midnight and the wake cutoff the ongoing night is
-        // dated yesterday, which a dayOffset-0 refresh can't fetch — it would
-        // write the upcoming night instead. Keep the last-known daytime render
-        // rather than churn toward a future-night snapshot.
-        assertEquals(KEEP, action(dayInsight(LocalDate.of(2026, 6, 18)), at(2026, 6, 19, 2, 0)))
+    fun `post-midnight, a stale daytime snapshot refreshes toward the ongoing overnight`() {
+        // Between midnight and the wake cutoff the current window is the ongoing
+        // overnight, which is today-anchored (since "Show Overnight and Today
+        // before dawn") and so reachable by a dayOffset-0 refresh. A stale
+        // daytime snapshot therefore refreshes toward it rather than being kept.
+        assertEquals(REFRESH, action(dayInsight(LocalDate.of(2026, 6, 18)), at(2026, 6, 19, 2, 0)))
     }
 
     @Test
     fun `tonight snapshot honors a later-than-default wake time`() {
-        // Wake set to 09:00: the overnight widget stays current until then.
+        // Wake set to 09:00: the ongoing overnight stays current until then.
+        // Captured post-midnight (01:00) and >1h old at both clocks below.
         val lateMorning = LocalTime.of(9, 0)
+        val overnight = nightInsight(
+            LocalDate.of(2026, 6, 18),
+            generatedAt = at(2026, 6, 19, 1, 0),
+            overnight = true,
+        )
         assertEquals(
             RENDER,
-            widgetCacheAction(nightInsight(LocalDate.of(2026, 6, 18)), at(2026, 6, 19, 8, 0), lateMorning, tonight, zone),
+            widgetCacheAction(overnight, at(2026, 6, 19, 8, 0), lateMorning, tonight, zone),
         )
         assertEquals(
             REFRESH,
-            widgetCacheAction(nightInsight(LocalDate.of(2026, 6, 18)), at(2026, 6, 19, 9, 30), lateMorning, tonight, zone),
+            widgetCacheAction(overnight, at(2026, 6, 19, 9, 30), lateMorning, tonight, zone),
         )
     }
 
@@ -124,14 +149,28 @@ class WidgetInsightFreshnessTest {
     private fun dayInsight(forDate: LocalDate, generatedAt: Instant = forDate.atTime(7, 0).atZone(zone).toInstant()): Insight =
         insight(ForecastPeriod.TODAY, forDate, generatedAt)
 
-    private fun nightInsight(forDate: LocalDate, generatedAt: Instant = forDate.atTime(19, 0).atZone(zone).toInstant()): Insight =
-        insight(ForecastPeriod.TONIGHT, forDate, generatedAt)
+    // overnight = true models the ongoing post-midnight night: its bundle is
+    // anchored on today but its derived insight dates to yesterday (see
+    // InsightSummary.overnight). The widget recognises that window by the flag,
+    // not the date.
+    private fun nightInsight(
+        forDate: LocalDate,
+        generatedAt: Instant = forDate.atTime(19, 0).atZone(zone).toInstant(),
+        overnight: Boolean = false,
+    ): Insight =
+        insight(ForecastPeriod.TONIGHT, forDate, generatedAt, overnight)
 
-    private fun insight(period: ForecastPeriod, forDate: LocalDate, generatedAt: Instant): Insight =
+    private fun insight(
+        period: ForecastPeriod,
+        forDate: LocalDate,
+        generatedAt: Instant,
+        overnight: Boolean = false,
+    ): Insight =
         Insight(
             summary = InsightSummary(
                 period = period,
                 band = BandClause(TemperatureBand.MILD, TemperatureBand.MILD),
+                overnight = overnight,
             ),
             recommendedItems = emptyList(),
             generatedAt = generatedAt,

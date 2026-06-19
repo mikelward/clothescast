@@ -2,6 +2,7 @@ package app.clothescast.widget
 
 import android.content.Context
 import app.clothescast.ClothesCastApplication
+import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
@@ -137,12 +138,30 @@ internal fun widgetCacheAction(
     val localNow = LocalDateTime.ofInstant(now, zone)
     val currentPeriod = FetchAndNotifyWorker.currentPeriodForSchedule(morningTime, tonightTime, localNow.toLocalTime())
     val currentDate = FetchAndNotifyWorker.playTargetDate(currentPeriod, localNow, morningTime, tonightTime)
-    if (insight.period == currentPeriod && insight.forDate == currentDate) return WidgetCacheAction.RENDER
+    // The ongoing overnight (the post-midnight tail of the TONIGHT window) dates
+    // its *derived* insight to yesterday — the night began yesterday evening —
+    // even though its snapshot bundle, and so [currentDate], stays anchored on
+    // today (see FetchAndNotifyWorker.playTargetDate / InsightSummary.overnight).
+    // So in that tail match the current window on the overnight flag plus the
+    // expected night's date (yesterday), not on [currentDate]: the flag alone
+    // would also accept a day-old overnight, and [currentDate] (today) would
+    // accept the *coming* night. Outside the tail, the usual period+date match.
+    val currentlyOvernight = currentPeriod == ForecastPeriod.TONIGHT &&
+        tonightTime > morningTime && localNow.toLocalTime() < morningTime
+    val matchesCurrentWindow = if (currentlyOvernight) {
+        insight.period == ForecastPeriod.TONIGHT &&
+            insight.summary.overnight &&
+            insight.forDate == localNow.toLocalDate().minusDays(1)
+    } else {
+        insight.period == currentPeriod && insight.forDate == currentDate
+    }
+    if (matchesCurrentWindow) return WidgetCacheAction.RENDER
     if (Duration.between(insight.generatedAt, now) < FetchAndNotifyWorker.SILENT_REFRESH_MIN_AGE) {
         return WidgetCacheAction.RENDER
     }
-    // currentDate trails the device date only in the post-midnight tail of the
-    // tonight window, where a dayOffset-0 refresh can't reach the ongoing night.
+    // Defensive: [currentDate] no longer trails the device date (the overnight is
+    // today-anchored since "Show Overnight and Today before dawn"), so a refresh
+    // can always reach the current window and this branch is normally not taken.
     if (currentDate != localNow.toLocalDate()) return WidgetCacheAction.KEEP
     return WidgetCacheAction.REFRESH
 }

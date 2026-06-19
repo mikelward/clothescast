@@ -145,6 +145,16 @@ class InsightCacheTest {
     }
 
     @Test
+    fun `overnight flag survives the cache round-trip`() = runTest {
+        // The "Overnight" label is baked into the snapshot so it stays stable
+        // across re-renders / process death; the cache must persist it.
+        val overnight = sample.copy(period = ForecastPeriod.TONIGHT, overnight = true)
+        subject.store(InsightCache.Slot.THIS_PERIOD, overnight)
+
+        subject.thisPeriod.first()?.overnight shouldBe true
+    }
+
+    @Test
     fun `store NEXT_PERIOD round-trips independently of THIS_PERIOD`() = runTest {
         val other = sample.copy(period = ForecastPeriod.TONIGHT)
         subject.store(InsightCache.Slot.THIS_PERIOD, sample)

@@ -209,6 +209,8 @@ class InsightCache(
         val period: String = ForecastPeriod.TODAY.name,
         val generatedAtEpochMillis: Long,
         val historicYesterday: DailyHistoryDto? = null,
+        // Defaults false for payloads cached before the overnight feature.
+        val overnight: Boolean = false,
     ) {
         fun toDomain(): ForecastSnapshot {
             val domainBundle = bundle.toDomain()
@@ -219,6 +221,7 @@ class InsightCache(
                 period = runCatching { ForecastPeriod.valueOf(period) }.getOrDefault(ForecastPeriod.TODAY),
                 generatedAt = Instant.ofEpochMilli(generatedAtEpochMillis),
                 historicYesterday = historicYesterday?.toDomain(),
+                overnight = overnight,
             )
         }
     }
@@ -470,6 +473,7 @@ class InsightCache(
                 feelsLikeMaxC = it.feelsLikeMaxC,
             )
         },
+        overnight = overnight,
     )
 
     private fun ForecastBundle.toDto(): ForecastBundleDto = ForecastBundleDto(

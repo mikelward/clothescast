@@ -60,8 +60,9 @@ class InsightFormatterTest {
         // umbrella-in-clothes cases work; override to exercise the gating-
         // independent path (clothes == null but the umbrella still surfaces).
         carriedAccessories: List<String> = clothes?.items.orEmpty().filter { Garment.isAccessoryKey(it) },
+        overnight: Boolean = false,
     ) = InsightSummary(
-        period, band, delta, clothes, precip, calendarTieIn, eveningEventTieIn, carriedAccessories,
+        period, band, delta, clothes, precip, calendarTieIn, eveningEventTieIn, carriedAccessories, overnight,
     )
 
     @Test
@@ -90,6 +91,16 @@ class InsightFormatterTest {
     @Test
     fun `tonight period switches the lead-in`() {
         subject.format(summary(period = ForecastPeriod.TONIGHT)) shouldBe "Tonight, it will be 21°."
+    }
+
+    @Test
+    fun `ongoing overnight leads with Overnight, not Tonight`() {
+        // The post-midnight ongoing overnight is a TONIGHT summary flagged
+        // overnight; the prose must lead with "Overnight" so it matches the
+        // "Overnight" page / outfit labels (and the spoken cast).
+        subject.format(
+            summary(period = ForecastPeriod.TONIGHT, overnight = true),
+        ) shouldBe "Overnight, it will be 21°."
     }
 
     @Test

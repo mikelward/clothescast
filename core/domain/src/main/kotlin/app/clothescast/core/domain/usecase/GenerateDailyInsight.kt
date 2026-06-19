@@ -44,8 +44,13 @@ class GenerateDailyInsight(
         // `(TODAY, 1)` is supported — there's no day-after-tomorrow data in
         // the bundle to wrap a tomorrow-tonight window around.
         dayOffset: Int = 0,
+        // Marks the ongoing overnight (post-midnight tail): the night in
+        // progress is sliced off yesterday → today pre-dawn and dated yesterday,
+        // while the calendar anchor stays on today. Only valid with TONIGHT and
+        // dayOffset = 0. See [ForecastSnapshot.overnight].
+        overnight: Boolean = false,
     ): DailyInsightResult {
-        val snapshot = snapshot(location, prefs, period, dayOffset)
+        val snapshot = snapshot(location, prefs, period, dayOffset, overnight)
         return deriveInsight(snapshot, prefs)
     }
 
@@ -61,9 +66,13 @@ class GenerateDailyInsight(
         prefs: UserPreferences,
         period: ForecastPeriod = ForecastPeriod.TODAY,
         dayOffset: Int = 0,
+        overnight: Boolean = false,
     ): ForecastSnapshot {
         require(dayOffset == 0 || (dayOffset == 1 && period == ForecastPeriod.TODAY)) {
             "Only same-day (dayOffset=0) and tomorrow-daytime (dayOffset=1, period=TODAY) generation are supported."
+        }
+        require(!overnight || (period == ForecastPeriod.TONIGHT && dayOffset == 0)) {
+            "The overnight window only applies to the same-day TONIGHT period (period=TONIGHT, dayOffset=0)."
         }
         val fetched = weatherRepository.fetchForecast(location)
         val bundle = if (dayOffset == 1) {
@@ -80,6 +89,7 @@ class GenerateDailyInsight(
             location = location,
             period = period,
             generatedAt = clock.instant(),
+            overnight = overnight,
         )
     }
 

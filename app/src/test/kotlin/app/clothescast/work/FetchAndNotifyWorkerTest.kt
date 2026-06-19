@@ -449,12 +449,13 @@ class FetchAndNotifyWorkerTest {
         target(ForecastPeriod.TODAY, LocalTime.of(20, 0)) shouldBe date.plusDays(1)
         target(ForecastPeriod.TONIGHT, LocalTime.of(20, 0)) shouldBe date
 
-        // Overnight (02:00, past midnight, before the morning cutoff) — the
-        // current ongoing night began the previous evening, so it's dated
-        // yesterday; the next daytime cast is *this* morning, i.e. today (not
-        // tomorrow). This is the midnight-crossing case the offset must handle.
+        // Overnight (02:00, past midnight, before the morning cutoff) — the next
+        // daytime cast is *this* morning, i.e. today (not tomorrow). The nightly
+        // cast stays today's: the ongoing overnight snapshot is anchored on the
+        // real today (it only dates its derived insight to yesterday via the
+        // overnight flag), so the cache matches on today's date.
         target(ForecastPeriod.TODAY, LocalTime.of(2, 0)) shouldBe date
-        target(ForecastPeriod.TONIGHT, LocalTime.of(2, 0)) shouldBe date.minusDays(1)
+        target(ForecastPeriod.TONIGHT, LocalTime.of(2, 0)) shouldBe date
     }
 
     // Minimal WorkInfoLite for the staleNoLocationFailure pure-function tests.

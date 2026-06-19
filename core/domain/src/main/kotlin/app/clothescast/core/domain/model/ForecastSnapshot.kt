@@ -47,4 +47,17 @@ data class ForecastSnapshot(
      * a path that doesn't have a store wired (tests, previews).
      */
     val historicYesterday: DailyHistoryEntry? = null,
+    /**
+     * Marks the *ongoing overnight* window — the night that began yesterday
+     * evening and ends this morning, captured in the post-midnight tail. Unlike
+     * the coming night (the evening's TONIGHT), the calendar anchor stays on
+     * today: `bundle.today` is still the real current day (so the week pages /
+     * `currentDay` / `upcomingDays` stay correct), but the renderer slices the
+     * night off `bundle.yesterday` → `bundle.today` pre-dawn, dates the insight
+     * to yesterday, and pairs it with *today's* daytime. Baked in (not derived
+     * from render-time `now()`) so the "Overnight" label is stable across
+     * re-renders and doesn't depend on when a surface happens to repaint. Only
+     * ever set with [period] == TONIGHT.
+     */
+    val overnight: Boolean = false,
 )

@@ -64,6 +64,11 @@ class DeriveInsight(
         val morningStart = prefs.schedule.time
         val tonightStart = prefs.tonightSchedule.time
         val period = snapshot.period
+        // The ongoing overnight slices its night off *yesterday* (yesterday
+        // 19:00 → today 07:00) and dates itself to yesterday, while the calendar
+        // anchor (currentDay / upcomingDays / week pages) stays on the real
+        // today. Only ever set with TONIGHT.
+        val overnight = snapshot.overnight
 
         val periodView = buildPeriodView(
             bundle = bundle,
@@ -72,6 +77,7 @@ class DeriveInsight(
             morningStart = morningStart,
             tonightStart = tonightStart,
             events = snapshot.events,
+            overnight = overnight,
         )
 
         val eveningEventTieIn = if (period == ForecastPeriod.TODAY && prefs.dailyMentionEveningEvents) {
@@ -129,13 +135,16 @@ class DeriveInsight(
             todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item.itemKey },
             tonightStart = tonightStart,
             diagLog = diagLog,
+            overnight = overnight,
         )
 
         val insight = Insight(
             summary = summary,
             recommendedItems = periodView.triggeredOutfit.items,
             generatedAt = snapshot.generatedAt,
-            forDate = bundle.today.date,
+            // The overnight is the night that began yesterday evening, so it
+            // dates to yesterday even though the calendar anchor stays today.
+            forDate = if (overnight) bundle.yesterday.date else bundle.today.date,
             location = snapshot.location,
             hourly = periodView.forecast.hourly,
             confidence = if (bundle.perModelHourly == null) {
@@ -173,15 +182,23 @@ class DeriveInsight(
         morningStart: LocalTime,
         tonightStart: LocalTime,
         events: List<CalendarEvent>,
+        overnight: Boolean,
     ): PeriodView {
         val todayForecast = bundle.today.slicedForToday(
             morningStart = morningStart,
             eveningEnd = tonightStart,
         )
-        val tonightForecast = bundle.today.slicedForTonight(
+        // The night base: the ongoing overnight began *yesterday* evening
+        // (yesterday 19:00 → today 07:00), so it slices off yesterday with
+        // today's hourly as the pre-dawn wrap. The coming night slices off today
+        // with tomorrow's hourly. The calendar anchor (currentDay / week) is
+        // unaffected either way — it always stays on `bundle.today`.
+        val nightBase = if (overnight) bundle.yesterday else bundle.today
+        val nightWrapHourly = if (overnight) bundle.today.hourly else bundle.tomorrowHourly
+        val tonightForecast = nightBase.slicedForTonight(
             tonightStart = tonightStart,
             morningEnd = morningStart,
-            tomorrowHourly = bundle.tomorrowHourly,
+            tomorrowHourly = nightWrapHourly,
         )
         val periodForecast = when (period) {
             ForecastPeriod.TODAY -> todayForecast
@@ -199,10 +216,18 @@ class DeriveInsight(
             }
         val rawNextForecast = when (period) {
             ForecastPeriod.TODAY -> tonightForecast.takeIf { it.hourly.isNotEmpty() }
-            ForecastPeriod.TONIGHT -> bundle.tomorrow?.slicedForToday(
-                morningStart = morningStart,
-                eveningEnd = tonightStart,
-            )
+            // The coming night leads into tomorrow's daytime; the ongoing
+            // overnight leads into *today's* daytime (the day you're walking
+            // into), so its "next" card is today, not tomorrow.
+            ForecastPeriod.TONIGHT ->
+                if (overnight) {
+                    todayForecast.takeIf { it.hourly.isNotEmpty() }
+                } else {
+                    bundle.tomorrow?.slicedForToday(
+                        morningStart = morningStart,
+                        eveningEnd = tonightStart,
+                    )
+                }
         }
         // Carry the same per-model rain-code enrichment onto the *next* period's
         // forecast, sliced to that period's own window. Without it the Today card
@@ -223,7 +248,9 @@ class DeriveInsight(
         val perModelForRender = bundle.perModelHourly?.slicedTo(
             when (period) {
                 ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
-                ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, bundle.today.date, tonightStart)
+                // The night window is dated off its base day (yesterday for the
+                // ongoing overnight, today for the coming night).
+                ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, nightBase.date, tonightStart)
             },
         )
         // Enrich the forecast the rule engine sees with the per-model rain-code
@@ -253,7 +280,7 @@ class DeriveInsight(
             forecast = periodForecast,
             nextForecast = nextForecast,
             triggeredOutfit = triggeredOutfit,
-            events = filterEventsForPeriod(events, period, bundle.today.date, morningStart, tonightStart),
+            events = filterEventsForPeriod(events, period, nightBase.date, morningStart, tonightStart),
             perModelForRender = perModelForRender,
             deltaToday = deltaToday,
             deltaYesterday = deltaYesterday,
@@ -286,6 +313,9 @@ class DeriveInsight(
             morningStart = morningStart,
             tonightStart = tonightStart,
             events = allEvents,
+            // The morning insight's evening tie-in is about *tonight* (the coming
+            // night of today), never the ongoing overnight.
+            overnight = false,
         )
         val nightSummary: InsightSummary = renderInsightSummary(
             today = nightView.forecast,

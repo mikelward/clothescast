@@ -142,10 +142,15 @@ class RenderInsightSummary {
         // than yesterday" surprise, while tests / previews / cache
         // re-derives keep the no-op default and pay nothing.
         diagLog: (String) -> Unit = {},
+        // Marks the ongoing overnight (post-midnight tail). Carried onto the
+        // returned summary so the formatter leads with "Overnight" instead of
+        // "Tonight". Only meaningful with [period] == TONIGHT; defaults false.
+        overnight: Boolean = false,
     ): InsightSummary {
         val peak = peakPrecip(today, perModelHourly)
         return InsightSummary(
             period = period,
+            overnight = overnight,
             band = bandClause(today),
             delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC, deltaFormat, diagLog) else null,
             clothes = clothesClause(todayItems, period, clothesMentionMode, yesterdayTriggeredItems),

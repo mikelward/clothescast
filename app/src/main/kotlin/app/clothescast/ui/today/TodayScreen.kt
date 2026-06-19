@@ -203,6 +203,7 @@ fun TodayScreen(
     val titleRes = topBarTitleRes(
         period = state.thisPeriodInsight?.period,
         page = pagerState.currentPage,
+        overnight = state.thisPeriodInsight?.summary?.overnight == true,
     )
     // System back on page 1 or 2 steps back one page instead of exiting the
     // app — matches the on-screen left chevron. Page 0 falls through to the
@@ -1968,7 +1969,7 @@ internal fun OutfitPreviewRow(
     onNavigateToClothes: () -> Unit = {},
 ) {
     val primary = insight.outfit ?: return
-    val (primaryLabel, nextLabel) = outfitLabels(insight.period)
+    val (primaryLabel, nextLabel) = outfitLabels(insight)
     // IntrinsicSize.Max + fillMaxHeight stretches both cards to the taller one's
     // height. The garment caption grows to as many lines as its content needs
     // (a long worn line wrapping on a narrow card, plus an accessory line) — so
@@ -2015,10 +2016,19 @@ internal fun OutfitPreviewRow(
     }
 }
 
-private fun outfitLabels(period: ForecastPeriod): Pair<Int, Int> = when (period) {
-    ForecastPeriod.TODAY -> R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
-    ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
-}
+private fun outfitLabels(insight: Insight): Pair<Int, Int> =
+    when (insight.period) {
+        ForecastPeriod.TODAY ->
+            R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
+        ForecastPeriod.TONIGHT ->
+            // Ongoing overnight → "Overnight" + "Today"; the coming night →
+            // "Tonight" + "Tomorrow".
+            if (insight.summary.overnight) {
+                R.string.today_outfit_label_overnight to R.string.today_outfit_label_today
+            } else {
+                R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
+            }
+    }
 
 // Title shown in the TopAppBar — tracks the visible pager page so swiping
 // right from a morning view flips "Today" to "Tonight" (and the evening
@@ -2026,13 +2036,24 @@ private fun outfitLabels(period: ForecastPeriod): Pair<Int, Int> = when (period)
 // page 3 the following week (days 8-14); their titles are the same regardless
 // of which period the user opened from. Falls back to "Today" when no insight
 // is cached yet (pager isn't rendered in that state).
-internal fun topBarTitleRes(period: ForecastPeriod?, page: Int): Int {
+internal fun topBarTitleRes(
+    period: ForecastPeriod?,
+    page: Int,
+    overnight: Boolean = false,
+): Int {
     if (page == 2) return R.string.today_title_week
     if (page == 3) return R.string.today_title_following_week
+    // The ongoing overnight (post-midnight tail): page 0 is "Overnight", page 1
+    // the daytime it leads into ("Today").
     return when (period) {
         null -> R.string.today_title
         ForecastPeriod.TODAY -> if (page == 0) R.string.today_title else R.string.today_outfit_label_tonight
-        ForecastPeriod.TONIGHT -> if (page == 0) R.string.today_outfit_label_tonight else R.string.today_outfit_label_tomorrow
+        ForecastPeriod.TONIGHT ->
+            if (overnight) {
+                if (page == 0) R.string.today_outfit_label_overnight else R.string.today_outfit_label_today
+            } else {
+                if (page == 0) R.string.today_outfit_label_tonight else R.string.today_outfit_label_tomorrow
+            }
     }
 }
 
@@ -2482,14 +2503,17 @@ internal fun InsightCard(
     }
     // Page 2 caches tomorrow's daytime insight after the evening worker run;
     // surface it as "Tomorrow" rather than "Today" so the heading matches the
-    // prose lead-in below.
+    // prose lead-in below. The ongoing overnight (post-midnight tail) is flagged
+    // on the insight itself — "Overnight", not "Tonight".
     val isFutureDay = insight.forDate.isAfter(LocalDate.now())
     val periodLabel = stringResource(
         when (insight.period) {
             ForecastPeriod.TODAY ->
                 if (isFutureDay) R.string.today_outfit_label_tomorrow
                 else R.string.today_outfit_label_today
-            ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight
+            ForecastPeriod.TONIGHT ->
+                if (insight.summary.overnight) R.string.today_outfit_label_overnight
+                else R.string.today_outfit_label_tonight
         },
     )
     val location = insight.location

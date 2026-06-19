@@ -173,7 +173,7 @@ private fun OutfitWidgetContent(
             SideBySideContent(insight, size, topColors, bottomColors, handsColors, carriedColors, outerColors)
         } else {
             SingleColumnContent(
-                label = context.getString(periodLabelRes(insight.period)),
+                label = context.getString(periodLabelRes(insight)),
                 outfit = outfit,
                 size = size,
                 topColors = topColors,
@@ -325,7 +325,7 @@ private fun SideBySideContent(
     val context = LocalContext.current
     val primaryOutfit = insight.outfit ?: return
     val nextOutfit = insight.nextOutfit ?: return
-    val (primaryLabelRes, nextLabelRes) = sideBySideLabelRes(insight.period)
+    val (primaryLabelRes, nextLabelRes) = sideBySideLabelRes(insight)
     // Each column gets roughly half the available width; drive the per-column
     // scale off that half-width so icons / text don't try to grow into space
     // they don't actually have.
@@ -456,19 +456,28 @@ private fun scaledSubtitleSp(size: DpSize): TextUnit {
     return (short * 0.0688f).coerceAtLeast(10f).sp
 }
 
-private fun periodLabelRes(period: ForecastPeriod): Int = when (period) {
-    ForecastPeriod.TODAY -> R.string.today_outfit_label_today
-    ForecastPeriod.TONIGHT -> R.string.today_outfit_label_tonight
-}
+private fun periodLabelRes(insight: Insight): Int =
+    when (insight.period) {
+        ForecastPeriod.TODAY -> R.string.today_outfit_label_today
+        ForecastPeriod.TONIGHT ->
+            if (insight.summary.overnight) R.string.today_outfit_label_overnight
+            else R.string.today_outfit_label_tonight
+    }
 
 // Mirrors `outfitLabels` in TodayScreen.OutfitPreviewRow: the "next" period
-// after TODAY is TONIGHT, after TONIGHT it's TOMORROW.
-private fun sideBySideLabelRes(period: ForecastPeriod): Pair<Int, Int> = when (period) {
-    ForecastPeriod.TODAY ->
-        R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
-    ForecastPeriod.TONIGHT ->
-        R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
-}
+// after TODAY is TONIGHT, after TONIGHT it's TOMORROW — except the ongoing
+// overnight, which leads into TODAY.
+private fun sideBySideLabelRes(insight: Insight): Pair<Int, Int> =
+    when (insight.period) {
+        ForecastPeriod.TODAY ->
+            R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
+        ForecastPeriod.TONIGHT ->
+            if (insight.summary.overnight) {
+                R.string.today_outfit_label_overnight to R.string.today_outfit_label_today
+            } else {
+                R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
+            }
+    }
 
 // Top-icon accessible label, appending the carried / extremity gear the
 // composited overlay shows so a screen reader names the whole glance ("Coat,

@@ -27,11 +27,9 @@ class ClothesRulesSnapshotTest {
 
     @Test
     fun `umbrella gate customisation is bucketed as a percentage-point delta`() {
-        // The umbrella default is precip-keyed (probability arm at 20%, OR'd with
-        // a drizzle-code arm). Raising the gate to 60% is a +40pp change that must
-        // register as a customised category — not silently report "0" the way
-        // routing it through the °C bucket would. The probability gate is read out
-        // of the composite, so a plain-probability replacement compares cleanly.
+        // The umbrella default is the 10% chance-of-rain probability gate. Raising
+        // it to 60% is a +50pp change that must register as a customised category —
+        // not silently report "0" the way routing it through the °C bucket would.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == Garment.UMBRELLA) {
                 rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(60.0))
@@ -42,18 +40,18 @@ class ClothesRulesSnapshotTest {
 
         val snap = ClothesRulesSnapshot.from(rules)
 
-        snap.umbrellaDeltaPct shouldBe "+40"
+        snap.umbrellaDeltaPct shouldBe "+50"
         snap.customisedCount shouldBe 1
         snap.categoriesCustomised shouldBe "umbrella"
         snap.allDefaults shouldBe false
     }
 
     @Test
-    fun `lowering the umbrella gate reports a signed negative bucket`() {
-        // Default probability arm 20% → 10% is a -10pp change.
+    fun `raising the umbrella gate slightly reports a signed positive bucket`() {
+        // Default probability gate 10% → 20% is a +10pp change.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == Garment.UMBRELLA) {
-                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(10.0))
+                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(20.0))
             } else {
                 rule
             }
@@ -61,15 +59,15 @@ class ClothesRulesSnapshotTest {
 
         val snap = ClothesRulesSnapshot.from(rules)
 
-        snap.umbrellaDeltaPct shouldBe "-10"
+        snap.umbrellaDeltaPct shouldBe "+10"
         snap.customisedCount shouldBe 1
     }
 
     @Test
     fun `rain jacket gate customisation is bucketed like the umbrella`() {
-        // The rain jacket ships as a precip-keyed default too (probability arm at
-        // 50%, OR'd with a rain-code arm). Lowering the gate to 30% is a -20pp
-        // change that registers the same way the umbrella's does.
+        // The rain jacket ships as a precip-keyed default too (the 50% probability
+        // gate). Lowering it to 30% is a -20pp change that registers the same way
+        // the umbrella's does.
         val rules = ClothesRule.DEFAULTS.map { rule ->
             if (rule.item == Garment.RAIN_JACKET) {
                 rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(30.0))
@@ -83,30 +81,6 @@ class ClothesRulesSnapshotTest {
         snap.rainJacketDeltaPct shouldBe "-20"
         snap.customisedCount shouldBe 1
         snap.categoriesCustomised shouldBe "rain-jacket"
-        snap.allDefaults shouldBe false
-    }
-
-    @Test
-    fun `changing only the rain-code floor counts as a customisation`() {
-        // The umbrella default is `≥20% OR drizzle code`. Switching the rain-code
-        // floor off (a bare probability rule at the same 20% gate) leaves the
-        // probability delta at "0", but the selector edit must still register —
-        // otherwise it vanishes from the aggregate and reports all_defaults=true.
-        val rules = ClothesRule.DEFAULTS.map { rule ->
-            if (rule.item == Garment.UMBRELLA) {
-                rule.copy(condition = ClothesRule.PrecipitationProbabilityAbove(20.0))
-            } else {
-                rule
-            }
-        }
-
-        val snap = ClothesRulesSnapshot.from(rules)
-
-        // Probability gate unchanged, so the reported pct delta stays "0"...
-        snap.umbrellaDeltaPct shouldBe "0"
-        // ...but the floor edit still surfaces as a customisation.
-        snap.customisedCount shouldBe 1
-        snap.categoriesCustomised shouldBe "umbrella"
         snap.allDefaults shouldBe false
     }
 

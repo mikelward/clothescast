@@ -18,7 +18,6 @@ class ClothesRuleTest {
         feelsLikeMin: Double = min,
         feelsLikeMax: Double = max,
         condition: WeatherCondition = WeatherCondition.CLEAR,
-        peakRainCondition: WeatherCondition = WeatherCondition.UNKNOWN,
     ): DailyForecast = DailyForecast(
         date = date,
         temperatureMinC = min,
@@ -28,7 +27,6 @@ class ClothesRuleTest {
         precipitationProbabilityMaxPct = precip,
         precipitationMmTotal = 0.0,
         condition = condition,
-        peakRainCondition = peakRainCondition,
     )
 
     @Test
@@ -111,58 +109,22 @@ class ClothesRuleTest {
     }
 
     @Test
-    fun `umbrella default fires on its 20 percent gate or a drizzle code`() {
+    fun `umbrella default fires on its 10 percent chance-of-rain gate`() {
         val umbrella = ClothesRule.DEFAULTS.first { it.item == Garment.UMBRELLA }
-        // Probability arm: gate is 20%, lower than the rain jacket's.
+        // Gate is the 10% chance-of-rain bar, lower than the rain jacket's.
         umbrella.appliesTo(forecast(min = 10.0, max = 18.0, precip = 25.0)) shouldBe true
-        umbrella.appliesTo(forecast(min = 10.0, max = 18.0, precip = 15.0)) shouldBe false
-        // Code arm: a drizzle code with no measurable probability still fires it.
-        umbrella.appliesTo(
-            forecast(min = 10.0, max = 18.0, precip = 0.0, peakRainCondition = WeatherCondition.DRIZZLE),
-        ) shouldBe true
+        // Inclusive at the gate.
+        umbrella.appliesTo(forecast(min = 10.0, max = 18.0, precip = 10.0)) shouldBe true
+        umbrella.appliesTo(forecast(min = 10.0, max = 18.0, precip = 5.0)) shouldBe false
     }
 
     @Test
-    fun `rain jacket default fires on its 50 percent gate or a rain code`() {
+    fun `rain jacket default fires on its 50 percent likely-rain gate`() {
         val jacket = ClothesRule.DEFAULTS.first { it.item == Garment.RAIN_JACKET }
-        // Probability arm: heavier 50% bar than the umbrella's.
+        // Heavier 50% bar than the umbrella's.
         jacket.appliesTo(forecast(min = 10.0, max = 18.0, precip = 55.0)) shouldBe true
+        jacket.appliesTo(forecast(min = 10.0, max = 18.0, precip = 50.0)) shouldBe true
         jacket.appliesTo(forecast(min = 10.0, max = 18.0, precip = 40.0)) shouldBe false
-        // Code arm needs rain (or worse), not mere drizzle.
-        jacket.appliesTo(
-            forecast(min = 10.0, max = 18.0, precip = 0.0, peakRainCondition = WeatherCondition.DRIZZLE),
-        ) shouldBe false
-        jacket.appliesTo(
-            forecast(min = 10.0, max = 18.0, precip = 0.0, peakRainCondition = WeatherCondition.RAIN),
-        ) shouldBe true
-    }
-
-    @Test
-    fun `rain code rule keys on the per-model peak, not the base condition`() {
-        val rule = ClothesRule(Garment.UMBRELLA, ClothesRule.RainCode(WeatherCondition.DRIZZLE))
-        // Fires on the per-model rain evidence the prose's drizzle tier renders...
-        rule.appliesTo(forecast(min = 10.0, max = 18.0, peakRainCondition = WeatherCondition.RAIN)) shouldBe true
-        // ...snow is off the rain scale, so it never fires rain gear...
-        rule.appliesTo(forecast(min = 10.0, max = 18.0, peakRainCondition = WeatherCondition.SNOW)) shouldBe false
-        // ...and a base RAIN code with no per-model signal does NOT fire it. That
-        // keeps the rule aligned with the rain clause: in the base-code,
-        // below-threshold, no-per-model case the prose stays silent, so the rule
-        // must too (peakRainCondition is UNKNOWN when per-model data is absent).
-        rule.appliesTo(forecast(min = 10.0, max = 18.0, condition = WeatherCondition.RAIN)) shouldBe false
-    }
-
-    @Test
-    fun `anyOf matches when either arm matches and never on an empty list`() {
-        val rule = ClothesRule.AnyOf(
-            listOf(
-                ClothesRule.PrecipitationProbabilityAbove(50.0),
-                ClothesRule.RainCode(WeatherCondition.DRIZZLE),
-            ),
-        )
-        rule.matches(forecast(min = 10.0, max = 18.0, precip = 60.0)) shouldBe true
-        rule.matches(forecast(min = 10.0, max = 18.0, peakRainCondition = WeatherCondition.DRIZZLE)) shouldBe true
-        rule.matches(forecast(min = 10.0, max = 18.0, precip = 10.0)) shouldBe false
-        ClothesRule.AnyOf(emptyList()).matches(forecast(min = 10.0, max = 18.0, precip = 99.0)) shouldBe false
     }
 
     @Test

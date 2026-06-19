@@ -236,9 +236,8 @@ class SettingsRepositoryTest {
         val rules = decodeStoredRules(result[clothesRulesKey])
         rules.map { it.item } shouldBe listOf(Garment.SWEATER, Garment.UMBRELLA)
         val umbrellaRule = rules.first { it.item == Garment.UMBRELLA }
-        // The appended umbrella is the current default — a composite of a
-        // probability gate OR'd with a drizzle-code arm.
-        (umbrellaRule.condition is ClothesRule.AnyOf) shouldBe true
+        // The appended umbrella is the current default — the 10% chance-of-rain gate.
+        (umbrellaRule.condition as ClothesRule.PrecipitationProbabilityAbove).percent shouldBe 10.0
     }
 
     @Test
@@ -310,9 +309,12 @@ class SettingsRepositoryTest {
 
         val rules = decodeStoredRules(result[clothesRulesKey])
         rules.map { it.item } shouldBe listOf(Garment.SWEATER, Garment.UMBRELLA, Garment.RAIN_JACKET)
-        // The old-default umbrella is upgraded to the new composite.
-        (rules.first { it.item == Garment.UMBRELLA }.condition is ClothesRule.AnyOf) shouldBe true
-        (rules.first { it.item == Garment.RAIN_JACKET }.condition is ClothesRule.AnyOf) shouldBe true
+        // The old-default umbrella (30%) is upgraded to the current 10% gate, and the
+        // appended rain jacket is the current 50% gate — both single probability rules.
+        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 10.0
+        (rules.first { it.item == Garment.RAIN_JACKET }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 50.0
     }
 
     @Test
@@ -344,21 +346,76 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `clothes-rule DTO round-trips the composite rain-gear defaults`() {
-        // The new RainCode / AnyOf rows survive an encode/decode cycle through the
-        // production write+read path, so a stored composite umbrella/rain jacket
-        // comes back identical rather than being dropped as unknown.
+    fun `clothes-rule DTO round-trips the probability rain-gear defaults`() {
+        // The rain-gear defaults are single probability rules now; they survive an
+        // encode/decode cycle through the production write+read path identically.
         decodeStoredRules(encodeRules(*ClothesRule.DEFAULTS.toTypedArray())) shouldBe ClothesRule.DEFAULTS
     }
 
     @Test
-    fun `composite rain-gear rows keep value encoded so a downgrade drops only the unknown row`() {
-        // value is meaningless for an any_of row, but an older build's DTO requires
-        // it — a missing required field would fail the whole-list decode and reset
-        // every threshold, not just skip the one unknown rule. So it must stay in
-        // the JSON even at its default 0.0.
+    fun `rain-gear rows keep value encoded so a downgrade drops only the unknown row`() {
+        // A probability row carries its percent as `value`, and an older build's DTO
+        // requires the field — a missing required field would fail the whole-list
+        // decode and reset every threshold, not just skip one rule. So it must stay
+        // in the JSON.
         val json = encodeRules(ClothesRule.DEFAULTS.first { it.item == Garment.UMBRELLA })
         json shouldContain "\"value\""
+    }
+
+    @Test
+    fun `rain-gear probability migration collapses an AnyOf umbrella default to its probability gate`() = runTest {
+        // A stored composite umbrella from before the consensus-probability collapse:
+        // an any_of of a 20% probability arm OR a drizzle rain_code arm. The migration
+        // rewrites it to the single probability gate, dropping the code arm.
+        val storedJson = """[
+            {"item":"sweater","type":"temp_below","value":16.0,"unit":"CELSIUS"},
+            {"item":"umbrella","type":"any_of","value":0.0,"any":[
+                {"type":"precip_above","value":20.0},
+                {"type":"rain_code","value":0.0,"codeFloor":"DRIZZLE"}
+            ]},
+            {"item":"rain-jacket","type":"rain_code","value":0.0,"codeFloor":"RAIN"}
+        ]""".trimIndent()
+        val before = mutablePreferencesOf(clothesRulesKey to storedJson)
+
+        val result = rainGearProbabilityMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        // The legacy temperature rule is byte-identical in the re-encoded JSON.
+        result[clothesRulesKey]!! shouldContain
+            """{"item":"sweater","type":"temp_below","value":16.0,"unit":"CELSIUS"}"""
+        // The any_of umbrella collapses to its 20% probability arm...
+        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 20.0
+        // ...and the bare rain_code rain jacket substitutes the new 50% default.
+        (rules.first { it.item == Garment.RAIN_JACKET }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 50.0
+        // No dead codeFloor / any fields survive in the re-encoded JSON.
+        result[clothesRulesKey]!!.contains("rain_code") shouldBe false
+        result[clothesRulesKey]!!.contains("any_of") shouldBe false
+    }
+
+    @Test
+    fun `rain-gear probability migration leaves a list with no legacy shapes byte-identical`() = runTest {
+        // Nothing to collapse: the stored list is already temperature + probability
+        // rules, so the migration leaves the JSON untouched.
+        val storedJson = encodeRules(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(10.0)),
+        )
+        val before = mutablePreferencesOf(clothesRulesKey to storedJson)
+
+        val result = rainGearProbabilityMigration().migrate(before)
+
+        result[clothesRulesKey] shouldBe storedJson
+    }
+
+    @Test
+    fun `rain-gear probability migration runs once, gated by its sentinel`() = runTest {
+        val migration = rainGearProbabilityMigration()
+        migration.shouldMigrate(emptyPreferences()) shouldBe true
+        migration.shouldMigrate(
+            mutablePreferencesOf(booleanPreferencesKey("rain_gear_probability_migrated_v1") to true),
+        ) shouldBe false
     }
 
     @Test

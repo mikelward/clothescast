@@ -133,7 +133,7 @@ class GenerateDailyInsightTest {
 
         // today: feels-like 6→25 → cold to warm; +8°C high vs yesterday → 8° warmer;
         // clothes defaults at this temperature: sweater, jacket, shorts, plus the
-        // rain-gear defaults (60% rain / RAIN code clears the umbrella's 20% and
+        // rain-gear defaults (60% chance of rain clears the umbrella's 10% and
         // the rain jacket's 50% gates). The formatter folds the umbrella into the
         // precip clause; here both ride in the resolved items.
         // 60% precipitation → noon fallback (no hourly entries on `today`).
@@ -177,8 +177,8 @@ class GenerateDailyInsightTest {
     @Test
     fun `IF_CHANGED emits the clothes clause when clothing differs from yesterday`() = runTest {
         // yesterday (10→17) triggers only sweater; today (6→25) adds jacket and
-        // shorts, plus the rain-gear defaults (60% rain / RAIN code clears both
-        // the umbrella's 20% and the rain jacket's 50% gates).
+        // shorts, plus the rain-gear defaults (60% chance of rain clears both
+        // the umbrella's 10% and the rain jacket's 50% gates).
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))
         val subject = GenerateDailyInsight(weather, clock = clock)
 
@@ -220,10 +220,11 @@ class GenerateDailyInsightTest {
             temperatureMaxC = 22.0,
             feelsLikeMinC = 19.0,
             feelsLikeMaxC = 22.0,
-            precipitationProbabilityMaxPct = 10.0,
-            // Dry comfort-gap day: override the shared `today` fixture's RAIN
-            // condition so the precip-keyed rain-gear defaults stay silent and
-            // this exercises the temperature tiers only.
+            precipitationProbabilityMaxPct = 5.0,
+            // Dry comfort-gap day: below the 10% chance-of-rain bar (and override
+            // the shared `today` fixture's RAIN condition) so the precip-keyed
+            // rain-gear defaults stay silent and this exercises the temperature
+            // tiers only.
             condition = WeatherCondition.PARTLY_CLOUDY,
         )
         val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
@@ -248,10 +249,11 @@ class GenerateDailyInsightTest {
             temperatureMaxC = 22.0,
             feelsLikeMinC = 19.0,
             feelsLikeMaxC = 22.0,
-            precipitationProbabilityMaxPct = 10.0,
-            // Dry comfort-gap day: override the shared `today` fixture's RAIN
-            // condition so the precip-keyed rain-gear defaults stay silent and
-            // this exercises the temperature tiers only.
+            precipitationProbabilityMaxPct = 5.0,
+            // Dry comfort-gap day: below the 10% chance-of-rain bar (and override
+            // the shared `today` fixture's RAIN condition) so the precip-keyed
+            // rain-gear defaults stay silent and this exercises the temperature
+            // tiers only.
             condition = WeatherCondition.PARTLY_CLOUDY,
         )
         val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
@@ -281,9 +283,10 @@ class GenerateDailyInsightTest {
             temperatureMaxC = 28.0,
             feelsLikeMinC = 22.0,
             feelsLikeMaxC = 28.0,
-            precipitationProbabilityMaxPct = 10.0,
-            // Dry day: override the shared fixture's RAIN condition so the
-            // rain-gear defaults stay silent (testing the warm tiers only).
+            precipitationProbabilityMaxPct = 5.0,
+            // Dry day: below the 10% chance-of-rain bar (and override the shared
+            // fixture's RAIN condition) so the rain-gear defaults stay silent
+            // (testing the warm tiers only).
             condition = WeatherCondition.CLEAR,
         )
         val weather = FakeWeatherRepository(ForecastBundle(hotToday, yesterday))
@@ -306,10 +309,11 @@ class GenerateDailyInsightTest {
             temperatureMaxC = 22.0,
             feelsLikeMinC = 19.0,
             feelsLikeMaxC = 22.0,
-            precipitationProbabilityMaxPct = 10.0,
-            // Dry comfort-gap day: override the shared `today` fixture's RAIN
-            // condition so the precip-keyed rain-gear defaults stay silent and
-            // this exercises the temperature tiers only.
+            precipitationProbabilityMaxPct = 5.0,
+            // Dry comfort-gap day: below the 10% chance-of-rain bar (and override
+            // the shared `today` fixture's RAIN condition) so the precip-keyed
+            // rain-gear defaults stay silent and this exercises the temperature
+            // tiers only.
             condition = WeatherCondition.PARTLY_CLOUDY,
         )
         val weather = FakeWeatherRepository(ForecastBundle(mildToday, yesterday))
@@ -367,9 +371,10 @@ class GenerateDailyInsightTest {
             temperatureMaxC = 8.0,
             feelsLikeMinC = 2.0,
             feelsLikeMaxC = 8.0,
-            precipitationProbabilityMaxPct = 10.0,
-            // Dry cold day: override the shared fixture's RAIN condition so the
-            // rain-gear defaults stay silent (testing the cold tiers only).
+            precipitationProbabilityMaxPct = 5.0,
+            // Dry cold day: below the 10% chance-of-rain bar (and override the
+            // shared fixture's RAIN condition) so the rain-gear defaults stay
+            // silent (testing the cold tiers only).
             condition = WeatherCondition.CLEAR,
         )
         val weather = FakeWeatherRepository(ForecastBundle(freezingToday, yesterday))
@@ -511,60 +516,6 @@ class GenerateDailyInsightTest {
         shouldThrow<IllegalArgumentException> {
             subject.snapshot(london, prefs, ForecastPeriod.TODAY, overnight = true)
         }
-    }
-
-    @Test
-    fun `next-period outfit picks up a per-model drizzle code the blend hides`() = runTest {
-        // The tonight window's only rain signal is a single model's drizzle code:
-        // the blended tonight condition stays cloudy and POP sits below the 20%
-        // umbrella gate. The next-outfit icon goes through OutfitSuggestion
-        // .fromForecast (no pre-evaluated outfit), so it must get the same
-        // per-model enrichment the current period does, or it'd drop the umbrella
-        // the current period / prose surface.
-        val tonightHour = LocalTime.of(21, 0)
-        val drizzleModel = listOf(
-            PerModelHour(
-                time = LocalDateTime.of(today.date, tonightHour),
-                apparentTemperatureC = 12.0,
-                temperatureC = 12.0,
-                precipitationProbabilityPct = 10.0,
-                condition = WeatherCondition.DRIZZLE,
-            ),
-        )
-        val dryModel = listOf(
-            PerModelHour(
-                time = LocalDateTime.of(today.date, tonightHour),
-                apparentTemperatureC = 12.0,
-                temperatureC = 12.0,
-                precipitationProbabilityPct = 10.0,
-                condition = WeatherCondition.CLOUDY,
-            ),
-        )
-        val todayWithTonight = today.copy(
-            // A dry daytime hour plus a cloudy, low-POP tonight hour — so the
-            // tonight slice (the next period) is non-empty but carries no rain in
-            // its own blended condition.
-            hourly = listOf(
-                HourlyForecast(LocalTime.of(10, 0), 18.0, 18.0, 5.0, WeatherCondition.CLEAR),
-                HourlyForecast(tonightHour, 12.0, 12.0, 10.0, WeatherCondition.CLOUDY),
-            ),
-        )
-        val weather = FakeWeatherRepository(
-            ForecastBundle(
-                todayWithTonight,
-                yesterday,
-                perModelHourly = PerModelHourly(
-                    byModel = mapOf("ecmwf_aifs025_single" to drizzleModel, "gfs_seamless" to dryModel),
-                ),
-            ),
-        )
-        val subject = GenerateDailyInsight(weather, clock = clock)
-
-        val insight = subject(london, prefs).insight
-
-        // The next-period (tonight) outfit surfaces the umbrella off the per-model
-        // drizzle code, even though tonight's blended condition is cloudy at 10%.
-        insight.nextOutfit?.carried shouldBe OutfitSuggestion.Carried.UMBRELLA
     }
 
     @Test
@@ -927,9 +878,9 @@ class GenerateDailyInsightTest {
         // landed that hour (temp or precip null). The sparse model stays in
         // the overlay with the hours it did report: the charts position
         // points by timestamp lookup (a gap renders as a gap, not a shifted
-        // curve) and pickPerModelPeak counts per-hour reporters by design —
-        // evicting the whole model starved the rain-tier majority of exactly
-        // the warming-up models the sparse handling exists for.
+        // curve) and the confidence computation tolerates per-hour gaps by
+        // design — evicting the whole model starved it of exactly the
+        // warming-up models the sparse handling exists for.
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 12.0, 11.0, 10.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 30.0, WeatherCondition.CLEAR),
@@ -966,52 +917,36 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in picks up rain that only one model spots in the per-model series`() = runTest {
+    fun `evening tie-in picks up evening rain from the blended hourly series`() = runTest {
         // The TODAY pass evaluates the evening-event tie-in against the tonight
-        // slice. When base hourly under-calls precip (< 30% at every evening
-        // hour) but one per-model series sees real rain at an evening hour,
-        // the renderer's per-model tier should catch it. The fetch is now
-        // forecast_days=2, so the per-model series spans the full
-        // wrap-past-midnight tonight window — pre-midnight (today) AND the
-        // tomorrow-morning portion both feed the tie-in's rain time.
+        // slice. The blended-consensus chance of rain peaks at an evening hour
+        // (21:00 at 75% with a rain code), so the tie-in dates its rain there.
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(15, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
         )
         // Tonight slice (19:00–06:00 wrap) cold enough to trigger the jacket
-        // rule (feelsLikeMin < 12) but with low base precip probability so the
-        // base-only fallback would leave `rainTime` null.
+        // rule (feelsLikeMin < 12); the 21:00 hour carries the wettest blended
+        // chance of rain, so it drives the tie-in's rain time.
         val evening = listOf(
             HourlyForecast(LocalTime.of(19, 0), 11.0, 9.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
             HourlyForecast(LocalTime.of(20, 0), 10.5, 8.5, 10.0, WeatherCondition.PARTLY_CLOUDY),
-            HourlyForecast(LocalTime.of(21, 0), 10.0, 8.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
+            HourlyForecast(LocalTime.of(21, 0), 10.0, 8.0, 75.0, WeatherCondition.RAIN),
             HourlyForecast(LocalTime.of(22, 0), 10.0, 8.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
         )
         val baseHourly = today.copy(
             hourly = daytime + evening,
-            precipitationProbabilityMaxPct = 10.0,
-            condition = WeatherCondition.PARTLY_CLOUDY,
+            precipitationProbabilityMaxPct = 75.0,
+            condition = WeatherCondition.RAIN,
         )
-        // One model spots evening rain at 21:00 (today). Tomorrow's pre-dawn
-        // hours stay dry — they're in scope after the forecast_days=2 widening
-        // but the peak should still pick the louder 21:00 reading. Covering
-        // both days is what the renderer expects from the wider fetch.
-        val ecmwfFull = perModelDay(today.date, 11.0, 9.0, precipScale = 0.0).mapIndexed { hour, entry ->
-            if (hour == 21) entry.copy(precipitationProbabilityPct = 75.0) else entry.copy(precipitationProbabilityPct = 10.0)
-        } + perModelDay(today.date.plusDays(1), 9.0, 7.0, precipScale = 0.0).map {
-            it.copy(precipitationProbabilityPct = 5.0)
-        }
-        val perModelHourly = PerModelHourly(byModel = mapOf("ecmwf_ifs04" to ecmwfFull))
         val diner = CalendarEvent(
             title = "dinner",
             start = today.date.atTime(21, 0),
             end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
-        val weather = FakeWeatherRepository(
-            ForecastBundle(baseHourly, yesterday, perModelHourly = perModelHourly),
-        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 
@@ -1035,14 +970,13 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in picks up post-midnight rain that only one model spots`() = runTest {
+    fun `evening tie-in picks up post-midnight rain in the wrap-past-midnight window`() = runTest {
         // Same setup as the pre-midnight case above, but the rain hour is at
         // 02:00 tomorrow — the part of the tonight window that crosses
-        // midnight. Pre-`forecast_days=2`, this hour was outside per-model
-        // coverage entirely; pre-LocalDateTime migration, it would have
-        // aliased against today's 02:00 (which is sleepy, dry, and not in the
-        // tonight slice). With both fixes, the post-midnight reading flows
-        // straight through to the tie-in's rain time.
+        // midnight. The blended chance of rain peaks there (pulled from the
+        // tomorrow-morning slice), so the post-midnight reading flows straight
+        // through to the tie-in's rain time without aliasing against today's
+        // 02:00.
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
@@ -1053,7 +987,7 @@ class GenerateDailyInsightTest {
             HourlyForecast(LocalTime.of(22, 0), 10.0, 8.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
         )
         val tomorrowMorning = listOf(
-            HourlyForecast(LocalTime.of(2, 0), 9.0, 7.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
+            HourlyForecast(LocalTime.of(2, 0), 9.0, 7.0, 75.0, WeatherCondition.RAIN),
             HourlyForecast(LocalTime.of(5, 0), 9.0, 7.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
         )
         val baseHourly = today.copy(
@@ -1061,20 +995,6 @@ class GenerateDailyInsightTest {
             precipitationProbabilityMaxPct = 10.0,
             condition = WeatherCondition.PARTLY_CLOUDY,
         )
-        // Today entries dry, tomorrow's 02:00 wet (75%). Both days in the
-        // per-model series; the slice picks tomorrow's because that's the
-        // hour the tonight window points to.
-        val tomorrowEntries = perModelDay(today.date.plusDays(1), 9.0, 7.0, precipScale = 0.0).map { entry ->
-            if (entry.time.toLocalTime() == LocalTime.of(2, 0)) {
-                entry.copy(precipitationProbabilityPct = 75.0)
-            } else {
-                entry.copy(precipitationProbabilityPct = 10.0)
-            }
-        }
-        val ecmwfFull = perModelDay(today.date, 11.0, 9.0, precipScale = 0.0).map {
-            it.copy(precipitationProbabilityPct = 10.0)
-        } + tomorrowEntries
-        val perModelHourly = PerModelHourly(byModel = mapOf("ecmwf_ifs04" to ecmwfFull))
         val diner = CalendarEvent(
             title = "after-hours",
             start = today.date.atTime(22, 0),
@@ -1082,7 +1002,7 @@ class GenerateDailyInsightTest {
             location = "Theatre",
         )
         val weather = FakeWeatherRepository(
-            ForecastBundle(baseHourly, yesterday, perModelHourly = perModelHourly, tomorrowHourly = tomorrowMorning),
+            ForecastBundle(baseHourly, yesterday, tomorrowHourly = tomorrowMorning),
         )
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
@@ -2242,25 +2162,25 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in surfaces bare per-model rain when no clothes rule fires`() = runTest {
+    fun `evening tie-in surfaces bare evening rain when no clothes rule fires`() = runTest {
         // The case AGENTS.md flags under "Domain conventions": no clothes
         // rule triggers for the tonight window (mild evening, no
-        // user-defined umbrella rule — the defaults intentionally don't
-        // ship one), but a per-model series spots rain ≥ 30%. Pre-fix the
-        // tie-in returned null and the morning insight stayed silent on
-        // evening rain; the fix emits an item-less clause that the
-        // formatter renders as a bare "Rain tonight at 9pm." (or
-        // chance-of-rain on POSSIBLE).
+        // user-defined umbrella rule), but the blended-consensus chance of
+        // rain clears the chance-of-rain bar at an evening hour. The tie-in
+        // emits an item-less clause the formatter renders as a bare
+        // "Chance of rain tonight." (POSSIBLE), so the morning insight isn't
+        // silent on evening rain.
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(15, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
         )
-        // Mild evening: feels-like stays above the jacket-rule threshold
-        // so nothing triggers from the base forecast.
+        // Mild evening: feels-like stays above the jacket-rule threshold so
+        // nothing triggers from the base forecast. 21:00 carries a 25% chance
+        // of rain with a rain code — that's the chance-of-rain band (POSSIBLE).
         val evening = listOf(
             HourlyForecast(LocalTime.of(19, 0), 15.0, 14.0, 5.0, WeatherCondition.PARTLY_CLOUDY),
-            HourlyForecast(LocalTime.of(21, 0), 15.0, 14.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
+            HourlyForecast(LocalTime.of(21, 0), 15.0, 14.0, 25.0, WeatherCondition.RAIN),
         )
         val baseHourly = today.copy(
             hourly = daytime + evening,
@@ -2268,29 +2188,8 @@ class GenerateDailyInsightTest {
             // can't fire — only feels-like-min < 12 triggers them.
             feelsLikeMinC = 14.0,
             feelsLikeMaxC = 18.0,
-            precipitationProbabilityMaxPct = 10.0,
-            condition = WeatherCondition.PARTLY_CLOUDY,
-        )
-        // One model spots rain at 21:00 ≥ POSSIBLE_THRESHOLD; the other two
-        // stay dry, so the per-model tier emits POSSIBLE.
-        val ecmwfEntries = listOf(
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(19, 0)), 14.0, 15.0, 5.0),
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(21, 0)), 14.0, 15.0, 75.0),
-        )
-        val gfsEntries = listOf(
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(19, 0)), 14.0, 15.0, 5.0),
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(21, 0)), 14.0, 15.0, 10.0),
-        )
-        val iconEntries = listOf(
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(19, 0)), 14.0, 15.0, 5.0),
-            PerModelHour(LocalDateTime.of(today.date, LocalTime.of(21, 0)), 14.0, 15.0, 5.0),
-        )
-        val perModelHourly = PerModelHourly(
-            byModel = mapOf(
-                "ecmwf_ifs04" to ecmwfEntries,
-                "gfs_seamless" to gfsEntries,
-                "icon_seamless" to iconEntries,
-            ),
+            precipitationProbabilityMaxPct = 25.0,
+            condition = WeatherCondition.RAIN,
         )
         val diner = CalendarEvent(
             title = "dinner",
@@ -2298,9 +2197,7 @@ class GenerateDailyInsightTest {
             end = today.date.atTime(23, 0),
             location = "Restaurant",
         )
-        val weather = FakeWeatherRepository(
-            ForecastBundle(baseHourly, yesterday, perModelHourly = perModelHourly),
-        )
+        val weather = FakeWeatherRepository(ForecastBundle(baseHourly, yesterday))
         val calendar = FakeCalendarEventReader(events = listOf(diner))
         val subject = GenerateDailyInsight(weather, calendarEventReader = calendar, clock = clock)
 

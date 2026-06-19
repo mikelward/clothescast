@@ -41,6 +41,15 @@
     <!-- Daily notification. POST_NOTIFICATIONS is runtime on Android 13+. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- The scheduled briefing speaks from a WorkManager worker, i.e. the
+         background. Android 15+ refuses audio focus to background apps and
+         Android 17+ silences background AudioTrack writes outright, so the
+         worker promotes itself to a media-playback foreground service for the
+         brief delivery window (it can start one from the background because the
+         run is triggered by an exact alarm — an explicit FGS-start exemption). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
     <!-- Read today's calendar events to enrich the morning insight. Opt-in via the
          Settings toggle; runtime grant requested from there. We deliberately do NOT
          declare WRITE_CALENDAR — ClothesCast only reads. -->
@@ -207,6 +216,15 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/conditions_widget_info" />
         </receiver>
+
+        <!-- WorkManager hosts foreground workers in its own SystemForegroundService.
+             API 34+ requires the service to declare every foregroundServiceType it
+             runs with; merge the media-playback type onto WorkManager's declaration
+             so FetchAndNotifyWorker.setForeground(...) can use it for spoken delivery. -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="mediaPlayback"
+            tools:node="merge" />
 
     </application>
 

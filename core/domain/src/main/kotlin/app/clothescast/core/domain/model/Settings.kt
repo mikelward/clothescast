@@ -46,6 +46,10 @@ enum class DeliveryMode { NOTIFICATION_ONLY, TTS_ONLY, NOTIFICATION_AND_TTS, SIL
 val DeliveryMode.postsNotification: Boolean
     get() = this == DeliveryMode.NOTIFICATION_ONLY || this == DeliveryMode.NOTIFICATION_AND_TTS
 
+/** True for the two modes that speak the briefing aloud on the phone. */
+val DeliveryMode.playsSpeech: Boolean
+    get() = this == DeliveryMode.TTS_ONLY || this == DeliveryMode.NOTIFICATION_AND_TTS
+
 /**
  * Per-holiday firing state, with [AUTO] the default and [ON] / [OFF] as
  * explicit overrides:

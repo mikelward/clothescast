@@ -1,14 +1,17 @@
 package app.clothescast.work
 
 import android.content.Context
+import android.content.pm.ServiceInfo
 import android.location.LocationManager
 import app.clothescast.diag.DiagLog
+import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
+import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
@@ -24,6 +27,7 @@ import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.playsSpeech
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.windSpeedUnit
@@ -40,6 +44,7 @@ import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.core.data.tts.isRetryableGeminiTtsFailure
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
+import app.clothescast.notification.CHANNEL_PLAYBACK
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -166,6 +171,15 @@ class FetchAndNotifyWorker(
             DiagLog.e(TAG, "Failed to read user preferences; retrying", t)
             return Result.retry()
         }
+
+        // Promote to a media-playback foreground service as early as possible
+        // (before the jitter/alignment waits, so it lands inside the
+        // exact-alarm FGS-start exemption window) when this scheduled run will
+        // speak. Without it, the TTS later can't get audio focus on Android
+        // 15+ and is silenced outright on Android 17+ — both because the
+        // worker runs in the background. No-op for the play / cache-only /
+        // silent paths, which aren't alarm-driven.
+        promoteToPlaybackServiceIfNeeded(prefs)
 
         // On-demand play path: the Today screen's Play button and the
         // Schedule settings "Play now" buttons. Runs the full deliver()
@@ -1718,6 +1732,66 @@ class FetchAndNotifyWorker(
      * already passed (slow fetch, retry backoff), the wait is skipped and delivery
      * starts immediately.
      */
+    /**
+     * Promote a scheduled, speaking run to a media-playback foreground service
+     * so its TTS can actually be heard. Two background-audio restrictions make
+     * this necessary on modern Android, both because [FetchAndNotifyWorker]
+     * runs in the background:
+     *  - Android 15+ (API 35) refuses audio focus to apps that aren't the top
+     *    app or running a foreground service (`AUDIOFOCUS_REQUEST_FAILED`).
+     *  - Android 17+ goes further and silences background `AudioTrack` writes
+     *    entirely — so even "speak without focus" produces nothing.
+     *
+     * Only the alarm-driven path qualifies: a foreground "Play" tap already
+     * runs while the app is the top app (focus works without a service), and
+     * the exact-alarm exemption that lets us *start* a foreground service from
+     * the background only covers the alarm fire. We also skip it when the
+     * period's delivery mode won't speak, so notification-only users don't see
+     * a service notification for nothing. Best-effort: if the system refuses
+     * the start (e.g. the exemption window lapsed), log and continue in the
+     * background rather than failing the whole run.
+     */
+    private suspend fun promoteToPlaybackServiceIfNeeded(prefs: UserPreferences) {
+        val alarmTriggered = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L) != 0L
+        if (!alarmTriggered) return
+        val period = inputData.getString(KEY_PERIOD)
+            ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
+            ?: ForecastPeriod.TODAY
+        val mode = when (period) {
+            ForecastPeriod.TODAY -> prefs.deliveryMode
+            ForecastPeriod.TONIGHT -> prefs.tonightDeliveryMode
+        }
+        if (!mode.playsSpeech) return
+        runCatching { setForeground(playbackForegroundInfo()) }
+            .onFailure { t ->
+                if (t is CancellationException) throw t
+                DiagLog.w(TAG, "Couldn't start the playback foreground service; speech may be inaudible from the background.", t)
+            }
+    }
+
+    /**
+     * The notification carried by the playback foreground service (see
+     * [promoteToPlaybackServiceIfNeeded]). Silent and LOW-importance — it's a
+     * platform requirement for background audio, not a user-actionable post —
+     * and tagged `mediaPlayback` so the foreground-service type matches the
+     * permission and manifest declaration.
+     */
+    private fun playbackForegroundInfo(): ForegroundInfo {
+        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_PLAYBACK)
+            .setSmallIcon(R.drawable.ic_notification_insight)
+            .setContentTitle(applicationContext.getString(R.string.notification_playback_title))
+            .setOngoing(true)
+            .setSilent(true)
+            .build()
+        // minSdk is 31, so the typed ForegroundInfo constructor (foreground
+        // service type, applied on API 29+) is always available here.
+        return ForegroundInfo(
+            PLAYBACK_NOTIFICATION_ID,
+            notification,
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK,
+        )
+    }
+
     private suspend fun awaitDeliveryAlignment() {
         val alarmFiredAtMs = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L)
         if (alarmFiredAtMs == 0L) return
@@ -1834,6 +1908,11 @@ class FetchAndNotifyWorker(
         // fresh forecast. Race vs. concurrent plays is handled in the
         // UI gate — see TodayState.anyWorkActive.
         const val UNIQUE_WORK_NAME_PLAY = "insight_play"
+
+        // Foreground-service notification ID for the playback service. Distinct
+        // from the insight notification IDs (1001 daily, 1003 tonight) so the
+        // service notification and the delivered insight don't clobber each other.
+        private const val PLAYBACK_NOTIFICATION_ID = 1005
 
         // Output Data keys for surfacing failure reasons in the UI.
         const val KEY_REASON = "reason"

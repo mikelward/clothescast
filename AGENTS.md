@@ -401,29 +401,31 @@ new rule the first time something bites you, not the third.
   temperatures (apparent, wind-chill / humidity adjusted) — never raw 2 m
   air temperature. That's what the user actually experiences stepping
   outside.
-- **Per-model rain doesn't pick clothes, but it does mention rain.** The
-  morning insight's evening tie-in clause has two emission paths. If the
-  user's clothes rules fire for the evening window (e.g. it'll be cold
-  enough for a jacket), the clause names the item *and* folds in the
-  per-model rain when one's detected: "Tonight, rain, bring a
-  jacket." If no clothes rule fires but a per-model series spots rain ≥
-  20% in the tonight window and the user has an evening event with a
-  location, the clause still emits — without recommending clothes —
-  as a bare rain warning ("Tonight, rain." / the hedged
-  chance-of-rain wording for the POSSIBLE tier). The prose deliberately
-  no longer pins a peak hour ("rain at 9pm") — that claimed precision
-  the hourly forecast can't back; the peak time still rides the clause
-  data for the chart and cast card. A post-midnight peak appends
-  "overnight" ("Tonight, rain overnight."); an evening peak adds no
-  timing word — the "Tonight," lead already carries it. The principle: we *always*
-  surface rain when a model spots it, even when no clothes rule fires —
-  e.g. the user lowered their umbrella gate, deleted the rule, or the
-  probability sits below it. The umbrella itself ships as a precip-keyed
-  default (peak probability above 20%, OR a drizzle weather code — see the
-  comment on `ClothesRule.DEFAULTS`), so on a default setup the evening clause names
-  it; the bare-rain path is the fallback for when it doesn't. Staying
-  silent on evening rain because no rule happened to trigger is exactly
-  the case the per-model tier exists to catch.
+- **One number drives every rain surface — the blended-consensus chance of
+  rain.** The prose's "chance of rain", the umbrella / rain-jacket clothes
+  defaults, and the conditions-strip droplet all key off the single blended
+  probability of precipitation that already lives on
+  `DailyForecast.precipitationProbabilityMaxPct` / the blended
+  `HourlyForecast.precipitationProbabilityPct` (the cross-model consensus
+  blend — see `ConsensusBlend.kt`). Two bars: **≥ 10%** → prose "chance of
+  rain" + umbrella default + strip droplet; **≥ 50%** → prose confident
+  "rain" + rain-jacket default. There is no longer a per-model /
+  weather-code / trace-amount rain path: rain is never surfaced from a lone
+  model's drizzle code, and the umbrella default is a plain
+  `PrecipitationProbabilityAbove(10.0)` (rain jacket `PrecipitationProbabilityAbove(50.0)`),
+  not an OR of probability and a code floor. The morning insight's evening
+  tie-in still has two emission paths off this number: when a clothes rule
+  fires for the evening window the clause names the item and folds in the
+  rain ("Tonight, rain, bring a jacket."); when no rule fires but the
+  blended chance clears 10% in the tonight window and the user has an
+  evening event with a location, the clause emits as a bare rain warning
+  ("Tonight, rain." / the hedged chance-of-rain wording for the POSSIBLE
+  tier). The prose deliberately doesn't pin a peak hour ("rain at 9pm") —
+  the peak time still rides the clause data for the chart and cast card. A
+  post-midnight peak appends "overnight"; an evening peak adds no timing
+  word. Snow never fires the rain-gear defaults: the rule engine's snow gate
+  (`EvaluateClothesRules`, via `isFrozenPrecipitation`) suppresses rain gear
+  on snow days even when snow clears the probability bar.
 - The `:app` module owns Android concerns; LLM choice (which Gemini model
   to call) is `:app`'s problem. The `:core:domain` module is pure Kotlin
   and must stay that way — it's where the clothes / insight logic lives

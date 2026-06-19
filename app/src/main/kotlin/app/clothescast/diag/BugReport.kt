@@ -208,6 +208,7 @@ object BugReport {
         mqttPublishStatus: SettingsRepository.MqttPublishStatus?,
     ) {
         appendLine("MQTT bridge enabled: ${prefs.mqttBridgeEnabled}")
+        appendLine("MQTT skip phone speech: ${prefs.mqttSkipPhoneSpeech}")
         val hostLine = prefs.mqttHost?.takeIf { it.isNotBlank() }?.let { "$it:${prefs.mqttPort}" }
             ?: "(unset)"
         appendLine("MQTT broker: $hostLine")

@@ -303,14 +303,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">Napi ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Az általad aktivált reggeli időjárás-összefoglaló.</string>
     <string name="notification_daily_insight_title">Mai időjárás</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Esti ClothesCast (eseményekkel)</string>
-    <string name="notification_channel_tonight_insight_default_description">Az esti időjárás-összefoglaló, ha ma este eseményeid vannak. Lejátssza az alapértelmezett értesítési hangot.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Esti ClothesCast (néma)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Az esti időjárás-összefoglaló csendes estéken. Némán érkezik — láthatod a zárolási képernyőn, de nem ad hangot.</string>
     <string name="notification_tonight_insight_title">Mai esti időjárás</string>
 
 

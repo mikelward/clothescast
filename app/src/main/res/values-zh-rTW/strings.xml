@@ -268,14 +268,8 @@ label localises.
     the per-channel notification titles. Three channels: daily, nightly
     (default + silent variants), weather alerts.
     -->
-    <string name="notification_channel_daily_insight_name">每日 ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">你啟用的早晨天氣摘要。</string>
     <string name="notification_daily_insight_title">今天的天氣</string>
 
-    <string name="notification_channel_tonight_insight_default_name">夜間 ClothesCast（有行程）</string>
-    <string name="notification_channel_tonight_insight_default_description">你今晚有行事曆行程時的晚間天氣摘要。會播放你的預設通知聲音。</string>
-    <string name="notification_channel_tonight_insight_silent_name">夜間 ClothesCast（靜音）</string>
-    <string name="notification_channel_tonight_insight_silent_description">晚上沒有行程時的晚間天氣摘要。靜音傳送 — 你可以在鎖定畫面上看到，但不會發出聲音。</string>
     <string name="notification_tonight_insight_title">今晚的天氣</string>
 
 

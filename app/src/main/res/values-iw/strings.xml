@@ -408,13 +408,7 @@ standard in Israeli digital communication.
     <string name="garment_polo">פולו</string>
 
     <!-- Notification channels -->
-    <string name="notification_channel_daily_insight_name">ClothesCast יומי</string>
-    <string name="notification_channel_daily_insight_description">סיכום מזג האוויר הבוקר שנרשמת אליו.</string>
     <string name="notification_daily_insight_title">ClothesCast להיום</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast לילי (עם אירועים)</string>
-    <string name="notification_channel_tonight_insight_default_description">סיכום מזג האוויר הערבי כשיש לך אירועי לוח שנה הלילה.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast לילי (שקט)</string>
-    <string name="notification_channel_tonight_insight_silent_description">סיכום מזג האוויר הערבי כשהערב שלך ריק. נשלח בשקט.</string>
     <string name="notification_tonight_insight_title">ClothesCast ללילה</string>
 
     <!-- Settings — notification permission -->

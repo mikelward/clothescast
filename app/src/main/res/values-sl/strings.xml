@@ -542,13 +542,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_clothes_description">Če napoved preseže enega od teh pragov, se predmet prikaže v tvojem dnevnem ClothesCastu.</string>
 
     <!-- Notification channels and titles. -->
-    <string name="notification_channel_daily_insight_name">Dnevni ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Jutranji vremenski povzetek, ki si ga vklopil.</string>
     <string name="notification_daily_insight_title">Današnji ClothesCast</string>
-    <string name="notification_channel_tonight_insight_default_name">Nočni ClothesCast (z dogodki)</string>
-    <string name="notification_channel_tonight_insight_default_description">Večerni vremenski povzetek, ko imaš nocoj dogodke v koledarju. Predvaja tvoj privzeti zvok obvestila.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Nočni ClothesCast (tiho)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Večerni vremenski povzetek, ko je tvoj večer prost. Objavljeno tiho — na zaklenjenem zaslonu si ga lahko ogledaš, a ne bo proizvajal zvoka.</string>
     <string name="notification_tonight_insight_title">Nocojšnji ClothesCast</string>
 
     <!-- Notification permission card. -->

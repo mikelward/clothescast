@@ -349,14 +349,8 @@ only the displayed label localizes.
     the per-channel notification titles. Three channels: daily, nightly
     (default + silent variants), weather alerts.
     -->
-    <string name="notification_channel_daily_insight_name">Ежедневный ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Утренняя сводка погоды, которая включена.</string>
     <string name="notification_daily_insight_title">Погода сегодня</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Вечерний ClothesCast (с событиями)</string>
-    <string name="notification_channel_tonight_insight_default_description">Вечерняя сводка погоды, когда у тебя сегодня есть события в календаре. Воспроизводит звук уведомления по умолчанию.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Вечерний ClothesCast (тихий)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Вечерняя сводка погоды, когда у тебя свободный вечер. Доставляется бесшумно — можешь увидеть на экране блокировки, но звук не издаётся.</string>
     <string name="notification_tonight_insight_title">Погода сегодня вечером</string>
 
 

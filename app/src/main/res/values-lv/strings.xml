@@ -502,13 +502,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_distance_unit_miles">Jūdzes</string>
 
     <!-- Notifications -->
-    <string name="notification_channel_daily_insight_name">Ikdienas ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Rīta laika apkopojums, kuram tu pierakstījies.</string>
     <string name="notification_daily_insight_title">Šodienas ClothesCast</string>
-    <string name="notification_channel_tonight_insight_default_name">Nakts ClothesCast (ar notikumiem)</string>
-    <string name="notification_channel_tonight_insight_default_description">Vakara laika apkopojums, ja šovakar ir kalendāra notikumi. Atskaņo noklusējuma paziņojuma skaņu.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Nakts ClothesCast (klusais)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Vakara laika apkopojums, ja vakars ir brīvs. Publicēts klusumā — vari to apskatīt bloķēšanas ekrānā, taču tas neskanēs.</string>
     <string name="notification_tonight_insight_title">Šovakarējais ClothesCast</string>
 
     <!-- Notification permission settings -->

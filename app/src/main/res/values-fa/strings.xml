@@ -402,13 +402,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="garment_polo">پولو</string>
 
     <!-- Notifications -->
-    <string name="notification_channel_daily_insight_name">ClothesCast روزانه</string>
-    <string name="notification_channel_daily_insight_description">خلاصه آب‌وهوای صبحگاهی که ثبت‌نام کرده‌اید.</string>
     <string name="notification_daily_insight_title">ClothesCast امروز</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast شبانه (با رویدادها)</string>
-    <string name="notification_channel_tonight_insight_default_description">خلاصه آب‌وهوای عصرگاهی هنگامی که امشب رویدادهای تقویم دارید.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast شبانه (ساکت)</string>
-    <string name="notification_channel_tonight_insight_silent_description">خلاصه آب‌وهوای عصرگاهی وقتی عصر شما خالی است. ساکت ارسال می‌شود.</string>
     <string name="notification_tonight_insight_title">ClothesCast امشب</string>
 
     <!-- Settings — notification permission -->

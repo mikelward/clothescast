@@ -283,14 +283,8 @@ the displayed label localizes.
     the per-channel notification titles. Three channels: daily, nightly
     (default + silent variants), weather alerts.
     -->
-    <string name="notification_channel_daily_insight_name">毎日の ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">あなたが有効にした朝の天気要約です。</string>
     <string name="notification_daily_insight_title">今日の天気</string>
 
-    <string name="notification_channel_tonight_insight_default_name">夜間の ClothesCast（予定あり）</string>
-    <string name="notification_channel_tonight_insight_default_description">今夜カレンダーに予定があるときの夜の天気要約です。既定の通知音を鳴らします。</string>
-    <string name="notification_channel_tonight_insight_silent_name">夜間の ClothesCast（無音）</string>
-    <string name="notification_channel_tonight_insight_silent_description">予定のない夜の天気要約です。無音で配信され、ロック画面で確認できますが、音は鳴りません。</string>
     <string name="notification_tonight_insight_title">今夜の天気</string>
 
 

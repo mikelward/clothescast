@@ -562,14 +562,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- ============================================================
          Notifications
          ============================================================ -->
-    <string name="notification_channel_daily_insight_name">Pang-araw na ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Ang umaga na buod ng panahon na pinili mo.</string>
     <string name="notification_daily_insight_title">ClothesCast ngayon</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Pang-gabing ClothesCast (may mga evento)</string>
-    <string name="notification_channel_tonight_insight_default_description">Ang gabi na buod ng panahon kapag mayroon kang mga evento ng kalendaryo ngayong gabi. Nagpapatugtog ng iyong default na tunog ng notipikasyon.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Pang-gabing ClothesCast (tahimik)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Ang gabi na buod ng panahon kapag walang laman ang iyong gabi. Nipo-post nang tahimik — maaari mo itong tingnan sa lock screen, ngunit hindi ito magpapatugtog ng tunog.</string>
     <string name="notification_tonight_insight_title">ClothesCast ngayong gabi</string>
 
 

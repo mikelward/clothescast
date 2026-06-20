@@ -374,14 +374,8 @@ default English (matching values-pl / values-uk).
     <string name="settings_tts_voice_locale_am_et">Amharski (Etiopija)</string>
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">Dnevni ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Jutarnji vremenski rezime koji si uključio.</string>
     <string name="notification_daily_insight_title">Današnji ClothesCast</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Noćni ClothesCast (sa događajima)</string>
-    <string name="notification_channel_tonight_insight_default_description">Večernji vremenski rezime kada večeras imaš događaje u kalendaru. Reprodukuje tvoj podrazumevani zvuk obaveštenja.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Noćni ClothesCast (tihi)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Večernji vremenski rezime kada ti je večer slobodna. Šalje se tiho — možeš da ga pogledaš na zaključanom ekranu, ali neće reprodukovati zvuk.</string>
     <string name="notification_tonight_insight_title">Večerašnji ClothesCast</string>
 
 

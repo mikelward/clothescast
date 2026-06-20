@@ -287,14 +287,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     the per-channel notification titles. Three channels: daily, nightly
     (default + silent variants), weather alerts.
     -->
-    <string name="notification_channel_daily_insight_name">ClothesCast diário</string>
-    <string name="notification_channel_daily_insight_description">O resumo do tempo matinal que você ativou.</string>
     <string name="notification_daily_insight_title">Tempo de hoje</string>
 
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast noturno (com eventos)</string>
-    <string name="notification_channel_tonight_insight_default_description">O resumo do tempo da noite quando você tem eventos no calendário esta noite. Toca seu som de notificação padrão.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast noturno (silencioso)</string>
-    <string name="notification_channel_tonight_insight_silent_description">O resumo do tempo da noite quando sua noite está livre. Enviado em silêncio — você pode dar uma olhada na tela de bloqueio, mas ele não emite som.</string>
     <string name="notification_tonight_insight_title">Tempo desta noite</string>
 
 

@@ -529,13 +529,7 @@ to values/strings.xml (English).
     <string name="garment_polo">Polo</string>
 
     <!-- Notification channels -->
-    <string name="notification_channel_daily_insight_name">ClothesCast Harian</string>
-    <string name="notification_channel_daily_insight_description">Ringkasan cuaca pagi yang Anda pilih.</string>
     <string name="notification_daily_insight_title">ClothesCast hari ini</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast Malam (dengan acara)</string>
-    <string name="notification_channel_tonight_insight_default_description">Ringkasan cuaca malam saat Anda memiliki acara kalender malam ini. Memainkan suara notifikasi default Anda.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast Malam (senyap)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Ringkasan cuaca malam saat malam Anda kosong. Diposting secara senyap — Anda dapat melihatnya di layar kunci, tetapi tidak akan mengeluarkan suara.</string>
     <string name="notification_tonight_insight_title">ClothesCast malam ini</string>
 
     <!-- Notification permission settings -->

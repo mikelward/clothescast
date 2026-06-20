@@ -321,14 +321,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     and the per-channel notification titles. Three channels: daily,
     nightly (default + silent variants), severe-weather alerts.
     -->
-    <string name="notification_channel_daily_insight_name">Καθημερινός ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Η πρωινή σύνοψη καιρού στην οποία επέλεξες να συμμετέχεις.</string>
     <string name="notification_daily_insight_title">Καιρός σήμερα</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Νυχτερινός ClothesCast (με συμβάντα)</string>
-    <string name="notification_channel_tonight_insight_default_description">Η βραδινή σύνοψη καιρού όταν έχεις συμβάντα ημερολογίου απόψε. Παίζει τον προεπιλεγμένο ήχο ειδοποιήσεών σου.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Νυχτερινός ClothesCast (σιωπηλός)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Η βραδινή σύνοψη καιρού όταν το βράδυ σου είναι ελεύθερο. Παραδίδεται σιωπηλά — μπορείς να τη δεις στην οθόνη κλειδώματος, αλλά δεν παράγει ήχο.</string>
     <string name="notification_tonight_insight_title">Καιρός απόψε</string>
 
 

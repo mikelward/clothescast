@@ -310,14 +310,8 @@ What is NOT overridden, by design:
     <!--
     Notification channels.
     -->
-    <string name="notification_channel_daily_insight_name">Denný ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Ranné zhrnutie počasia, ktoré si aktivoval.</string>
     <string name="notification_daily_insight_title">Dnešné počasie</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Nočný ClothesCast (s udalosťami)</string>
-    <string name="notification_channel_tonight_insight_default_description">Večerné zhrnutie počasia, keď máš dnes večer udalosti. Prehrá tvoj predvolený tón upozornenia.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Nočný ClothesCast (tichý)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Večerné zhrnutie počasia v pokojné večery. Doručí sa ticho — uvidíš ho na zamykacej obrazovke, ale nevydá žiadny zvuk.</string>
     <string name="notification_tonight_insight_title">Dnešné večerné počasie</string>
 
 

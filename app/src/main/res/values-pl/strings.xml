@@ -257,14 +257,8 @@ is unchanged; only the displayed label localizes.
     <!--
     Notification channels.
     -->
-    <string name="notification_channel_daily_insight_name">Codzienny ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Poranne podsumowanie pogody, które włączyłeś.</string>
     <string name="notification_daily_insight_title">Pogoda dzisiaj</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Wieczorny ClothesCast (z wydarzeniami)</string>
-    <string name="notification_channel_tonight_insight_default_description">Wieczorne podsumowanie pogody, gdy masz dzisiaj wieczorem wydarzenia. Odtwarza domyślny dźwięk powiadomienia.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Wieczorny ClothesCast (cichy)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Wieczorne podsumowanie pogody w spokojne wieczory. Dostarczane bezgłośnie — możesz je zobaczyć na ekranie blokady, ale nie wydaje dźwięku.</string>
     <string name="notification_tonight_insight_title">Pogoda wieczorem</string>
 
 

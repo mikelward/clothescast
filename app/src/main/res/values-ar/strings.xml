@@ -413,13 +413,7 @@ they work correctly in both the single-band and range templates.
     <string name="garment_polo">بولو</string>
 
     <!-- Notification channels and content -->
-    <string name="notification_channel_daily_insight_name">ClothesCast اليومي</string>
-    <string name="notification_channel_daily_insight_description">ملخص الطقس الصباحي الذي اشتركت فيه.</string>
     <string name="notification_daily_insight_title">ClothesCast اليوم</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast الليلي (مع الأحداث)</string>
-    <string name="notification_channel_tonight_insight_default_description">ملخص الطقس المسائي عند وجود أحداث تقويم الليلة.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast الليلي (صامت)</string>
-    <string name="notification_channel_tonight_insight_silent_description">ملخص الطقس المسائي في المساء الهادئ. يُرسَل صامتًا.</string>
     <string name="notification_tonight_insight_title">ClothesCast الليلة</string>
 
     <!-- Settings — notification permission -->

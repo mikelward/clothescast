@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ServiceInfo
 import android.location.LocationManager
 import app.clothescast.diag.DiagLog
+import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import androidx.work.BackoffPolicy
@@ -105,6 +106,15 @@ class FetchAndNotifyWorker(
 
     private val app: ClothesCastApplication
         get() = applicationContext as ClothesCastApplication
+
+    // True once this worker has promoted *itself* to the playback foreground
+    // service (notification id 1005) because no ScheduledDeliveryService was
+    // shepherding the run — see promoteToPlaybackServiceIfNeeded. When we own
+    // the notification, the PREPARING -> DELIVERING swap is ours to make:
+    // markFetchComplete() re-posts it with the "Delivering" title. The Service
+    // does the same swap off the KEY_FETCH_COMPLETE progress flag when *it*
+    // owns the notification instead.
+    private var ownsPlaybackForeground = false
 
     override suspend fun doWork(): Result {
         val isCacheOnly = inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)
@@ -351,7 +361,7 @@ class FetchAndNotifyWorker(
             // because isHoldingForegroundFor(id) is true the worker has
             // already skipped its own promoteToPlaybackServiceIfNeeded —
             // background TTS could be silenced on Android 15+.
-            setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
+            markFetchComplete()
             return runCatching { deliver(cachedInsight, prefs, formatProse(cachedInsight, prefs)) }
                 .map {
                     recordDailyHistory(cachedInsight)
@@ -457,7 +467,7 @@ class FetchAndNotifyWorker(
             // past the fetching phase. (Play stays disabled throughout
             // delivery via TodayState.anyWorkActive, which keys off
             // WorkInfo.state directly.)
-            setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
+            markFetchComplete()
             val insight = app.deriveInsight(cached, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
             val prose = formatProse(insight, prefs)
             return deliverBestEffort(insight, prefs, prose, "Replayed", forceNotifyAndSpeak)
@@ -472,7 +482,7 @@ class FetchAndNotifyWorker(
             DiagLog.i(TAG, "Play requested for $requestedPeriod but no location available; skipping.")
             return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
         }
-        setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
+        markFetchComplete()
         // When the requested period IS the current window, route through the
         // full fresh() path so the fetched snapshot lands in the cache (+
         // next-window pre-capture, + history): an empty-cache Play populates
@@ -634,7 +644,7 @@ class FetchAndNotifyWorker(
                 // an active WorkInfo carrying this progress flag as no
                 // longer in the "fetching" phase; a deliver-side failure
                 // still surfaces via the terminal FAILED entry.
-                setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
+                markFetchComplete()
                 // A current-window Today Play tap with an empty/stale cache
                 // lands here (playInsight → fresh). Carry its "notify + speak
                 // now" intent through so delivery fires regardless of the
@@ -1777,6 +1787,7 @@ class FetchAndNotifyWorker(
         if (!mode.playsSpeech) return
         runCatching { setForeground(playbackForegroundInfo()) }
             .onSuccess {
+                ownsPlaybackForeground = true
                 DiagLog.i(TAG, "Promoted to the playback foreground service (notification id=$PLAYBACK_NOTIFICATION_ID).")
             }
             .onFailure { t ->
@@ -1813,10 +1824,12 @@ class FetchAndNotifyWorker(
      * and tagged `mediaPlayback` so the foreground-service type matches the
      * permission and manifest declaration.
      */
-    private fun playbackForegroundInfo(): ForegroundInfo {
+    private fun playbackForegroundInfo(
+        @StringRes titleRes: Int = R.string.notification_playback_title,
+    ): ForegroundInfo {
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_PLAYBACK)
             .setSmallIcon(R.drawable.ic_notification_insight)
-            .setContentTitle(applicationContext.getString(R.string.notification_playback_title))
+            .setContentTitle(applicationContext.getString(titleRes))
             .setOngoing(true)
             .setSilent(true)
             .build()
@@ -1827,6 +1840,32 @@ class FetchAndNotifyWorker(
             notification,
             ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK,
         )
+    }
+
+    /**
+     * Marks the fetch + insight phase done, immediately before the deliver
+     * fan-out. Stamps [KEY_FETCH_COMPLETE] so a shepherding
+     * [ScheduledDeliveryService] swaps its foreground notification from
+     * "Preparing your ClothesCast" to "Delivering your ClothesCast".
+     *
+     * When *this worker* owns the playback foreground notification instead —
+     * i.e. it self-promoted via [promoteToPlaybackServiceIfNeeded] because no
+     * Service was shepherding the run (Service start lost the startup race, was
+     * refused, the process restarted, or this is an overlapping / Play run) —
+     * nothing observes that progress flag, so make the same swap ourselves by
+     * re-posting id [PLAYBACK_NOTIFICATION_ID] with the "Delivering" title.
+     * Without this the self-promoted notification sits on "Preparing" through
+     * the entire run.
+     */
+    private suspend fun markFetchComplete() {
+        setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
+        if (!ownsPlaybackForeground) return
+        runCatching {
+            setForeground(playbackForegroundInfo(R.string.notification_delivering_title))
+        }.onFailure { t ->
+            if (t is CancellationException) throw t
+            DiagLog.w(TAG, "Couldn't swap the playback foreground notification to \"Delivering\".", t)
+        }
     }
 
     private suspend fun awaitDeliveryAlignment() {

@@ -419,6 +419,72 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `rain-gear v2 migration bumps an untouched 20 percent umbrella to 10 percent`() = runTest {
+        // Installs that already ran v1 have the umbrella default collapsed to a bare
+        // 20% row (v1 sentinel set, so v1 won't run again). This v2 pass drops that
+        // untouched default to the new 10% bar so it fires on the same chance as the
+        // prose and the conditions strip.
+        val storedJson = """[
+            {"item":"sweater","type":"temp_below","value":16.0,"unit":"CELSIUS"},
+            {"item":"umbrella","type":"precip_above","value":20.0},
+            {"item":"rain-jacket","type":"precip_above","value":50.0}
+        ]""".trimIndent()
+        val before = mutablePreferencesOf(clothesRulesKey to storedJson)
+
+        val result = rainGearProbabilityV2Migration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 10.0
+        // Rain jacket (50% old = new) and the temperature rule are left as-is.
+        (rules.first { it.item == Garment.RAIN_JACKET }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 50.0
+        result[clothesRulesKey]!! shouldContain
+            """{"item":"sweater","type":"temp_below","value":16.0,"unit":"CELSIUS"}"""
+    }
+
+    @Test
+    fun `rain-gear v2 migration leaves a customized umbrella percentage byte-identical`() = runTest {
+        // 25% is not the old 20% default, so it's a deliberate setting — v2 leaves the
+        // stored JSON untouched.
+        val storedJson = """[{"item":"umbrella","type":"precip_above","value":25.0}]""".trimIndent()
+        val before = mutablePreferencesOf(clothesRulesKey to storedJson)
+
+        val result = rainGearProbabilityV2Migration().migrate(before)
+
+        result[clothesRulesKey] shouldBe storedJson
+    }
+
+    @Test
+    fun `rain-gear v2 migration runs once, gated by its sentinel`() = runTest {
+        val migration = rainGearProbabilityV2Migration()
+        migration.shouldMigrate(emptyPreferences()) shouldBe true
+        migration.shouldMigrate(
+            mutablePreferencesOf(booleanPreferencesKey("rain_gear_probability_migrated_v2") to true),
+        ) shouldBe false
+    }
+
+    @Test
+    fun `rain-gear v1 then v2 upgrades a legacy composite umbrella to 10 percent`() = runTest {
+        // End to end across the chain: the pre-consensus composite umbrella collapses
+        // to a bare 20% via v1, then v2 drops it to the new 10% default.
+        val storedJson = """[
+            {"item":"umbrella","type":"any_of","value":0.0,"any":[
+                {"type":"precip_above","value":20.0},
+                {"type":"rain_code","value":0.0,"codeFloor":"DRIZZLE"}
+            ]}
+        ]""".trimIndent()
+        val afterV1 = rainGearProbabilityMigration().migrate(
+            mutablePreferencesOf(clothesRulesKey to storedJson),
+        )
+        val afterV2 = rainGearProbabilityV2Migration().migrate(afterV1)
+
+        val rules = decodeStoredRules(afterV2[clothesRulesKey])
+        (rules.first { it.item == Garment.UMBRELLA }.condition as ClothesRule.PrecipitationProbabilityAbove)
+            .percent shouldBe 10.0
+    }
+
+    @Test
     fun `periodPreamble defaults to ALWAYS and round-trips all values`() = runTest {
         subject.preferences.first().periodPreamble shouldBe PreambleVisibility.ALWAYS
 

@@ -1545,6 +1545,7 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
             umbrellaDefaultMigration(),
             rainGearDefaultsMigration(),
             rainGearProbabilityMigration(),
+            rainGearProbabilityV2Migration(),
         )
     },
 )
@@ -1901,7 +1902,71 @@ internal fun rainGearProbabilityMigration(): DataMigration<Preferences> {
     }
 }
 
-// Only the US uses Fahrenheit in everyday weather contexts. A handful of
+/**
+ * One-time follow-up to [rainGearProbabilityMigration] that bumps an untouched
+ * default umbrella from the old 20% bar down to the new 10% chance-of-rain bar.
+ *
+ * [rainGearProbabilityMigration] (the consensus build's v1) collapsed the old
+ * "≥ 20% OR drizzle-code" umbrella composite onto its 20% probability arm and set
+ * its own sentinel, so on installs that already ran it the default umbrella sits at
+ * a bare `precip_above` 20 — firing only at 20% while the prose and the conditions
+ * strip moved to 10%. A bare probability row is byte-identical through v1, so that
+ * gap can't be closed there; this v2 pass rewrites any bare 20% umbrella row to 10%.
+ *
+ * We can't tell a stale default apart from a user who deliberately set exactly 20%
+ * (the weather-code arm that once distinguished them is long gone), so both move to
+ * 10% — the same value-based upgrade the other default migrations in this file make.
+ * Because it runs once, gated by [RAIN_GEAR_PROBABILITY_V2_SENTINEL], a 20% the user
+ * sets *after* the migration has run stays 20%. Rain jacket is untouched: its old
+ * and new default are both 50%. Internal for unit testing.
+ */
+internal fun rainGearProbabilityV2Migration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey(RAIN_GEAR_PROBABILITY_V2_SENTINEL)
+    val clothesRules = stringPreferencesKey("clothes_rules_json")
+    val json = Json { ignoreUnknownKeys = true }
+
+    fun ClothesRuleDto.isOldDefaultUmbrella(): Boolean =
+        Garment.fromKey(item) == Garment.UMBRELLA &&
+            type == ClothesRuleDto.TYPE_PRECIP_ABOVE &&
+            value == OLD_UMBRELLA_DEFAULT_PCT
+
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            val stored = currentData[clothesRules]
+            if (!stored.isNullOrBlank()) {
+                runCatching {
+                    val dtos = json.decodeFromString<List<ClothesRuleDto>>(stored)
+                    // Only rewrite when a bare 20% umbrella is present; any other list
+                    // (already 10%, customized, no umbrella rule) re-encodes unchanged.
+                    if (dtos.any { it.isOldDefaultUmbrella() }) {
+                        val rebuilt = dtos.map { dto ->
+                            if (dto.isOldDefaultUmbrella()) dto.copy(value = NEW_UMBRELLA_DEFAULT_PCT) else dto
+                        }
+                        result[clothesRules] = json.encodeToString(rebuilt)
+                    }
+                }
+                // Corrupt JSON: leave it untouched and still set the sentinel —
+                // parseRules falls back to the new DEFAULTS when it can't decode.
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
+
+private const val RAIN_GEAR_PROBABILITY_V2_SENTINEL = "rain_gear_probability_migrated_v2"
+private const val OLD_UMBRELLA_DEFAULT_PCT = 20.0
+private const val NEW_UMBRELLA_DEFAULT_PCT = 10.0
 // dependencies (BS, BZ, KY, PW) also do, but they're rounding error and the
 // user can override via the unit picker if needed — not worth the extra surface.
 // Internal so SettingsState can mirror the repository's defaults at construction

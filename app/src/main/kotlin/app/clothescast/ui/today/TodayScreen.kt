@@ -117,6 +117,7 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.PreambleVisibility
@@ -1250,6 +1251,7 @@ private fun TodayPage(
                     rangeFormat = state.rangeFormat,
                     clothesFormat = state.clothesFormat,
                     bottomsFormat = state.bottomsFormat,
+                    accessoriesFormat = state.accessoriesFormat,
                     periodPreamble = state.periodPreamble,
                     wearPreamble = state.wearPreamble,
                     showChevronRight = showChevronRight,
@@ -2425,6 +2427,11 @@ internal fun InsightCard(
      */
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
     /**
+     * Whether the carried umbrella is spoken in the prose. Defaults to
+     * [AccessoriesFormat.ALWAYS] so existing previews stay byte-identical.
+     */
+    accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
+    /**
      * Where the period / wear preambles survive. Both default to
      * [PreambleVisibility.ALWAYS] (full prose) until the drop is translated
      * beyond English; the real card passes the user's choice in explicitly.
@@ -2484,11 +2491,11 @@ internal fun InsightCard(
     val context = LocalContext.current
     val formatter = remember(
         context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
-        periodPreamble, wearPreamble,
+        accessoriesFormat, periodPreamble, wearPreamble,
     ) {
         InsightFormatter.forRegion(
             context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
-            periodPreamble, wearPreamble,
+            accessoriesFormat, periodPreamble, wearPreamble,
         )
     }
     // Page 2 caches tomorrow's daytime insight after the evening worker run;

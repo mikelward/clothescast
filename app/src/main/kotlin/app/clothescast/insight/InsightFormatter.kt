@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
@@ -100,6 +101,16 @@ class InsightFormatter(
      * [BottomsFormat.NEVER] drops them from items mode too.
      */
     private val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    /**
+     * Whether the carried umbrella is spoken in the prose. See
+     * [AccessoriesFormat]. Default [AccessoriesFormat.ALWAYS] folds the
+     * umbrella into the precip clause and evening tie-in as before;
+     * [AccessoriesFormat.NEVER] drops every spoken mention — rain still
+     * surfaces and the outfit-card icon is untouched, so the user sees the
+     * umbrella without hearing it. Gates [formatPrecip] and
+     * [formatEveningEventTieIn] alike so the two clauses can't drift.
+     */
+    private val accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
     /**
      * Where the period preamble ("Today, it will be …") is allowed to survive.
      * See [PreambleVisibility]. Combined with the per-call [InsightSurface] to
@@ -278,6 +289,7 @@ class InsightFormatter(
         // the bare-rain wording so the evening rain still surfaces.
         val precipAccessoryKeys = buildSet {
             summary.precip
+                ?.takeIf { accessoriesFormat == AccessoriesFormat.ALWAYS }
                 ?.takeIf { it.condition.warrantsRainAccessory() }
                 ?.let { summary.carriedAccessories.firstOrNull() }
                 ?.let { add(normalizeItemKey(it)) }
@@ -688,6 +700,7 @@ class InsightFormatter(
         // a thunderstorm forecast is still a wet one), matching the rule
         // engine so the prose and the outfit icon can't drift.
         val accessoryPhrase = accessoryKey
+            ?.takeIf { accessoriesFormat == AccessoriesFormat.ALWAYS }
             ?.takeIf { precip.condition.warrantsRainAccessory() }
             ?.let(phraser::withArticle)
         return when (precip.likelihood) {
@@ -761,6 +774,7 @@ class InsightFormatter(
         // to the bare-rain wording ("Tonight, chance of drizzle.") so the
         // evening rain still surfaces without the redundant carry.
         val accessoryKey = tieIn.items.firstOrNull(::isAccessory)
+            ?.takeIf { accessoriesFormat == AccessoriesFormat.ALWAYS }
             ?.takeIf { rainTime != null && tieIn.precipCondition?.warrantsRainAccessory() == true }
             ?.takeIf { normalizeItemKey(it) !in alreadyMentionedAccessories }
         val items = if (accessoryKey != null) filteredItems + accessoryKey else filteredItems
@@ -986,6 +1000,7 @@ class InsightFormatter(
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
             bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
             periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
             wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
         ): InsightFormatter =
@@ -996,6 +1011,7 @@ class InsightFormatter(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
+                accessoriesFormat,
                 periodPreamble,
                 wearPreamble,
             )
@@ -1008,6 +1024,7 @@ class InsightFormatter(
             rangeFormat: RangeFormat = RangeFormat.DEGREES,
             clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
             bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
             periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
             wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
         ): InsightFormatter {
@@ -1019,6 +1036,7 @@ class InsightFormatter(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
+                accessoriesFormat,
                 periodPreamble,
                 wearPreamble,
             )

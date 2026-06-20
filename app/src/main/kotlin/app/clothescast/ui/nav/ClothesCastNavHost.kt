@@ -432,6 +432,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                 prefs.rangeFormat,
                 prefs.clothesFormat,
                 prefs.bottomsFormat,
+                prefs.accessoriesFormat,
                 prefs.periodPreamble,
                 prefs.wearPreamble,
             )

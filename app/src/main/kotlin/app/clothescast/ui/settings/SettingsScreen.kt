@@ -300,6 +300,7 @@ internal fun VoicePage(
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
+            accessoriesFormat = state.accessoriesFormat,
             periodPreamble = state.periodPreamble,
             wearPreamble = state.wearPreamble,
             currentInsight = state.voicePreviewInsightSummary,

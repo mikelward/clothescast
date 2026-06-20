@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
@@ -166,6 +167,7 @@ internal fun SettingsFormatPreview() {
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
             deltaThresholdC = 3.0,
             deltaFormat = DeltaFormat.DEGREES,
             clothesMentionMode =ClothesMentionMode.ALWAYS,
@@ -175,6 +177,7 @@ internal fun SettingsFormatPreview() {
             onSetRangeFormat = {},
             onSetClothesFormat = {},
             onSetBottomsFormat = {},
+            onSetAccessoriesFormat = {},
             onSetDeltaThresholdC = {},
             onSetDeltaFormat = {},
             onSetClothesMentionMode = {},
@@ -196,6 +199,7 @@ internal fun SettingsFormatClothesNeverPreview() {
             rangeFormat = RangeFormat.BANDS,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
             deltaThresholdC = 3.0,
             deltaFormat = DeltaFormat.DEGREES,
             clothesMentionMode =ClothesMentionMode.NEVER,
@@ -205,6 +209,7 @@ internal fun SettingsFormatClothesNeverPreview() {
             onSetRangeFormat = {},
             onSetClothesFormat = {},
             onSetBottomsFormat = {},
+            onSetAccessoriesFormat = {},
             onSetDeltaThresholdC = {},
             onSetDeltaFormat = {},
             onSetClothesMentionMode = {},
@@ -227,6 +232,7 @@ internal fun SettingsFormatCurrentForecastPreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
             deltaThresholdC = 3.0,
             deltaFormat = DeltaFormat.DEGREES,
             clothesMentionMode =ClothesMentionMode.ALWAYS,
@@ -248,6 +254,7 @@ internal fun SettingsFormatCurrentForecastPreview() {
             onSetRangeFormat = {},
             onSetClothesFormat = {},
             onSetBottomsFormat = {},
+            onSetAccessoriesFormat = {},
             onSetDeltaThresholdC = {},
             onSetDeltaFormat = {},
             onSetClothesMentionMode = {},
@@ -423,6 +430,7 @@ internal fun SettingsVoiceDevicePreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
             periodPreamble = PreambleVisibility.ALWAYS,
             wearPreamble = PreambleVisibility.ALWAYS,
             currentInsight = null,
@@ -458,6 +466,7 @@ internal fun SettingsVoiceGeminiPreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
             periodPreamble = PreambleVisibility.ALWAYS,
             wearPreamble = PreambleVisibility.ALWAYS,
             currentInsight = null,
@@ -496,6 +505,7 @@ internal fun SettingsVoiceGeminiNoKeyPreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
             periodPreamble = PreambleVisibility.ALWAYS,
             wearPreamble = PreambleVisibility.ALWAYS,
             currentInsight = null,
@@ -535,6 +545,7 @@ internal fun SettingsVoiceGeminiNoKeySharedPreview() {
             rangeFormat = RangeFormat.DEGREES,
             clothesFormat = ClothesFormat.ITEMS,
             bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
             periodPreamble = PreambleVisibility.ALWAYS,
             wearPreamble = PreambleVisibility.ALWAYS,
             currentInsight = null,

@@ -13,6 +13,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaFormat
@@ -227,6 +228,10 @@ class SettingsRepository(
 
     suspend fun setBottomsFormat(format: BottomsFormat) {
         dataStore.edit { it[INSIGHT_BOTTOMS_FORMAT] = format.name }
+    }
+
+    suspend fun setAccessoriesFormat(format: AccessoriesFormat) {
+        dataStore.edit { it[INSIGHT_ACCESSORIES_FORMAT] = format.name }
     }
 
 
@@ -1019,6 +1024,9 @@ class SettingsRepository(
         val bottomsFormat = this[INSIGHT_BOTTOMS_FORMAT]
             ?.let { runCatching { BottomsFormat.valueOf(it) }.getOrNull() }
             ?: BottomsFormat.IF_GARMENTS
+        val accessoriesFormat = this[INSIGHT_ACCESSORIES_FORMAT]
+            ?.let { runCatching { AccessoriesFormat.valueOf(it) }.getOrNull() }
+            ?: AccessoriesFormat.ALWAYS
         val periodPreamble = this[INSIGHT_PERIOD_PREAMBLE]
             ?.let { runCatching { PreambleVisibility.valueOf(it) }.getOrNull() }
             ?: PreambleVisibility.ALWAYS
@@ -1162,6 +1170,7 @@ class SettingsRepository(
             rangeFormat = rangeFormat,
             clothesFormat = clothesFormat,
             bottomsFormat = bottomsFormat,
+            accessoriesFormat = accessoriesFormat,
             periodPreamble = periodPreamble,
             wearPreamble = wearPreamble,
             deltaThresholdC = deltaThresholdC,
@@ -1262,6 +1271,7 @@ class SettingsRepository(
         rangeFormat = rangeFormat.name,
         clothesFormat = clothesFormat.name,
         bottomsFormat = bottomsFormat.name,
+        accessoriesFormat = accessoriesFormat.name,
         deltaThresholdC = deltaThresholdC?.roundToInt() ?: -1,
         deltaFormat = deltaFormat.name,
         useCalendarEvents = useCalendarEvents,
@@ -1444,6 +1454,7 @@ class SettingsRepository(
         private val INSIGHT_RANGE_FORMAT = stringPreferencesKey("insight_range_format")
         private val INSIGHT_CLOTHES_FORMAT = stringPreferencesKey("insight_clothes_format")
         private val INSIGHT_BOTTOMS_FORMAT = stringPreferencesKey("insight_bottoms_format")
+        private val INSIGHT_ACCESSORIES_FORMAT = stringPreferencesKey("insight_accessories_format")
         private val INSIGHT_PERIOD_PREAMBLE = stringPreferencesKey("insight_period_preamble")
         private val INSIGHT_WEAR_PREAMBLE = stringPreferencesKey("insight_wear_preamble")
         private val INSIGHT_DELTA_THRESHOLD_C = doublePreferencesKey("insight_delta_threshold_c")

@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.ui.AppMenuShape
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
@@ -133,6 +134,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             rangeFormat = state.rangeFormat,
             clothesFormat = state.clothesFormat,
             bottomsFormat = state.bottomsFormat,
+            accessoriesFormat = state.accessoriesFormat,
             deltaThresholdC = state.deltaThresholdC,
             deltaFormat = state.deltaFormat,
             clothesMentionMode = state.clothesMentionMode,
@@ -145,6 +147,7 @@ internal fun FormatPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSetRangeFormat = viewModel::setRangeFormat,
             onSetClothesFormat = viewModel::setClothesFormat,
             onSetBottomsFormat = viewModel::setBottomsFormat,
+            onSetAccessoriesFormat = viewModel::setAccessoriesFormat,
             onSetDeltaThresholdC = viewModel::setDeltaThresholdC,
             onSetDeltaFormat = viewModel::setDeltaFormat,
             onSetClothesMentionMode = viewModel::setClothesMentionMode,
@@ -159,6 +162,7 @@ internal fun FormatContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
+    accessoriesFormat: AccessoriesFormat,
     deltaThresholdC: Double?,
     deltaFormat: DeltaFormat,
     clothesMentionMode: ClothesMentionMode,
@@ -171,6 +175,7 @@ internal fun FormatContent(
     onSetRangeFormat: (RangeFormat) -> Unit,
     onSetClothesFormat: (ClothesFormat) -> Unit,
     onSetBottomsFormat: (BottomsFormat) -> Unit,
+    onSetAccessoriesFormat: (AccessoriesFormat) -> Unit,
     onSetDeltaThresholdC: (Double?) -> Unit,
     onSetDeltaFormat: (DeltaFormat) -> Unit,
     onSetClothesMentionMode: (ClothesMentionMode) -> Unit,
@@ -194,6 +199,7 @@ internal fun FormatContent(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
+                accessoriesFormat,
                 deltaThresholdC,
                 deltaFormat,
                 clothesMentionMode,
@@ -209,6 +215,7 @@ internal fun FormatContent(
                 rangeFormat,
                 clothesFormat,
                 bottomsFormat,
+                accessoriesFormat,
             )
             SectionCard(title = stringResource(R.string.settings_format_what_to_say)) {
                 // Ordered to match the insight itself: lead-in, then the
@@ -263,10 +270,17 @@ internal fun FormatContent(
                     optionLabel = { stringResource(bottomsFormatLabel(it)) },
                     onSelect = onSetBottomsFormat,
                 )
-                // The old "Rain accessory" dropdown is retired: carrying an
-                // umbrella is now a configurable clothes rule (precip-keyed) in
-                // Settings → Clothes, not a global format toggle. A follow-up
-                // adds an "Accessories: Always/Never" control here.
+                // Carrying an umbrella is a precip-keyed clothes rule (Settings →
+                // Clothes); this only governs whether the prose *speaks* it.
+                // NEVER keeps the umbrella icon on the outfit card but drops the
+                // spoken "bring an umbrella" — see it without hearing it.
+                FormatDropdownRow(
+                    label = stringResource(R.string.settings_format_accessories_label),
+                    options = AccessoriesFormat.entries,
+                    selected = accessoriesFormat,
+                    optionLabel = { stringResource(accessoriesFormatLabel(it)) },
+                    onSelect = onSetAccessoriesFormat,
+                )
             }
         }
     }
@@ -289,6 +303,11 @@ private fun bottomsFormatLabel(format: BottomsFormat): Int = when (format) {
     BottomsFormat.NEVER -> R.string.settings_format_bottoms_never
 }
 
+private fun accessoriesFormatLabel(format: AccessoriesFormat): Int = when (format) {
+    AccessoriesFormat.ALWAYS -> R.string.settings_format_accessories_always
+    AccessoriesFormat.NEVER -> R.string.settings_format_accessories_never
+}
+
 private fun preambleVisibilityLabel(visibility: PreambleVisibility): Int = when (visibility) {
     PreambleVisibility.ALWAYS -> R.string.settings_format_preamble_always
     PreambleVisibility.SPEECH_ONLY -> R.string.settings_format_preamble_speech_only
@@ -302,6 +321,7 @@ private fun PreviewCard(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
+    accessoriesFormat: AccessoriesFormat,
     deltaThresholdC: Double?,
     deltaFormat: DeltaFormat,
     clothesMentionMode: ClothesMentionMode,
@@ -311,11 +331,11 @@ private fun PreviewCard(
     val context = LocalContext.current
     val formatter = remember(
         context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
-        periodPreamble, wearPreamble,
+        accessoriesFormat, periodPreamble, wearPreamble,
     ) {
         InsightFormatter.forRegion(
             context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
-            periodPreamble, wearPreamble,
+            accessoriesFormat, periodPreamble, wearPreamble,
         )
     }
     // Drop the delta clause when the selected threshold is above the sample's
@@ -359,6 +379,9 @@ private fun PreviewCard(
             ClothesClause(items = listOf("sweater", "pants"))
         },
         precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(17, 0), PrecipLikelihood.LIKELY),
+        // Carry an umbrella so the Accessories picker has something to flip:
+        // ALWAYS renders "Rain, bring an umbrella.", NEVER drops to "Rain.".
+        carriedAccessories = listOf("umbrella"),
     )
     SectionCard(title = stringResource(R.string.settings_format_preview_example_title)) {
         // Match the Today screen's insight card (headlineSmall) so the preview
@@ -392,15 +415,16 @@ private fun CurrentForecastPreviewCard(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
+    accessoriesFormat: AccessoriesFormat,
 ) {
     val context = LocalContext.current
     val formatter = remember(
         context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
-        periodPreamble, wearPreamble,
+        accessoriesFormat, periodPreamble, wearPreamble,
     ) {
         InsightFormatter.forRegion(
             context, region, temperatureUnit, rangeFormat, clothesFormat, bottomsFormat,
-            periodPreamble, wearPreamble,
+            accessoriesFormat, periodPreamble, wearPreamble,
         )
     }
     SectionCard(title = stringResource(R.string.settings_format_preview_current_title)) {

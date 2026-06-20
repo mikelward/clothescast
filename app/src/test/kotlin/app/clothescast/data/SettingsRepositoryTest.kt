@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.clothescast.core.domain.model.Garment
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
@@ -518,6 +519,17 @@ class SettingsRepositoryTest {
 
         subject.setBottomsFormat(BottomsFormat.IF_GARMENTS)
         subject.preferences.first().bottomsFormat shouldBe BottomsFormat.IF_GARMENTS
+    }
+
+    @Test
+    fun `accessoriesFormat defaults to ALWAYS and round-trips all values`() = runTest {
+        subject.preferences.first().accessoriesFormat shouldBe AccessoriesFormat.ALWAYS
+
+        subject.setAccessoriesFormat(AccessoriesFormat.NEVER)
+        subject.preferences.first().accessoriesFormat shouldBe AccessoriesFormat.NEVER
+
+        subject.setAccessoriesFormat(AccessoriesFormat.ALWAYS)
+        subject.preferences.first().accessoriesFormat shouldBe AccessoriesFormat.ALWAYS
     }
 
     @Test

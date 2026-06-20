@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.CalendarTieInClause
 import app.clothescast.core.domain.model.EveningEventTieInClause
@@ -1575,6 +1576,86 @@ class InsightFormatterTest {
                 precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
             ),
         ) shouldBe "Today, it will be 21°. Rain, bring an umbrella."
+    }
+
+    // ---------------------------------------------------------------------
+    // AccessoriesFormat.NEVER — the umbrella icon still shows on the outfit
+    // card (driven by the fired rule, not the formatter), but the prose stops
+    // speaking it. Rain itself still surfaces; only "bring an umbrella" drops.
+    // ---------------------------------------------------------------------
+
+    private val noAccessoriesSubject = InsightFormatter.forContext(
+        context,
+        Locale.ENGLISH,
+        accessoriesFormat = AccessoriesFormat.NEVER,
+    )
+
+    @Test
+    fun `accessories Never drops the umbrella from the LIKELY precip clause`() {
+        noAccessoriesSubject.format(
+            summary(
+                clothes = ClothesClause(listOf("umbrella")),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
+        ) shouldBe "Today, it will be 21°. Rain."
+    }
+
+    @Test
+    fun `accessories Never drops the umbrella from the POSSIBLE precip clause`() {
+        noAccessoriesSubject.format(
+            summary(
+                clothes = ClothesClause(listOf("umbrella")),
+                precip = PrecipClause(
+                    WeatherCondition.RAIN,
+                    LocalTime.of(15, 0),
+                    PrecipLikelihood.POSSIBLE,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Chance of rain."
+    }
+
+    @Test
+    fun `accessories Never still speaks the rain when the wear clause is suppressed`() {
+        // The carry rides on carriedAccessories independently of the wear
+        // clause, but NEVER silences it everywhere in the prose — the rain
+        // still surfaces.
+        noAccessoriesSubject.format(
+            summary(
+                clothes = null,
+                carriedAccessories = listOf("umbrella"),
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+            ),
+        ) shouldBe "Today, it will be 21°. Rain."
+    }
+
+    @Test
+    fun `accessories Never drops the umbrella from the evening tie-in, keeping bare rain`() {
+        // The evening tie-in's own umbrella carry is gated too, so it falls
+        // back to the bare-rain wording rather than naming the umbrella.
+        noAccessoriesSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain."
+    }
+
+    @Test
+    fun `accessories Never keeps a genuine clothing item in the evening tie-in`() {
+        // Only the umbrella is silenced — a real evening clothes delta (jacket)
+        // still rides the item-led template alongside the rain.
+        noAccessoriesSubject.format(
+            summary(
+                eveningEventTieIn = EveningEventTieInClause(
+                    items = listOf("jacket", "umbrella"),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        ) shouldBe "Today, it will be 21°. Tonight, rain, bring a jacket."
     }
 
     @Test

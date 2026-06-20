@@ -850,7 +850,12 @@
     <string name="settings_format_bottoms_always">Always</string>
     <string name="settings_format_bottoms_if_garments">If garments</string>
     <string name="settings_format_bottoms_never">Never</string>
-    <!-- Rain-accessory picker: "Off" vs "Umbrella" — opts in to "bring an umbrella" alongside the rain mention. -->
+    <!-- Accessories-format picker: whether the prose speaks the carried umbrella.
+         NEVER keeps the umbrella icon on the outfit card but drops the spoken
+         "bring an umbrella" — see it without hearing it. -->
+    <string name="settings_format_accessories_label">Accessories</string>
+    <string name="settings_format_accessories_always">Always</string>
+    <string name="settings_format_accessories_never">Never</string>
     <!-- Preamble pickers (PreambleVisibility), shared option labels. The period
          lead-in is the "Today, it will be …" intro; the wear lead-in is the
          "Wear a …" intro before the clothes. "Speech only" keeps it spoken but

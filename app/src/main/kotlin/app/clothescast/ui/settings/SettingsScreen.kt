@@ -178,6 +178,7 @@ internal fun SchedulePage(
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
     onSetUpSpeech: () -> Unit,
+    onOpenSmartHome: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScaffold(R.string.settings_page_schedule, onBack) { padding ->
@@ -219,6 +220,7 @@ internal fun SchedulePage(
             onSetCastMorning = viewModel::setCastMorning,
             onSetCastTonight = viewModel::setCastTonight,
             onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
+            onOpenSmartHome = onOpenSmartHome,
             previewEnabled = !state.anyWorkActive,
         )
         }

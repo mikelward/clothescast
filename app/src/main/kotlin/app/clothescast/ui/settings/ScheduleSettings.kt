@@ -123,6 +123,12 @@ internal fun ScheduleContent(
     onSetCastMorning: (Boolean) -> Unit = {},
     onSetCastTonight: (Boolean) -> Unit = {},
     onSetCastSkipPhoneSpeech: (Boolean) -> Unit = {},
+    // Jumps to the full Smart Home settings page — where the cast display is
+    // picked and the MQTT bridge configured. Shown beneath the smart-home
+    // sections so the toggles here aren't a dead end (the per-period cast
+    // toggles stay disabled until a display is picked, which only happens
+    // there). No-op default for previews / tests.
+    onOpenSmartHome: () -> Unit = {},
     // Gates the per-section "Play now" buttons: false while any daily / tonight
     // / play worker is active, so a preview can't start a second concurrent
     // delivery. Defaulted true for previews/tests that don't observe work state.
@@ -352,6 +358,14 @@ internal fun ScheduleContent(
                         onCheckedChange = onSetMqttSkipPhoneSpeech,
                     )
                 }
+            }
+            // Escape hatch to the full Smart Home page (display picker, MQTT
+            // config). Shown whenever a smart-home section is visible above.
+            if ((castAvailable && castEnabled) || mqttBridgeEnabled) {
+                OutlinedButton(
+                    onClick = onOpenSmartHome,
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.settings_page_smart_home)) }
             }
         }
     }

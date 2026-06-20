@@ -506,7 +506,7 @@ private val ERROR_TIMESTAMP_FORMAT: DateTimeFormatter =
     DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm")
 
 @Composable
-private fun MqttToggleRow(
+internal fun MqttToggleRow(
     title: String,
     description: String,
     checked: Boolean,

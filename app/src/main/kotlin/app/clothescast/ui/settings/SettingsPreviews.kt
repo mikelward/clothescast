@@ -114,8 +114,18 @@ internal fun SettingsScheduleNotificationsBlockedPreview() {
     SettingsFrame { ScheduleContentSample() }
 }
 
+// Schedule preview surfacing the smart-home delivery sections: the MQTT bridge
+// on and Cast on with a display picked, so the snapshot covers the Cast + MQTT
+// toggle blocks that now appear on this page when their master switches are
+// enabled in Smart Home settings.
+@Preview(name = "Settings · Schedule (smart home)", widthDp = 360)
 @Composable
-private fun ScheduleContentSample() {
+internal fun SettingsScheduleSmartHomePreview() {
+    SettingsFrame { ScheduleContentSample(smartHome = true) }
+}
+
+@Composable
+private fun ScheduleContentSample(smartHome: Boolean = false) {
     ScheduleContent(
         time = LocalTime.of(7, 0),
         days = Schedule.EVERY_DAY,
@@ -141,6 +151,10 @@ private fun ScheduleContentSample() {
         onSetDeliveryMode = {},
         onSetTonightDeliveryMode = {},
         onSetUpSpeech = {},
+        mqttBridgeEnabled = smartHome,
+        castAvailable = smartHome,
+        castEnabled = smartHome,
+        castRouteName = if (smartHome) "Living-room display" else null,
     )
 }
 

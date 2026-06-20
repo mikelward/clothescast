@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -41,6 +42,7 @@ import app.clothescast.location.ReverseGeocoder
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
@@ -50,6 +52,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TtsStyle
+import app.clothescast.core.domain.usecase.CalendarEventClassifier
 import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.ui.today.HolidayBanner
@@ -98,6 +101,7 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             region = state.region,
             holidayOverrides = state.holidayOverrides,
             enabledCountries = state.effectiveEnabledHolidayCountries,
+            calendarEnabled = state.calendarEnabled,
             themeFromCalendarHolidays = state.calendarEnabled && state.themeFromCalendarHolidays,
             themeFromCalendarBirthdays = state.calendarEnabled && state.themeFromCalendarBirthdays,
             loadEventsForDay = viewModel::calendarEventsForDay,
@@ -149,6 +153,7 @@ internal fun DeveloperContent(
     enabledCountries: Set<String>,
     padding: PaddingValues,
     onSpeak: (HolidayId?) -> Unit,
+    calendarEnabled: Boolean = false,
     themeFromCalendarHolidays: Boolean = false,
     themeFromCalendarBirthdays: Boolean = false,
     loadEventsForDay: suspend (LocalDate) -> List<CalendarEvent> = { emptyList() },
@@ -166,20 +171,27 @@ internal fun DeveloperContent(
     // read when a calendar-sourced toggle is on — matches the Today screen's
     // gate and avoids a needless calendar query (and permission surprise)
     // otherwise.
-    var events by remember { mutableStateOf<List<CalendarEvent>>(emptyList()) }
-    LaunchedEffect(selectedDate, themeFromCalendarHolidays, themeFromCalendarBirthdays) {
-        events = if (themeFromCalendarHolidays || themeFromCalendarBirthdays) {
-            loadEventsForDay(selectedDate)
-        } else {
-            emptyList()
-        }
+    // Read the picked day's events for the classification diagnostic only when
+    // the in-app calendar master switch is on — independent of the *theming*
+    // sub-toggles, so the diagnostic still works with holiday/birthday theming
+    // off, but honoring the user's in-app calendar opt-out. (The reader checks
+    // only the OS permission, which can outlive that opt-out, so the master
+    // switch is gated here rather than relied on downstream.) The reader still
+    // returns an empty list — and never prompts — when READ_CALENDAR isn't
+    // granted. The theme preview re-gates these via `themeEvents` below so it
+    // only *themes* from the calendar sources the matching toggle enables,
+    // mirroring the Today screen.
+    var dayEvents by remember { mutableStateOf<List<CalendarEvent>>(emptyList()) }
+    LaunchedEffect(selectedDate, calendarEnabled) {
+        dayEvents = if (calendarEnabled) loadEventsForDay(selectedDate) else emptyList()
     }
+    val themeEvents = if (themeFromCalendarHolidays || themeFromCalendarBirthdays) dayEvents else emptyList()
 
     val theme = remember(
         selectedDate,
         holidayOverrides,
         enabledCountries,
-        events,
+        themeEvents,
         themeFromCalendarHolidays,
         themeFromCalendarBirthdays,
     ) {
@@ -187,7 +199,7 @@ internal fun DeveloperContent(
             date = selectedDate,
             overrides = holidayOverrides,
             enabledCountries = enabledCountries,
-            events = events,
+            events = themeEvents,
             themeFromCalendarHolidays = themeFromCalendarHolidays,
             themeFromCalendarBirthdays = themeFromCalendarBirthdays,
         )
@@ -239,6 +251,8 @@ internal fun DeveloperContent(
             }
         }
 
+        CalendarEventDiagnosticCard(events = dayEvents)
+
         if (theme != null) {
             HolidayBanner(theme = theme, region = region, modifier = Modifier.fillMaxWidth())
         } else {
@@ -287,6 +301,99 @@ internal fun DeveloperContent(
             },
         ) {
             DatePicker(state = pickerState)
+        }
+    }
+}
+
+/**
+ * Lists every event the calendar reader returned for the picked day, with the
+ * classification each one received — so you can see exactly which personal-
+ * calendar entry (if any) is being detected as a birthday or public holiday
+ * and themes the day. A day themed unexpectedly ("why is it King's Birthday?")
+ * is almost always a single row here whose kind isn't NORMAL.
+ *
+ * Hardcoded English, like the reverse-geocode tester below: this surface is
+ * developer-only and never reaches a translator. Titles, locations, and the
+ * owner account are device-local diagnostics — they stay on screen and must
+ * never be copied into any off-device payload (insight prose, TTS, Firebase).
+ */
+@Composable
+private fun CalendarEventDiagnosticCard(events: List<CalendarEvent>) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text("Detected calendar events", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "Every event the reader returned for this day and how it classified each. " +
+                    "A BIRTHDAY or PUBLIC_HOLIDAY row is what themes the day — that's the one " +
+                    "to look at when a day is themed unexpectedly. Free-time events with no " +
+                    "birthday/holiday signal are dropped by the reader, so this can be shorter " +
+                    "than your calendar.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (events.isEmpty()) {
+                Text(
+                    "(no events read — calendar access off, or nothing on this day)",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                events.forEach { event -> EventClassificationRow(event) }
+            }
+        }
+    }
+}
+
+/** One event row in [CalendarEventDiagnosticCard]: title + kind, then the why. */
+@Composable
+private fun EventClassificationRow(event: CalendarEvent) {
+    // Recompute the reason from the same pure classifier the reader uses, so it
+    // stays in lock-step with the real pipeline. eventType isn't carried on
+    // CalendarEvent, so an explicit "Birthday"-typed event reads back as
+    // DEFAULT_NORMAL here while the reader (which had the type) tagged it
+    // BIRTHDAY; surface that case explicitly rather than contradict the kind.
+    val recomputed = CalendarEventClassifier.classify(event.title, event.ownerAccount, eventType = null)
+    val reason = when {
+        recomputed.kind == event.kind -> recomputed.reason.name
+        event.kind == EventKind.BIRTHDAY -> CalendarEventClassifier.Reason.EVENT_TYPE_BIRTHDAY.name
+        else -> recomputed.reason.name
+    }
+    val highlight = event.kind != EventKind.NORMAL
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = event.title,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = event.kind.name,
+                style = MaterialTheme.typography.labelMedium,
+                color = if (highlight) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text(
+            text = "reason: $reason" + if (event.allDay) " · all-day" else "",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        event.location?.let { loc ->
+            Text(
+                text = "location: $loc",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        event.ownerAccount?.let { owner ->
+            Text(
+                text = "calendar: $owner",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

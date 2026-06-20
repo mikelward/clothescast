@@ -57,7 +57,7 @@ class InsightNotifierTest {
         posted shouldHaveSize 1
         val n = posted.single()
 
-        n.channelId shouldBe "scheduled_insight_v1"
+        n.channelId shouldBe "scheduled_insight_v2"
         n.extras.getString(NotificationCompat.EXTRA_TITLE) shouldBe
             context.getString(R.string.notification_daily_insight_title)
         n.extras.getString(NotificationCompat.EXTRA_TEXT) shouldBe "Today will be mild. Wear a t-shirt."

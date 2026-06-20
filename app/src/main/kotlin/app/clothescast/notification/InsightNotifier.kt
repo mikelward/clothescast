@@ -66,11 +66,11 @@ class InsightNotifier(private val context: Context) {
             .setContentTitle(context.getString(R.string.notification_daily_insight_title))
             .setContentText(prose)
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))
-            // Channel importance is DEFAULT on API 26+; PRIORITY_DEFAULT is the
-            // pre-O equivalent for the same bucket. Was PRIORITY_HIGH (heads-up)
-            // back when the channel was IMPORTANCE_HIGH; the schedule is
-            // user-opted-in, so a sound + shade entry is enough.
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            // Channel importance is LOW (silent) on API 26+; PRIORITY_LOW is the
+            // pre-O equivalent for the same bucket. The schedule is user-opted-in
+            // and read at a glance, so a quiet shade entry — no ding, no heads-up —
+            // is enough.
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
@@ -83,7 +83,7 @@ class InsightNotifier(private val context: Context) {
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_DAILY_INSIGHT, notification)
         DiagLog.i(
             TAG,
-            "Posted daily insight notification (id=$NOTIFICATION_ID_DAILY_INSIGHT, channel=$CHANNEL_SCHEDULED_INSIGHT, importance=DEFAULT).",
+            "Posted daily insight notification (id=$NOTIFICATION_ID_DAILY_INSIGHT, channel=$CHANNEL_SCHEDULED_INSIGHT, importance=LOW).",
         )
     }
 

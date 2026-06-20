@@ -69,7 +69,9 @@ class TonightInsightNotifier(private val context: Context) {
             .setContentTitle(context.getString(R.string.notification_tonight_insight_title))
             .setContentText(prose)
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            // PRIORITY_LOW mirrors the LOW (silent) channel importance on pre-O —
+            // posts quietly to the shade, no ding or heads-up. See InsightNotifier.
+            .setPriority(NotificationCompat.PRIORITY_LOW)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

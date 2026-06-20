@@ -10,7 +10,11 @@ import app.clothescast.R
  * Channel IDs are stable identifiers persisted by the system; renaming or deleting one
  * is a user-visible change. Bump the suffix when channel semantics change.
  */
-internal const val CHANNEL_SCHEDULED_INSIGHT = "scheduled_insight_v1"
+// Bumped from `scheduled_insight_v1` so the drop from DEFAULT to LOW (silent —
+// no sound or heads-up) actually reaches existing installs. Android preserves an
+// existing channel's user-set importance forever, so editing the constant alone
+// would leave anyone who already had v1 still hearing the old ding.
+internal const val CHANNEL_SCHEDULED_INSIGHT = "scheduled_insight_v2"
 // Bumped from `playback_v1` so the broader semantics (now covers Preparing
 // + Delivering across the whole scheduled run, not just speech) take a
 // fresh user importance choice. Android preserves an existing channel's
@@ -41,6 +45,10 @@ private const val CHANNEL_DAILY_INSIGHT_RETIRED_V1 = "daily_insight_v1"
 private const val CHANNEL_DAILY_INSIGHT_RETIRED_V2 = "daily_insight_v2"
 private const val CHANNEL_TONIGHT_INSIGHT_DEFAULT_RETIRED = "tonight_insight_default_v1"
 private const val CHANNEL_TONIGHT_INSIGHT_SILENT_RETIRED = "tonight_insight_silent_v1"
+// Pre-silent forecast channel, IMPORTANCE_DEFAULT (made a sound). Replaced by the
+// LOW (silent) CHANNEL_SCHEDULED_INSIGHT above — a fresh ID so the new silence
+// reaches installs that already created the DEFAULT channel.
+private const val CHANNEL_SCHEDULED_INSIGHT_RETIRED_V1 = "scheduled_insight_v1"
 // Pre-v2 playback channel was scoped to "Speaking the forecast"; v2 broadens
 // to cover Preparing + Delivering across the whole scheduled run. Same
 // rationale as the forecast-channel collapse: let the user pick importance
@@ -53,10 +61,11 @@ private const val CHANNEL_PLAYBACK_RETIRED_V1 = "playback_v1"
  * Application.onCreate on every cold start.
  *
  * Two channels:
- * - **Scheduled ClothesCast** (DEFAULT): the morning *and* evening forecast
+ * - **Scheduled ClothesCast** (LOW, silent): the morning *and* evening forecast
  *   summaries the user opted into. Posted at the same importance for both
  *   periods so a night-worker primary tonight slot reads exactly as well as
- *   a day-worker primary morning slot.
+ *   a day-worker primary morning slot. Silent by design — these are a calm
+ *   reminder, not an alert, so they land in the shade without a sound.
  * - **Scheduled ClothesCast delivery** (LOW, silent): the foreground-service
  *   notification shown while the run prepares + delivers (see
  *   [ScheduledDeliveryService]). A policy requirement for the background
@@ -85,14 +94,21 @@ object NotificationChannelRegistrar {
         manager.deleteNotificationChannel(CHANNEL_TONIGHT_INSIGHT_DEFAULT_RETIRED)
         manager.deleteNotificationChannel(CHANNEL_TONIGHT_INSIGHT_SILENT_RETIRED)
         manager.deleteNotificationChannel(CHANNEL_PLAYBACK_RETIRED_V1)
+        manager.deleteNotificationChannel(CHANNEL_SCHEDULED_INSIGHT_RETIRED_V1)
 
+        // LOW + no sound / vibration: the morning and evening summaries are a
+        // calm, opted-in reminder, not an alert — they post silently to the shade
+        // and status bar without a ding or heads-up. setShowBadge stays on so the
+        // launcher dot still flags an unread summary.
         val scheduled = NotificationChannel(
             CHANNEL_SCHEDULED_INSIGHT,
             context.getString(R.string.notification_channel_scheduled_insight_name),
-            NotificationManager.IMPORTANCE_DEFAULT,
+            NotificationManager.IMPORTANCE_LOW,
         ).apply {
             description = context.getString(R.string.notification_channel_scheduled_insight_description)
             setShowBadge(true)
+            setSound(null, null)
+            enableVibration(false)
             lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
         }
 

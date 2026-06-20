@@ -320,6 +320,8 @@ class CalendarContractEventReaderTest {
         events[0].kind shouldBe EventKind.BIRTHDAY
         events[1].title shouldBe "Independence Day"
         events[1].kind shouldBe EventKind.PUBLIC_HOLIDAY
+        // Source calendar flows through so the settings listing can reveal it.
+        events[1].ownerAccount shouldBe "en.usa#holiday@group.v.calendar.google.com"
     }
 
     @Test

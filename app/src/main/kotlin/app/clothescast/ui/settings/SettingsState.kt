@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaFormat
@@ -65,6 +66,7 @@ data class SettingsState(
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    val accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
     val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val deltaThresholdC: Double? = 3.0,

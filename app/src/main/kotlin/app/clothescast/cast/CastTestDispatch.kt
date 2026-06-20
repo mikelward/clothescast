@@ -82,6 +82,7 @@ internal suspend fun castCurrentInsight(
         prefs.rangeFormat,
         prefs.clothesFormat,
         prefs.bottomsFormat,
+        prefs.accessoriesFormat,
         prefs.periodPreamble,
         prefs.wearPreamble,
     )

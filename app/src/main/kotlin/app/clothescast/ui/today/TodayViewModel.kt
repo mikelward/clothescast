@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
@@ -89,6 +90,7 @@ data class TodayState(
     val rangeFormat: RangeFormat = RangeFormat.DEGREES,
     val clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    val accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
     val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
@@ -723,6 +725,7 @@ class TodayViewModel(
             rangeFormat = prefs.rangeFormat,
             clothesFormat = prefs.clothesFormat,
             bottomsFormat = prefs.bottomsFormat,
+            accessoriesFormat = prefs.accessoriesFormat,
             periodPreamble = prefs.periodPreamble,
             wearPreamble = prefs.wearPreamble,
             distanceUnit = prefs.distanceUnit,

@@ -280,6 +280,24 @@ enum class ClothesFormat { ITEMS, LAYER_COUNT }
 enum class BottomsFormat { ALWAYS, IF_GARMENTS, NEVER }
 
 /**
+ * Controls whether carried accessories (the umbrella) are *spoken* in the
+ * insight prose.
+ *
+ *  - [ALWAYS] (default) — when a rain accessory is carried and the condition
+ *    warrants it (RAIN / DRIZZLE / THUNDERSTORM), the prose names it: "Rain,
+ *    bring an umbrella." / "Tonight, rain, bring an umbrella."
+ *  - [NEVER] — the accessory never appears in the spoken / prose clause. Rain
+ *    still surfaces ("Rain.") and the umbrella icon still shows on the outfit
+ *    card; only the spoken mention is dropped. Lets the user see the umbrella
+ *    without hearing it read aloud.
+ *
+ * Affects the spoken / prose clause only — the outfit card icon and the
+ * recommended-items list still show the carried umbrella regardless. The
+ * umbrella itself is still driven by the opt-in precip-keyed clothes rule.
+ */
+enum class AccessoriesFormat { ALWAYS, NEVER }
+
+/**
  * Controls whether the morning insight's spoken clothes clause ("Wear a
  * jacket.") is emitted.
  *
@@ -796,6 +814,14 @@ data class UserPreferences(
      * layer-count mode.
      */
     val bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    /**
+     * Controls whether the carried umbrella is spoken in the prose. See
+     * [AccessoriesFormat]. Defaults to [AccessoriesFormat.ALWAYS] — the
+     * historical behaviour, where rain folds the umbrella into the precip
+     * clause. [AccessoriesFormat.NEVER] drops the spoken mention while the
+     * outfit-card icon still shows it.
+     */
+    val accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
     /**
      * Where the period preamble ("Today, it will be" / "Tonight, it will be")
      * fronting the temperature sentence is allowed to survive. See

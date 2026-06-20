@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
@@ -84,6 +85,7 @@ internal fun VoiceContent(
     rangeFormat: RangeFormat,
     clothesFormat: ClothesFormat,
     bottomsFormat: BottomsFormat,
+    accessoriesFormat: AccessoriesFormat,
     periodPreamble: PreambleVisibility,
     wearPreamble: PreambleVisibility,
     // A TODAY-period InsightSummary picked from whichever cache slot holds a
@@ -172,6 +174,7 @@ internal fun VoiceContent(
                     rangeFormat = rangeFormat,
                     clothesFormat = clothesFormat,
                     bottomsFormat = bottomsFormat,
+                    accessoriesFormat = accessoriesFormat,
                     periodPreamble = periodPreamble,
                     wearPreamble = wearPreamble,
                     summary = currentInsight,
@@ -689,6 +692,7 @@ internal suspend fun runTtsPreview(
     rangeFormat: RangeFormat = RangeFormat.DEGREES,
     clothesFormat: ClothesFormat = ClothesFormat.ITEMS,
     bottomsFormat: BottomsFormat = BottomsFormat.IF_GARMENTS,
+    accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
     periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     summary: InsightSummary? = null,
@@ -707,6 +711,7 @@ internal suspend fun runTtsPreview(
             rangeFormat = rangeFormat,
             clothesFormat = clothesFormat,
             bottomsFormat = bottomsFormat,
+            accessoriesFormat = accessoriesFormat,
             periodPreamble = periodPreamble,
             wearPreamble = wearPreamble,
         )

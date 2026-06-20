@@ -243,6 +243,23 @@ class MqttPublisher(
                         "consumers triggering on it will skip this bundle until the next publish.",
                 )
             }
+            // One coalesced line for the whole `<period>/*` bundle instead of a
+            // line per topic. Failures are still surfaced individually above /
+            // below, so this success summary stays terse.
+            val periodKinds = succeededKinds(
+                "text" to proseOutcome,
+                "image" to imageOutcome,
+                "audio" to audioOutcome,
+                "video" to videoOutcome,
+                "timestamp" to periodTimestampOutcome,
+            )
+            DiagLog.i(
+                TAG,
+                "Published ${period.name.lowercase()} bundle to " +
+                    "${prepared.scheme}://${prepared.host}:${prepared.port}/" +
+                    "${proseTopic.substringBeforeLast('/')}: " +
+                    "${periodKinds.joinToString(", ")} (${periodKinds.size} topics).",
+            )
         } else {
             DiagLog.i(
                 TAG,
@@ -327,6 +344,21 @@ class MqttPublisher(
                                 "the next successful publish.",
                         )
                     }
+                    // One coalesced line for the whole `/now` mirror instead of a
+                    // line per topic, matching the `<period>/*` summary above.
+                    val nowKinds = succeededKinds(
+                        "image" to nowImageOutcome,
+                        "audio" to nowAudioOutcome,
+                        "video" to nowVideoOutcome,
+                        "text" to nowTextOutcome,
+                        "timestamp" to nowTimestampOutcome,
+                    )
+                    DiagLog.i(
+                        TAG,
+                        "Mirrored ${period.name.lowercase()} bundle to " +
+                            "${nowTextTopic.substringBeforeLast('/')}: " +
+                            "${nowKinds.joinToString(", ")} (${nowKinds.size} topics).",
+                    )
                 } else {
                     DiagLog.i(
                         TAG,
@@ -383,7 +415,17 @@ class MqttPublisher(
             TAG,
             "MQTT test publish to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
         )
-        return executePublish(prepared, topic, "ClothesCast: connection test".toByteArray(Charsets.UTF_8))
+        val outcome = executePublish(prepared, topic, "ClothesCast: connection test".toByteArray(Charsets.UTF_8))
+        if (outcome is MqttPublishOutcome.Success) {
+            // executePublish no longer logs per-topic success, so confirm the
+            // probe landed — the "Publish now" button's whole point is to see
+            // that the broker is reachable.
+            DiagLog.i(
+                TAG,
+                "MQTT test publish succeeded to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
+            )
+        }
+        return outcome
     }
 
     /**
@@ -443,6 +485,15 @@ class MqttPublisher(
         )
     }
 
+    /**
+     * The `kind` label of each topic whose publish succeeded, preserving
+     * argument order — used to build the coalesced "Published … (N topics)"
+     * summary lines so a successful bundle costs one diag line per group
+     * instead of one per topic.
+     */
+    private fun succeededKinds(vararg topics: Pair<String, MqttPublishOutcome>): List<String> =
+        topics.filter { it.second is MqttPublishOutcome.Success }.map { it.first }
+
     private suspend fun executePublish(
         prepared: PreparedPublish,
         topic: String,
@@ -482,7 +533,11 @@ class MqttPublisher(
         var result: MqttPublishOutcome = MqttPublishOutcome.Success
         try {
             publish(prepared.config, topic, payload)
-            DiagLog.i(TAG, "Published to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic")
+            // Success is intentionally silent here: a single bundle fans out to
+            // ~25 topics (period + /now + Home Assistant discovery), so a line
+            // per topic floods the 300-line diag snapshot. Callers log one
+            // coalesced summary per group instead; only failures, timeouts, and
+            // retries — the lines worth reading — are logged per topic below.
         } catch (ce: CancellationException) {
             // Re-raise so withTimeoutOrNull sees a timeout (returns null
             // and we return Failure below) and so a WorkManager-issued
@@ -518,13 +573,17 @@ class MqttPublisher(
     }
 
     private suspend fun publishHomeAssistantDiscovery(prepared: PreparedPublish) {
-        homeAssistantDiscoveryEntries(prepared.baseTopic).forEach { entry ->
+        val entries = homeAssistantDiscoveryEntries(prepared.baseTopic)
+        var configsPublished = 0
+        entries.forEach { entry ->
             val outcome = executePublish(
                 prepared = prepared,
                 topic = entry.configTopic,
                 payload = entry.payload.toByteArray(Charsets.UTF_8),
             )
-            if (outcome !is MqttPublishOutcome.Success) {
+            if (outcome is MqttPublishOutcome.Success) {
+                configsPublished++
+            } else {
                 DiagLog.w(
                     TAG,
                     "Home Assistant discovery config ${entry.configTopic} failed ($outcome); " +
@@ -535,9 +594,13 @@ class MqttPublisher(
         // Clear the pre-rename today/tonight discovery configs (empty retained
         // payload = HA "remove entity") so upgrading users don't keep orphaned
         // today/tonight entities alongside the new day/night ones.
-        homeAssistantDiscoveryTombstones(prepared.baseTopic).forEach { topic ->
+        val tombstones = homeAssistantDiscoveryTombstones(prepared.baseTopic)
+        var staleConfigsCleared = 0
+        tombstones.forEach { topic ->
             val outcome = executePublish(prepared = prepared, topic = topic, payload = ByteArray(0))
-            if (outcome !is MqttPublishOutcome.Success) {
+            if (outcome is MqttPublishOutcome.Success) {
+                staleConfigsCleared++
+            } else {
                 DiagLog.w(
                     TAG,
                     "Clearing stale discovery config $topic failed ($outcome); an orphaned " +
@@ -545,6 +608,13 @@ class MqttPublisher(
                 )
             }
         }
+        // One coalesced line for the discovery fan-out (per-topic failures, if
+        // any, are logged above) so it doesn't add ~17 lines to the snapshot.
+        DiagLog.i(
+            TAG,
+            "Published Home Assistant discovery: $configsPublished/${entries.size} entity configs, " +
+                "cleared $staleConfigsCleared/${tombstones.size} stale today/tonight configs.",
+        )
     }
 
     private data class PreparedPublish(

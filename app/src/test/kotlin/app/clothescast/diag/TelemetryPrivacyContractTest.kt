@@ -25,6 +25,7 @@ class TelemetryPrivacyContractTest {
         "api_call",
         "notification_delivery",
         "daily_refresh",
+        "scheduled_delivery_timeout",
         // The non-voice settings snapshot fans out into one event per Settings
         // page (one combined event would exceed Firebase's 25-param cap); the
         // param-key allowlist below is unchanged — same keys, regrouped.

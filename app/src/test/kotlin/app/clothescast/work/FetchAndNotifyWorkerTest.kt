@@ -325,21 +325,22 @@ class FetchAndNotifyWorkerTest {
     // --- companion enqueue routing --------------------------------------
 
     @Test
-    fun `enqueueOneShot for TODAY enqueues under the daily unique work name`() {
+    fun `enqueueOneShot for TODAY enqueues under the shared scheduled-delivery queue`() {
         FetchAndNotifyWorker.enqueueOneShot(context, period = ForecastPeriod.TODAY)
 
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME).map { it.state } shouldContainExactlyInAnyOrder
             listOf(WorkInfo.State.ENQUEUED)
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT) shouldHaveSize 0
     }
 
     @Test
-    fun `enqueueOneShot for TONIGHT enqueues under the tonight unique work name`() {
+    fun `enqueueOneShot for TONIGHT also enqueues under the shared scheduled-delivery queue`() {
+        // Single queue for both periods (REPLACE cancels overlapping runs).
+        // The period the worker is for is carried on the input data, not the
+        // queue name — see FetchAndNotifyWorker.UNIQUE_WORK_NAME.
         FetchAndNotifyWorker.enqueueOneShot(context, period = ForecastPeriod.TONIGHT)
 
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT).map { it.state } shouldContainExactlyInAnyOrder
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME).map { it.state } shouldContainExactlyInAnyOrder
             listOf(WorkInfo.State.ENQUEUED)
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) shouldHaveSize 0
     }
 
     @Test
@@ -360,28 +361,26 @@ class FetchAndNotifyWorkerTest {
 
     @Test
     fun `enqueuePlay uses its own unique work queue so it can't block scheduled refreshes`() {
-        // Play sits on UNIQUE_WORK_NAME_PLAY rather than the alarm
-        // queues; otherwise an offline Play tap parked behind the
-        // network constraint would let WorkManager's KEEP policy on
-        // the next alarm fire drop the scheduled morning refresh in
-        // favour of the pending play — the user would wake up to a
-        // stale cached announcement instead of a fresh forecast.
+        // Play sits on UNIQUE_WORK_NAME_PLAY rather than the shared
+        // scheduled-delivery queue; otherwise an offline Play tap parked
+        // behind the network constraint would let WorkManager's REPLACE
+        // policy on the next alarm fire cancel each other — the user
+        // would either lose their Play tap or wake up to a stale cached
+        // announcement.
         FetchAndNotifyWorker.enqueuePlay(context, period = ForecastPeriod.TODAY)
 
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY).map { it.state } shouldContainExactlyInAnyOrder
             listOf(WorkInfo.State.ENQUEUED)
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) shouldHaveSize 0
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT) shouldHaveSize 0
     }
 
     @Test
-    fun `enqueuePlay for TONIGHT also lands on the play queue, not the tonight queue`() {
+    fun `enqueuePlay for TONIGHT also lands on the play queue`() {
         FetchAndNotifyWorker.enqueuePlay(context, period = ForecastPeriod.TONIGHT)
 
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY).map { it.state } shouldContainExactlyInAnyOrder
             listOf(WorkInfo.State.ENQUEUED)
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) shouldHaveSize 0
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT) shouldHaveSize 0
     }
 
     @Test
@@ -474,11 +473,10 @@ class FetchAndNotifyWorkerTest {
     private fun workInfosFor(name: String): List<WorkInfo> =
         WorkManager.getInstance(context).getWorkInfosForUniqueWork(name).get()
 
-    // The two observed refresh queues the Today banner watches; the cache-only
-    // recovery lands on whichever matches the current schedule window.
+    // The observed refresh queue the Today banner watches; the cache-only
+    // recovery lands here regardless of which schedule window's current.
     private fun observedRefreshWorkInfos(): List<WorkInfo> =
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME) +
-            workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT)
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
 
     // Every queue a cache-only recovery could plausibly enqueue on — used to
     // assert the branch *didn't* kick one.

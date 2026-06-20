@@ -30,6 +30,7 @@ import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.diag.DiagLog
+import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.discovery.HomeAssistantDiscovery
 import app.clothescast.discovery.NsdHomeAssistantDiscovery
 import app.clothescast.diag.Telemetry
@@ -318,6 +319,7 @@ class ClothesCastApplication : Application() {
         // and DiagLog's wrapper above — no manual chaining needed here.
         Telemetry.start(this, settingsRepository, applicationScope)
         NotificationChannelRegistrar.register(this)
+        FetchAndNotifyWorker.cleanupLegacyQueues(this)
         // Register the Cast session-end listener so [CastMediaServer.stop]
         // fires whenever a cast session ends — user-initiated disconnect on
         // the receiver, network failure, route switch — and the LAN HTTP

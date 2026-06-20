@@ -12,14 +12,16 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.diag.DiagLog
 
 /**
- * Posts the tonight insight as a system notification. Picks one of two channels
- * based on whether the insight has calendar events tonight:
- *  - [CHANNEL_TONIGHT_INSIGHT_DEFAULT] when events are present — default importance,
- *    plays the user's notification sound. The user is heading out somewhere; the
- *    summary is worth interrupting them for.
- *  - [CHANNEL_TONIGHT_INSIGHT_SILENT] when the evening is empty — low importance,
- *    silent. Still posted so the user can glance at the lock screen and see the
- *    overnight insight, but nothing audible.
+ * Posts the tonight insight as a system notification on the shared
+ * [CHANNEL_SCHEDULED_INSIGHT] — the same channel the morning insight uses, so
+ * a night-worker primary tonight slot reads exactly as well as a day-worker
+ * primary morning slot.
+ *
+ * "Only notify on events" lives at the worker / [DeliveryGates] level: when
+ * the user has it on and the evening has no events, the worker doesn't call
+ * `notify()` at all (no quiet-channel fallback). That keeps the channel
+ * design symmetric across periods and lets the user dial channel importance
+ * once in system settings.
  *
  * Tapping the notification opens MainActivity. POST_NOTIFICATIONS is checked before
  * posting; on Android 13+ a missing permission silently no-ops (the insight is
@@ -49,11 +51,8 @@ class TonightInsightNotifier(private val context: Context) {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
-        val channel = if (insight.hasEvents) CHANNEL_TONIGHT_INSIGHT_DEFAULT else CHANNEL_TONIGHT_INSIGHT_SILENT
-        val priority = if (insight.hasEvents) NotificationCompat.PRIORITY_DEFAULT else NotificationCompat.PRIORITY_LOW
-
         val top = insight.outfit?.top
-        val notification = NotificationCompat.Builder(context, channel)
+        val notification = NotificationCompat.Builder(context, CHANNEL_SCHEDULED_INSIGHT)
             .setSmallIcon(InsightNotifier.smallIconFor(top))
             .setLargeIcon(
                 InsightNotifier.largeIconForTop(
@@ -70,7 +69,7 @@ class TonightInsightNotifier(private val context: Context) {
             .setContentTitle(context.getString(R.string.notification_tonight_insight_title))
             .setContentText(prose)
             .setStyle(NotificationCompat.BigTextStyle().bigText(prose))
-            .setPriority(priority)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
@@ -78,18 +77,12 @@ class TonightInsightNotifier(private val context: Context) {
                 NotificationDismissReceiver.deleteIntent(context, NOTIFICATION_ID_TONIGHT_INSIGHT, "tonight insight"),
             )
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
-            .apply {
-                // Belt-and-braces: even if a downstream OEM ignores the silent
-                // channel's importance, the per-notification flag still suppresses
-                // sound + heads-up for the no-events case.
-                if (!insight.hasEvents) setSilent(true)
-            }
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_TONIGHT_INSIGHT, notification)
         DiagLog.i(
             TAG,
-            "Posted tonight insight notification (id=$NOTIFICATION_ID_TONIGHT_INSIGHT, channel=$channel, hasEvents=${insight.hasEvents}).",
+            "Posted tonight insight notification (id=$NOTIFICATION_ID_TONIGHT_INSIGHT, channel=$CHANNEL_SCHEDULED_INSIGHT, hasEvents=${insight.hasEvents}).",
         )
     }
 

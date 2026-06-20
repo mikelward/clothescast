@@ -49,6 +49,11 @@
          run is triggered by an exact alarm — an explicit FGS-start exemption). -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <!-- ScheduledDeliveryService runs as a dataSync FGS during the fetch +
+         insight-generation window (and during deliver when the period doesn't
+         play speech). The mediaPlayback permission above covers the upgrade to
+         the speech window. See docs/schedule-lifecycle.md. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <!-- Read today's calendar events to enrich the morning insight. Opt-in via the
          Settings toggle; runtime grant requested from there. We deliberately do NOT
@@ -129,6 +134,19 @@
                 <action android:name="app.clothescast.alarm.FIRE_TONIGHT" />
             </intent-filter>
         </receiver>
+
+        <!-- Owns the "Preparing your ClothesCast" / "Delivering your ClothesCast"
+             foreground-service notification across an alarm-triggered delivery.
+             Started from AlarmReceiver via startForegroundService inside the
+             exact-alarm FGS-from-background exemption window. dataSync covers
+             the fetch + insight phase (and the no-speech deliver phase);
+             mediaPlayback covers the phone-speech deliver phase so the speaker
+             can claim audio focus on Android 15+. See
+             docs/schedule-lifecycle.md. -->
+        <service
+            android:name=".alarm.ScheduledDeliveryService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync|mediaPlayback" />
 
         <!-- Internal — only the OS delivers via the notification delete
              PendingIntent. Logs user dismissals of the insight notifications so a

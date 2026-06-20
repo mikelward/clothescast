@@ -182,6 +182,31 @@ object Telemetry {
     }
 
     /**
+     * Emits a `scheduled_delivery_timeout` event when
+     * [app.clothescast.alarm.ScheduledDeliveryService]'s pre-RUNNING safety
+     * timeout fires — the alarm fired and the Service started the foreground
+     * notification, but the worker never reached the `RUNNING` state within
+     * the cap (typically because `NetworkType.CONNECTED` deferred it on a
+     * flaky / offline device).
+     *
+     * Distinct from `daily_refresh{outcome=cancelled}` which fires when the
+     * worker itself was canceled mid-flight: this event surfaces the
+     * "worker queued but never started" case where the worker may still
+     * eventually run later (so it isn't yet canceled or failed), but the
+     * user's "Preparing your ClothesCast" notification was dismissed at the
+     * timeout.
+     *
+     *  - `slot` (string): `today` or `tonight`.
+     */
+    fun logScheduledDeliveryTimeout(slot: String) {
+        val analytics = analyticsRef ?: return
+        val params = Bundle().apply {
+            putString(PARAM_SLOT, slot)
+        }
+        analytics.logEvent(EVENT_SCHEDULED_DELIVERY_TIMEOUT, params)
+    }
+
+    /**
      * Emits the user's non-voice settings as one event per Settings page —
      * `settings_schedule`, `settings_clothes`, `settings_format`,
      * `settings_region`, `settings_display`, and `settings_calendar` — so each
@@ -282,6 +307,7 @@ object Telemetry {
     private const val EVENT_API_CALL = "api_call"
     private const val EVENT_NOTIFICATION_DELIVERY = "notification_delivery"
     private const val EVENT_DAILY_REFRESH = "daily_refresh"
+    private const val EVENT_SCHEDULED_DELIVERY_TIMEOUT = "scheduled_delivery_timeout"
     // The non-voice settings snapshot is split into one event per Settings
     // page (names mirror the screen titles) so each stays well under
     // Firebase's 25-param-per-event cap; see logSettingsSnapshot.

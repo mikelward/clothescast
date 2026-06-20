@@ -24,8 +24,12 @@ import java.time.Instant
 import java.time.LocalDate
 
 /**
- * Channel routing for the tonight notification: events present → default-importance
- * "with events" channel; empty evening → silent channel + setSilent flag.
+ * Channel routing for the tonight notification: every post lands on the shared
+ * scheduled-insight channel, regardless of whether the evening has events.
+ * Suppression of the empty-evening notification ("only notify on events") is
+ * a worker-level gate now ([DeliveryGates.emptyEveningSkip]), not channel
+ * routing — so when the notifier is called at all, it posts to the same
+ * channel the morning notifier uses.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [33])
@@ -45,22 +49,22 @@ class TonightInsightNotifierTest {
     }
 
     @Test
-    fun `tonight insight with events uses the default channel`() {
+    fun `tonight insight with events posts to the shared scheduled channel`() {
         TonightInsightNotifier(context).notify(sampleInsight(hasEvents = true), "Cool tonight. Bring a jacket.")
 
         val n = shadowOf(notificationManager).allNotifications.single()
-        n.channelId shouldBe "tonight_insight_default_v1"
+        n.channelId shouldBe "scheduled_insight_v1"
         n.extras.getString(NotificationCompat.EXTRA_TITLE) shouldBe
             context.getString(R.string.notification_tonight_insight_title)
         n.extras.getString(NotificationCompat.EXTRA_TEXT) shouldBe "Cool tonight. Bring a jacket."
     }
 
     @Test
-    fun `tonight insight without events uses the silent channel`() {
+    fun `tonight insight without events still posts to the shared scheduled channel`() {
         TonightInsightNotifier(context).notify(sampleInsight(hasEvents = false), "Cool tonight.")
 
         val n = shadowOf(notificationManager).allNotifications.single()
-        n.channelId shouldBe "tonight_insight_silent_v1"
+        n.channelId shouldBe "scheduled_insight_v1"
     }
 
     @Test

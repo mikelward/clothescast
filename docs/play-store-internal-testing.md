@@ -72,10 +72,75 @@ Push any commit to `main` (or merge a PR). The CI run on `main` should now
 finish with an "Upload AAB to Play Store internal track" step. Watch for
 green.
 
+## App content declarations (manual, one-time)
+
+CI uploads the AAB, but Play still won't *release* a build until the **App
+content** declarations are complete. These are browser-only forms in the Play
+Console — there's no API for them and nothing in this repo can satisfy them.
+The upload step can go green while the release stays blocked "in review" until
+they're filled in.
+
+### Foreground service permissions
+
+> **Symptom:** the release is blocked with
+> *"You must let us know whether your app uses any Foreground Service
+> permissions."*
+
+The app declares three foreground-service permissions
+(`AndroidManifest.xml`) because `ScheduledDeliveryService` runs as a
+foreground service for the scheduled daily briefing — see
+`docs/schedule-lifecycle.md`. Any declared `FOREGROUND_SERVICE_*` permission
+triggers this mandatory declaration.
+
+Fill it in at **Play Console → App content → Foreground service permissions
+→ Start declaration**. It's easy to miss in the sidebar; the direct deep
+link is `.../app/<appId>/app-content/foreground-services` (replace the
+`test-and-release` / `app-dashboard` slug in any console URL with
+`app-content/foreground-services`). Declare both types we ship and paste
+this justification (each form field caps at ~500 chars, so trim to fit):
+
+- **`FOREGROUND_SERVICE_DATA_SYNC`** — *"At a user-chosen time each day an
+  exact alarm wakes the app to fetch the weather forecast and generate the
+  daily clothing briefing in the background. A data-sync foreground service
+  runs for this short window and shows a 'Preparing your ClothesCast'
+  notification so the user knows their scheduled briefing is being prepared.
+  The work must outlive the alarm broadcast, so a foreground service is
+  required."*
+- **`FOREGROUND_SERVICE_MEDIA_PLAYBACK`** — *"When the scheduled briefing is
+  set to be spoken aloud, the app runs a media-playback foreground service
+  for the run — preparing the forecast and then playing the spoken audio —
+  and shows a notification while it does. Android 15+ refuses audio focus to
+  background apps, so a media-playback foreground service is the only
+  supported way to play the user's scheduled audio briefing at the chosen
+  time."* (The service holds the `mediaPlayback` type across the whole
+  speech-enabled run, not just the seconds of playback — keep the wording
+  truthful to that so the declaration matches the shipped APK.)
+
+The form asks for a short screen recording demonstrating each declared type.
+A speech-enabled run uses `mediaPlayback` start to finish, so one video won't
+exercise `dataSync` — record two short clips and upload both (e.g. unlisted
+YouTube links) where the form asks:
+
+- **`mediaPlayback`** — a scheduled briefing set to *speak*: the "Preparing
+  your ClothesCast" notification appearing, then the spoken forecast playing.
+- **`dataSync`** — a *non-speech* scheduled run (notification-only, or
+  cast / MQTT delivery): the "Preparing your ClothesCast" notification across
+  the fetch and the forecast notification posting, with no speech.
+
+After submitting, **Save** the declaration, then go back to the blocked
+release and **Send for review** again. The fix is per app, not per release —
+once accepted it stops blocking future uploads unless the declared FGS types
+change.
+
 ## Troubleshooting
 
 - **"Upload AAB to Play Store internal track" is skipped** → `PLAY_SERVICE_ACCOUNT_JSON`
   isn't set, or you pushed to a feature branch (only `main` publishes).
+- **Release blocked: "You must let us know whether your app uses any
+  Foreground Service permissions"** → complete the Foreground service
+  permissions declaration under **App content** — see the section above. The
+  AAB uploads fine; the *release* stays blocked until the declaration is
+  saved.
 - **`APK specifies a version code that has already been used`** → Play
   rejects re-uploads with the same `versionCode`. The repo derives
   `versionCode` from `git rev-list --count HEAD`, so a force-push to `main`

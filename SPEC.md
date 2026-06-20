@@ -710,13 +710,25 @@ OEMs we may revisit with a separate placeholder FGS notification.
 
 - **`FetchAndNotifyWorker`** — `CoroutineWorker`, runs on
   `Dispatchers.Default`. The whole flow above lives here.
-- **No app-owned `Service`.** TTS playback uses `AudioFocus`, not a
-  Foreground Service. The `FOREGROUND_SERVICE` + `FOREGROUND_SERVICE_SHORT_SERVICE`
-  permissions are declared (manifest) for forward compatibility but
-  unused on `main`.
-- **WorkManager's `SystemForegroundService`** — library-managed. Not
-  used by our worker on `main`; we don't override its
-  `foregroundServiceType` since we don't call `setForeground`.
+- **`ScheduledDeliveryService`** — app-owned foreground service that owns
+  the "Preparing / Delivering your ClothesCast" notification across an
+  alarm-triggered run. Started by `AlarmReceiver` via
+  `startForegroundService` inside the exact-alarm FGS-from-background
+  exemption window. For runs that speak the briefing it claims a
+  `mediaPlayback` FGS from the start (not just for the deliver window) so the
+  spoken forecast can take audio focus on Android 15+ (which refuses it to
+  background apps) without racing the worker reaching TTS before a later
+  upgrade; non-speech runs stay `dataSync` for the whole run. See
+  `docs/schedule-lifecycle.md`.
+- **WorkManager's `SystemForegroundService`** — library-managed fallback
+  FGS owner. `FetchAndNotifyWorker.promoteToPlaybackServiceIfNeeded`
+  promotes the worker itself (via `setForeground`) only for an
+  alarm-triggered speech run where `ScheduledDeliveryService` isn't already
+  holding the foreground notification — its 5-minute safety timeout, a
+  process restart, or a Service start the receiver couldn't reach. Non-alarm
+  Play runs return early (no `KEY_ALARM_FIRED_AT_MS`) and never use it. The
+  manifest declares its `foregroundServiceType` so API 34+ accepts the
+  promotion.
 - **`AlarmReceiver`** — broadcast receiver fired by `AlarmManager` at
   the scheduled time. Enqueues the worker.
 - **`ScheduleRefreshReceiver`** — re-arms alarms on
@@ -748,8 +760,9 @@ Declared in the manifest, with the destination each one enables:
 | `RECEIVE_BOOT_COMPLETED`                | Re-arming the daily alarm after reboot                    | No             |
 | `USE_EXACT_ALARM`                       | Scheduled-time alarm (API 33+, no-prompt)                 | No             |
 | `SCHEDULE_EXACT_ALARM` (maxSdk=32)      | Same, API 31–32 path                                      | No             |
-| `FOREGROUND_SERVICE`                    | Future TTS-during-background path; unused on `main`       | No             |
-| `FOREGROUND_SERVICE_SHORT_SERVICE`      | Same as above; declared, currently unused                 | No             |
+| `FOREGROUND_SERVICE`                    | Base permission for `ScheduledDeliveryService` (any FGS)   | No             |
+| `FOREGROUND_SERVICE_DATA_SYNC`          | Whole non-speech scheduled run (notification / cast / MQTT)| No             |
+| `FOREGROUND_SERVICE_MEDIA_PLAYBACK`     | Whole speech scheduled run; speech claims audio focus 15+  | No             |
 | `com.google.android.gms.permission.AD_ID` | **Removed** via `tools:node="remove"` (Firebase pulls it in transitively; we don't use ad IDs) | n/a |
 
 No new permissions are required to add Cast: `ACCESS_WIFI_STATE` and

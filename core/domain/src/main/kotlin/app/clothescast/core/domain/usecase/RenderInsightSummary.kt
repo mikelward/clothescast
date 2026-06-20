@@ -327,30 +327,44 @@ class RenderInsightSummary {
      *  - [PrecipLikelihood.LIKELY] ("Rain.") at/above [LIKELY_THRESHOLD] (50%).
      *  - [PrecipLikelihood.POSSIBLE] ("Chance of rain.") in the
      *    [POSSIBLE_THRESHOLD]–49% band (10–49%).
-     * Below [POSSIBLE_THRESHOLD] (10%), or when the resolved condition isn't a
-     * precipitating type, nothing fires.
+     * Below [POSSIBLE_THRESHOLD] (10%) nothing fires; at or above it the clause
+     * always fires, because the blended chance is the single signal — a dry
+     * weather *code* (a high-POP overcast hour) no longer cancels it.
      *
      * Condition resolution: prefers the peak hour's weather code when it's a
      * precipitating type, falling back to the day-level condition (after
      * `slicedFor…` this is already the wettest in-window hour's code) when the
      * hour is UNKNOWN; the noon fallback uses the day-level condition directly.
+     * A non-precipitating resolved code is coerced to [WeatherCondition.RAIN]
+     * (snow and the other precipitating codes keep their own type), so the prose
+     * agrees with the umbrella rule and the conditions strip instead of going
+     * silent on the code.
      */
     private fun peakPrecip(today: DailyForecast): PeakPrecip? {
         val peak = today.hourly.maxByOrNull { it.precipitationProbabilityPct }
         val time: LocalTime
-        val condition: WeatherCondition
+        val baseCondition: WeatherCondition
         val peakProb: Double
         if (peak == null || peak.precipitationProbabilityPct < POSSIBLE_THRESHOLD) {
             if (today.precipitationProbabilityMaxPct < POSSIBLE_THRESHOLD) return null
             time = LocalTime.NOON
-            condition = today.condition
+            baseCondition = today.condition
             peakProb = today.precipitationProbabilityMaxPct
         } else {
             time = peak.time
-            condition = if (peak.condition == WeatherCondition.UNKNOWN) today.condition else peak.condition
+            baseCondition = if (peak.condition == WeatherCondition.UNKNOWN) today.condition else peak.condition
             peakProb = peak.precipitationProbabilityPct
         }
-        if (!condition.isPrecipitation()) return null
+        // Honor the single number: once the blended-consensus chance clears the
+        // chance-of-rain bar, a dry weather *code* doesn't cancel the rain. A
+        // high-POP overcast hour (high probability, ~0 modeled accumulation) is
+        // rain by the numbers — the umbrella rule and the conditions strip already
+        // fire from the probability alone, so the prose and evening tie-in must
+        // agree rather than going silent on the code. Coerce a non-precipitating
+        // code to RAIN; snow (and drizzle / rain / thunderstorm) keep their own
+        // condition, so snow still reads as snow.
+        val condition =
+            if (baseCondition.isPrecipitation()) baseCondition else WeatherCondition.RAIN
         // All-day is measured against the LIKELY bar (≥ 50%), not the 10% peak
         // threshold above — "rain all day" should mean confident rain, so a day
         // that only ever nudges 10–49% still names its single peak hour. The base

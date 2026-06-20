@@ -206,6 +206,16 @@ without the Service shepherding it. The worker's
 the owner-gate mechanism above — same as before the Service existed.
 Worst-case the user gets the pre-Service experience, never nothing.
 
+When the worker owns id 1005 itself this way, it also makes the
+`PREPARING → DELIVERING` swap on its own: `markFetchComplete()` re-posts the
+notification with the "Delivering" title at the same point it stamps
+`KEY_FETCH_COMPLETE` (the flag the Service watches when *it* owns the id).
+Without this the self-promoted notification would sit on "Preparing" for the
+whole run — the visible symptom whenever the worker wins the startup race for
+id 1005 (it's enqueued before the receiver starts the Service, and
+`startForegroundService` dispatches to a possibly-contended main thread), or
+on any of the other owner-gate fallbacks above.
+
 ## When the Service is *not* involved
 
 - **`SILENT` delivery (no MQTT, no cast).** Receiver short-circuits as above.

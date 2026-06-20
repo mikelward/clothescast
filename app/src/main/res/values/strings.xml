@@ -189,6 +189,13 @@
          the time indicator away from "now". Tapping it returns every
          chart's indicator to the live clock. -->
     <string name="today_chart_reset_to_now">Show now</string>
+    <!-- Same restore button when it's showing only because the per-model
+         forecast lines are on (the chart is already at "now"). Tapping it
+         hides those lines. -->
+    <string name="today_chart_hide_model_forecasts">Hide model forecasts</string>
+    <!-- The restore button when the chart is both scrubbed away from "now"
+         and showing the per-model lines — a tap does both. -->
+    <string name="today_chart_reset_now_hide_models">Show now and hide model forecasts</string>
 
     <!-- Readout appended to each chart card's subtitle while the time
          indicator points at a specific hour. Mirrors the existing

@@ -1279,7 +1279,8 @@ private fun TodayPage(
                     //  - Tapping the plot grid of any chart enters scrub mode on
                     //    the shared [ChartScrubController], which (via the
                     //    [SpreadCoordinator] wired in [chartsSlot]) reveals the
-                    //    per-model spread if it isn't already on.
+                    //    per-model spread if it isn't already on; the per-chart
+                    //    restore button clears it again.
                     //
                     // [chipToggle] is null when there's no per-model data in the
                     // cache (e.g. older payloads) — the chip then stays a static
@@ -2803,7 +2804,7 @@ internal fun ForecastCard(
                     }
                 }
             }
-            if (scrubController != null) ChartRestoreOverlay(scrubController)
+            if (scrubController != null) ChartRestoreOverlay(scrubController, spreadShown = showModelSpread && perModelHourly != null)
         }
     }
 }
@@ -2864,7 +2865,7 @@ internal fun AirTemperatureCard(
                     )
                 }
             }
-            if (scrubController != null) ChartRestoreOverlay(scrubController)
+            if (scrubController != null) ChartRestoreOverlay(scrubController, spreadShown = showModelSpread && perModelHourly != null)
         }
     }
 }
@@ -3420,7 +3421,7 @@ internal fun PrecipitationCard(
                     )
                 }
             }
-            if (scrubController != null) ChartRestoreOverlay(scrubController)
+            if (scrubController != null) ChartRestoreOverlay(scrubController, spreadShown = showModelSpread && perModelHourly != null)
         }
     }
 }
@@ -3550,7 +3551,7 @@ internal fun PrecipitationAmountCard(
                     )
                 }
             }
-            if (scrubController != null) ChartRestoreOverlay(scrubController)
+            if (scrubController != null) ChartRestoreOverlay(scrubController, spreadShown = showModelSpread && perModelHourly != null)
         }
     }
 }

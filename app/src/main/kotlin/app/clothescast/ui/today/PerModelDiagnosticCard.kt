@@ -167,7 +167,7 @@ internal fun PerModelDiagnosticCard(
                     ),
                 )
             }
-            if (scrubController != null) ChartRestoreOverlay(scrubController)
+            if (scrubController != null) ChartRestoreOverlay(scrubController, spreadShown = showOverlay)
         }
     }
 }

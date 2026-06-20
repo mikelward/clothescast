@@ -57,10 +57,10 @@ import kotlin.math.roundToInt
  *  - [revealSpread] / [hideSpread] route to the view-model's `revealModelSpread` /
  *    `hideModelSpread`. Both are one-way setters — see those for rationale.
  *
- * The controller pairs every auto-reveal with a corresponding auto-hide on
- * [ChartScrubController.reset], so a restore-to-now also undoes the spread
- * reveal that scrub-mode entry triggered. Spread state the user enabled
- * themselves via the confidence chip is left untouched.
+ * Scrub-mode entry auto-reveals the spread (via [revealSpread]); the per-chart
+ * restore button ([ChartScrubController.reset]) clears it again — along with
+ * any spread the user turned on themselves via the confidence/tap toggle,
+ * since that button is only shown when there's a scrub or spread to clear.
  */
 internal interface SpreadCoordinator {
     fun isSpreadVisible(): Boolean
@@ -82,9 +82,9 @@ internal interface SpreadCoordinator {
  * Scrub-mode entry (the first [scrubTo] in a session — when [isScrubbed]
  * transitions from false to true) doubles as the per-model-spread reveal
  * trigger: if [spreadCoordinator] is wired and the spread isn't already
- * visible, we flip it on and remember that we did so. The matching
- * [reset] flips it back off. Spread state the user toggled on themselves
- * via the confidence chip is left alone — we only undo what we did.
+ * visible, we flip it on. [reset] (the per-chart restore button) clears the
+ * scrub and hides the spread again — including spread the user turned on
+ * themselves, since that button is only shown when there's something to clear.
  *
  * [setNow] is called once a minute by `TodayPage` so the indicator keeps
  * tracking the clock in the idle state. Charts on the Tomorrow page get
@@ -110,13 +110,6 @@ internal class ChartScrubController {
      */
     var spreadCoordinator: SpreadCoordinator? = null
 
-    /**
-     * True when we revealed the per-model spread as part of scrub-mode
-     * entry, so [reset] should undo it. Cleared by [reset] regardless of
-     * outcome so a second scrub session starts fresh.
-     */
-    private var autoRevealedSpread = false
-
     fun setNow(now: LocalDateTime?) {
         nowTime = now
         if (!isScrubbed) activeTime = now
@@ -128,20 +121,19 @@ internal class ChartScrubController {
         isScrubbed = true
         if (firstScrub) {
             val coord = spreadCoordinator
-            if (coord != null && !coord.isSpreadVisible()) {
-                coord.revealSpread()
-                autoRevealedSpread = true
-            }
+            if (coord != null && !coord.isSpreadVisible()) coord.revealSpread()
         }
     }
 
     fun reset() {
         isScrubbed = false
         activeTime = nowTime
-        if (autoRevealedSpread) {
-            spreadCoordinator?.hideSpread()
-            autoRevealedSpread = false
-        }
+        // Clear the spread too. The restore button this drives only appears
+        // when the chart is scrubbed or the spread is on, so a tap returns the
+        // chart to its resting "now / consensus-only" view regardless of how
+        // the spread got turned on (scrub auto-reveal or the confidence/tap
+        // toggle).
+        spreadCoordinator?.hideSpread()
     }
 }
 
@@ -481,16 +473,43 @@ private class ChartScrubIndicator(
  * Restore-icon affordance — top-right corner of each chart card,
  * outside the chart canvas so it doesn't overlap data lines or axis
  * labels. Call inside a `Box` that wraps the card's `Column` content
- * (the Box gives the IconButton a parent to align against). Only
- * renders when the user has scrubbed away from "now"; a tap snaps the
- * indicator back via [ChartScrubController.reset].
+ * (the Box gives the IconButton a parent to align against).
+ *
+ * Renders whenever there's something to clear — the chart is scrubbed
+ * away from "now" ([ChartScrubController.isScrubbed]) *or* the per-model
+ * spread is on ([spreadShown]) — and a tap returns the chart to its
+ * resting view: snaps the indicator back to now and hides the spread, via
+ * [ChartScrubController.reset]. So every chart carries its own way to clear
+ * the per-model lines, not just the confidence/tap toggle elsewhere on the
+ * page.
+ *
+ * Callers pass [spreadShown] only when *this* chart actually draws per-model
+ * curves (its `perModelHourly` is non-null). The spread flag is global, but a
+ * period without per-model data draws no lines and leaves the controller's
+ * [SpreadCoordinator] null — so showing the button off the flag alone would
+ * strand an icon that [ChartScrubController.reset] can't act on.
  *
  * The readout text (time + value at the indicator) is rendered
  * separately by [ChartReadout] in the card's text column.
  */
 @Composable
-internal fun BoxScope.ChartRestoreOverlay(controller: ChartScrubController) {
-    if (!controller.isScrubbed) return
+internal fun BoxScope.ChartRestoreOverlay(
+    controller: ChartScrubController,
+    spreadShown: Boolean = false,
+) {
+    val scrubbed = controller.isScrubbed
+    if (!scrubbed && !spreadShown) return
+    // Describe what the tap will actually do — the button now serves two jobs
+    // (snap a scrubbed chart back to "now" and/or hide the per-model lines), so
+    // a fixed "Show now" would mislead screen-reader users in the spread-only
+    // case (chart already at now, lines on from the confidence chip).
+    val description = stringResource(
+        when {
+            scrubbed && spreadShown -> R.string.today_chart_reset_now_hide_models
+            scrubbed -> R.string.today_chart_reset_to_now
+            else -> R.string.today_chart_hide_model_forecasts
+        },
+    )
     IconButton(
         onClick = controller::reset,
         modifier = Modifier
@@ -502,7 +521,7 @@ internal fun BoxScope.ChartRestoreOverlay(controller: ChartScrubController) {
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_chart_restore),
-            contentDescription = stringResource(R.string.today_chart_reset_to_now),
+            contentDescription = description,
         )
     }
 }

@@ -293,6 +293,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast nocturno (silencioso)</string>
     <string name="notification_channel_tonight_insight_silent_description">El resumen del tiempo de la tarde cuando tu noche está libre. Se entrega en silencio — puedes echarle un vistazo en la pantalla de bloqueo, pero no emite ningún sonido.</string>
     <string name="notification_tonight_insight_title">El tiempo de esta noche</string>
+    <string name="notification_playback_title">Preparando tu ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

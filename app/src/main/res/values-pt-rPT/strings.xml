@@ -310,6 +310,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast noturno (silencioso)</string>
     <string name="notification_channel_tonight_insight_silent_description">O resumo do tempo da noite quando a tua noite está livre. Entregue em silêncio — podes vê-lo no ecrã de bloqueio, mas não emite som.</string>
     <string name="notification_tonight_insight_title">Tempo desta noite</string>
+    <string name="notification_playback_title">A preparar o teu ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

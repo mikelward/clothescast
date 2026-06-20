@@ -292,6 +292,7 @@ the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">夜間の ClothesCast（無音）</string>
     <string name="notification_channel_tonight_insight_silent_description">予定のない夜の天気要約です。無音で配信され、ロック画面で確認できますが、音は鳴りません。</string>
     <string name="notification_tonight_insight_title">今夜の天気</string>
+    <string name="notification_playback_title">ClothesCast を準備中…</string>
 
 
     <!-- Notification-permission card. -->

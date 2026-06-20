@@ -581,6 +581,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast buổi tối (im lặng)</string>
     <string name="notification_channel_tonight_insight_silent_description">Tóm tắt thời tiết buổi tối khi buổi tối của bạn trống. Đăng im lặng — bạn có thể xem trên màn hình khóa nhưng sẽ không phát âm thanh.</string>
     <string name="notification_tonight_insight_title">ClothesCast tối nay</string>
+    <string name="notification_playback_title">Đang chuẩn bị ClothesCast của bạn</string>
 
 
     <!-- Notification permission -->

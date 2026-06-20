@@ -410,6 +410,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast شبانه (ساکت)</string>
     <string name="notification_channel_tonight_insight_silent_description">خلاصه آب‌وهوای عصرگاهی وقتی عصر شما خالی است. ساکت ارسال می‌شود.</string>
     <string name="notification_tonight_insight_title">ClothesCast امشب</string>
+    <string name="notification_playback_title">در حال آماده‌سازی ClothesCast شما</string>
 
     <!-- Settings — notification permission -->
     <string name="settings_notification_permission_title">اعلان‌ها مسدود شده‌اند</string>

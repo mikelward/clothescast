@@ -362,6 +362,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_name">ምሽታዊ ClothesCast (ዝምታ)</string>
     <string name="notification_channel_tonight_insight_silent_description">ምሽቱ ጸጥ ሲሆን የምሽቱ የአየር ሁኔታ ማጠቃለያ። ዝምታ ሆኖ ይለጠፋል።</string>
     <string name="notification_tonight_insight_title">የዛሬ ምሽት ClothesCast</string>
+    <string name="notification_playback_title">ClothesCastዎን በማዘጋጀት ላይ</string>
 
     <!-- Insight prose -->
     <string name="insight_lead_today">ዛሬ</string>

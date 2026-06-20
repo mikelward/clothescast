@@ -310,6 +310,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="notification_channel_tonight_insight_silent_name">Noční ClothesCast (tichý)</string>
     <string name="notification_channel_tonight_insight_silent_description">Večerní shrnutí počasí v klidné večery. Doručí se tiše — uvidíš ho na zamykací obrazovce, ale nevydá žádný zvuk.</string>
     <string name="notification_tonight_insight_title">Dnešní večerní počasí</string>
+    <string name="notification_playback_title">Připravuji tvůj ClothesCast</string>
 
 
     <!-- Notification permission card. -->

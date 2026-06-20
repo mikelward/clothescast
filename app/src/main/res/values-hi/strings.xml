@@ -280,6 +280,7 @@ Not overridden by design:
     <string name="notification_channel_tonight_insight_silent_name">रात्रि ClothesCast (मौन)</string>
     <string name="notification_channel_tonight_insight_silent_description">जब आपकी शाम खाली हो तब की मौसम सारांश। चुपचाप भेजी जाती है — लॉक स्क्रीन पर देख सकते हैं, लेकिन आवाज़ नहीं होगी।</string>
     <string name="notification_tonight_insight_title">आज रात का ClothesCast</string>
+    <string name="notification_playback_title">आपका ClothesCast तैयार हो रहा है</string>
 
 
     <!-- Notification permission card. -->

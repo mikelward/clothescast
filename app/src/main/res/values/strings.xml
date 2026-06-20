@@ -1123,6 +1123,10 @@
     <string name="notification_channel_tonight_insight_silent_description">The evening weather summary when your evening is empty. Posted silently — you can glance at it on the lock screen, but it won\'t make a sound.</string>
     <string name="notification_tonight_insight_title">Tonight\'s ClothesCast</string>
 
+    <!-- TODO(i18n): translate notification_channel_playback_name and
+         notification_channel_playback_description once the channel's exact
+         semantics are settled. Only notification_playback_title (the
+         user-visible foreground-service title) is localized for now. -->
     <string name="notification_channel_playback_name">Speaking the forecast</string>
     <string name="notification_channel_playback_description">Shown briefly while ClothesCast reads your scheduled forecast aloud. Required by Android so the audio can play from the background.</string>
     <string name="notification_playback_title">Preparing your ClothesCast</string>

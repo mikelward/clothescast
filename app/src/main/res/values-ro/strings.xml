@@ -541,6 +541,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast nocturn (silențios)</string>
     <string name="notification_channel_tonight_insight_silent_description">Rezumatul meteo de seară când seara este liberă. Postat silențios — îl poți vedea pe ecranul de blocare, dar nu va emite niciun sunet.</string>
     <string name="notification_tonight_insight_title">ClothesCast-ul de diseară</string>
+    <string name="notification_playback_title">Se pregătește ClothesCast-ul tău</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Notificările sunt blocate</string>

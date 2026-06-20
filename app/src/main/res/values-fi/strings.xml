@@ -237,6 +237,7 @@ displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">Iltainen ClothesCast (hiljainen)</string>
     <string name="notification_channel_tonight_insight_silent_description">Iltainen säätiivis hiljaisina iltoina. Toimitetaan äänettömästi — näet sen lukitusnäytöllä, mutta se ei soi.</string>
     <string name="notification_tonight_insight_title">Tämän illan sää</string>
+    <string name="notification_playback_title">Valmistellaan ClothesCastiasi</string>
 
 
     <string name="settings_notification_permission_title">Ilmoitukset on estetty</string>

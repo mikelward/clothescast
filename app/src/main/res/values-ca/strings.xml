@@ -453,6 +453,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast nocturn (silenciós)</string>
     <string name="notification_channel_tonight_insight_silent_description">El resum meteorològic del vespre quan el teu vespre és lliure. S\'envia silenciosament — pots veure\'l a la pantalla de bloqueig, però no fa cap so.</string>
     <string name="notification_tonight_insight_title">El temps d\'aquesta nit</string>
+    <string name="notification_playback_title">Preparant el teu ClothesCast</string>
 
 
     <string name="settings_notification_permission_title">Les notificacions estan bloquejades</string>

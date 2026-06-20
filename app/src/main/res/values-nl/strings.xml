@@ -266,6 +266,7 @@ the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">Avondlijkse ClothesCast (stil)</string>
     <string name="notification_channel_tonight_insight_silent_description">De avondlijkse weersamenvatting op vrije avonden. Stil bezorgd — je kunt hem op het vergrendelscherm zien, maar hij maakt geen geluid.</string>
     <string name="notification_tonight_insight_title">Weer vanavond</string>
+    <string name="notification_playback_title">Je ClothesCast wordt voorbereid</string>
 
 
     <!-- Notification-permission card. -->

@@ -371,6 +371,7 @@ surfaces.
     <string name="notification_channel_tonight_insight_silent_name">Ноћни ClothesCast (тихи)</string>
     <string name="notification_channel_tonight_insight_silent_description">Вечерњи временски резиме када ти је вечер слободна. Шаље се тихо — можеш да га погледаш на закључаном екрану, али неће репродуковати звук.</string>
     <string name="notification_tonight_insight_title">Вечерашњи ClothesCast</string>
+    <string name="notification_playback_title">Припрема твог ClothesCastа</string>
 
 
     <!-- Notification-permission card. -->

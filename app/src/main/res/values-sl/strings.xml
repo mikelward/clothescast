@@ -550,6 +550,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="notification_channel_tonight_insight_silent_name">Nočni ClothesCast (tiho)</string>
     <string name="notification_channel_tonight_insight_silent_description">Večerni vremenski povzetek, ko je tvoj večer prost. Objavljeno tiho — na zaklenjenem zaslonu si ga lahko ogledaš, a ne bo proizvajal zvoka.</string>
     <string name="notification_tonight_insight_title">Nocojšnji ClothesCast</string>
+    <string name="notification_playback_title">Pripravljam tvoj ClothesCast</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Obvestila so blokirana</string>

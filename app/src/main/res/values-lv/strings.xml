@@ -510,6 +510,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="notification_channel_tonight_insight_silent_name">Nakts ClothesCast (klusais)</string>
     <string name="notification_channel_tonight_insight_silent_description">Vakara laika apkopojums, ja vakars ir brīvs. Publicēts klusumā — vari to apskatīt bloķēšanas ekrānā, taču tas neskanēs.</string>
     <string name="notification_tonight_insight_title">Šovakarējais ClothesCast</string>
+    <string name="notification_playback_title">Sagatavo tavu ClothesCast</string>
 
     <!-- Notification permission settings -->
     <string name="settings_notification_permission_title">Paziņojumi ir bloķēti</string>

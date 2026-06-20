@@ -285,6 +285,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast serale (silenzioso)</string>
     <string name="notification_channel_tonight_insight_silent_description">Il riepilogo meteo serale quando la serata è libera. Inviato in silenzio — puoi dargli un\'occhiata sulla schermata di blocco, ma non emette suoni.</string>
     <string name="notification_tonight_insight_title">Meteo di stasera</string>
+    <string name="notification_playback_title">Preparazione del tuo ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

@@ -358,6 +358,7 @@ only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">Вечерний ClothesCast (тихий)</string>
     <string name="notification_channel_tonight_insight_silent_description">Вечерняя сводка погоды, когда у тебя свободный вечер. Доставляется бесшумно — можешь увидеть на экране блокировки, но звук не издаётся.</string>
     <string name="notification_tonight_insight_title">Погода сегодня вечером</string>
+    <string name="notification_playback_title">Готовлю твой ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

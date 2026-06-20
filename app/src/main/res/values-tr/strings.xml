@@ -237,6 +237,7 @@ displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">Gecelik ClothesCast (sessiz)</string>
     <string name="notification_channel_tonight_insight_silent_description">Sakin akşamlarda gelen akşam hava durumu özeti. Sessiz teslim edilir — kilit ekranında görebilirsiniz ama ses çıkarmaz.</string>
     <string name="notification_tonight_insight_title">Bu akşamın hava durumu</string>
+    <string name="notification_playback_title">ClothesCast\'ın hazırlanıyor</string>
 
 
     <string name="settings_notification_permission_title">Bildirimler engellendi</string>

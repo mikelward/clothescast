@@ -314,6 +314,7 @@ only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">Вечірній ClothesCast (беззвучний)</string>
     <string name="notification_channel_tonight_insight_silent_description">Вечірнє зведення погоди, коли у вас вільний вечір. Доставляється беззвучно — можна побачити на екрані блокування, але звук не лунає.</string>
     <string name="notification_tonight_insight_title">Погода сьогодні ввечері</string>
+    <string name="notification_playback_title">Готуємо ваш ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

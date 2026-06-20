@@ -383,6 +383,7 @@ default English (matching values-pl / values-uk).
     <string name="notification_channel_tonight_insight_silent_name">Noćni ClothesCast (tihi)</string>
     <string name="notification_channel_tonight_insight_silent_description">Večernji vremenski rezime kada ti je večer slobodna. Šalje se tiho — možeš da ga pogledaš na zaključanom ekranu, ali neće reprodukovati zvuk.</string>
     <string name="notification_tonight_insight_title">Večerašnji ClothesCast</string>
+    <string name="notification_playback_title">Priprema tvog ClothesCasta</string>
 
 
     <!-- Notification-permission card. -->

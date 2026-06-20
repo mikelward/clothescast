@@ -266,6 +266,7 @@ is unchanged; only the displayed label localizes.
     <string name="notification_channel_tonight_insight_silent_name">Wieczorny ClothesCast (cichy)</string>
     <string name="notification_channel_tonight_insight_silent_description">Wieczorne podsumowanie pogody w spokojne wieczory. Dostarczane bezgłośnie — możesz je zobaczyć na ekranie blokady, ale nie wydaje dźwięku.</string>
     <string name="notification_tonight_insight_title">Pogoda wieczorem</string>
+    <string name="notification_playback_title">Przygotowuję Twój ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

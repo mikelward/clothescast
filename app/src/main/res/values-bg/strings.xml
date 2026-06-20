@@ -552,6 +552,7 @@ What is NOT overridden, by design:
     <string name="notification_channel_tonight_insight_silent_name">Нощен ClothesCast (тих)</string>
     <string name="notification_channel_tonight_insight_silent_description">Вечерното резюме на времето, когато вечерта е спокойна. Публикува се тихо — можеш да го видиш на заключения екран, но няма да издаде звук.</string>
     <string name="notification_tonight_insight_title">Нощният ClothesCast</string>
+    <string name="notification_playback_title">Подготвя твоя ClothesCast</string>
 
     <!-- Notification permission card. -->
     <string name="settings_notification_permission_title">Известията са блокирани</string>

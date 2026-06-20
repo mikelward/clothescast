@@ -319,6 +319,7 @@ What is NOT overridden, by design:
     <string name="notification_channel_tonight_insight_silent_name">Nočný ClothesCast (tichý)</string>
     <string name="notification_channel_tonight_insight_silent_description">Večerné zhrnutie počasia v pokojné večery. Doručí sa ticho — uvidíš ho na zamykacej obrazovke, ale nevydá žiadny zvuk.</string>
     <string name="notification_tonight_insight_title">Dnešné večerné počasie</string>
+    <string name="notification_playback_title">Pripravujem tvoj ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

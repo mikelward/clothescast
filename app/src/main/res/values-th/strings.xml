@@ -535,6 +535,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast รายคืน (เงียบ)</string>
     <string name="notification_channel_tonight_insight_silent_description">สรุปสภาพอากาศตอนเย็นเมื่อตอนเย็นว่าง โพสต์แบบเงียบ — สามารถดูบนหน้าจอล็อก แต่จะไม่ส่งเสียง</string>
     <string name="notification_tonight_insight_title">ClothesCast คืนนี้</string>
+    <string name="notification_playback_title">กำลังเตรียม ClothesCast ของคุณ</string>
 
     <!-- Notification permission settings -->
     <string name="settings_notification_permission_title">การแจ้งเตือนถูกบล็อก</string>

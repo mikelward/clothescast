@@ -416,6 +416,7 @@ standard in Israeli digital communication.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast לילי (שקט)</string>
     <string name="notification_channel_tonight_insight_silent_description">סיכום מזג האוויר הערבי כשהערב שלך ריק. נשלח בשקט.</string>
     <string name="notification_tonight_insight_title">ClothesCast ללילה</string>
+    <string name="notification_playback_title">מכין/ה את ClothesCast שלך</string>
 
     <!-- Settings — notification permission -->
     <string name="settings_notification_permission_title">התראות חסומות</string>

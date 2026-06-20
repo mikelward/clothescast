@@ -312,6 +312,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="notification_channel_tonight_insight_silent_name">Esti ClothesCast (néma)</string>
     <string name="notification_channel_tonight_insight_silent_description">Az esti időjárás-összefoglaló csendes estéken. Némán érkezik — láthatod a zárolási képernyőn, de nem ad hangot.</string>
     <string name="notification_tonight_insight_title">Mai esti időjárás</string>
+    <string name="notification_playback_title">A ClothesCastod készül</string>
 
 
     <!-- Notification permission card. -->

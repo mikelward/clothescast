@@ -571,6 +571,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="notification_channel_tonight_insight_silent_name">Pang-gabing ClothesCast (tahimik)</string>
     <string name="notification_channel_tonight_insight_silent_description">Ang gabi na buod ng panahon kapag walang laman ang iyong gabi. Nipo-post nang tahimik — maaari mo itong tingnan sa lock screen, ngunit hindi ito magpapatugtog ng tunog.</string>
     <string name="notification_tonight_insight_title">ClothesCast ngayong gabi</string>
+    <string name="notification_playback_title">Inihahanda ang iyong ClothesCast</string>
 
 
     <string name="settings_notification_permission_title">Naka-block ang mga notipikasyon</string>

@@ -459,6 +459,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="notification_channel_tonight_insight_silent_name">Õhtune ClothesCast (vaikne)</string>
     <string name="notification_channel_tonight_insight_silent_description">Õhtune ilmakokkuvõte, kui õhtu on vaba. Postitatakse vaikselt — saad sellele lukustusekraanilt pilgu heita, kuid heli ei esita.</string>
     <string name="notification_tonight_insight_title">Tänase õhtu ClothesCast</string>
+    <string name="notification_playback_title">Valmistab sinu ClothesCast\'i ette</string>
 
 
     <string name="settings_notification_permission_title">Teavitused on blokeeritud</string>

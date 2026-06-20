@@ -311,6 +311,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="notification_channel_tonight_insight_silent_name">Aftenens ClothesCast (stille)</string>
     <string name="notification_channel_tonight_insight_silent_description">Den aftenvise vejropsummering på rolige aftener. Leveres lydløst — du kan se den på låseskærmen, men den laver ingen lyd.</string>
     <string name="notification_tonight_insight_title">Vejret i aften</string>
+    <string name="notification_playback_title">Forbereder dit ClothesCast</string>
 
 
     <!-- Notification permission card. -->

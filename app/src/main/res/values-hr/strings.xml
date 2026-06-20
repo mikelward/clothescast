@@ -266,6 +266,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="notification_channel_tonight_insight_silent_name">Noćni ClothesCast (tihi)</string>
     <string name="notification_channel_tonight_insight_silent_description">Večernji vremenski sažetak kad ti je večer slobodna. Šalje se tiho — možeš ga pogledati na zaključanom zaslonu, ali neće proizvesti zvuk.</string>
     <string name="notification_tonight_insight_title">Vrijeme večeras</string>
+    <string name="notification_playback_title">Pripremam tvoj ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

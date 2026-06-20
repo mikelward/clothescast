@@ -421,6 +421,7 @@ they work correctly in both the single-band and range templates.
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast الليلي (صامت)</string>
     <string name="notification_channel_tonight_insight_silent_description">ملخص الطقس المسائي في المساء الهادئ. يُرسَل صامتًا.</string>
     <string name="notification_tonight_insight_title">ClothesCast الليلة</string>
+    <string name="notification_playback_title">جارٍ تحضير ClothesCast</string>
 
     <!-- Settings — notification permission -->
     <string name="settings_notification_permission_title">الإشعارات محظورة</string>

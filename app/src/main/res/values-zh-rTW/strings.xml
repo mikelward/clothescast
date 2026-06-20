@@ -277,6 +277,7 @@ label localises.
     <string name="notification_channel_tonight_insight_silent_name">夜間 ClothesCast（靜音）</string>
     <string name="notification_channel_tonight_insight_silent_description">晚上沒有行程時的晚間天氣摘要。靜音傳送 — 你可以在鎖定畫面上看到，但不會發出聲音。</string>
     <string name="notification_tonight_insight_title">今晚的天氣</string>
+    <string name="notification_playback_title">正在準備你的 ClothesCast</string>
 
 
     <!-- Notification-permission card. -->

@@ -755,6 +755,7 @@
     <string name="notification_channel_tonight_insight_silent_name">ClothesCast-i i mbrëmjes (në heshtje)</string>
     <string name="notification_channel_tonight_insight_silent_description">Përmbledhja e motit në mbrëmje kur mbrëmja jote është bosh. Postohet në heshtje — mund ta shohësh në ekranin e kyçur, por nuk do të bëjë zhurmë.</string>
     <string name="notification_tonight_insight_title">ClothesCast-i i sontëm</string>
+    <string name="notification_playback_title">Po përgatitet ClothesCast-i yt</string>
     <string name="settings_notification_permission_title">Njoftimet janë të bllokuara</string>
     <string name="settings_notification_permission_description">Pa lejen e njoftimeve, ClothesCast-i yt ditor s\'ka ku të shkojë. Jepe që ClothesCast të mund ta dërgojë nesër në mëngjes.</string>
     <string name="settings_notification_permission_grant">Jep lejen e njoftimeve</string>

@@ -94,7 +94,9 @@ class ClothesCastApplication : Application() {
      * by the Settings voice picker and the "currently using" line.
      */
     val androidTtsVoiceEnumerator: AndroidTtsVoiceEnumerator by lazy { AndroidTtsVoiceEnumerator(this) }
-    val calendarEventReader: CalendarEventReader by lazy { CalendarContractEventReader(this) }
+    val calendarEventReader: CalendarEventReader by lazy {
+        CalendarContractEventReader(this) { settingsRepository.preferences.first().calendarOverrides }
+    }
     val appUpdateChecker: AppUpdateChecker by lazy { AppUpdateChecker(this) }
     val geminiTtsClient: GeminiTtsClient by lazy {
         GeminiTtsClient(

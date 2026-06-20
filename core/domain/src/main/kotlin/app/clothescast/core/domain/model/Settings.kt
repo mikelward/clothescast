@@ -942,6 +942,20 @@ data class UserPreferences(
      */
     val holidayOverrides: Map<HolidayId, HolidayOverride> = emptyMap(),
     /**
+     * Per-calendar enable/disable overrides, keyed by the calendar's stable
+     * provider id ([CalendarInfo.id]). Sparse: a present entry is an explicit
+     * user choice (`true` = read this calendar, `false` = ignore it); an
+     * absent entry means "follow the calendar's visibility in the host
+     * calendar app". So the effective decision for a calendar is
+     * `calendarOverrides[id] ?: visible`, and a fresh install (empty map)
+     * simply mirrors what the user sees in Google Calendar. Disabling a
+     * calendar removes its events from theming, evening tie-ins, the
+     * listings, *and* the insight prose fed to the TTS — strictly less data
+     * leaves the device. Stored as `STATE:id` pairs in a stringSet (STATE
+     * first so a colon inside the id can't confuse the split).
+     */
+    val calendarOverrides: Map<String, Boolean> = emptyMap(),
+    /**
      * Which numerical-weather-prediction models the multi-model confidence
      * fetcher consults — or `null` for "auto, derive from current location"
      * (see [ForecastModel.defaultsFor]). Fresh installs default to null so

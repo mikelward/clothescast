@@ -7,6 +7,7 @@ import android.net.Uri
 import android.provider.CalendarContract
 import app.clothescast.diag.DiagLog
 import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.model.CalendarInfo
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
@@ -32,7 +33,18 @@ import java.time.ZoneOffset
  * Returns an empty list on any failure path (missing permission, missing provider,
  * cursor crash) so the daily insight pipeline degrades gracefully to no events.
  */
-class CalendarContractEventReader(private val context: Context) : CalendarEventReader {
+class CalendarContractEventReader(
+    private val context: Context,
+    /**
+     * Supplies the user's current per-calendar overrides (see
+     * [app.clothescast.core.domain.model.UserPreferences.calendarOverrides]).
+     * Read fresh on each query so a toggle takes effect on the next refresh
+     * without rebuilding the reader. Defaulted to "no overrides" so tests and
+     * any call site that doesn't care still get the visibility-default
+     * behaviour.
+     */
+    private val calendarOverridesProvider: suspend () -> Map<String, Boolean> = { emptyMap() },
+) : CalendarEventReader {
 
     @Volatile
     private var eventTypeProjectionRejected: Boolean = false
@@ -42,13 +54,16 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             DiagLog.i(TAG, "READ_CALENDAR not granted; skipping calendar read.")
             return emptyList()
         }
+        // Resolve per-calendar overrides off the blocking cursor path (the
+        // provider reads DataStore) before entering the query.
+        val overrides = calendarOverridesProvider()
         return withContext(Dispatchers.IO) {
             coRunCatching {
                 // Drop all-day rows whose UTC date isn't today: in zones east of
                 // UTC, yesterday's all-day event overlaps the start of today's
                 // local-day window and would otherwise bleed in. Timed rows are
                 // kept as-is — the Instances window already scoped them.
-                query(date, date.plusDays(1), zoneId)
+                query(date, date.plusDays(1), zoneId, overrides = overrides)
                     .filterNot { it.event.allDay && it.date != date }
                     .map { it.event }
             }
@@ -66,6 +81,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             DiagLog.i(TAG, "READ_CALENDAR not granted; skipping calendar read.")
             return emptyList()
         }
+        val overrides = calendarOverridesProvider()
         return withContext(Dispatchers.IO) {
             coRunCatching {
                 // Narrow the year-long window to all-day rows at the provider
@@ -83,7 +99,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                 // surfacing timed celebrations here needs a different approach
                 // (e.g. also select eventType = birthday, or widen + cap the
                 // scan) without re-materialising every meeting recurrence.
-                query(startInclusive, endExclusive, zoneId, allDayOnly = true)
+                query(startInclusive, endExclusive, zoneId, allDayOnly = true, overrides = overrides)
                     .filter { it.event.kind != EventKind.NORMAL }
                     .filter { it.date >= startInclusive && it.date < endExclusive }
                     .map { UpcomingCalendarEvent(it.date, it.event.title, it.event.kind, it.event.ownerAccount) }
@@ -103,6 +119,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
         endExclusive: LocalDate,
         zoneId: ZoneId,
         allDayOnly: Boolean = false,
+        overrides: Map<String, Boolean> = emptyMap(),
     ): List<DatedEvent> {
         val startMillis = startInclusive.atStartOfDay(zoneId).toInstant().toEpochMilli()
         val endMillis = endExclusive.atStartOfDay(zoneId).toInstant().toEpochMilli()
@@ -221,7 +238,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             }
         }
 
-        val ownerByCalendarId = ownerAccountsFor(calendarIds)
+        val metaByCalendarId = calendarMetaFor(calendarIds)
 
         // Tally classifications across the query so we can log one summary line
         // instead of one per row — a year-long upcomingCelebrations() over a
@@ -231,7 +248,14 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
         // (both are PII); the summary names only the kind+reason counts.
         val classificationTally = mutableMapOf<Pair<EventKind, String>, Int>()
         val events = rows.mapNotNull { row ->
-            val owner = ownerByCalendarId[row.calendarId]
+            val meta = metaByCalendarId[row.calendarId]
+            // Per-calendar gate: an explicit override wins; otherwise follow the
+            // calendar's visibility in the host calendar app. Unknown calendars
+            // (metadata lookup failed) default to included so a lookup glitch
+            // doesn't silently drop every event.
+            val enabled = meta?.let { overrides[calendarKey(it)] ?: it.visible } ?: true
+            if (!enabled) return@mapNotNull null
+            val owner = meta?.ownerAccount
             val result = CalendarEventClassifier.classify(row.title, owner, row.eventType)
             // FREE rows are typically calendar holds the user doesn't want surfaced
             // as meetings — but holiday and birthday calendars sync as FREE too, and
@@ -265,24 +289,59 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
         return events
     }
 
+    /** Per-calendar metadata used for classification and the visibility gate. */
+    private data class CalendarMeta(
+        val ownerAccount: String?,
+        val syncId: String?,
+        val displayName: String?,
+        val accountName: String?,
+        val accountType: String?,
+        val visible: Boolean,
+    )
+
     /**
-     * Reads `OWNER_ACCOUNT` for each calendar id touched by the day's instances.
-     * `CalendarContract.Instances` doesn't expose the column directly — it lives
-     * on the Calendars table — so we run one secondary query keyed on the ids we
-     * just saw. Returns an empty map on permission/cursor failure; the classifier
-     * just falls back to NORMAL for those rows.
+     * The per-calendar override key: the calendar's account scoped to its
+     * stable provider id — `account/syncId`, where syncId is the sync adapter's
+     * server-side id — falling back to `account/name` for local calendars with
+     * no sync id. Account-scoped because the same holiday calendar synced into
+     * two accounts shares one `_SYNC_ID` (e.g. `en.uk#holiday@…`); without the
+     * account prefix the two would collapse to a single toggle. Never the local
+     * row index, which is regenerated when an account is removed and re-added.
+     */
+    private fun calendarKey(meta: CalendarMeta): String {
+        val account = meta.accountName.orEmpty()
+        val tail = meta.syncId?.takeIf { it.isNotBlank() } ?: meta.displayName.orEmpty()
+        val type = meta.accountType?.takeIf { it.isNotBlank() }
+        // Android identifies an account by (name, type), so include the type:
+        // the same email added under two providers (e.g. Google + Exchange) can
+        // share an account name and even a sync id / display name, and without
+        // the type the two calendars would collapse to one key.
+        return if (type != null) "$type/$account/$tail" else "$account/$tail"
+    }
+
+    /**
+     * Reads metadata for the given calendar [ids] — or every calendar on the
+     * device when [ids] is null (used by [availableCalendars]).
+     * `CalendarContract.Instances` doesn't expose these columns — they live on
+     * the Calendars table — so this runs one secondary query. Returns an empty
+     * map on permission/cursor failure; callers degrade gracefully
+     * (classification falls back to NORMAL, the visibility gate to "included").
      */
     @SuppressLint("MissingPermission")
-    private fun ownerAccountsFor(calendarIds: Set<Long>): Map<Long, String?> {
-        if (calendarIds.isEmpty()) return emptyMap()
+    private fun calendarMetaFor(ids: Set<Long>?): Map<Long, CalendarMeta> {
+        if (ids != null && ids.isEmpty()) return emptyMap()
         val projection = arrayOf(
             CalendarContract.Calendars._ID,
             CalendarContract.Calendars.OWNER_ACCOUNT,
+            CalendarContract.Calendars._SYNC_ID,
+            CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
+            CalendarContract.Calendars.ACCOUNT_NAME,
+            CalendarContract.Calendars.ACCOUNT_TYPE,
+            CalendarContract.Calendars.VISIBLE,
         )
-        val placeholders = calendarIds.joinToString(",") { "?" }
-        val selection = "${CalendarContract.Calendars._ID} IN ($placeholders)"
-        val selectionArgs = calendarIds.map { it.toString() }.toTypedArray()
-        val result = mutableMapOf<Long, String?>()
+        val selection = ids?.let { "${CalendarContract.Calendars._ID} IN (${it.joinToString(",") { "?" }})" }
+        val selectionArgs = ids?.map { it.toString() }?.toTypedArray()
+        val result = mutableMapOf<Long, CalendarMeta>()
         runCatching {
             context.contentResolver.query(
                 CalendarContract.Calendars.CONTENT_URI,
@@ -293,15 +352,53 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
             )?.use { cursor ->
                 val idIdx = cursor.getColumnIndex(CalendarContract.Calendars._ID)
                 val ownerIdx = cursor.getColumnIndex(CalendarContract.Calendars.OWNER_ACCOUNT)
+                val syncIdx = cursor.getColumnIndex(CalendarContract.Calendars._SYNC_ID)
+                val nameIdx = cursor.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
+                val accountIdx = cursor.getColumnIndex(CalendarContract.Calendars.ACCOUNT_NAME)
+                val accountTypeIdx = cursor.getColumnIndex(CalendarContract.Calendars.ACCOUNT_TYPE)
+                val visibleIdx = cursor.getColumnIndex(CalendarContract.Calendars.VISIBLE)
                 while (cursor.moveToNext()) {
                     if (idIdx < 0) continue
-                    val id = cursor.getLong(idIdx)
-                    val owner = if (ownerIdx >= 0) cursor.getString(ownerIdx) else null
-                    result[id] = owner
+                    result[cursor.getLong(idIdx)] = CalendarMeta(
+                        ownerAccount = if (ownerIdx >= 0) cursor.getString(ownerIdx) else null,
+                        syncId = if (syncIdx >= 0) cursor.getString(syncIdx) else null,
+                        displayName = if (nameIdx >= 0) cursor.getString(nameIdx) else null,
+                        accountName = if (accountIdx >= 0) cursor.getString(accountIdx) else null,
+                        accountType = if (accountTypeIdx >= 0) cursor.getString(accountTypeIdx) else null,
+                        // Column missing → assume visible so the gate fails open.
+                        visible = visibleIdx < 0 || cursor.getInt(visibleIdx) != 0,
+                    )
                 }
             }
-        }.onFailure { DiagLog.w(TAG, "Owner-account lookup failed; classification falls back to NORMAL.", it) }
+        }.onFailure { DiagLog.w(TAG, "Calendar metadata lookup failed; classification/visibility degrade gracefully.", it) }
         return result
+    }
+
+    override suspend fun availableCalendars(): List<CalendarInfo> {
+        if (!CalendarPermission.isGranted(context)) {
+            DiagLog.i(TAG, "READ_CALENDAR not granted; skipping calendar enumeration.")
+            return emptyList()
+        }
+        return withContext(Dispatchers.IO) {
+            coRunCatching {
+                calendarMetaFor(ids = null).values
+                    .map { meta ->
+                        CalendarInfo(
+                            id = calendarKey(meta),
+                            displayName = meta.displayName?.takeIf { it.isNotBlank() }
+                                ?: meta.accountName?.takeIf { it.isNotBlank() }
+                                ?: calendarKey(meta),
+                            accountName = meta.accountName.orEmpty(),
+                            accountType = meta.accountType,
+                            visible = meta.visible,
+                        )
+                    }
+                    .distinctBy { it.id }
+                    .sortedWith(compareBy({ it.accountName.lowercase() }, { it.displayName.lowercase() }))
+            }
+                .onFailure { DiagLog.w(TAG, "Calendar enumeration failed; returning none.", it) }
+                .getOrDefault(emptyList())
+        }
     }
 
     private companion object {

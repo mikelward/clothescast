@@ -216,6 +216,8 @@ class SettingsViewModel(
     private var discoveryJob: Job? = null
     /** In-flight upcoming-celebrations read; guards against overlapping loads. */
     private var calendarCelebrationsJob: Job? = null
+    /** In-flight device-calendar enumeration; guards against overlapping loads. */
+    private var availableCalendarsJob: Job? = null
     /**
      * The most recently enumerated effective locale, used to detect when
      * re-enumeration is needed. Stored as a resolved [Locale] rather than
@@ -272,6 +274,7 @@ class SettingsViewModel(
                         outfitOuterColors = prefs.outfitOuterColors,
                         holidayCountrySelection = prefs.holidayCountrySelection,
                         holidayOverrides = prefs.holidayOverrides,
+                        calendarOverrides = prefs.calendarOverrides,
                         effectiveEnabledHolidayCountries = effectiveCountries,
                         clothesRules = prefs.clothesRules,
                         homeSectionOrder = prefs.homeSectionOrder,
@@ -783,6 +786,36 @@ class SettingsViewModel(
             val events = reader.upcomingCelebrations(today, today.plusYears(1), zone)
                 .distinctBy { Triple(it.date, it.title, it.kind) }
             _state.update { it.copy(calendarCelebrations = events) }
+        }
+    }
+
+    /**
+     * Enumerates the device's calendars into [SettingsState.availableCalendars]
+     * for the per-calendar enable/disable list. Called when the Calendar screen
+     * sees READ_CALENDAR granted. No-ops when no reader is wired (pure-VM tests)
+     * or a read is already in flight; degrades to an empty list on failure.
+     */
+    fun loadAvailableCalendars() {
+        val reader = calendarEventReader ?: return
+        if (availableCalendarsJob?.isActive == true) return
+        availableCalendarsJob = viewModelScope.launch {
+            val calendars = reader.availableCalendars()
+            _state.update { it.copy(availableCalendars = calendars) }
+        }
+    }
+
+    /**
+     * Persists a per-calendar enable/disable choice (keyed by stable id) and
+     * refreshes the celebration listings, which surface only the enabled
+     * calendars — otherwise they'd keep showing a just-disabled calendar's
+     * events (or omit a re-enabled one) until the screen is recreated.
+     */
+    fun setCalendarOverride(id: String, enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setCalendarOverride(id, enabled)
+            calendarCelebrationsJob?.cancel()
+            _state.update { it.copy(calendarCelebrations = null) }
+            loadCalendarCelebrations()
         }
     }
 

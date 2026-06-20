@@ -342,6 +342,87 @@ class CalendarContractEventReaderTest {
         events[0].kind shouldBe EventKind.NORMAL
         events[0].ownerAccount shouldBe null
     }
+
+    @Test
+    fun `events from a hidden calendar are excluded by default`(): Unit = runBlocking {
+        provider.calendars[30L] = "en.uk#holiday@group.v.calendar.google.com"
+        provider.calendarVisible[30L] = false
+        provider.instances += allDayInstance(30L, "King's Birthday")
+
+        val events = CalendarContractEventReader(context).eventsForDay(date, zone)
+
+        // Not visible in the host calendar app → not read.
+        events shouldHaveSize 0
+    }
+
+    @Test
+    fun `an explicit ON override re-includes a hidden calendar`(): Unit = runBlocking {
+        provider.calendars[30L] = "en.uk#holiday@group.v.calendar.google.com"
+        provider.calendarVisible[30L] = false
+        provider.calendarSyncId[30L] = "uk-holidays"
+        provider.calendarAccount[30L] = "me@example.com"
+        provider.instances += allDayInstance(30L, "King's Birthday")
+
+        val reader = CalendarContractEventReader(context) { mapOf("me@example.com/uk-holidays" to true) }
+        val events = reader.eventsForDay(date, zone)
+
+        events shouldHaveSize 1
+        events[0].kind shouldBe EventKind.PUBLIC_HOLIDAY
+    }
+
+    @Test
+    fun `an explicit OFF override excludes a visible calendar`(): Unit = runBlocking {
+        provider.calendars[40L] = "owner@example.com"
+        provider.calendarVisible[40L] = true
+        provider.calendarSyncId[40L] = "personal"
+        provider.calendarAccount[40L] = "me@example.com"
+        provider.instances += allDayInstance(40L, "Alex's birthday")
+
+        val reader = CalendarContractEventReader(context) { mapOf("me@example.com/personal" to false) }
+
+        reader.eventsForDay(date, zone) shouldHaveSize 0
+    }
+
+    @Test
+    fun `availableCalendars enumerates calendars keyed by sync id`(): Unit = runBlocking {
+        provider.calendars[50L] = "owner@example.com"
+        provider.calendarDisplayName[50L] = "Work"
+        provider.calendarAccount[50L] = "work@example.com"
+        provider.calendarSyncId[50L] = "work-sync"
+        provider.calendarVisible[50L] = false
+
+        val calendars = CalendarContractEventReader(context).availableCalendars()
+
+        calendars shouldHaveSize 1
+        calendars[0].id shouldBe "work@example.com/work-sync"
+        calendars[0].displayName shouldBe "Work"
+        calendars[0].accountName shouldBe "work@example.com"
+        calendars[0].visible shouldBe false
+    }
+
+    @Test
+    fun `same-name accounts of different types stay distinct`(): Unit = runBlocking {
+        // Same email added under two providers, sharing a sync id — the account
+        // type is what keeps them independently toggleable.
+        provider.calendars[60L] = "user@example.com"
+        provider.calendarAccount[60L] = "user@example.com"
+        provider.calendarAccountType[60L] = "com.google"
+        provider.calendarSyncId[60L] = "shared-sync"
+        provider.calendars[61L] = "user@example.com"
+        provider.calendarAccount[61L] = "user@example.com"
+        provider.calendarAccountType[61L] = "com.android.exchange"
+        provider.calendarSyncId[61L] = "shared-sync"
+
+        val calendars = CalendarContractEventReader(context).availableCalendars()
+
+        calendars shouldHaveSize 2
+        calendars.map { it.id }.toSet() shouldBe setOf(
+            "com.google/user@example.com/shared-sync",
+            "com.android.exchange/user@example.com/shared-sync",
+        )
+        // Account type flows through so the UI can disambiguate the two rows.
+        calendars.map { it.accountType }.toSet() shouldBe setOf("com.google", "com.android.exchange")
+    }
 }
 
 data class FakeInstance(
@@ -366,6 +447,12 @@ data class FakeInstance(
 class FakeCalendarProvider : ContentProvider() {
     val instances: MutableList<FakeInstance> = mutableListOf()
     val calendars: MutableMap<Long, String?> = mutableMapOf()
+    /** Optional per-calendar metadata; sensible defaults applied when unset. */
+    val calendarVisible: MutableMap<Long, Boolean> = mutableMapOf()
+    val calendarSyncId: MutableMap<Long, String?> = mutableMapOf()
+    val calendarDisplayName: MutableMap<Long, String?> = mutableMapOf()
+    val calendarAccount: MutableMap<Long, String?> = mutableMapOf()
+    val calendarAccountType: MutableMap<Long, String?> = mutableMapOf()
 
     /**
      * When false, the fake instance provider rejects the `eventType` column
@@ -432,6 +519,12 @@ class FakeCalendarProvider : ContentProvider() {
     private fun calendarValue(id: Long, owner: String?, col: String): Any? = when (col) {
         CalendarContract.Calendars._ID -> id
         CalendarContract.Calendars.OWNER_ACCOUNT -> owner
+        CalendarContract.Calendars._SYNC_ID -> calendarSyncId[id] ?: owner
+        CalendarContract.Calendars.CALENDAR_DISPLAY_NAME -> calendarDisplayName[id] ?: owner
+        CalendarContract.Calendars.ACCOUNT_NAME -> calendarAccount[id] ?: owner
+        CalendarContract.Calendars.ACCOUNT_TYPE -> calendarAccountType[id]
+        // Default visible so existing tests (which only set owner) keep surfacing.
+        CalendarContract.Calendars.VISIBLE -> if (calendarVisible[id] != false) 1 else 0
         else -> null
     }
 

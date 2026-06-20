@@ -127,7 +127,7 @@ class AlarmReceiverErrorHandlingTest {
         // The catch for TONIGHT does nothing observable, so we can't poll for a
         // positive signal — wait a beat, then assert nothing was enqueued.
         Thread.sleep(500)
-        workManager.getWorkInfosForUniqueWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT)
+        workManager.getWorkInfosForUniqueWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
             .get()
             .shouldBeEmpty()
         // The alarm was also never re-armed (scheduler.schedule lives inside

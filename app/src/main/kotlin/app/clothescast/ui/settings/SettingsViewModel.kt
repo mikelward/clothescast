@@ -413,11 +413,12 @@ class SettingsViewModel(
             // slot's cache write.
             viewModelScope.launch {
                 combine(
+                    // Both scheduled periods now share one queue; Play stays
+                    // on its own — see FetchAndNotifyWorker.UNIQUE_WORK_NAME.
                     wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME),
-                    wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT),
                     wm.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY),
-                ) { today, tonight, play ->
-                    today.hasActiveWork() || tonight.hasActiveWork() || play.hasActiveWork()
+                ) { scheduled, play ->
+                    scheduled.hasActiveWork() || play.hasActiveWork()
                 }.collect { active ->
                     _state.update { it.copy(anyWorkActive = active) }
                 }

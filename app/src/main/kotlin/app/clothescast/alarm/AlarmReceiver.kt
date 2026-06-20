@@ -3,9 +3,14 @@ package app.clothescast.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import app.clothescast.diag.DiagLog
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.core.domain.model.playsSpeech
+import app.clothescast.core.domain.model.postsNotification
+import app.clothescast.core.domain.usecase.isMqttPublishable
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,12 +25,20 @@ import kotlinx.coroutines.launch
  *  - [ACTION_FIRE]         — the morning ([ForecastPeriod.TODAY]) alarm
  *  - [ACTION_FIRE_TONIGHT] — the evening ([ForecastPeriod.TONIGHT]) alarm
  *
- * For each, the receiver:
- * 1. Enqueues a WorkManager OneTimeWorkRequest ([FetchAndNotifyWorker]) which actually
- *    does the fetch + insight + notification under network/retry constraints.
- * 2. Re-arms the same slot's alarm for the next day. Re-arming here (rather than only
- *    inside the Worker) keeps the alarm chain alive even if the Worker is permanently
- *    failing.
+ * The receiver reads preferences once and then routes:
+ *  1. Slot disabled → cancel the alarm, do nothing else.
+ *  2. SILENT delivery (no notification, no audio, no MQTT, no cast) →
+ *     enqueue the worker as a normal background refresh and re-arm. No
+ *     foreground service, no "Preparing" notification — the user opted out
+ *     of every visible surface and we honor that.
+ *  3. Otherwise → enqueue the worker, re-arm, and (best-effort) start
+ *     [ScheduledDeliveryService] so the user sees "Preparing your
+ *     ClothesCast" → "Delivering your ClothesCast" while the run happens.
+ *     If the Service start is refused, the worker's own
+ *     [FetchAndNotifyWorker.promoteToPlaybackServiceIfNeeded] covers the
+ *     speech window — worst case is the pre-Service behavior, never nothing.
+ *
+ * See docs/schedule-lifecycle.md for the full state machine.
  */
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -72,12 +85,22 @@ class AlarmReceiver : BroadcastReceiver() {
                     scheduler.cancel(ForecastPeriod.TONIGHT)
                     return@launch
                 }
-                FetchAndNotifyWorker.enqueueOneShot(
+
+                val workId = FetchAndNotifyWorker.enqueueOneShot(
                     appCtx,
                     period = period,
                     alarmScheduledAtMs = scheduledAtMs,
                     alarmFiredAtMs = firedAtMs,
                 )
+
+                if (needsForegroundSurface(prefs, period)) {
+                    // Best-effort: if the platform refuses (background-restricted,
+                    // lapsed exemption window, OEM quirk), the worker still runs
+                    // and its own promoteToPlaybackServiceIfNeeded covers the
+                    // speech window via the static isHoldingForeground gate.
+                    tryStartService(appCtx, period, prefs, workId.toString())
+                }
+
                 val schedule = when (period) {
                     ForecastPeriod.TODAY -> prefs.schedule
                     ForecastPeriod.TONIGHT -> prefs.tonightSchedule
@@ -99,6 +122,80 @@ class AlarmReceiver : BroadcastReceiver() {
                 pending.finish()
                 scope.cancel()
             }
+        }
+    }
+
+    /**
+     * True when the period's delivery configuration calls for a visible
+     * foreground-service surface during the run. SILENT delivery with no
+     * usable smart-home destinations means the user opted out of every
+     * visible / audible affordance — posting "Preparing your ClothesCast"
+     * would regress that contract.
+     *
+     * Uses the same publishability rules the delivery pipeline does:
+     * [isMqttPublishable] requires both the toggle *and* a non-blank
+     * host, and cast requires both the toggle *and* a picked route ID
+     * (matches `DeliveryGates.willCast`). A SILENT slot with the MQTT
+     * toggle on but no host configured, or cast enabled with no route
+     * picked, falls through the same way as plain SILENT.
+     */
+    private fun needsForegroundSurface(prefs: UserPreferences, period: ForecastPeriod): Boolean {
+        val deliveryMode = when (period) {
+            ForecastPeriod.TODAY -> prefs.deliveryMode
+            ForecastPeriod.TONIGHT -> prefs.tonightDeliveryMode
+        }
+        val castThisPeriod = when (period) {
+            ForecastPeriod.TODAY -> prefs.castMorning
+            ForecastPeriod.TONIGHT -> prefs.castTonight
+        }
+        val willCast = prefs.castEnabled && prefs.castRouteId != null && castThisPeriod
+        return deliveryMode.postsNotification ||
+            deliveryMode.playsSpeech ||
+            isMqttPublishable(prefs) ||
+            willCast
+    }
+
+    /**
+     * Starts the Service with the specific [workId] to watch, and the
+     * pre-resolved mode flags. Catches both the exception path
+     * (`ForegroundServiceStartNotAllowedException` and friends) and the
+     * silent-null return — `startForegroundService` returns the
+     * `ComponentName` of the started service, or null when the system
+     * couldn't resolve it.
+     */
+    private fun tryStartService(
+        context: Context,
+        period: ForecastPeriod,
+        prefs: UserPreferences,
+        workId: String,
+    ) {
+        val deliveryMode = when (period) {
+            ForecastPeriod.TODAY -> prefs.deliveryMode
+            ForecastPeriod.TONIGHT -> prefs.tonightDeliveryMode
+        }
+        val castThisPeriod = when (period) {
+            ForecastPeriod.TODAY -> prefs.castMorning
+            ForecastPeriod.TONIGHT -> prefs.castTonight
+        }
+        val willCast = prefs.castEnabled && prefs.castRouteId != null && castThisPeriod
+        val deliveringWantsForeground =
+            deliveryMode.playsSpeech ||
+                isMqttPublishable(prefs) ||
+                willCast
+        val intent = ScheduledDeliveryService.intent(
+            context = context,
+            period = period,
+            workId = workId,
+            playsSpeech = deliveryMode.playsSpeech,
+            deliveringWantsForeground = deliveringWantsForeground,
+        )
+        val result = runCatching { ContextCompat.startForegroundService(context, intent) }
+            .onFailure { t ->
+                DiagLog.w(TAG, "startForegroundService for $period refused; falling back to worker-only path", t)
+            }
+            .getOrNull()
+        if (result == null) {
+            DiagLog.w(TAG, "startForegroundService for $period returned null (system declined); falling back to worker-only path")
         }
     }
 

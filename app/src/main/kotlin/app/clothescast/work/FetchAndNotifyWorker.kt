@@ -20,6 +20,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import app.clothescast.ClothesCastApplication
+import app.clothescast.alarm.ScheduledDeliveryService
 import app.clothescast.core.domain.model.DailyHistoryEntry
 import app.clothescast.core.domain.model.postsNotification
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -216,10 +217,10 @@ class FetchAndNotifyWorker(
         if (inputData.getBoolean(KEY_CACHE_LOCATION_ONLY, false)) {
             val resolved = resolveLocation(prefs, forceFresh = true)
             if (resolved != null && !hasCachedThisPeriodInsight()) {
-                // Route the recovery through the *observed* daily / tonight
+                // Route the recovery through the *observed* scheduled-delivery
                 // queue (silent = no notification / TTS), not the silent-refresh
                 // queue. The scheduled run that failed for lack of a location
-                // left a terminal REASON_NO_LOCATION WorkInfo on an observed
+                // left a terminal REASON_NO_LOCATION WorkInfo on the observed
                 // queue, and the Today banner only suppresses it while the
                 // location-action banner is showing — which stops the moment
                 // resolveLocation() saves a fallback here. A success on the
@@ -229,23 +230,9 @@ class FetchAndNotifyWorker(
                 // error. enqueueOneShot's REPLACE on the observed queue both
                 // clears the stale failure and shows a "Fetching" spinner while
                 // it runs.
-                //
-                // Recover the current window for the actual fetch. But the
-                // failure may sit on the *other* observed queue: if this
-                // morning's daily run failed and the user only grants location
-                // after the tonight window opens, the current period is TONIGHT
-                // while the stale REASON_NO_LOCATION lives on the daily queue.
-                // mergeWorkStatus surfaces a failure on *either* queue, so also
-                // kick a (silent) recovery on the other queue when it carries
-                // that stale failure — a no-op in the common same-window case.
                 val period = currentPeriodForSchedule(prefs)
-                val other = otherPeriod(period)
-                val periods = buildList {
-                    add(period)
-                    if (hasStaleNoLocationFailure(observedWorkName(other))) add(other)
-                }
-                DiagLog.i(TAG, "Cache-only refresh resolved a location with nothing cached; kicking $periods refresh.")
-                periods.forEach { enqueueOneShot(applicationContext, silent = true, period = it) }
+                DiagLog.i(TAG, "Cache-only refresh resolved a location with nothing cached; kicking $period refresh.")
+                enqueueOneShot(applicationContext, silent = true, period = period)
             } else {
                 DiagLog.i(TAG, "Cache-only location refresh; skipping insight pipeline.")
             }
@@ -357,6 +344,14 @@ class FetchAndNotifyWorker(
         if (cached != null) {
             val cachedInsight = cached.insight
             DiagLog.i(TAG, "Using cached $period insight for ${cachedInsight.forDate}.")
+            // Mirror the fresh-fetch path: stamp KEY_FETCH_COMPLETE so
+            // ScheduledDeliveryService swaps from PREPARING to DELIVERING
+            // (mediaPlayback FGS when speech plays). Otherwise the Service
+            // sits at "Preparing" through the whole cached delivery, and
+            // because isHoldingForegroundFor(id) is true the worker has
+            // already skipped its own promoteToPlaybackServiceIfNeeded —
+            // background TTS could be silenced on Android 15+.
+            setProgress(workDataOf(KEY_FETCH_COMPLETE to true))
             return runCatching { deliver(cachedInsight, prefs, formatProse(cachedInsight, prefs)) }
                 .map {
                     recordDailyHistory(cachedInsight)
@@ -859,32 +854,6 @@ class FetchAndNotifyWorker(
     // leaving the user on a blank Today screen.
     private suspend fun hasCachedThisPeriodInsight(): Boolean =
         runCatching { app.insightCache.thisPeriod.first() }.getOrNull() != null
-
-    // The observed unique-work queue (the ones TodayViewModel.workStatusFlow
-    // watches) that a [period]'s scheduled run lands on.
-    private fun observedWorkName(period: ForecastPeriod): String = when (period) {
-        ForecastPeriod.TODAY -> UNIQUE_WORK_NAME
-        ForecastPeriod.TONIGHT -> UNIQUE_WORK_NAME_TONIGHT
-    }
-
-    private fun otherPeriod(period: ForecastPeriod): ForecastPeriod = when (period) {
-        ForecastPeriod.TODAY -> ForecastPeriod.TONIGHT
-        ForecastPeriod.TONIGHT -> ForecastPeriod.TODAY
-    }
-
-    // True when [workName]'s most-recent terminal run failed for lack of a
-    // location and nothing's currently active on it — i.e. a stale
-    // REASON_NO_LOCATION WorkInfo the banner would surface once the saved
-    // fallback drops the location-action suppression. A query failure degrades
-    // to false — we'd rather skip the extra recovery than throw out of the
-    // cache-only path. The decision itself lives in [staleNoLocationFailure]
-    // so it can be unit-tested without WorkManager.
-    private fun hasStaleNoLocationFailure(workName: String): Boolean {
-        val infos = runCatching {
-            WorkManager.getInstance(applicationContext).getWorkInfosForUniqueWork(workName).get()
-        }.getOrElse { return false }
-        return staleNoLocationFailure(infos.toLite())
-    }
 
     private suspend fun resolveLocation(prefs: UserPreferences, forceFresh: Boolean = false): Location? {
         if (prefs.useDeviceLocation) {
@@ -1788,6 +1757,16 @@ class FetchAndNotifyWorker(
     private suspend fun promoteToPlaybackServiceIfNeeded(prefs: UserPreferences) {
         val alarmTriggered = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L) != 0L
         if (!alarmTriggered) return
+        // ScheduledDeliveryService is the primary FGS owner for alarm-driven
+        // runs. While it's holding id 1005, we skip our own setForeground —
+        // a second call would clobber its notification and race the type
+        // transition. The static check (not a persisted input flag) is what
+        // covers the corner cases: the Service's 5-min safety timeout, a
+        // process restart, or a Service start that the receiver couldn't
+        // reach — in any of them isHoldingForeground() is false and the
+        // worker promotes itself so background TTS still has the
+        // mediaPlayback FGS Android 15+ requires.
+        if (ScheduledDeliveryService.isHoldingForegroundFor(id)) return
         val period = inputData.getString(KEY_PERIOD)
             ?.let { runCatching { ForecastPeriod.valueOf(it) }.getOrNull() }
             ?: ForecastPeriod.TODAY
@@ -1946,8 +1925,18 @@ class FetchAndNotifyWorker(
 
     companion object {
         private const val TAG = "FetchAndNotifyWorker"
+        // Single unique-work queue for both TODAY and TONIGHT scheduled runs.
+        // Sharing one queue means WorkManager's ExistingWorkPolicy.REPLACE
+        // naturally cancels any in-flight previous run when a new alarm
+        // fires — covers the "morning still mid-flight when evening alarm
+        // fires" overlap without any cross-queue dance. The period the run
+        // is for is carried on the WorkInfo's input data ([KEY_PERIOD]);
+        // observers that care about which slot is running read it there.
+        //
+        // Name preserved as "daily_insight_fetch" — WorkManager persists the
+        // queue keyed by this name and renaming would orphan any run armed
+        // before the upgrade.
         const val UNIQUE_WORK_NAME = "daily_insight_fetch"
-        const val UNIQUE_WORK_NAME_TONIGHT = "tonight_insight_fetch"
         // Distinct queue from the daily / tonight runs so a user toggling
         // device location while a forecast run is in flight doesn't cancel
         // it (and vice versa). Cache-only runs are idempotent and skip the
@@ -2154,13 +2143,20 @@ class FetchAndNotifyWorker(
          */
         internal const val KEY_PLAY_FORCE = "play_force"
 
+        /**
+         * Returns the [java.util.UUID] of the enqueued work request so callers
+         * (notably [app.clothescast.alarm.AlarmReceiver]) can hand it to
+         * [app.clothescast.alarm.ScheduledDeliveryService] to watch the
+         * specific run rather than racing whatever stale terminal WorkInfo
+         * the unique-work queue is hanging on to.
+         */
         fun enqueueOneShot(
             context: Context,
             silent: Boolean = false,
             period: ForecastPeriod = ForecastPeriod.TODAY,
             alarmScheduledAtMs: Long = 0L,
             alarmFiredAtMs: Long = 0L,
-        ) {
+        ): java.util.UUID {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -2184,16 +2180,18 @@ class FetchAndNotifyWorker(
                 )
                 .build()
 
-            // The manual Refresh tap (the only silent caller here) uses REPLACE so
-            // it supersedes any in-flight retry and starts a fresh fetch. Alarm
-            // enqueues use KEEP so a still-retrying run isn't duplicated.
-            val policy = if (silent) ExistingWorkPolicy.REPLACE else ExistingWorkPolicy.KEEP
-            val workName = when (period) {
-                ForecastPeriod.TODAY -> UNIQUE_WORK_NAME
-                ForecastPeriod.TONIGHT -> UNIQUE_WORK_NAME_TONIGHT
-            }
+            // REPLACE across the board, and one shared queue for both
+            // periods: the alarm path uses it so a stuck retry from an
+            // earlier fire — *or* an in-flight worker for the other slot —
+            // is canceled in favor of the new alarm's fresh request. The
+            // silent refresh path already used REPLACE; the merged queue
+            // means a manual Refresh tap supersedes any in-flight scheduled
+            // run too. With REPLACE we always know `request.id` is the id
+            // WorkManager kept, so callers (notably AlarmReceiver) don't
+            // need to read it back.
             WorkManager.getInstance(context)
-                .enqueueUniqueWork(workName, policy, request)
+                .enqueueUniqueWork(UNIQUE_WORK_NAME, ExistingWorkPolicy.REPLACE, request)
+            return request.id
         }
 
         /**
@@ -2202,9 +2200,9 @@ class FetchAndNotifyWorker(
          * Replays a fresh same-day cached snapshot when one exists, else
          * fetches fresh (see [playInsight]). Runs on its own
          * [UNIQUE_WORK_NAME_PLAY] queue so an offline tap sitting here can't
-         * block a later scheduled alarm fire (which uses KEEP on
-         * [UNIQUE_WORK_NAME] / [UNIQUE_WORK_NAME_TONIGHT] and would otherwise
-         * get dropped in favour of the pending play). REPLACE because the
+         * block a later scheduled alarm fire (which uses REPLACE on
+         * [UNIQUE_WORK_NAME] — sharing the queue would let the pending
+         * play be canceled by the alarm or vice versa). REPLACE because the
          * user's most-recent tap is the one that matters; concurrent
          * Refresh+Play double-delivery is prevented by the UI gate (see
          * [TodayState.anyWorkActive]), not by sharing a queue.
@@ -2252,10 +2250,36 @@ class FetchAndNotifyWorker(
          * their `invokeOnCancellation` hooks. A future scheduled alarm is
          * unaffected — it re-enqueues on its own next fire.
          */
+        /**
+         * One-shot cleanup of unique-work queue names this class no longer
+         * uses. Idempotent — `cancelUniqueWork` is a no-op when no rows
+         * exist under the name. Called from
+         * [app.clothescast.ClothesCastApplication.onCreate] so an upgrade
+         * doesn't leave a stale TONIGHT WorkSpec lurking on the retired
+         * `tonight_insight_fetch` queue: that worker would otherwise run
+         * later with its old period input, fire a duplicate notification /
+         * TTS / MQTT / cast on top of the merged-queue run, and not be
+         * observable via the current [TodayViewModel] / [SettingsViewModel]
+         * flows (which only watch [UNIQUE_WORK_NAME] now).
+         */
+        fun cleanupLegacyQueues(context: Context) {
+            // WorkManager initializes via androidx.startup on real devices,
+            // but Robolectric doesn't fire that provider — getInstance() then
+            // throws IllegalStateException from a test that didn't explicitly
+            // initialise WorkManager. Treat that as "nothing to clean up"; on
+            // a real device the cleanup runs once per cold start.
+            runCatching {
+                WorkManager.getInstance(context).cancelUniqueWork(LEGACY_UNIQUE_WORK_NAME_TONIGHT)
+            }.onFailure { DiagLog.w(TAG, "Legacy queue cleanup skipped (WorkManager unavailable)", it) }
+        }
+
+        // Retired in the queue-merge — both periods now share UNIQUE_WORK_NAME.
+        // Kept here only so [cleanupLegacyQueues] can cancel any orphaned row.
+        private const val LEGACY_UNIQUE_WORK_NAME_TONIGHT = "tonight_insight_fetch"
+
         fun cancelDelivery(context: Context) {
             val workManager = WorkManager.getInstance(context)
             workManager.cancelUniqueWork(UNIQUE_WORK_NAME)
-            workManager.cancelUniqueWork(UNIQUE_WORK_NAME_TONIGHT)
             workManager.cancelUniqueWork(UNIQUE_WORK_NAME_PLAY)
         }
 

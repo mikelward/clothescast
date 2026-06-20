@@ -529,16 +529,18 @@ class TodayViewModel(
     // into a single flow so [state]'s `combine` stays under the 5-flow
     // overload cap now that the pager reads both period slots separately.
     private val workStatusFlow = combine(
+        // Both TODAY and TONIGHT scheduled runs share UNIQUE_WORK_NAME now
+        // (single queue, REPLACE on enqueue covers the overlap case). The
+        // Play tap stays on its own queue so an offline Play sitting there
+        // can't block an alarm.
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME),
-        workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_TONIGHT),
         workManager.getWorkInfosForUniqueWorkFlow(FetchAndNotifyWorker.UNIQUE_WORK_NAME_PLAY),
-    ) { todayInfos, tonightInfos, replayInfos ->
-        val todayLite = todayInfos.toLite()
-        val tonightLite = tonightInfos.toLite()
+    ) { scheduledInfos, replayInfos ->
+        val scheduledLite = scheduledInfos.toLite()
         val replayLite = replayInfos.toLite()
         WorkSignals(
-            status = mergeWorkStatus(selectStatus(todayLite), selectStatus(tonightLite)),
-            anyWorkActive = anyActive(todayLite) || anyActive(tonightLite) || anyActive(replayLite),
+            status = selectStatus(scheduledLite),
+            anyWorkActive = anyActive(scheduledLite) || anyActive(replayLite),
         )
     }
 

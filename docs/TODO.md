@@ -136,6 +136,16 @@ Done:
 
 Open:
 
+- [ ] **Publish a calendar-events MQTT topic.** Tonight's
+      `tonightNotifyOnlyOnEvents` skips the phone-side delivery on
+      event-free evenings, but we still publish MQTT so Home Assistant
+      automations can read fresh data unconditionally. Right now HA can
+      only see the insight prose — it can't tell *why* the phone stayed
+      quiet, so the automation has to guess from prose text whether the
+      evening had events. Publish a boolean / count under e.g.
+      `clothescast/<topic>/tonight/has_events` (and possibly `event_count`)
+      so HA can decide its own trigger logic — play the cast on event
+      nights, stay quiet otherwise, etc. — without us pre-deciding for it.
 - [ ] **Music Assistant `mass.announce` quick-start in the setup
       guide.** docs/smart-home.md now describes the three speaking
       options at a high level, but for users picking Option B the
@@ -183,7 +193,9 @@ PRIVACY.md and is mirrored inline in the Settings → Privacy card.
 
 Live events: `api_call` (endpoint, outcome, status, latency;
 offline-filtered), `notification_delivery` (slot, alarm delay, total
-delay), `daily_refresh` (slot, outcome, latency), the non-voice
+delay), `daily_refresh` (slot, outcome, latency),
+`scheduled_delivery_timeout` (slot — fires when the FGS shepherd's
+pre-RUNNING 5-min cap kicks in because the worker stayed queued), the non-voice
 configuration split into one event per Settings page (`settings_schedule`
 / `settings_clothes` / `settings_format` / `settings_region` /
 `settings_display` / `settings_calendar` — one combined event would
@@ -195,6 +207,18 @@ small set since Firebase caps custom user properties at 25 per app.
 
 Open work:
 
+- [ ] **Route caught non-crash errors to Crashlytics.** Crashes already
+      flow via `FirebaseCrashlytics`, but the long tail of caught
+      exceptions logged through `DiagLog.e` / `.w` only lands in the
+      on-device diag file. Routing them through
+      `FirebaseCrashlytics.recordException` would surface real-world
+      failure modes (network outages, parsing errors, TTS synth failures)
+      without waiting for a crashing fork. The privacy work is the gating
+      cost: log strings are free-form and can contain prose / locations /
+      keys, so we'd need an audit + filtering layer (or a structured
+      replacement for the free-form messages) before piping them through.
+      PRIVACY.md → "Analytics and crash reporting" lists the hard
+      do-not-transmit set.
 - [x] **Codify the do-not-transmit list in tests.** `TelemetryPrivacyContractTest`
       structurally locks the surface: event-name / param-key / user-property
       allowlists in `Telemetry.kt`, literal-only Crashlytics custom keys, no

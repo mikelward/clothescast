@@ -380,6 +380,8 @@ internal fun CalendarPage(
             themeFromCalendarHolidays = state.themeFromCalendarHolidays,
             themeFromCalendarBirthdays = state.themeFromCalendarBirthdays,
             calendarCelebrations = state.calendarCelebrations,
+            availableCalendars = state.availableCalendars,
+            calendarOverrides = state.calendarOverrides,
             padding = padding,
             onSetCalendarEnabled = viewModel::setCalendarEnabled,
             onSetUseCalendarEvents = viewModel::setUseCalendarEvents,
@@ -396,6 +398,8 @@ internal fun CalendarPage(
             onSetThemeFromCalendarBirthdays = viewModel::setThemeFromCalendarBirthdays,
             onCalendarPermissionRechecked = viewModel::markCalendarPermissionRechecked,
             onLoadCalendarCelebrations = viewModel::loadCalendarCelebrations,
+            onLoadAvailableCalendars = viewModel::loadAvailableCalendars,
+            onSetCalendarOverride = viewModel::setCalendarOverride,
             onNavigateToRegionSettings = onNavigateToRegion,
             onNavigateToLocationSettings = onNavigateToLocation,
         )

@@ -29,6 +29,7 @@ import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
+import app.clothescast.core.domain.model.CalendarInfo
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
@@ -128,6 +129,12 @@ data class SettingsState(
      */
     val holidayOverrides: Map<HolidayId, HolidayOverride> = emptyMap(),
     /**
+     * Per-calendar enable/disable overrides, keyed by stable provider id.
+     * Sparse: present = explicit choice, absent = follow the calendar's
+     * visibility in the host app.
+     */
+    val calendarOverrides: Map<String, Boolean> = emptyMap(),
+    /**
      * The effective enabled-country set the resolver uses today, derived
      * from [holidayCountrySelection] + the user's locale + the weather
      * location's country. Exposed to the UI so each per-holiday row can
@@ -181,6 +188,12 @@ data class SettingsState(
      * never carried off device.
      */
     val calendarCelebrations: List<UpcomingCalendarEvent>? = null,
+    /**
+     * Calendars present on the device, for the per-calendar enable/disable
+     * setting. `null` until the first enumeration completes; loaded lazily
+     * once READ_CALENDAR is granted and never carried off device.
+     */
+    val availableCalendars: List<CalendarInfo>? = null,
     val telemetryEnabled: Boolean = true,
     val apiKeyConfigured: Boolean = false,
     /**

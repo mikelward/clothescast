@@ -705,6 +705,8 @@ internal fun SettingsCalendarPreview() {
             themeFromCalendarHolidays = true,
             themeFromCalendarBirthdays = false,
             calendarCelebrations = null,
+            availableCalendars = null,
+            calendarOverrides = emptyMap(),
             padding = PaddingValues(0.dp),
             onSetCalendarEnabled = {},
             onSetUseCalendarEvents = {},
@@ -721,6 +723,8 @@ internal fun SettingsCalendarPreview() {
             onSetThemeFromCalendarBirthdays = {},
             onCalendarPermissionRechecked = {},
             onLoadCalendarCelebrations = {},
+            onLoadAvailableCalendars = {},
+            onSetCalendarOverride = { _, _ -> },
             onNavigateToRegionSettings = {},
             onNavigateToLocationSettings = {},
         )

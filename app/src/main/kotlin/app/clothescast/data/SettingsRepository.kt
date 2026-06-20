@@ -853,6 +853,21 @@ class SettingsRepository(
         }
     }
 
+    /**
+     * Persists a per-calendar enable/disable override, or clears it (back to
+     * "follow the calendar's visibility in the host app") when [enabled] is
+     * null. Keyed by the calendar's stable provider id
+     * ([app.clothescast.core.domain.model.CalendarInfo.id]).
+     */
+    suspend fun setCalendarOverride(id: String, enabled: Boolean?) {
+        val key = id.trim().takeIf { it.isNotEmpty() } ?: return
+        dataStore.edit { prefs ->
+            val current = parseCalendarOverrides(prefs[CALENDAR_OVERRIDES])
+            val updated = if (enabled == null) current - key else current + (key to enabled)
+            prefs[CALENDAR_OVERRIDES] = encodeCalendarOverrides(updated)
+        }
+    }
+
     suspend fun setHolidayCountryHome(enabled: Boolean) {
         dataStore.edit { it[HOLIDAY_COUNTRY_HOME] = enabled }
     }
@@ -1081,6 +1096,7 @@ class SettingsRepository(
             countryOverrides = parseHolidayCountryOverrides(this[HOLIDAY_COUNTRY_OVERRIDES]),
         )
         val holidayOverrides = parseHolidayOverrides(this[HOLIDAY_OVERRIDES])
+        val calendarOverrides = parseCalendarOverrides(this[CALENDAR_OVERRIDES])
         // Resolve stored enum names back to [ForecastModel]. Unknown / removed
         // entries are dropped silently so a forward-compat (future enum value
         // we didn't ship yet) or stale value from a downgrade doesn't break
@@ -1185,6 +1201,7 @@ class SettingsRepository(
             outfitOuterColors = outfitOuterColors,
             holidayCountrySelection = holidayCountrySelection,
             holidayOverrides = holidayOverrides,
+            calendarOverrides = calendarOverrides,
             forecastModels = forecastModels,
             mqttBridgeEnabled = mqttBridgeEnabled,
             mqttHost = mqttHost,
@@ -1318,6 +1335,30 @@ class SettingsRepository(
         overrides.entries.mapNotNullTo(mutableSetOf()) { (id, state) ->
             if (state == HolidayOverride.AUTO) null else "${id.name}:${state.name}"
         }
+
+    /**
+     * Decodes the persisted per-calendar override map. Each entry is `STATE:id`
+     * where STATE is `ON` / `OFF` and `id` is the calendar's stable provider id
+     * — STATE leads so a `:` inside the id can't break the split. Missing /
+     * malformed entries drop silently.
+     */
+    private fun parseCalendarOverrides(raw: Set<String>?): Map<String, Boolean> {
+        if (raw.isNullOrEmpty()) return emptyMap()
+        return raw.mapNotNull { entry ->
+            val parts = entry.split(":", limit = 2)
+            if (parts.size != 2) return@mapNotNull null
+            val enabled = when (parts[0]) {
+                "ON" -> true
+                "OFF" -> false
+                else -> return@mapNotNull null
+            }
+            val id = parts[1].takeIf { it.isNotEmpty() } ?: return@mapNotNull null
+            id to enabled
+        }.toMap()
+    }
+
+    private fun encodeCalendarOverrides(overrides: Map<String, Boolean>): Set<String> =
+        overrides.entries.mapTo(mutableSetOf()) { (id, enabled) -> "${if (enabled) "ON" else "OFF"}:$id" }
 
     /**
      * Decodes the persisted per-country override map. Each set entry is
@@ -1479,6 +1520,7 @@ class SettingsRepository(
         private val OUTFIT_CARRIED_COLORS = stringPreferencesKey("outfit_carried_colors_json")
         private val OUTFIT_OUTER_COLORS = stringPreferencesKey("outfit_outer_colors_json")
         private val HOLIDAY_OVERRIDES = stringSetPreferencesKey("holiday_overrides")
+        private val CALENDAR_OVERRIDES = stringSetPreferencesKey("calendar_overrides")
         private val HOLIDAY_COUNTRY_HOME = booleanPreferencesKey("holiday_country_home")
         private val HOLIDAY_COUNTRY_CURRENT = booleanPreferencesKey("holiday_country_current")
         private val HOLIDAY_COUNTRY_GLOBAL = booleanPreferencesKey("holiday_country_global")

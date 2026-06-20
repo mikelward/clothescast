@@ -55,6 +55,7 @@ import app.clothescast.ui.AppMenuShape
 import app.clothescast.R
 import app.clothescast.calendar.CalendarPermission
 import app.clothescast.diag.findActivity
+import app.clothescast.core.domain.model.CalendarInfo
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayCountrySelection
@@ -109,6 +110,8 @@ internal fun CalendarContent(
     themeFromCalendarHolidays: Boolean,
     themeFromCalendarBirthdays: Boolean,
     calendarCelebrations: List<UpcomingCalendarEvent>?,
+    availableCalendars: List<CalendarInfo>?,
+    calendarOverrides: Map<String, Boolean>,
     padding: PaddingValues,
     onSetCalendarEnabled: (Boolean) -> Unit,
     onSetUseCalendarEvents: (Boolean) -> Unit,
@@ -125,6 +128,8 @@ internal fun CalendarContent(
     onSetThemeFromCalendarBirthdays: (Boolean) -> Unit,
     onCalendarPermissionRechecked: () -> Unit,
     onLoadCalendarCelebrations: () -> Unit,
+    onLoadAvailableCalendars: () -> Unit,
+    onSetCalendarOverride: (String, Boolean) -> Unit,
     onNavigateToRegionSettings: () -> Unit,
     onNavigateToLocationSettings: () -> Unit,
 ) {
@@ -213,7 +218,10 @@ internal fun CalendarContent(
     val scrollToTop: () -> Unit = { coroutineScope.launch { scrollState.animateScrollTo(0) } }
 
     LaunchedEffect(calendarEnabled, permissionGranted) {
-        if (calendarEnabled && permissionGranted) onLoadCalendarCelebrations()
+        if (calendarEnabled && permissionGranted) {
+            onLoadCalendarCelebrations()
+            onLoadAvailableCalendars()
+        }
     }
     val calendarHolidays = calendarCelebrations?.filter { it.kind == EventKind.PUBLIC_HOLIDAY }
     val calendarBirthdays = calendarCelebrations?.filter { it.kind == EventKind.BIRTHDAY }
@@ -395,6 +403,19 @@ internal fun CalendarContent(
                 events = calendarHolidays,
                 emptyMessage = stringResource(R.string.settings_holidays_calendar_no_holidays),
                 uiLocale = uiLocale,
+                onRequestPermission = requestPermissionForListing,
+                onEnableCalendar = scrollToTop,
+            )
+
+            // Which device calendars feed ClothesCast. Defaults to each
+            // calendar's visibility in the host calendar app; an explicit
+            // toggle here overrides that.
+            CalendarSelectionSection(
+                calendarEnabled = calendarEnabled,
+                permissionGranted = permissionGranted,
+                calendars = availableCalendars,
+                overrides = calendarOverrides,
+                onSetCalendarOverride = onSetCalendarOverride,
                 onRequestPermission = requestPermissionForListing,
                 onEnableCalendar = scrollToTop,
             )
@@ -1083,5 +1104,142 @@ private fun CelebrationRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+    }
+}
+
+/**
+ * Per-calendar enable/disable list. One switch per device calendar; the
+ * effective state is the user's explicit override when set, otherwise the
+ * calendar's visibility in the host calendar app (so a fresh install mirrors
+ * Google Calendar). Disabling a calendar stops ClothesCast reading it for
+ * theming, evening tie-ins, the listings, and the insight prose. Gated like
+ * the celebration listings: master switch first, then READ_CALENDAR.
+ */
+@Composable
+private fun CalendarSelectionSection(
+    calendarEnabled: Boolean,
+    permissionGranted: Boolean,
+    calendars: List<CalendarInfo>?,
+    overrides: Map<String, Boolean>,
+    onSetCalendarOverride: (String, Boolean) -> Unit,
+    onRequestPermission: () -> Unit,
+    onEnableCalendar: () -> Unit,
+) {
+    val active = calendarEnabled && permissionGranted
+    val summary = if (active && calendars != null) calendars.size.toString() else "—"
+    CollapsibleSection(
+        title = stringResource(R.string.settings_calendars_title),
+        summary = summary,
+        rememberKey = "holidays-calendar-selection-section",
+    ) {
+        when {
+            !calendarEnabled -> {
+                TextButton(
+                    onClick = onEnableCalendar,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_holidays_calendar_enable_master),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
+            !permissionGranted -> {
+                TextButton(
+                    onClick = onRequestPermission,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_holidays_calendar_grant_permission),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
+            calendars == null -> {
+                Text(
+                    text = stringResource(R.string.settings_holidays_calendar_loading),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            calendars.isEmpty() -> {
+                Text(
+                    text = stringResource(R.string.settings_calendars_none),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+            else -> {
+                Text(
+                    text = stringResource(R.string.settings_calendars_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                // When two calendars would show the same name + account (e.g. the
+                // same email added under two providers), surface the provider so
+                // their switches are distinguishable.
+                val ambiguous = calendars
+                    .groupBy { it.displayName to it.accountName }
+                    .filterValues { it.size > 1 }
+                    .keys
+                calendars.forEach { calendar ->
+                    CalendarToggleRow(
+                        calendar = calendar,
+                        checked = overrides[calendar.id] ?: calendar.visible,
+                        showProvider = (calendar.displayName to calendar.accountName) in ambiguous,
+                        onCheckedChange = { onSetCalendarOverride(calendar.id, it) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+/** A calendar name + account with an on/off switch. */
+@Composable
+private fun CalendarToggleRow(
+    calendar: CalendarInfo,
+    checked: Boolean,
+    showProvider: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    val account = calendar.accountName.takeIf { it.isNotBlank() && it != calendar.displayName }
+    val provider = if (showProvider) providerLabel(calendar.accountType) else null
+    val subtitle = listOfNotNull(account, provider).joinToString(" · ").ifBlank { null }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = calendar.displayName, style = MaterialTheme.typography.bodyMedium)
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
+
+/**
+ * Best-effort friendly name for a calendar account type, shown only to
+ * disambiguate same-name/same-account calendars from different providers.
+ * Falls back to the raw type for providers we don't special-case (still
+ * distinguishing, just less pretty) — better than hiding it on a collision.
+ */
+private fun providerLabel(accountType: String?): String? {
+    val type = accountType?.takeIf { it.isNotBlank() } ?: return null
+    return when {
+        type.equals("com.google", ignoreCase = true) -> "Google"
+        type.contains("exchange", ignoreCase = true) -> "Exchange"
+        type.contains("caldav", ignoreCase = true) -> "CalDAV"
+        else -> type
     }
 }

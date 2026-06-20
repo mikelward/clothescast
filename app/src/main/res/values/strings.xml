@@ -1543,6 +1543,10 @@
     <!-- Shown when a detected-celebration row is tapped open, revealing which
          synced calendar the event came from. %1$s is the source calendar account. -->
     <string name="settings_holidays_calendar_source">Calendar: %1$s</string>
+    <!-- Per-calendar enable/disable list (Calendar settings). -->
+    <string name="settings_calendars_title">Calendars</string>
+    <string name="settings_calendars_description">Choose which of your device\'s calendars ClothesCast reads. By default it follows each calendar\'s visibility in your calendar app; flip any on or off here.</string>
+    <string name="settings_calendars_none">No calendars found on this device.</string>
 
     <!-- Inline warning shown under a calendar source toggle when the stored
          pref is on but READ_CALENDAR was revoked from system Settings.

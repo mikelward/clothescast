@@ -249,6 +249,7 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
                     viewModel = e.settingsViewModel(nav, app),
                     onBack = onBack,
                     onSetUpSpeech = { nav.navigate(VoiceDest) },
+                    onOpenSmartHome = { nav.navigate(SmartHomeDest) },
                 )
             }
         }

@@ -159,28 +159,6 @@ class SettingsRepository(
         dataStore.edit { it[BUG_REPORT_CONSENT_ACKED] = acked }
     }
 
-    /**
-     * One-shot cleanup of preference keys that backed the GPS-based at-home
-     * TTS gate before it was retired. The gate is gone (the MQTT- and
-     * Cast-success based "Skip phone speech…" toggles cover the same use
-     * case without a stored home pin), but a user who'd configured a home
-     * still has their coordinates sitting on disk from the previous build.
-     * Run at app start so that data is gone the first time the upgraded
-     * build reaches the launcher.
-     *
-     * Idempotent: removes by key name, no-ops when the keys are absent
-     * (fresh installs, repeat runs).
-     */
-    suspend fun clearLegacyHomePreferences() {
-        dataStore.edit { prefs ->
-            prefs.remove(doublePreferencesKey("home_latitude"))
-            prefs.remove(doublePreferencesKey("home_longitude"))
-            prefs.remove(stringPreferencesKey("home_display_name"))
-            prefs.remove(stringPreferencesKey("home_country_code"))
-            prefs.remove(booleanPreferencesKey("skip_tts_at_home"))
-        }
-    }
-
     suspend fun setSchedule(time: LocalTime, days: Set<DayOfWeek>) {
         require(days.isNotEmpty()) { "Schedule must include at least one day" }
         dataStore.edit { prefs ->

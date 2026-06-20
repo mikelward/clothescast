@@ -24,7 +24,6 @@ internal const val CHANNEL_PLAYBACK = "playback_v2"
 // leaves the dead channel in system notification settings for existing
 // installs. deleteNotificationChannel is a no-op when the ID was never
 // registered (fresh installs), so this is safe to call unconditionally.
-private const val CHANNEL_WEATHER_ALERTS_RETIRED = "weather_alerts_v1"
 // Pre-collapse forecast channels. The three of them — morning (HIGH), evening-
 // with-events (DEFAULT), evening-empty (LOW silent) — were replaced by the
 // single DEFAULT-importance CHANNEL_SCHEDULED_INSIGHT above. The
@@ -79,7 +78,6 @@ object NotificationChannelRegistrar {
         // silence morning forecasts too, which they never asked for.
         // Users who want to mute the new channel can do so in system
         // notification settings.
-        manager.deleteNotificationChannel(CHANNEL_WEATHER_ALERTS_RETIRED)
         manager.deleteNotificationChannel(CHANNEL_DAILY_INSIGHT_RETIRED_V1)
         manager.deleteNotificationChannel(CHANNEL_DAILY_INSIGHT_RETIRED_V2)
         manager.deleteNotificationChannel(CHANNEL_TONIGHT_INSIGHT_DEFAULT_RETIRED)

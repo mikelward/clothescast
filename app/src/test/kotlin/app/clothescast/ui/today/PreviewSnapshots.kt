@@ -59,6 +59,7 @@ import app.clothescast.ui.settings.SettingsRegionPreview
 import app.clothescast.ui.settings.SettingsRootPreview
 import app.clothescast.ui.settings.SettingsScheduleNotificationsBlockedPreview
 import app.clothescast.ui.settings.SettingsSchedulePreview
+import app.clothescast.ui.settings.SettingsScheduleSmartHomePreview
 import app.clothescast.ui.settings.SettingsSmartHomePreview
 import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiNoKeyPreview
@@ -674,6 +675,16 @@ class PreviewSnapshots {
         shadowOf(RuntimeEnvironment.getApplication())
             .grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
         capture { SettingsSchedulePreview() }
+    }
+    // The same screen with the Cast + MQTT delivery sections showing — they
+    // appear once those destinations' master switches are on in Smart Home
+    // settings. Taller viewport so the extra sections aren't clipped.
+    @Test
+    @Config(qualifiers = "w360dp-h1600dp-xhdpi")
+    fun settings_schedule_smart_home() {
+        shadowOf(RuntimeEnvironment.getApplication())
+            .grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
+        capture { SettingsScheduleSmartHomePreview() }
     }
 
     // The permission-blocked counterpart: with POST_NOTIFICATIONS denied (the

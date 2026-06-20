@@ -207,6 +207,18 @@ internal fun SchedulePage(
             onSetDeliveryMode = viewModel::setDeliveryMode,
             onSetTonightDeliveryMode = viewModel::setTonightDeliveryMode,
             onSetUpSpeech = onSetUpSpeech,
+            mqttBridgeEnabled = state.mqttBridgeEnabled,
+            mqttSkipPhoneSpeech = state.mqttSkipPhoneSpeech,
+            castAvailable = state.castAvailable,
+            castRouteName = state.castRouteName,
+            castEnabled = state.castEnabled,
+            castMorning = state.castMorning,
+            castTonight = state.castTonight,
+            castSkipPhoneSpeech = state.castSkipPhoneSpeech,
+            onSetMqttSkipPhoneSpeech = viewModel::setMqttSkipPhoneSpeech,
+            onSetCastMorning = viewModel::setCastMorning,
+            onSetCastTonight = viewModel::setCastTonight,
+            onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
             previewEnabled = !state.anyWorkActive,
         )
         }

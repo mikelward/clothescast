@@ -103,6 +103,26 @@ internal fun ScheduleContent(
     // button that returns here — see ClothesCastNavHost wiring it to VoiceDest.
     // Only fires when speech isn't set up yet (see [speechConfigured]).
     onSetUpSpeech: () -> Unit,
+    // Smart-home delivery toggles, surfaced here as well as on the Smart Home
+    // page so a user wiring up their schedule can see — and flip — where each
+    // cast lands without leaving the page. Each block only renders when its
+    // destination's master switch is on in Smart Home settings: the Cast block
+    // when [castEnabled] (and Cast is available on the device), the MQTT block
+    // when [mqttBridgeEnabled]. The toggles, gating, and copy mirror the Smart
+    // Home cards exactly. Defaulted so previews / tests that don't exercise
+    // smart-home delivery keep the sections hidden.
+    mqttBridgeEnabled: Boolean = false,
+    mqttSkipPhoneSpeech: Boolean = true,
+    castAvailable: Boolean = false,
+    castRouteName: String? = null,
+    castEnabled: Boolean = false,
+    castMorning: Boolean = true,
+    castTonight: Boolean = true,
+    castSkipPhoneSpeech: Boolean = true,
+    onSetMqttSkipPhoneSpeech: (Boolean) -> Unit = {},
+    onSetCastMorning: (Boolean) -> Unit = {},
+    onSetCastTonight: (Boolean) -> Unit = {},
+    onSetCastSkipPhoneSpeech: (Boolean) -> Unit = {},
     // Gates the per-section "Play now" buttons: false while any daily / tonight
     // / play worker is active, so a preview can't start a second concurrent
     // delivery. Defaulted true for previews/tests that don't observe work state.
@@ -292,6 +312,47 @@ internal fun ScheduleContent(
                 onPreview = { triggerPreview(context, ForecastPeriod.TONIGHT) },
                 previewEnabled = previewEnabled,
             )
+            // Cast section — only when Cast is available and switched on. Mirrors
+            // the Smart Home card's per-period toggles and the same gate: the
+            // toggles stay disabled until a display is picked (on the Smart Home
+            // page), so the preconditions stay visible.
+            if (castAvailable && castEnabled) {
+                val castPerPeriodEnabled = castRouteName != null
+                SectionCard(title = stringResource(R.string.settings_smart_home_cast_title)) {
+                    CastToggleRow(
+                        title = stringResource(R.string.settings_smart_home_cast_morning_title),
+                        description = stringResource(R.string.settings_smart_home_cast_morning_description),
+                        checked = castMorning,
+                        enabled = castPerPeriodEnabled,
+                        onCheckedChange = onSetCastMorning,
+                    )
+                    CastToggleRow(
+                        title = stringResource(R.string.settings_smart_home_cast_tonight_title),
+                        description = stringResource(R.string.settings_smart_home_cast_tonight_description),
+                        checked = castTonight,
+                        enabled = castPerPeriodEnabled,
+                        onCheckedChange = onSetCastTonight,
+                    )
+                    CastToggleRow(
+                        title = stringResource(R.string.settings_smart_home_cast_skip_phone_speech_title),
+                        description = stringResource(R.string.settings_smart_home_cast_skip_phone_speech_description),
+                        checked = castSkipPhoneSpeech,
+                        enabled = castPerPeriodEnabled,
+                        onCheckedChange = onSetCastSkipPhoneSpeech,
+                    )
+                }
+            }
+            // MQTT section — only when the bridge is switched on.
+            if (mqttBridgeEnabled) {
+                SectionCard(title = stringResource(R.string.settings_smart_home_mqtt_title)) {
+                    MqttToggleRow(
+                        title = stringResource(R.string.settings_smart_home_mqtt_skip_phone_speech_title),
+                        description = stringResource(R.string.settings_smart_home_mqtt_skip_phone_speech_description),
+                        checked = mqttSkipPhoneSpeech,
+                        onCheckedChange = onSetMqttSkipPhoneSpeech,
+                    )
+                }
+            }
         }
     }
 

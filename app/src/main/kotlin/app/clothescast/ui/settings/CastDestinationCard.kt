@@ -177,7 +177,7 @@ internal fun CastDestinationCard(
 }
 
 @Composable
-private fun CastToggleRow(
+internal fun CastToggleRow(
     title: String,
     description: String,
     checked: Boolean,

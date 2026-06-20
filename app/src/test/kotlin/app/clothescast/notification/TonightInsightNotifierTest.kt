@@ -53,7 +53,7 @@ class TonightInsightNotifierTest {
         TonightInsightNotifier(context).notify(sampleInsight(hasEvents = true), "Cool tonight. Bring a jacket.")
 
         val n = shadowOf(notificationManager).allNotifications.single()
-        n.channelId shouldBe "scheduled_insight_v1"
+        n.channelId shouldBe "scheduled_insight_v2"
         n.extras.getString(NotificationCompat.EXTRA_TITLE) shouldBe
             context.getString(R.string.notification_tonight_insight_title)
         n.extras.getString(NotificationCompat.EXTRA_TEXT) shouldBe "Cool tonight. Bring a jacket."
@@ -64,7 +64,7 @@ class TonightInsightNotifierTest {
         TonightInsightNotifier(context).notify(sampleInsight(hasEvents = false), "Cool tonight.")
 
         val n = shadowOf(notificationManager).allNotifications.single()
-        n.channelId shouldBe "scheduled_insight_v1"
+        n.channelId shouldBe "scheduled_insight_v2"
     }
 
     @Test

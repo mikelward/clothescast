@@ -72,28 +72,39 @@ Entered when the Service is started by the receiver. The Service:
 
 1. Reads the worker UUID and the mode flags (`playsSpeech`,
    `deliveringWantsForeground`) from the intent extras the receiver stamped.
-2. Calls `startForeground(1005, prepareNotification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)`
-   and flips the process-local `isHoldingForeground` flag to `true`.
+2. Calls `startForeground(1005, prepareNotification, type)` and flips the
+   process-local `isHoldingForeground` flag to `true`. The `type` is chosen
+   up front from `playsSpeech`: `FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK` for
+   speech runs, `FOREGROUND_SERVICE_TYPE_DATA_SYNC` otherwise.
 3. Subscribes to `WorkManager.getWorkInfoByIdFlow(workId)` — the specific
    request the receiver enqueued, not the unique-work-name flow (which can
    surface stale terminal rows from yesterday's run and tear the Service
    down immediately).
 
-`dataSync` is the right type for "the app is fetching forecast data in the
-background", and it doesn't carry the `mediaPlayback` audio-focus implications
-we don't need until speech actually starts.
+For non-speech runs `dataSync` is the right type for "the app is fetching
+forecast data in the background". For speech runs we deliberately claim
+`mediaPlayback` from `PREPARING` rather than waiting for `DELIVERING`: the
+worker can reach TTS before the async progress observer would upgrade the type
+(a slow fetch can swallow the alignment wait, and the cached-redelivery path
+goes straight from `setProgress` to `deliver()`), and on Android 15+ a
+`dataSync` FGS can't grant audio focus, so the speech would be silenced.
+Starting `mediaPlayback` up front closes that race; the cost is a slightly
+broader FGS type held for the whole `PREPARING` phase before `deliver()`
+actually speaks — usually brief, but on a slow fetch or the cached-redelivery
+path that phase can span the full fetch / generation / alignment window.
 
 ### `DELIVERING` (only if speech / MQTT / cast)
 
 Entered when the WorkInfo for this run reports `KEY_FETCH_COMPLETE=true` in
 its progress data — the worker has finished fetch + insight generation and
 is about to start the deliver fan-out. The Service swaps to the "Delivering"
-notification with the appropriate FGS type:
+notification, keeping the same FGS type it picked in `PREPARING`:
 
 - if `playsSpeech` is true, call
-  `startForeground(1005, deliverNotification, FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)`.
-  Audio focus on Android 15+ requires the process to be hosting an FGS of
-  type `mediaPlayback` while it plays.
+  `startForeground(1005, deliverNotification, FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)`
+  — already the type held since `PREPARING`. Audio focus on Android 15+
+  requires the process to be hosting an FGS of type `mediaPlayback` while it
+  plays.
 - else (MQTT bridge or cast only), call
   `startForeground(1005, deliverNotification, FOREGROUND_SERVICE_TYPE_DATA_SYNC)`.
   No audio focus to claim, just keep the user informed that the run is still

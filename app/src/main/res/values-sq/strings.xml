@@ -747,13 +747,7 @@
     <string name="settings_default_outfit_range_never">asnjëherë</string>
     <string name="garment_short_skirt">Fund i shkurtër</string>
     <string name="garment_rain_jacket">Xhaketë kundër shiut</string>
-    <string name="notification_channel_daily_insight_name">ClothesCast-i ditor</string>
-    <string name="notification_channel_daily_insight_description">Përmbledhja e motit në mëngjes që zgjodhe ta marrësh.</string>
     <string name="notification_daily_insight_title">ClothesCast-i i sotëm</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast-i i mbrëmjes (me ngjarje)</string>
-    <string name="notification_channel_tonight_insight_default_description">Përmbledhja e motit në mbrëmje kur ke ngjarje në kalendar sonte. Luan tingullin tënd të parazgjedhur të njoftimeve.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast-i i mbrëmjes (në heshtje)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Përmbledhja e motit në mbrëmje kur mbrëmja jote është bosh. Postohet në heshtje — mund ta shohësh në ekranin e kyçur, por nuk do të bëjë zhurmë.</string>
     <string name="notification_tonight_insight_title">ClothesCast-i i sontëm</string>
     <string name="settings_notification_permission_title">Njoftimet janë të bllokuara</string>
     <string name="settings_notification_permission_description">Pa lejen e njoftimeve, ClothesCast-i yt ditor s\'ka ku të shkojë. Jepe që ClothesCast të mund ta dërgojë nesër në mëngjes.</string>

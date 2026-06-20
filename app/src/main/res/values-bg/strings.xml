@@ -544,13 +544,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_voice_locale_am_et">Амхарски (Етиопия)</string>
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">Дневен ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Сутрешното резюме на времето, което си активирал.</string>
     <string name="notification_daily_insight_title">Днешният ClothesCast</string>
-    <string name="notification_channel_tonight_insight_default_name">Нощен ClothesCast (със събития)</string>
-    <string name="notification_channel_tonight_insight_default_description">Вечерното резюме на времето, когато имаш събития в календара тази вечер. Пуска стандартния звук за известие.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Нощен ClothesCast (тих)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Вечерното резюме на времето, когато вечерта е спокойна. Публикува се тихо — можеш да го видиш на заключения екран, но няма да издаде звук.</string>
     <string name="notification_tonight_insight_title">Нощният ClothesCast</string>
 
     <!-- Notification permission card. -->

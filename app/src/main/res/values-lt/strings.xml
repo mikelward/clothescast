@@ -542,13 +542,7 @@ What is NOT overridden, by design:
     <string name="garment_polo">Polo</string>
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">Dienos ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Ryto orų santrauka, kurią užsisakei.</string>
     <string name="notification_daily_insight_title">Šiandienos ClothesCast</string>
-    <string name="notification_channel_tonight_insight_default_name">Nakties ClothesCast (su renginiais)</string>
-    <string name="notification_channel_tonight_insight_default_description">Vakaro orų santrauka, kai šiandien vakare turi kalendoriaus renginių. Skleidžia numatytąjį pranešimo garsą.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Nakties ClothesCast (tylus)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Vakaro orų santrauka ramiais vakarais. Pateikiama tyliai — gali matyti užrakto ekrane, bet nekeliks garso.</string>
     <string name="notification_tonight_insight_title">Šiandien vakaro ClothesCast</string>
 
     <!-- Notification permission card. -->

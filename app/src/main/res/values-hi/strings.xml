@@ -271,14 +271,8 @@ Not overridden by design:
     <string name="settings_location_background_denied_keep">अभी नहीं</string>
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">दैनिक ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">वह सुबह की मौसम सारांश जिसे आपने चालू किया।</string>
     <string name="notification_daily_insight_title">आज का ClothesCast</string>
 
-    <string name="notification_channel_tonight_insight_default_name">रात्रि ClothesCast (घटनाओं के साथ)</string>
-    <string name="notification_channel_tonight_insight_default_description">जब आज रात कैलेंडर में घटनाएँ हों तो शाम की मौसम सारांश। डिफ़ॉल्ट सूचना ध्वनि बजाता है।</string>
-    <string name="notification_channel_tonight_insight_silent_name">रात्रि ClothesCast (मौन)</string>
-    <string name="notification_channel_tonight_insight_silent_description">जब आपकी शाम खाली हो तब की मौसम सारांश। चुपचाप भेजी जाती है — लॉक स्क्रीन पर देख सकते हैं, लेकिन आवाज़ नहीं होगी।</string>
     <string name="notification_tonight_insight_title">आज रात का ClothesCast</string>
 
 

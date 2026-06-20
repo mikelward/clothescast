@@ -301,14 +301,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">Denní ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Ranní shrnutí počasí, které jsi aktivoval/a.</string>
     <string name="notification_daily_insight_title">Dnešní počasí</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Noční ClothesCast (s událostmi)</string>
-    <string name="notification_channel_tonight_insight_default_description">Večerní shrnutí počasí, pokud máš dnes večer události. Přehraje tvůj výchozí tón oznámení.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Noční ClothesCast (tichý)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Večerní shrnutí počasí v klidné večery. Doručí se tiše — uvidíš ho na zamykací obrazovce, ale nevydá žádný zvuk.</string>
     <string name="notification_tonight_insight_title">Dnešní večerní počasí</string>
 
 

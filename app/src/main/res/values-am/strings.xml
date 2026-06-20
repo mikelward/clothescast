@@ -354,13 +354,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="bug_report_consent_cancel">ሰርዝ</string>
 
     <!-- Notifications -->
-    <string name="notification_channel_daily_insight_name">ዕለታዊ ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">የጠዋቱ የአየር ሁኔታ ማጠቃለያ ለምን ተመዘገቡ።</string>
     <string name="notification_daily_insight_title">የዛሬ ClothesCast</string>
-    <string name="notification_channel_tonight_insight_default_name">ምሽታዊ ClothesCast (ዝግጅቶች ሲኖሩ)</string>
-    <string name="notification_channel_tonight_insight_default_description">ዛሬ ምሽት የቀን መቁጠሪያ ዝግጅቶቻቸው ሲኖሩ የምሽቱ የአየር ሁኔታ ማጠቃለያ።</string>
-    <string name="notification_channel_tonight_insight_silent_name">ምሽታዊ ClothesCast (ዝምታ)</string>
-    <string name="notification_channel_tonight_insight_silent_description">ምሽቱ ጸጥ ሲሆን የምሽቱ የአየር ሁኔታ ማጠቃለያ። ዝምታ ሆኖ ይለጠፋል።</string>
     <string name="notification_tonight_insight_title">የዛሬ ምሽት ClothesCast</string>
 
     <!-- Insight prose -->

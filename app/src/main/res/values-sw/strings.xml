@@ -368,13 +368,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="garment_polo">Polo</string>
 
     <!-- Notification channels -->
-    <string name="notification_channel_daily_insight_name">ClothesCast ya kila siku</string>
-    <string name="notification_channel_daily_insight_description">Muhtasari wa hali ya hewa ya asubuhi uliojiunga.</string>
     <string name="notification_daily_insight_title">ClothesCast ya Leo</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast ya usiku (na matukio)</string>
-    <string name="notification_channel_tonight_insight_default_description">Muhtasari wa hali ya hewa ya jioni unapokuwa na matukio ya kalenda usiku huu.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast ya usiku (kimya)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Muhtasari wa hali ya hewa ya jioni jioni yako ikiwa tulivu. Imetumwa kimya.</string>
     <string name="notification_tonight_insight_title">ClothesCast ya Usiku Huu</string>
 
     <!-- Settings: notifications permission -->

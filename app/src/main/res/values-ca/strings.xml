@@ -444,14 +444,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_clothes_cond_temp_above">quan la temperatura percebuda és superior a %1$s</string>
     <string name="settings_clothes_cond_precip_above">quan la probabilitat de pluja supera el %.0f%%</string>
 
-    <string name="notification_channel_daily_insight_name">ClothesCast diari</string>
-    <string name="notification_channel_daily_insight_description">El resum meteorològic matinal al qual t\'has subscrit.</string>
     <string name="notification_daily_insight_title">El temps d\'avui</string>
 
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast nocturn (amb esdeveniments)</string>
-    <string name="notification_channel_tonight_insight_default_description">El resum meteorològic del vespre quan tens esdeveniments al calendari aquesta nit. Reprodueix el so de notificació predeterminat.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast nocturn (silenciós)</string>
-    <string name="notification_channel_tonight_insight_silent_description">El resum meteorològic del vespre quan el teu vespre és lliure. S\'envia silenciosament — pots veure\'l a la pantalla de bloqueig, però no fa cap so.</string>
     <string name="notification_tonight_insight_title">El temps d\'aquesta nit</string>
 
 

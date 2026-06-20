@@ -572,14 +572,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <!-- =====================================================================
          Notifications
          ===================================================================== -->
-    <string name="notification_channel_daily_insight_name">ClothesCast hàng ngày</string>
-    <string name="notification_channel_daily_insight_description">Tóm tắt thời tiết buổi sáng bạn đã đăng ký.</string>
     <string name="notification_daily_insight_title">ClothesCast hôm nay</string>
 
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast buổi tối (có sự kiện)</string>
-    <string name="notification_channel_tonight_insight_default_description">Tóm tắt thời tiết buổi tối khi bạn có sự kiện lịch tối nay. Phát âm thanh thông báo mặc định.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast buổi tối (im lặng)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Tóm tắt thời tiết buổi tối khi buổi tối của bạn trống. Đăng im lặng — bạn có thể xem trên màn hình khóa nhưng sẽ không phát âm thanh.</string>
     <string name="notification_tonight_insight_title">ClothesCast tối nay</string>
 
 

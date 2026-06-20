@@ -301,14 +301,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     (PT) for BR "padrão" in the default-sound copy; "ecrã de bloqueio"
     (PT) for BR "tela de bloqueio".
     -->
-    <string name="notification_channel_daily_insight_name">ClothesCast diário</string>
-    <string name="notification_channel_daily_insight_description">O resumo matinal do tempo que ativaste.</string>
     <string name="notification_daily_insight_title">Tempo de hoje</string>
 
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast noturno (com eventos)</string>
-    <string name="notification_channel_tonight_insight_default_description">O resumo do tempo da noite quando tens eventos no calendário para esta noite. Toca o teu som de notificação predefinido.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast noturno (silencioso)</string>
-    <string name="notification_channel_tonight_insight_silent_description">O resumo do tempo da noite quando a tua noite está livre. Entregue em silêncio — podes vê-lo no ecrã de bloqueio, mas não emite som.</string>
     <string name="notification_tonight_insight_title">Tempo desta noite</string>
 
 

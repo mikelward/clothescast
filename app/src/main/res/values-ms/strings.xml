@@ -527,13 +527,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="garment_polo">Polo</string>
 
     <!-- Notification channels -->
-    <string name="notification_channel_daily_insight_name">ClothesCast Harian</string>
-    <string name="notification_channel_daily_insight_description">Ringkasan cuaca pagi yang anda pilih untuk terima.</string>
     <string name="notification_daily_insight_title">ClothesCast Hari Ini</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast Malam (dengan acara)</string>
-    <string name="notification_channel_tonight_insight_default_description">Ringkasan cuaca petang apabila anda mempunyai acara kalendar malam ini. Memainkan bunyi pemberitahuan lalai anda.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast Malam (senyap)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Ringkasan cuaca petang apabila petang anda kosong. Dihantar secara senyap — anda boleh melihatnya pada skrin kunci, tetapi tidak akan berbunyi.</string>
     <string name="notification_tonight_insight_title">ClothesCast Malam Ini</string>
 
     <!-- Notification permission prompt in settings -->

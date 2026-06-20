@@ -228,14 +228,8 @@ displayed label localizes.
     <string name="settings_location_searching">Aranıyor…</string>
     <string name="settings_location_no_results">Sonuç bulunamadı.</string>
 
-    <string name="notification_channel_daily_insight_name">Günlük ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Etkinleştirdiğiniz sabah hava durumu özeti.</string>
     <string name="notification_daily_insight_title">Bugünün hava durumu</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Gecelik ClothesCast (etkinliklerle)</string>
-    <string name="notification_channel_tonight_insight_default_description">Bu akşam etkinlikleriniz olduğunda gelen akşam hava durumu özeti. Varsayılan bildirim sesini çalar.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Gecelik ClothesCast (sessiz)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Sakin akşamlarda gelen akşam hava durumu özeti. Sessiz teslim edilir — kilit ekranında görebilirsiniz ama ses çıkarmaz.</string>
     <string name="notification_tonight_insight_title">Bu akşamın hava durumu</string>
 
 

@@ -305,14 +305,8 @@ only the displayed label localizes.
     <string name="settings_location_background_denied_keep">Не зараз</string>
 
     <!-- Notification channels and titles. -->
-    <string name="notification_channel_daily_insight_name">Щоденний ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Ранкова зведення погоди, яку ви підключили.</string>
     <string name="notification_daily_insight_title">Погода на сьогодні</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Вечірній ClothesCast (з подіями)</string>
-    <string name="notification_channel_tonight_insight_default_description">Вечірнє зведення погоди, коли у вас є події у календарі сьогодні ввечері. Відтворює стандартний звук сповіщення.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Вечірній ClothesCast (беззвучний)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Вечірнє зведення погоди, коли у вас вільний вечір. Доставляється беззвучно — можна побачити на екрані блокування, але звук не лунає.</string>
     <string name="notification_tonight_insight_title">Погода сьогодні ввечері</string>
 
 

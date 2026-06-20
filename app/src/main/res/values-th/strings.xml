@@ -527,13 +527,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_description">หากพยากรณ์อากาศเกินค่าเกณฑ์ใดค่าหนึ่ง รายการนั้นจะปรากฏใน ClothesCast รายวันของคุณ</string>
 
     <!-- Notification channels -->
-    <string name="notification_channel_daily_insight_name">ClothesCast รายวัน</string>
-    <string name="notification_channel_daily_insight_description">สรุปสภาพอากาศช่วงเช้าที่คุณสมัครรับ</string>
     <string name="notification_daily_insight_title">ClothesCast วันนี้</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast รายคืน (มีกิจกรรม)</string>
-    <string name="notification_channel_tonight_insight_default_description">สรุปสภาพอากาศตอนเย็นเมื่อมีกิจกรรมปฏิทินคืนนี้ ส่งเสียงการแจ้งเตือนเริ่มต้น</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast รายคืน (เงียบ)</string>
-    <string name="notification_channel_tonight_insight_silent_description">สรุปสภาพอากาศตอนเย็นเมื่อตอนเย็นว่าง โพสต์แบบเงียบ — สามารถดูบนหน้าจอล็อก แต่จะไม่ส่งเสียง</string>
     <string name="notification_tonight_insight_title">ClothesCast คืนนี้</string>
 
     <!-- Notification permission settings -->

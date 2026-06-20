@@ -302,14 +302,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
 
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">Dagligt ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Den daglige vejropsummering, du har aktiveret.</string>
     <string name="notification_daily_insight_title">Dagens vejr</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Aftenens ClothesCast (med begivenheder)</string>
-    <string name="notification_channel_tonight_insight_default_description">Den aftenvise vejropsummering, når du har begivenheder i aften. Afspiller din standardnotifikationslyd.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Aftenens ClothesCast (stille)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Den aftenvise vejropsummering på rolige aftener. Leveres lydløst — du kan se den på låseskærmen, men den laver ingen lyd.</string>
     <string name="notification_tonight_insight_title">Vejret i aften</string>
 
 

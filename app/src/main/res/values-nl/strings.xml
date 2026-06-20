@@ -257,14 +257,8 @@ the displayed label localizes.
     <!--
     Notification channels.
     -->
-    <string name="notification_channel_daily_insight_name">Dagelijkse ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">De ochtendelijke weersamenvatting die je hebt ingesteld.</string>
     <string name="notification_daily_insight_title">Weer vandaag</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Avondlijkse ClothesCast (met afspraken)</string>
-    <string name="notification_channel_tonight_insight_default_description">De avondlijkse weersamenvatting als je vanavond afspraken hebt. Speelt je standaard meldingsgeluid af.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Avondlijkse ClothesCast (stil)</string>
-    <string name="notification_channel_tonight_insight_silent_description">De avondlijkse weersamenvatting op vrije avonden. Stil bezorgd — je kunt hem op het vergrendelscherm zien, maar hij maakt geen geluid.</string>
     <string name="notification_tonight_insight_title">Weer vanavond</string>
 
 

@@ -257,14 +257,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     the per-channel notification titles. Three channels: daily, nightly
     (default + silent variants), weather alerts.
     -->
-    <string name="notification_channel_daily_insight_name">Dnevni ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Jutarnji vremenski sažetak koji je uključen.</string>
     <string name="notification_daily_insight_title">Današnje vrijeme</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Noćni ClothesCast (s događajima)</string>
-    <string name="notification_channel_tonight_insight_default_description">Večernji vremenski sažetak kada večeras imaš događaje u kalendaru. Reproducira tvoj zadani zvuk obavijesti.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Noćni ClothesCast (tihi)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Večernji vremenski sažetak kad ti je večer slobodna. Šalje se tiho — možeš ga pogledati na zaključanom zaslonu, ali neće proizvesti zvuk.</string>
     <string name="notification_tonight_insight_title">Vrijeme večeras</string>
 
 

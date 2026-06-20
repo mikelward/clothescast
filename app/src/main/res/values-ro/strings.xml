@@ -533,13 +533,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="garment_polo">Polo</string>
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">ClothesCast zilnic</string>
-    <string name="notification_channel_daily_insight_description">Rezumatul meteo de dimineață la care ai optat.</string>
     <string name="notification_daily_insight_title">ClothesCast-ul de astăzi</string>
-    <string name="notification_channel_tonight_insight_default_name">ClothesCast nocturn (cu evenimente)</string>
-    <string name="notification_channel_tonight_insight_default_description">Rezumatul meteo de seară când ai evenimente în calendar diseară. Redă sunetul de notificare implicit.</string>
-    <string name="notification_channel_tonight_insight_silent_name">ClothesCast nocturn (silențios)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Rezumatul meteo de seară când seara este liberă. Postat silențios — îl poți vedea pe ecranul de blocare, dar nu va emite niciun sunet.</string>
     <string name="notification_tonight_insight_title">ClothesCast-ul de diseară</string>
 
     <!-- Notification permission card. -->

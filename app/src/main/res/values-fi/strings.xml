@@ -228,14 +228,8 @@ displayed label localizes.
     <string name="settings_location_searching">Haetaan…</string>
     <string name="settings_location_no_results">Ei tuloksia.</string>
 
-    <string name="notification_channel_daily_insight_name">Päivittäinen ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Aktivoimasi aamuinen säätiivis.</string>
     <string name="notification_daily_insight_title">Tämän päivän sää</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Iltainen ClothesCast (tapahtumien kanssa)</string>
-    <string name="notification_channel_tonight_insight_default_description">Iltainen säätiivis, kun sinulla on tapahtumia tänä iltana. Soittaa oletusäänimerkityksesi.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Iltainen ClothesCast (hiljainen)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Iltainen säätiivis hiljaisina iltoina. Toimitetaan äänettömästi — näet sen lukitusnäytöllä, mutta se ei soi.</string>
     <string name="notification_tonight_insight_title">Tämän illan sää</string>
 
 

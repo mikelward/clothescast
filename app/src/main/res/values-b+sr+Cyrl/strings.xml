@@ -362,14 +362,8 @@ surfaces.
     <string name="settings_tts_voice_locale_am_et">Амхарски (Етиопија)</string>
 
     <!-- Notification channels. -->
-    <string name="notification_channel_daily_insight_name">Дневни ClothesCast</string>
-    <string name="notification_channel_daily_insight_description">Јутарњи временски резиме који си укључио.</string>
     <string name="notification_daily_insight_title">Данашњи ClothesCast</string>
 
-    <string name="notification_channel_tonight_insight_default_name">Ноћни ClothesCast (са догађајима)</string>
-    <string name="notification_channel_tonight_insight_default_description">Вечерњи временски резиме када вечерас имаш догађаје у календару. Репродукује твој подразумевани звук обавештења.</string>
-    <string name="notification_channel_tonight_insight_silent_name">Ноћни ClothesCast (тихи)</string>
-    <string name="notification_channel_tonight_insight_silent_description">Вечерњи временски резиме када ти је вечер слободна. Шаље се тихо — можеш да га погледаш на закључаном екрану, али неће репродуковати звук.</string>
     <string name="notification_tonight_insight_title">Вечерашњи ClothesCast</string>
 
 

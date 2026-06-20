@@ -341,10 +341,11 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `precip clause is omitted when the peak hour's condition is cloudy`() {
-        // "Cloudy at 15:00" doesn't earn a clause: precipitation info is what the
-        // user wants to hear, not haziness. A 30%+ probability with a non-precip
-        // dominant condition gets dropped entirely.
+    fun `precip clause coerces a high-POP cloudy peak hour to rain`() {
+        // A 60% chance with an overcast code is rain by the numbers (high
+        // probability, ~0 modeled accumulation). The umbrella rule and the
+        // conditions strip already fire from the probability, so the prose agrees
+        // instead of going silent on the dry code: the clause emits as RAIN.
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.CLOUDY,
@@ -352,20 +353,28 @@ class RenderInsightSummaryTest {
                 HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.CLOUDY),
             ),
         )
-        subject(today, yesterday, emptyList()).precip.shouldBeNull()
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.RAIN
+        out.time shouldBe LocalTime.of(15, 0)
+        out.likelihood shouldBe PrecipLikelihood.LIKELY
     }
 
     @Test
-    fun `precip clause is omitted when the noon fallback condition is partly cloudy`() {
-        // Day-level chance 40% but no hourly entry crosses 30%, so we'd normally fall
-        // back to noon with today.condition. If today.condition is non-precip we still
-        // drop the clause.
+    fun `noon fallback coerces a dry day-level chance to rain`() {
+        // Day-level chance 40% with no hourly entries: the noon fallback fires, and
+        // a non-precip day condition no longer drops the clause — 40% is a
+        // chance-of-rain by the numbers, so it emits as RAIN at noon (POSSIBLE).
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 40.0,
             condition = WeatherCondition.PARTLY_CLOUDY,
             hourly = emptyList(),
         )
-        subject(today, yesterday, emptyList()).precip.shouldBeNull()
+        val out = subject(today, yesterday, emptyList()).precip
+        out.shouldNotBeNull()
+        out!!.condition shouldBe WeatherCondition.RAIN
+        out.time shouldBe LocalTime.NOON
+        out.likelihood shouldBe PrecipLikelihood.POSSIBLE
     }
 
     @Test
@@ -462,21 +471,24 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `calendar tie-in is omitted when the peak condition is non-precipitation`() {
-        // Even with the umbrella rule firing on day-level probability and an event
-        // overlapping the peak hour, a cloudy peak shouldn't motivate a tie-in —
-        // there's no precipitation clause to anchor it to.
+    fun `calendar tie-in fires on a high-POP cloudy peak once it coerces to rain`() {
+        // A cloudy peak at 60% now coerces to a RAIN precip clause (the single
+        // number drives the prose), so an overlapping event plus the umbrella rule
+        // motivate the tie-in — agreeing with the umbrella the rule already
+        // suggests, rather than leaving it unanchored.
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.CLOUDY,
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.CLOUDY)),
         )
         val event = CalendarEvent("park run", tonightPeakDate.atTime(14, 30), tonightPeakDate.atTime(16, 0))
-        subject(
+        val out = subject(
             today, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn.shouldBeNull()
+        ).calendarTieIn
+        out.shouldNotBeNull()
+        out!!.item shouldBe "umbrella"
     }
 
     @Test

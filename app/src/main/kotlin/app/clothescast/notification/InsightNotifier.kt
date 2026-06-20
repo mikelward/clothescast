@@ -10,6 +10,7 @@ import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.diag.DiagLog
 import app.clothescast.ui.garment.renderTopWithHandsBitmap
 
 /**
@@ -69,13 +70,21 @@ class InsightNotifier(private val context: Context) {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(
+                NotificationDismissReceiver.deleteIntent(context, NOTIFICATION_ID_DAILY_INSIGHT, "daily insight"),
+            )
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_DAILY_INSIGHT, notification)
+        DiagLog.i(
+            TAG,
+            "Posted daily insight notification (id=$NOTIFICATION_ID_DAILY_INSIGHT, channel=$CHANNEL_DAILY_INSIGHT, importance=HIGH).",
+        )
     }
 
     companion object {
+        private const val TAG = "InsightNotifier"
         const val NOTIFICATION_ID_DAILY_INSIGHT = 1001
         private const val REQUEST_OPEN_APP = 100
 

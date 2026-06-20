@@ -130,6 +130,14 @@
             </intent-filter>
         </receiver>
 
+        <!-- Internal — only the OS delivers via the notification delete
+             PendingIntent. Logs user dismissals of the insight notifications so a
+             forecast post that vanishes without a matching dismissal line points
+             at a non-user removal (e.g. foreground-service teardown). -->
+        <receiver
+            android:name=".notification.NotificationDismissReceiver"
+            android:exported="false" />
+
         <!-- System broadcasts that should re-arm the daily alarm. All four
              actions are protected system broadcasts, which the OS delivers
              to unexported receivers — exported="false" just keeps other

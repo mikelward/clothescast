@@ -9,6 +9,7 @@ import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.diag.DiagLog
 
 /**
  * Posts the tonight insight as a system notification. Picks one of two channels
@@ -73,6 +74,9 @@ class TonightInsightNotifier(private val context: Context) {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(
+                NotificationDismissReceiver.deleteIntent(context, NOTIFICATION_ID_TONIGHT_INSIGHT, "tonight insight"),
+            )
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .apply {
                 // Belt-and-braces: even if a downstream OEM ignores the silent
@@ -83,9 +87,14 @@ class TonightInsightNotifier(private val context: Context) {
             .build()
 
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_TONIGHT_INSIGHT, notification)
+        DiagLog.i(
+            TAG,
+            "Posted tonight insight notification (id=$NOTIFICATION_ID_TONIGHT_INSIGHT, channel=$channel, hasEvents=${insight.hasEvents}).",
+        )
     }
 
     companion object {
+        private const val TAG = "TonightInsightNotifier"
         const val NOTIFICATION_ID_TONIGHT_INSIGHT = 1003
         private const val REQUEST_OPEN_APP = 102
     }

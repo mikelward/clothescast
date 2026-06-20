@@ -98,6 +98,8 @@ Three options, in roughly increasing order of friction:
 6. **Calendar tie-in** (optional): toggle _Use calendar events_ in
    Settings → Data Sources and grant `READ_CALENDAR` to let calendar presence
    gate event-relevant advice without putting event titles in rendered output.
+   See [docs/calendar-holidays.md](docs/calendar-holidays.md) for how holidays
+   are used and what to do if one shows on the wrong date.
 7. **Verify**: tap the **Fire insight now** button (About → Debug card,
    only in debug builds) to exercise the full pipeline without waiting
    until the scheduled time.

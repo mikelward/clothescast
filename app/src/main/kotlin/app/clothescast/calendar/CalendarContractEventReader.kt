@@ -86,7 +86,7 @@ class CalendarContractEventReader(private val context: Context) : CalendarEventR
                 query(startInclusive, endExclusive, zoneId, allDayOnly = true)
                     .filter { it.event.kind != EventKind.NORMAL }
                     .filter { it.date >= startInclusive && it.date < endExclusive }
-                    .map { UpcomingCalendarEvent(it.date, it.event.title, it.event.kind) }
+                    .map { UpcomingCalendarEvent(it.date, it.event.title, it.event.kind, it.event.ownerAccount) }
                     .sortedWith(compareBy({ it.date }, { it.title }))
             }
                 .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }

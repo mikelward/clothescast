@@ -9,12 +9,16 @@ import java.time.LocalDate
  *
  * Unlike [CalendarEvent] — which is always projected into the one local day an
  * insight is generated for — this carries its [date] so the listing can show
- * each event chronologically across the window. Only the title, date, and the
- * reader-set [kind] are surfaced; like [CalendarEvent], these stay on device
- * and must never appear in insight prose, TTS payloads, or Firebase.
+ * each event chronologically across the window. The title, date, reader-set
+ * [kind], and source-calendar [ownerAccount] are surfaced so the settings
+ * listing can show which calendar a detected celebration came from (tap a row
+ * to reveal it). Like [CalendarEvent], every field here is device-local and
+ * must never appear in insight prose, TTS payloads, or Firebase — [ownerAccount]
+ * especially is account/email-shaped PII and is shown on screen only.
  */
 data class UpcomingCalendarEvent(
     val date: LocalDate,
     val title: String,
     val kind: EventKind,
+    val ownerAccount: String? = null,
 )

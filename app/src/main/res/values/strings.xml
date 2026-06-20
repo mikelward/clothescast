@@ -1540,6 +1540,9 @@
     <string name="settings_holidays_calendar_loading">Checking your calendars…</string>
     <string name="settings_holidays_calendar_no_holidays">No upcoming holidays found in your synced calendars.</string>
     <string name="settings_holidays_calendar_no_birthdays">No upcoming birthdays found in your synced calendars.</string>
+    <!-- Shown when a detected-celebration row is tapped open, revealing which
+         synced calendar the event came from. %1$s is the source calendar account. -->
+    <string name="settings_holidays_calendar_source">Calendar: %1$s</string>
 
     <!-- Inline warning shown under a calendar source toggle when the stored
          pref is on but READ_CALENDAR was revoked from system Settings.

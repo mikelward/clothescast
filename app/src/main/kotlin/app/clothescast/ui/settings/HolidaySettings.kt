@@ -3,6 +3,7 @@ package app.clothescast.ui.settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -1025,25 +1026,62 @@ internal fun CalendarCelebrationsSection(
                 val dateFormatter = remember(uiLocale) {
                     DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(uiLocale)
                 }
-                events.forEach { event ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = event.title,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.weight(1f),
-                        )
-                        Text(
-                            text = event.date.format(dateFormatter),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(start = 8.dp),
-                        )
-                    }
-                }
+                events.forEach { event -> CelebrationRow(event, dateFormatter) }
             }
+        }
+    }
+}
+
+/**
+ * One detected-celebration row: title + date, tappable to expand and reveal the
+ * source calendar (the synced account the event came from) so the user can see
+ * *which* calendar is theming a day — e.g. tracking down a surprise "King's
+ * Birthday" public holiday. The owner account is account/email-shaped and
+ * device-local: shown on screen only, never copied off-device.
+ */
+@Composable
+private fun CelebrationRow(
+    event: UpcomingCalendarEvent,
+    dateFormatter: DateTimeFormatter,
+) {
+    var expanded by rememberSaveable(event.date, event.title, event.kind) { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded }
+            .padding(vertical = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = event.title,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = event.date.format(dateFormatter),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 8.dp),
+            )
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = stringResource(
+                    if (expanded) R.string.settings_holidays_collapse
+                    else R.string.settings_holidays_expand
+                ),
+                modifier = Modifier.padding(start = 8.dp),
+            )
+        }
+        if (expanded) {
+            Text(
+                text = stringResource(
+                    R.string.settings_holidays_calendar_source,
+                    event.ownerAccount ?: stringResource(R.string.settings_holiday_country_unknown),
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

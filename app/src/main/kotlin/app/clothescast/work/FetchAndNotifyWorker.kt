@@ -1,5 +1,6 @@
 package app.clothescast.work
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.location.LocationManager
@@ -120,6 +121,11 @@ class FetchAndNotifyWorker(
         val skipTelemetry = isCacheOnly || isSilent || isPlay
         return try {
             val result = stamped(doWorkInternal())
+            // Last snapshot before this returns: WorkManager stops the playback
+            // foreground service right after doWork() completes, so anything the
+            // teardown clears is still present here. Comparing this against the
+            // "after delivery" line pins the disappearance to the teardown.
+            logActiveAppNotifications("at worker exit")
             if (!skipTelemetry) recordDailyRefreshOutcome(period, result, startMs)
             result
         } catch (ce: CancellationException) {
@@ -1356,6 +1362,8 @@ class FetchAndNotifyWorker(
                 if (t is CancellationException) throw t
                 DiagLog.w(TAG, "Failed to persist the MQTT publish status.", t)
             }
+
+            logActiveAppNotifications("after delivery")
         }
     }
 
@@ -1789,10 +1797,34 @@ class FetchAndNotifyWorker(
         }
         if (!mode.playsSpeech) return
         runCatching { setForeground(playbackForegroundInfo()) }
+            .onSuccess {
+                DiagLog.i(TAG, "Promoted to the playback foreground service (notification id=$PLAYBACK_NOTIFICATION_ID).")
+            }
             .onFailure { t ->
                 if (t is CancellationException) throw t
                 DiagLog.w(TAG, "Couldn't start the playback foreground service; speech may be inaudible from the background.", t)
             }
+    }
+
+    /**
+     * Logs the app's currently-posted notifications at [stage] so a bug report
+     * shows whether the forecast post (daily id 1001 / tonight id 1003) is still
+     * in the shade at that point or has already been cleared — and whether the
+     * playback foreground-service notification (id 1005) is still up alongside it.
+     *
+     * Pairs with the delete-intent log in [app.clothescast.notification.NotificationDismissReceiver]:
+     * a forecast id that's present at "after delivery" but gone by "at worker exit"
+     * with no dismissal line in between points at the foreground-service teardown
+     * clearing it rather than a user swipe. Only ids are logged — never the prose —
+     * so no insight content crosses into the diag file.
+     */
+    private fun logActiveAppNotifications(stage: String) {
+        val manager = applicationContext.getSystemService<NotificationManager>() ?: return
+        val active = runCatching { manager.activeNotifications }.getOrNull() ?: return
+        val ids = active.joinToString { sbn ->
+            "id=${sbn.id}" + (sbn.tag?.let { "/tag=$it" } ?: "")
+        }
+        DiagLog.i(TAG, "Active notifications $stage: [$ids] (count=${active.size}).")
     }
 
     /**

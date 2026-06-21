@@ -687,7 +687,7 @@
     <string name="settings_privacy_telemetry_label">Send crash and usage data</string>
     <string name="settings_privacy_telemetry_description">Sends anonymous crash reports and aggregate usage stats to help the developer fix bugs and decide which features to keep.</string>
     <string name="settings_privacy_telemetry_limits">Never sent: calendar events, location coordinates or place names, insight text or notification text, API keys, precise GPS, advertising IDs.</string>
-    <string name="settings_privacy_open_policy">Read full privacy policy</string>
+    <string name="settings_privacy_open_policy">Privacy policy</string>
 
     <!-- Smart Home settings sub-page. The MQTT bridge publishes the rendered
          insight prose to a user-hosted broker (typically the Mosquitto add-on
@@ -1144,8 +1144,8 @@
          calendar. Turning any sub-feature on prompts for permission and switches
          the master on automatically. Nothing read from the calendar leaves the
          device. -->
-    <string name="settings_calendar_master">Use my calendar</string>
-    <string name="settings_calendar_master_description">Let ClothesCast read your calendars to personalize forecasts and outfits. Nothing leaves the device.</string>
+    <string name="settings_calendar_master">Use my calendars</string>
+    <string name="settings_calendar_master_description">Read your calendars to personalize forecasts and outfits. Nothing leaves your device by default.</string>
     <string name="settings_calendar_features_title">Personal calendars</string>
     <!-- Shared label for the evening add-ons feature: shown both on the calendar
          features list and on the Daily ClothesCast schedule's mention toggle. -->

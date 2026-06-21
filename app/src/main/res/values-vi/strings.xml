@@ -1036,7 +1036,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Dùng lịch của tôi</string>
-    <string name="settings_calendar_master_description">Cho phép ClothesCast đọc lịch của bạn để cá nhân hóa dự báo và trang phục. Không có gì rời khỏi thiết bị.</string>
+    <string name="settings_calendar_master_description">Đọc lịch của bạn để cá nhân hóa dự báo và trang phục. Theo mặc định, không có gì rời khỏi thiết bị của bạn.</string>
     <string name="settings_calendar_features_title">Lịch cá nhân</string>
     <string name="settings_evening_add_ons">Vật dụng thêm cho buổi tối</string>
     <string name="settings_evening_add_ons_description">Nếu bạn ra ngoài vào buổi tối, dự báo buổi sáng sẽ cho bạn biết có cần mang thêm gì không.</string>

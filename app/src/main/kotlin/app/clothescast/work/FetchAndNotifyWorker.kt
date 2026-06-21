@@ -1080,6 +1080,7 @@ class FetchAndNotifyWorker(
                 image = png,
                 audio = wav,
                 video = video,
+                hasEvents = insight.hasEvents,
                 mirrorToNow = false,
             )
             DiagLog.i(
@@ -1271,6 +1272,7 @@ class FetchAndNotifyWorker(
                         image = png,
                         audio = wav,
                         video = video,
+                        hasEvents = insight.hasEvents,
                     )
                 }
                     .onFailure { t ->

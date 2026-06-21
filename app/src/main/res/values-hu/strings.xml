@@ -967,7 +967,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Használja a naptáramat</string>
-    <string name="settings_calendar_master_description">Engedd, hogy a ClothesCast olvassa a naptáraidat az előrejelzések és öltözékek személyre szabásához. Semmi sem hagyja el az eszközt.</string>
+    <string name="settings_calendar_master_description">Beolvassa a naptáraidat az előrejelzések és öltözékek személyre szabásához. Alapértelmezetten semmi sem hagyja el a készülékedet.</string>
     <string name="settings_calendar_features_title">Személyes naptárak</string>
     <string name="settings_evening_add_ons">Esti extrák</string>
     <string name="settings_evening_add_ons_description">Ha este elmész valahova, a reggeli előrejelzés megmondja, kell-e bármi extrát magaddal vinned.</string>

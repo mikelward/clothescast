@@ -1138,7 +1138,7 @@ label localises.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">使用我的行事曆</string>
-    <string name="settings_calendar_master_description">讓 ClothesCast 讀取你的行事曆，以個人化預報和穿搭。不會有任何資料離開裝置。</string>
+    <string name="settings_calendar_master_description">讀取你的行事曆，以個人化預報和穿搭。預設情況下，不會有任何資料離開你的裝置。</string>
     <string name="settings_calendar_features_title">個人行事曆</string>
     <string name="settings_evening_add_ons">晚間額外物品</string>
     <string name="settings_evening_add_ons_description">如果你晚上要外出，早晨預報會告訴你是否需要額外帶點什麼。</string>

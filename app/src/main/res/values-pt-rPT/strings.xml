@@ -1102,7 +1102,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Usar o meu calendário</string>
-    <string name="settings_calendar_master_description">Permite ao ClothesCast ler os teus calendários para personalizar previsões e vestuário. Nada sai do dispositivo.</string>
+    <string name="settings_calendar_master_description">Lê os teus calendários para personalizar previsões e vestuário. Por predefinição, nada sai do teu dispositivo.</string>
     <string name="settings_calendar_features_title">Calendários pessoais</string>
     <string name="settings_evening_add_ons">Extras para a noite</string>
     <string name="settings_evening_add_ons_description">Se vais sair à noite, a previsão matinal diz-te se precisas de levar algo extra.</string>

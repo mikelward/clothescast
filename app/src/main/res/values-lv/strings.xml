@@ -915,7 +915,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Izmantot manu kalendāru</string>
-    <string name="settings_calendar_master_description">Ļauj ClothesCast lasīt tavus kalendārus, lai pielāgotu prognozes un apģērbu. Nekas nepamet ierīci.</string>
+    <string name="settings_calendar_master_description">Lasa tavus kalendārus, lai pielāgotu prognozes un apģērbu. Pēc noklusējuma nekas nepamet tavu ierīci.</string>
     <string name="settings_calendar_features_title">Personīgie kalendāri</string>
     <string name="settings_evening_add_ons">Vakara papildinājumi</string>
     <string name="settings_evening_add_ons_description">Ja vakarā kaut kur dodies, rīta prognoze pateiks, vai jāņem kas papildus.</string>

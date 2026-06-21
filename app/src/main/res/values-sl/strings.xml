@@ -959,7 +959,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Uporabi moj koledar</string>
-    <string name="settings_calendar_master_description">Dovoli ClothesCastu branje tvojih koledarjev za prilagajanje napovedi in oblek. Nič ne zapusti naprave.</string>
+    <string name="settings_calendar_master_description">Bere tvoje koledarje za prilagajanje napovedi in oblek. Privzeto nič ne zapusti tvoje naprave.</string>
     <string name="settings_calendar_features_title">Osebni koledarji</string>
     <string name="settings_evening_add_ons">Večerni dodatki</string>
     <string name="settings_evening_add_ons_description">Če greš zvečer ven, ti jutranja napoved pove, ali moraš s seboj vzeti kaj dodatnega.</string>

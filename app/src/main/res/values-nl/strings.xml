@@ -1022,7 +1022,7 @@ the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Mijn agenda gebruiken</string>
-    <string name="settings_calendar_master_description">Laat ClothesCast je agenda\'s lezen om voorspellingen en outfits te personaliseren. Niets verlaat het apparaat.</string>
+    <string name="settings_calendar_master_description">Leest je agenda\'s om voorspellingen en outfits te personaliseren. Standaard verlaat niets je apparaat.</string>
     <string name="settings_calendar_features_title">Persoonlijke agenda\'s</string>
     <string name="settings_evening_add_ons">Extra spullen voor de avond</string>
     <string name="settings_evening_add_ons_description">Als je \'s avonds uitgaat, vertelt de ochtendvoorspelling je of je iets extra\'s moet meenemen.</string>

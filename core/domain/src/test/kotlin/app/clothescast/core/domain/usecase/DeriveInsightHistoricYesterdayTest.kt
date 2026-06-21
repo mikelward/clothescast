@@ -1,11 +1,13 @@
 package app.clothescast.core.domain.usecase
 
+import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DailyHistoryEntry
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.Location
@@ -123,6 +125,40 @@ class DeriveInsightHistoricYesterdayTest {
         val result = DeriveInsight()(snapshot(historic = null), prefs)
         result.insight.summary.delta.shouldNotBeNull()
         result.insight.summary.delta!!.degrees shouldBe 4
+    }
+
+    private val locatedEvent = CalendarEvent(
+        title = "Concert",
+        start = LocalDate.of(2026, 5, 24).atTime(14, 0),
+        end = LocalDate.of(2026, 5, 24).atTime(15, 0),
+        location = "Arena",
+        allDay = false,
+        kind = EventKind.NORMAL,
+    )
+
+    private fun snapshotWithEvents(events: List<CalendarEvent>): ForecastSnapshot = ForecastSnapshot(
+        bundle = ForecastBundle(today = today, yesterday = bogusBundleYesterday),
+        events = events,
+        location = Location(latitude = 53.4054, longitude = -2.9924, displayName = "Liverpool"),
+        period = ForecastPeriod.TODAY,
+        generatedAt = Instant.parse("2026-05-24T07:00:00Z"),
+        historicYesterday = null,
+    )
+
+    @Test
+    fun `hasEvents is true when the calendar tie-in is active`() {
+        val active = prefs.copy(calendarEnabled = true, useCalendarEvents = true)
+        DeriveInsight()(snapshotWithEvents(listOf(locatedEvent)), active).insight.hasEvents shouldBe true
+    }
+
+    @Test
+    fun `cached events are dropped when the calendar tie-in is off`() {
+        // Simulates a cache hit / replay after the user turned the tie-in off:
+        // the snapshot still holds an event captured while it was on, but the
+        // re-derive must not resurface it in hasEvents (and so not in the prose
+        // tie-in, the delivery gates, or the MQTT has_events flag either).
+        val off = prefs.copy(calendarEnabled = true, useCalendarEvents = false)
+        DeriveInsight()(snapshotWithEvents(listOf(locatedEvent)), off).insight.hasEvents shouldBe false
     }
 
     @Test

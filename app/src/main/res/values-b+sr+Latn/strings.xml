@@ -963,7 +963,7 @@ default English (matching values-pl / values-uk).
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Koristi moj kalendar</string>
-    <string name="settings_calendar_master_description">Dozvoli ClothesCastu da čita tvoje kalendare radi personalizacije prognoza i outfita. Ništa ne napušta uređaj.</string>
+    <string name="settings_calendar_master_description">Čita tvoje kalendare radi personalizacije prognoza i outfita. Podrazumevano ništa ne napušta tvoj uređaj.</string>
     <string name="settings_calendar_features_title">Lični kalendari</string>
     <string name="settings_evening_add_ons">Večernji dodaci</string>
     <string name="settings_evening_add_ons_description">Ako uveče izlaziš, jutarnja prognoza ti kaže da li treba da poneseš nešto dodatno.</string>

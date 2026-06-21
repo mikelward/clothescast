@@ -1128,7 +1128,7 @@ displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">내 캘린더 사용</string>
-    <string name="settings_calendar_master_description">ClothesCast가 캘린더를 읽어 예보와 옷차림을 개인화해요. 어떤 정보도 기기 밖으로 나가지 않습니다.</string>
+    <string name="settings_calendar_master_description">캘린더를 읽어 예보와 옷차림을 개인화해요. 기본적으로 어떤 정보도 기기 밖으로 나가지 않습니다.</string>
     <string name="settings_calendar_features_title">개인 캘린더</string>
     <string name="settings_evening_add_ons">저녁 추가 준비물</string>
     <string name="settings_evening_add_ons_description">저녁에 외출할 경우, 아침 예보에서 추가로 챙길 것이 있는지 알려드려요.</string>

@@ -330,6 +330,14 @@ internal fun CalendarContent(
                         else onSetCalendarEnabled(false)
                     },
                 )
+                // The master description deliberately stays short ("nothing
+                // leaves your device by default"); the full who-gets-what —
+                // including the calendar-derived has_events flag the Smart Home
+                // bridge can publish — lives in the privacy policy.
+                TextButton(
+                    onClick = { openUrl(context, PRIVACY_POLICY_URL) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(stringResource(R.string.settings_privacy_open_policy)) }
                 if (permanentlyDenied && !permissionGranted) {
                     Text(
                         text = stringResource(R.string.settings_calendar_open_settings),

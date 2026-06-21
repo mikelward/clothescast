@@ -914,7 +914,7 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Utilitza el meu calendari</string>
-    <string name="settings_calendar_master_description">Permet que ClothesCast llegeixi els teus calendaris per personalitzar previsions i vestits. Res no surt del dispositiu.</string>
+    <string name="settings_calendar_master_description">Llegeix els teus calendaris per personalitzar previsions i vestits. Per defecte, res no surt del teu dispositiu.</string>
     <string name="settings_calendar_features_title">Calendaris personals</string>
     <string name="settings_evening_add_ons">Complements del vespre</string>
     <string name="settings_evening_add_ons_description">Si surts al vespre, la previsió del matí t\'indica si has de portar alguna cosa extra.</string>

@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-05-31_
+_Last updated: 2026-06-21_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -34,14 +34,18 @@ have over it.
   your device. The event title may appear inside the spoken sentence
   (e.g. _"Bring a jacket for your concert tonight"_), and is therefore
   also sent to the TTS provider in that one case — only when both calendar
-  tie-in and online TTS are enabled.
+  tie-in and online TTS are enabled. If you also enable the MQTT bridge
+  below, one calendar-derived boolean — whether the window has a located
+  event, with no titles, times, or locations — is published to your own
+  broker.
 - If you opt in to the **Smart Home / Home Assistant MQTT bridge**
   (Settings → Smart Home, off by default), the rendered forecast
-  sentence is published as a retained MQTT message to a broker you
-  configure — typically the Mosquitto add-on running on your own Home
-  Assistant. The broker host and credentials are entirely yours; nothing
-  ClothesCast sends goes to a service the developer operates. See "Smart
-  Home / Home Assistant bridge" below for what's in the payload.
+  sentence — plus a small calendar-derived `has_events` boolean — is
+  published as a retained MQTT message to a broker you configure —
+  typically the Mosquitto add-on running on your own Home Assistant. The
+  broker host and credentials are entirely yours; nothing ClothesCast
+  sends goes to a service the developer operates. See "Smart Home / Home
+  Assistant bridge" below for what's in the payload.
 - Nothing is sold, no advertising, no ad-targeting profiles, no
   third-party data sharing beyond the services listed below. (The
   aggregate usage analytics + crash reports above _do_ count as
@@ -96,10 +100,13 @@ The source code is at <https://github.com/mikelward/clothescast>.
 - **Why:** To pair a clothes recommendation with a meeting that overlaps
   bad weather (e.g. _"Bring a jacket for your concert tonight"_).
 - **Where it goes:** Calendar reading happens entirely on your device.
-  The only way calendar data leaves the device is if (a) the tie-in fires
-  for today's forecast _and_ (b) you have online TTS enabled — in which
-  case the rendered sentence (which can include the event title) is sent
-  to your chosen TTS provider for vocalization.
+  Two narrow paths can let calendar-derived data leave it: (a) if the
+  tie-in fires for today's forecast _and_ you have online TTS enabled, the
+  rendered sentence (which can include the event title) is sent to your
+  chosen TTS provider for vocalization; and (b) if you enable the Smart
+  Home MQTT bridge, a single event-presence boolean (`has_events` — no
+  titles, times, or locations) is published to your own broker. See "Smart
+  Home / Home Assistant bridge" below.
 - **Stored on device:** The most recent forecast snapshot is cached for
   up to one day so the app doesn't refetch on every launch. Event titles
   and locations are never written to disk; only event timing (start,
@@ -208,7 +215,12 @@ The source code is at <https://github.com/mikelward/clothescast>.
   only repackages what the image and audio topics already publish. A
   small `now/timestamp` topic carries the epoch-millis time of the most
   recent publish so a consumer can tell a fresh forecast from a retained
-  one. The payload includes any calendar-event tie-in clause that fires
+  one. A `has_events` topic carries a single boolean — `true`/`false` for
+  whether that window has a located calendar event — so an automation can
+  tell a deliberately-quiet evening (when "notify only on event nights"
+  keeps the phone silent) from an outage. It's the only calendar-derived
+  field here, and it carries no event titles, times, or locations. The
+  payload includes any calendar-event tie-in clause that fires
   (e.g. _"Bring a jacket for your concert tonight"_) when you have the
   calendar tie-in enabled, because that clause is part of the rendered
   sentence. No coordinates, no API keys, no settings values, no device
@@ -298,7 +310,7 @@ policies apply to anything they receive:
 | Google Firebase Authentication | An App Check attestation, to mint and refresh an anonymous identifier (no name, email, or password) | First use of the shared-key path, then periodic token refreshes |
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, an anonymous app identifier (as a signed Firebase ID token; plus a Firebase Installation ID during the current rollout), a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
-| Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence, as a retained MQTT message | Only if you opt in to the Smart Home bridge and configure a broker |
+| Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence; the outfit-card image, TTS audio, and muxed MP4 on sibling topics; an update timestamp; and a calendar-derived `has_events` boolean (no event titles, times, or locations) — all as retained MQTT messages | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |
 
 These providers act as service providers fulfilling a single request and
@@ -469,6 +481,16 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-06-21** — The **Smart Home / Home Assistant MQTT bridge** now
+  publishes a `has_events` boolean (`true`/`false`) on each window's topic
+  (and the `now` mirror): whether that forecast window has a located
+  calendar event, so a Home Assistant automation can tell a deliberately-
+  quiet evening (when "notify only on event nights" keeps the phone silent)
+  from an outage. This is a new calendar-derived field crossing the device
+  boundary — but only to your own broker, only when you have both the
+  calendar tie-in and the bridge enabled, and it carries no event titles,
+  times, or locations, just the single boolean. See the updated "Smart Home
+  / Home Assistant bridge" and "Calendar events" sections above.
 - **2026-06-17** — Rain gear (umbrella, rain jacket) now also fires on the
   forecast weather code, catching drizzle the probability gate misses. The
   `clothes_rules_snapshot` analytics event gained one aggregate param,

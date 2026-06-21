@@ -1028,7 +1028,7 @@ only the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Использовать мой календарь</string>
-    <string name="settings_calendar_master_description">Разреши ClothesCast читать твои календари, чтобы подбирать прогнозы и наряды под тебя. Ничего не покидает устройство.</string>
+    <string name="settings_calendar_master_description">Читает твои календари, чтобы подбирать прогнозы и наряды. По умолчанию ничего не покидает твоё устройство.</string>
     <string name="settings_calendar_features_title">Личные календари</string>
     <string name="settings_evening_add_ons">Дополнения на вечер</string>
     <string name="settings_evening_add_ons_description">Если ты собираешься куда-то вечером, утренний прогноз подскажет, нужно ли взять что-то с собой.</string>

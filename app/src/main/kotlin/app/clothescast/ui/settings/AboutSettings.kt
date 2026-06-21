@@ -123,6 +123,10 @@ private fun AboutCard() {
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.settings_about_open_meteo)) }
         TextButton(
+            onClick = { openUrl(context, PRIVACY_POLICY_URL) },
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.settings_privacy_open_policy)) }
+        TextButton(
             onClick = {
                 if (bugReportConsentAcked) {
                     launchBugReport()

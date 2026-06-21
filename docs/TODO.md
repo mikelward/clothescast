@@ -136,16 +136,14 @@ Done:
 
 Open:
 
-- [ ] **Publish a calendar-events MQTT topic.** Tonight's
-      `tonightNotifyOnlyOnEvents` skips the phone-side delivery on
-      event-free evenings, but we still publish MQTT so Home Assistant
-      automations can read fresh data unconditionally. Right now HA can
-      only see the insight prose — it can't tell *why* the phone stayed
-      quiet, so the automation has to guess from prose text whether the
-      evening had events. Publish a boolean / count under e.g.
-      `clothescast/<topic>/tonight/has_events` (and possibly `event_count`)
-      so HA can decide its own trigger logic — play the cast on event
-      nights, stay quiet otherwise, etc. — without us pre-deciding for it.
+- [x] **Publish a calendar-events MQTT topic.** `has_events` (`true`/`false`)
+      now publishes on every window — `<prefix>/day/has_events`,
+      `<prefix>/night/has_events`, and the `<prefix>/now/has_events` mirror —
+      gated into the bundle like the other modalities and exposed as Home
+      Assistant `binary_sensor` discovery entities. So an automation can tell a
+      deliberately-silent (event-free, `tonightNotifyOnlyOnEvents`) evening from
+      an outage without parsing prose. `event_count` wasn't included — a boolean
+      covered the use case; revisit if a count is ever needed.
 - [ ] **Music Assistant `mass.announce` quick-start in the setup
       guide.** docs/smart-home.md now describes the three speaking
       options at a high level, but for users picking Option B the
@@ -166,7 +164,8 @@ Open:
       "what to bring tomorrow" briefing.
 - [ ] **Notification actions** — "read aloud" / "snooze for today" buttons in
       the notification.
-- [ ] **Tap-to-replay TTS** on Today.
+- [x] **Tap-to-replay TTS** on Today — the play button replays the cached
+      insight through TTS / MQTT / Cast (`TodayScreen` play action).
 - [ ] **Past 7 days history** on Today — pull from `InsightCache`, persist
       beyond the current single slot.
 - [ ] **Clothes rule presets** ("Cyclist", "Commuter", "Dog walker") — pick a

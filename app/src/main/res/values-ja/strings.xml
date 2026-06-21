@@ -1124,7 +1124,7 @@ the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">カレンダーを使用</string>
-    <string name="settings_calendar_master_description">ClothesCast がカレンダーを読み取り、予報と服装をパーソナライズします。端末から外に出るものは何もありません。</string>
+    <string name="settings_calendar_master_description">カレンダーを読み取り、予報と服装をパーソナライズします。デフォルトでは、端末から外に出るものは何もありません。</string>
     <string name="settings_calendar_features_title">個人のカレンダー</string>
     <string name="settings_evening_add_ons">夜の追加アイテム</string>
     <string name="settings_evening_add_ons_description">夜に外出する場合、朝の予報で追加で持っていくべきものがあるかをお知らせします。</string>

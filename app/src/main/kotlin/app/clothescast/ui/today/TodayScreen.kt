@@ -2522,99 +2522,62 @@ internal fun InsightCard(
     val renderLeftChevron = showChevronLeft && onChevronTap != null
     val rightChevronAction = onChevronRightTap ?: onChevronTap
     val renderRightChevron = showChevronRight && rightChevronAction != null
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            // Three-zone header: 28.dp slots are reserved on both edges so
-            // the period label sits in the same horizontal position whether
-            // or not a chevron is currently rendered, and so the back/forward
-            // affordances land on opposite edges as the user swipes between
-            // pages. AutoMirrored chevron variants flip in RTL automatically.
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (renderLeftChevron) {
-                        IconButton(
-                            onClick = { onChevronTap?.invoke() },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = stringResource(R.string.today_back_to_primary),
-                            )
-                        }
-                    }
-                }
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = periodLabel,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = if (onLongPressDate != null) {
-                            Modifier.pointerInput(onLongPressDate) {
-                                detectTapGestures(onLongPress = { onLongPressDate() })
-                            }
-                        } else {
-                            Modifier
-                        },
-                    )
-                    if (location != null && locationLabel != null) {
-                        Text(
-                            text = " · ",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = locationLabel,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            // Tapping the city name opens the Location settings
-                            // page — the address detail + Map button live there.
-                            // Falls back to inert text when no nav callback is
-                            // wired (previews / tests).
-                            modifier = if (onNavigateToLocation != null) {
-                                Modifier.clickable { onNavigateToLocation() }
-                            } else {
-                                Modifier
-                            },
-                        )
-                    }
-                }
-                Box(modifier = Modifier.size(28.dp)) {
-                    if (renderRightChevron) {
-                        IconButton(
-                            onClick = { rightChevronAction?.invoke() },
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = stringResource(R.string.today_view_other_period),
-                            )
-                        }
-                    }
-                }
+    InsightCardShell(
+        // 28.dp edge slots reserved on both sides so the centered label holds
+        // its position whether or not a chevron renders, and the back / forward
+        // affordances land on opposite edges as the user swipes between pages.
+        leftSlot = {
+            if (renderLeftChevron) {
+                InsightCardChevron(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = stringResource(R.string.today_back_to_primary),
+                    onClick = { onChevronTap?.invoke() },
+                )
             }
-            Text(
-                // VISUAL surface: under the default Speech-only period preamble
-                // the card opens straight on the measurement ("14° to 20°. …"),
-                // dropping the redundant "Today, it will be …" lead the card's
-                // own period header already supplies. The user's Lead-in setting
-                // can override (Always shows the lead here too; Never drops it
-                // from the spoken briefing as well).
-                text = formatter.format(insight.summary, isFutureDay = isFutureDay),
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = if (onNavigateToFormat != null) {
-                    Modifier.clickable { onNavigateToFormat() }
+        },
+        rightSlot = {
+            if (renderRightChevron) {
+                InsightCardChevron(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = stringResource(R.string.today_view_other_period),
+                    onClick = { rightChevronAction?.invoke() },
+                )
+            }
+        },
+        centerContent = {
+            // The period label carries the hidden long-press-to-Developer-
+            // settings gesture when wired; the city suffix opens Location
+            // settings (the address detail + Map button live there) and falls
+            // back to inert text when no nav callback is wired (previews / tests).
+            InsightCardCenterLabel(
+                label = periodLabel,
+                locationLabel = locationLabel,
+                onNavigateToLocation = onNavigateToLocation,
+                labelModifier = if (onLongPressDate != null) {
+                    Modifier.pointerInput(onLongPressDate) {
+                        detectTapGestures(onLongPress = { onLongPressDate() })
+                    }
                 } else {
                     Modifier
                 },
             )
-        }
+        },
+    ) {
+        Text(
+            // VISUAL surface: under the default Speech-only period preamble
+            // the card opens straight on the measurement ("14° to 20°. …"),
+            // dropping the redundant "Today, it will be …" lead the card's
+            // own period header already supplies. The user's Lead-in setting
+            // can override (Always shows the lead here too; Never drops it
+            // from the spoken briefing as well).
+            text = formatter.format(insight.summary, isFutureDay = isFutureDay),
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = if (onNavigateToFormat != null) {
+                Modifier.clickable { onNavigateToFormat() }
+            } else {
+                Modifier
+            },
+        )
     }
 }
 

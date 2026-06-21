@@ -493,9 +493,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_temperature_unit_title">Unit suhu</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Unit jarak</string>
-    <string name="settings_distance_unit_kilometers">Kilometer</string>
-    <string name="settings_distance_unit_miles">Batu</string>
+    <string name="settings_wind_speed_unit_title">Unit kelajuan angin</string>
 
     <!-- Clothes settings -->
     <string name="settings_clothes_title">Peraturan pakaian</string>

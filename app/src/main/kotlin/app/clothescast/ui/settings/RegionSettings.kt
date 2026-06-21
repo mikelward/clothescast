@@ -28,8 +28,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
-import app.clothescast.core.domain.model.DistanceUnit
-import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.WindSpeedUnit
+import app.clothescast.core.domain.model.WindSpeedUnitSetting
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
@@ -43,15 +43,15 @@ import java.text.Collator
 internal fun RegionContent(
     region: Region,
     temperatureUnitSetting: TemperatureUnitSetting,
-    distanceUnitSetting: DistanceUnitSetting,
+    windSpeedUnitSetting: WindSpeedUnitSetting,
     timeFormatSetting: TimeFormatSetting,
     resolvedTemperatureUnit: TemperatureUnit,
-    resolvedDistanceUnit: DistanceUnit,
+    resolvedWindSpeedUnit: WindSpeedUnit,
     resolvedTimeFormat: TimeFormat,
     padding: PaddingValues,
     onSetRegion: (Region) -> Unit,
     onSetTemperatureUnit: (TemperatureUnitSetting) -> Unit,
-    onSetDistanceUnit: (DistanceUnitSetting) -> Unit,
+    onSetWindSpeedUnit: (WindSpeedUnitSetting) -> Unit,
     onSetTimeFormat: (TimeFormatSetting) -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -88,16 +88,20 @@ internal fun RegionContent(
                     )
                 }
             }
-            SectionCard(title = stringResource(R.string.settings_distance_unit_title)) {
-                DistanceUnitSetting.entries.forEach { setting ->
-                    val label = if (setting == DistanceUnitSetting.AUTO)
-                        "${stringResource(R.string.settings_unit_auto)} (${resolvedDistanceUnit.symbol()})"
+            SectionCard(title = stringResource(R.string.settings_wind_speed_unit_title)) {
+                WindSpeedUnitSetting.entries.forEach { setting ->
+                    // Options are labelled by their unit symbol (km/h, mph, kn,
+                    // m/s) rendered straight from the domain, so they need no
+                    // per-locale translation; AUTO shows the resolved symbol in
+                    // parentheses the same way the temperature picker does.
+                    val label = if (setting == WindSpeedUnitSetting.AUTO)
+                        "${stringResource(R.string.settings_unit_auto)} (${resolvedWindSpeedUnit.symbol()})"
                     else
-                        stringResource(distanceUnitSettingLabel(setting))
+                        setting.resolvedUnit().symbol()
                     RadioRow(
                         label = label,
-                        selected = setting == distanceUnitSetting,
-                        onSelect = { onSetDistanceUnit(setting) },
+                        selected = setting == windSpeedUnitSetting,
+                        onSelect = { onSetWindSpeedUnit(setting) },
                     )
                 }
             }
@@ -260,10 +264,15 @@ private fun temperatureUnitSettingLabel(setting: TemperatureUnitSetting): Int = 
     TemperatureUnitSetting.FAHRENHEIT -> R.string.settings_temperature_unit_fahrenheit
 }
 
-private fun distanceUnitSettingLabel(setting: DistanceUnitSetting): Int = when (setting) {
-    DistanceUnitSetting.AUTO -> R.string.settings_unit_auto
-    DistanceUnitSetting.KILOMETERS -> R.string.settings_distance_unit_kilometers
-    DistanceUnitSetting.MILES -> R.string.settings_distance_unit_miles
+// Maps an explicit (non-AUTO) wind-speed setting to the resolved unit whose
+// symbol() labels its radio row. AUTO is handled at the call site (it shows the
+// locale-resolved symbol), so its arm here is unreachable filler.
+private fun WindSpeedUnitSetting.resolvedUnit(): WindSpeedUnit = when (this) {
+    WindSpeedUnitSetting.AUTO -> WindSpeedUnit.KMH
+    WindSpeedUnitSetting.KMH -> WindSpeedUnit.KMH
+    WindSpeedUnitSetting.MPH -> WindSpeedUnit.MPH
+    WindSpeedUnitSetting.KNOTS -> WindSpeedUnit.KNOTS
+    WindSpeedUnitSetting.MS -> WindSpeedUnit.MS
 }
 
 private fun timeFormatSettingLabel(setting: TimeFormatSetting): Int = when (setting) {

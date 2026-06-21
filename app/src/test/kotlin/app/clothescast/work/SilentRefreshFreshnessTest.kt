@@ -5,7 +5,7 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.Location
@@ -89,7 +89,7 @@ class SilentRefreshFreshnessTest {
         tonightSchedule = Schedule(time = LocalTime.of(19, 0), days = Schedule.EVERY_DAY, zoneId = zone),
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         temperatureUnit = TemperatureUnit.CELSIUS,
-        distanceUnit = DistanceUnit.KILOMETERS,
+        windSpeedUnit = WindSpeedUnit.KMH,
         clothesRules = ClothesRule.DEFAULTS,
         defaultBottom = OutfitSuggestion.Bottom.LONG_PANTS,
         defaultTop = OutfitSuggestion.Top.TSHIRT,

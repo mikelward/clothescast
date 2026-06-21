@@ -1040,9 +1040,10 @@
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
 
-    <string name="settings_distance_unit_title">Distance unit</string>
-    <string name="settings_distance_unit_kilometers">Kilometers</string>
-    <string name="settings_distance_unit_miles">Miles</string>
+    <!-- Wind speed unit picker. The km/h / mph / kn / m/s options are labelled
+         in code from their unit symbols (no translatable strings), so only the
+         section title lives here. -->
+    <string name="settings_wind_speed_unit_title">Wind speed unit</string>
 
     <string name="settings_time_format_title">Time format</string>
     <string name="settings_time_format_12h">12-hour</string>

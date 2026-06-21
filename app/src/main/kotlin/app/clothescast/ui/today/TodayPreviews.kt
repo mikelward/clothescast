@@ -1756,8 +1756,8 @@ internal fun WindCardScrubbedPreview() {
 
 // Imperial variant — exercises the km/h → mph conversion in both the picker
 // (Y-axis values) and the subtitle string. Pairs with the default km/h preview
-// above to lock in the unit-switching path now that DistanceUnit drives wind
-// display.
+// above to lock in the unit-switching path now that the wind-speed unit is its
+// own setting.
 @Preview(name = "Wind card · with model spread (mph)", widthDp = 360)
 @Composable
 internal fun WindCardWithModelSpreadMphPreview() {

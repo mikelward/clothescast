@@ -12,7 +12,7 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -125,7 +125,7 @@ class InsightCacheTest {
         schedule = Schedule(time = LocalTime.of(7, 0), days = Schedule.EVERY_DAY, zoneId = ZoneId.of("UTC")),
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         temperatureUnit = TemperatureUnit.CELSIUS,
-        distanceUnit = DistanceUnit.KILOMETERS,
+        windSpeedUnit = WindSpeedUnit.KMH,
         clothesRules = ClothesRule.DEFAULTS,
         defaultBottom = OutfitSuggestion.Bottom.LONG_PANTS,
         defaultTop = OutfitSuggestion.Top.TSHIRT,

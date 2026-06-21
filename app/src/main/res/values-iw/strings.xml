@@ -372,9 +372,7 @@ standard in Israeli digital communication.
     <string name="settings_temperature_unit_title">יחידת טמפרטורה</string>
     <string name="settings_temperature_unit_celsius">צלזיוס (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">פרנהייט (°F)</string>
-    <string name="settings_distance_unit_title">יחידת מרחק</string>
-    <string name="settings_distance_unit_kilometers">קילומטרים</string>
-    <string name="settings_distance_unit_miles">מיילים</string>
+    <string name="settings_wind_speed_unit_title">יחידת מהירות הרוח</string>
 
     <!-- Settings — clothes rules -->
     <string name="settings_clothes_title">כללי לבוש</string>

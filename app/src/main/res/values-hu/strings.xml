@@ -260,9 +260,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_temperature_unit_title">Hőmérséklet-egység</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Távolság-egység</string>
-    <string name="settings_distance_unit_kilometers">Kilométer</string>
-    <string name="settings_distance_unit_miles">Mérföld</string>
+    <string name="settings_wind_speed_unit_title">Szélsebesség mértékegysége</string>
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>

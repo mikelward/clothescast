@@ -26,7 +26,6 @@ import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.castCurrentInsight
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.OutfitSuggestion
-import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
@@ -391,7 +390,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                         formatter = formatter,
                         hourly = insight.hourly,
                         temperatureUnit = prefs.temperatureUnit,
-                        windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
+                        windSpeedUnit = prefs.windSpeedUnit,
                     )
                     val header = app.getString(
                         if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today

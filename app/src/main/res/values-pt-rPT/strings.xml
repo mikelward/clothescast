@@ -205,9 +205,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_temperature_unit_title">Unidade de temperatura</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Unidade de distância</string>
-    <string name="settings_distance_unit_kilometers">Quilómetros</string>
-    <string name="settings_distance_unit_miles">Milhas</string>
+    <string name="settings_wind_speed_unit_title">Unidade de velocidade do vento</string>
 
     <!--
     Voice locale picker labels — same European Portuguese language-name

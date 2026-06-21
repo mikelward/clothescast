@@ -310,9 +310,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_temperature_unit_title">Jedinica temperature</string>
     <string name="settings_temperature_unit_celsius">Celzijus (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Frenheit (°F)</string>
-    <string name="settings_distance_unit_title">Jedinica udaljenosti</string>
-    <string name="settings_distance_unit_kilometers">Kilometri</string>
-    <string name="settings_distance_unit_miles">Milje</string>
+    <string name="settings_wind_speed_unit_title">Jedinica brzine vetra</string>
 
     <!-- Voice locale picker labels. -->
     <string name="settings_tts_voice_locale_en_us">Engleski (SAD)</string>

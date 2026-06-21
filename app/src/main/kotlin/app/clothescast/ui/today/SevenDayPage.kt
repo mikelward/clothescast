@@ -27,7 +27,6 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHourly
-import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.core.domain.usecase.DeriveWeekAheadInsight
 import app.clothescast.insight.InsightFormatter
 import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
@@ -163,7 +162,7 @@ internal fun SevenDayPage(
     // week-ahead headline below read these locals so sourcing them from state
     // doesn't churn the rest of the body.
     val temperatureUnit = state.temperatureUnit
-    val distanceUnit = state.distanceUnit
+    val windSpeedUnit = state.windSpeedUnit
     val showModelSpread = state.showModelSpread
     val region = state.region
     val deltaThresholdC = state.deltaThresholdC
@@ -471,7 +470,6 @@ internal fun SevenDayPage(
             ForecastCard(
                 hourly = flatHourly,
                 temperatureUnit = temperatureUnit,
-                distanceUnit = distanceUnit,
                 startDate = startDate,
                 perModelHourly = weekPerModelDiagnostics,
                 showModelSpread = showModelSpread,
@@ -505,7 +503,7 @@ internal fun SevenDayPage(
                 WindCard(
                     hourly = flatHourly,
                     perModelHourly = perModelData,
-                    windSpeedUnit = distanceUnit.windSpeedUnit(),
+                    windSpeedUnit = windSpeedUnit,
                     startDate = startDate,
                     showModelSpread = showModelSpread,
                 )

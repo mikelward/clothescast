@@ -2,7 +2,7 @@ package app.clothescast.calendar
 
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.Schedule
@@ -32,7 +32,7 @@ class HolidayThemeResolverTest {
         schedule = Schedule(time = LocalTime.of(7, 0), days = Schedule.EVERY_DAY, zoneId = ZoneId.of("UTC")),
         deliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
         temperatureUnit = TemperatureUnit.CELSIUS,
-        distanceUnit = DistanceUnit.KILOMETERS,
+        windSpeedUnit = WindSpeedUnit.KMH,
         clothesRules = emptyList(),
         // Master calendar switch on; the per-source theming toggles are flipped
         // per-test (theming reads only when master AND the toggle are on).

@@ -381,10 +381,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_temperature_unit_title">Unitat de temperatura</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_wind_speed_unit_title">Unitat de velocitat del vent</string>
 
-    <string name="settings_distance_unit_title">Unitat de distància</string>
-    <string name="settings_distance_unit_kilometers">Quilòmetres</string>
-    <string name="settings_distance_unit_miles">Milles</string>
 
     <string name="settings_clothes_title">Regles de roba</string>
     <string name="settings_clothes_description">Si una previsió supera un d\'aquests llindars, la peça apareix en el teu ClothesCast diari.</string>

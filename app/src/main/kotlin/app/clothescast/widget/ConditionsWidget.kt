@@ -29,7 +29,6 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import app.clothescast.R
-import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.ui.garment.OutfitCardInfoLines
 import app.clothescast.ui.garment.STRIP_SURFACE_DARK_ARGB
@@ -79,7 +78,7 @@ class ConditionsWidget : GlanceAppWidget() {
                     formatter = formatter,
                     hourly = insight.hourly,
                     temperatureUnit = prefs.temperatureUnit,
-                    windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
+                    windSpeedUnit = prefs.windSpeedUnit,
                 )
             }.getOrNull()
         } else {

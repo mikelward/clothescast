@@ -231,9 +231,7 @@ only the displayed label localizes.
     <string name="settings_temperature_unit_title">Единицы температуры</string>
     <string name="settings_temperature_unit_celsius">Цельсий (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Фаренгейт (°F)</string>
-    <string name="settings_distance_unit_title">Единицы расстояния</string>
-    <string name="settings_distance_unit_kilometers">Километры</string>
-    <string name="settings_distance_unit_miles">Мили</string>
+    <string name="settings_wind_speed_unit_title">Единица скорости ветра</string>
 
     <!--
     Voice locale picker labels — same Russian language-name translations

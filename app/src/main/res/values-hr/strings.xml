@@ -158,9 +158,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_temperature_unit_title">Jedinica temperature</string>
     <string name="settings_temperature_unit_celsius">Celzij (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Jedinica udaljenosti</string>
-    <string name="settings_distance_unit_kilometers">Kilometri</string>
-    <string name="settings_distance_unit_miles">Milje</string>
+    <string name="settings_wind_speed_unit_title">Jedinica brzine vjetra</string>
 
     <!--
     Voice locale picker labels — same Croatian language-name translations

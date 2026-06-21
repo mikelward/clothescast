@@ -11,7 +11,7 @@ import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -77,7 +77,7 @@ class GenerateDailyInsightTest {
         schedule = Schedule.default(ZoneOffset.UTC),
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         temperatureUnit = TemperatureUnit.CELSIUS,
-        distanceUnit = DistanceUnit.KILOMETERS,
+        windSpeedUnit = WindSpeedUnit.KMH,
         clothesRules = ClothesRule.DEFAULTS,
         // Master calendar switch on; individual cases flip useCalendarEvents to
         // exercise the per-feature gate (events read only when both are on).

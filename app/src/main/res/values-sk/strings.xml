@@ -261,9 +261,7 @@ What is NOT overridden, by design:
     <string name="settings_temperature_unit_title">Jednotka teploty</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Jednotka vzdialenosti</string>
-    <string name="settings_distance_unit_kilometers">Kilometre</string>
-    <string name="settings_distance_unit_miles">Míle</string>
+    <string name="settings_wind_speed_unit_title">Jednotka rýchlosti vetra</string>
 
     <!--
     API keys screen.

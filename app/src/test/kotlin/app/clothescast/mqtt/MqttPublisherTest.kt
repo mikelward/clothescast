@@ -1,7 +1,7 @@
 package app.clothescast.mqtt
 
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -1375,7 +1375,7 @@ class MqttPublisherTest {
         schedule = Schedule(time = LocalTime.of(7, 0), days = Schedule.EVERY_DAY, zoneId = ZoneId.of("UTC")),
         deliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
         temperatureUnit = TemperatureUnit.CELSIUS,
-        distanceUnit = DistanceUnit.KILOMETERS,
+        windSpeedUnit = WindSpeedUnit.KMH,
         clothesRules = emptyList(),
     )
 }

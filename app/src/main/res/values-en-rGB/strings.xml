@@ -21,7 +21,6 @@ full re-translation.
          "Kilometers" (en-US); the other metric-using English variants
          (en-AU / en-CA / en-ZA) inherit this en-rGB form via CLDR
          locale-similarity — they all descend from en-001 the same way. -->
-    <string name="settings_distance_unit_kilometers">Kilometres</string>
 
     <!-- "Colours" with the British -our ending. en-AU / en-CA / en-ZA
          inherit this via the same CLDR cascade as Kilometres above. -->

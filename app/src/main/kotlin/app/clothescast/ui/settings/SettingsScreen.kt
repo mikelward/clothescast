@@ -263,15 +263,15 @@ internal fun RegionPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
         RegionContent(
             region = state.region,
             temperatureUnitSetting = state.temperatureUnitSetting,
-            distanceUnitSetting = state.distanceUnitSetting,
+            windSpeedUnitSetting = state.windSpeedUnitSetting,
             timeFormatSetting = state.timeFormatSetting,
             resolvedTemperatureUnit = state.temperatureUnit,
-            resolvedDistanceUnit = state.distanceUnit,
+            resolvedWindSpeedUnit = state.windSpeedUnit,
             resolvedTimeFormat = state.timeFormat,
             padding = padding,
             onSetRegion = viewModel::setRegion,
             onSetTemperatureUnit = viewModel::setTemperatureUnitSetting,
-            onSetDistanceUnit = viewModel::setDistanceUnitSetting,
+            onSetWindSpeedUnit = viewModel::setWindSpeedUnitSetting,
             onSetTimeFormat = viewModel::setTimeFormatSetting,
         )
     }

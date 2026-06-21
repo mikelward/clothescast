@@ -43,7 +43,7 @@ class TelemetryPrivacyContractTest {
         "period", "alarm_delay_ms", "total_delay_ms",
         "slot",
         "temperature_unit_setting", "temperature_unit_effective",
-        "distance_unit_setting", "distance_unit_effective",
+        "wind_speed_unit_setting", "wind_speed_unit_effective",
         "delivery_mode_daily", "delivery_mode_tonight",
         "theme_mode", "color_palette", "default_bottom", "default_top",
         "daily_enabled", "daily_time_bucket_hour", "daily_days_count",

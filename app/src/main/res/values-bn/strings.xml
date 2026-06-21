@@ -489,9 +489,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_temperature_unit_title">তাপমাত্রা একক</string>
     <string name="settings_temperature_unit_celsius">সেলসিয়াস (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">ফারেনহাইট (°F)</string>
-    <string name="settings_distance_unit_title">দূরত্ব একক</string>
-    <string name="settings_distance_unit_kilometers">কিলোমিটার</string>
-    <string name="settings_distance_unit_miles">মাইল</string>
+    <string name="settings_wind_speed_unit_title">বাতাসের গতির একক</string>
 
     <!-- ============================================================
          Settings — Clothes

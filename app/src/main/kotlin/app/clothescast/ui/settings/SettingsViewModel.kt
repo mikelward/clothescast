@@ -15,7 +15,7 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.WindSpeedUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HolidayCatalog
@@ -260,9 +260,9 @@ class SettingsViewModel(
                         deltaFormat = prefs.deltaFormat,
                         region = prefs.region,
                         temperatureUnit = prefs.temperatureUnit,
-                        distanceUnit = prefs.distanceUnit,
+                        windSpeedUnit = prefs.windSpeedUnit,
                         temperatureUnitSetting = prefs.temperatureUnitSetting,
-                        distanceUnitSetting = prefs.distanceUnitSetting,
+                        windSpeedUnitSetting = prefs.windSpeedUnitSetting,
                         timeFormat = prefs.timeFormat,
                         timeFormatSetting = prefs.timeFormatSetting,
                         themeMode = prefs.themeMode,
@@ -524,8 +524,16 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setTemperatureUnitSetting(setting) }
     }
 
-    fun setDistanceUnitSetting(setting: DistanceUnitSetting) {
-        viewModelScope.launch { settingsRepository.setDistanceUnitSetting(setting) }
+    fun setWindSpeedUnitSetting(setting: WindSpeedUnitSetting) {
+        viewModelScope.launch {
+            settingsRepository.setWindSpeedUnitSetting(setting)
+            // The Conditions widget renders the wind label off prefs.windSpeedUnit
+            // but doesn't subscribe to the prefs flow, so nudge it to repaint —
+            // otherwise the launcher keeps the old unit until the next scheduled
+            // cache/widget refresh. (Same reason the outfit-color setters below
+            // refresh; see the refreshOutfitWidget note in ClothesCastNavHost.)
+            refreshOutfitWidget()
+        }
     }
 
     fun setTimeFormatSetting(setting: TimeFormatSetting) {

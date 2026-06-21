@@ -23,8 +23,8 @@ package app.clothescast.diag
 data class SettingsSnapshot(
     val temperatureUnitSetting: String,
     val temperatureUnitEffective: String,
-    val distanceUnitSetting: String,
-    val distanceUnitEffective: String,
+    val windSpeedUnitSetting: String,
+    val windSpeedUnitEffective: String,
     val deliveryModeDaily: String,
     val deliveryModeTonight: String,
     val themeMode: String,

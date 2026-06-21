@@ -25,5 +25,4 @@ falls through to the base French translation.
     <!-- Quebec French spells the imperial mile "Mille" (plur. "Milles");
          France carries the English loan "Miles" since the unit is
          basically only used in en-imported software. -->
-    <string name="settings_distance_unit_miles">Milles</string>
 </resources>

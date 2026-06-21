@@ -149,9 +149,7 @@ displayed label localizes.
     <string name="settings_temperature_unit_title">Lämpötilayksikkö</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Etäisyysyksikkö</string>
-    <string name="settings_distance_unit_kilometers">Kilometrit</string>
-    <string name="settings_distance_unit_miles">Mailit</string>
+    <string name="settings_wind_speed_unit_title">Tuulen nopeuden yksikkö</string>
 
     <string name="settings_tts_voice_locale_en_us">Englanti (Yhdysvallat)</string>
     <string name="settings_tts_voice_locale_en_gb">Englanti (Iso-Britannia)</string>

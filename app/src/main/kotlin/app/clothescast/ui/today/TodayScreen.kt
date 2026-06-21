@@ -100,7 +100,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ConfidenceInfo
-import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.Fact
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -129,7 +128,6 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
-import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.BugReportOverflowMenu
 import app.clothescast.ui.EdgeFadeOverlay
@@ -942,7 +940,7 @@ internal fun HomePageScaffold(
         conditionsHourly,
         state.region,
         state.temperatureUnit,
-        state.distanceUnit,
+        state.windSpeedUnit,
     ) {
         conditionsHourly?.takeIf { it.isNotEmpty() }?.let { hourly ->
             runCatching {
@@ -952,7 +950,7 @@ internal fun HomePageScaffold(
                     formatter = formatter,
                     hourly = hourly,
                     temperatureUnit = state.temperatureUnit,
-                    windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                    windSpeedUnit = state.windSpeedUnit,
                 )
             }.onFailure { t ->
                 // Explicit fallback: a formatter/resource failure hides the
@@ -1307,7 +1305,7 @@ private fun TodayPage(
                         info = confidence,
                         perModelHourly = insight.perModelHourly,
                         temperatureUnit = state.temperatureUnit,
-                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                        windSpeedUnit = state.windSpeedUnit,
                         showModelSpread = state.showModelSpread,
                         onToggleModelSpread = onChipTap,
                     )
@@ -1397,7 +1395,6 @@ private fun TodayPage(
                 ForecastCard(
                     hourly = insight.hourly,
                     temperatureUnit = state.temperatureUnit,
-                    distanceUnit = state.distanceUnit,
                     startDate = insight.forDate,
                     perModelHourly = perModelData,
                     showModelSpread = state.showModelSpread,
@@ -1436,7 +1433,7 @@ private fun TodayPage(
                     WindCard(
                         hourly = insight.hourly,
                         perModelHourly = perModelData,
-                        windSpeedUnit = state.distanceUnit.windSpeedUnit(),
+                        windSpeedUnit = state.windSpeedUnit,
                         startDate = insight.forDate,
                         showModelSpread = state.showModelSpread,
                     )
@@ -2693,7 +2690,6 @@ internal fun ConfidenceChip(
 internal fun ForecastCard(
     hourly: List<HourlyForecast>,
     temperatureUnit: TemperatureUnit,
-    distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,

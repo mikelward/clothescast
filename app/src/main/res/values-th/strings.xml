@@ -497,9 +497,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_temperature_unit_title">หน่วยอุณหภูมิ</string>
     <string name="settings_temperature_unit_celsius">เซลเซียส (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">ฟาเรนไฮต์ (°F)</string>
-    <string name="settings_distance_unit_title">หน่วยระยะทาง</string>
-    <string name="settings_distance_unit_kilometers">กิโลเมตร</string>
-    <string name="settings_distance_unit_miles">ไมล์</string>
+    <string name="settings_wind_speed_unit_title">หน่วยความเร็วลม</string>
 
     <!-- Clothes settings description -->
     <string name="settings_clothes_title">กฎเสื้อผ้า</string>

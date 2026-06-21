@@ -206,9 +206,7 @@ only the displayed label localizes.
     <string name="settings_temperature_unit_title">Одиниці температури</string>
     <string name="settings_temperature_unit_celsius">Цельсій (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Фаренгейт (°F)</string>
-    <string name="settings_distance_unit_title">Одиниці відстані</string>
-    <string name="settings_distance_unit_kilometers">Кілометри</string>
-    <string name="settings_distance_unit_miles">Милі</string>
+    <string name="settings_wind_speed_unit_title">Одиниця швидкості вітру</string>
 
     <!-- Voice locale picker labels in Ukrainian. -->
     <string name="settings_tts_voice_locale_en_us">Англійська (США)</string>

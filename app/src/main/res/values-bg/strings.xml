@@ -455,9 +455,7 @@ What is NOT overridden, by design:
     <string name="settings_temperature_unit_title">Единица за температура</string>
     <string name="settings_temperature_unit_celsius">Целзий (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Фаренхайт (°F)</string>
-    <string name="settings_distance_unit_title">Единица за разстояние</string>
-    <string name="settings_distance_unit_kilometers">Километри</string>
-    <string name="settings_distance_unit_miles">Мили</string>
+    <string name="settings_wind_speed_unit_title">Мерна единица за скорост на вятъра</string>
 
     <!-- Clothes rules screen. -->
     <string name="settings_clothes_title">Правила за дрехи</string>

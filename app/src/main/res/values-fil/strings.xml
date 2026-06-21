@@ -521,10 +521,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_temperature_unit_title">Yunit ng temperatura</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_wind_speed_unit_title">Yunit ng bilis ng hangin</string>
 
-    <string name="settings_distance_unit_title">Yunit ng distansya</string>
-    <string name="settings_distance_unit_kilometers">Kilometro</string>
-    <string name="settings_distance_unit_miles">Milya</string>
 
     <!-- ============================================================
          Settings — Clothes

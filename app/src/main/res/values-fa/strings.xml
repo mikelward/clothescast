@@ -342,7 +342,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <!-- Settings — schedule -->
     <string name="settings_schedule_title">ClothesCast روزانه</string>
     <string name="settings_schedule_time_label">زمان</string>
-    <string name="settings_daily_mention_evening_events">ذکر رویدادهای عصر</string>
     <string name="settings_schedule_preview">اکنون پخش کن</string>
     <string name="settings_tonight_title">ClothesCast شبانه</string>
     <string name="settings_tonight_enabled">نمایش ClothesCast شبانه</string>
@@ -965,8 +964,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_calendar_master">از تقویم من استفاده کن</string>
     <string name="settings_calendar_master_description">به ClothesCast اجازه دهید تقویم‌های شما را بخواند تا پیش‌بینی‌ها و لباس‌ها را شخصی‌سازی کند. هیچ چیز از دستگاه خارج نمی‌شود.</string>
     <string name="settings_calendar_features_title">تقویم‌های شخصی</string>
-    <string name="settings_calendar_evening_tie_ins">پیوندهای عصرگاهی</string>
-    <string name="settings_calendar_evening_tie_ins_description">اگر در عصر بیرون می‌روید، پیش‌بینی صبحگاهی به شما می‌گوید که آیا چیز اضافه‌ای باید همراه ببرید.</string>
+    <string name="settings_evening_add_ons">افزودنی‌های عصرگاهی</string>
+    <string name="settings_evening_add_ons_description">اگر در عصر بیرون می‌روید، پیش‌بینی صبحگاهی به شما می‌گوید که آیا چیز اضافه‌ای باید همراه ببرید.</string>
     <string name="settings_calendar_birthdays_description">از رنگ‌ها و پیام‌های ویژه برای تولدها در تقویم‌های خود استفاده کنید.</string>
     <string name="settings_calendar_public_holidays_description">از رنگ‌ها و پیام‌های ویژه برای تعطیلات رسمی در تقویم‌های خود استفاده کنید.</string>
     <string name="settings_calendar_open_system_settings">باز کردن تنظیمات سیستم</string>

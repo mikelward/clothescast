@@ -348,7 +348,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Schedule settings -->
     <string name="settings_schedule_title">ClothesCast รายวัน</string>
     <string name="settings_schedule_time_label">เวลา</string>
-    <string name="settings_daily_mention_evening_events">กล่าวถึงกิจกรรมตอนเย็น</string>
     <string name="settings_schedule_preview">เล่นเลย</string>
 
     <!-- Nightly ClothesCast settings -->
@@ -978,8 +977,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_calendar_master">ใช้ปฏิทินของฉัน</string>
     <string name="settings_calendar_master_description">ให้ ClothesCast อ่านปฏิทินของคุณเพื่อปรับแต่งพยากรณ์และชุดแต่งกาย ไม่มีข้อมูลออกนอกอุปกรณ์</string>
     <string name="settings_calendar_features_title">ปฏิทินส่วนตัว</string>
-    <string name="settings_calendar_evening_tie_ins">การเชื่อมโยงตอนเย็น</string>
-    <string name="settings_calendar_evening_tie_ins_description">หากคุณออกไปข้างนอกในตอนเย็น พยากรณ์ตอนเช้าจะบอกว่าคุณต้องนำสิ่งของพิเศษอะไรไปบ้าง</string>
+    <string name="settings_evening_add_ons">ของเพิ่มเติมตอนเย็น</string>
+    <string name="settings_evening_add_ons_description">หากคุณออกไปข้างนอกในตอนเย็น พยากรณ์ตอนเช้าจะบอกว่าคุณต้องนำสิ่งของพิเศษอะไรไปบ้าง</string>
     <string name="settings_calendar_birthdays_description">ใช้สีและข้อความพิเศษสำหรับวันเกิดในปฏิทินของคุณ</string>
     <string name="settings_calendar_public_holidays_description">ใช้สีและข้อความพิเศษสำหรับวันหยุดราชการในปฏิทินของคุณ</string>
     <string name="settings_calendar_open_system_settings">เปิดการตั้งค่าระบบ</string>

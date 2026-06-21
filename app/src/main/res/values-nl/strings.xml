@@ -77,7 +77,6 @@ the displayed label localizes.
     -->
     <string name="settings_schedule_title">Dagelijkse ClothesCast</string>
     <string name="settings_schedule_time_label">Tijdstip</string>
-    <string name="settings_daily_mention_evening_events">Avondafspraken vermelden</string>
     <string name="settings_schedule_preview">Nu afspelen</string>
 
     <string name="settings_tonight_title">Avondlijkse ClothesCast</string>
@@ -1025,8 +1024,8 @@ the displayed label localizes.
     <string name="settings_calendar_master">Mijn agenda gebruiken</string>
     <string name="settings_calendar_master_description">Laat ClothesCast je agenda\'s lezen om voorspellingen en outfits te personaliseren. Niets verlaat het apparaat.</string>
     <string name="settings_calendar_features_title">Persoonlijke agenda\'s</string>
-    <string name="settings_calendar_evening_tie_ins">Avondkoppelingen</string>
-    <string name="settings_calendar_evening_tie_ins_description">Als je \'s avonds uitgaat, vertelt de ochtendvoorspelling je of je iets extra\'s moet meenemen.</string>
+    <string name="settings_evening_add_ons">Extra spullen voor de avond</string>
+    <string name="settings_evening_add_ons_description">Als je \'s avonds uitgaat, vertelt de ochtendvoorspelling je of je iets extra\'s moet meenemen.</string>
     <string name="settings_calendar_birthdays_description">Gebruik speciale kleuren en berichten voor verjaardagen in je agenda\'s.</string>
     <string name="settings_calendar_public_holidays_description">Gebruik speciale kleuren en berichten voor feestdagen in je agenda\'s.</string>
     <string name="settings_calendar_open_system_settings">Systeeminstellingen openen</string>

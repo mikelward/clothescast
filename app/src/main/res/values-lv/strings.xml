@@ -328,7 +328,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <!-- Schedule settings -->
     <string name="settings_schedule_title">Ikdienas ClothesCast</string>
     <string name="settings_schedule_time_label">Laiks</string>
-    <string name="settings_daily_mention_evening_events">Pieminēt vakara notikumus</string>
     <string name="settings_schedule_preview">Atskaņot tagad</string>
     <string name="settings_tonight_title">Nakts ClothesCast</string>
     <string name="settings_tonight_enabled">Rādīt nakts ClothesCast</string>
@@ -918,8 +917,8 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_calendar_master">Izmantot manu kalendāru</string>
     <string name="settings_calendar_master_description">Ļauj ClothesCast lasīt tavus kalendārus, lai pielāgotu prognozes un apģērbu. Nekas nepamet ierīci.</string>
     <string name="settings_calendar_features_title">Personīgie kalendāri</string>
-    <string name="settings_calendar_evening_tie_ins">Vakara notikumu sasaiste</string>
-    <string name="settings_calendar_evening_tie_ins_description">Ja vakarā kaut kur dodies, rīta prognoze pateiks, vai jāņem kas papildus.</string>
+    <string name="settings_evening_add_ons">Vakara papildinājumi</string>
+    <string name="settings_evening_add_ons_description">Ja vakarā kaut kur dodies, rīta prognoze pateiks, vai jāņem kas papildus.</string>
     <string name="settings_calendar_birthdays_description">Īpašas krāsas un ziņojumi tavu kalendāru dzimšanas dienām.</string>
     <string name="settings_calendar_public_holidays_description">Īpašas krāsas un ziņojumi tavu kalendāru valsts svētkiem.</string>
     <string name="settings_calendar_open_system_settings">Atvērt sistēmas iestatījumus</string>

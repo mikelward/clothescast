@@ -352,7 +352,6 @@ What is NOT overridden, by design:
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dienos ClothesCast</string>
     <string name="settings_schedule_time_label">Laikas</string>
-    <string name="settings_daily_mention_evening_events">Minėti vakaro renginius</string>
     <string name="settings_schedule_preview">Leisti dabar</string>
 
     <!-- Nightly ClothesCast. -->
@@ -965,8 +964,8 @@ What is NOT overridden, by design:
     <string name="settings_calendar_master">Naudoti mano kalendorių</string>
     <string name="settings_calendar_master_description">Leisk ClothesCast skaityti tavo kalendorius, kad pritaikytų prognozes ir aprangą. Niekas nepalieka įrenginio.</string>
     <string name="settings_calendar_features_title">Asmeniniai kalendoriai</string>
-    <string name="settings_calendar_evening_tie_ins">Vakaro įvykių sąsajos</string>
-    <string name="settings_calendar_evening_tie_ins_description">Jei vakare kažkur eini, ryto prognozė pasakys, ar reikia pasiimti kažką papildomai.</string>
+    <string name="settings_evening_add_ons">Vakaro priedai</string>
+    <string name="settings_evening_add_ons_description">Jei vakare kažkur eini, ryto prognozė pasakys, ar reikia pasiimti kažką papildomai.</string>
     <string name="settings_calendar_birthdays_description">Naudoti specialias spalvas ir žinutes tavo kalendorių gimtadieniams.</string>
     <string name="settings_calendar_public_holidays_description">Naudoti specialias spalvas ir žinutes tavo kalendorių valstybinėms šventėms.</string>
     <string name="settings_calendar_open_system_settings">Atidaryti sistemos nustatymus</string>

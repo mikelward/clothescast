@@ -342,8 +342,8 @@ internal fun CalendarContent(
                     ) { Text(stringResource(R.string.settings_calendar_open_system_settings)) }
                 }
                 CalendarFeatureRow(
-                    label = stringResource(R.string.settings_calendar_evening_tie_ins),
-                    description = stringResource(R.string.settings_calendar_evening_tie_ins_description),
+                    label = stringResource(R.string.settings_evening_add_ons),
+                    description = stringResource(R.string.settings_evening_add_ons_description),
                     checked = calendarEnabled && useCalendarEvents && permissionGranted,
                     onToggle = { wantsOn ->
                         if (wantsOn) requestThenEnable { onSetUseCalendarEvents(true) }

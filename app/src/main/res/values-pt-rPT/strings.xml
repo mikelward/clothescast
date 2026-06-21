@@ -117,7 +117,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     -->
     <string name="settings_schedule_title">ClothesCast diário</string>
     <string name="settings_schedule_time_label">Hora</string>
-    <string name="settings_daily_mention_evening_events">Mencionar eventos da noite</string>
     <string name="settings_schedule_preview">Reproduzir agora</string>
 
     <string name="settings_tonight_title">ClothesCast noturno</string>
@@ -1105,8 +1104,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_calendar_master">Usar o meu calendário</string>
     <string name="settings_calendar_master_description">Permite ao ClothesCast ler os teus calendários para personalizar previsões e vestuário. Nada sai do dispositivo.</string>
     <string name="settings_calendar_features_title">Calendários pessoais</string>
-    <string name="settings_calendar_evening_tie_ins">Ligações com a noite</string>
-    <string name="settings_calendar_evening_tie_ins_description">Se vais sair à noite, a previsão matinal diz-te se precisas de levar algo extra.</string>
+    <string name="settings_evening_add_ons">Extras para a noite</string>
+    <string name="settings_evening_add_ons_description">Se vais sair à noite, a previsão matinal diz-te se precisas de levar algo extra.</string>
     <string name="settings_calendar_birthdays_description">Usa cores e mensagens especiais para aniversários nos teus calendários.</string>
     <string name="settings_calendar_public_holidays_description">Usa cores e mensagens especiais para feriados nos teus calendários.</string>
     <string name="settings_calendar_open_system_settings">Abrir definições do sistema</string>

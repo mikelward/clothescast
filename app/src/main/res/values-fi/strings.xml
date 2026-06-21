@@ -70,7 +70,6 @@ displayed label localizes.
 
     <string name="settings_schedule_title">Päivittäinen ClothesCast</string>
     <string name="settings_schedule_time_label">Aika</string>
-    <string name="settings_daily_mention_evening_events">Mainitse iltatapahtumat</string>
     <string name="settings_schedule_preview">Toista nyt</string>
 
     <string name="settings_tonight_title">Iltainen ClothesCast</string>
@@ -984,8 +983,8 @@ displayed label localizes.
     <string name="settings_calendar_master">Käytä kalenteriani</string>
     <string name="settings_calendar_master_description">Anna ClothesCastin lukea kalenterisi ennusteiden ja vaatteiden räätälöintiä varten. Mikään ei poistu laitteelta.</string>
     <string name="settings_calendar_features_title">Henkilökohtaiset kalenterit</string>
-    <string name="settings_calendar_evening_tie_ins">Iltatapahtumien sidonnat</string>
-    <string name="settings_calendar_evening_tie_ins_description">Jos lähdet illalla ulos, aamuennuste kertoo, tarvitsetko ottaa jotain ylimääräistä mukaan.</string>
+    <string name="settings_evening_add_ons">Illan lisät</string>
+    <string name="settings_evening_add_ons_description">Jos lähdet illalla ulos, aamuennuste kertoo, tarvitsetko ottaa jotain ylimääräistä mukaan.</string>
     <string name="settings_calendar_birthdays_description">Erityisiä värejä ja viestejä kalentereidesi syntymäpäiville.</string>
     <string name="settings_calendar_public_holidays_description">Erityisiä värejä ja viestejä kalentereidesi virallisille juhlapyhille.</string>
     <string name="settings_calendar_open_system_settings">Avaa järjestelmäasetukset</string>

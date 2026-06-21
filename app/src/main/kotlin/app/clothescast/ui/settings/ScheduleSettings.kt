@@ -453,7 +453,8 @@ private fun DayCard(
                 onRequestSpeechSetup = onRequestSpeechSetup,
             )
             ToggleRow(
-                label = stringResource(R.string.settings_daily_mention_evening_events),
+                label = stringResource(R.string.settings_evening_add_ons),
+                description = stringResource(R.string.settings_evening_add_ons_description),
                 checked = mentionEveningEvents,
                 onCheckedChange = onSetMentionEveningEvents,
             )
@@ -575,6 +576,7 @@ private fun ToggleRow(
     label: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
+    description: String? = null,
 ) {
     // Modifier.toggleable + onCheckedChange = null on the Switch itself merges
     // semantics so TalkBack announces the label together with the switch state,
@@ -589,11 +591,16 @@ private fun ToggleRow(
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = label, style = MaterialTheme.typography.bodyMedium)
+            if (description != null) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         Switch(checked = checked, onCheckedChange = null)
     }
 }

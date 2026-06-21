@@ -818,7 +818,6 @@
     <string name="settings_schedule_title">Daily ClothesCast</string>
     <string name="settings_schedule_enabled">Daily ClothesCast</string>
     <string name="settings_schedule_time_label">Time</string>
-    <string name="settings_daily_mention_evening_events">Mention evening events</string>
     <!-- "Play now" button at the bottom of each schedule section, previewing
          that section's cast on demand. -->
     <string name="settings_schedule_preview">Play now</string>
@@ -1148,8 +1147,10 @@
     <string name="settings_calendar_master">Use my calendar</string>
     <string name="settings_calendar_master_description">Let ClothesCast read your calendars to personalize forecasts and outfits. Nothing leaves the device.</string>
     <string name="settings_calendar_features_title">Personal calendars</string>
-    <string name="settings_calendar_evening_tie_ins">Evening tie-ins</string>
-    <string name="settings_calendar_evening_tie_ins_description">If you\'re going out in the evening, the morning forecast tells you if you need to bring anything extra.</string>
+    <!-- Shared label for the evening add-ons feature: shown both on the calendar
+         features list and on the Daily ClothesCast schedule's mention toggle. -->
+    <string name="settings_evening_add_ons">Evening add-ons</string>
+    <string name="settings_evening_add_ons_description">If you\'re going out in the evening, the morning forecast tells you if you need to bring anything extra.</string>
     <string name="settings_calendar_birthdays">Birthdays</string>
     <string name="settings_calendar_birthdays_description">Use special colors and messages for birthdays in your calendars.</string>
     <string name="settings_calendar_public_holidays">Public holidays</string>

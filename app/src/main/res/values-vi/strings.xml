@@ -367,7 +367,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          ===================================================================== -->
     <string name="settings_schedule_title">ClothesCast hàng ngày</string>
     <string name="settings_schedule_time_label">Giờ</string>
-    <string name="settings_daily_mention_evening_events">Đề cập sự kiện buổi tối</string>
     <string name="settings_schedule_preview">Phát ngay</string>
 
     <string name="settings_tonight_title">ClothesCast buổi tối</string>
@@ -1039,8 +1038,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_calendar_master">Dùng lịch của tôi</string>
     <string name="settings_calendar_master_description">Cho phép ClothesCast đọc lịch của bạn để cá nhân hóa dự báo và trang phục. Không có gì rời khỏi thiết bị.</string>
     <string name="settings_calendar_features_title">Lịch cá nhân</string>
-    <string name="settings_calendar_evening_tie_ins">Kết nối sự kiện buổi tối</string>
-    <string name="settings_calendar_evening_tie_ins_description">Nếu bạn ra ngoài vào buổi tối, dự báo buổi sáng sẽ cho bạn biết có cần mang thêm gì không.</string>
+    <string name="settings_evening_add_ons">Vật dụng thêm cho buổi tối</string>
+    <string name="settings_evening_add_ons_description">Nếu bạn ra ngoài vào buổi tối, dự báo buổi sáng sẽ cho bạn biết có cần mang thêm gì không.</string>
     <string name="settings_calendar_birthdays_description">Dùng màu sắc và thông điệp đặc biệt cho sinh nhật trong lịch của bạn.</string>
     <string name="settings_calendar_public_holidays_description">Dùng màu sắc và thông điệp đặc biệt cho ngày lễ công cộng trong lịch của bạn.</string>
     <string name="settings_calendar_open_system_settings">Mở cài đặt hệ thống</string>

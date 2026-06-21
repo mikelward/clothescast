@@ -348,7 +348,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <!-- Schedule settings. -->
     <string name="settings_schedule_title">ClothesCast zilnic</string>
     <string name="settings_schedule_time_label">Oră</string>
-    <string name="settings_daily_mention_evening_events">Menționează evenimentele de seară</string>
     <string name="settings_schedule_preview">Redă acum</string>
 
     <!-- Tonight settings. -->
@@ -954,8 +953,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_calendar_master">Folosește calendarul meu</string>
     <string name="settings_calendar_master_description">Permite ClothesCast să citească calendarele tale pentru a personaliza prognozele și ținutele. Nimic nu părăsește dispozitivul.</string>
     <string name="settings_calendar_features_title">Calendare personale</string>
-    <string name="settings_calendar_evening_tie_ins">Legături cu evenimentele de seară</string>
-    <string name="settings_calendar_evening_tie_ins_description">Dacă ieși seara, prognoza de dimineață îți spune dacă trebuie să iei ceva în plus.</string>
+    <string name="settings_evening_add_ons">Suplimente pentru seară</string>
+    <string name="settings_evening_add_ons_description">Dacă ieși seara, prognoza de dimineață îți spune dacă trebuie să iei ceva în plus.</string>
     <string name="settings_calendar_birthdays_description">Folosește culori și mesaje speciale pentru zilele de naștere din calendarele tale.</string>
     <string name="settings_calendar_public_holidays_description">Folosește culori și mesaje speciale pentru sărbătorile din calendarele tale.</string>
     <string name="settings_calendar_open_system_settings">Deschide setările sistemului</string>

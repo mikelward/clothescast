@@ -363,7 +363,6 @@ What is NOT overridden, by design:
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Дневен ClothesCast</string>
     <string name="settings_schedule_time_label">Час</string>
-    <string name="settings_daily_mention_evening_events">Споменавай вечерни събития</string>
     <string name="settings_schedule_preview">Пусни сега</string>
 
     <!-- Nightly ClothesCast. -->
@@ -964,8 +963,8 @@ What is NOT overridden, by design:
     <string name="settings_calendar_master">Използвай моя календар</string>
     <string name="settings_calendar_master_description">Позволи на ClothesCast да чете календарите ти, за да персонализира прогнози и облекла. Нищо не напуска устройството.</string>
     <string name="settings_calendar_features_title">Лични календари</string>
-    <string name="settings_calendar_evening_tie_ins">Вечерни връзки</string>
-    <string name="settings_calendar_evening_tie_ins_description">Ако излизаш вечерта, сутрешната прогноза ти казва дали трябва да вземеш нещо допълнително.</string>
+    <string name="settings_evening_add_ons">Вечерни допълнения</string>
+    <string name="settings_evening_add_ons_description">Ако излизаш вечерта, сутрешната прогноза ти казва дали трябва да вземеш нещо допълнително.</string>
     <string name="settings_calendar_birthdays_description">Използвай специални цветове и съобщения за рождени дни в твоите календари.</string>
     <string name="settings_calendar_public_holidays_description">Използвай специални цветове и съобщения за официални празници в твоите календари.</string>
     <string name="settings_calendar_open_system_settings">Отвори системните настройки</string>

@@ -99,7 +99,6 @@ label localises.
     -->
     <string name="settings_schedule_title">每日 ClothesCast</string>
     <string name="settings_schedule_time_label">時間</string>
-    <string name="settings_daily_mention_evening_events">提及晚間行程</string>
     <string name="settings_schedule_preview">立即播放</string>
 
     <string name="settings_tonight_title">夜間 ClothesCast</string>
@@ -1141,8 +1140,8 @@ label localises.
     <string name="settings_calendar_master">使用我的行事曆</string>
     <string name="settings_calendar_master_description">讓 ClothesCast 讀取你的行事曆，以個人化預報和穿搭。不會有任何資料離開裝置。</string>
     <string name="settings_calendar_features_title">個人行事曆</string>
-    <string name="settings_calendar_evening_tie_ins">晚間銜接</string>
-    <string name="settings_calendar_evening_tie_ins_description">如果你晚上要外出，早晨預報會告訴你是否需要額外帶點什麼。</string>
+    <string name="settings_evening_add_ons">晚間額外物品</string>
+    <string name="settings_evening_add_ons_description">如果你晚上要外出，早晨預報會告訴你是否需要額外帶點什麼。</string>
     <string name="settings_calendar_birthdays_description">為行事曆中的生日使用特別的顏色與訊息。</string>
     <string name="settings_calendar_public_holidays_description">為行事曆中的國定假日使用特別的顏色與訊息。</string>
     <string name="settings_calendar_open_system_settings">開啟系統設定</string>

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.clothescast.calendar.CalendarPermission
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
@@ -83,6 +84,16 @@ class InsightCache(
     private val dataStore: DataStore<Preferences>,
     private val deriveInsight: DeriveInsight = DeriveInsight(),
     private val json: Json = Json { ignoreUnknownKeys = true },
+    // Whether cached calendar events may still be used. Snapshots persist the
+    // events captured while permission was granted; revoking READ_CALENDAR in
+    // system settings isn't reflected in prefs, so DeriveInsight's
+    // calendarEventMentionsActive gate can't catch it. When this returns false
+    // every read drops the stale events, so a since-revoked event can't
+    // resurface in re-derived prose, the Today screen, or the MQTT has_events
+    // flag on a cache hit / replay before the next fetch clears the cache.
+    // Non-destructive: the stored bytes keep their events, so re-granting
+    // permission restores them on the next read.
+    private val calendarEventsReadable: () -> Boolean = { true },
 ) {
     // TODO(datastore-json-plumbing): see DailyHistoryStore — shared
     //   JSON-preference I/O plumbing opportunity across this, SettingsRepository,
@@ -99,11 +110,24 @@ class InsightCache(
 
     /** Raw snapshot stored for page 1 — the 12-hour window the user is currently in. */
     val thisPeriod: Flow<ForecastSnapshot?> =
-        dataStore.data.map { it.readSlot(THIS_PERIOD_KEY, LEGACY_THIS_PERIOD_V7_KEY) }
+        dataStore.data.map { it.readSlot(THIS_PERIOD_KEY, LEGACY_THIS_PERIOD_V7_KEY)?.gateCalendarEvents() }
 
     /** Raw snapshot stored for page 2 — the pre-captured next 12-hour window. */
     val nextPeriod: Flow<ForecastSnapshot?> =
-        dataStore.data.map { it.readSlot(NEXT_PERIOD_KEY, LEGACY_NEXT_PERIOD_V7_KEY) }
+        dataStore.data.map { it.readSlot(NEXT_PERIOD_KEY, LEGACY_NEXT_PERIOD_V7_KEY)?.gateCalendarEvents() }
+
+    // Drops cached calendar events when calendar access is no longer readable
+    // (see [calendarEventsReadable]); a no-op when there are none or access is
+    // intact. Applied on the raw [thisPeriod] / [nextPeriod] reads (so .first()
+    // consumers — the worker, the Smart Home replay / has_events flag — re-check
+    // per read) AND re-applied inside [deriveFlow]'s combine, so a long-lived
+    // Today collector re-evaluates the gate when permission changes: the cache
+    // DataStore doesn't re-emit on a permission change, but the resume path
+    // ticks prefs (calendar_permission_recheck_tick), which recombines. Without
+    // the combine-side re-check the collector would keep the snapshot it cached
+    // while access was still granted, events and all.
+    private fun ForecastSnapshot.gateCalendarEvents(): ForecastSnapshot =
+        if (events.isEmpty() || calendarEventsReadable()) this else copy(events = emptyList())
 
     /**
      * Derives the [DailyInsightResult] for [slot] against [prefs] using the
@@ -121,7 +145,10 @@ class InsightCache(
             Slot.NEXT_PERIOD -> nextPeriod
         }
         return combine(snapshotFlow, prefsFlow) { snapshot, prefs ->
-            snapshot?.let { deriveInsight(it, prefs) }
+            // Re-check the calendar gate on every recombine, not just when the
+            // cache DataStore emits — a permission revoke surfaces here as a
+            // prefs (recheck-tick) emission against an unchanged snapshot.
+            snapshot?.gateCalendarEvents()?.let { deriveInsight(it, prefs) }
         }
     }
 
@@ -581,7 +608,11 @@ class InsightCache(
         fun create(
             context: Context,
             deriveInsight: DeriveInsight = DeriveInsight(),
-        ): InsightCache = InsightCache(context.insightDataStore, deriveInsight)
+        ): InsightCache = InsightCache(
+            context.insightDataStore,
+            deriveInsight,
+            calendarEventsReadable = { CalendarPermission.isGranted(context) },
+        )
     }
 }
 

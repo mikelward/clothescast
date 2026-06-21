@@ -457,8 +457,8 @@ the displayed label localizes.
     <string name="insight_condition_thunderstorm">雷雨</string>
     <string name="insight_condition_unknown">不明</string>
     <!-- "会議（15時）のためにコートを持っていきましょう。" -->
-    <string name="insight_tie_in">今夜は%1$sを持っていきましょう。</string>
-    <string name="insight_tie_in_with_rain">今夜は%1$sを持っていきましょう。%3$s。</string>
+    <string name="insight_extras">今夜は%1$sを持っていきましょう。</string>
+    <string name="insight_extras_with_rain">今夜は%1$sを持っていきましょう。%3$s。</string>
     <!-- "15時" / "15時30分" — Japanese spoken time. -->
     <string name="insight_time_hour">%1$d時</string>
     <string name="insight_time_hour_minutes">%1$d時%2$02d分</string>
@@ -692,8 +692,8 @@ the displayed label localizes.
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "〜の可能性" wraps a noun (e.g. 雨); invariant for any precip noun. -->
     <string name="insight_precip_chance">%1$sの可能性。</string>
-    <string name="insight_tie_in_at_night">%1$sを持っていきましょう。</string>
-    <string name="insight_tie_in_with_rain_chance">今夜は%1$sを持っていきましょう。%3$sの可能性。</string>
+    <string name="insight_extras_at_night">%1$sを持っていきましょう。</string>
+    <string name="insight_extras_with_rain_chance">今夜は%1$sを持っていきましょう。%3$sの可能性。</string>
     <string name="insight_evening_rain">今夜は%2$s。</string>
     <string name="insight_evening_rain_chance">今夜は%2$sの可能性。</string>
 
@@ -1126,8 +1126,8 @@ the displayed label localizes.
     <string name="settings_calendar_master">カレンダーを使用</string>
     <string name="settings_calendar_master_description">カレンダーを読み取り、予報と服装をパーソナライズします。デフォルトでは、端末から外に出るものは何もありません。</string>
     <string name="settings_calendar_features_title">個人のカレンダー</string>
-    <string name="settings_evening_add_ons">夜の追加アイテム</string>
-    <string name="settings_evening_add_ons_description">夜に外出する場合、朝の予報で追加で持っていくべきものがあるかをお知らせします。</string>
+    <string name="settings_evening_extras">夜の追加アイテム</string>
+    <string name="settings_evening_extras_description">夜に外出する場合、朝の予報で追加で持っていくべきものがあるかをお知らせします。</string>
     <string name="settings_calendar_birthdays_description">カレンダーの誕生日に特別な色とメッセージを使用します。</string>
     <string name="settings_calendar_public_holidays_description">カレンダーの祝日に特別な色とメッセージを使用します。</string>
     <string name="settings_calendar_open_system_settings">システム設定を開く</string>

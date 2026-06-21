@@ -103,16 +103,16 @@ What is NOT overridden, by design:
     <string name="insight_condition_snow">Сняг</string>
     <string name="insight_condition_thunderstorm">Гръмотевична буря</string>
     <string name="insight_condition_unknown">Неизвестно</string>
-    <string name="insight_tie_in">Вземи %1$s за тази вечер.</string>
-    <string name="insight_tie_in_with_rain">Вземи %1$s за тази вечер, %3$s.</string>
+    <string name="insight_extras">Вземи %1$s за тази вечер.</string>
+    <string name="insight_extras_with_rain">Вземи %1$s за тази вечер, %3$s.</string>
     <!-- "15" — preposition "в" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
     <!-- New insight strings -->
     <string name="insight_precip_chance">Шанс за %1$s.</string>
-    <string name="insight_tie_in_at_night">Вземи %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Тази вечер шанс за %3$s, вземи %1$s.</string>
+    <string name="insight_extras_at_night">Вземи %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Тази вечер шанс за %3$s, вземи %1$s.</string>
     <string name="insight_evening_rain">Тази вечер %2$s.</string>
     <string name="insight_evening_rain_chance">Тази вечер шанс за %2$s.</string>
 
@@ -963,8 +963,8 @@ What is NOT overridden, by design:
     <string name="settings_calendar_master">Използвай моя календар</string>
     <string name="settings_calendar_master_description">Чете календарите ти, за да персонализира прогнози и облекла. По подразбиране нищо не напуска устройството ти.</string>
     <string name="settings_calendar_features_title">Лични календари</string>
-    <string name="settings_evening_add_ons">Вечерни допълнения</string>
-    <string name="settings_evening_add_ons_description">Ако излизаш вечерта, сутрешната прогноза ти казва дали трябва да вземеш нещо допълнително.</string>
+    <string name="settings_evening_extras">Вечерни допълнения</string>
+    <string name="settings_evening_extras_description">Ако излизаш вечерта, сутрешната прогноза ти казва дали трябва да вземеш нещо допълнително.</string>
     <string name="settings_calendar_birthdays_description">Използвай специални цветове и съобщения за рождени дни в твоите календари.</string>
     <string name="settings_calendar_public_holidays_description">Използвай специални цветове и съобщения за официални празници в твоите календари.</string>
     <string name="settings_calendar_open_system_settings">Отвори системните настройки</string>

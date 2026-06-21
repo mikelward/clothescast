@@ -568,10 +568,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="insight_condition_snow">Sníh</string>
     <string name="insight_condition_thunderstorm">Bouřka</string>
     <string name="insight_condition_unknown">Neznámé</string>
-    <string name="insight_tie_in">Vezmi si %1$s na večer.</string>
-    <string name="insight_tie_in_at_night">Vezmi si %1$s na večer.</string>
-    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Možný %3$s — vezmi si %1$s.</string>
+    <string name="insight_extras">Vezmi si %1$s na večer.</string>
+    <string name="insight_extras_at_night">Vezmi si %1$s na večer.</string>
+    <string name="insight_extras_with_rain">Vezmi si %1$s na večer, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Možný %3$s — vezmi si %1$s.</string>
     <string name="insight_evening_rain">Večer %2$s.</string>
     <string name="insight_evening_rain_chance">Večer možný %2$s.</string>
     <!-- "15" — preposition "v" comes from surrounding templates. -->
@@ -984,8 +984,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_calendar_master">Použít můj kalendář</string>
     <string name="settings_calendar_master_description">Čte tvé kalendáře, aby přizpůsobil předpovědi a outfity. Ve výchozím nastavení nic neopustí tvé zařízení.</string>
     <string name="settings_calendar_features_title">Osobní kalendáře</string>
-    <string name="settings_evening_add_ons">Večerní doplňky</string>
-    <string name="settings_evening_add_ons_description">Pokud jdeš večer ven, ranní předpověď ti řekne, jestli si máš vzít něco navíc.</string>
+    <string name="settings_evening_extras">Večerní doplňky</string>
+    <string name="settings_evening_extras_description">Pokud jdeš večer ven, ranní předpověď ti řekne, jestli si máš vzít něco navíc.</string>
     <string name="settings_calendar_birthdays_description">Použij speciální barvy a zprávy pro narozeniny ve tvých kalendářích.</string>
     <string name="settings_calendar_public_holidays_description">Použij speciální barvy a zprávy pro státní svátky ve tvých kalendářích.</string>
     <string name="settings_calendar_open_system_settings">Otevřít systémová nastavení</string>

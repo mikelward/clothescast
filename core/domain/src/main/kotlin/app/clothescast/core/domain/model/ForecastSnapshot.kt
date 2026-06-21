@@ -16,7 +16,7 @@ import java.time.Instant
  * The [bundle] is stored already-shifted for the worker's `dayOffset` parameter,
  * so from the renderer's perspective `bundle.today` is always the day the
  * snapshot is for. [events] are the calendar events that overlap that day, used
- * by `RenderInsightSummary` for the calendar-tie-in and evening-event-tie-in
+ * by `RenderInsightSummary` for the calendar-extras and evening-event-extras
  * clauses; titles and free-form location strings are not consulted by the
  * renderer (only timing + location-presence), so on-disk persistence keeps the
  * minimal subset to keep the existing privacy posture intact (see PRIVACY.md).

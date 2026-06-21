@@ -456,8 +456,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_snow">Neige</string>
     <string name="insight_condition_thunderstorm">Orage</string>
     <string name="insight_condition_unknown">Inconnu</string>
-    <string name="insight_tie_in">Prends %1$s ce soir.</string>
-    <string name="insight_tie_in_with_rain">Prends %1$s ce soir, %3$s.</string>
+    <string name="insight_extras">Prends %1$s ce soir.</string>
+    <string name="insight_extras_with_rain">Prends %1$s ce soir, %3$s.</string>
     <!-- "15h" / "15h30" — French TTS reads as "quinze heures" / "quinze heures trente". -->
     <string name="insight_time_hour">%1$dh</string>
     <string name="insight_time_hour_minutes">%1$dh%2$02d</string>
@@ -681,11 +681,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="bug_report_consent_continue">Continuer</string>
     <string name="bug_report_consent_cancel">Annuler</string>
 
-    <!-- Insight: tie-in at night (no "Ce soir" prefix — band lead already set context). -->
-    <string name="insight_tie_in_at_night">Prends %1$s.</string>
+    <!-- Insight: extras at night (no "Ce soir" prefix — band lead already set context). -->
+    <string name="insight_extras_at_night">Prends %1$s.</string>
     <!-- Hedged precipitation and evening-rain templates. -->
     <string name="insight_precip_chance">Risque de %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Ce soir, risque de %3$s, prends %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Ce soir, risque de %3$s, prends %1$s.</string>
     <string name="insight_evening_rain">Ce soir, %2$s.</string>
     <string name="insight_evening_rain_chance">Ce soir, risque de %2$s.</string>
 
@@ -1103,8 +1103,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Utiliser mon calendrier</string>
     <string name="settings_calendar_master_description">Lit tes calendriers pour personnaliser les prévisions et les tenues. Par défaut, rien ne quitte ton appareil.</string>
     <string name="settings_calendar_features_title">Calendriers personnels</string>
-    <string name="settings_evening_add_ons">Compléments du soir</string>
-    <string name="settings_evening_add_ons_description">Si tu sors le soir, la prévision du matin t\'indique si tu dois prendre quelque chose en plus.</string>
+    <string name="settings_evening_extras">Compléments du soir</string>
+    <string name="settings_evening_extras_description">Si tu sors le soir, la prévision du matin t\'indique si tu dois prendre quelque chose en plus.</string>
     <string name="settings_calendar_birthdays_description">Utilise des couleurs et messages spéciaux pour les anniversaires de tes calendriers.</string>
     <string name="settings_calendar_public_holidays_description">Utilise des couleurs et messages spéciaux pour les jours fériés de tes calendriers.</string>
     <string name="settings_calendar_open_system_settings">Ouvrir les paramètres système</string>

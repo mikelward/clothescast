@@ -580,11 +580,11 @@ only the displayed label localizes.
     <string name="insight_condition_snow">Сніг</string>
     <string name="insight_condition_thunderstorm">Гроза</string>
     <string name="insight_condition_unknown">Невідомо</string>
-    <string name="insight_tie_in">Візьміть %1$s сьогодні ввечері.</string>
+    <string name="insight_extras">Візьміть %1$s сьогодні ввечері.</string>
     <!-- No-prefix counterpart: band lead already established the night context. -->
-    <string name="insight_tie_in_at_night">Візьміть %1$s.</string>
-    <string name="insight_tie_in_with_rain">Візьміть %1$s сьогодні ввечері, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Сьогодні ввечері можливий %3$s, візьміть %1$s.</string>
+    <string name="insight_extras_at_night">Візьміть %1$s.</string>
+    <string name="insight_extras_with_rain">Візьміть %1$s сьогодні ввечері, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Сьогодні ввечері можливий %3$s, візьміть %1$s.</string>
     <string name="insight_evening_rain">Сьогодні ввечері %2$s.</string>
     <string name="insight_evening_rain_chance">Сьогодні ввечері можливий %2$s.</string>
     <!-- "15" — preposition "о" comes from surrounding templates. -->
@@ -973,8 +973,8 @@ only the displayed label localizes.
     <string name="settings_calendar_master">Використовувати мій календар</string>
     <string name="settings_calendar_master_description">Читає ваші календарі, щоб персоналізувати прогнози та образи. За замовчуванням нічого не покидає ваш пристрій.</string>
     <string name="settings_calendar_features_title">Особисті календарі</string>
-    <string name="settings_evening_add_ons">Доповнення на вечір</string>
-    <string name="settings_evening_add_ons_description">Якщо ви кудись ідете ввечері, ранковий прогноз підкаже, чи потрібно взяти щось додатково.</string>
+    <string name="settings_evening_extras">Доповнення на вечір</string>
+    <string name="settings_evening_extras_description">Якщо ви кудись ідете ввечері, ранковий прогноз підкаже, чи потрібно взяти щось додатково.</string>
     <string name="settings_calendar_birthdays_description">Спеціальні кольори та повідомлення для днів народження у ваших календарях.</string>
     <string name="settings_calendar_public_holidays_description">Спеціальні кольори та повідомлення для державних свят у ваших календарях.</string>
     <string name="settings_calendar_open_system_settings">Відкрити системні налаштування</string>

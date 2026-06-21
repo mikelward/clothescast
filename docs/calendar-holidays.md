@@ -3,7 +3,7 @@
 With your permission (`READ_CALENDAR`), ClothesCast can read the calendars
 already synced to your phone to make the daily forecast more useful:
 
-- **Evening tie-ins** — if you have an evening event somewhere, the forecast
+- **Evening extras** — if you have an evening event somewhere, the forecast
   can fold in the weather for *that* part of the day (e.g. "Tonight, rain,
   bring a jacket").
 - **Birthdays and public holidays** — these can theme the outfit card with

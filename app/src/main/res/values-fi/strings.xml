@@ -380,10 +380,10 @@ displayed label localizes.
     <string name="insight_condition_thunderstorm">Ukkosmyrsky</string>
     <string name="insight_condition_unknown">Tuntematon</string>
 
-    <string name="insight_tie_in">Ota %1$s mukaan tänä iltana.</string>
-    <string name="insight_tie_in_at_night">Ota %1$s mukaan tänä iltana.</string>
-    <string name="insight_tie_in_with_rain">Ota %1$s mukaan tänä iltana, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Mahdollisesti %3$s — ota %1$s mukaan.</string>
+    <string name="insight_extras">Ota %1$s mukaan tänä iltana.</string>
+    <string name="insight_extras_at_night">Ota %1$s mukaan tänä iltana.</string>
+    <string name="insight_extras_with_rain">Ota %1$s mukaan tänä iltana, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Mahdollisesti %3$s — ota %1$s mukaan.</string>
     <string name="insight_precip_chance">Mahdollisesti %1$s.</string>
     <string name="insight_evening_rain">Tänä iltana %2$s.</string>
     <string name="insight_evening_rain_chance">Tänä iltana mahdollisesti %2$s.</string>
@@ -983,8 +983,8 @@ displayed label localizes.
     <string name="settings_calendar_master">Käytä kalenteriani</string>
     <string name="settings_calendar_master_description">Lukee kalenterisi ennusteiden ja vaatteiden räätälöintiä varten. Oletuksena mikään ei poistu laitteeltasi.</string>
     <string name="settings_calendar_features_title">Henkilökohtaiset kalenterit</string>
-    <string name="settings_evening_add_ons">Illan lisät</string>
-    <string name="settings_evening_add_ons_description">Jos lähdet illalla ulos, aamuennuste kertoo, tarvitsetko ottaa jotain ylimääräistä mukaan.</string>
+    <string name="settings_evening_extras">Illan lisät</string>
+    <string name="settings_evening_extras_description">Jos lähdet illalla ulos, aamuennuste kertoo, tarvitsetko ottaa jotain ylimääräistä mukaan.</string>
     <string name="settings_calendar_birthdays_description">Erityisiä värejä ja viestejä kalentereidesi syntymäpäiville.</string>
     <string name="settings_calendar_public_holidays_description">Erityisiä värejä ja viestejä kalentereidesi virallisille juhlapyhille.</string>
     <string name="settings_calendar_open_system_settings">Avaa järjestelmäasetukset</string>

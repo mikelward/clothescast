@@ -468,8 +468,8 @@ displayed label localizes.
     <string name="insight_condition_thunderstorm">뇌우</string>
     <string name="insight_condition_unknown">알 수 없음</string>
     <!-- "회의(15시)에 코트 챙기세요." -->
-    <string name="insight_tie_in">오늘 밤 %1$s 챙기세요.</string>
-    <string name="insight_tie_in_with_rain">오늘 밤 %1$s 챙기세요, %3$s.</string>
+    <string name="insight_extras">오늘 밤 %1$s 챙기세요.</string>
+    <string name="insight_extras_with_rain">오늘 밤 %1$s 챙기세요, %3$s.</string>
     <!-- "15시" / "15시 30분" — Korean spoken time. -->
     <string name="insight_time_hour">%1$d시</string>
     <string name="insight_time_hour_minutes">%1$d시 %2$02d분</string>
@@ -696,8 +696,8 @@ displayed label localizes.
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "가능성" — invariant Sino-Korean noun, no inflection on the preceding precip noun. -->
     <string name="insight_precip_chance">%1$s 가능성.</string>
-    <string name="insight_tie_in_at_night">%1$s 챙기세요.</string>
-    <string name="insight_tie_in_with_rain_chance">오늘 밤 %1$s 챙기세요, %3$s 가능성.</string>
+    <string name="insight_extras_at_night">%1$s 챙기세요.</string>
+    <string name="insight_extras_with_rain_chance">오늘 밤 %1$s 챙기세요, %3$s 가능성.</string>
     <string name="insight_evening_rain">오늘 밤 %2$s.</string>
     <string name="insight_evening_rain_chance">오늘 밤 %2$s 가능성.</string>
 
@@ -1130,8 +1130,8 @@ displayed label localizes.
     <string name="settings_calendar_master">내 캘린더 사용</string>
     <string name="settings_calendar_master_description">캘린더를 읽어 예보와 옷차림을 개인화해요. 기본적으로 어떤 정보도 기기 밖으로 나가지 않습니다.</string>
     <string name="settings_calendar_features_title">개인 캘린더</string>
-    <string name="settings_evening_add_ons">저녁 추가 준비물</string>
-    <string name="settings_evening_add_ons_description">저녁에 외출할 경우, 아침 예보에서 추가로 챙길 것이 있는지 알려드려요.</string>
+    <string name="settings_evening_extras">저녁 추가 준비물</string>
+    <string name="settings_evening_extras_description">저녁에 외출할 경우, 아침 예보에서 추가로 챙길 것이 있는지 알려드려요.</string>
     <string name="settings_calendar_birthdays_description">캘린더의 생일에 특별한 색상과 메시지를 사용해요.</string>
     <string name="settings_calendar_public_holidays_description">캘린더의 공휴일에 특별한 색상과 메시지를 사용해요.</string>
     <string name="settings_calendar_open_system_settings">시스템 설정 열기</string>

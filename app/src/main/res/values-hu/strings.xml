@@ -571,10 +571,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="insight_condition_snow">Hó</string>
     <string name="insight_condition_thunderstorm">Zivatar</string>
     <string name="insight_condition_unknown">Ismeretlen</string>
-    <string name="insight_tie_in">Vigyél magaddal %1$s estére.</string>
-    <string name="insight_tie_in_at_night">Vigyél magaddal %1$s estére.</string>
-    <string name="insight_tie_in_with_rain">Vigyél magaddal %1$s estére, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Esetleg %3$s — vigyél %1$s.</string>
+    <string name="insight_extras">Vigyél magaddal %1$s estére.</string>
+    <string name="insight_extras_at_night">Vigyél magaddal %1$s estére.</string>
+    <string name="insight_extras_with_rain">Vigyél magaddal %1$s estére, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Esetleg %3$s — vigyél %1$s.</string>
     <string name="insight_evening_rain">Este %2$s.</string>
     <string name="insight_evening_rain_chance">Este esetleg %2$s.</string>
     <!-- "15" — postposition "órakor" comes from surrounding templates. -->
@@ -969,8 +969,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_calendar_master">Használja a naptáramat</string>
     <string name="settings_calendar_master_description">Beolvassa a naptáraidat az előrejelzések és öltözékek személyre szabásához. Alapértelmezetten semmi sem hagyja el a készülékedet.</string>
     <string name="settings_calendar_features_title">Személyes naptárak</string>
-    <string name="settings_evening_add_ons">Esti extrák</string>
-    <string name="settings_evening_add_ons_description">Ha este elmész valahova, a reggeli előrejelzés megmondja, kell-e bármi extrát magaddal vinned.</string>
+    <string name="settings_evening_extras">Esti extrák</string>
+    <string name="settings_evening_extras_description">Ha este elmész valahova, a reggeli előrejelzés megmondja, kell-e bármi extrát magaddal vinned.</string>
     <string name="settings_calendar_birthdays_description">Különleges színek és üzenetek használata a naptáraidban szereplő születésnapokra.</string>
     <string name="settings_calendar_public_holidays_description">Különleges színek és üzenetek használata a naptáraidban szereplő ünnepnapokra.</string>
     <string name="settings_calendar_open_system_settings">Rendszerbeállítások megnyitása</string>

@@ -442,8 +442,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_snow">Neve</string>
     <string name="insight_condition_thunderstorm">Temporale</string>
     <string name="insight_condition_unknown">Sconosciuto</string>
-    <string name="insight_tie_in">Porta %1$s stasera.</string>
-    <string name="insight_tie_in_with_rain">Porta %1$s stasera, %3$s.</string>
+    <string name="insight_extras">Porta %1$s stasera.</string>
+    <string name="insight_extras_with_rain">Porta %1$s stasera, %3$s.</string>
     <!-- "15" / "15 e 30" — preposition "alle" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d e %2$02d</string>
@@ -667,11 +667,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="bug_report_consent_continue">Continua</string>
     <string name="bug_report_consent_cancel">Annulla</string>
 
-    <!-- Insight: tie-in at night (no "Stasera" prefix — band lead already set context). -->
-    <string name="insight_tie_in_at_night">Porta %1$s.</string>
+    <!-- Insight: extras at night (no "Stasera" prefix — band lead already set context). -->
+    <string name="insight_extras_at_night">Porta %1$s.</string>
     <!-- Hedged precipitation and evening-rain templates. -->
     <string name="insight_precip_chance">Possibilità di %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Stasera, possibilità di %3$s, porta %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Stasera, possibilità di %3$s, porta %1$s.</string>
     <string name="insight_evening_rain">Stasera, %2$s.</string>
     <string name="insight_evening_rain_chance">Stasera, possibilità di %2$s.</string>
 
@@ -1089,8 +1089,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Usa il mio calendario</string>
     <string name="settings_calendar_master_description">Legge i tuoi calendari per personalizzare previsioni e outfit. Per impostazione predefinita, nulla lascia il tuo dispositivo.</string>
     <string name="settings_calendar_features_title">Calendari personali</string>
-    <string name="settings_evening_add_ons">Extra per la sera</string>
-    <string name="settings_evening_add_ons_description">Se esci la sera, la previsione del mattino ti dice se devi portare qualcosa in più.</string>
+    <string name="settings_evening_extras">Extra per la sera</string>
+    <string name="settings_evening_extras_description">Se esci la sera, la previsione del mattino ti dice se devi portare qualcosa in più.</string>
     <string name="settings_calendar_birthdays_description">Usa colori e messaggi speciali per i compleanni nei tuoi calendari.</string>
     <string name="settings_calendar_public_holidays_description">Usa colori e messaggi speciali per le festività nei tuoi calendari.</string>
     <string name="settings_calendar_open_system_settings">Apri impostazioni di sistema</string>

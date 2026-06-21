@@ -93,8 +93,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="insight_condition_snow">Salji</string>
     <string name="insight_condition_thunderstorm">Ribut petir</string>
     <string name="insight_condition_unknown">Tidak diketahui</string>
-    <string name="insight_tie_in">Bawa %1$s malam ini.</string>
-    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, %3$s.</string>
+    <string name="insight_extras">Bawa %1$s malam ini.</string>
+    <string name="insight_extras_with_rain">Bawa %1$s malam ini, %3$s.</string>
     <!-- "15" / "15.30" — "pukul" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
@@ -563,9 +563,9 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- Insight prose: precipitation chance variant -->
     <string name="insight_precip_chance">Kemungkinan %1$s.</string>
 
-    <!-- Insight prose: evening tie-in variants -->
-    <string name="insight_tie_in_at_night">Bawa %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan %3$s, bawa %1$s.</string>
+    <!-- Insight prose: evening extras variants -->
+    <string name="insight_extras_at_night">Bawa %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Malam ini, kemungkinan %3$s, bawa %1$s.</string>
     <string name="insight_evening_rain">Malam ini, %2$s.</string>
     <string name="insight_evening_rain_chance">Malam ini, kemungkinan %2$s.</string>
 
@@ -983,8 +983,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_calendar_master">Gunakan kalendar saya</string>
     <string name="settings_calendar_master_description">Membaca kalendar anda untuk memperibadikan ramalan dan pakaian. Secara lalai, tiada apa-apa yang meninggalkan peranti anda.</string>
     <string name="settings_calendar_features_title">Kalendar peribadi</string>
-    <string name="settings_evening_add_ons">Tambahan untuk petang</string>
-    <string name="settings_evening_add_ons_description">Jika anda keluar pada waktu petang, ramalan pagi akan memberitahu anda jika anda perlu membawa sesuatu yang tambahan.</string>
+    <string name="settings_evening_extras">Tambahan untuk petang</string>
+    <string name="settings_evening_extras_description">Jika anda keluar pada waktu petang, ramalan pagi akan memberitahu anda jika anda perlu membawa sesuatu yang tambahan.</string>
     <string name="settings_calendar_birthdays_description">Gunakan warna dan mesej khas untuk hari jadi dalam kalendar anda.</string>
     <string name="settings_calendar_public_holidays_description">Gunakan warna dan mesej khas untuk hari kelepasan am dalam kalendar anda.</string>
     <string name="settings_calendar_open_system_settings">Buka tetapan sistem</string>

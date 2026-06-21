@@ -1149,8 +1149,8 @@
     <string name="settings_calendar_features_title">Personal calendars</string>
     <!-- Shared label for the evening extras feature: shown both on the calendar
          features list and on the Daily ClothesCast schedule's mention toggle. -->
-    <string name="settings_evening_add_ons">Evening extras</string>
-    <string name="settings_evening_add_ons_description">If you\'re going out in the evening, the morning forecast tells you if you need to bring anything extra.</string>
+    <string name="settings_evening_extras">Evening extras</string>
+    <string name="settings_evening_extras_description">If you\'re going out in the evening, the morning forecast tells you if you need to bring anything extra.</string>
     <string name="settings_calendar_birthdays">Birthdays</string>
     <string name="settings_calendar_birthdays_description">Use special colors and messages for birthdays in your calendars.</string>
     <string name="settings_calendar_public_holidays">Public holidays</string>
@@ -1221,7 +1221,7 @@
     <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$d = feels-like
          degrees (rounded, in the user's chosen unit). The comma-fronted
          "Today, it will be …" / "Tonight, it will be …" structure is
-         symmetric with how tie-in sentences front their own time marker
+         symmetric with how extras sentences front their own time marker
          ("Tonight, bring a jacket.") so the insight reads as a series of
          "<time>, <content>" beats. -->
     <string name="insight_band_single">%1$s, it will be %2$d°.</string>
@@ -1345,7 +1345,7 @@
     %1$s = condition (downcased), %2$s = accessory phrase.
     -->
     <string name="insight_precip_chance_with_accessory">Chance of %1$s, bring %2$s.</string>
-    <!-- Timing qualifier for the morning insight's evening rain tie-in,
+    <!-- Timing qualifier for the morning insight's evening rain extras,
          appended after the condition noun ("Tonight, rain overnight, …") only
          when the precip peak falls post-midnight (00:00–04:59). Evening peaks
          get no qualifier at all: the clause already leads with "Tonight," so
@@ -1391,10 +1391,10 @@
     <string name="insight_condition_unknown">Unknown</string>
 
     <!--
-    Tie-in clause used when the sentence introduces the evening context from a
+    Extras clause used when the sentence introduces the evening context from a
     morning-period insight (today's "Mention evening events" path, and also the
     umbrella-style clothes-carry split). Fronted with "Tonight," so the time
-    marker sits up front; pairs with insight_tie_in_at_night, which is the
+    marker sits up front; pairs with insight_extras_at_night, which is the
     no-prefix counterpart used on TONIGHT insights where the band lead has
     already established the night context. %1$s = item phrase (with article,
     via the same phraser as clothes). No event title or time deliberately:
@@ -1402,16 +1402,16 @@
     keys), and the "Tonight," anchor is enough — the listener already knows
     their schedule.
     -->
-    <string name="insight_tie_in">Tonight, bring %1$s.</string>
+    <string name="insight_extras">Tonight, bring %1$s.</string>
     <!--
-    No-prefix counterpart of insight_tie_in: used on a TONIGHT insight, where
+    No-prefix counterpart of insight_extras: used on a TONIGHT insight, where
     the band lead ("Tonight, it will be …") has already established the night
     context, so a second "Tonight," on this sentence would just repeat the
     intro. %1$s = item phrase.
     -->
-    <string name="insight_tie_in_at_night">Bring %1$s.</string>
+    <string name="insight_extras_at_night">Bring %1$s.</string>
     <!--
-    Variant of insight_tie_in for the morning insight's evening tie-in when the
+    Variant of insight_extras for the morning insight's evening extras when the
     evening forecast also has precipitation ≥ 20%. Folds the precip mention into
     the same sentence so the morning insight mentions the evening weather
     alongside the evening clothing tip, without emitting a second precip clause
@@ -1428,9 +1428,9 @@
     a stormy / snowy evening names the real condition ("Tonight, snow
     overnight, …") instead of always saying "rain".
     -->
-    <string name="insight_tie_in_with_rain">Tonight, %3$s%2$s, bring %1$s.</string>
+    <string name="insight_extras_with_rain">Tonight, %3$s%2$s, bring %1$s.</string>
     <!--
-    POSSIBLE-tier counterpart of insight_tie_in_with_rain: a clothes rule
+    POSSIBLE-tier counterpart of insight_extras_with_rain: a clothes rule
     triggered for the evening but only one per-model series flagged the
     precip at ≥ 20%. Hedges the wording so a single-model reading doesn't
     render with the same definite tone as a majority-of-models agreement.
@@ -1438,9 +1438,9 @@
     %3$s = condition noun (lowercased), so the hedge reads "chance of snow" /
     "chance of thunderstorm" when the peak isn't plain rain.
     -->
-    <string name="insight_tie_in_with_rain_chance">Tonight, chance of %3$s%2$s, bring %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Tonight, chance of %3$s%2$s, bring %1$s.</string>
     <!--
-    Bare-precip variant of the evening tie-in for the morning insight: emitted
+    Bare-precip variant of the evening extras for the morning insight: emitted
     when the user has an evening event with a location and the per-model
     forecast tier spots precip ≥ 50% (majority of models agree) at some hour in
     the tonight window, but no clothes rule fired for that period. The
@@ -1450,7 +1450,7 @@
     stormy evening names the real condition ("Tonight, snow overnight.")
     instead of always saying "rain". Fronts the "Tonight," time marker so the
     sentence reads in the same "<time>, <content>." shape as the band lead and
-    the item-led tie-in templates.
+    the item-led extras templates.
     -->
     <string name="insight_evening_rain">Tonight, %2$s%1$s.</string>
     <!--

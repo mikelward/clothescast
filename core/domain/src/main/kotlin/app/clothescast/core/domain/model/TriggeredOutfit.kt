@@ -24,7 +24,7 @@ package app.clothescast.core.domain.model
  * then bottom.
  *
  * The split is preserved (rather than a single flat items list) because the
- * evening-event tie-in's delta — "extra clothing the night needs that the
+ * evening-event extras's delta — "extra clothing the night needs that the
  * morning didn't already announce" — compares only threshold-rule matches on
  * each side. The per-tier default is the user's baseline outfit, not "extra"
  * for the evening, so folding it into the comparison would surface a spurious

@@ -580,10 +580,10 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="insight_condition_thunderstorm">Tordenvejr</string>
     <string name="insight_condition_unknown">Ukendt</string>
 
-    <string name="insight_tie_in">Tag %1$s med i aften.</string>
-    <string name="insight_tie_in_at_night">Tag %1$s med i aften.</string>
-    <string name="insight_tie_in_with_rain">Tag %1$s med i aften, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Risiko for %3$s — tag %1$s med.</string>
+    <string name="insight_extras">Tag %1$s med i aften.</string>
+    <string name="insight_extras_at_night">Tag %1$s med i aften.</string>
+    <string name="insight_extras_with_rain">Tag %1$s med i aften, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Risiko for %3$s — tag %1$s med.</string>
     <string name="insight_evening_rain">I aften %2$s.</string>
     <string name="insight_evening_rain_chance">I aften risiko for %2$s.</string>
 
@@ -1006,8 +1006,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_calendar_master">Brug min kalender</string>
     <string name="settings_calendar_master_description">Læser dine kalendere for at tilpasse prognoser og outfits. Som standard forlader intet din enhed.</string>
     <string name="settings_calendar_features_title">Personlige kalendere</string>
-    <string name="settings_evening_add_ons">Ekstra til aftenen</string>
-    <string name="settings_evening_add_ons_description">Hvis du går ud om aftenen, fortæller morgenprognoserne dig, om du skal tage noget ekstra med.</string>
+    <string name="settings_evening_extras">Ekstra til aftenen</string>
+    <string name="settings_evening_extras_description">Hvis du går ud om aftenen, fortæller morgenprognoserne dig, om du skal tage noget ekstra med.</string>
     <string name="settings_calendar_birthdays_description">Brug særlige farver og beskeder til fødselsdage i dine kalendere.</string>
     <string name="settings_calendar_public_holidays_description">Brug særlige farver og beskeder til helligdage i dine kalendere.</string>
     <string name="settings_calendar_open_system_settings">Åbn systemindstillinger</string>

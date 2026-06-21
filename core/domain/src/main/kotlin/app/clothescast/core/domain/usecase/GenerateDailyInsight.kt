@@ -103,7 +103,7 @@ class GenerateDailyInsight(
         return coRunCatching {
             // Fetch today AND tomorrow: the tonight window wraps past midnight
             // to tomorrow's morning start, and the morning insight's evening
-            // tie-in reads that same window, so both periods need tomorrow's
+            // extras reads that same window, so both periods need tomorrow's
             // pre-dawn events — which only the tomorrow day query returns. An
             // instance spanning midnight is materialized by both day queries
             // with identical absolute times, so the data-class distinct()

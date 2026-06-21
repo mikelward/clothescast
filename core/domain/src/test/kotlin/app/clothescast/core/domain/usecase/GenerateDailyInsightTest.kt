@@ -82,7 +82,7 @@ class GenerateDailyInsightTest {
         // Master calendar switch on; individual cases flip useCalendarEvents to
         // exercise the per-feature gate (events read only when both are on).
         calendarEnabled = true,
-        // Opt into the morning→evening tie-in explicitly — it's off by default
+        // Opt into the morning→evening extras explicitly — it's off by default
         // now, and these cases exist to exercise it.
         dailyMentionEveningEvents = true,
     )
@@ -539,15 +539,15 @@ class GenerateDailyInsightTest {
         )
 
         // Tomorrow rides along because the tonight window (and the morning
-        // insight's evening tie-in) wraps past midnight into tomorrow's
+        // insight's evening extras) wraps past midnight into tomorrow's
         // pre-dawn hours.
         calendar.requestedDates shouldContainExactly listOf(today.date, today.date.plusDays(1))
         calendar.lastZone shouldBe zone
-        // The morning rain tie-in is suppressed on TODAY (PR #149); the tonight
-        // pass still carries the existing CalendarTieInClause — see the
+        // The morning rain extras is suppressed on TODAY (PR #149); the tonight
+        // pass still carries the existing CalendarExtrasClause — see the
         // `tonight period` test below for the firing case. This test only cares
         // that the reader was consulted with the right (date, zone).
-        result.insight.summary.calendarTieIn.shouldBeNull()
+        result.insight.summary.calendarExtras.shouldBeNull()
     }
 
     @Test
@@ -561,7 +561,7 @@ class GenerateDailyInsightTest {
         val result = subject(london, prefs.copy(useCalendarEvents = false))
 
         calendar.requestedDates.shouldBeEmpty()
-        result.insight.summary.calendarTieIn.shouldBeNull()
+        result.insight.summary.calendarExtras.shouldBeNull()
     }
 
     @Test
@@ -573,8 +573,8 @@ class GenerateDailyInsightTest {
         val result = subject(london, prefs.copy(useCalendarEvents = true))
 
         // The summary still composes — the band clause is always present (it's non-null
-        // by the type system) — we just lose the calendar tie-in.
-        result.insight.summary.calendarTieIn.shouldBeNull()
+        // by the type system) — we just lose the calendar extras.
+        result.insight.summary.calendarExtras.shouldBeNull()
     }
 
     @Test
@@ -917,10 +917,10 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in picks up evening rain from the blended hourly series`() = runTest {
-        // The TODAY pass evaluates the evening-event tie-in against the tonight
+    fun `evening extras picks up evening rain from the blended hourly series`() = runTest {
+        // The TODAY pass evaluates the evening-event extras against the tonight
         // slice. The blended-consensus chance of rain peaks at an evening hour
-        // (21:00 at 75% with a rain code), so the tie-in dates its rain there.
+        // (21:00 at 75% with a rain code), so the extras dates its rain there.
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
             HourlyForecast(LocalTime.of(12, 0), 18.0, 17.0, 5.0, WeatherCondition.CLEAR),
@@ -928,7 +928,7 @@ class GenerateDailyInsightTest {
         )
         // Tonight slice (19:00–06:00 wrap) cold enough to trigger the jacket
         // rule (feelsLikeMin < 12); the 21:00 hour carries the wettest blended
-        // chance of rain, so it drives the tie-in's rain time.
+        // chance of rain, so it drives the extras's rain time.
         val evening = listOf(
             HourlyForecast(LocalTime.of(19, 0), 11.0, 9.0, 10.0, WeatherCondition.PARTLY_CLOUDY),
             HourlyForecast(LocalTime.of(20, 0), 10.5, 8.5, 10.0, WeatherCondition.PARTLY_CLOUDY),
@@ -952,7 +952,7 @@ class GenerateDailyInsightTest {
 
         // Only-the-jacket rule isolates the assertion: with no other rule
         // triggering, todayItems is empty and evening items = [jacket] —
-        // not a subset of today's, so the tie-in is not suppressed.
+        // not a subset of today's, so the extras is not suppressed.
         val jacketOnly = listOf(ClothesRule(Garment.JACKET, ClothesRule.TemperatureBelow(12.0)))
         val result = subject(
             location = london,
@@ -963,19 +963,19 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("jacket")
         tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
     @Test
-    fun `evening tie-in picks up post-midnight rain in the wrap-past-midnight window`() = runTest {
+    fun `evening extras picks up post-midnight rain in the wrap-past-midnight window`() = runTest {
         // Same setup as the pre-midnight case above, but the rain hour is at
         // 02:00 tomorrow — the part of the tonight window that crosses
         // midnight. The blended chance of rain peaks there (pulled from the
         // tomorrow-morning slice), so the post-midnight reading flows straight
-        // through to the tie-in's rain time without aliasing against today's
+        // through to the extras's rain time without aliasing against today's
         // 02:00.
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
@@ -1017,14 +1017,14 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("jacket")
         tie.rainTime shouldBe LocalTime.of(2, 0)
     }
 
     @Test
-    fun `evening tie-in is omitted when the user has no event away from home`() = runTest {
+    fun `evening extras is omitted when the user has no event away from home`() = runTest {
         // The away-from-home gate is the only behavioural asymmetry between
         // the day and night passes. With no located event in the night window
         // — only a morning event, or an unlocated evening one — the morning
@@ -1061,15 +1061,15 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        result.insight.summary.eveningEventTieIn.shouldBeNull()
+        result.insight.summary.eveningEventExtras.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in keeps the umbrella even when it also fired during the day`() = runTest {
+    fun `evening extras keeps the umbrella even when it also fired during the day`() = runTest {
         // Rain both daytime and tonight + an umbrella rule: the umbrella fires
         // for both slices, so the clothes-delta dedup would drop it from the
-        // evening tie-in. It must survive — the evening rain warning still
-        // wants "bring an umbrella" — so it rides on the tie-in independently.
+        // evening extras. It must survive — the evening rain warning still
+        // wants "bring an umbrella" — so it rides on the extras independently.
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 50.0, WeatherCondition.RAIN),
@@ -1105,14 +1105,14 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("umbrella")
         tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
     @Test
-    fun `evening tie-in surfaces a rain jacket even when the day wore an equally warm top`() = runTest {
+    fun `evening extras surfaces a rain jacket even when the day wore an equally warm top`() = runTest {
         // Cool-but-dry day (sweater fires, no rain) and a cool rainy evening
         // (sweater + rain jacket fire). The rain jacket is a thin OUTER shell
         // with the same warmth as the sweater, so the warmth-only top comparison
@@ -1156,17 +1156,17 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("rain-jacket")
         tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
     @Test
-    fun `evening tie-in mirrors what the night notification would itself say`() = runTest {
-        // The day's evening tie-in is the night insight, dictated by the
+    fun `evening extras mirrors what the night notification would itself say`() = runTest {
+        // The day's evening extras is the night insight, dictated by the
         // night bundle. When the night insight would say "Bring a jacket;
-        // rain at 9pm.", the tie-in carries the same item + rain time.
+        // rain at 9pm.", the extras carries the same item + rain time.
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 16.0, 15.0, 5.0, WeatherCondition.CLEAR),
@@ -1202,7 +1202,7 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("jacket")
         tie.rainTime shouldBe LocalTime.of(21, 0)
@@ -1215,9 +1215,9 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in carries only the clothing delta vs the morning insight`() = runTest {
+    fun `evening extras carries only the clothing delta vs the morning insight`() = runTest {
         // Today triggers sweater on a cool daytime; night gets colder and
-        // additionally needs a jacket. The tie-in carries the new item
+        // additionally needs a jacket. The extras carries the new item
         // ("jacket"), not "sweater" — the morning insight already mentioned
         // sweater, so repeating it adds nothing.
         val zone = ZoneId.of("Europe/London")
@@ -1258,19 +1258,19 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("jacket")
         tie.rainTime.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in carries every night-only item, not just the first`() = runTest {
+    fun `evening extras carries every night-only item, not just the first`() = runTest {
         // Today triggers shorts (warm afternoon, mild evening); the night
         // drops cold enough for jeans + a sweater. Delta straddles both slots
         // — bottom (jeans, swapping in for the warm-day shorts) plus top
         // (sweater, new since the day was bare) — and both surface in the
-        // tie-in's items list rather than the engine dropping one silently.
+        // extras's items list rather than the engine dropping one silently.
         // Picked across slots rather than two SHELL tops because tops
         // layer-reduce within their layer: jacket + coat firing together
         // would collapse to coat alone (you wear one outer, not both),
@@ -1314,16 +1314,16 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("sweater", "jeans")
         tie.rainTime.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in collapses to bare rain when night items are a subset of today`() = runTest {
+    fun `evening extras collapses to bare rain when night items are a subset of today`() = runTest {
         // Today and night both trigger the same item (jacket — cold all
-        // day). With no clothing delta the tie-in skips the item part and
+        // day). With no clothing delta the extras skips the item part and
         // surfaces just the rain mention, because evening rain is still new
         // information the morning slice didn't cover.
         val zone = ZoneId.of("Europe/London")
@@ -1361,16 +1361,16 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items.shouldBeEmpty()
         tie.rainTime shouldBe LocalTime.of(21, 0)
     }
 
     @Test
-    fun `evening tie-in is omitted when delta is empty and there is no rain`() = runTest {
+    fun `evening extras is omitted when delta is empty and there is no rain`() = runTest {
         // Same items today and night, no rain — there's genuinely nothing
-        // to add for the evening, so the tie-in stays silent.
+        // to add for the evening, so the extras stays silent.
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
             HourlyForecast(LocalTime.of(8, 0), 8.0, 6.0, 5.0, WeatherCondition.CLEAR),
@@ -1405,15 +1405,15 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        result.insight.summary.eveningEventTieIn.shouldBeNull()
+        result.insight.summary.eveningEventExtras.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in is silent when the day already wears the night's rule garment as the user's default top`() = runTest {
+    fun `evening extras is silent when the day already wears the night's rule garment as the user's default top`() = runTest {
         // Codex-flagged: defaultTop = SWEATER for someone who runs cold.
         // Daytime is mild (no threshold rule matches) so they wear their
         // default sweater all day. Night drops below the sweater rule's
-        // 18°C threshold, so the rule matches at night. The tie-in must
+        // 18°C threshold, so the rule matches at night. The extras must
         // NOT say "Bring a sweater tonight" — they had it on all day.
         // Tops layer, so a night top-tier match already covered by the
         // day's outfit (whether via rule or default) means no action.
@@ -1453,17 +1453,17 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        result.insight.summary.eveningEventTieIn.shouldBeNull()
+        result.insight.summary.eveningEventExtras.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in surfaces a heavier default top the day didn't need`() = runTest {
+    fun `evening extras surfaces a heavier default top the day didn't need`() = runTest {
         // defaultTop = SWEATER for someone who runs cold. A warm afternoon fires
         // their t-shirt rule, so the day's top is the lighter t-shirt; the mild
         // evening fires no top rule, so the night falls back to the default
         // sweater. The sweater is a heavier layer than the day's t-shirt, so the
         // evening genuinely needs it — "Bring a sweater tonight." (Previously the
-        // tie-in only looked at fired night *rules* and silently dropped the
+        // extras only looked at fired night *rules* and silently dropped the
         // fallback top, so this user got no evening cue at all.)
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
@@ -1501,19 +1501,19 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("sweater")
         tie.rainTime.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in stays silent for a same-layer default top`() = runTest {
+    fun `evening extras stays silent for a same-layer default top`() = runTest {
         // defaultTop = PUFFER. A cold morning fires the jacket rule (day top =
         // jacket); the milder evening fires no top rule, so the night falls back
         // to the default puffer. Jacket and puffer are both SHELL — a puffer is a
         // warm shell, not an extra layer — so the evening doesn't add a layer the
-        // day didn't have, and the tie-in says nothing. ("Extra cold" would be
+        // day didn't have, and the extras says nothing. ("Extra cold" would be
         // signalled by gloves, not a warmer same-layer top.)
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
@@ -1551,15 +1551,15 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        result.insight.summary.eveningEventTieIn.shouldBeNull()
+        result.insight.summary.eveningEventExtras.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in is silent when the night top resolves to a default the day was wearing as a rule`() = runTest {
+    fun `evening extras is silent when the night top resolves to a default the day was wearing as a rule`() = runTest {
         // Cold day with a sweater rule, mild night where no threshold rule
         // matches → the night's top tier resolves to the default top
         // (TSHIRT). Tops layer, so dropping back to t-shirt is just
-        // removing a layer — no need to "bring" anything. Tie-in stays
+        // removing a layer — no need to "bring" anything. Extras stays
         // silent.
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
@@ -1596,15 +1596,15 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        result.insight.summary.eveningEventTieIn.shouldBeNull()
+        result.insight.summary.eveningEventExtras.shouldBeNull()
     }
 
     @Test
-    fun `evening tie-in surfaces the night's bottom substitution when the day's bottom was a different rule`() = runTest {
+    fun `evening extras surfaces the night's bottom substitution when the day's bottom was a different rule`() = runTest {
         // Hot day fires the shorts rule, evening cools off enough that
         // shorts no longer applies and the bottom tier resolves to the
         // default (PANTS). Bottoms substitute (you swap, not layer), so
-        // the tie-in surfaces "Bring pants tonight" — a real action the
+        // the extras surfaces "Bring pants tonight" — a real action the
         // user needs to take when leaving for the evening event.
         val zone = ZoneId.of("Europe/London")
         val daytime = listOf(
@@ -1641,13 +1641,13 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("pants")
     }
 
     @Test
-    fun `evening tie-in still carries genuinely new night-only top rules when the day was driven by defaults`() = runTest {
+    fun `evening extras still carries genuinely new night-only top rules when the day was driven by defaults`() = runTest {
         // Counterpart to the "default sweater" silent case: a mild
         // daytime resolving to defaults (defaultTop = TSHIRT) but a
         // *cold* night that triggers BOTH the sweater rule AND the
@@ -1691,13 +1691,13 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         tie!!.items shouldBe listOf("sweater", "jacket")
     }
 
     @Test
-    fun `evening tie-in stays silent when a bottom rule matches the default garment`() = runTest {
+    fun `evening extras stays silent when a bottom rule matches the default garment`() = runTest {
         // Codex-flagged: a legacy rule item like "trousers" (a recognized
         // Garment alias for PANTS) shouldn't surface as different from the
         // night's default "pants" — the user is already wearing the same
@@ -1740,8 +1740,8 @@ class GenerateDailyInsightTest {
         )
 
         // The day fires the PANTS rule, night defaults to PANTS too. Same
-        // garment — no tie-in should emit "Bring pants."
-        result.insight.summary.eveningEventTieIn.shouldBeNull()
+        // garment — no extras should emit "Bring pants."
+        result.insight.summary.eveningEventExtras.shouldBeNull()
     }
 
     @Test
@@ -1966,14 +1966,14 @@ class GenerateDailyInsightTest {
         )
 
         // Morning event must be filtered out for the tonight pass; the gig
-        // must drive the tie-in. The tie-in's data class only carries the
+        // must drive the extras. The extras's data class only carries the
         // clothes item now (event title + time were dropped to keep calendar
         // event metadata off-device); the precip clause still names the
         // 8pm rain. With temperature-only defaults firing on the 14°C feels-like
         // and no umbrella rule, the picked item is the first triggered: sweater.
-        val tieIn = result.insight.summary.calendarTieIn
-        tieIn.shouldNotBeNull()
-        tieIn!!.item shouldBe "sweater"
+        val extras = result.insight.summary.calendarExtras
+        extras.shouldNotBeNull()
+        extras!!.item shouldBe "sweater"
         result.insight.summary.precip!!.time shouldBe LocalTime.of(20, 0)
         result.insight.hasEvents shouldBe true
     }
@@ -1982,7 +1982,7 @@ class GenerateDailyInsightTest {
     fun `tonight hasEvents is false when the evening event has no location`() = runTest {
         // hasEvents drives the tonight notification loudness and the
         // tonight-notify-only-on-events pref. We treat "no location" as
-        // "user is at home", same gate buildEveningEventTieIn uses; an
+        // "user is at home", same gate buildEveningEventExtras uses; an
         // unlabelled evening hold shouldn't make tonight notifications
         // chirp.
         val zone = ZoneId.of("Europe/London")
@@ -2162,11 +2162,11 @@ class GenerateDailyInsightTest {
     }
 
     @Test
-    fun `evening tie-in surfaces bare evening rain when no clothes rule fires`() = runTest {
+    fun `evening extras surfaces bare evening rain when no clothes rule fires`() = runTest {
         // The case AGENTS.md flags under "Domain conventions": no clothes
         // rule triggers for the tonight window (mild evening, no
         // user-defined umbrella rule), but the blended-consensus chance of
-        // rain clears the chance-of-rain bar at an evening hour. The tie-in
+        // rain clears the chance-of-rain bar at an evening hour. The extras
         // emits an item-less clause the formatter renders as a bare
         // "Chance of rain tonight." (POSSIBLE), so the morning insight isn't
         // silent on evening rain.
@@ -2216,7 +2216,7 @@ class GenerateDailyInsightTest {
             period = ForecastPeriod.TODAY,
         )
 
-        val tie = result.insight.summary.eveningEventTieIn
+        val tie = result.insight.summary.eveningEventExtras
         tie.shouldNotBeNull()
         // Bare-rain emission: no items, rain time set, POSSIBLE tier.
         tie!!.items shouldBe emptyList()

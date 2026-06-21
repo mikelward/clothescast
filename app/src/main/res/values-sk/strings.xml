@@ -582,10 +582,10 @@ What is NOT overridden, by design:
     <string name="insight_condition_snow">Sneh</string>
     <string name="insight_condition_thunderstorm">Búrka</string>
     <string name="insight_condition_unknown">Neznáme</string>
-    <string name="insight_tie_in">Vezmi si %1$s na večer.</string>
-    <string name="insight_tie_in_at_night">Vezmi si %1$s.</string>
-    <string name="insight_tie_in_with_rain">Vezmi si %1$s na večer, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Dnes večer možnosť %3$s, vezmi si %1$s.</string>
+    <string name="insight_extras">Vezmi si %1$s na večer.</string>
+    <string name="insight_extras_at_night">Vezmi si %1$s.</string>
+    <string name="insight_extras_with_rain">Vezmi si %1$s na večer, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Dnes večer možnosť %3$s, vezmi si %1$s.</string>
     <string name="insight_evening_rain">Dnes večer %2$s.</string>
     <string name="insight_evening_rain_chance">Dnes večer možnosť %2$s.</string>
     <!-- "15" — preposition "o" comes from surrounding templates. -->
@@ -998,8 +998,8 @@ What is NOT overridden, by design:
     <string name="settings_calendar_master">Použiť môj kalendár</string>
     <string name="settings_calendar_master_description">Číta tvoje kalendáre, aby prispôsobil predpovede a outfity. V predvolenom nastavení nič neopustí tvoje zariadenie.</string>
     <string name="settings_calendar_features_title">Osobné kalendáre</string>
-    <string name="settings_evening_add_ons">Večerné doplnky</string>
-    <string name="settings_evening_add_ons_description">Ak ideš večer von, ranná predpoveď ti povie, či si máš vziať niečo navyše.</string>
+    <string name="settings_evening_extras">Večerné doplnky</string>
+    <string name="settings_evening_extras_description">Ak ideš večer von, ranná predpoveď ti povie, či si máš vziať niečo navyše.</string>
     <string name="settings_calendar_birthdays_description">Použi špeciálne farby a správy pre narodeniny v tvojich kalendároch.</string>
     <string name="settings_calendar_public_holidays_description">Použi špeciálne farby a správy pre štátne sviatky v tvojich kalendároch.</string>
     <string name="settings_calendar_open_system_settings">Otvoriť systémové nastavenia</string>

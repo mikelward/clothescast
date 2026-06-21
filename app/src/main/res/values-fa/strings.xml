@@ -98,9 +98,9 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="insight_condition_thunderstorm">طوفان</string>
     <string name="insight_condition_unknown">نامشخص</string>
     <!-- SOV: "%1$s را امشب ببرید" = "[item] را tonight bring". -->
-    <string name="insight_tie_in">%1$s را امشب ببرید.</string>
+    <string name="insight_extras">%1$s را امشب ببرید.</string>
     <!-- %2$s is the spoken time — "ساعت" embedded here since time is a bare number. -->
-    <string name="insight_tie_in_with_rain">%1$s را امشب ببرید، %3$s.</string>
+    <string name="insight_extras_with_rain">%1$s را امشب ببرید، %3$s.</string>
     <!-- Bare number; "ساعت" comes from insight_precip_at_time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -429,10 +429,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="bug_report_consent_continue">ادامه</string>
     <string name="bug_report_consent_cancel">لغو</string>
 
-    <!-- Insight prose — precipitation and tie-in variants -->
+    <!-- Insight prose — precipitation and extras variants -->
     <string name="insight_precip_chance">احتمال %1$s.</string>
-    <string name="insight_tie_in_at_night">%1$s را ببرید.</string>
-    <string name="insight_tie_in_with_rain_chance">%1$s را امشب ببرید، احتمال %3$s.</string>
+    <string name="insight_extras_at_night">%1$s را ببرید.</string>
+    <string name="insight_extras_with_rain_chance">%1$s را امشب ببرید، احتمال %3$s.</string>
     <string name="insight_evening_rain">امشب، %2$s.</string>
     <string name="insight_evening_rain_chance">امشب، احتمال %2$s.</string>
 
@@ -964,8 +964,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_calendar_master">از تقویم من استفاده کن</string>
     <string name="settings_calendar_master_description">تقویم‌های شما را می‌خواند تا پیش‌بینی‌ها و لباس‌ها را شخصی‌سازی کند. به‌طور پیش‌فرض هیچ چیز از دستگاه شما خارج نمی‌شود.</string>
     <string name="settings_calendar_features_title">تقویم‌های شخصی</string>
-    <string name="settings_evening_add_ons">افزودنی‌های عصرگاهی</string>
-    <string name="settings_evening_add_ons_description">اگر در عصر بیرون می‌روید، پیش‌بینی صبحگاهی به شما می‌گوید که آیا چیز اضافه‌ای باید همراه ببرید.</string>
+    <string name="settings_evening_extras">افزودنی‌های عصرگاهی</string>
+    <string name="settings_evening_extras_description">اگر در عصر بیرون می‌روید، پیش‌بینی صبحگاهی به شما می‌گوید که آیا چیز اضافه‌ای باید همراه ببرید.</string>
     <string name="settings_calendar_birthdays_description">از رنگ‌ها و پیام‌های ویژه برای تولدها در تقویم‌های خود استفاده کنید.</string>
     <string name="settings_calendar_public_holidays_description">از رنگ‌ها و پیام‌های ویژه برای تعطیلات رسمی در تقویم‌های خود استفاده کنید.</string>
     <string name="settings_calendar_open_system_settings">باز کردن تنظیمات سیستم</string>

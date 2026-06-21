@@ -520,10 +520,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="insight_condition_snow">Neu</string>
     <string name="insight_condition_thunderstorm">Tempesta</string>
     <string name="insight_condition_unknown">Desconegut</string>
-    <string name="insight_tie_in">Emporta\'t %1$s aquesta nit.</string>
-    <string name="insight_tie_in_at_night">Emporta\'t %1$s.</string>
-    <string name="insight_tie_in_with_rain">Aquesta nit, %3$s, emporta\'t %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Aquesta nit, possibilitat de %3$s, emporta\'t %1$s.</string>
+    <string name="insight_extras">Emporta\'t %1$s aquesta nit.</string>
+    <string name="insight_extras_at_night">Emporta\'t %1$s.</string>
+    <string name="insight_extras_with_rain">Aquesta nit, %3$s, emporta\'t %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Aquesta nit, possibilitat de %3$s, emporta\'t %1$s.</string>
     <string name="insight_evening_rain">Aquesta nit, %2$s.</string>
     <string name="insight_evening_rain_chance">Aquesta nit, possibilitat de %2$s.</string>
     <!-- "15" / "15:30" — "a les" comes from surrounding templates. -->
@@ -916,8 +916,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_calendar_master">Utilitza el meu calendari</string>
     <string name="settings_calendar_master_description">Llegeix els teus calendaris per personalitzar previsions i vestits. Per defecte, res no surt del teu dispositiu.</string>
     <string name="settings_calendar_features_title">Calendaris personals</string>
-    <string name="settings_evening_add_ons">Complements del vespre</string>
-    <string name="settings_evening_add_ons_description">Si surts al vespre, la previsió del matí t\'indica si has de portar alguna cosa extra.</string>
+    <string name="settings_evening_extras">Complements del vespre</string>
+    <string name="settings_evening_extras_description">Si surts al vespre, la previsió del matí t\'indica si has de portar alguna cosa extra.</string>
     <string name="settings_calendar_birthdays_description">Utilitza colors i missatges especials per als aniversaris dels teus calendaris.</string>
     <string name="settings_calendar_public_holidays_description">Utilitza colors i missatges especials per als festius dels teus calendaris.</string>
     <string name="settings_calendar_open_system_settings">Obre la configuració del sistema</string>

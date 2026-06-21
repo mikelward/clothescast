@@ -202,7 +202,7 @@ internal class MultiModelConfidenceFetcher(
                 // full 14 days (ICON stops at day 7; ECMWF coarsens past ~day 6),
                 // so the second week's spread is naturally sparser — the page's
                 // coverage gate auto-hides diagnostics for any day a model
-                // doesn't reach. The tonight insight's evening tie-in still
+                // doesn't reach. The tonight insight's evening extras still
                 // reads tomorrow's pre-dawn hours out of the same series.
                 // With past_days=1 below the daily arrays lead with yesterday,
                 // so the confidence aggregate reads today at index 1 (see

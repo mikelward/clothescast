@@ -275,7 +275,7 @@ class EvaluateClothesRulesTest {
         // default sweater rule (MID, < 18°C). On a 14°C morning both fire, but
         // the t-shirt is implicit under the sweater — it shouldn't read out as
         // "Wear a jumper, t-shirt, and jeans." Items drops the BASE; rules
-        // keeps every firing rule (the rationale + tie-in delta logic still
+        // keeps every firing rule (the rationale + extras delta logic still
         // need access to all matches).
         val rules = listOf(
             ClothesRule(Garment.TSHIRT, ClothesRule.TemperatureBelow(30.0)),

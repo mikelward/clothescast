@@ -91,16 +91,16 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_snow">หิมะ</string>
     <string name="insight_condition_thunderstorm">พายุฝนฟ้าคะนอง</string>
     <string name="insight_condition_unknown">ไม่ทราบ</string>
-    <string name="insight_tie_in">พก%1$sไปคืนนี้</string>
-    <string name="insight_tie_in_with_rain">พก%1$sไปคืนนี้, %3$s</string>
+    <string name="insight_extras">พก%1$sไปคืนนี้</string>
+    <string name="insight_extras_with_rain">พก%1$sไปคืนนี้, %3$s</string>
     <!-- "15 นาฬิกา" / "15 นาฬิกา 30 นาที" — preposition "เวลา" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d นาฬิกา</string>
     <string name="insight_time_hour_minutes">%1$d นาฬิกา %2$02d นาที</string>
 
     <!-- Missing insight strings -->
     <string name="insight_precip_chance">อาจมี%1$s</string>
-    <string name="insight_tie_in_at_night">พก%1$sด้วย</string>
-    <string name="insight_tie_in_with_rain_chance">คืนนี้อาจมี%3$s พก%1$sด้วย</string>
+    <string name="insight_extras_at_night">พก%1$sด้วย</string>
+    <string name="insight_extras_with_rain_chance">คืนนี้อาจมี%3$s พก%1$sด้วย</string>
     <string name="insight_evening_rain">คืนนี้%2$s</string>
     <string name="insight_evening_rain_chance">คืนนี้อาจมี%2$s</string>
 
@@ -977,8 +977,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_calendar_master">ใช้ปฏิทินของฉัน</string>
     <string name="settings_calendar_master_description">อ่านปฏิทินของคุณเพื่อปรับแต่งพยากรณ์และชุดแต่งกาย ตามค่าเริ่มต้น ไม่มีข้อมูลออกนอกอุปกรณ์ของคุณ</string>
     <string name="settings_calendar_features_title">ปฏิทินส่วนตัว</string>
-    <string name="settings_evening_add_ons">ของเพิ่มเติมตอนเย็น</string>
-    <string name="settings_evening_add_ons_description">หากคุณออกไปข้างนอกในตอนเย็น พยากรณ์ตอนเช้าจะบอกว่าคุณต้องนำสิ่งของพิเศษอะไรไปบ้าง</string>
+    <string name="settings_evening_extras">ของเพิ่มเติมตอนเย็น</string>
+    <string name="settings_evening_extras_description">หากคุณออกไปข้างนอกในตอนเย็น พยากรณ์ตอนเช้าจะบอกว่าคุณต้องนำสิ่งของพิเศษอะไรไปบ้าง</string>
     <string name="settings_calendar_birthdays_description">ใช้สีและข้อความพิเศษสำหรับวันเกิดในปฏิทินของคุณ</string>
     <string name="settings_calendar_public_holidays_description">ใช้สีและข้อความพิเศษสำหรับวันหยุดราชการในปฏิทินของคุณ</string>
     <string name="settings_calendar_open_system_settings">เปิดการตั้งค่าระบบ</string>

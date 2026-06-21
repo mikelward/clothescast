@@ -509,8 +509,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_snow">Χιόνι</string>
     <string name="insight_condition_thunderstorm">Καταιγίδα</string>
     <string name="insight_condition_unknown">Άγνωστος</string>
-    <string name="insight_tie_in">Πάρε %1$s απόψε.</string>
-    <string name="insight_tie_in_with_rain">Πάρε %1$s απόψε, %3$s.</string>
+    <string name="insight_extras">Πάρε %1$s απόψε.</string>
+    <string name="insight_extras_with_rain">Πάρε %1$s απόψε, %3$s.</string>
     <!-- "15:00" / "15:30" — standard Greek 24-hour colon notation,
          TTS reads naturally. -->
     <string name="insight_time_hour">%1$d:00</string>
@@ -636,8 +636,8 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Missing insight prose. -->
     <string name="insight_precip_chance">Πιθανότητα %1$s.</string>
-    <string name="insight_tie_in_at_night">Πάρε %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα %3$s.</string>
+    <string name="insight_extras_at_night">Πάρε %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Πάρε %1$s απόψε, πιθανότητα %3$s.</string>
     <string name="insight_evening_rain">Απόψε, %2$s.</string>
     <string name="insight_evening_rain_chance">Απόψε, πιθανότητα %2$s.</string>
 
@@ -1096,8 +1096,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Χρήση του ημερολογίου μου</string>
     <string name="settings_calendar_master_description">Διαβάζει τα ημερολόγιά σου για να προσαρμόζει προγνώσεις και στολές. Από προεπιλογή, τίποτα δεν φεύγει από τη συσκευή σου.</string>
     <string name="settings_calendar_features_title">Προσωπικά ημερολόγια</string>
-    <string name="settings_evening_add_ons">Πρόσθετα για το βράδυ</string>
-    <string name="settings_evening_add_ons_description">Αν βγαίνεις το βράδυ, η πρωινή πρόγνωση σου λέει αν πρέπει να πάρεις κάτι επιπλέον.</string>
+    <string name="settings_evening_extras">Πρόσθετα για το βράδυ</string>
+    <string name="settings_evening_extras_description">Αν βγαίνεις το βράδυ, η πρωινή πρόγνωση σου λέει αν πρέπει να πάρεις κάτι επιπλέον.</string>
     <string name="settings_calendar_birthdays_description">Χρήση ειδικών χρωμάτων και μηνυμάτων για γενέθλια στα ημερολόγιά σου.</string>
     <string name="settings_calendar_public_holidays_description">Χρήση ειδικών χρωμάτων και μηνυμάτων για επίσημες αργίες στα ημερολόγιά σου.</string>
     <string name="settings_calendar_open_system_settings">Άνοιξε τις ρυθμίσεις συστήματος</string>

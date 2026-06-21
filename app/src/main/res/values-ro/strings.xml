@@ -90,16 +90,16 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="insight_condition_snow">Ninsoare</string>
     <string name="insight_condition_thunderstorm">Furtună</string>
     <string name="insight_condition_unknown">Necunoscut</string>
-    <string name="insight_tie_in">Ia %1$s diseară.</string>
-    <string name="insight_tie_in_with_rain">Ia %1$s diseară, %3$s.</string>
+    <string name="insight_extras">Ia %1$s diseară.</string>
+    <string name="insight_extras_with_rain">Ia %1$s diseară, %3$s.</string>
     <!-- "15" — preposition "la" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
     <!-- Missing insight prose strings. -->
     <string name="insight_precip_chance">Posibil %1$s.</string>
-    <string name="insight_tie_in_at_night">Ia %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Diseară, posibil %3$s, ia %1$s.</string>
+    <string name="insight_extras_at_night">Ia %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Diseară, posibil %3$s, ia %1$s.</string>
     <string name="insight_evening_rain">Diseară, %2$s.</string>
     <string name="insight_evening_rain_chance">Diseară, posibil %2$s.</string>
 
@@ -953,8 +953,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_calendar_master">Folosește calendarul meu</string>
     <string name="settings_calendar_master_description">Citește calendarele tale pentru a personaliza prognozele și ținutele. În mod implicit, nimic nu părăsește dispozitivul tău.</string>
     <string name="settings_calendar_features_title">Calendare personale</string>
-    <string name="settings_evening_add_ons">Suplimente pentru seară</string>
-    <string name="settings_evening_add_ons_description">Dacă ieși seara, prognoza de dimineață îți spune dacă trebuie să iei ceva în plus.</string>
+    <string name="settings_evening_extras">Suplimente pentru seară</string>
+    <string name="settings_evening_extras_description">Dacă ieși seara, prognoza de dimineață îți spune dacă trebuie să iei ceva în plus.</string>
     <string name="settings_calendar_birthdays_description">Folosește culori și mesaje speciale pentru zilele de naștere din calendarele tale.</string>
     <string name="settings_calendar_public_holidays_description">Folosește culori și mesaje speciale pentru sărbătorile din calendarele tale.</string>
     <string name="settings_calendar_open_system_settings">Deschide setările sistemului</string>

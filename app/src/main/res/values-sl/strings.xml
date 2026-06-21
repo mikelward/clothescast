@@ -91,17 +91,17 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="insight_condition_snow">Sneg</string>
     <string name="insight_condition_thunderstorm">Nevihta</string>
     <string name="insight_condition_unknown">Neznano</string>
-    <string name="insight_tie_in">Vzemi %1$s s seboj nocoj.</string>
-    <string name="insight_tie_in_with_rain">Vzemi %1$s s seboj nocoj, %3$s.</string>
+    <string name="insight_extras">Vzemi %1$s s seboj nocoj.</string>
+    <string name="insight_extras_with_rain">Vzemi %1$s s seboj nocoj, %3$s.</string>
     <!-- Slovenian time format uses "." separator: "ob 15.30". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
 
-    <!-- Insight: tie-in at night (no "Nocoj" prefix — band lead already set context). -->
-    <string name="insight_tie_in_at_night">Vzemi %1$s s seboj.</string>
+    <!-- Insight: extras at night (no "Nocoj" prefix — band lead already set context). -->
+    <string name="insight_extras_at_night">Vzemi %1$s s seboj.</string>
     <!-- Hedged precipitation: "Možnost dežja" (chance of rain). -->
     <string name="insight_precip_chance">Možnost %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Nocoj možnost %3$s, vzemi %1$s s seboj.</string>
+    <string name="insight_extras_with_rain_chance">Nocoj možnost %3$s, vzemi %1$s s seboj.</string>
     <string name="insight_evening_rain">Nocoj %2$s.</string>
     <string name="insight_evening_rain_chance">Nocoj možnost %2$s.</string>
 
@@ -961,8 +961,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_calendar_master">Uporabi moj koledar</string>
     <string name="settings_calendar_master_description">Bere tvoje koledarje za prilagajanje napovedi in oblek. Privzeto nič ne zapusti tvoje naprave.</string>
     <string name="settings_calendar_features_title">Osebni koledarji</string>
-    <string name="settings_evening_add_ons">Večerni dodatki</string>
-    <string name="settings_evening_add_ons_description">Če greš zvečer ven, ti jutranja napoved pove, ali moraš s seboj vzeti kaj dodatnega.</string>
+    <string name="settings_evening_extras">Večerni dodatki</string>
+    <string name="settings_evening_extras_description">Če greš zvečer ven, ti jutranja napoved pove, ali moraš s seboj vzeti kaj dodatnega.</string>
     <string name="settings_calendar_birthdays_description">Uporabi posebne barve in sporočila za rojstne dneve v tvojih koledarjih.</string>
     <string name="settings_calendar_public_holidays_description">Uporabi posebne barve in sporočila za državne praznike v tvojih koledarjih.</string>
     <string name="settings_calendar_open_system_settings">Odpri sistemske nastavitve</string>

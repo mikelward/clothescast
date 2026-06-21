@@ -414,7 +414,7 @@ new rule the first time something bites you, not the third.
   model's drizzle code, and the umbrella default is a plain
   `PrecipitationProbabilityAbove(10.0)` (rain jacket `PrecipitationProbabilityAbove(50.0)`),
   not an OR of probability and a code floor. The morning insight's evening
-  tie-in still has two emission paths off this number: when a clothes rule
+  extras still has two emission paths off this number: when a clothes rule
   fires for the evening window the clause names the item and folds in the
   rain ("Tonight, rain, bring a jacket."); when no rule fires but the
   blended chance clears 10% in the tonight window and the user has an

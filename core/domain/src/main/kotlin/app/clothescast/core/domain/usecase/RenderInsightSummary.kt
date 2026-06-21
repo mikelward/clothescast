@@ -2,13 +2,13 @@ package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarEvent
-import app.clothescast.core.domain.model.CalendarTieInClause
+import app.clothescast.core.domain.model.CalendarExtrasClause
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.DeltaFormat
-import app.clothescast.core.domain.model.EveningEventTieInClause
+import app.clothescast.core.domain.model.EveningEventExtrasClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.InsightSummary
@@ -32,7 +32,7 @@ import kotlin.math.roundToInt
  * special-cases evening data — the morning's heads-up about a cold or rainy
  * evening event is computed by the caller by running this same render against
  * the night slice and folding the resulting clothes + precip clauses into an
- * [EveningEventTieInClause] (see [GenerateDailyInsight]).
+ * [EveningEventExtrasClause] (see [GenerateDailyInsight]).
  *
  * Rules (each yields 0 or 1 clause):
  * 1. [BandClause] — classify feels-like low and high into bands. Always emitted.
@@ -48,15 +48,15 @@ import kotlin.math.roundToInt
  *    band (10–49%). Below 10% nothing fires. The peak hour is the wettest hour
  *    of [today.hourly]; when that series is empty or sub-10% it falls back to a
  *    noon synthesis from the day-level [DailyForecast.precipitationProbabilityMaxPct].
- * 5. [CalendarTieInClause] — when clothes + precip both fired AND a calendar
+ * 5. [CalendarExtrasClause] — when clothes + precip both fired AND a calendar
  *    event overlaps the precip peak hour. Names the first triggered item in
  *    rule order, mirroring rule 3's ordering (no umbrella priority — the
  *    formatter silences accessories, so see the inline comment where the
  *    clause is built).
  *    **Only emitted on [ForecastPeriod.TONIGHT].** On TODAY the bare precip
  *    clause ("Rain at 3pm.") is enough — the listener already knows about
- *    their morning event, so chaining a tie-in just repeats what they heard.
- * 6. [EveningEventTieInClause] — passes through whatever the caller built. The
+ *    their morning event, so chaining an extras just repeats what they heard.
+ * 6. [EveningEventExtrasClause] — passes through whatever the caller built. The
  *    renderer doesn't know how to compose one because it requires consulting
  *    the night forecast slice, which is the caller's job.
  *
@@ -76,12 +76,12 @@ class RenderInsightSummary {
         // Defaults to [today], which is correct when the caller hasn't sliced
         // the forecast (e.g. in unit tests that pass raw 24h fields on both sides).
         todayForDelta: DailyForecast = today,
-        // Pre-built evening tie-in. The caller (GenerateDailyInsight) constructs
+        // Pre-built evening extras. The caller (GenerateDailyInsight) constructs
         // it by running render() against the night slice and folding the
         // resulting clothes + precip clauses, gated on the user having an
         // event away from home that night. This renderer is period-local and
         // doesn't compose it.
-        eveningEventTieIn: EveningEventTieInClause? = null,
+        eveningEventExtras: EveningEventExtrasClause? = null,
         // Feels-like delta (°C) the day must clear before the delta clause is
         // emitted. null disables the clause entirely. Defaults to the historical
         // 3°C threshold so existing callers/tests are unchanged.
@@ -102,7 +102,7 @@ class RenderInsightSummary {
         yesterdayTriggeredItems: List<String> = emptyList(),
         // Threshold-rule matches only, separate from [todayItems] (which
         // includes per-tier default items). Drives "bring X for your
-        // event" tie-ins, where a default isn't an "extra" the user
+        // event" extras, where a default isn't an "extra" the user
         // needs to bring — it's the baseline outfit they already have
         // on. Defaults to [todayItems] for backward-compat with callers
         // that don't distinguish (mostly tests passing synthetic rule
@@ -113,7 +113,7 @@ class RenderInsightSummary {
         todayRuleItems: List<String> = todayItems,
         // Start of the tonight window, used only to date the precip peak when
         // pairing it against the dated calendar events for the TONIGHT
-        // calendar tie-in: peak hours at/after this time fall on [today]'s
+        // calendar extras: peak hours at/after this time fall on [today]'s
         // date, earlier ones on the next day — the same wrap convention as
         // [tonightWindow], via the shared [tonightDateTime] helper. Defaults
         // to the 19:00 schedule default so existing callers/tests are
@@ -140,7 +140,7 @@ class RenderInsightSummary {
             delta = if (period == ForecastPeriod.TODAY) deltaClause(todayForDelta, yesterday, deltaThresholdC, deltaFormat, diagLog) else null,
             clothes = clothesClause(todayItems, period, clothesMentionMode, yesterdayTriggeredItems),
             precip = peak?.let { PrecipClause(it.condition, it.time, it.likelihood, it.allDay) },
-            // Calendar tie-in only fires on TONIGHT — pairing the precip peak
+            // Calendar extras only fires on TONIGHT — pairing the precip peak
             // with an event the listener hasn't yet attended ("Bring an
             // umbrella.") is the case where it adds value. Event titles and
             // times never appear in the rendered prose — they don't flow
@@ -151,14 +151,14 @@ class RenderInsightSummary {
             // umbrella." after it just repeats what the user already heard.
             //
             // Threshold-rule matches only — a tier's default isn't an
-            // "extra to bring," so it shouldn't be what the tie-in
+            // "extra to bring," so it shouldn't be what the extras
             // points at.
-            calendarTieIn = if (period == ForecastPeriod.TONIGHT) {
-                calendarTieInClause(todayRuleItems, peak, events, today.date, tonightStart)
+            calendarExtras = if (period == ForecastPeriod.TONIGHT) {
+                calendarExtrasClause(todayRuleItems, peak, events, today.date, tonightStart)
             } else {
                 null
             },
-            eveningEventTieIn = eveningEventTieIn,
+            eveningEventExtras = eveningEventExtras,
             // Carried accessories (umbrella) ride independently of the wear
             // clause: the formatter folds them into the precip clause, so they
             // must survive clothes-mention gating that suppresses [clothes].
@@ -314,7 +314,7 @@ class RenderInsightSummary {
 
     /**
      * Resolves the precipitation peak hour the way the precip rule needs it. Lifted
-     * out of the precip clause assembly so the calendar-tie-in rule can pair an
+     * out of the precip clause assembly so the calendar-extras rule can pair an
      * event window against the same time without re-running the logic and getting
      * out of sync.
      *
@@ -359,7 +359,7 @@ class RenderInsightSummary {
         // chance-of-rain bar, a dry weather *code* doesn't cancel the rain. A
         // high-POP overcast hour (high probability, ~0 modeled accumulation) is
         // rain by the numbers — the umbrella rule and the conditions strip already
-        // fire from the probability alone, so the prose and evening tie-in must
+        // fire from the probability alone, so the prose and evening extras must
         // agree rather than going silent on the code. Coerce a non-precipitating
         // code to RAIN; snow (and drizzle / rain / thunderstorm) keep their own
         // condition, so snow still reads as snow.
@@ -378,13 +378,13 @@ class RenderInsightSummary {
         return PeakPrecip(time, condition, likelihood, allDay)
     }
 
-    private fun calendarTieInClause(
+    private fun calendarExtrasClause(
         items: List<String>,
         peak: PeakPrecip?,
         events: List<CalendarEvent>,
         todayDate: LocalDate,
         tonightStart: LocalTime,
-    ): CalendarTieInClause? {
+    ): CalendarExtrasClause? {
         if (items.isEmpty() || peak == null || events.isEmpty()) return null
         // Need an overlapping event to motivate the clause, but we don't capture
         // the event's title or time — neither is in the rendered prose, and we
@@ -399,8 +399,8 @@ class RenderInsightSummary {
         // Pick the first triggered item, mirroring rule 3's ordering. The formatter
         // silences accessories (umbrella) before they reach the rendered prose, so
         // there's no point picking a specifically-precip-motivated item here — until
-        // the accessory catalog lands, calendar tie-ins are garment-only.
-        return CalendarTieInClause(item = items.first())
+        // the accessory catalog lands, calendar extras are garment-only.
+        return CalendarExtrasClause(item = items.first())
     }
 
     /**

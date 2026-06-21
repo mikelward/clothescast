@@ -96,8 +96,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="insight_condition_snow">Tuyết</string>
     <string name="insight_condition_thunderstorm">Giông bão</string>
     <string name="insight_condition_unknown">Không xác định</string>
-    <string name="insight_tie_in">Mang %1$s tối nay.</string>
-    <string name="insight_tie_in_with_rain">Mang %1$s tối nay, %3$s.</string>
+    <string name="insight_extras">Mang %1$s tối nay.</string>
+    <string name="insight_extras_with_rain">Mang %1$s tối nay, %3$s.</string>
     <!-- "15 giờ" / "15 giờ 30 phút" — preposition "lúc" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d giờ</string>
     <string name="insight_time_hour_minutes">%1$d giờ %2$02d phút</string>
@@ -619,8 +619,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          Insight prose — additional templates
          ===================================================================== -->
     <string name="insight_precip_chance">Có thể %1$s.</string>
-    <string name="insight_tie_in_at_night">Mang %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Tối nay, có thể %3$s, mang %1$s.</string>
+    <string name="insight_extras_at_night">Mang %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Tối nay, có thể %3$s, mang %1$s.</string>
     <string name="insight_evening_rain">Tối nay, %2$s.</string>
     <string name="insight_evening_rain_chance">Tối nay, có thể %2$s.</string>
 
@@ -1038,8 +1038,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_calendar_master">Dùng lịch của tôi</string>
     <string name="settings_calendar_master_description">Đọc lịch của bạn để cá nhân hóa dự báo và trang phục. Theo mặc định, không có gì rời khỏi thiết bị của bạn.</string>
     <string name="settings_calendar_features_title">Lịch cá nhân</string>
-    <string name="settings_evening_add_ons">Vật dụng thêm cho buổi tối</string>
-    <string name="settings_evening_add_ons_description">Nếu bạn ra ngoài vào buổi tối, dự báo buổi sáng sẽ cho bạn biết có cần mang thêm gì không.</string>
+    <string name="settings_evening_extras">Vật dụng thêm cho buổi tối</string>
+    <string name="settings_evening_extras_description">Nếu bạn ra ngoài vào buổi tối, dự báo buổi sáng sẽ cho bạn biết có cần mang thêm gì không.</string>
     <string name="settings_calendar_birthdays_description">Dùng màu sắc và thông điệp đặc biệt cho sinh nhật trong lịch của bạn.</string>
     <string name="settings_calendar_public_holidays_description">Dùng màu sắc và thông điệp đặc biệt cho ngày lễ công cộng trong lịch của bạn.</string>
     <string name="settings_calendar_open_system_settings">Mở cài đặt hệ thống</string>

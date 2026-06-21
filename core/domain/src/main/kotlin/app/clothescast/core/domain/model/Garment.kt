@@ -268,7 +268,7 @@ enum class Garment(
          *
          * Operates on `ClothesRule`s (not item strings) so callers that
          * still need the originating rule — for the rationale dialog, the
-         * tie-in delta, etc. — can keep the linkage instead of round-
+         * extras delta, etc. — can keep the linkage instead of round-
          * tripping through `Garment.fromKey`.
          *
          * Rule of thumb: the returned list, mapped through `.item`, is

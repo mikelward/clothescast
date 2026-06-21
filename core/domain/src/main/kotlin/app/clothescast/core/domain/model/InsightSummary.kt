@@ -6,7 +6,7 @@ import java.time.LocalTime
  * The structured form of a daily insight. Each clause is a pure-data description
  * of one of the seven independent rules in
  * [app.clothescast.core.domain.usecase.RenderInsightSummary] (band, delta,
- * clothes, precip, calendar tie-in, evening-event tie-in); the corresponding
+ * clothes, precip, calendar extras, evening-event extras); the corresponding
  * prose is produced by an Android-side formatter that resolves item keys and
  * templates through string resources.
  *
@@ -20,9 +20,9 @@ import java.time.LocalTime
  * The [period] determines a couple of presentation choices: the band sentence's
  * lead-in ("Today will be …" vs "Tonight will be …"), whether the [delta]
  * clause is emitted at all (tonight skips the yesterday-vs-today comparison the
- * morning pass already covered), which tie-in clause carries event-mentions
- * (TONIGHT uses [calendarTieIn]; TODAY uses [eveningEventTieIn] when the user
- * opts in via "Mention evening events"), and whether [calendarTieIn] is
+ * morning pass already covered), which extras clause carries event-mentions
+ * (TONIGHT uses [calendarExtras]; TODAY uses [eveningEventExtras] when the user
+ * opts in via "Mention evening events"), and whether [calendarExtras] is
  * suppressed entirely (it is on TODAY — the bare precip clause is enough,
  * since the morning event the listener is mentally parsed against is already
  * known to them).
@@ -33,19 +33,19 @@ data class InsightSummary(
     val delta: DeltaClause? = null,
     val clothes: ClothesClause? = null,
     val precip: PrecipClause? = null,
-    val calendarTieIn: CalendarTieInClause? = null,
+    val calendarExtras: CalendarExtrasClause? = null,
     /**
-     * A second tie-in for morning insights: an evening event paired with a
+     * A second extras for morning insights: an evening event paired with a
      * clothing tip derived from the *evening* forecast slice. Renders as
-     * "Tonight, bring a jacket." — no event title (see [EveningEventTieInClause]
+     * "Tonight, bring a jacket." — no event title (see [EveningEventExtrasClause]
      * for why a calendar event name never reaches the rendered prose).
      *
      * Only emitted on TODAY when the user has the "Mention evening events"
-     * setting on. The TONIGHT pass uses [calendarTieIn] for its own event
-     * tie-ins; that clause is anchored to a precip-peak hour the listener
+     * setting on. The TONIGHT pass uses [calendarExtras] for its own event
+     * extras; that clause is anchored to a precip-peak hour the listener
      * doesn't already know about, and likewise carries no event title.
      */
-    val eveningEventTieIn: EveningEventTieInClause? = null,
+    val eveningEventExtras: EveningEventExtrasClause? = null,
     /**
      * Carried accessories (today only umbrella) the user's rules fired,
      * independent of [clothes]. The formatter folds these into the precip
@@ -191,7 +191,7 @@ data class PrecipClause(
 enum class PrecipLikelihood { LIKELY, POSSIBLE }
 
 /**
- * Calendar tie-in: a clothes [item] keyed off the precipitation peak overlapping
+ * Calendar extras: a clothes [item] keyed off the precipitation peak overlapping
  * a calendar event. The formatter renders this as "Bring <item> tonight." — no
  * event title, because we never want a calendar event name in the rendered prose
  * (the prose is fed to off-device TTS engines), and no time, because the matched
@@ -199,13 +199,13 @@ enum class PrecipLikelihood { LIKELY, POSSIBLE }
  * [ForecastPeriod.TONIGHT]; on [ForecastPeriod.TODAY] the bare precip clause
  * carries the message.
  */
-data class CalendarTieInClause(val item: String)
+data class CalendarExtrasClause(val item: String)
 
 /**
- * Evening-event tie-in for the morning insight: clothes [items] hinted at by
+ * Evening-event extras for the morning insight: clothes [items] hinted at by
  * an evening calendar event. The formatter renders this as "Tonight, bring
  * <items>." — no event title, for the same off-device-prose reason as
- * [CalendarTieInClause]. Only emitted on [ForecastPeriod.TODAY] when the user
+ * [CalendarExtrasClause]. Only emitted on [ForecastPeriod.TODAY] when the user
  * has the "Mention evening events" setting on.
  *
  * [items] carries every clothes item the night needs that the day didn't
@@ -242,7 +242,7 @@ data class CalendarTieInClause(val item: String)
  * this field existed — the formatter treats that as "unknown, skip the
  * accessory" rather than guess.
  */
-data class EveningEventTieInClause(
+data class EveningEventExtrasClause(
     val items: List<String> = emptyList(),
     val rainTime: LocalTime? = null,
     val likelihood: PrecipLikelihood = PrecipLikelihood.LIKELY,

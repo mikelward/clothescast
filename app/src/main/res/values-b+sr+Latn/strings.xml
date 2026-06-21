@@ -118,10 +118,10 @@ default English (matching values-pl / values-uk).
     <string name="insight_condition_snow">Sneg</string>
     <string name="insight_condition_thunderstorm">Grmljavina</string>
     <string name="insight_condition_unknown">Nepoznato</string>
-    <string name="insight_tie_in">Ponesi %1$s večeras.</string>
-    <string name="insight_tie_in_at_night">Ponesi %1$s.</string>
-    <string name="insight_tie_in_with_rain">Ponesi %1$s večeras, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Večeras moguća %3$s, ponesi %1$s.</string>
+    <string name="insight_extras">Ponesi %1$s večeras.</string>
+    <string name="insight_extras_at_night">Ponesi %1$s.</string>
+    <string name="insight_extras_with_rain">Ponesi %1$s večeras, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Večeras moguća %3$s, ponesi %1$s.</string>
     <string name="insight_evening_rain">Večeras %2$s.</string>
     <string name="insight_evening_rain_chance">Večeras moguća %2$s.</string>
     <!-- "15" — preposition "u" comes from surrounding templates. -->
@@ -965,8 +965,8 @@ default English (matching values-pl / values-uk).
     <string name="settings_calendar_master">Koristi moj kalendar</string>
     <string name="settings_calendar_master_description">Čita tvoje kalendare radi personalizacije prognoza i outfita. Podrazumevano ništa ne napušta tvoj uređaj.</string>
     <string name="settings_calendar_features_title">Lični kalendari</string>
-    <string name="settings_evening_add_ons">Večernji dodaci</string>
-    <string name="settings_evening_add_ons_description">Ako uveče izlaziš, jutarnja prognoza ti kaže da li treba da poneseš nešto dodatno.</string>
+    <string name="settings_evening_extras">Večernji dodaci</string>
+    <string name="settings_evening_extras_description">Ako uveče izlaziš, jutarnja prognoza ti kaže da li treba da poneseš nešto dodatno.</string>
     <string name="settings_calendar_birthdays_description">Koristi posebne boje i poruke za rođendane u tvojim kalendarima.</string>
     <string name="settings_calendar_public_holidays_description">Koristi posebne boje i poruke za državne praznike u tvojim kalendarima.</string>
     <string name="settings_calendar_open_system_settings">Otvori sistemska podešavanja</string>

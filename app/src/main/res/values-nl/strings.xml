@@ -424,10 +424,10 @@ the displayed label localizes.
     <string name="insight_condition_thunderstorm">Onweer</string>
     <string name="insight_condition_unknown">Onbekend</string>
 
-    <string name="insight_tie_in">Neem %1$s mee vanavond.</string>
-    <string name="insight_tie_in_at_night">Neem %1$s mee vanavond.</string>
-    <string name="insight_tie_in_with_rain">Neem %1$s mee vanavond, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Kans op %3$s — neem %1$s mee.</string>
+    <string name="insight_extras">Neem %1$s mee vanavond.</string>
+    <string name="insight_extras_at_night">Neem %1$s mee vanavond.</string>
+    <string name="insight_extras_with_rain">Neem %1$s mee vanavond, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Kans op %3$s — neem %1$s mee.</string>
     <string name="insight_evening_rain">Vanavond %2$s.</string>
     <string name="insight_evening_rain_chance">Vanavond kans op %2$s.</string>
     <string name="insight_precip_chance">Kans op %1$s.</string>
@@ -476,7 +476,7 @@ the displayed label localizes.
     <string name="today_failed_no_location">Je locatie kon niet worden bepaald. Sta permanente locatietoegang toe of stel een stad in via de instellingen.</string>
     <string name="today_location_required_title">Stel je locatie in</string>
     <string name="today_location_required_body">ClothesCast heeft je locatie nodig om de voorspelling op te halen. Sta permanente locatietoegang toe of kies een stad.</string>
-    <string name="today_location_required_action">Locatie-instellingen openen</string>
+    <string name="today_location_required_action">Locaextrastellingen openen</string>
 
     <string name="today_rationale_title">Waarom dit outfit?</string>
     <string name="today_rationale_show">Waarom?</string>
@@ -846,7 +846,7 @@ the displayed label localizes.
     <string name="settings_holidays_source_all">Alle landen</string>
     <string name="settings_holidays_link_settings">Instellingen</string>
     <string name="settings_holidays_link_calendar_settings_a11y">Kalenderinstellingen</string>
-    <string name="settings_holidays_link_location_settings_a11y">Locatie-instellingen</string>
+    <string name="settings_holidays_link_location_settings_a11y">Locaextrastellingen</string>
     <string name="settings_holidays_link_region_settings_a11y">Regio-instellingen</string>
     <string name="settings_holidays_permission_revoked">Kalendermachtiging vereist. Tik om opnieuw te verlenen.</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
@@ -1024,8 +1024,8 @@ the displayed label localizes.
     <string name="settings_calendar_master">Mijn agenda gebruiken</string>
     <string name="settings_calendar_master_description">Leest je agenda\'s om voorspellingen en outfits te personaliseren. Standaard verlaat niets je apparaat.</string>
     <string name="settings_calendar_features_title">Persoonlijke agenda\'s</string>
-    <string name="settings_evening_add_ons">Extra spullen voor de avond</string>
-    <string name="settings_evening_add_ons_description">Als je \'s avonds uitgaat, vertelt de ochtendvoorspelling je of je iets extra\'s moet meenemen.</string>
+    <string name="settings_evening_extras">Extra spullen voor de avond</string>
+    <string name="settings_evening_extras_description">Als je \'s avonds uitgaat, vertelt de ochtendvoorspelling je of je iets extra\'s moet meenemen.</string>
     <string name="settings_calendar_birthdays_description">Gebruik speciale kleuren en berichten voor verjaardagen in je agenda\'s.</string>
     <string name="settings_calendar_public_holidays_description">Gebruik speciale kleuren en berichten voor feestdagen in je agenda\'s.</string>
     <string name="settings_calendar_open_system_settings">Systeeminstellingen openen</string>
@@ -1305,7 +1305,7 @@ the displayed label localizes.
     <string name="settings_page_region">Regio-instellingen</string>
     <string name="settings_page_clothes">Kledinginstellingen</string>
     <string name="settings_page_display">Weergave-instellingen</string>
-    <string name="settings_page_location">Locatie-instellingen</string>
+    <string name="settings_page_location">Locaextrastellingen</string>
     <string name="settings_page_calendar">Agenda-instellingen</string>
     <string name="settings_page_forecasters">Voorspellingsmodelinstellingen</string>
     <string name="settings_page_smart_home">Slim thuis-instellingen</string>

@@ -7,7 +7,7 @@ import java.util.Locale
 
 /**
  * Joins a list of clothes items into a single comma/and-separated phrase
- * suitable for the "Wear …" sentence and the calendar tie-in. Article picking
+ * suitable for the "Wear …" sentence and the calendar extras. Article picking
  * is grammar-specific (English needs "a" / "an" only on the first item; German
  * articles depend on grammatical gender; languages with no articles need
  * nothing) so each language plugs in its own [ClothesPhraser]. Unknown locales
@@ -16,7 +16,7 @@ import java.util.Locale
  * locale's `insight_clothes_join_*` templates.
  */
 internal interface ClothesPhraser {
-    /** Article-prefixed form of a single item, used by the calendar tie-in clause. */
+    /** Article-prefixed form of a single item, used by the calendar extras clause. */
     fun withArticle(item: String): String
 
     /**
@@ -123,7 +123,7 @@ internal class EnglishClothesPhraser(private val resources: Resources) : Clothes
  * German list join: items are emitted bare because we don't carry grammatical
  * gender on each clothes rule (der/die/das ⇒ einen/eine/ein for "Trag …"), so
  * any guessed article is wrong half the time. Items are joined with commas
- * and a final "und"; no Oxford comma. The calendar tie-in ("Denk an …")
+ * and a final "und"; no Oxford comma. The calendar extras ("Denk an …")
  * likewise emits the item bare.
  *
  * Items are passed through [translate] first so the default English-keyed

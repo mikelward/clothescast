@@ -60,11 +60,11 @@ class OpenMeteoClientTest {
         client.fetchForecast(london)
 
         // The confidence fetcher also hits /v1/forecast (one batched call across
-        // all configured models) with a different param shape (no past_days).
-        // Pick out the primary call by looking for past_days=1 so this test isn't
-        // sensitive to async ordering.
+        // all configured models). Both calls now carry past_days=1, so pick out
+        // the primary call by the absence of `models` (only the confidence call
+        // lists them) so this test isn't sensitive to async ordering.
         val forecastReq = captured.first {
-            it.url.encodedPath == "/v1/forecast" && it.url.parameters["past_days"] == "1"
+            it.url.encodedPath == "/v1/forecast" && it.url.parameters["models"] == null
         }
         forecastReq.url.host shouldBe OPEN_METEO_HOST
 
@@ -151,7 +151,11 @@ class OpenMeteoClientTest {
             }
         """.trimIndent()
         val engine = MockEngine { request ->
-            val isPrimary = request.url.parameters["past_days"] == "1"
+            // Both calls now carry past_days=1 (the per-model confidence call
+            // reaches back into yesterday so the Overnight chart's per-model
+            // lines have pre-midnight data). The confidence call is the one
+            // that lists `models`; the primary forecast doesn't.
+            val isPrimary = request.url.parameters["models"] == null
             respond(
                 content = if (isPrimary) primaryJson else confidenceJson,
                 status = HttpStatusCode.OK,

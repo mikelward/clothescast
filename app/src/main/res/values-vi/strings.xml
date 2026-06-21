@@ -245,26 +245,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <!-- =====================================================================
          Onboarding
          ===================================================================== -->
-    <string name="onboarding_title">Chào mừng đến với ClothesCast</string>
-    <string name="onboarding_subtitle">Ba lựa chọn nhanh là xong. Có thể chỉnh lại sau trong Cài đặt.</string>
-    <string name="onboarding_subtitle_tv">Hai lựa chọn nhanh là xong. Có thể chỉnh lại sau trong Cài đặt.</string>
-    <string name="onboarding_notifications_title">Thông báo</string>
-    <string name="onboarding_notifications_description">Cần thiết để gửi ClothesCast hàng ngày.</string>
-    <string name="onboarding_notifications_grant">Cấp quyền thông báo</string>
-    <string name="onboarding_location_title">Vị trí</string>
-    <string name="onboarding_location_description">Tải dự báo cho vị trí xấp xỉ của bạn.</string>
-    <string name="onboarding_location_grant">Cấp quyền vị trí</string>
-    <string name="onboarding_location_grant_background">Cấp quyền vị trí luôn bật</string>
-    <string name="onboarding_location_background_needed">Một bước nữa: ClothesCast cần \'Cho phép mọi lúc\' để dự báo buổi sáng có thể đọc vị trí của bạn khi ứng dụng đóng.</string>
-    <string name="onboarding_location_denied_hint">Đã từ chối quyền vị trí. Bạn có thể nhập thành phố thủ công thay thế.</string>
-    <string name="onboarding_location_enter_manual">Nhập vị trí thủ công</string>
-    <string name="onboarding_location_enter_manual_hint">Bạn có thể nhập thủ công nếu từ chối quyền vị trí hoặc vị trí thiết bị không chính xác.</string>
-    <string name="onboarding_location_using_device">Đang dùng vị trí thiết bị mỗi buổi sáng.</string>
-    <string name="onboarding_gemini_title">Khóa API Gemini</string>
-    <string name="onboarding_gemini_description">Dùng Gemini để có giọng đọc chất lượng cao.</string>
-    <string name="onboarding_step_done">Xong</string>
-    <string name="onboarding_skip">Bỏ qua</string>
-    <string name="onboarding_continue">Tiếp tục</string>
     <string name="onboarding_pair_from_phone">Kết nối từ điện thoại thay thế</string>
 
     <!-- =====================================================================

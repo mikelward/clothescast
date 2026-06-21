@@ -310,23 +310,7 @@ displayed label localizes.
     <string name="conditions_wind">%1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
-    <string name="onboarding_title">Tervetuloa ClothesCastiin</string>
-    <string name="onboarding_subtitle">Kaksi nopeaa valintaa ja olet valmis. Kaikella muulla on järkevä oletusarvo, jonka voit myöhemmin muuttaa asetuksissa.</string>
-    <string name="onboarding_notifications_title">Ilmoitukset</string>
-    <string name="onboarding_notifications_description">Jotta päivittäinen ClothesCastisi tavoittaa sinut. Salli kerran, ja se on huomenna aamulla valmiina.</string>
-    <string name="onboarding_notifications_grant">Salli ilmoitukset</string>
-    <string name="onboarding_location_title">Sijainti</string>
-    <string name="onboarding_location_description">Jotta oikea ennuste haetaan. Sijaintiluvalla ClothesCast lukee laitteesi suunnilleen sijaintisi joka aamu; muuten valitse kaupunki manuaalisesti.</string>
-    <string name="onboarding_location_grant">Salli sijaintipääsy</string>
-    <string name="onboarding_location_denied_hint">Sijaintipääsy evätty. Voit valita kaupungin manuaalisesti sen sijaan.</string>
-    <string name="onboarding_location_enter_manual">Syötä sijainti manuaalisesti</string>
-    <string name="onboarding_location_using_device">Käytämme laitteesi sijaintia joka aamu.</string>
 
-    <string name="onboarding_gemini_title">Gemini API -avain</string>
-    <string name="onboarding_gemini_description">ClothesCast käyttää tätä puheääniä ja ennusteen luomista varten. Hanki ilmainen avain osoitteesta aistudio.google.com. Avain tallennetaan salattuna Android Keystoreen.</string>
-    <string name="onboarding_step_done">Valmis</string>
-    <string name="onboarding_skip">Ohita toistaiseksi</string>
-    <string name="onboarding_continue">Jatka</string>
 
     <string name="insight_lead_today">Tänään</string>
     <string name="insight_lead_tomorrow">Huomenna</string>
@@ -456,11 +440,7 @@ displayed label localizes.
     <string name="today_crash_banner_share">Jaa raportti</string>
     <string name="today_crash_banner_dismiss">Sulje</string>
 
-    <string name="onboarding_subtitle_tv">Kaksi nopeaa valintaa ja olet valmis. Kaiken muun voit säätää myöhemmin asetuksissa.</string>
 
-    <string name="onboarding_location_grant_background">Salli aina</string>
-    <string name="onboarding_location_background_needed">Vielä yksi askel: ClothesCast tarvitsee "Salli aina" -luvan, jotta aamuinen ennuste voi lukea sijaintisi sovelluksen ollessa suljettuna.</string>
-    <string name="onboarding_location_enter_manual_hint">Voit syöttää sijaintisi manuaalisesti, jos hylkäät sijaintipääsyn tai laitteen sijainti on väärä.</string>
 
     <string name="settings_root_display">Näyttö</string>
     <string name="settings_root_location">Sijainti</string>

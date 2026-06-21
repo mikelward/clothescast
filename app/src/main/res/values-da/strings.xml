@@ -468,27 +468,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
-    <string name="onboarding_title">Velkommen til ClothesCast</string>
-    <string name="onboarding_subtitle">To hurtige valg, og du er klar. Alt andet har en fornuftig standardindstilling, som du kan ændre senere i indstillingerne.</string>
-    <string name="onboarding_subtitle_tv">To hurtige valg, og du er klar. Alt andet kan du tilpasse senere i indstillingerne.</string>
-    <string name="onboarding_notifications_title">Notifikationer</string>
-    <string name="onboarding_notifications_description">For at dit daglige ClothesCast kan nå dig. Tillad én gang, og i morgen tidlig er det der.</string>
-    <string name="onboarding_notifications_grant">Tillad notifikationer</string>
-    <string name="onboarding_location_title">Placering</string>
-    <string name="onboarding_location_description">For at hente den rigtige prognose. Med placeringsadgang læser ClothesCast hver morgen den omtrentlige placering af din enhed; ellers vælger du en by manuelt.</string>
-    <string name="onboarding_location_grant">Tillad placeringsadgang</string>
-    <string name="onboarding_location_denied_hint">Placeringsadgang nægtet. Du kan i stedet vælge en by manuelt.</string>
-    <string name="onboarding_location_enter_manual">Angiv placering manuelt</string>
-    <string name="onboarding_location_using_device">Vi bruger din enheds placering hver morgen.</string>
-    <string name="onboarding_location_grant_background">Tillad altid</string>
-    <string name="onboarding_location_background_needed">Ét skridt mere: ClothesCast har brug for "Tillad altid", for at morgenprognoserne kan læse din placering, mens appen er lukket.</string>
-    <string name="onboarding_location_enter_manual_hint">Du kan angive din placering manuelt, hvis du nægter placeringsadgang, eller hvis enhedens placering er forkert.</string>
 
-    <string name="onboarding_gemini_title">Gemini API-nøgle</string>
-    <string name="onboarding_gemini_description">Bruges af ClothesCast til talte stemmer og prognosegenering. Hent en gratis på aistudio.google.com. Nøglen gemmes krypteret i Android Keystore.</string>
-    <string name="onboarding_step_done">Færdig</string>
-    <string name="onboarding_skip">Spring over for nu</string>
-    <string name="onboarding_continue">Fortsæt</string>
     <string name="onboarding_pair_from_phone">Par fra telefonen i stedet</string>
 
     <!-- Pairing screen (TV). -->

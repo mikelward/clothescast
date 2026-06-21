@@ -467,27 +467,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
-    <string name="onboarding_title">Vítej v ClothesCastu</string>
-    <string name="onboarding_subtitle">Dvě rychlé volby a můžeš začít. Vše ostatní má rozumné výchozí hodnoty, které můžeš později změnit v nastavení.</string>
-    <string name="onboarding_subtitle_tv">Dvě rychlé volby a můžeš začít. Vše ostatní můžeš změnit později v nastavení.</string>
-    <string name="onboarding_notifications_title">Oznámení</string>
-    <string name="onboarding_notifications_description">Aby ti tvůj denní ClothesCast dorazil. Jednou povol a ráno bude tady.</string>
-    <string name="onboarding_notifications_grant">Povolit oznámení</string>
-    <string name="onboarding_location_title">Poloha</string>
-    <string name="onboarding_location_description">Aby se načetla správná předpověď. S přístupem k poloze bude ClothesCast každé ráno číst přibližnou polohu tvého zařízení; jinak vyber město ručně.</string>
-    <string name="onboarding_location_grant">Povolit přístup k poloze</string>
-    <string name="onboarding_location_denied_hint">Přístup k poloze byl odmítnut. Místo toho můžeš ručně vybrat město.</string>
-    <string name="onboarding_location_enter_manual">Zadat polohu ručně</string>
-    <string name="onboarding_location_using_device">Každé ráno budeme používat polohu tvého zařízení.</string>
-    <string name="onboarding_location_grant_background">Vždy povolit</string>
-    <string name="onboarding_location_background_needed">Ještě jeden krok: ClothesCast potřebuje „Vždy povolit", aby ranní předpověď mohla číst tvou polohu, když je aplikace zavřená.</string>
-    <string name="onboarding_location_enter_manual_hint">Svou polohu můžeš zadat ručně, pokud odmítneš přístup k poloze nebo je poloha zařízení nesprávná.</string>
 
-    <string name="onboarding_gemini_title">Gemini API klíč</string>
-    <string name="onboarding_gemini_description">Používá ho ClothesCast pro mluvené hlasy a generování předpovědí. Získej ho zdarma na aistudio.google.com. Klíč je zašifrovaně uložen v Android Keystoru.</string>
-    <string name="onboarding_step_done">Hotovo</string>
-    <string name="onboarding_skip">Zatím přeskočit</string>
-    <string name="onboarding_continue">Pokračovat</string>
     <string name="onboarding_pair_from_phone">Místo toho spárovat z telefonu</string>
 
     <!-- Pairing (TV). -->

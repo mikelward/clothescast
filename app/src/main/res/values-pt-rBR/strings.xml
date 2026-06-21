@@ -398,23 +398,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     address prose stays in você-form imperative ("Defina", "Conceda",
     "Escolha").
     -->
-    <string name="onboarding_title">Boas-vindas ao ClothesCast</string>
-    <string name="onboarding_subtitle">Duas escolhas rápidas e tudo certo. Todo o resto tem um valor padrão razoável que você poderá ajustar depois nas configurações.</string>
-    <string name="onboarding_notifications_title">Notificações</string>
-    <string name="onboarding_notifications_description">Necessárias para entregar seu ClothesCast diário. Conceda uma vez e ClothesCast aparecerá amanhã de manhã.</string>
-    <string name="onboarding_notifications_grant">Conceder notificações</string>
-    <string name="onboarding_location_title">Localização</string>
-    <string name="onboarding_location_description">Usada para buscar a previsão correta. Ao conceder a localização, ClothesCast pode ler toda manhã a localização aproximada do seu aparelho; caso contrário, escolha uma cidade manualmente.</string>
-    <string name="onboarding_location_grant">Conceder acesso à localização</string>
-    <string name="onboarding_location_denied_hint">Acesso à localização negado. Você pode escolher uma cidade manualmente.</string>
-    <string name="onboarding_location_enter_manual">Inserir localização manualmente</string>
-    <string name="onboarding_location_using_device">Usando a localização do seu aparelho toda manhã.</string>
 
-    <string name="onboarding_gemini_title">Chave API Gemini</string>
-    <string name="onboarding_gemini_description">Usada pelo ClothesCast para vozes faladas e geração de previsões. Obtenha uma gratuita em aistudio.google.com. A chave é criptografada em repouso com o Android Keystore.</string>
-    <string name="onboarding_step_done">Concluído</string>
-    <string name="onboarding_skip">Pular por enquanto</string>
-    <string name="onboarding_continue">Continuar</string>
 
     <string name="insight_lead_today">Hoje</string>
     <string name="insight_lead_tomorrow">Amanhã</string>
@@ -550,12 +534,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_crash_banner_dismiss">Fechar</string>
 
     <!-- TV-specific onboarding subtitle (two steps instead of three). -->
-    <string name="onboarding_subtitle_tv">Duas escolhas rápidas e você está pronto. Todo o resto pode ser ajustado nas configurações mais tarde.</string>
 
     <!-- Onboarding — background location step. -->
-    <string name="onboarding_location_grant_background">Permitir sempre</string>
-    <string name="onboarding_location_background_needed">Mais um passo: o ClothesCast precisa de \'Permitir sempre\' para que a previsão matinal possa ler sua localização enquanto o app está fechado.</string>
-    <string name="onboarding_location_enter_manual_hint">Você pode inserir sua localização manualmente se recusar o acesso à localização ou se a localização do dispositivo estiver incorreta.</string>
 
     <!-- Settings root — rows not yet translated. -->
     <string name="settings_root_display">Tela</string>

@@ -238,26 +238,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- ============================================================
          Onboarding
          ============================================================ -->
-    <string name="onboarding_title">Maligayang pagdating sa ClothesCast</string>
-    <string name="onboarding_subtitle">Tatlong mabilis na pagpipilian at tapos ka na. Baguhin mamaya sa Mga Setting.</string>
-    <string name="onboarding_subtitle_tv">Dalawang mabilis na pagpipilian at tapos ka na. Baguhin mamaya sa Mga Setting.</string>
-    <string name="onboarding_notifications_title">Mga Notipikasyon</string>
-    <string name="onboarding_notifications_description">Kinakailangan para maihatid ang iyong pang-araw na ClothesCast.</string>
-    <string name="onboarding_notifications_grant">Ibigay ang pahintulot sa notipikasyon</string>
-    <string name="onboarding_location_title">Lokasyon</string>
-    <string name="onboarding_location_description">Kunin ang hula para sa iyong tinatayang lokasyon.</string>
-    <string name="onboarding_location_grant">Ibigay ang pahintulot sa lokasyon</string>
-    <string name="onboarding_location_grant_background">Ibigay ang palaging naka-on na lokasyon</string>
-    <string name="onboarding_location_background_needed">Isa pang hakbang: kailangan ng ClothesCast ng \'Payagan sa lahat ng oras\' para mabasa ang iyong lokasyon habang nakasara ang app.</string>
-    <string name="onboarding_location_denied_hint">Tinanggihan ang pahintulot sa lokasyon. Maaari kang pumili ng lungsod nang manu-mano.</string>
-    <string name="onboarding_location_enter_manual">Ilagay ang lokasyon nang manu-mano</string>
-    <string name="onboarding_location_enter_manual_hint">Maaari kang manu-manong ilagay ang iyong lokasyon kung tinanggihan mo ang pahintulot sa lokasyon o kung mali ang lokasyon ng iyong device.</string>
-    <string name="onboarding_location_using_device">Ginagamit ang lokasyon ng iyong device tuwing umaga.</string>
-    <string name="onboarding_gemini_title">Gemini API key</string>
-    <string name="onboarding_gemini_description">Gumamit ng Gemini para sa mga de-kalidad na boses.</string>
-    <string name="onboarding_step_done">Tapos na</string>
-    <string name="onboarding_skip">Laktawan muna</string>
-    <string name="onboarding_continue">Magpatuloy</string>
     <string name="onboarding_pair_from_phone">Mag-pair mula sa telepono</string>
 
     <!-- ============================================================

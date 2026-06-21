@@ -135,26 +135,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_telemetry_notice_open_settings">Configuració de privadesa</string>
     <string name="today_telemetry_notice_dismiss">Descarta</string>
 
-    <string name="onboarding_title">Benvingut a ClothesCast</string>
-    <string name="onboarding_subtitle">Dues opcions ràpides i ja estàs. Tot a la resta té un valor predeterminat raonable que pots ajustar més tard a Configuració.</string>
-    <string name="onboarding_subtitle_tv">Dues opcions ràpides i ja estàs. Tot es pot ajustar a Configuració més tard.</string>
-    <string name="onboarding_notifications_title">Notificacions</string>
-    <string name="onboarding_notifications_description">Necessàries per lliurar el teu ClothesCast diari.</string>
-    <string name="onboarding_notifications_grant">Concedeix permís de notificació</string>
-    <string name="onboarding_location_title">Ubicació</string>
-    <string name="onboarding_location_description">Obtén la previsió per a la teva ubicació aproximada.</string>
-    <string name="onboarding_location_grant">Concedeix permís d\'ubicació</string>
-    <string name="onboarding_location_grant_background">Concedeix ubicació permanent</string>
-    <string name="onboarding_location_background_needed">Un pas més: ClothesCast necessita «Permet sempre» perquè la previsió matinal pugui llegir la teva ubicació mentre l\'aplicació és tancada.</string>
-    <string name="onboarding_location_denied_hint">Permís d\'ubicació denegat. Pots triar una ciutat manualment.</string>
-    <string name="onboarding_location_enter_manual">Introdueix la ubicació manualment</string>
-    <string name="onboarding_location_enter_manual_hint">Pots introduir la teva ubicació manualment si denegues el permís d\'ubicació o si la ubicació del dispositiu és incorrecta.</string>
-    <string name="onboarding_location_using_device">S\'utilitza la ubicació del teu dispositiu cada matí.</string>
-    <string name="onboarding_gemini_title">Clau API de Gemini</string>
-    <string name="onboarding_gemini_description">Utilitza Gemini per obtenir veus d\'alta qualitat.</string>
-    <string name="onboarding_step_done">Fet</string>
-    <string name="onboarding_skip">Ometre per ara</string>
-    <string name="onboarding_continue">Continua</string>
     <string name="onboarding_pair_from_phone">Emparella des del telèfon</string>
 
     <string name="pairing_title">Escaneja per emparellar</string>

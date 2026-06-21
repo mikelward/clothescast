@@ -353,23 +353,7 @@ the displayed label localizes.
     <!--
     Onboarding flow.
     -->
-    <string name="onboarding_title">Welkom bij ClothesCast</string>
-    <string name="onboarding_subtitle">Twee snelle keuzes en je bent klaar. Alles andere heeft een goede standaardinstelling die je later in de instellingen kunt aanpassen.</string>
-    <string name="onboarding_notifications_title">Meldingen</string>
-    <string name="onboarding_notifications_description">Zodat je dagelijkse ClothesCast bij je aankomt. Eenmalig toestaan, en morgenochtend is hij er.</string>
-    <string name="onboarding_notifications_grant">Meldingen toestaan</string>
-    <string name="onboarding_location_title">Locatie</string>
-    <string name="onboarding_location_description">Zodat de juiste voorspelling wordt opgehaald. Met locatietoegang leest ClothesCast elke ochtend de globale locatie van je apparaat; anders kun je handmatig een stad kiezen.</string>
-    <string name="onboarding_location_grant">Locatietoegang toestaan</string>
-    <string name="onboarding_location_denied_hint">Locatietoegang geweigerd. Je kunt in plaats daarvan handmatig een stad kiezen.</string>
-    <string name="onboarding_location_enter_manual">Locatie handmatig invoeren</string>
-    <string name="onboarding_location_using_device">We gebruiken elke ochtend de locatie van je apparaat.</string>
 
-    <string name="onboarding_gemini_title">Gemini-API-sleutel</string>
-    <string name="onboarding_gemini_description">Wordt door ClothesCast gebruikt voor gesproken stemmen en het genereren van voorspellingen. Haal er gratis een op via aistudio.google.com. De sleutel wordt versleuteld opgeslagen in de Android Keystore.</string>
-    <string name="onboarding_step_done">Klaar</string>
-    <string name="onboarding_skip">Voorlopig overslaan</string>
-    <string name="onboarding_continue">Doorgaan</string>
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Vandaag</string>
@@ -502,12 +486,8 @@ the displayed label localizes.
     <string name="today_crash_banner_dismiss">Sluiten</string>
 
     <!-- TV-specific onboarding subtitle. -->
-    <string name="onboarding_subtitle_tv">Twee snelle keuzes en je bent klaar. Alles andere kun je later in de instellingen aanpassen.</string>
 
     <!-- Onboarding — background location step. -->
-    <string name="onboarding_location_grant_background">Altijd toestaan</string>
-    <string name="onboarding_location_background_needed">Nog één stap: ClothesCast heeft \'Altijd toestaan\' nodig zodat de ochtendvoorspelling je locatie kan lezen terwijl de app gesloten is.</string>
-    <string name="onboarding_location_enter_manual_hint">Je kunt je locatie handmatig invoeren als je locatietoegang weigert of als de apparaatlocatie onjuist is.</string>
 
     <!-- Settings root — extra rows. -->
     <string name="settings_root_display">Weergave</string>

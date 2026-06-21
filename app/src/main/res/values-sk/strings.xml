@@ -481,27 +481,7 @@ What is NOT overridden, by design:
     <!--
     Onboarding flow.
     -->
-    <string name="onboarding_title">Vitaj v ClothesCaste</string>
-    <string name="onboarding_subtitle">Dve rýchle voľby a hotovo. Všetko ostatné má rozumné predvolené hodnoty, ktoré môžeš neskôr zmeniť v nastaveniach.</string>
-    <string name="onboarding_subtitle_tv">Dve rýchle voľby a hotovo. Všetko ostatné môžeš zmeniť neskôr v nastaveniach.</string>
-    <string name="onboarding_notifications_title">Upozornenia</string>
-    <string name="onboarding_notifications_description">Potrebné na doručenie tvojho denného ClothesCastu. Udeľ raz a zajtra ráno bude tu.</string>
-    <string name="onboarding_notifications_grant">Udeliť oprávnenie na upozornenia</string>
-    <string name="onboarding_location_title">Poloha</string>
-    <string name="onboarding_location_description">Na načítanie správnej predpovede. S prístupom k polohe bude ClothesCast každé ráno čítať približnú polohu zariadenia; inak vyber mesto ručne.</string>
-    <string name="onboarding_location_grant">Udeliť oprávnenie k polohe</string>
-    <string name="onboarding_location_grant_background">Vždy povoliť</string>
-    <string name="onboarding_location_background_needed">Ešte jeden krok: ClothesCast potrebuje „Vždy povoliť", aby ranná predpoveď mohla čítať tvoju polohu, keď je aplikácia zatvorená.</string>
-    <string name="onboarding_location_denied_hint">Prístup k polohe bol zamietnutý. Namiesto toho môžeš ručne vybrať mesto.</string>
-    <string name="onboarding_location_enter_manual">Zadať polohu ručne</string>
-    <string name="onboarding_location_enter_manual_hint">Svoju polohu môžeš zadať ručne, ak zamietneš prístup k polohe alebo je poloha zariadenia nesprávna.</string>
-    <string name="onboarding_location_using_device">Každé ráno budeme používať polohu tvojho zariadenia.</string>
 
-    <string name="onboarding_gemini_title">Gemini API kľúč</string>
-    <string name="onboarding_gemini_description">ClothesCast ho používa na hlasové výstupy a generovanie predpovedí. Získaj zadarmo na aistudio.google.com. Kľúč je zašifrovane uložený v Android Keystori.</string>
-    <string name="onboarding_step_done">Hotovo</string>
-    <string name="onboarding_skip">Zatiaľ preskočiť</string>
-    <string name="onboarding_continue">Pokračovať</string>
     <string name="onboarding_pair_from_phone">Spárovať cez telefón</string>
 
     <!-- Pairing (TV). -->

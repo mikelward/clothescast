@@ -135,27 +135,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_telemetry_notice_open_settings">Privaatsuse seaded</string>
     <string name="today_telemetry_notice_dismiss">Sulge</string>
 
-    <string name="onboarding_title">Tere tulemast ClothesCast\'i</string>
-    <string name="onboarding_subtitle">Kolm kiiret valikut ja oled valmis. Muuda hiljem seadetes.</string>
-    <string name="onboarding_subtitle_tv">Kaks kiiret valikut ja oled valmis. Muuda hiljem seadetes.</string>
-    <string name="onboarding_notifications_title">Teavitused</string>
-    <string name="onboarding_notifications_description">Vajalik igapäevase ClothesCast\'i edastamiseks.</string>
-    <string name="onboarding_notifications_grant">Anna teavitusluba</string>
-    <string name="onboarding_location_title">Asukoht</string>
-    <string name="onboarding_location_description">Laadi ilmaprognoos sinu ligikaudse asukoha jaoks.</string>
-    <string name="onboarding_location_grant">Anna asukohaluba</string>
-    <string name="onboarding_location_grant_background">Anna alati-sees asukohaluba</string>
-    <string name="onboarding_location_background_needed">Veel üks samm: ClothesCast vajab luba „Luba alati", et hommikune prognoos saaks lugeda sinu asukohta rakenduse suletuks ajal.</string>
-    <string name="onboarding_location_denied_hint">Asukohaluba keelati. Võid hoopis käsitsi linna valida.</string>
-    <string name="onboarding_location_enter_manual">Sisesta asukoht käsitsi</string>
-    <string name="onboarding_location_enter_manual_hint">Võid asukoha käsitsi sisestada, kui keelad asukohaloa või seadme asukoht on vale.</string>
-    <string name="onboarding_location_using_device">Kasutatakse seadme asukohta igal hommikul.</string>
 
-    <string name="onboarding_gemini_title">Gemini API-võti</string>
-    <string name="onboarding_gemini_description">Kasuta Gemini\'t kõrgekvaliteediliste häälte saamiseks.</string>
-    <string name="onboarding_step_done">Valmis</string>
-    <string name="onboarding_skip">Jäta praegu vahele</string>
-    <string name="onboarding_continue">Jätka</string>
     <string name="onboarding_pair_from_phone">Ühenda hoopis telefonist</string>
 
     <string name="pairing_title">Skaneeri paarimiseks</string>

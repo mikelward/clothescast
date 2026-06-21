@@ -486,27 +486,7 @@ only the displayed label localizes.
     <string name="today_telemetry_notice_dismiss">Закрити</string>
 
     <!-- Onboarding flow. -->
-    <string name="onboarding_title">Ласкаво просимо до ClothesCast</string>
-    <string name="onboarding_subtitle">Три швидких вибори — і все готово. Налаштуйте пізніше в налаштуваннях.</string>
-    <string name="onboarding_subtitle_tv">Два швидких вибори — і все готово. Налаштуйте пізніше в налаштуваннях.</string>
-    <string name="onboarding_notifications_title">Сповіщення</string>
-    <string name="onboarding_notifications_description">Потрібні для доставки вашого щоденного ClothesCast.</string>
-    <string name="onboarding_notifications_grant">Надати дозвіл на сповіщення</string>
-    <string name="onboarding_location_title">Місцезнаходження</string>
-    <string name="onboarding_location_description">Отримання прогнозу для вашого приблизного місцезнаходження.</string>
-    <string name="onboarding_location_grant">Надати дозвіл на місцезнаходження</string>
-    <string name="onboarding_location_grant_background">Надати постійний доступ до місцезнаходження</string>
-    <string name="onboarding_location_background_needed">Ще один крок: ClothesCast потребує «Дозволити завжди», щоб ранковий прогноз міг зчитувати ваше місцезнаходження, коли застосунок закрито.</string>
-    <string name="onboarding_location_denied_hint">Дозвіл на місцезнаходження відхилено. Ви можете вибрати місто вручну.</string>
-    <string name="onboarding_location_enter_manual">Ввести місцезнаходження вручну</string>
-    <string name="onboarding_location_enter_manual_hint">Ви можете ввести своє місцезнаходження вручну, якщо відхилите дозвіл або місцезнаходження пристрою невірне.</string>
-    <string name="onboarding_location_using_device">Щоранку використовується місцезнаходження вашого пристрою.</string>
 
-    <string name="onboarding_gemini_title">Ключ API Gemini</string>
-    <string name="onboarding_gemini_description">Використовуйте Gemini для голосів високої якості.</string>
-    <string name="onboarding_step_done">Готово</string>
-    <string name="onboarding_skip">Пропустити поки що</string>
-    <string name="onboarding_continue">Продовжити</string>
     <string name="onboarding_pair_from_phone">Зв\'язати з телефону</string>
 
     <!-- TV pairing screen. -->

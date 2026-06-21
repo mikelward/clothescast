@@ -405,26 +405,6 @@ Not overridden by design:
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
-    <string name="onboarding_title">ClothesCast में आपका स्वागत है</string>
-    <string name="onboarding_subtitle">तीन आसान विकल्प और आप तैयार। बाद में सेटिंग में बदल सकते हैं।</string>
-    <string name="onboarding_subtitle_tv">दो आसान विकल्प और आप तैयार। बाद में सेटिंग में बदल सकते हैं।</string>
-    <string name="onboarding_notifications_title">सूचनाएँ</string>
-    <string name="onboarding_notifications_description">आपका दैनिक ClothesCast देने के लिए ज़रूरी।</string>
-    <string name="onboarding_notifications_grant">सूचना अनुमति दें</string>
-    <string name="onboarding_location_title">स्थान</string>
-    <string name="onboarding_location_description">आपके अनुमानित स्थान के लिए पूर्वानुमान लाएँ।</string>
-    <string name="onboarding_location_grant">स्थान अनुमति दें</string>
-    <string name="onboarding_location_grant_background">हमेशा-चालू स्थान अनुमति दें</string>
-    <string name="onboarding_location_background_needed">एक और कदम: ClothesCast को "हमेशा अनुमति दें" चाहिए ताकि सुबह का पूर्वानुमान ऐप बंद होने पर भी आपका स्थान पढ़ सके।</string>
-    <string name="onboarding_location_denied_hint">स्थान अनुमति नकारी गई। आप इसके बजाय कोई शहर चुन सकते हैं।</string>
-    <string name="onboarding_location_enter_manual">स्थान हाथ से दर्ज करें</string>
-    <string name="onboarding_location_enter_manual_hint">यदि आप स्थान अनुमति नकारते हैं या आपका डिवाइस स्थान गलत है, तो आप अपना स्थान हाथ से दर्ज कर सकते हैं।</string>
-    <string name="onboarding_location_using_device">हर सुबह आपके डिवाइस का स्थान उपयोग हो रहा है।</string>
-    <string name="onboarding_gemini_title">Gemini API कुंजी</string>
-    <string name="onboarding_gemini_description">बेहतर आवाज़ें पाने के लिए Gemini उपयोग करें।</string>
-    <string name="onboarding_step_done">हो गया</string>
-    <string name="onboarding_skip">अभी छोड़ें</string>
-    <string name="onboarding_continue">जारी रखें</string>
     <string name="onboarding_pair_from_phone">फ़ोन से जोड़ें</string>
 
     <!-- TV phone-pairing screen. -->

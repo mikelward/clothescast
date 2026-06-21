@@ -253,26 +253,6 @@ West Bengal vocabulary differences in a future PR.
          Onboarding
          ============================================================ -->
 
-    <string name="onboarding_title">ClothesCast-এ স্বাগতম</string>
-    <string name="onboarding_subtitle">তিনটি দ্রুত পছন্দ এবং আপনি প্রস্তুত। পরে সেটিংসে পরিবর্তন করুন।</string>
-    <string name="onboarding_subtitle_tv">দুটি দ্রুত পছন্দ এবং আপনি প্রস্তুত। পরে সেটিংসে পরিবর্তন করুন।</string>
-    <string name="onboarding_notifications_title">বিজ্ঞপ্তি</string>
-    <string name="onboarding_notifications_description">আপনার দৈনিক ClothesCast পাঠাতে প্রয়োজন।</string>
-    <string name="onboarding_notifications_grant">বিজ্ঞপ্তির অনুমতি দিন</string>
-    <string name="onboarding_location_title">অবস্থান</string>
-    <string name="onboarding_location_description">আপনার আনুমানিক অবস্থানের পূর্বাভাস আনুন।</string>
-    <string name="onboarding_location_grant">অবস্থানের অনুমতি দিন</string>
-    <string name="onboarding_location_grant_background">সর্বদা অবস্থান অনুমতি দিন</string>
-    <string name="onboarding_location_background_needed">আরেকটি ধাপ: অ্যাপ বন্ধ থাকলেও সকালের পূর্বাভাস আনতে ClothesCast-এর \'সব সময় অনুমতি দিন\' দরকার।</string>
-    <string name="onboarding_location_denied_hint">অবস্থানের অনুমতি প্রত্যাখ্যাত হয়েছে। পরিবর্তে আপনি ম্যানুয়ালি একটি শহর বেছে নিতে পারেন।</string>
-    <string name="onboarding_location_enter_manual">ম্যানুয়ালি অবস্থান দিন</string>
-    <string name="onboarding_location_enter_manual_hint">অবস্থানের অনুমতি না দিলে বা ডিভাইসের অবস্থান ভুল হলে আপনি ম্যানুয়ালি অবস্থান দিতে পারেন।</string>
-    <string name="onboarding_location_using_device">প্রতিদিন সকালে আপনার ডিভাইসের অবস্থান ব্যবহার করা হচ্ছে।</string>
-    <string name="onboarding_gemini_title">Gemini API কী</string>
-    <string name="onboarding_gemini_description">উচ্চমানের ভয়েস পেতে Gemini ব্যবহার করুন।</string>
-    <string name="onboarding_step_done">সম্পন্ন</string>
-    <string name="onboarding_skip">এখনের জন্য এড়িয়ে যান</string>
-    <string name="onboarding_continue">চালিয়ে যান</string>
     <string name="onboarding_pair_from_phone">পরিবর্তে ফোন থেকে পেয়ার করুন</string>
 
     <!-- ============================================================

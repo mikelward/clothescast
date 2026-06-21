@@ -416,23 +416,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     ("Concede", "Continua", "Escolhe"). "Predefinido" (PT) for BR
     "padrão"; "Saltar" (PT) for BR "Pular".
     -->
-    <string name="onboarding_title">Boas-vindas ao ClothesCast</string>
-    <string name="onboarding_subtitle">Duas escolhas rápidas e está tudo pronto. Tudo o resto tem um valor predefinido razoável que poderás ajustar depois nas definições.</string>
-    <string name="onboarding_notifications_title">Notificações</string>
-    <string name="onboarding_notifications_description">Necessárias para entregar o teu ClothesCast diário. Concede uma vez e o ClothesCast aparece amanhã de manhã.</string>
-    <string name="onboarding_notifications_grant">Conceder notificações</string>
-    <string name="onboarding_location_title">Localização</string>
-    <string name="onboarding_location_description">Utilizada para obter a previsão correta. Ao conceder a localização, o ClothesCast pode ler todas as manhãs a localização aproximada do teu dispositivo; caso contrário, escolhe uma cidade manualmente.</string>
-    <string name="onboarding_location_grant">Conceder acesso à localização</string>
-    <string name="onboarding_location_denied_hint">Acesso à localização recusado. Podes escolher uma cidade manualmente.</string>
-    <string name="onboarding_location_enter_manual">Introduzir localização manualmente</string>
-    <string name="onboarding_location_using_device">A utilizar a localização do teu dispositivo todas as manhãs.</string>
 
-    <string name="onboarding_gemini_title">Chave API Gemini</string>
-    <string name="onboarding_gemini_description">Utilizada pelo ClothesCast para vozes faladas e geração de previsões. Obtém uma gratuitamente em aistudio.google.com. A chave é encriptada em repouso com o Android Keystore.</string>
-    <string name="onboarding_step_done">Concluído</string>
-    <string name="onboarding_skip">Saltar por agora</string>
-    <string name="onboarding_continue">Continuar</string>
 
     <!-- Insight prose templates — pt-PT equivalents of the keys in
          values/strings.xml. Tu-form imperative ("Veste …", "Leva …")
@@ -532,12 +516,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_update_downloaded_action">Reiniciar</string>
 
     <!-- TV-specific onboarding subtitle (two steps instead of three). -->
-    <string name="onboarding_subtitle_tv">Duas escolhas rápidas e estás pronto. Todo o resto pode ser ajustado nas definições mais tarde.</string>
 
     <!-- Onboarding — background location step. -->
-    <string name="onboarding_location_grant_background">Permitir sempre</string>
-    <string name="onboarding_location_background_needed">Mais um passo: o ClothesCast precisa de \'Permitir sempre\' para que a previsão matinal possa ler a tua localização enquanto a aplicação está fechada.</string>
-    <string name="onboarding_location_enter_manual_hint">Podes introduzir a tua localização manualmente se recusares o acesso à localização ou se a localização do dispositivo estiver incorreta.</string>
 
     <!-- Onboarding — TV pairing step. -->
     <string name="onboarding_pair_from_phone">Emparelhar pelo telemóvel</string>

@@ -713,14 +713,6 @@ data class UserPreferences(
      */
     val geminiPromoCardDismissed: Boolean = false,
     /**
-     * Set to true when the user taps "Skip" on the first-run onboarding screen.
-     * Onboarding normally reappears on every cold launch while any of its
-     * conditions (notification permission, location, Gemini key) are still
-     * unmet; this flag makes the user's choice to skip stick so they aren't
-     * forced back through it. Cleared only by a fresh install / data wipe.
-     */
-    val onboardingSkipped: Boolean = false,
-    /**
      * Bumped to `System.currentTimeMillis()` whenever the user re-grants
      * `READ_CALENDAR` via the in-app permission flow. Exists purely to
      * force the [SettingsRepository.preferences] flow to re-emit so any

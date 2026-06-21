@@ -236,26 +236,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_telemetry_notice_dismiss">رد کردن</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">به ClothesCast خوش آمدید</string>
-    <string name="onboarding_subtitle">سه انتخاب سریع و آماده‌اید. بعداً در تنظیمات تغییر دهید.</string>
-    <string name="onboarding_subtitle_tv">دو انتخاب سریع و آماده‌اید. بعداً در تنظیمات تغییر دهید.</string>
-    <string name="onboarding_notifications_title">اعلان‌ها</string>
-    <string name="onboarding_notifications_description">برای ارسال ClothesCast روزانه شما لازم است.</string>
-    <string name="onboarding_notifications_grant">اعطای مجوز اعلان</string>
-    <string name="onboarding_location_title">موقعیت</string>
-    <string name="onboarding_location_description">دریافت پیش‌بینی برای موقعیت تقریبی شما.</string>
-    <string name="onboarding_location_grant">اعطای مجوز موقعیت</string>
-    <string name="onboarding_location_grant_background">اعطای مجوز موقعیت دائمی</string>
-    <string name="onboarding_location_background_needed">یک قدم دیگر: ClothesCast به \'همیشه اجازه بده\' نیاز دارد تا پیش‌بینی صبحگاهی بتواند موقعیت شما را در زمان بسته بودن برنامه بخواند.</string>
-    <string name="onboarding_location_denied_hint">مجوز موقعیت رد شد. می‌توانید یک شهر را به صورت دستی انتخاب کنید.</string>
-    <string name="onboarding_location_enter_manual">ورود دستی موقعیت</string>
-    <string name="onboarding_location_enter_manual_hint">اگر مجوز موقعیت را رد کنید یا موقعیت دستگاه شما اشتباه باشد، می‌توانید موقعیت خود را به صورت دستی وارد کنید.</string>
-    <string name="onboarding_location_using_device">هر صبح از موقعیت دستگاه شما استفاده می‌شود.</string>
-    <string name="onboarding_gemini_title">کلید Gemini API</string>
-    <string name="onboarding_gemini_description">از Gemini برای دریافت صداهای باکیفیت استفاده کنید.</string>
-    <string name="onboarding_step_done">انجام شد</string>
-    <string name="onboarding_skip">فعلاً رد شو</string>
-    <string name="onboarding_continue">ادامه</string>
     <string name="onboarding_pair_from_phone">جفت‌سازی از طریق گوشی</string>
 
     <!-- Pairing (TV) -->

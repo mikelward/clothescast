@@ -48,8 +48,8 @@ Code TODOs in source files are linked from here when they exist.
       whatever singular/plural reads naturally in their language.
 - [ ] **Translate `settings_api_key_status_unset`** ("2 free each
       day, get a key for more.") across all 44 `values-*` overrides.
-      Shown on Voice settings, the Speech setup sheet, and the
-      onboarding key step whenever no BYOK key is set. The old
+      Shown on Voice settings and the Speech setup sheet whenever
+      no BYOK key is set. The old
       translations were stripped when this string's meaning changed
       from "no key configured, go get one" to surfacing the free
       daily allowance, so non-English devices currently fall back to

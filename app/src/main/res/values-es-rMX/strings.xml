@@ -32,7 +32,6 @@ that a Mexican speaker would notice as wrong is overridden here.
     <string name="settings_title">Configuración</string>
     <string name="today_open_settings">Abrir configuración</string>
     <string name="today_empty_subtitle">Tu ClothesCast matutino aparecerá aquí cuando se genere.</string>
-    <string name="onboarding_subtitle">Dos elecciones rápidas y ya está. Todo lo demás tiene un valor predeterminado razonable que podrás ajustar más tarde en la configuración.</string>
     <string name="settings_location_grant_background">Conceder ubicación en segundo plano (configuración del sistema)</string>
     <string name="settings_calendar_open_settings">Acceso al calendario denegado. Concédelo en la configuración del sistema.</string>
 

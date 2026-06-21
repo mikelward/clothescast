@@ -549,27 +549,7 @@ only the displayed label localizes.
     welcome (gender-neutral fixed greeting, sidesteps the masc/fem
     agreement gender pick).
     -->
-    <string name="onboarding_title">Добро пожаловать в ClothesCast</string>
-    <string name="onboarding_subtitle">Два быстрых выбора — и всё готово. У всего остального есть разумные значения по умолчанию, которые ты потом сможешь настроить в настройках.</string>
-    <string name="onboarding_subtitle_tv">Два быстрых выбора — и всё готово. Всё остальное ты сможешь настроить позже в настройках.</string>
-    <string name="onboarding_notifications_title">Уведомления</string>
-    <string name="onboarding_notifications_description">Нужны для доставки твоего ежедневного ClothesCast. Разреши один раз — и ClothesCast появится завтра утром.</string>
-    <string name="onboarding_notifications_grant">Разрешить уведомления</string>
-    <string name="onboarding_location_title">Местоположение</string>
-    <string name="onboarding_location_description">Используется для получения правильного прогноза. Если разрешишь местоположение, ClothesCast сможет каждое утро читать примерное местоположение твоего устройства; иначе выбери город вручную.</string>
-    <string name="onboarding_location_grant">Разрешить доступ к местоположению</string>
-    <string name="onboarding_location_grant_background">Разрешить всегда</string>
-    <string name="onboarding_location_background_needed">Ещё один шаг: ClothesCast требуется «Разрешить всегда», чтобы утренний прогноз мог определять твоё местоположение, пока приложение закрыто.</string>
-    <string name="onboarding_location_denied_hint">Доступ к местоположению отклонён. Можешь выбрать город вручную.</string>
-    <string name="onboarding_location_enter_manual">Ввести местоположение вручную</string>
-    <string name="onboarding_location_enter_manual_hint">Ты можешь ввести своё местоположение вручную, если откажешь в доступе к местоположению или местоположение устройства неверно.</string>
-    <string name="onboarding_location_using_device">Каждое утро используем местоположение твоего устройства.</string>
 
-    <string name="onboarding_gemini_title">Ключ API Gemini</string>
-    <string name="onboarding_gemini_description">Используется ClothesCast для озвучивания и генерации прогноза. Получи бесплатно на aistudio.google.com. Ключ зашифрован с помощью Android Keystore.</string>
-    <string name="onboarding_step_done">Готово</string>
-    <string name="onboarding_skip">Пропустить пока</string>
-    <string name="onboarding_continue">Продолжить</string>
     <string name="onboarding_pair_from_phone">Связать с телефона</string>
 
     <string name="pairing_title">Сканировать для сопряжения</string>

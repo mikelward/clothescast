@@ -518,27 +518,8 @@
          space — bare ", " would be trimmed. -->
     <string name="today_week_ahead_separator">", "</string>
 
-    <string name="onboarding_title">Welcome to ClothesCast</string>
-    <string name="onboarding_subtitle">Three quick choices and you\'re set. Tweak later in Settings.</string>
-    <string name="onboarding_subtitle_tv">Two quick choices and you\'re set. Tweak later in Settings.</string>
-    <string name="onboarding_notifications_title">Notifications</string>
-    <string name="onboarding_notifications_description">Required to deliver your daily ClothesCast.</string>
-    <string name="onboarding_notifications_grant">Grant notification permission</string>
-    <string name="onboarding_location_title">Location</string>
-    <string name="onboarding_location_description">Fetch the forecast for your approximate location.</string>
-    <string name="onboarding_location_grant">Grant location permission</string>
-    <string name="onboarding_location_grant_background">Grant always-on location</string>
-    <string name="onboarding_location_background_needed">One more step: ClothesCast needs \'Allow all the time\' so the morning forecast can read your location while the app is closed.</string>
-    <string name="onboarding_location_denied_hint">Location permission denied. You can pick a city manually instead.</string>
-    <string name="onboarding_location_enter_manual">Enter location manually</string>
-    <string name="onboarding_location_enter_manual_hint">You can manually enter your location if you deny location permission or your device location is wrong.</string>
-    <string name="onboarding_location_using_device">Using your device\'s location each morning.</string>
-
-    <string name="onboarding_gemini_title">Gemini API key</string>
-    <string name="onboarding_gemini_description">Use Gemini to get high quality voices.</string>
-    <string name="onboarding_step_done">Done</string>
-    <string name="onboarding_skip">Skip</string>
-    <string name="onboarding_continue">Continue</string>
+    <!-- Button on the Voice settings / Speech setup sheet that jumps to the
+         TV phone-pairing flow for entering a Gemini key. -->
     <string name="onboarding_pair_from_phone">Pair from phone instead</string>
 
     <!-- Phone-pairing screen: TV runs an HTTP server and shows a QR code; the user
@@ -771,8 +752,8 @@
          high quality). -->
     <string name="settings_tts_device_header">Low-quality voices built into your phone.</string>
     <string name="settings_api_key_status_set">A Gemini key is configured.</string>
-    <!-- Single status line for the no-key state, shown on Voice settings, the
-         Speech setup sheet, and the onboarding key step. Leads with the free
+    <!-- Single status line for the no-key state, shown on Voice settings and
+         the Speech setup sheet. Leads with the free
          tier the user can use right now and the upgrade their own key buys.
          "get a key" is linkified by LinkifiedText to AI Studio's API-key page
          (see AISTUDIO_LINK_LABEL in SettingsCommon.kt) — keep that exact

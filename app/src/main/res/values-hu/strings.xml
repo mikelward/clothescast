@@ -469,27 +469,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
-    <string name="onboarding_title">Üdvözöl a ClothesCast</string>
-    <string name="onboarding_subtitle">Két gyors választás, és indulhatsz. Minden másnak van ésszerű alapértéke, amelyet később megváltoztathatsz a beállításokban.</string>
-    <string name="onboarding_subtitle_tv">Két gyors választás, és indulhatsz. Minden mást később megváltoztathatsz a beállításokban.</string>
-    <string name="onboarding_notifications_title">Értesítések</string>
-    <string name="onboarding_notifications_description">Hogy megkapd a napi ClothesCastodat. Engedélyezd egyszer, és reggel ott lesz.</string>
-    <string name="onboarding_notifications_grant">Értesítések engedélyezése</string>
-    <string name="onboarding_location_title">Helyszín</string>
-    <string name="onboarding_location_description">Hogy a megfelelő előrejelzés töltődjön be. Helyszín-hozzáféréssel a ClothesCast minden reggel beolvassa az eszközöd hozzávetőleges helyzetét; egyébként válassz várost manuálisan.</string>
-    <string name="onboarding_location_grant">Helyszín-hozzáférés engedélyezése</string>
-    <string name="onboarding_location_denied_hint">Helyszín-hozzáférés megtagadva. Ehelyett manuálisan is választhatsz várost.</string>
-    <string name="onboarding_location_enter_manual">Helyszín manuális megadása</string>
-    <string name="onboarding_location_using_device">Minden reggel az eszközöd helyszínét fogjuk használni.</string>
-    <string name="onboarding_location_grant_background">Mindig engedélyezve</string>
-    <string name="onboarding_location_background_needed">Még egy lépés: a ClothesCastnak „Mindig engedélyezve" szükséges, hogy a reggeli előrejelzés olvashassa a helyszínedet, amikor az alkalmazás be van zárva.</string>
-    <string name="onboarding_location_enter_manual_hint">Manuálisan is megadhatod a helyszínedet, ha megtagadod a helyszín-hozzáférést, vagy az eszköz helyszíne helytelen.</string>
 
-    <string name="onboarding_gemini_title">Gemini API-kulcs</string>
-    <string name="onboarding_gemini_description">A ClothesCast ezt használja a hangos hangokhoz és az előrejelzés-generáláshoz. Szerezz egyet ingyen az aistudio.google.com oldalon. A kulcs titkosítva van tárolva az Android Keystoreban.</string>
-    <string name="onboarding_step_done">Kész</string>
-    <string name="onboarding_skip">Egyelőre kihagyás</string>
-    <string name="onboarding_continue">Folytatás</string>
     <string name="onboarding_pair_from_phone">Inkább párosítás telefonról</string>
 
     <!-- Pairing (TV). -->

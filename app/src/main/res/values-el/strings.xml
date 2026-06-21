@@ -437,23 +437,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     agreement on the verb form, so no need for a gender-neutral
     workaround like the Romance / Slavic locales use.
     -->
-    <string name="onboarding_title">Καλώς όρισες στον ClothesCast</string>
-    <string name="onboarding_subtitle">Δύο γρήγορες επιλογές και είσαι έτοιμος. Όλα τα υπόλοιπα έχουν λογική προεπιλογή που μπορείς να αλλάξεις αργότερα στις Ρυθμίσεις.</string>
-    <string name="onboarding_notifications_title">Ειδοποιήσεις</string>
-    <string name="onboarding_notifications_description">Απαραίτητες για να παραδίδεται ο καθημερινός σου ClothesCast. Παραχώρησέ τες μία φορά και ο ClothesCast θα εμφανιστεί αύριο το πρωί.</string>
-    <string name="onboarding_notifications_grant">Παραχώρηση ειδοποιήσεων</string>
-    <string name="onboarding_location_title">Τοποθεσία</string>
-    <string name="onboarding_location_description">Χρησιμοποιείται για την ανάκτηση της σωστής πρόβλεψης. Παραχωρώντας την τοποθεσία, ο ClothesCast μπορεί να διαβάζει την κατά προσέγγιση τοποθεσία της συσκευής σου κάθε πρωί· διαφορετικά επίλεξε μια πόλη χειροκίνητα.</string>
-    <string name="onboarding_location_grant">Παραχώρηση πρόσβασης τοποθεσίας</string>
-    <string name="onboarding_location_denied_hint">Η πρόσβαση τοποθεσίας απορρίφθηκε. Μπορείς να επιλέξεις μια πόλη χειροκίνητα.</string>
-    <string name="onboarding_location_enter_manual">Εισαγωγή τοποθεσίας χειροκίνητα</string>
-    <string name="onboarding_location_using_device">Χρησιμοποιείται η τοποθεσία της συσκευής σου κάθε πρωί.</string>
 
-    <string name="onboarding_gemini_title">Gemini API key</string>
-    <string name="onboarding_gemini_description">Χρησιμοποιείται από τον ClothesCast για φωνές εκφώνησης και παραγωγή πρόβλεψης. Πάρε ένα δωρεάν από το aistudio.google.com. Το key είναι κρυπτογραφημένο σε ηρεμία με το Android Keystore.</string>
-    <string name="onboarding_step_done">Έγινε</string>
-    <string name="onboarding_skip">Παράκαμψη προς το παρόν</string>
-    <string name="onboarding_continue">Συνέχεια</string>
 
     <!-- Insight prose templates — Greek equivalents of the keys in
          values/strings.xml. εσύ-form imperatives ("Φόρεσε", "Πάρε") for
@@ -642,10 +626,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_evening_rain_chance">Απόψε, πιθανότητα %2$s.</string>
 
     <!-- Missing onboarding strings. -->
-    <string name="onboarding_subtitle_tv">Δύο γρήγορες επιλογές και είσαι έτοιμος. Μπορείς να τα αλλάξεις αργότερα στις Ρυθμίσεις.</string>
-    <string name="onboarding_location_grant_background">Παραχώρηση τοποθεσίας πάντα ενεργής</string>
-    <string name="onboarding_location_background_needed">Ένα ακόμη βήμα: ο ClothesCast χρειάζεται \'Να επιτρέπεται πάντα\' ώστε η πρωινή πρόβλεψη να μπορεί να διαβάζει την τοποθεσία σου ενώ η εφαρμογή είναι κλειστή.</string>
-    <string name="onboarding_location_enter_manual_hint">Μπορείς να εισάγεις χειροκίνητα την τοποθεσία σου αν αρνηθείς την πρόσβαση τοποθεσίας ή αν η τοποθεσία της συσκευής σου είναι λανθασμένη.</string>
 
     <!-- Missing settings root nav entries. -->
     <string name="settings_root_display">Εμφάνιση</string>

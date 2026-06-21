@@ -35,9 +35,6 @@ import app.clothescast.ui.garment.ClothingThickCoatPreview
 import app.clothescast.ui.garment.ClothingThickJacketPreview
 import app.clothescast.ui.garment.ClothingThinJacketPreview
 import app.clothescast.ui.garment.ClothingRainJacketPreview
-import app.clothescast.ui.onboarding.OnboardingCompletePreview
-import app.clothescast.ui.onboarding.OnboardingFreshPreview
-import app.clothescast.ui.onboarding.OnboardingPartialPreview
 import app.clothescast.ui.settings.SettingsCalendarPreview
 import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
@@ -101,7 +98,7 @@ import org.robolectric.annotation.GraphicsMode
 
 //
 // Calls every preview wrapper across the app — `ui/today/TodayPreviews.kt`,
-// `ui/onboarding/OnboardingPreviews.kt`, `ui/settings/SettingsPreviews.kt`,
+// `ui/settings/SettingsPreviews.kt`,
 // `notification/NotificationIconPreviews.kt`, `widget/WidgetPreviews.kt` —
 // and captures each to PNG under
 // `app/snapshots/` — a *tracked* path, so GitHub renders image diffs natively
@@ -150,11 +147,12 @@ class PreviewSnapshots {
         ?: error("roborazzi.output.dir not set; configure in app/build.gradle.kts testOptions")
 
     // Robolectric creates a fresh Application per test method by default, but
-    // AndroidJUnit4 doesn't guarantee source-order execution: if `onboarding_partial`
-    // (which grants POST_NOTIFICATIONS) ran before `onboarding_fresh` *and* a
-    // future Robolectric / lifecycle change started sharing application state
-    // across methods, the fresh snapshot would silently capture the wrong
-    // baseline. Explicitly denying both perms before every test pins the
+    // AndroidJUnit4 doesn't guarantee source-order execution: if a test that
+    // grants POST_NOTIFICATIONS (e.g. `settings_schedule`) ran before one that
+    // expects the permission denied (`settings_schedule_notifications_blocked`)
+    // *and* a future Robolectric / lifecycle change started sharing application
+    // state across methods, the blocked snapshot would silently capture the
+    // wrong baseline. Explicitly denying both perms before every test pins the
     // starting state regardless of the surrounding harness's reset semantics.
     @Before
     fun resetPermissions() {
@@ -750,28 +748,6 @@ class PreviewSnapshots {
     fun settings_smart_home() = capture { SettingsSmartHomePreview() }
     @Test fun settings_garment_color_picker() = captureDialog { SettingsGarmentColorPickerPreview() }
 
-    // Onboarding's notification + location step cards derive their "complete"
-    // checkmark from runtime permission state (POST_NOTIFICATIONS,
-    // ACCESS_COARSE_LOCATION) read via LocalContext, not from any value the
-    // composable accepts as a parameter. To capture states beyond "fresh
-    // install — nothing granted", grant the relevant permissions on the
-    // Robolectric application *before* setContent runs.
-    @Test fun onboarding_fresh() = capture { OnboardingFreshPreview() }
-
-    @Test fun onboarding_partial() {
-        shadowOf(RuntimeEnvironment.getApplication())
-            .grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
-        capture { OnboardingPartialPreview() }
-    }
-
-    @Test fun onboarding_complete() {
-        shadowOf(RuntimeEnvironment.getApplication()).grantPermissions(
-            Manifest.permission.POST_NOTIFICATIONS,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-        )
-        capture { OnboardingCompletePreview() }
-    }
-
     // Meta-test: verifies that every `@Preview internal fun XxxPreview()` declared
     // in the app's `*Previews.kt` files has a corresponding `@Test` in this class.
     // Also checks the reverse — no stale `@Test` calling a preview that no longer
@@ -787,7 +763,6 @@ class PreviewSnapshots {
             "app.clothescast.ui.LauncherIconPreviewsKt",
             "app.clothescast.ui.MenuPreviewsKt",
             "app.clothescast.ui.today.TodayPreviewsKt",
-            "app.clothescast.ui.onboarding.OnboardingPreviewsKt",
             "app.clothescast.ui.settings.SettingsPreviewsKt",
             "app.clothescast.ui.garment.GarmentDrawablePreviewsKt",
             "app.clothescast.notification.NotificationIconPreviewsKt",

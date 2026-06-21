@@ -238,26 +238,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_telemetry_notice_dismiss">Tutup</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">Selamat datang ke ClothesCast</string>
-    <string name="onboarding_subtitle">Tiga pilihan pantas dan anda bersedia. Ubah kemudian dalam Tetapan.</string>
-    <string name="onboarding_subtitle_tv">Dua pilihan pantas dan anda bersedia. Ubah kemudian dalam Tetapan.</string>
-    <string name="onboarding_notifications_title">Pemberitahuan</string>
-    <string name="onboarding_notifications_description">Diperlukan untuk menghantar ClothesCast harian anda.</string>
-    <string name="onboarding_notifications_grant">Benarkan kebenaran pemberitahuan</string>
-    <string name="onboarding_location_title">Lokasi</string>
-    <string name="onboarding_location_description">Ambil ramalan untuk lokasi anggaran anda.</string>
-    <string name="onboarding_location_grant">Benarkan kebenaran lokasi</string>
-    <string name="onboarding_location_grant_background">Benarkan lokasi sentiasa aktif</string>
-    <string name="onboarding_location_background_needed">Satu langkah lagi: ClothesCast memerlukan \'Benarkan sepanjang masa\' supaya ramalan pagi dapat membaca lokasi anda semasa aplikasi ditutup.</string>
-    <string name="onboarding_location_denied_hint">Kebenaran lokasi ditolak. Anda boleh memilih bandar secara manual.</string>
-    <string name="onboarding_location_enter_manual">Masukkan lokasi secara manual</string>
-    <string name="onboarding_location_enter_manual_hint">Anda boleh memasukkan lokasi anda secara manual jika anda menolak kebenaran lokasi atau lokasi peranti anda tidak tepat.</string>
-    <string name="onboarding_location_using_device">Menggunakan lokasi peranti anda setiap pagi.</string>
-    <string name="onboarding_gemini_title">Kunci API Gemini</string>
-    <string name="onboarding_gemini_description">Gunakan Gemini untuk mendapatkan suara berkualiti tinggi.</string>
-    <string name="onboarding_step_done">Selesai</string>
-    <string name="onboarding_skip">Langkau buat masa ini</string>
-    <string name="onboarding_continue">Teruskan</string>
     <string name="onboarding_pair_from_phone">Pasangkan dari telefon</string>
 
     <!-- TV pairing screen -->

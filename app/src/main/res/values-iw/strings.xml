@@ -240,26 +240,6 @@ standard in Israeli digital communication.
     <string name="today_telemetry_notice_dismiss">סגור/י</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">ברוך/ה הבא/ה ל-ClothesCast</string>
-    <string name="onboarding_subtitle">שלוש בחירות מהירות ואתה/את מוכן/ה. שנה/י מאוחר יותר בהגדרות.</string>
-    <string name="onboarding_subtitle_tv">שתי בחירות מהירות ואתה/את מוכן/ה. שנה/י מאוחר יותר בהגדרות.</string>
-    <string name="onboarding_notifications_title">התראות</string>
-    <string name="onboarding_notifications_description">נדרש למסירת ClothesCast היומי שלך.</string>
-    <string name="onboarding_notifications_grant">הענק/י הרשאת התראות</string>
-    <string name="onboarding_location_title">מיקום</string>
-    <string name="onboarding_location_description">אחזר/י תחזית עבור מיקומך המשוער.</string>
-    <string name="onboarding_location_grant">הענק/י הרשאת מיקום</string>
-    <string name="onboarding_location_grant_background">הענק/י מיקום תמידי</string>
-    <string name="onboarding_location_background_needed">עוד שלב אחד: ClothesCast זקוק ל\'אפשר בכל עת\' כדי שתחזית הבוקר תוכל לקרוא את מיקומך כשהאפליקציה סגורה.</string>
-    <string name="onboarding_location_denied_hint">הרשאת מיקום נדחתה. תוכל/י לבחור עיר ידנית במקום.</string>
-    <string name="onboarding_location_enter_manual">הזן/י מיקום ידנית</string>
-    <string name="onboarding_location_enter_manual_hint">תוכל/י להזין את מיקומך ידנית אם תדחה/י את הרשאת המיקום או אם מיקום המכשיר שלך שגוי.</string>
-    <string name="onboarding_location_using_device">משתמש/ת במיקום המכשיר שלך בכל בוקר.</string>
-    <string name="onboarding_gemini_title">מפתח Gemini API</string>
-    <string name="onboarding_gemini_description">השתמש/י ב-Gemini לקבלת קולות איכותיים.</string>
-    <string name="onboarding_step_done">סיום</string>
-    <string name="onboarding_skip">דלג/י לעת עתה</string>
-    <string name="onboarding_continue">המשך/י</string>
     <string name="onboarding_pair_from_phone">צמד/י מהטלפון במקום</string>
 
     <!-- Pairing (TV) -->

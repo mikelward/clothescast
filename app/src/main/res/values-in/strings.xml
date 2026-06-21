@@ -238,26 +238,6 @@ to values/strings.xml (English).
     <string name="today_telemetry_notice_dismiss">Tutup</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">Selamat datang di ClothesCast</string>
-    <string name="onboarding_subtitle">Tiga pilihan cepat dan Anda siap. Sesuaikan nanti di Pengaturan.</string>
-    <string name="onboarding_subtitle_tv">Dua pilihan cepat dan Anda siap. Sesuaikan nanti di Pengaturan.</string>
-    <string name="onboarding_notifications_title">Notifikasi</string>
-    <string name="onboarding_notifications_description">Diperlukan untuk mengirimkan ClothesCast harian Anda.</string>
-    <string name="onboarding_notifications_grant">Izinkan notifikasi</string>
-    <string name="onboarding_location_title">Lokasi</string>
-    <string name="onboarding_location_description">Ambil prakiraan untuk lokasi perkiraan Anda.</string>
-    <string name="onboarding_location_grant">Izinkan akses lokasi</string>
-    <string name="onboarding_location_grant_background">Izinkan akses lokasi setiap saat</string>
-    <string name="onboarding_location_background_needed">Satu langkah lagi: ClothesCast membutuhkan \'Izinkan setiap saat\' agar prakiraan pagi dapat membaca lokasi Anda saat aplikasi ditutup.</string>
-    <string name="onboarding_location_denied_hint">Izin lokasi ditolak. Anda dapat memilih kota secara manual.</string>
-    <string name="onboarding_location_enter_manual">Masukkan lokasi secara manual</string>
-    <string name="onboarding_location_enter_manual_hint">Anda dapat memasukkan lokasi secara manual jika menolak izin lokasi atau lokasi perangkat Anda salah.</string>
-    <string name="onboarding_location_using_device">Menggunakan lokasi perangkat Anda setiap pagi.</string>
-    <string name="onboarding_gemini_title">Kunci API Gemini</string>
-    <string name="onboarding_gemini_description">Gunakan Gemini untuk mendapatkan suara berkualitas tinggi.</string>
-    <string name="onboarding_step_done">Selesai</string>
-    <string name="onboarding_skip">Lewati untuk sekarang</string>
-    <string name="onboarding_continue">Lanjutkan</string>
     <string name="onboarding_pair_from_phone">Pasangkan dari ponsel</string>
 
     <!-- TV pairing screen -->

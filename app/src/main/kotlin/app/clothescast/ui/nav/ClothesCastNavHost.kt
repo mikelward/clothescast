@@ -33,8 +33,6 @@ import app.clothescast.location.LocationResolver
 import app.clothescast.ui.LocalNavigateToAbout
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderOutfitCard
-import app.clothescast.ui.onboarding.OnboardingScreen
-import app.clothescast.ui.onboarding.OnboardingViewModel
 import app.clothescast.ui.pairing.PairingScreen
 import app.clothescast.ui.pairing.PairingViewModel
 import app.clothescast.ui.settings.AboutPage
@@ -79,13 +77,6 @@ private const val NAV_ANIM_MS = 200
 // link matching with page 0. The feels-like home-screen widgets deep-link to
 // page 0 / 2.
 @Serializable internal data class TodayRoute(val page: Int = 0)
-// TODO: Onboarding is disabled — the app always starts on Today (see the
-// startDestination below) and nothing navigates to OnboardingRoute anymore.
-// This route and the OnboardingScreen/ViewModel/Previews, the onboarding_*
-// strings, the onboardingSkipped preference, and enqueueOnboardingRefresh are
-// all dead now. Delete them in the follow-up purge once we're sure onboarding
-// won't be re-enabled.
-@Serializable internal object OnboardingRoute
 @Serializable internal object PairingRoute
 
 @Serializable internal object SettingsGraph
@@ -162,50 +153,6 @@ fun ClothesCastNavHost(
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
                 onNavigateToFormat = { nav.navigate(FormatDest) },
                 onNavigateToVoice = { nav.navigate(VoiceDest) },
-            )
-        }
-
-        composable<OnboardingRoute> {
-            val onboarding: OnboardingViewModel = viewModel(
-                factory = OnboardingViewModel.Factory(
-                    secureKeyStore = app.secureKeyStore,
-                    settingsRepository = app.settingsRepository,
-                    geocodingClient = app.geocodingClient,
-                    refreshLocationCache = {
-                        FetchAndNotifyWorker.enqueueLocationCacheRefresh(app)
-                    },
-                    workManager = WorkManager.getInstance(app),
-                    externalScope = app.applicationScope,
-                ),
-            )
-            // Both footer buttons finish onboarding and land on Today — the
-            // schedule slot is on by default now, so there's no schedule step
-            // to "Continue" into; the Today "Automatic ClothesCasts" promo
-            // covers schedule discovery instead. First-run auto-fetch so the
-            // user lands on a populated Today screen instead of the empty state
-            // and immediately sees what the app produces. Silent so the screen
-            // they're already looking at fills in without a duplicate
-            // notification chime or TTS playback on top. If location isn't
-            // resolvable the worker fails silently and the location prompt at
-            // the top of the banner stack takes over — the user has the next
-            // step in either case.
-            val finishOnboarding: () -> Unit = {
-                FetchAndNotifyWorker.enqueueOnboardingRefresh(app)
-                nav.navigate(TodayRoute()) {
-                    popUpTo(nav.graph.id) { inclusive = true }
-                }
-            }
-            OnboardingScreen(
-                viewModel = onboarding,
-                onPairFromPhone = { nav.navigate(PairingRoute) },
-                onContinue = finishOnboarding,
-                onSkip = {
-                    // Persist the skip (on the app scope, so the write survives
-                    // the pop below clearing the ViewModel), then finish like
-                    // Continue does.
-                    onboarding.markSkipped()
-                    finishOnboarding()
-                },
             )
         }
 

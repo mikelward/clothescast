@@ -237,7 +237,7 @@ on any of the other owner-gate fallbacks above.
   window on this path because the Play queue (`UNIQUE_WORK_NAME_PLAY`)
   doesn't go through `AlarmReceiver`, and `isHoldingForeground()` is `false`
   for the Play run.
-- **Silent refresh** (app-open opportunistic, onboarding, manual Refresh).
+- **Silent refresh** (app-open opportunistic, manual Refresh).
   `KEY_SILENT_REFRESH=true` means no notification / TTS / MQTT / cast at all.
   No FGS needed; the Worker runs at normal priority.
 - **Location-cache refresh** (device-location toggle on). Network-only side

@@ -171,26 +171,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">እንኳን ወደ ClothesCast መጡ</string>
-    <string name="onboarding_subtitle">ሶስት ፈጣን ምርጫዎች ብቻ ያደርጉታል። ቆይቶ በቅንብሮች ውስጥ ይቀይሩ።</string>
-    <string name="onboarding_subtitle_tv">ሁለት ፈጣን ምርጫዎች ብቻ ያደርጉታል። ቆይቶ በቅንብሮች ውስጥ ይቀይሩ።</string>
-    <string name="onboarding_notifications_title">ማሳወቂያዎች</string>
-    <string name="onboarding_notifications_description">ዕለታዊ ClothesCast ለማድረስ ያስፈልጋል።</string>
-    <string name="onboarding_notifications_grant">የማሳወቂያ ፍቃድ ስጥ</string>
-    <string name="onboarding_location_title">ቦታ</string>
-    <string name="onboarding_location_description">ለቦታዎ ትንበያ ማምጣት።</string>
-    <string name="onboarding_location_grant">የቦታ ፍቃድ ስጥ</string>
-    <string name="onboarding_location_grant_background">ሁልጊዜ ያለ ቦታ ፍቃድ ስጥ</string>
-    <string name="onboarding_location_background_needed">አንድ ተጨማሪ ደረጃ: ClothesCast ጠዋት ሲዘጋ ቦታዎን ሊያነብ \'ሁልጊዜ ፍቀድ\' ያስፈልጋል።</string>
-    <string name="onboarding_location_denied_hint">የቦታ ፍቃድ ተከልክሏል። ከተማ በእጅ ሊያስገቡ ይችላሉ።</string>
-    <string name="onboarding_location_enter_manual">ቦታ በእጅ አስገባ</string>
-    <string name="onboarding_location_enter_manual_hint">የቦታ ፍቃድ ከከለከሉ ወይም የመሳሪያዎ ቦታ ትክክል ካልሆነ ቦታዎን በእጅ ሊያስገቡ ይችላሉ።</string>
-    <string name="onboarding_location_using_device">ጠዋቱን የመሳሪያዎን ቦታ ይጠቀማል።</string>
-    <string name="onboarding_gemini_title">Gemini API key</string>
-    <string name="onboarding_gemini_description">ከፍተኛ ጥራት ያለው ድምፅ ለማግኘት Gemini ይጠቀሙ።</string>
-    <string name="onboarding_step_done">ተጠናቀቀ</string>
-    <string name="onboarding_skip">አሁን ዝለሉ</string>
-    <string name="onboarding_continue">ቀጥል</string>
     <string name="onboarding_pair_from_phone">ከስልኩ ጋር አስተሳስር</string>
 
     <!-- Pairing (TV) -->

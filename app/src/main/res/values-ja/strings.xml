@@ -391,23 +391,7 @@ the displayed label localizes.
     (gender-neutral by virtue of Japanese not marking gender on most
     addresses, so no Bienvenido/a-style workaround needed).
     -->
-    <string name="onboarding_title">ClothesCast へようこそ</string>
-    <string name="onboarding_subtitle">2つの簡単な選択で準備完了。他はすべて妥当な初期値があり、後から設定で調整できます。</string>
-    <string name="onboarding_notifications_title">通知</string>
-    <string name="onboarding_notifications_description">毎日の ClothesCast を届けるために必要です。一度許可すれば、ClothesCast は明日の朝に表示されます。</string>
-    <string name="onboarding_notifications_grant">通知を許可</string>
-    <string name="onboarding_location_title">位置情報</string>
-    <string name="onboarding_location_description">正確な予報を取得するために使用します。位置情報を許可すると、ClothesCast は毎朝、端末のおおよその位置を読み取れます。許可しない場合は、都市を手動で選択してください。</string>
-    <string name="onboarding_location_grant">位置情報を許可</string>
-    <string name="onboarding_location_denied_hint">位置情報の許可が拒否されました。代わりに都市を手動で選択できます。</string>
-    <string name="onboarding_location_enter_manual">位置を手動で入力</string>
-    <string name="onboarding_location_using_device">毎朝、端末の位置情報を使用します。</string>
 
-    <string name="onboarding_gemini_title">Gemini API キー</string>
-    <string name="onboarding_gemini_description">ClothesCast が音声読み上げと予報生成に使用します。aistudio.google.com で無料で取得できます。キーは Android Keystore で暗号化して保存されます。</string>
-    <string name="onboarding_step_done">完了</string>
-    <string name="onboarding_skip">今はスキップ</string>
-    <string name="onboarding_continue">続ける</string>
 
     <string name="insight_lead_today">今日</string>
     <string name="insight_lead_tomorrow">明日</string>
@@ -558,10 +542,6 @@ the displayed label localizes.
     <!-- Onboarding additions — TV-shorter subtitle (TV onboarding has
          less screen real-estate), the always-on location step, and the
          manual-entry hint shown on the location screen. -->
-    <string name="onboarding_subtitle_tv">2つの簡単な選択で準備完了。後から設定で調整できます。</string>
-    <string name="onboarding_location_grant_background">常時位置情報を許可</string>
-    <string name="onboarding_location_background_needed">あと1ステップ：朝の予報がアプリ終了中も位置情報を読み取れるよう、ClothesCast には「常に許可」が必要です。</string>
-    <string name="onboarding_location_enter_manual_hint">位置情報の許可を拒否した場合や、端末の位置が間違っている場合は、位置を手動で入力できます。</string>
 
     <!-- Settings root list — three new rows (Display / Location /
          Calendar) and their subtitles. The earlier root rows

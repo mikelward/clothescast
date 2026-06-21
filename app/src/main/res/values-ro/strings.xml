@@ -242,26 +242,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_telemetry_notice_dismiss">Închide</string>
 
     <!-- Onboarding. -->
-    <string name="onboarding_title">Bun venit în ClothesCast</string>
-    <string name="onboarding_subtitle">Trei alegeri rapide și ești gata. Ajustează mai târziu în Setări.</string>
-    <string name="onboarding_subtitle_tv">Două alegeri rapide și ești gata. Ajustează mai târziu în Setări.</string>
-    <string name="onboarding_notifications_title">Notificări</string>
-    <string name="onboarding_notifications_description">Necesar pentru a livra ClothesCast-ul tău zilnic.</string>
-    <string name="onboarding_notifications_grant">Acordă permisiunea pentru notificări</string>
-    <string name="onboarding_location_title">Locație</string>
-    <string name="onboarding_location_description">Preia prognoza pentru locația ta aproximativă.</string>
-    <string name="onboarding_location_grant">Acordă permisiunea de locație</string>
-    <string name="onboarding_location_grant_background">Acordă locație permanentă</string>
-    <string name="onboarding_location_background_needed">Încă un pas: ClothesCast are nevoie de \'Permite mereu\' ca prognoza de dimineață să poată citi locația ta când aplicația este închisă.</string>
-    <string name="onboarding_location_denied_hint">Permisiunea de locație a fost refuzată. Poți alege un oraș manual în loc.</string>
-    <string name="onboarding_location_enter_manual">Introdu locația manual</string>
-    <string name="onboarding_location_enter_manual_hint">Poți introduce manual locația dacă refuzi permisiunea de locație sau dacă locația dispozitivului tău este greșită.</string>
-    <string name="onboarding_location_using_device">Se folosește locația dispozitivului tău în fiecare dimineață.</string>
-    <string name="onboarding_gemini_title">Cheie API Gemini</string>
-    <string name="onboarding_gemini_description">Folosește Gemini pentru voci de înaltă calitate.</string>
-    <string name="onboarding_step_done">Gata</string>
-    <string name="onboarding_skip">Omite deocamdată</string>
-    <string name="onboarding_continue">Continuă</string>
     <string name="onboarding_pair_from_phone">Asociază de pe telefon</string>
 
     <!-- Pairing (TV). -->

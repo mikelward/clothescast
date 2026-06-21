@@ -63,7 +63,6 @@ class NavGraphComposeTest {
             // Same graph shape as ClothesCastNavHost; stub bodies on purpose.
             NavHost(navController = nav, startDestination = TodayRoute()) {
                 composable<TodayRoute> {}
-                composable<OnboardingRoute> {}
                 composable<PairingRoute> {}
                 navigation<SettingsGraph>(startDestination = SettingsRootDest) {
                     composable<SettingsRootDest> {}
@@ -92,7 +91,6 @@ class NavGraphComposeTest {
         // route from the @Serializable instance via its KSerializer; a broken
         // or missing serializer throws right here.
         composeRule.runOnUiThread {
-            nav.navigate(OnboardingRoute)
             nav.navigate(PairingRoute)
             nav.navigate(SettingsGraph) // resolves to SettingsRootDest
             settingsDestinations.forEach { nav.navigate(it) }

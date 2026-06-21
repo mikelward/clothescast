@@ -255,26 +255,6 @@ What is NOT overridden, by design:
     <string name="today_telemetry_notice_dismiss">Затвори</string>
 
     <!-- Onboarding flow. -->
-    <string name="onboarding_title">Добре дошъл в ClothesCast</string>
-    <string name="onboarding_subtitle">Три бързи избора и сте готов. Промени настройките по-късно.</string>
-    <string name="onboarding_subtitle_tv">Два бързи избора и си готов. Промени настройките по-късно.</string>
-    <string name="onboarding_notifications_title">Известия</string>
-    <string name="onboarding_notifications_description">Необходими за доставяне на твоя дневен ClothesCast.</string>
-    <string name="onboarding_notifications_grant">Разреши известия</string>
-    <string name="onboarding_location_title">Местоположение</string>
-    <string name="onboarding_location_description">Взима прогнозата за твоето приблизително местоположение.</string>
-    <string name="onboarding_location_grant">Разреши достъп до местоположение</string>
-    <string name="onboarding_location_grant_background">Разреши винаги</string>
-    <string name="onboarding_location_background_needed">Още една стъпка: ClothesCast се нуждае от „Разреши винаги", за да може сутрешната прогноза да прочете местоположението ти, докато приложението е затворено.</string>
-    <string name="onboarding_location_denied_hint">Достъпът до местоположение е отказан. Вместо това можеш да въведеш град ръчно.</string>
-    <string name="onboarding_location_enter_manual">Въведи местоположение ръчно</string>
-    <string name="onboarding_location_enter_manual_hint">Можеш да въведеш местоположението си ръчно, ако откажеш достъп до местоположение или местоположението на устройството е грешно.</string>
-    <string name="onboarding_location_using_device">Ще използваме местоположението на устройството ти всяка сутрин.</string>
-    <string name="onboarding_gemini_title">API ключ за Gemini</string>
-    <string name="onboarding_gemini_description">Използвай Gemini за гласове с високо качество.</string>
-    <string name="onboarding_step_done">Готово</string>
-    <string name="onboarding_skip">Пропусни засега</string>
-    <string name="onboarding_continue">Продължи</string>
     <string name="onboarding_pair_from_phone">Свързване от телефон</string>
 
     <!-- Phone-pairing screen (TV). -->

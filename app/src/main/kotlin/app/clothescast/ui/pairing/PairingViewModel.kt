@@ -83,9 +83,9 @@ class PairingViewModel(
             val srv = PairingServer { key ->
                 viewModelScope.launch {
                     secureKeyStore.set(key)
-                    // Mirror OnboardingViewModel.setApiKey: configuring a Gemini
-                    // key during onboarding flips the TTS default to Gemini,
-                    // unless the user already picked an engine in Settings.
+                    // Configuring a Gemini key via pairing flips the TTS default
+                    // to Gemini, unless the user already picked an engine in
+                    // Settings.
                     settingsRepository.setTtsEngineIfUnset(TtsEngine.GEMINI)
                     _state.value = PairingState.Received
                 }

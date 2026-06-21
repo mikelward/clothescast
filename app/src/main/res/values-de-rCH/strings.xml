@@ -379,23 +379,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     Onboarding flow — first-run welcome, two permission steps (notifications
     + location), and the Gemini API-key step. Du-form throughout.
     -->
-    <string name="onboarding_title">Willkommen bei ClothesCast</string>
-    <string name="onboarding_subtitle">Zwei schnelle Auswahlen, und du bist startklar. Alles andere hat eine sinnvolle Voreinstellung, die du später in den Einstellungen anpassen kannst.</string>
-    <string name="onboarding_notifications_title">Benachrichtigungen</string>
-    <string name="onboarding_notifications_description">Damit dein täglicher ClothesCast bei dir ankommt. Einmal erlauben, und morgen früh ist er da.</string>
-    <string name="onboarding_notifications_grant">Benachrichtigungen erlauben</string>
-    <string name="onboarding_location_title">Standort</string>
-    <string name="onboarding_location_description">Damit die richtige Vorhersage geholt wird. Mit Standortzugriff liest ClothesCast jeden Morgen den ungefähren Standort deines Geräts; andernfalls wähl eine Stadt manuell.</string>
-    <string name="onboarding_location_grant">Standortzugriff erlauben</string>
-    <string name="onboarding_location_denied_hint">Standortzugriff abgelehnt. Du kannst stattdessen eine Stadt manuell wählen.</string>
-    <string name="onboarding_location_enter_manual">Standort manuell eingeben</string>
-    <string name="onboarding_location_using_device">Wir verwenden jeden Morgen den Standort deines Geräts.</string>
 
-    <string name="onboarding_gemini_title">Gemini-API-Schlüssel</string>
-    <string name="onboarding_gemini_description">Wird von ClothesCast für gesprochene Stimmen und die Vorhersage-Generierung verwendet. Hol dir kostenlos einen unter aistudio.google.com. Der Schlüssel wird im Android Keystore verschlüsselt gespeichert.</string>
-    <string name="onboarding_step_done">Fertig</string>
-    <string name="onboarding_skip">Erstmal überspringen</string>
-    <string name="onboarding_continue">Weiter</string>
 
     <!-- Insight prose templates — German equivalents of the keys in values/strings.xml. -->
     <string name="insight_lead_today">Heute</string>

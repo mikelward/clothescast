@@ -310,23 +310,7 @@ displayed label localizes.
     <string name="conditions_wind">%1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
-    <string name="onboarding_title">ClothesCast\'a Hoş Geldiniz</string>
-    <string name="onboarding_subtitle">İki hızlı seçim ve hazırsın. Diğer her şeyin daha sonra ayarlardan değiştirebileceğin makul bir varsayılanı var.</string>
-    <string name="onboarding_notifications_title">Bildirimler</string>
-    <string name="onboarding_notifications_description">Günlük ClothesCast\'ının sana ulaşması için. Bir kez izin ver ve yarın sabah hazır olacak.</string>
-    <string name="onboarding_notifications_grant">Bildirimlere izin ver</string>
-    <string name="onboarding_location_title">Konum</string>
-    <string name="onboarding_location_description">Doğru tahminin alınması için. Konum erişimiyle ClothesCast her sabah cihazının yaklaşık konumunu okur; aksi takdirde bir şehri manuel olarak seç.</string>
-    <string name="onboarding_location_grant">Konum erişimine izin ver</string>
-    <string name="onboarding_location_denied_hint">Konum erişimi reddedildi. Bunun yerine manuel olarak bir şehir seçebilirsin.</string>
-    <string name="onboarding_location_enter_manual">Konumu manuel olarak gir</string>
-    <string name="onboarding_location_using_device">Her sabah cihazının konumunu kullanıyoruz.</string>
 
-    <string name="onboarding_gemini_title">Gemini API Anahtarı</string>
-    <string name="onboarding_gemini_description">ClothesCast bunu sesli konuşma ve tahmin oluşturma için kullanır. aistudio.google.com adresinden ücretsiz bir anahtar alın. Anahtar Android Keystore\'da şifreli olarak saklanır.</string>
-    <string name="onboarding_step_done">Tamam</string>
-    <string name="onboarding_skip">Şimdilik atla</string>
-    <string name="onboarding_continue">Devam et</string>
 
     <string name="insight_lead_today">Bugün</string>
     <string name="insight_lead_tomorrow">Yarın</string>
@@ -455,11 +439,7 @@ displayed label localizes.
     <string name="today_crash_banner_share">Raporu paylaş</string>
     <string name="today_crash_banner_dismiss">Kapat</string>
 
-    <string name="onboarding_subtitle_tv">İki hızlı seçim ve hazırsın. Diğer her şeyi daha sonra ayarlardan değiştirebilirsin.</string>
 
-    <string name="onboarding_location_grant_background">Her zaman izin ver</string>
-    <string name="onboarding_location_background_needed">Bir adım daha: ClothesCast, uygulama kapalıyken sabah tahmini konumunuzu okuyabilmesi için "Her zaman izin ver" iznine ihtiyaç duyar.</string>
-    <string name="onboarding_location_enter_manual_hint">Konum erişimini reddederseniz veya cihaz konumu yanlışsa konumunuzu manuel olarak girebilirsiniz.</string>
 
     <string name="settings_root_display">Görünüm</string>
     <string name="settings_root_location">Konum</string>

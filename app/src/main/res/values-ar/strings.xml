@@ -243,26 +243,6 @@ they work correctly in both the single-band and range templates.
     <string name="today_telemetry_notice_dismiss">إغلاق</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">مرحبًا بك في ClothesCast</string>
-    <string name="onboarding_subtitle">ثلاثة خيارات سريعة وأنت جاهز. عدّلها لاحقًا في الإعدادات.</string>
-    <string name="onboarding_subtitle_tv">خياران سريعان وأنت جاهز. عدّلهما لاحقًا في الإعدادات.</string>
-    <string name="onboarding_notifications_title">الإشعارات</string>
-    <string name="onboarding_notifications_description">مطلوب لتسليم ClothesCast اليومي.</string>
-    <string name="onboarding_notifications_grant">منح إذن الإشعارات</string>
-    <string name="onboarding_location_title">الموقع</string>
-    <string name="onboarding_location_description">جلب التوقعات لموقعك التقريبي.</string>
-    <string name="onboarding_location_grant">منح إذن الموقع</string>
-    <string name="onboarding_location_grant_background">منح إذن الموقع الدائم</string>
-    <string name="onboarding_location_background_needed">خطوة أخيرة: تحتاج ClothesCast إلى \'السماح في جميع الأوقات\' حتى تتمكن توقعات الصباح من قراءة موقعك أثناء إغلاق التطبيق.</string>
-    <string name="onboarding_location_denied_hint">تم رفض إذن الموقع. يمكنك اختيار مدينة يدويًا.</string>
-    <string name="onboarding_location_enter_manual">إدخال الموقع يدويًا</string>
-    <string name="onboarding_location_enter_manual_hint">يمكنك إدخال موقعك يدويًا إذا رفضت إذن الموقع أو كان موقع جهازك خاطئًا.</string>
-    <string name="onboarding_location_using_device">يستخدم موقع جهازك كل صباح.</string>
-    <string name="onboarding_gemini_title">مفتاح Gemini API</string>
-    <string name="onboarding_gemini_description">استخدم Gemini للحصول على أصوات عالية الجودة.</string>
-    <string name="onboarding_step_done">تم</string>
-    <string name="onboarding_skip">تخطي الآن</string>
-    <string name="onboarding_continue">متابعة</string>
     <string name="onboarding_pair_from_phone">الإقران من الهاتف بدلاً من ذلك</string>
 
     <!-- TV pairing -->

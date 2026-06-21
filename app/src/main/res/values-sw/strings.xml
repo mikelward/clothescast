@@ -218,26 +218,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_telemetry_notice_dismiss">Ondoa</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">Karibu ClothesCast</string>
-    <string name="onboarding_subtitle">Chaguo tatu za haraka na uko tayari. Rekebisha baadaye katika Mipangilio.</string>
-    <string name="onboarding_subtitle_tv">Chaguo mbili za haraka na uko tayari. Rekebisha baadaye katika Mipangilio.</string>
-    <string name="onboarding_notifications_title">Arifa</string>
-    <string name="onboarding_notifications_description">Inahitajika kutoa ClothesCast yako ya kila siku.</string>
-    <string name="onboarding_notifications_grant">Toa ruhusa ya arifa</string>
-    <string name="onboarding_location_title">Mahali</string>
-    <string name="onboarding_location_description">Pakua utabiri wa mahali pako pa takriban.</string>
-    <string name="onboarding_location_grant">Toa ruhusa ya mahali</string>
-    <string name="onboarding_location_grant_background">Toa ruhusa ya mahali daima</string>
-    <string name="onboarding_location_background_needed">Hatua moja zaidi: ClothesCast inahitaji \'Ruhusu wakati wote\' ili utabiri wa asubuhi uweze kusoma mahali pako programu inapofungwa.</string>
-    <string name="onboarding_location_denied_hint">Ruhusa ya mahali imekataliwa. Unaweza kuchagua mji wewe mwenyewe.</string>
-    <string name="onboarding_location_enter_manual">Ingiza mahali wewe mwenyewe</string>
-    <string name="onboarding_location_enter_manual_hint">Unaweza kuingiza mahali pako wewe mwenyewe ikiwa utakataa ruhusa ya mahali au mahali pa kifaa chako si sahihi.</string>
-    <string name="onboarding_location_using_device">Inatumia mahali pa kifaa chako kila asubuhi.</string>
-    <string name="onboarding_gemini_title">Ufunguo wa Gemini API</string>
-    <string name="onboarding_gemini_description">Tumia Gemini kupata sauti za ubora wa juu.</string>
-    <string name="onboarding_step_done">Imekamilika</string>
-    <string name="onboarding_skip">Ruka kwa sasa</string>
-    <string name="onboarding_continue">Endelea</string>
     <string name="onboarding_pair_from_phone">Unganisha kutoka simu badala yake</string>
 
     <!-- TV pairing -->

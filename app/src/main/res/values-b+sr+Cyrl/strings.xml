@@ -525,26 +525,6 @@ surfaces.
     <string name="today_telemetry_notice_dismiss">Затвори</string>
 
     <!-- Onboarding flow. -->
-    <string name="onboarding_title">Добродошао у ClothesCast</string>
-    <string name="onboarding_subtitle">Три брза избора и готово. Све остало можеш да подесиш у подешавањима.</string>
-    <string name="onboarding_subtitle_tv">Два брза избора и готово. Све остало можеш да подесиш у подешавањима.</string>
-    <string name="onboarding_notifications_title">Обавештења</string>
-    <string name="onboarding_notifications_description">Потребно за испоруку твог дневног ClothesCastа.</string>
-    <string name="onboarding_notifications_grant">Дозволи обавештења</string>
-    <string name="onboarding_location_title">Локација</string>
-    <string name="onboarding_location_description">Преузимање прогнозе за твоју апроксимативну локацију.</string>
-    <string name="onboarding_location_grant">Дозволи приступ локацији</string>
-    <string name="onboarding_location_grant_background">Дозволи трајни приступ локацији</string>
-    <string name="onboarding_location_background_needed">Још један корак: ClothesCast треба \'Дозволи увек\' како би јутарња прогноза могла да чита твоју локацију док је апликација затворена.</string>
-    <string name="onboarding_location_denied_hint">Приступ локацији одбијен. Уместо тога можеш ручно да одабереш град.</string>
-    <string name="onboarding_location_enter_manual">Унеси локацију ручно</string>
-    <string name="onboarding_location_enter_manual_hint">Можеш ручно да унесеш своју локацију ако одбијете приступ локацији или ако је локација уређаја нетачна.</string>
-    <string name="onboarding_location_using_device">Користимо локацију твог уређаја сваког јутра.</string>
-    <string name="onboarding_gemini_title">Gemini API кључ</string>
-    <string name="onboarding_gemini_description">Користи Gemini за висококвалитетне гласове.</string>
-    <string name="onboarding_step_done">Готово</string>
-    <string name="onboarding_skip">Прескочи за сада</string>
-    <string name="onboarding_continue">Настави</string>
     <string name="onboarding_pair_from_phone">Упари путем телефона</string>
 
     <!-- Phone-pairing screen. -->

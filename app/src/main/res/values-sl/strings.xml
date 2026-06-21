@@ -250,26 +250,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_telemetry_notice_dismiss">Zapri</string>
 
     <!-- Onboarding. -->
-    <string name="onboarding_title">Dobrodošel v ClothesCast</string>
-    <string name="onboarding_subtitle">Tri hitre izbire in si pripravljen. Pozneje prilagodi v Nastavitvah.</string>
-    <string name="onboarding_subtitle_tv">Dve hitri izbiri in si pripravljen. Pozneje prilagodi v Nastavitvah.</string>
-    <string name="onboarding_notifications_title">Obvestila</string>
-    <string name="onboarding_notifications_description">Potrebno za dostavo tvojega dnevnega ClothesCasta.</string>
-    <string name="onboarding_notifications_grant">Dovoli obvestila</string>
-    <string name="onboarding_location_title">Lokacija</string>
-    <string name="onboarding_location_description">Pridobi napoved za tvojo okvirno lokacijo.</string>
-    <string name="onboarding_location_grant">Dovoli dostop do lokacije</string>
-    <string name="onboarding_location_grant_background">Dovoli trajni dostop do lokacije</string>
-    <string name="onboarding_location_background_needed">Še en korak: ClothesCast potrebuje \'Dovoli ves čas\', da jutranja napoved lahko prebere tvojo lokacijo, ko je aplikacija zaprta.</string>
-    <string name="onboarding_location_denied_hint">Dostop do lokacije zavrnjen. Namesto tega lahko ročno izbereš mesto.</string>
-    <string name="onboarding_location_enter_manual">Vnesi lokacijo ročno</string>
-    <string name="onboarding_location_enter_manual_hint">Lokacijo lahko ročno vneseš, če zavrneš dostop do lokacije ali če je lokacija naprave napačna.</string>
-    <string name="onboarding_location_using_device">Vsako jutro se uporablja lokacija tvoje naprave.</string>
-    <string name="onboarding_gemini_title">Gemini API-ključ</string>
-    <string name="onboarding_gemini_description">Uporabi Gemini za glasove visoke kakovosti.</string>
-    <string name="onboarding_step_done">Končano</string>
-    <string name="onboarding_skip">Preskoči za zdaj</string>
-    <string name="onboarding_continue">Nadaljuj</string>
     <string name="onboarding_pair_from_phone">Poveži s telefona</string>
 
     <!-- TV pairing screen. -->

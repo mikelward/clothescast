@@ -9,7 +9,7 @@
 
 # Type-safe Navigation Compose routes. Each NavHost destination is a top-level
 # @Serializable object / data class in app.clothescast.ui.nav (TodayRoute,
-# OnboardingRoute, PairingRoute, the Settings*Dest objects, SettingsGraph).
+# PairingRoute, the Settings*Dest objects, SettingsGraph).
 # Compose Navigation resolves a route's KSerializer *reflectively, by KClass*,
 # while building the graph at NavHost composition. R8's optimizing+obfuscating
 # release build strips the synthetic serializer() / INSTANCE members of the

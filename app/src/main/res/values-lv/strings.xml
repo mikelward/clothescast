@@ -222,26 +222,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_telemetry_notice_dismiss">Aizvērt</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">Laipni lūgti ClothesCast</string>
-    <string name="onboarding_subtitle">Trīs ātra izvēle un esi gatavs. Vēlāk maini iestatījumos.</string>
-    <string name="onboarding_subtitle_tv">Divas ātra izvēle un esi gatavs. Vēlāk maini iestatījumos.</string>
-    <string name="onboarding_notifications_title">Paziņojumi</string>
-    <string name="onboarding_notifications_description">Nepieciešami, lai piegādātu tavu ikdienas ClothesCast.</string>
-    <string name="onboarding_notifications_grant">Piešķirt paziņojumu atļauju</string>
-    <string name="onboarding_location_title">Atrašanās vieta</string>
-    <string name="onboarding_location_description">Ielādē prognozi tuvākajai atrašanās vietai.</string>
-    <string name="onboarding_location_grant">Piešķirt atrašanās vietas atļauju</string>
-    <string name="onboarding_location_grant_background">Piešķirt pastāvīgu atrašanās vietas atļauju</string>
-    <string name="onboarding_location_background_needed">Vēl viens solis: ClothesCast vajadzīga atļauja "Vienmēr atļaut", lai rīta prognoze varētu nolasīt tavu atrašanās vietu, kamēr lietotne ir aizvērta.</string>
-    <string name="onboarding_location_denied_hint">Atrašanās vietas atļauja liegta. Tā vietā vari manuāli ievadīt pilsētu.</string>
-    <string name="onboarding_location_enter_manual">Ievadīt atrašanās vietu manuāli</string>
-    <string name="onboarding_location_enter_manual_hint">Vari manuāli ievadīt atrašanās vietu, ja liedz atrašanās vietas atļauju vai ierīces atrašanās vieta ir nepareiza.</string>
-    <string name="onboarding_location_using_device">Katru rītu tiek izmantota ierīces atrašanās vieta.</string>
-    <string name="onboarding_gemini_title">Gemini API atslēga</string>
-    <string name="onboarding_gemini_description">Izmanto Gemini, lai iegūtu augstas kvalitātes balsis.</string>
-    <string name="onboarding_step_done">Gatavs</string>
-    <string name="onboarding_skip">Izlaist pagaidām</string>
-    <string name="onboarding_continue">Turpināt</string>
     <string name="onboarding_pair_from_phone">Savienot no tālruņa</string>
 
     <!-- Pairing (TV) -->

@@ -242,26 +242,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_telemetry_notice_dismiss">ปิด</string>
 
     <!-- Onboarding -->
-    <string name="onboarding_title">ยินดีต้อนรับสู่ ClothesCast</string>
-    <string name="onboarding_subtitle">เลือกสามอย่างรวดเร็วแล้วพร้อมใช้งาน ปรับแต่งเพิ่มเติมได้ในการตั้งค่า</string>
-    <string name="onboarding_subtitle_tv">เลือกสองอย่างรวดเร็วแล้วพร้อมใช้งาน ปรับแต่งเพิ่มเติมได้ในการตั้งค่า</string>
-    <string name="onboarding_notifications_title">การแจ้งเตือน</string>
-    <string name="onboarding_notifications_description">จำเป็นสำหรับการส่ง ClothesCast รายวันของคุณ</string>
-    <string name="onboarding_notifications_grant">อนุญาตการแจ้งเตือน</string>
-    <string name="onboarding_location_title">ตำแหน่ง</string>
-    <string name="onboarding_location_description">ดึงพยากรณ์อากาศสำหรับตำแหน่งโดยประมาณของคุณ</string>
-    <string name="onboarding_location_grant">อนุญาตการเข้าถึงตำแหน่ง</string>
-    <string name="onboarding_location_grant_background">อนุญาตการเข้าถึงตำแหน่งตลอดเวลา</string>
-    <string name="onboarding_location_background_needed">อีกขั้นตอนหนึ่ง: ClothesCast ต้องการ \'อนุญาตตลอดเวลา\' เพื่อให้พยากรณ์อากาศช่วงเช้าสามารถอ่านตำแหน่งของคุณได้แม้แอปปิดอยู่</string>
-    <string name="onboarding_location_denied_hint">ถูกปฏิเสธการเข้าถึงตำแหน่ง คุณสามารถป้อนเมืองด้วยตนเองแทนได้</string>
-    <string name="onboarding_location_enter_manual">ป้อนตำแหน่งด้วยตนเอง</string>
-    <string name="onboarding_location_enter_manual_hint">คุณสามารถป้อนตำแหน่งด้วยตนเองหากปฏิเสธสิทธิ์ตำแหน่งหรือตำแหน่งอุปกรณ์ไม่ถูกต้อง</string>
-    <string name="onboarding_location_using_device">ใช้ตำแหน่งอุปกรณ์ของคุณทุกเช้า</string>
-    <string name="onboarding_gemini_title">Gemini API key</string>
-    <string name="onboarding_gemini_description">ใช้ Gemini เพื่อรับเสียงคุณภาพสูง</string>
-    <string name="onboarding_step_done">เสร็จสิ้น</string>
-    <string name="onboarding_skip">ข้ามไปก่อน</string>
-    <string name="onboarding_continue">ดำเนินการต่อ</string>
     <string name="onboarding_pair_from_phone">จับคู่จากโทรศัพท์แทน</string>
 
     <!-- TV pairing screen -->

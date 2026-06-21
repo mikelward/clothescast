@@ -363,23 +363,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     sidestep the masc/fem agreement Croatian otherwise forces on ti-form
     addresses; everything else uses true ti-form.
     -->
-    <string name="onboarding_title">Dobrodošli u ClothesCast</string>
-    <string name="onboarding_subtitle">Dva brza odabira i to je sve. Sve ostalo ima razuman zadani izbor koji kasnije možeš podesiti u postavkama.</string>
-    <string name="onboarding_notifications_title">Obavijesti</string>
-    <string name="onboarding_notifications_description">Potrebno za isporuku tvog dnevnog ClothesCasta. Dopusti jednom, i ClothesCast će se pojaviti sutra ujutro.</string>
-    <string name="onboarding_notifications_grant">Dopusti obavijesti</string>
-    <string name="onboarding_location_title">Lokacija</string>
-    <string name="onboarding_location_description">Koristi se za dohvaćanje točne prognoze. Ako dopustiš lokaciju, ClothesCast svako jutro može pročitati približnu lokaciju tvog uređaja; inače ručno odaberi grad.</string>
-    <string name="onboarding_location_grant">Dopusti pristup lokaciji</string>
-    <string name="onboarding_location_denied_hint">Pristup lokaciji odbijen. Umjesto toga možeš ručno odabrati grad.</string>
-    <string name="onboarding_location_enter_manual">Unesi lokaciju ručno</string>
-    <string name="onboarding_location_using_device">Svako jutro koristimo lokaciju tvog uređaja.</string>
 
-    <string name="onboarding_gemini_title">Gemini API ključ</string>
-    <string name="onboarding_gemini_description">ClothesCast ga koristi za izgovorene glasove i generiranje prognoza. Nabavi besplatno na aistudio.google.com. Ključ je šifriran u Android Keystore.</string>
-    <string name="onboarding_step_done">Gotovo</string>
-    <string name="onboarding_skip">Preskoči zasad</string>
-    <string name="onboarding_continue">Nastavi</string>
 
     <string name="insight_lead_today">Danas</string>
     <string name="insight_lead_tomorrow">Sutra</string>
@@ -514,12 +498,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_crash_banner_dismiss">Zatvori</string>
 
     <!-- TV-specific onboarding subtitle (two steps instead of three). -->
-    <string name="onboarding_subtitle_tv">Dva brza izbora i spreman si. Sve ostalo možeš prilagoditi u postavkama kasnije.</string>
 
     <!-- Onboarding — background location step. -->
-    <string name="onboarding_location_grant_background">Uvijek dopusti</string>
-    <string name="onboarding_location_background_needed">Još jedan korak: ClothesCast treba \'Uvijek dopusti\' kako bi jutarnja prognoza mogla čitati tvoju lokaciju dok je aplikacija zatvorena.</string>
-    <string name="onboarding_location_enter_manual_hint">Možeš ručno unijeti svoju lokaciju ako odbiješ pristup lokaciji ili ako je lokacija uređaja netočna.</string>
 
     <!-- Settings root — rows not yet translated. -->
     <string name="settings_root_display">Zaslon</string>

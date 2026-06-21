@@ -242,26 +242,6 @@ What is NOT overridden, by design:
     <string name="today_telemetry_notice_dismiss">Atmesti</string>
 
     <!-- Onboarding. -->
-    <string name="onboarding_title">Sveiki atvykę į ClothesCast</string>
-    <string name="onboarding_subtitle">Trys greiti pasirinkimai — ir viskas paruošta. Vėliau galima keisti nustatymuose.</string>
-    <string name="onboarding_subtitle_tv">Du greiti pasirinkimai — ir viskas paruošta. Vėliau galima keisti nustatymuose.</string>
-    <string name="onboarding_notifications_title">Pranešimai</string>
-    <string name="onboarding_notifications_description">Reikalinga, kad kasdieninis ClothesCast būtų pristatytas.</string>
-    <string name="onboarding_notifications_grant">Suteikti pranešimų leidimą</string>
-    <string name="onboarding_location_title">Vieta</string>
-    <string name="onboarding_location_description">Gauti prognozę pagal apytikslę tavo vietą.</string>
-    <string name="onboarding_location_grant">Suteikti vietos leidimą</string>
-    <string name="onboarding_location_grant_background">Suteikti nuolatinį vietos leidimą</string>
-    <string name="onboarding_location_background_needed">Dar vienas žingsnis: ClothesCast reikia leidimo „Visada leisti", kad ryto prognozė galėtų nuskaityti tavo vietą, kol programa uždaryta.</string>
-    <string name="onboarding_location_denied_hint">Vietos leidimas atmestas. Vietoj to galite pasirinkti miestą rankiniu būdu.</string>
-    <string name="onboarding_location_enter_manual">Įvesti vietą rankiniu būdu</string>
-    <string name="onboarding_location_enter_manual_hint">Galite rankiniu būdu įvesti vietą, jei atsisakysite vietos leidimo arba įrenginio vieta yra neteisinga.</string>
-    <string name="onboarding_location_using_device">Kiekvieną rytą bus naudojama įrenginio vieta.</string>
-    <string name="onboarding_gemini_title">Gemini API raktas</string>
-    <string name="onboarding_gemini_description">Naudok Gemini aukštos kokybės balsams.</string>
-    <string name="onboarding_step_done">Atlikta</string>
-    <string name="onboarding_skip">Praleisti dabar</string>
-    <string name="onboarding_continue">Tęsti</string>
     <string name="onboarding_pair_from_phone">Susieti iš telefono</string>
 
     <!-- TV pairing screen. -->

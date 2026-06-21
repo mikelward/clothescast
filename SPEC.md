@@ -41,14 +41,12 @@ I put on before I leave?" instead of a full weather-office report.
    cache the current and next period. Delivery channels are additive; failures
    are logged and surfaced where possible without cancelling unrelated
    channels.
-5. **Manual paths.** Onboarding and Today-screen refreshes silently populate the
+5. **Manual paths.** Today-screen refreshes silently populate the
    cache; explicit Play / Cast / test actions bypass some scheduled-delivery
    gates because the user just asked for output now.
 
 ### Main user surfaces
 
-- **Onboarding.** Lightweight first-run setup for location and optional phone
-  pairing, then an automatic silent refresh so Today can start populated.
 - **Today.** The home screen shows the current / next forecast periods, outfit
   card, feels-like and precipitation charts, confidence / per-model diagnostics,
   celebratory theming, setup promos, update notices, crash-report

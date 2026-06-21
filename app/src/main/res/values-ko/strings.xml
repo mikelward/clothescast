@@ -403,23 +403,7 @@ displayed label localizes.
     Bienvenido/a-style workaround is needed; "오신 것을 환영합니다" is the
     standard Korean app welcome.
     -->
-    <string name="onboarding_title">ClothesCast에 오신 것을 환영합니다</string>
-    <string name="onboarding_subtitle">두 가지 빠른 선택만으로 준비 완료. 나머지는 모두 합리적인 기본값이 있고, 나중에 설정에서 조정할 수 있어요.</string>
-    <string name="onboarding_notifications_title">알림</string>
-    <string name="onboarding_notifications_description">매일 ClothesCast를 전달하는 데 필요해요. 한 번 허용하면 ClothesCast가 내일 아침에 표시됩니다.</string>
-    <string name="onboarding_notifications_grant">알림 허용</string>
-    <string name="onboarding_location_title">위치</string>
-    <string name="onboarding_location_description">정확한 예보를 가져오는 데 사용해요. 위치를 허용하면 ClothesCast가 매일 아침 기기의 대략적인 위치를 읽을 수 있어요. 그렇지 않으면 도시를 직접 선택하세요.</string>
-    <string name="onboarding_location_grant">위치 액세스 허용</string>
-    <string name="onboarding_location_denied_hint">위치 액세스가 거부되었어요. 대신 도시를 직접 선택할 수 있어요.</string>
-    <string name="onboarding_location_enter_manual">위치 직접 입력</string>
-    <string name="onboarding_location_using_device">매일 아침 기기의 위치를 사용해요.</string>
 
-    <string name="onboarding_gemini_title">Gemini API 키</string>
-    <string name="onboarding_gemini_description">ClothesCast가 음성 읽기와 예보 생성에 사용해요. aistudio.google.com에서 무료로 받을 수 있어요. 키는 Android Keystore로 암호화되어 저장됩니다.</string>
-    <string name="onboarding_step_done">완료</string>
-    <string name="onboarding_skip">나중에</string>
-    <string name="onboarding_continue">계속</string>
 
     <string name="insight_lead_today">오늘</string>
     <string name="insight_lead_tomorrow">내일</string>
@@ -562,10 +546,6 @@ displayed label localizes.
     <!-- Onboarding additions — TV-shorter subtitle (TV onboarding has
          less screen real-estate), the always-on location step, and the
          manual-entry hint shown on the location screen. -->
-    <string name="onboarding_subtitle_tv">두 가지 빠른 선택으로 준비 완료. 나머지는 나중에 설정에서 조정할 수 있어요.</string>
-    <string name="onboarding_location_grant_background">상시 위치 허용</string>
-    <string name="onboarding_location_background_needed">한 단계 더: 앱이 닫혀 있어도 아침 예보가 위치를 읽을 수 있도록 ClothesCast에 \'항상 허용\'이 필요합니다.</string>
-    <string name="onboarding_location_enter_manual_hint">위치 권한을 거부하거나 기기 위치가 잘못된 경우 위치를 직접 입력할 수 있습니다.</string>
 
     <!-- Settings root list — three new rows (Display / Location /
          Calendar) and their subtitles. The earlier root rows

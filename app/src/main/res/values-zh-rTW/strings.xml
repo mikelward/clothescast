@@ -375,23 +375,7 @@ label localises.
     neutral by virtue of Chinese not marking gender on most adjectives /
     addresses). 你-form throughout for the casual register.
     -->
-    <string name="onboarding_title">歡迎使用 ClothesCast</string>
-    <string name="onboarding_subtitle">兩個快速選擇即可開始。其他設定都有合理的預設值，你之後可以在設定裡調整。</string>
-    <string name="onboarding_notifications_title">通知</string>
-    <string name="onboarding_notifications_description">用於送出你的每日 ClothesCast。授予一次權限後，ClothesCast 明天早上就會出現。</string>
-    <string name="onboarding_notifications_grant">授予通知權限</string>
-    <string name="onboarding_location_title">位置</string>
-    <string name="onboarding_location_description">用於取得準確的天氣預報。授予位置權限後，ClothesCast 每天早上可以讀取你裝置的概略位置；否則請手動選擇一個城市。</string>
-    <string name="onboarding_location_grant">授予位置權限</string>
-    <string name="onboarding_location_denied_hint">位置權限被拒絕。你可以手動選擇一個城市。</string>
-    <string name="onboarding_location_enter_manual">手動輸入位置</string>
-    <string name="onboarding_location_using_device">每天早上使用你裝置的位置。</string>
 
-    <string name="onboarding_gemini_title">Gemini API 金鑰</string>
-    <string name="onboarding_gemini_description">ClothesCast 用於語音朗讀與天氣預報生成。可在 aistudio.google.com 免費取得。金鑰會以 Android Keystore 加密儲存。</string>
-    <string name="onboarding_step_done">完成</string>
-    <string name="onboarding_skip">暫時跳過</string>
-    <string name="onboarding_continue">繼續</string>
 
     <string name="insight_lead_today">今天</string>
     <string name="insight_lead_tomorrow">明天</string>
@@ -495,10 +479,6 @@ label localises.
     <!-- Onboarding additions — TV-shorter subtitle (TV onboarding has
          less screen real-estate), the always-on location step, the
          manual-entry hint, and the TV phone-pairing fallback link. -->
-    <string name="onboarding_subtitle_tv">兩個快速選擇即可開始。之後可在設定裡調整。</string>
-    <string name="onboarding_location_grant_background">授予始終開啟位置權限</string>
-    <string name="onboarding_location_background_needed">還有一步：ClothesCast 需要「始終允許」權限，讓早晨預報在應用程式關閉時也能讀取你的位置。</string>
-    <string name="onboarding_location_enter_manual_hint">如果你拒絕位置權限，或裝置位置有誤，可以手動輸入位置。</string>
     <string name="onboarding_pair_from_phone">改用手機配對</string>
 
     <!-- TV pairing flow — phone scans the QR, pastes the Gemini API

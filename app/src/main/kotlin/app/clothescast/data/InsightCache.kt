@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.time.LocalDate
@@ -81,9 +80,9 @@ import java.time.ZoneId
  * corruption (deserialization failure → drop and regenerate) trivial.
  */
 class InsightCache(
-    private val dataStore: DataStore<Preferences>,
+    dataStore: DataStore<Preferences>,
     private val deriveInsight: DeriveInsight = DeriveInsight(),
-    private val json: Json = Json { ignoreUnknownKeys = true },
+    json: Json = Json { ignoreUnknownKeys = true },
     // Whether cached calendar events may still be used. Snapshots persist the
     // events captured while permission was granted; revoking READ_CALENDAR in
     // system settings isn't reflected in prefs, so DeriveInsight's
@@ -94,10 +93,7 @@ class InsightCache(
     // Non-destructive: the stored bytes keep their events, so re-granting
     // permission restores them on the next read.
     private val calendarEventsReadable: () -> Boolean = { true },
-) {
-    // TODO(datastore-json-plumbing): see DailyHistoryStore — shared
-    //   JSON-preference I/O plumbing opportunity across this, SettingsRepository,
-    //   and DailyHistoryStore (extract readJson/writeJson; keep the DTOs).
+) : JsonPreferenceStore(dataStore, json) {
 
     /**
      * Which 12-hour window a snapshot occupies relative to the rendering
@@ -154,7 +150,7 @@ class InsightCache(
 
     suspend fun store(slot: Slot, snapshot: ForecastSnapshot) {
         dataStore.edit {
-            it[keyFor(slot)] = json.encodeToString(snapshot.toDto())
+            it.writeJson(keyFor(slot), snapshot.toDto())
             // A fresh capture supersedes whatever the pre-update build left
             // under the old key names; drop them so the read fallback can't
             // resurrect a stale snapshot and the orphaned bytes don't linger.
@@ -212,8 +208,9 @@ class InsightCache(
         // fetch lands. The v7 shape decodes into the current DTO (the event
         // date fields default to null and materialise against the snapshot's
         // own date), so only the key name needs bridging.
-        val raw = this[key] ?: this[legacyKey] ?: return null
-        return runCatching { json.decodeFromString<ForecastSnapshotDto>(raw).toDomain() }.getOrNull()
+        return decodeJson<ForecastSnapshot?>(this[key] ?: this[legacyKey], null) {
+            json.decodeFromString<ForecastSnapshotDto>(it).toDomain()
+        }
     }
 
     private fun keyFor(slot: Slot): Preferences.Key<String> =

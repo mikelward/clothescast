@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastConfidence
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.ForecastSnapshot
@@ -28,10 +29,14 @@ import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.ForecastBundle
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -103,6 +108,19 @@ class InsightCacheTest {
         generatedAt = now,
     )
 
+    private val sampleWithEvent = sample.copy(
+        events = listOf(
+            CalendarEvent(
+                title = "Concert",
+                start = LocalDateTime.of(2026, 4, 25, 14, 0),
+                end = LocalDateTime.of(2026, 4, 25, 15, 0),
+                location = "Arena",
+                allDay = false,
+                kind = EventKind.NORMAL,
+            ),
+        ),
+    )
+
     private val basePrefs = UserPreferences(
         schedule = Schedule(time = LocalTime.of(7, 0), days = Schedule.EVERY_DAY, zoneId = ZoneId.of("UTC")),
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
@@ -142,6 +160,68 @@ class InsightCacheTest {
 
         val read = subject.thisPeriod.first()
         read shouldBe sample
+    }
+
+    // The cache scrubs event content to placeholders on disk (privacy — see
+    // PLACEHOLDER_LOCATION), so events don't round-trip by value; these assert
+    // on event *presence*, which is what the permission gate switches.
+    @Test
+    fun `cached events are kept on read when calendar access is intact`() = runTest {
+        val cache = InsightCache(dataStore, calendarEventsReadable = { true })
+        cache.store(InsightCache.Slot.THIS_PERIOD, sampleWithEvent)
+
+        cache.thisPeriod.first()?.events?.size shouldBe 1
+    }
+
+    @Test
+    fun `cached events are dropped on read when calendar permission is revoked`() = runTest {
+        // Stored while permission was granted; access revoked in system settings
+        // since. A read must not surface the event — otherwise a cache hit /
+        // replay would re-derive stale prose and publish has_events=true after
+        // calendar access is gone.
+        val revoked = InsightCache(dataStore, calendarEventsReadable = { false })
+        revoked.store(InsightCache.Slot.THIS_PERIOD, sampleWithEvent)
+
+        revoked.thisPeriod.first()?.events shouldBe emptyList()
+
+        // Non-destructive: the stored bytes keep the event, so a reader with
+        // access restored still sees it (re-granting permission heals the read).
+        InsightCache(dataStore, calendarEventsReadable = { true })
+            .thisPeriod.first()?.events?.size shouldBe 1
+    }
+
+    @Test
+    fun `deriveFlow re-drops events when permission is revoked mid-collection`() = runTest {
+        // A DataStore on the test scheduler so the long-lived collector below is
+        // deterministic (the shared one in setUp runs on Dispatchers.IO).
+        val ds = PreferenceDataStoreFactory.create(
+            scope = CoroutineScope(UnconfinedTestDispatcher(testScheduler) + Job()),
+            produceFile = { File(tempDir.toFile(), "recheck.preferences_pb") },
+        )
+        var readable = true
+        val cache = InsightCache(ds, calendarEventsReadable = { readable })
+        cache.store(InsightCache.Slot.THIS_PERIOD, sampleWithEvent)
+
+        val prefs = MutableStateFlow(
+            basePrefs.copy(calendarEnabled = true, useCalendarEvents = true),
+        )
+        val hasEvents = mutableListOf<Boolean?>()
+        val job = launch(UnconfinedTestDispatcher(testScheduler)) {
+            cache.deriveFlow(InsightCache.Slot.THIS_PERIOD, prefs)
+                .collect { hasEvents += it?.insight?.hasEvents }
+        }
+
+        hasEvents.last() shouldBe true
+
+        // READ_CALENDAR revoked in system settings; the Today resume path ticks
+        // prefs (calendar_permission_recheck_tick) against the unchanged cached
+        // snapshot. The live collector must re-evaluate the gate, not keep
+        // deriving the cached event.
+        readable = false
+        prefs.value = prefs.value.copy(deltaThresholdC = 4.0)
+
+        hasEvents.last() shouldBe false
+        job.cancel()
     }
 
     @Test

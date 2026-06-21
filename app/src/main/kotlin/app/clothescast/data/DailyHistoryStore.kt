@@ -7,10 +7,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.clothescast.core.domain.model.DailyHistoryEntry
-import kotlinx.coroutines.flow.first
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalDate
 
@@ -36,18 +34,9 @@ import java.time.LocalDate
  * duplicate-day write into the list.
  */
 class DailyHistoryStore(
-    private val dataStore: DataStore<Preferences>,
-    private val json: Json = Json { ignoreUnknownKeys = true },
-) {
-    // TODO(datastore-json-plumbing): this read-flow / edit / runCatching-decode
-    //   / Dto<->domain pattern is duplicated across DailyHistoryStore,
-    //   InsightCache, and SettingsRepository. Extract a JsonPreferenceStore base
-    //   for the I/O plumbing (readJson/writeJson) — but KEEP the per-store DTOs:
-    //   they're a deliberate schema boundary (versioned `_v1` keys,
-    //   ignoreUnknownKeys) decoupling on-disk format from the domain model, so
-    //   collapsing them into @Serializable domain types would couple wire format
-    //   to domain shape. This is the cleanest store to migrate first as the
-    //   proof; then InsightCache, then SettingsRepository — one per PR.
+    dataStore: DataStore<Preferences>,
+    json: Json = Json { ignoreUnknownKeys = true },
+) : JsonPreferenceStore(dataStore, json) {
 
     /**
      * Returns the entry recorded for [date], or null when nothing was stored
@@ -69,22 +58,18 @@ class DailyHistoryStore(
     suspend fun put(entry: DailyHistoryEntry) {
         dataStore.edit { prefs ->
             val cutoff = entry.date.minusDays(1)
-            val existing = decode(prefs[HISTORY_KEY])
+            val existing = decodeJson(prefs[HISTORY_KEY], emptyList(), ::decodeEntries)
             val merged = (existing.filter { it.date != entry.date && !it.date.isBefore(cutoff) } + entry)
                 .sortedBy { it.date }
-            prefs[HISTORY_KEY] = json.encodeToString(merged.map { it.toDto() })
+            prefs.writeJson(HISTORY_KEY, merged.map { it.toDto() })
         }
     }
 
     private suspend fun read(): List<DailyHistoryEntry> =
-        decode(dataStore.data.first()[HISTORY_KEY])
+        readJson(HISTORY_KEY, emptyList(), ::decodeEntries)
 
-    private fun decode(raw: String?): List<DailyHistoryEntry> {
-        if (raw.isNullOrEmpty()) return emptyList()
-        return runCatching {
-            json.decodeFromString<List<EntryDto>>(raw).map { it.toDomain() }
-        }.getOrDefault(emptyList())
-    }
+    private fun decodeEntries(raw: String): List<DailyHistoryEntry> =
+        json.decodeFromString<List<EntryDto>>(raw).map { it.toDomain() }
 
     @Serializable
     private data class EntryDto(

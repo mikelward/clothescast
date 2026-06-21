@@ -75,14 +75,11 @@ import java.util.Locale
  * [SettingsRepository.create] is the production factory.
  */
 class SettingsRepository(
-    private val dataStore: DataStore<Preferences>,
+    dataStore: DataStore<Preferences>,
     private val zoneIdProvider: () -> ZoneId = { ZoneId.systemDefault() },
     private val systemLocaleProvider: () -> Locale = { Locale.getDefault() },
-    private val json: Json = Json { ignoreUnknownKeys = true },
-) {
-    // TODO(datastore-json-plumbing): see DailyHistoryStore — shared
-    //   JSON-preference I/O plumbing opportunity across this, InsightCache, and
-    //   DailyHistoryStore (extract readJson/writeJson; keep the DTOs).
+    json: Json = Json { ignoreUnknownKeys = true },
+) : JsonPreferenceStore(dataStore, json) {
 
     val preferences: Flow<UserPreferences> = dataStore.data.map { prefs -> prefs.toUserPreferences() }
 
@@ -298,7 +295,7 @@ class SettingsRepository(
     }
 
     suspend fun setClothesRules(rules: List<ClothesRule>) {
-        dataStore.edit { it[CLOTHES_RULES] = json.encodeToString(rules.map { rule -> rule.toDto() }) }
+        dataStore.edit { it.writeJson(CLOTHES_RULES, rules.map { rule -> rule.toDto() }) }
     }
 
     /**
@@ -309,7 +306,7 @@ class SettingsRepository(
      */
     suspend fun setHomeSectionOrder(order: List<HomeSection>) {
         dataStore.edit {
-            it[HOME_SECTION_ORDER] = json.encodeToString(HomeSection.normalize(order).map { s -> s.name })
+            it.writeJson(HOME_SECTION_ORDER, HomeSection.normalize(order).map { s -> s.name })
         }
     }
 
@@ -804,7 +801,7 @@ class SettingsRepository(
         dataStore.edit { prefs ->
             val current = parseOutfitTopColors(prefs[OUTFIT_TOP_COLORS])
             val updated = if (argb == null) current - top else current + (top to argb)
-            prefs[OUTFIT_TOP_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+            prefs.writeJson(OUTFIT_TOP_COLORS, updated.mapKeys { it.key.name })
         }
     }
 
@@ -813,7 +810,7 @@ class SettingsRepository(
         dataStore.edit { prefs ->
             val current = parseOutfitBottomColors(prefs[OUTFIT_BOTTOM_COLORS])
             val updated = if (argb == null) current - bottom else current + (bottom to argb)
-            prefs[OUTFIT_BOTTOM_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+            prefs.writeJson(OUTFIT_BOTTOM_COLORS, updated.mapKeys { it.key.name })
         }
     }
 
@@ -822,7 +819,7 @@ class SettingsRepository(
         dataStore.edit { prefs ->
             val current = parseOutfitHandsColors(prefs[OUTFIT_HANDS_COLORS])
             val updated = if (argb == null) current - hands else current + (hands to argb)
-            prefs[OUTFIT_HANDS_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+            prefs.writeJson(OUTFIT_HANDS_COLORS, updated.mapKeys { it.key.name })
         }
     }
 
@@ -831,7 +828,7 @@ class SettingsRepository(
         dataStore.edit { prefs ->
             val current = parseOutfitCarriedColors(prefs[OUTFIT_CARRIED_COLORS])
             val updated = if (argb == null) current - carried else current + (carried to argb)
-            prefs[OUTFIT_CARRIED_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+            prefs.writeJson(OUTFIT_CARRIED_COLORS, updated.mapKeys { it.key.name })
         }
     }
 
@@ -840,7 +837,7 @@ class SettingsRepository(
         dataStore.edit { prefs ->
             val current = parseOutfitOuterColors(prefs[OUTFIT_OUTER_COLORS])
             val updated = if (argb == null) current - outer else current + (outer to argb)
-            prefs[OUTFIT_OUTER_COLORS] = json.encodeToString(updated.mapKeys { it.key.name })
+            prefs.writeJson(OUTFIT_OUTER_COLORS, updated.mapKeys { it.key.name })
         }
     }
 
@@ -1404,29 +1401,25 @@ class SettingsRepository(
      * forward-compat values (a future-added `Top` variant in stored JSON
      * silently disappears on read rather than crashing the whole flow).
      */
-    private fun <K : Any> parseOutfitColors(raw: String?, resolveKey: (String) -> K?): Map<K, Long> {
-        if (raw.isNullOrBlank()) return emptyMap()
-        return runCatching {
-            json.decodeFromString<Map<String, Long>>(raw)
-                .mapNotNull { (key, value) -> resolveKey(key)?.let { it to value } }
+    private fun <K : Any> parseOutfitColors(raw: String?, resolveKey: (String) -> K?): Map<K, Long> =
+        decodeJson(raw, emptyMap()) {
+            json.decodeFromString<Map<String, Long>>(it)
+                .mapNotNull { (key, value) -> resolveKey(key)?.let { k -> k to value } }
                 .toMap()
-        }.getOrDefault(emptyMap())
-    }
+        }
 
-    private fun parseRules(raw: String?): List<ClothesRule> {
-        if (raw.isNullOrBlank()) return ClothesRule.DEFAULTS
-        return runCatching {
+    private fun parseRules(raw: String?): List<ClothesRule> =
+        decodeJson(raw, ClothesRule.DEFAULTS) {
             // Drop any stored rule whose item isn't a catalog garment (legacy
             // free-form items from before the catalog) — see [ClothesRuleDto.toDomain].
-            json.decodeFromString<List<ClothesRuleDto>>(raw).mapNotNull { it.toDomain() }
-        }.getOrDefault(ClothesRule.DEFAULTS)
+            json.decodeFromString<List<ClothesRuleDto>>(it).mapNotNull { dto -> dto.toDomain() }
+        }
             // An empty stored list is also treated as "no rules configured" rather
             // than honoured as an intentional zero — with editing locked
             // (ClothesSettings is read-only), a user who deleted all their rules
             // in a previous editable-UI version would otherwise have no way to
             // recover the defaults.
             .ifEmpty { ClothesRule.DEFAULTS }
-    }
 
     /**
      * Decodes the stored home-section order (a JSON list of [HomeSection] enum
@@ -1435,11 +1428,12 @@ class SettingsRepository(
      * all-unknown list all fall back to [HomeSection.DEFAULTS].
      */
     private fun parseHomeSectionOrder(raw: String?): List<HomeSection> {
-        if (raw.isNullOrBlank()) return HomeSection.DEFAULTS
-        val stored = runCatching {
-            json.decodeFromString<List<String>>(raw)
+        // normalize(emptyList) == HomeSection.DEFAULTS, so an absent / blank /
+        // malformed key falls back to the defaults the same as before.
+        val stored = decodeJson(raw, emptyList()) {
+            json.decodeFromString<List<String>>(it)
                 .mapNotNull { name -> runCatching { HomeSection.valueOf(name) }.getOrNull() }
-        }.getOrDefault(emptyList())
+        }
         return HomeSection.normalize(stored)
     }
 

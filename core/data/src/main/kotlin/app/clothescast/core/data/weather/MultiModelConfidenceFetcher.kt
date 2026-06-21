@@ -204,10 +204,19 @@ internal class MultiModelConfidenceFetcher(
                 // coverage gate auto-hides diagnostics for any day a model
                 // doesn't reach. The tonight insight's evening tie-in still
                 // reads tomorrow's pre-dawn hours out of the same series.
-                // Confidence aggregates read `daily[0]` (today's value), so
-                // widening the window doesn't disturb the tier calculation
-                // downstream.
+                // With past_days=1 below the daily arrays lead with yesterday,
+                // so the confidence aggregate reads today at index 1 (see
+                // todayDailyIndex / readModelDaily) — not index 0, which is now
+                // yesterday.
                 parameter("forecast_days", 14)
+                // past_days=1 mirrors the primary OpenMeteoClient call so the
+                // per-model hourly series reaches back into yesterday evening.
+                // The Overnight view's window starts at ~19:00 the previous
+                // day; without yesterday's hours the per-model lines only have
+                // data from today 00:00 onward, so the chart shows just the
+                // blended line before midnight and the per-model lines only
+                // diverge after it.
+                parameter("past_days", 1)
                 parameter("timezone", "auto")
                 parameter("daily", "apparent_temperature_max,apparent_temperature_min,precipitation_probability_max")
                 // cloud_cover_low (the deck below ~2 km) rather than total
@@ -228,9 +237,10 @@ internal class MultiModelConfidenceFetcher(
         }
 
     private fun computeConfidence(daily: JsonObject, models: List<String>): ConfidenceInfo? {
+        val todayIndex = todayDailyIndex(daily)
         val results = buildList {
             for (model in models) {
-                when (val outcome = readModelDaily(daily, model)) {
+                when (val outcome = readModelDaily(daily, model, todayIndex)) {
                     is ReadOutcome.Usable -> add(model to outcome.values)
                     is ReadOutcome.Dropped ->
                         logger.log("model $model dropped: ${outcome.reason}")
@@ -377,14 +387,27 @@ internal class MultiModelConfidenceFetcher(
         return runCatching { LocalDateTime.parse(text) }.getOrNull()
     }
 
-    private fun readModelDaily(daily: JsonObject, model: String): ReadOutcome {
-        val tempMax = numberAt(daily["apparent_temperature_max_$model"] as? JsonArray, 0)?.toDouble()
+    /**
+     * Index of today's entry within the daily arrays. The confidence call uses
+     * `past_days=1`, so Open-Meteo leads the daily arrays with yesterday (index
+     * 0) and today sits at index 1 — mirror [OpenMeteoMapper], which reads today
+     * the same way. A degenerate response with a single daily entry (no past
+     * day) falls back to index 0 so the aggregate still describes the only day
+     * present rather than dropping every model on an out-of-bounds read.
+     */
+    private fun todayDailyIndex(daily: JsonObject): Int {
+        val times = daily["time"] as? JsonArray ?: return 0
+        return if (times.size >= 2) 1 else 0
+    }
+
+    private fun readModelDaily(daily: JsonObject, model: String, todayIndex: Int): ReadOutcome {
+        val tempMax = numberAt(daily["apparent_temperature_max_$model"] as? JsonArray, todayIndex)?.toDouble()
         // Soft field: the daily low feeds the low-disagreement half of the
         // temp spread, but a model that reports a high without a low still
         // contributes its high. When missing it simply drops out of the
         // low-spread calculation (see [compute]) rather than dropping the
         // whole model.
-        val tempMin = numberAt(daily["apparent_temperature_min_$model"] as? JsonArray, 0)?.toDouble()
+        val tempMin = numberAt(daily["apparent_temperature_min_$model"] as? JsonArray, todayIndex)?.toDouble()
         // Soft field: Open-Meteo omits daily precipitation_probability_max for
         // several models (verified 2026-06-09 against the live API — among
         // DEFAULT_MODELS, ecmwf_aifs025_single returns null at all three of
@@ -397,7 +420,7 @@ internal class MultiModelConfidenceFetcher(
         // path's soft precip handling and the daily-low handling above.
         // apparent_temperature_max stays the only hard requirement: without it
         // the model has no temperature vote to cast.
-        val precipMax = numberAt(daily["precipitation_probability_max_$model"] as? JsonArray, 0)?.toDouble()
+        val precipMax = numberAt(daily["precipitation_probability_max_$model"] as? JsonArray, todayIndex)?.toDouble()
         if (precipMax == null) {
             logger.log("model $model daily: precipitation_probability_max missing, precip-spread will skip this model")
         }

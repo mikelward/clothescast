@@ -120,7 +120,10 @@ class MultiModelConfidenceFetcherTest {
         // evening tie-in able to see tomorrow's pre-dawn rain that one model
         // spots but the base forecast under-calls.
         req.url.parameters["forecast_days"] shouldBe "14"
-        req.url.parameters["past_days"].shouldBeNull()
+        // past_days=1 reaches back into yesterday evening so the Overnight
+        // view's per-model lines have data before midnight, matching the
+        // blended line's window (which the primary call already covers).
+        req.url.parameters["past_days"] shouldBe "1"
     }
 
     @Test
@@ -156,6 +159,18 @@ class MultiModelConfidenceFetcherTest {
         info.precipSpreadPp shouldBe (10.0 plusOrMinus 0.0001)
         info.modelsConsulted shouldContainExactlyInAnyOrder
             listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless")
+    }
+
+    @Test
+    fun `confidence reads today not yesterday when past_days prepends a day`() = runTest {
+        // With past_days=1 the daily arrays lead with yesterday; the aggregate
+        // must read today (index 1). Yesterday disagrees wildly here, so a
+        // regression to index 0 would report LOW instead of today's HIGH.
+        val info = fetcherWith(PAST_DAY_THEN_TODAY).fetch(london, fixtureModels)?.confidence.shouldNotBeNull()
+
+        info.level shouldBe ForecastConfidence.HIGH
+        info.tempSpreadC shouldBe (1.0 plusOrMinus 0.0001)
+        info.precipSpreadPp shouldBe (10.0 plusOrMinus 0.0001)
     }
 
     @Test
@@ -587,6 +602,26 @@ class MultiModelConfidenceFetcherTest {
                 "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
+              }
+            }
+        """.trimIndent()
+
+        // The real past_days=1 shape: yesterday at index 0, today at index 1.
+        // Yesterday's highs split wide (10 / 15 / 20 → spread 10 → LOW) while
+        // today's cluster tight (21.0 / 21.5 / 22.0 → spread 1.0 → HIGH, the
+        // same values as THREE_MODEL_AGREEMENT). The confidence aggregate must
+        // describe today, so reading index 0 by mistake flips the tier and is
+        // caught here.
+        private val PAST_DAY_THEN_TODAY = """
+            {
+              "daily": {
+                "time": ["2026-05-11", "2026-05-12"],
+                "apparent_temperature_max_ecmwf_ifs025": [10.0, 21.0],
+                "apparent_temperature_max_gfs_seamless": [15.0, 21.5],
+                "apparent_temperature_max_icon_seamless": [20.0, 22.0],
+                "precipitation_probability_max_ecmwf_ifs025": [80, 10],
+                "precipitation_probability_max_gfs_seamless": [50, 15],
+                "precipitation_probability_max_icon_seamless": [20, 20]
               }
             }
         """.trimIndent()

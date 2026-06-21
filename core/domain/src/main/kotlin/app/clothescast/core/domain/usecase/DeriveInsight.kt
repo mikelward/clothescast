@@ -69,13 +69,23 @@ class DeriveInsight(
         // today. Only ever set with TONIGHT.
         val overnight = snapshot.overnight
 
+        // Calendar events feed the evening tie-in and [Insight.hasEvents] only
+        // while the calendar tie-in is currently active. The fetch path already
+        // drops events when it's off (GenerateDailyInsight gates the reader on
+        // calendarEventMentionsActive), but a cache hit / replay re-derives from
+        // snapshot.events, which can still hold events captured before the user
+        // turned the tie-in off. Gate here too, so a stale event can't resurface
+        // in the prose, hasEvents, the delivery gates, or the MQTT has_events
+        // flag after the setting was disabled.
+        val activeEvents = if (prefs.calendarEventMentionsActive) snapshot.events else emptyList()
+
         val periodView = buildPeriodView(
             bundle = bundle,
             prefs = prefs,
             period = period,
             morningStart = morningStart,
             tonightStart = tonightStart,
-            events = snapshot.events,
+            events = activeEvents,
             overnight = overnight,
         )
 
@@ -85,7 +95,7 @@ class DeriveInsight(
                 prefs = prefs,
                 morningStart = morningStart,
                 tonightStart = tonightStart,
-                allEvents = snapshot.events,
+                allEvents = activeEvents,
                 todayItems = periodView.triggeredOutfit.items,
             )
         } else {

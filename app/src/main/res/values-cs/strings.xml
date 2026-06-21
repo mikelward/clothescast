@@ -982,7 +982,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Použít můj kalendář</string>
-    <string name="settings_calendar_master_description">Povol ClothesCastu číst tvé kalendáře, aby mohl přizpůsobit předpovědi a outfity. Nic neopustí zařízení.</string>
+    <string name="settings_calendar_master_description">Čte tvé kalendáře, aby přizpůsobil předpovědi a outfity. Ve výchozím nastavení nic neopustí tvé zařízení.</string>
     <string name="settings_calendar_features_title">Osobní kalendáře</string>
     <string name="settings_evening_add_ons">Večerní doplňky</string>
     <string name="settings_evening_add_ons_description">Pokud jdeš večer ven, ranní předpověď ti řekne, jestli si máš vzít něco navíc.</string>

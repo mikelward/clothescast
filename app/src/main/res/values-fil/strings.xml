@@ -1025,7 +1025,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Gamitin ang aking kalendaryo</string>
-    <string name="settings_calendar_master_description">Payagan ang ClothesCast na basahin ang iyong mga kalendaryo upang ipersonalisa ang mga forecast at outfit. Walang lumalabas sa device.</string>
+    <string name="settings_calendar_master_description">Binabasa ang iyong mga kalendaryo para ipersonalisa ang mga forecast at outfit. Bilang default, walang lumalabas sa iyong device.</string>
     <string name="settings_calendar_features_title">Mga personal na kalendaryo</string>
     <string name="settings_evening_add_ons">Mga dagdag sa gabi</string>
     <string name="settings_evening_add_ons_description">Kung lumalabas ka sa gabi, sasabihin ng forecast sa umaga kung kailangan mong magdala ng anumang dagdag.</string>

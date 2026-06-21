@@ -974,7 +974,7 @@ displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Takvimimi kullan</string>
-    <string name="settings_calendar_master_description">ClothesCast\'ın tahminleri ve kıyafetleri kişiselleştirmek için takvimlerini okumasına izin ver. Hiçbir şey cihazdan çıkmaz.</string>
+    <string name="settings_calendar_master_description">Tahminleri ve kıyafetleri kişiselleştirmek için takvimlerini okur. Varsayılan olarak hiçbir şey cihazından çıkmaz.</string>
     <string name="settings_calendar_features_title">Kişisel takvimler</string>
     <string name="settings_evening_add_ons">Akşam eklentileri</string>
     <string name="settings_evening_add_ons_description">Akşam dışarı çıkacaksan sabah tahmini sana yanına fazladan bir şey alman gerekip gerekmediğini söyler.</string>

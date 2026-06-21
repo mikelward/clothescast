@@ -1005,7 +1005,7 @@ Not overridden by design:
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">मेरे कैलेंडर का उपयोग करें</string>
-    <string name="settings_calendar_master_description">ClothesCast को आपके कैलेंडर पढ़ने दें ताकि पूर्वानुमान और पोशाक व्यक्तिगत बनाई जा सके। कुछ भी डिवाइस से बाहर नहीं जाता।</string>
+    <string name="settings_calendar_master_description">पूर्वानुमान और पोशाक को व्यक्तिगत बनाने के लिए आपके कैलेंडर पढ़ता है। डिफ़ॉल्ट रूप से कुछ भी आपके डिवाइस से बाहर नहीं जाता।</string>
     <string name="settings_calendar_features_title">व्यक्तिगत कैलेंडर</string>
     <string name="settings_evening_add_ons">शाम के लिए अतिरिक्त चीज़ें</string>
     <string name="settings_evening_add_ons_description">यदि आप शाम को बाहर जा रहे हैं, तो सुबह का पूर्वानुमान बताता है कि कुछ अतिरिक्त साथ लेना है या नहीं।</string>

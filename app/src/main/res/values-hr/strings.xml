@@ -1043,7 +1043,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Koristi moj kalendar</string>
-    <string name="settings_calendar_master_description">Dopusti ClothesCastu čitanje tvojih kalendara za prilagodbu prognoza i outfita. Ništa ne napušta uređaj.</string>
+    <string name="settings_calendar_master_description">Čita tvoje kalendare radi prilagodbe prognoza i outfita. Prema zadanim postavkama ništa ne napušta tvoj uređaj.</string>
     <string name="settings_calendar_features_title">Osobni kalendari</string>
     <string name="settings_evening_add_ons">Večernji dodaci</string>
     <string name="settings_evening_add_ons_description">Ako navečer izlaziš, jutarnja prognoza ti kaže trebaš li ponijeti nešto dodatno.</string>

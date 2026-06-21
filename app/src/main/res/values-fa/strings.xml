@@ -962,7 +962,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">از تقویم من استفاده کن</string>
-    <string name="settings_calendar_master_description">به ClothesCast اجازه دهید تقویم‌های شما را بخواند تا پیش‌بینی‌ها و لباس‌ها را شخصی‌سازی کند. هیچ چیز از دستگاه خارج نمی‌شود.</string>
+    <string name="settings_calendar_master_description">تقویم‌های شما را می‌خواند تا پیش‌بینی‌ها و لباس‌ها را شخصی‌سازی کند. به‌طور پیش‌فرض هیچ چیز از دستگاه شما خارج نمی‌شود.</string>
     <string name="settings_calendar_features_title">تقویم‌های شخصی</string>
     <string name="settings_evening_add_ons">افزودنی‌های عصرگاهی</string>
     <string name="settings_evening_add_ons_description">اگر در عصر بیرون می‌روید، پیش‌بینی صبحگاهی به شما می‌گوید که آیا چیز اضافه‌ای باید همراه ببرید.</string>

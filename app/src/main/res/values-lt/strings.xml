@@ -962,7 +962,7 @@ What is NOT overridden, by design:
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Naudoti mano kalendorių</string>
-    <string name="settings_calendar_master_description">Leisk ClothesCast skaityti tavo kalendorius, kad pritaikytų prognozes ir aprangą. Niekas nepalieka įrenginio.</string>
+    <string name="settings_calendar_master_description">Skaito tavo kalendorius, kad pritaikytų prognozes ir aprangą. Pagal numatytuosius nustatymus niekas nepalieka tavo įrenginio.</string>
     <string name="settings_calendar_features_title">Asmeniniai kalendoriai</string>
     <string name="settings_evening_add_ons">Vakaro priedai</string>
     <string name="settings_evening_add_ons_description">Jei vakare kažkur eini, ryto prognozė pasakys, ar reikia pasiimti kažką papildomai.</string>

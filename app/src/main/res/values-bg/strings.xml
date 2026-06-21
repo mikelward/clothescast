@@ -961,7 +961,7 @@ What is NOT overridden, by design:
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Използвай моя календар</string>
-    <string name="settings_calendar_master_description">Позволи на ClothesCast да чете календарите ти, за да персонализира прогнози и облекла. Нищо не напуска устройството.</string>
+    <string name="settings_calendar_master_description">Чете календарите ти, за да персонализира прогнози и облекла. По подразбиране нищо не напуска устройството ти.</string>
     <string name="settings_calendar_features_title">Лични календари</string>
     <string name="settings_evening_add_ons">Вечерни допълнения</string>
     <string name="settings_evening_add_ons_description">Ако излизаш вечерта, сутрешната прогноза ти казва дали трябва да вземеш нещо допълнително.</string>

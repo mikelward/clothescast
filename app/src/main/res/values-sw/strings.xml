@@ -943,7 +943,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Tumia kalenda yangu</string>
-    <string name="settings_calendar_master_description">Ruhusu ClothesCast kusoma kalenda zako ili kubinafsisha utabiri na mavazi. Hakuna kinachoacha kifaa.</string>
+    <string name="settings_calendar_master_description">Husoma kalenda zako ili kubinafsisha utabiri na mavazi. Kwa chaguo-msingi, hakuna kinachoacha kifaa chako.</string>
     <string name="settings_calendar_features_title">Kalenda za kibinafsi</string>
     <string name="settings_evening_add_ons">Nyongeza za jioni</string>
     <string name="settings_evening_add_ons_description">Ikiwa unaenda nje jioni, utabiri wa asubuhi unakuambia ikiwa unahitaji kuchukua kitu chochote zaidi.</string>

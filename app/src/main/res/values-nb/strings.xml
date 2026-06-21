@@ -1003,7 +1003,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Bruk kalenderen min</string>
-    <string name="settings_calendar_master_description">La ClothesCast lese kalenderne dine for å tilpasse prognoser og antrekk. Ingenting forlater enheten.</string>
+    <string name="settings_calendar_master_description">Leser kalenderne dine for å tilpasse prognoser og antrekk. Som standard forlater ingenting enheten din.</string>
     <string name="settings_calendar_features_title">Personlige kalendere</string>
     <string name="settings_evening_add_ons">Ekstra til kvelden</string>
     <string name="settings_evening_add_ons_description">Hvis du går ut på kvelden, forteller morgenprognosen deg om du må ta med noe ekstra.</string>

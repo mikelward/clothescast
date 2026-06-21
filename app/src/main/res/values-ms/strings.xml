@@ -981,7 +981,7 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Gunakan kalendar saya</string>
-    <string name="settings_calendar_master_description">Benarkan ClothesCast membaca kalendar anda untuk memperibadikan ramalan dan pakaian. Tiada apa yang meninggalkan peranti.</string>
+    <string name="settings_calendar_master_description">Membaca kalendar anda untuk memperibadikan ramalan dan pakaian. Secara lalai, tiada apa-apa yang meninggalkan peranti anda.</string>
     <string name="settings_calendar_features_title">Kalendar peribadi</string>
     <string name="settings_evening_add_ons">Tambahan untuk petang</string>
     <string name="settings_evening_add_ons_description">Jika anda keluar pada waktu petang, ramalan pagi akan memberitahu anda jika anda perlu membawa sesuatu yang tambahan.</string>

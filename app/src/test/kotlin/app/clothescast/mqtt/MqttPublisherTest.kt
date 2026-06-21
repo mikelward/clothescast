@@ -666,7 +666,19 @@ class MqttPublisherTest {
             "homeassistant/image/clothescast_home_forecast_day_image/config",
             "homeassistant/image/clothescast_home_forecast_night_image/config",
             "homeassistant/image/clothescast_home_forecast_now_image/config",
+            "homeassistant/binary_sensor/clothescast_home_forecast_day_has_events/config",
+            "homeassistant/binary_sensor/clothescast_home_forecast_night_has_events/config",
+            "homeassistant/binary_sensor/clothescast_home_forecast_now_has_events/config",
         )
+        val hasEvents = discoveryPayload(
+            discovery,
+            "homeassistant/binary_sensor/clothescast_home_forecast_now_has_events/config",
+        )
+        hasEvents["state_topic"]!!.jsonPrimitive.content shouldBe "home/forecast/now/has_events"
+        hasEvents["default_entity_id"]!!.jsonPrimitive.content shouldBe
+            "binary_sensor.clothescast_home_forecast_now_has_events"
+        hasEvents["payload_on"]!!.jsonPrimitive.content shouldBe "true"
+        hasEvents["payload_off"]!!.jsonPrimitive.content shouldBe "false"
         val today = discoveryPayload(discovery, "homeassistant/sensor/clothescast_home_forecast_day/config")
         today["unique_id"]!!.jsonPrimitive.content shouldBe "clothescast_home_forecast_day"
         today["default_entity_id"]!!.jsonPrimitive.content shouldBe "sensor.clothescast_home_forecast_day"
@@ -1222,22 +1234,101 @@ class MqttPublisherTest {
         )
 
         subject.publishIfEnabled(ForecastPeriod.TODAY, "x") shouldBe MqttPublishOutcome.Success
-        // No retries: the period bundle publishes all four topics once (prose
-        // plus image/audio/video clears, since no media was submitted) then its
-        // own timestamp commit marker, then the coordinated /now bundle
-        // (image/audio/video clears, text, then timestamp last).
+        // No retries: the period bundle publishes its content topics once (prose
+        // plus image/audio/video clears, since no media was submitted, and the
+        // has_events flag) then its own timestamp commit marker, then the
+        // coordinated /now bundle (image/audio/video clears, has_events, text,
+        // then timestamp last).
         attempts.filterNot(::isDiscoveryTopic) shouldBe listOf(
             "clothescast/default/day/text",
             "clothescast/default/day/image",
             "clothescast/default/day/audio",
             "clothescast/default/day/video",
+            "clothescast/default/day/has_events",
             "clothescast/default/day/timestamp",
             "clothescast/default/now/image",
             "clothescast/default/now/audio",
             "clothescast/default/now/video",
+            "clothescast/default/now/has_events",
             "clothescast/default/now/text",
             "clothescast/default/now/timestamp",
         )
+    }
+
+    @Test
+    fun `has_events flag publishes on day-night and the now mirror, gating now-text`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TONIGHT, "prose", hasEvents = true)
+
+        // The period segment and the /now mirror both carry the flag as "true".
+        captured.first { it.topic == "clothescast/default/night/has_events" }
+            .payload.decodeToString() shouldBe "true"
+        captured.first { it.topic == "clothescast/default/now/has_events" }
+            .payload.decodeToString() shouldBe "true"
+        // now/has_events lands before now/text, like the other content mirrors,
+        // so a now/text-triggered automation reads a matching flag.
+        val topics = captured.map { it.topic }
+        topics.indexOf("clothescast/default/now/text") shouldBeGreaterThan
+            topics.indexOf("clothescast/default/now/has_events")
+    }
+
+    @Test
+    fun `has_events flag defaults to false`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        captured.first { it.topic == "clothescast/default/day/has_events" }
+            .payload.decodeToString() shouldBe "false"
+        captured.first { it.topic == "clothescast/default/now/has_events" }
+            .payload.decodeToString() shouldBe "false"
+    }
+
+    @Test
+    fun `now-text held back when now has_events mirror fails`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(mqttBridgeEnabled = true, mqttHost = "broker.local"),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload ->
+                captured.add(PublishCall(config, topic, payload))
+                if (topic.endsWith("/now/has_events")) error("now/has_events mirror failure")
+            },
+            retryDelayMs = 1L,
+        )
+
+        val outcome = subject.publishIfEnabled(ForecastPeriod.TODAY, "x")
+
+        outcome shouldBe MqttPublishOutcome.Success
+        captured.none { it.topic.endsWith("/now/text") }.shouldBeTrue()
+        captured.none { it.topic.endsWith("/now/timestamp") }.shouldBeTrue()
+    }
+
+    @Test
+    fun `hasEventsTopicFor and nowHasEventsTopicFor build has_events-suffixed topics`() {
+        MqttPublisher.hasEventsTopicFor("clothescast/default", ForecastPeriod.TODAY) shouldBe
+            "clothescast/default/day/has_events"
+        MqttPublisher.hasEventsTopicFor("home/forecast", ForecastPeriod.TONIGHT) shouldBe
+            "home/forecast/night/has_events"
+        MqttPublisher.nowHasEventsTopicFor("/clothescast/default/") shouldBe
+            "clothescast/default/now/has_events"
     }
 
     @Test

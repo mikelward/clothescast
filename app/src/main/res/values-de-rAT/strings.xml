@@ -674,7 +674,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Meinen Kalender verwenden</string>
-    <string name="settings_calendar_master_description">Erlaubt ClothesCast, deine Kalender zu lesen, um Vorhersagen und Outfits zu personalisieren. Nichts verlässt das Gerät.</string>
+    <string name="settings_calendar_master_description">Liest deine Kalender, um Vorhersagen und Outfits zu personalisieren. Standardmäßig verlässt nichts dein Gerät.</string>
     <string name="settings_calendar_features_title">Persönliche Kalender</string>
     <string name="settings_evening_add_ons">Extras für den Abend</string>
     <string name="settings_evening_add_ons_description">Wenn du abends ausgehst, sagt dir die Morgenvorhersage, ob du etwas mitnehmen solltest.</string>

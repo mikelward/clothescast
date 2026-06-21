@@ -478,7 +478,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                     )
                 }.getOrNull()
             }
-            app.mqttPublisher.publishIfEnabled(insight.period, prose, image = png)
+            app.mqttPublisher.publishIfEnabled(insight.period, prose, image = png, hasEvents = insight.hasEvents)
         },
         discovery = app.homeAssistantDiscovery,
         castRouteDiscovery = app.castRouteDiscovery,

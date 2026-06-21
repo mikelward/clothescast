@@ -970,7 +970,7 @@ they work correctly in both the single-band and range templates.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">استخدام تقويمي</string>
-    <string name="settings_calendar_master_description">اسمح لـ ClothesCast بقراءة تقاويمك لتخصيص التوقعات والأزياء. لا يغادر شيء الجهاز.</string>
+    <string name="settings_calendar_master_description">يقرأ تقاويمك لتخصيص التوقعات والأزياء. لا شيء يغادر جهازك افتراضيًا.</string>
     <string name="settings_calendar_features_title">التقاويم الشخصية</string>
     <string name="settings_evening_add_ons">إضافات المساء</string>
     <string name="settings_evening_add_ons_description">إذا كنت ستخرج في المساء، تخبرك توقعات الصباح بما إذا كنت بحاجة إلى إحضار أي شيء إضافي.</string>

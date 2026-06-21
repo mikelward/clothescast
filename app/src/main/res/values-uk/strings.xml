@@ -971,7 +971,7 @@ only the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Використовувати мій календар</string>
-    <string name="settings_calendar_master_description">Дозвольте ClothesCast читати ваші календарі, щоб персоналізувати прогнози та образи. Нічого не покидає пристрій.</string>
+    <string name="settings_calendar_master_description">Читає ваші календарі, щоб персоналізувати прогнози та образи. За замовчуванням нічого не покидає ваш пристрій.</string>
     <string name="settings_calendar_features_title">Особисті календарі</string>
     <string name="settings_evening_add_ons">Доповнення на вечір</string>
     <string name="settings_evening_add_ons_description">Якщо ви кудись ідете ввечері, ранковий прогноз підкаже, чи потрібно взяти щось додатково.</string>

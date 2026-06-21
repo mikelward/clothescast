@@ -996,7 +996,7 @@ What is NOT overridden, by design:
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Použiť môj kalendár</string>
-    <string name="settings_calendar_master_description">Povoľ ClothesCastu čítať tvoje kalendáre, aby mohol prispôsobiť predpovede a outfity. Nič neopustí zariadenie.</string>
+    <string name="settings_calendar_master_description">Číta tvoje kalendáre, aby prispôsobil predpovede a outfity. V predvolenom nastavení nič neopustí tvoje zariadenie.</string>
     <string name="settings_calendar_features_title">Osobné kalendáre</string>
     <string name="settings_evening_add_ons">Večerné doplnky</string>
     <string name="settings_evening_add_ons_description">Ak ideš večer von, ranná predpoveď ti povie, či si máš vziať niečo navyše.</string>

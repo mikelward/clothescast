@@ -951,7 +951,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Folosește calendarul meu</string>
-    <string name="settings_calendar_master_description">Permite ClothesCast să citească calendarele tale pentru a personaliza prognozele și ținutele. Nimic nu părăsește dispozitivul.</string>
+    <string name="settings_calendar_master_description">Citește calendarele tale pentru a personaliza prognozele și ținutele. În mod implicit, nimic nu părăsește dispozitivul tău.</string>
     <string name="settings_calendar_features_title">Calendare personale</string>
     <string name="settings_evening_add_ons">Suplimente pentru seară</string>
     <string name="settings_evening_add_ons_description">Dacă ieși seara, prognoza de dimineață îți spune dacă trebuie să iei ceva în plus.</string>

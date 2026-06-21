@@ -918,7 +918,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Kasuta minu kalendrit</string>
-    <string name="settings_calendar_master_description">Luba ClothesCast\'il lugeda sinu kalendreid, et kohandada prognoose ja riietust. Midagi ei lahku seadmest.</string>
+    <string name="settings_calendar_master_description">Loeb sinu kalendreid, et kohandada prognoose ja riietust. Vaikimisi ei lahku miski sinu seadmest.</string>
     <string name="settings_calendar_features_title">Isiklikud kalendrid</string>
     <string name="settings_evening_add_ons">Õhtused lisad</string>
     <string name="settings_evening_add_ons_description">Kui sa lähed õhtul välja, ütleb hommikuprognoos sulle, kas pead midagi lisaks kaasa võtma.</string>

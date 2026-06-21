@@ -36,7 +36,11 @@ yourself; no developer-operated service ever sees the payload.
    card-plus-announcement MP4 (when published) land on
    `<prefix>/<period>/image`, `<prefix>/<period>/audio`, and
    `<prefix>/<period>/video` respectively (where `<period>` is `day` or
-   `night`). **Each scheduled run publishes both windows** — the current one
+   `night`). A `<prefix>/<period>/has_events` flag (`true`/`false`) reports
+   whether that window has a located calendar event — handy when *Notify only
+   on event nights* keeps the phone quiet, so an automation can tell a
+   deliberately-silent evening from an outage. **Each scheduled run publishes
+   both windows** — the current one
    and the next — so `day` and `night` always carry the current and upcoming
    cast rather than one going stale. Each `day`/`night` bundle is
    self-coherent: when a window has no audio or video this run (you're on
@@ -50,8 +54,9 @@ yourself; no developer-operated service ever sees the payload.
    `<prefix>/<period>/timestamp`** and dedupe on its value, exactly as you would
    on `now/timestamp`. The current window's bundle is also
    mirrored to `<prefix>/now/<kind>` — `<prefix>/now/text`,
-   `<prefix>/now/image`, `<prefix>/now/audio`, `<prefix>/now/video`, and
-   `<prefix>/now/timestamp` — so a consumer can subscribe to a single
+   `<prefix>/now/image`, `<prefix>/now/audio`, `<prefix>/now/video`,
+   `<prefix>/now/has_events`, and `<prefix>/now/timestamp` — so a consumer can
+   subscribe to a single
    "latest" topic without having to switch on day vs night. `now` always
    reflects the *current* window; the next window lands only on its own
    `day`/`night` segment.
@@ -92,7 +97,7 @@ for the overnight one — configurable in Settings → Schedule) will publish
 retained MQTT messages to each topic. After a successful forecast publish,
 ClothesCast also publishes retained Home Assistant MQTT discovery
 configs under `homeassistant/.../config`, so HA can create the text,
-timestamp, and image entities automatically. The discovery configs point
+timestamp, image, and has-events entities automatically. The discovery configs point
 at the normal state topics above — they replace YAML setup, not the
 forecast publishes themselves.
 
@@ -183,6 +188,9 @@ next successful publish:
 - `image.clothescast_day_image` from `<prefix>/day/image`
 - `image.clothescast_night_image` from `<prefix>/night/image`
 - `image.clothescast_now_image` from `<prefix>/now/image`
+- `binary_sensor.clothescast_day_has_events` from `<prefix>/day/has_events`
+- `binary_sensor.clothescast_night_has_events` from `<prefix>/night/has_events`
+- `binary_sensor.clothescast_now_has_events` from `<prefix>/now/has_events`
 
 All entities are grouped under a single ClothesCast device in Home
 Assistant. If a broker ACL rejects `homeassistant/#`, the forecast

@@ -1020,7 +1020,7 @@ is unchanged; only the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Użyj mojego kalendarza</string>
-    <string name="settings_calendar_master_description">Pozwól ClothesCastowi czytać twoje kalendarze, aby spersonalizować prognozy i stroje. Nic nie opuszcza urządzenia.</string>
+    <string name="settings_calendar_master_description">Czyta twoje kalendarze, aby spersonalizować prognozy i stroje. Domyślnie nic nie opuszcza twojego urządzenia.</string>
     <string name="settings_calendar_features_title">Osobiste kalendarze</string>
     <string name="settings_evening_add_ons">Dodatki na wieczór</string>
     <string name="settings_evening_add_ons_description">Jeśli wieczorem wychodzisz, poranna prognoza powie ci, czy potrzebujesz wziąć coś dodatkowego.</string>

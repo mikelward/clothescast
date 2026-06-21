@@ -951,7 +951,7 @@ surfaces.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Користи мој календар</string>
-    <string name="settings_calendar_master_description">Дозволи ClothesCastу да чита твоје календаре ради персонализације прогноза и оутфита. Ништа не напушта уређај.</string>
+    <string name="settings_calendar_master_description">Чита твоје календаре ради персонализације прогноза и оутфита. Подразумевано ништа не напушта твој уређај.</string>
     <string name="settings_calendar_features_title">Лични календари</string>
     <string name="settings_evening_add_ons">Вечерњи додаци</string>
     <string name="settings_evening_add_ons_description">Ако увече излазиш, јутарња прогноза ти каже да ли треба да понесеш нешто додатно.</string>

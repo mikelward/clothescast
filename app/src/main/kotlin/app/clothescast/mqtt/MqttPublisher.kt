@@ -63,11 +63,16 @@ class MqttPublisher(
 
     /**
      * Publishes a delivery's prose, optional outfit image, optional TTS
-     * audio, and optional muxed video (PNG frame + TTS audio as an MP4) as a
-     * single coordinated bundle. The period-specific topics
-     * (`${baseTopic}/{day,night}/{text,image,audio,video}` — the segment maps
-     * from [ForecastPeriod] via [topicSegment]) fan out in parallel — they're
-     * independent surfaces and a slow image upload shouldn't hold up the prose.
+     * audio, optional muxed video (PNG frame + TTS audio as an MP4), and a
+     * [hasEvents] flag as a single coordinated bundle. The period-specific
+     * topics (`${baseTopic}/{day,night}/{text,image,audio,video,has_events}` —
+     * the segment maps from [ForecastPeriod] via [topicSegment]) fan out in
+     * parallel — they're independent surfaces and a slow image upload shouldn't
+     * hold up the prose. [hasEvents] is published as `"true"`/`"false"` so a
+     * Home Assistant automation can tell an event-free evening (where
+     * `tonightNotifyOnlyOnEvents` keeps the phone quiet) from a real outage
+     * without parsing the prose; it gates the commit marker like every other
+     * modality, so a fresh timestamp implies a fresh flag.
      *
      * [mirrorToNow] controls the `/now` mirror. The run's *current* period
      * publishes with `mirrorToNow = true` (the default) so the `/now` topics
@@ -159,6 +164,7 @@ class MqttPublisher(
         image: ByteArray? = null,
         audio: ByteArray? = null,
         video: ByteArray? = null,
+        hasEvents: Boolean = false,
         mirrorToNow: Boolean = true,
     ): MqttPublishOutcome = coroutineScope {
         val prepared = preparePublish(context = period.name.lowercase())
@@ -168,11 +174,13 @@ class MqttPublisher(
         val imageTopic = imageTopicFor(prepared.baseTopic, period)
         val audioTopic = audioTopicFor(prepared.baseTopic, period)
         val videoTopic = videoTopicFor(prepared.baseTopic, period)
+        val hasEventsTopic = hasEventsTopicFor(prepared.baseTopic, period)
         val periodTimestampTopic = timestampTopicFor(prepared.baseTopic, period)
         val nowTextTopic = nowTopicFor(prepared.baseTopic)
         val nowImageTopic = nowImageTopicFor(prepared.baseTopic)
         val nowAudioTopic = nowAudioTopicFor(prepared.baseTopic)
         val nowVideoTopic = nowVideoTopicFor(prepared.baseTopic)
+        val nowHasEventsTopic = nowHasEventsTopicFor(prepared.baseTopic)
         val nowTimestampTopic = nowTimestampTopicFor(prepared.baseTopic)
         // MQTT 3.1.1 carries no native publish timestamp (and the MQTT 5
         // user-property route isn't available on this v3 client), so we
@@ -182,11 +190,12 @@ class MqttPublisher(
         // same timestamp it already played and skips replaying the clip
         // rather than re-announcing a stale bundle.
         val timestampBytes = System.currentTimeMillis().toString().toByteArray(Charsets.UTF_8)
+        val hasEventsBytes = (if (hasEvents) "true" else "false").toByteArray(Charsets.UTF_8)
         DiagLog.i(
             TAG,
             "MQTT bridge enabled; publishing ${period.name.lowercase()} insight bundle to " +
                 "${prepared.scheme}://${prepared.host}:${prepared.port}/$proseTopic " +
-                "(image=${image != null}, audio=${audio != null}, video=${video != null}, " +
+                "(image=${image != null}, audio=${audio != null}, video=${video != null}, hasEvents=$hasEvents, " +
                 "mirrored to /now as $nowImageTopic / $nowAudioTopic / $nowVideoTopic, " +
                 "then $nowTextTopic, then $nowTimestampTopic last as the commit marker, " +
                 "auth=${!prepared.config.username.isNullOrBlank()}, " +
@@ -209,10 +218,12 @@ class MqttPublisher(
         val imageDeferred = async { executePublish(prepared, imageTopic, image ?: emptyPayload) }
         val audioDeferred = async { executePublish(prepared, audioTopic, audio ?: emptyPayload) }
         val videoDeferred = async { executePublish(prepared, videoTopic, video ?: emptyPayload) }
+        val hasEventsDeferred = async { executePublish(prepared, hasEventsTopic, hasEventsBytes) }
         val proseOutcome = proseDeferred.await()
         val imageOutcome = imageDeferred.await()
         val audioOutcome = audioDeferred.await()
         val videoOutcome = videoDeferred.await()
+        val hasEventsOutcome = hasEventsDeferred.await()
 
         // /now mirrors only when the whole period bundle — payloads and clears
         // alike — published cleanly, so the mirror never advances past a period
@@ -220,7 +231,8 @@ class MqttPublisher(
         val everyPeriodPublishSucceeded = proseOutcome is MqttPublishOutcome.Success &&
             imageOutcome is MqttPublishOutcome.Success &&
             audioOutcome is MqttPublishOutcome.Success &&
-            videoOutcome is MqttPublishOutcome.Success
+            videoOutcome is MqttPublishOutcome.Success &&
+            hasEventsOutcome is MqttPublishOutcome.Success
 
         // Per-period commit marker, written **last** of the `<period>/*` bundle
         // and only once text + image + audio + video (payloads and clears) have
@@ -265,7 +277,7 @@ class MqttPublisher(
                 TAG,
                 "Holding back $periodTimestampTopic for ${period.name.lowercase()} bundle " +
                     "(prose=$proseOutcome, image=$imageOutcome, audio=$audioOutcome, " +
-                    "video=$videoOutcome); the ${topicSegment(period)}/* marker stays at the " +
+                    "video=$videoOutcome, has_events=$hasEventsOutcome); the ${topicSegment(period)}/* marker stays at the " +
                     "previous bundle so a consumer doesn't act on a half-updated set.",
             )
         }
@@ -310,12 +322,20 @@ class MqttPublisher(
             val nowVideoMirror = async {
                 executePublish(prepared, nowVideoTopic, video ?: emptyPayload)
             }
+            // now/has_events mirrors the period flag and gates now/text like the
+            // other content mirrors, so a now/text-triggered automation reads a
+            // has_events value that matches the prose it's about to act on.
+            val nowHasEventsMirror = async {
+                executePublish(prepared, nowHasEventsTopic, hasEventsBytes)
+            }
             val nowImageOutcome = nowImageMirror.await()
             val nowAudioOutcome = nowAudioMirror.await()
             val nowVideoOutcome = nowVideoMirror.await()
+            val nowHasEventsOutcome = nowHasEventsMirror.await()
             if (nowImageOutcome is MqttPublishOutcome.Success &&
                 nowAudioOutcome is MqttPublishOutcome.Success &&
-                nowVideoOutcome is MqttPublishOutcome.Success
+                nowVideoOutcome is MqttPublishOutcome.Success &&
+                nowHasEventsOutcome is MqttPublishOutcome.Success
             ) {
                 val nowTextOutcome = executePublish(prepared, nowTextTopic, proseBytes)
                 if (nowTextOutcome is MqttPublishOutcome.Success) {
@@ -373,8 +393,8 @@ class MqttPublisher(
                     "Holding back $nowTextTopic and $nowTimestampTopic mirrors for " +
                         "${period.name.lowercase()} bundle (now/image=$nowImageOutcome, " +
                         "now/audio=$nowAudioOutcome, now/video=$nowVideoOutcome, " +
-                        "videoSubmitted=${video != null}); the now set stays at the previous " +
-                        "bundle to keep it coherent.",
+                        "now/has_events=$nowHasEventsOutcome, videoSubmitted=${video != null}); " +
+                        "the now set stays at the previous bundle to keep it coherent.",
                 )
             }
         } else {
@@ -386,6 +406,7 @@ class MqttPublisher(
                 if (imageOutcome !is MqttPublishOutcome.Success) "image" else null,
                 if (audioOutcome !is MqttPublishOutcome.Success) "audio" else null,
                 if (videoOutcome !is MqttPublishOutcome.Success) "video" else null,
+                if (hasEventsOutcome !is MqttPublishOutcome.Success) "has_events" else null,
             ).joinToString("/")
             DiagLog.i(
                 TAG,
@@ -665,6 +686,13 @@ class MqttPublisher(
         fun videoTopicFor(baseTopic: String, period: ForecastPeriod): String =
             periodTopicFor(baseTopic, period, "video")
 
+        // Boolean ("true"/"false") flag: did this period's window carry a
+        // located, timed calendar event? Lets a Home Assistant automation tell
+        // an event-free evening (where the phone may stay quiet) from an outage
+        // without parsing the prose.
+        fun hasEventsTopicFor(baseTopic: String, period: ForecastPeriod): String =
+            periodTopicFor(baseTopic, period, "has_events")
+
         // Epoch-millis (decimal string) commit marker for the `<period>/*`
         // bundle, written last and only when the whole bundle settled — the
         // day/night equivalent of `now/timestamp`. A consumer reading a day or
@@ -684,6 +712,8 @@ class MqttPublisher(
         fun nowAudioTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "audio")
 
         fun nowVideoTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "video")
+
+        fun nowHasEventsTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "has_events")
 
         // Epoch-millis (decimal string) of the most recent /now bundle. Not a
         // payload modality — it's the recency marker consumers use to dedupe a
@@ -732,6 +762,19 @@ class MqttPublisher(
                     put("device", device)
                 }.toString(),
             )
+            fun binarySensor(id: String, name: String, stateTopic: String) = HomeAssistantDiscoveryEntry(
+                configTopic = "homeassistant/binary_sensor/${idPrefix}_$id/config",
+                payload = buildJsonObject {
+                    put("name", name)
+                    put("unique_id", "${idPrefix}_$id")
+                    put("default_entity_id", "binary_sensor.${idPrefix}_$id")
+                    put("state_topic", stateTopic)
+                    put("payload_on", "true")
+                    put("payload_off", "false")
+                    put("icon", "mdi:calendar-check")
+                    put("device", device)
+                }.toString(),
+            )
             return listOf(
                 sensor("day", "Day", topicFor(base, ForecastPeriod.TODAY), icon = "mdi:tshirt-crew"),
                 sensor("night", "Night", topicFor(base, ForecastPeriod.TONIGHT), icon = "mdi:tshirt-crew"),
@@ -763,6 +806,9 @@ class MqttPublisher(
                 image("day_image", "Day image", imageTopicFor(base, ForecastPeriod.TODAY)),
                 image("night_image", "Night image", imageTopicFor(base, ForecastPeriod.TONIGHT)),
                 image("now_image", "Now image", nowImageTopicFor(base)),
+                binarySensor("day_has_events", "Day has events", hasEventsTopicFor(base, ForecastPeriod.TODAY)),
+                binarySensor("night_has_events", "Night has events", hasEventsTopicFor(base, ForecastPeriod.TONIGHT)),
+                binarySensor("now_has_events", "Now has events", nowHasEventsTopicFor(base)),
             )
         }
 

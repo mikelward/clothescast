@@ -752,7 +752,7 @@
     <string name="settings_notification_permission_description">Pa lejen e njoftimeve, ClothesCast-i yt ditor s\'ka ku të shkojë. Jepe që ClothesCast të mund ta dërgojë nesër në mëngjes.</string>
     <string name="settings_notification_permission_grant">Jep lejen e njoftimeve</string>
     <string name="settings_calendar_master">Përdor kalendarin tim</string>
-    <string name="settings_calendar_master_description">Lëre ClothesCast-in të lexojë kalendarët e tu për të personalizuar parashikimet dhe kombinimet. Asgjë nuk largohet nga pajisja.</string>
+    <string name="settings_calendar_master_description">Lexon kalendarët e tu për të personalizuar parashikimet dhe kombinimet. Si parazgjedhje, asgjë nuk largohet nga pajisja jote.</string>
     <string name="settings_calendar_features_title">Kalendarët personalë</string>
     <string name="settings_evening_add_ons">Shtesa për mbrëmjen</string>
     <string name="settings_evening_add_ons_description">Nëse del në mbrëmje, parashikimi i mëngjesit të thotë nëse të duhet të marrësh diçka shtesë.</string>

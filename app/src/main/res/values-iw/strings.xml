@@ -968,7 +968,7 @@ standard in Israeli digital communication.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">השתמש/י ביומן שלי</string>
-    <string name="settings_calendar_master_description">אפשר/י ל-ClothesCast לקרוא את היומנים שלך כדי להתאים אישית תחזיות ולבוש. שום דבר לא יוצא מהמכשיר.</string>
+    <string name="settings_calendar_master_description">קורא את היומנים שלך כדי להתאים אישית תחזיות ולבוש. כברירת מחדל, שום דבר לא יוצא מהמכשיר שלך.</string>
     <string name="settings_calendar_features_title">יומנים אישיים</string>
     <string name="settings_evening_add_ons">תוספות לערב</string>
     <string name="settings_evening_add_ons_description">אם את/ה יוצא/ת בערב, תחזית הבוקר אומרת לך אם צריך לקחת משהו נוסף.</string>

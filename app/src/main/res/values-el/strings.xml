@@ -1094,7 +1094,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Χρήση του ημερολογίου μου</string>
-    <string name="settings_calendar_master_description">Άφησε το ClothesCast να διαβάζει τα ημερολόγιά σου για να προσαρμόζει προγνώσεις και στολές. Τίποτα δεν φεύγει από τη συσκευή.</string>
+    <string name="settings_calendar_master_description">Διαβάζει τα ημερολόγιά σου για να προσαρμόζει προγνώσεις και στολές. Από προεπιλογή, τίποτα δεν φεύγει από τη συσκευή σου.</string>
     <string name="settings_calendar_features_title">Προσωπικά ημερολόγια</string>
     <string name="settings_evening_add_ons">Πρόσθετα για το βράδυ</string>
     <string name="settings_evening_add_ons_description">Αν βγαίνεις το βράδυ, η πρωινή πρόγνωση σου λέει αν πρέπει να πάρεις κάτι επιπλέον.</string>

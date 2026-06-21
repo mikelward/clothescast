@@ -942,7 +942,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">የእኔን የቀን መቁጠሪያ ተጠቀም</string>
-    <string name="settings_calendar_master_description">ትንበያዎችንና ልብሶችን ለማበጀት ClothesCast የቀን መቁጠሪያዎችዎን እንዲያነብ ይፍቀዱ። ምንም ከመሳሪያው አይወጣም።</string>
+    <string name="settings_calendar_master_description">ትንበያዎችንና ልብሶችን ለማበጀት የቀን መቁጠሪያዎችዎን ያነባል። በነባሪነት ምንም ከመሣሪያዎ አይወጣም።</string>
     <string name="settings_calendar_features_title">የግል የቀን መቁጠሪያዎች</string>
     <string name="settings_evening_add_ons">የምሽት ተጨማሪዎች</string>
     <string name="settings_evening_add_ons_description">ምሽት ላይ ቢወጡ የጠዋቱ ትንበያ ተጨማሪ ነገር ይዘው መሄድ አለመሄድዎን ይነግርዎታል።</string>

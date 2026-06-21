@@ -37,5 +37,5 @@ full re-translation.
     <string name="settings_calendar_public_holidays_description">Use special colours and messages for public holidays in your calendars.</string>
 
     <!-- "Personalise" with the British -ise ending. -->
-    <string name="settings_calendar_master_description">Let ClothesCast read your calendars to personalise forecasts and outfits. Nothing leaves the device.</string>
+    <string name="settings_calendar_master_description">Read your calendars to personalise forecasts and outfits. Nothing leaves your device by default.</string>
 </resources>

@@ -44,6 +44,7 @@ import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
+import app.clothescast.core.domain.model.MorningScheduleEntry
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -129,7 +130,20 @@ internal fun SettingsScheduleSmartHomePreview() {
 private fun ScheduleContentSample(smartHome: Boolean = false) {
     ScheduleContent(
         time = LocalTime.of(7, 0),
-        days = Schedule.EVERY_DAY,
+        days = setOf(
+            java.time.DayOfWeek.MONDAY,
+            java.time.DayOfWeek.TUESDAY,
+            java.time.DayOfWeek.WEDNESDAY,
+            java.time.DayOfWeek.THURSDAY,
+            java.time.DayOfWeek.FRIDAY,
+        ),
+        additionalMorningSchedules = listOf(
+            MorningScheduleEntry(
+                id = 1,
+                time = LocalTime.of(9, 0),
+                days = setOf(java.time.DayOfWeek.SATURDAY, java.time.DayOfWeek.SUNDAY),
+            ),
+        ),
         dailyEnabled = true,
         tonightTime = LocalTime.of(19, 0),
         tonightDays = Schedule.EVERY_DAY,

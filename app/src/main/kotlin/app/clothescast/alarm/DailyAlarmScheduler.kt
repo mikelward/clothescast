@@ -34,26 +34,8 @@ class DailyAlarmScheduler(
     private val clock: Clock = Clock.systemUTC(),
 ) {
     fun schedule(schedule: Schedule, period: ForecastPeriod = ForecastPeriod.TODAY) {
-        val alarmManager = context.getSystemService<AlarmManager>() ?: run {
-            DiagLog.w(TAG, "AlarmManager unavailable; alarm not scheduled")
-            return
-        }
-
         val triggerAt: Instant = schedule.nextOccurrenceAfter(clock.instant())
-        val pendingIntent = pendingIntent(context, period, scheduledAtMs = triggerAt.toEpochMilli())
-
-        if (!alarmManager.canScheduleExactAlarms()) {
-            // USE_EXACT_ALARM (API 33+) auto-grants this; on the API 31-32 shim path it's
-            // also granted by default. If somehow it's denied (user revoked manually),
-            // fall back to setAndAllowWhileIdle so the user still gets the notification,
-            // just possibly drifted by a few minutes.
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt.toEpochMilli(), pendingIntent)
-            DiagLog.w(TAG, "Exact-alarm permission denied; using inexact alarm at $triggerAt for $period")
-            return
-        }
-
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt.toEpochMilli(), pendingIntent)
-        DiagLog.i(TAG, "Insight alarm armed for $triggerAt ($period)")
+        armAt(triggerAt, pendingIntent(context, period, scheduledAtMs = triggerAt.toEpochMilli()), "$period")
     }
 
     fun cancel(period: ForecastPeriod = ForecastPeriod.TODAY) {
@@ -61,10 +43,61 @@ class DailyAlarmScheduler(
         alarmManager.cancel(pendingIntent(context, period))
     }
 
+    /**
+     * Arms one of the additional morning casts ([app.clothescast.core.domain.model.MorningScheduleEntry]).
+     * Each entry gets its own request code (derived from [entryId]) + receiver
+     * action so AlarmManager keeps it independent of the primary morning / tonight
+     * alarms and of the other entries. The fired insight is still the morning
+     * ([ForecastPeriod.TODAY]) one — only the wall-clock time and days differ.
+     */
+    fun scheduleMorningExtra(schedule: Schedule, entryId: Int) {
+        val triggerAt: Instant = schedule.nextOccurrenceAfter(clock.instant())
+        armAt(
+            triggerAt,
+            morningExtraPendingIntent(context, entryId, scheduledAtMs = triggerAt.toEpochMilli()),
+            "morning-extra#$entryId",
+        )
+    }
+
+    fun cancelMorningExtra(entryId: Int) {
+        val alarmManager = context.getSystemService<AlarmManager>() ?: return
+        alarmManager.cancel(morningExtraPendingIntent(context, entryId))
+    }
+
+    private fun armAt(triggerAt: Instant, pendingIntent: PendingIntent, label: String) {
+        val alarmManager = context.getSystemService<AlarmManager>() ?: run {
+            DiagLog.w(TAG, "AlarmManager unavailable; alarm not scheduled")
+            return
+        }
+        if (!alarmManager.canScheduleExactAlarms()) {
+            // USE_EXACT_ALARM (API 33+) auto-grants this; on the API 31-32 shim path it's
+            // also granted by default. If somehow it's denied (user revoked manually),
+            // fall back to setAndAllowWhileIdle so the user still gets the notification,
+            // just possibly drifted by a few minutes.
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt.toEpochMilli(), pendingIntent)
+            DiagLog.w(TAG, "Exact-alarm permission denied; using inexact alarm at $triggerAt for $label")
+            return
+        }
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt.toEpochMilli(), pendingIntent)
+        DiagLog.i(TAG, "Insight alarm armed for $triggerAt ($label)")
+    }
+
     companion object {
         private const val TAG = "DailyAlarmScheduler"
         private const val ALARM_REQUEST_CODE_TODAY = 0xADA1
         private const val ALARM_REQUEST_CODE_TONIGHT = 0xADA2
+
+        /**
+         * Request codes for the additional morning casts are derived from this
+         * base plus the entry id (always > 0, so they never collide with
+         * [ALARM_REQUEST_CODE_TODAY] / [ALARM_REQUEST_CODE_TONIGHT]). Each entry's
+         * code is stable across re-arms so `FLAG_UPDATE_CURRENT` swaps the extras
+         * in place rather than stacking duplicate alarms.
+         */
+        private const val ALARM_REQUEST_CODE_MORNING_EXTRA_BASE = 0xADB0
+
+        /** Entry id of the firing additional morning cast — read by [AlarmReceiver]. */
+        const val EXTRA_ENTRY_ID = "app.clothescast.alarm.ENTRY_ID"
 
         /**
          * Wall-clock millis of the moment we asked AlarmManager to fire. Read by
@@ -98,6 +131,27 @@ class DailyAlarmScheduler(
             return PendingIntent.getBroadcast(
                 context,
                 requestCode,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
+        }
+
+        internal fun morningExtraPendingIntent(
+            context: Context,
+            entryId: Int,
+            scheduledAtMs: Long = 0L,
+        ): PendingIntent {
+            val intent = Intent(context, AlarmReceiver::class.java)
+                .setAction(AlarmReceiver.ACTION_FIRE_MORNING_EXTRA)
+                // The action is shared by every extra; the request code keeps the
+                // PendingIntents distinct, and the id rides as an extra so the
+                // receiver knows which entry fired.
+                .setData(android.net.Uri.parse("clothescast://morning-extra/$entryId"))
+                .putExtra(EXTRA_ENTRY_ID, entryId)
+                .putExtra(EXTRA_SCHEDULED_AT_MS, scheduledAtMs)
+            return PendingIntent.getBroadcast(
+                context,
+                ALARM_REQUEST_CODE_MORNING_EXTRA_BASE + entryId,
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )

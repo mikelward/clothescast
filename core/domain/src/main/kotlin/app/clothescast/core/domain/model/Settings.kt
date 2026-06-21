@@ -1048,6 +1048,20 @@ data class UserPreferences(
      * the cast is playing.
      */
     val castSkipPhoneSpeech: Boolean = true,
+    /**
+     * Additional morning ClothesCasts beyond the primary [schedule] — lets the
+     * user split the week so, e.g., weekday mornings fire at 07:00 and weekend
+     * mornings at 09:00. Each entry delivers the same morning insight as the
+     * primary morning cast; only its wall-clock time and the days it covers
+     * differ. Delivery mode and smart-home destinations are shared with the
+     * primary morning cast. Empty by default (one morning cast).
+     *
+     * Invariant: the day sets of [schedule] and every entry here are pairwise
+     * disjoint — see [MorningSchedules], which owns the partition logic. The
+     * repository normalizes on read so a hand-edited or buggy overlap can't
+     * fire two morning casts on the same day.
+     */
+    val additionalMorningSchedules: List<MorningScheduleEntry> = emptyList(),
 ) {
     /**
      * Effective per-feature flags: a feature reads the calendar only when the

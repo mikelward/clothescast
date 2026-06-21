@@ -22,6 +22,8 @@ import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.MorningScheduleEntry
+import app.clothescast.core.domain.model.MorningSchedules
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RangeFormat
@@ -32,6 +34,7 @@ import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
+import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.data.InsightCache
@@ -79,6 +82,10 @@ class SettingsViewModel(
     private val keyStore: SecureKeyStore,
     private val rearmAlarm: (Schedule, ForecastPeriod) -> Unit,
     private val cancelAlarm: (ForecastPeriod) -> Unit,
+    // Arm / cancel one additional morning cast by entry id. Defaulted to no-ops
+    // so pure-VM tests that don't exercise the alarm side don't have to wire them.
+    private val rearmMorningExtra: (Schedule, Int) -> Unit = { _, _ -> },
+    private val cancelMorningExtra: (Int) -> Unit = {},
     private val geocodingClient: OpenMeteoGeocodingClient,
     private val voiceEnumerator: TtsVoiceEnumerator,
     /**
@@ -241,6 +248,7 @@ class SettingsViewModel(
                     it.copy(
                         scheduleTime = prefs.schedule.time,
                         scheduleDays = prefs.schedule.days,
+                        additionalMorningSchedules = prefs.additionalMorningSchedules,
                         dailyEnabled = prefs.dailyEnabled,
                         tonightTime = prefs.tonightSchedule.time,
                         tonightDays = prefs.tonightSchedule.days,
@@ -1097,13 +1105,83 @@ class SettingsViewModel(
 
     fun setSchedule(time: LocalTime, days: Set<DayOfWeek>) {
         if (days.isEmpty()) return
+        // Set the primary cast's time + days, keeping the week partitioned: any day
+        // the primary now owns is stripped from the additional casts (an additional
+        // cast left with no days is dropped).
+        updateMorning { entries ->
+            entries.mapNotNull { e ->
+                when (e.id) {
+                    MorningSchedules.PRIMARY_ID -> e.copy(time = time, days = days)
+                    else -> {
+                        val remaining = e.days - days
+                        if (remaining.isEmpty()) null else e.copy(days = remaining)
+                    }
+                }
+            }
+        }
+    }
+
+    /** Move the wall-clock time of the morning cast with id [entryId]. */
+    fun setMorningScheduleTime(entryId: Int, time: LocalTime) {
+        updateMorning { MorningSchedules.setTime(it, entryId, time) }
+    }
+
+    /** Toggle [day]'s membership in the morning cast with id [entryId] (partition-aware). */
+    fun toggleMorningScheduleDay(entryId: Int, day: DayOfWeek) {
+        updateMorning { MorningSchedules.toggleDay(it, entryId, day) }
+    }
+
+    /** Split off a new additional morning cast, seeded from the primary's days. */
+    fun addMorningSchedule() {
+        updateMorning { entries ->
+            val primaryTime = entries.first { it.id == MorningSchedules.PRIMARY_ID }.time
+            MorningSchedules.addEntry(entries, primaryTime.plusHours(2))
+        }
+    }
+
+    /** Remove the additional morning cast with id [entryId]; its days return to the primary. */
+    fun removeMorningSchedule(entryId: Int) {
+        updateMorning { MorningSchedules.removeEntry(it, entryId) }
+    }
+
+    private fun unifiedMorning(prefs: UserPreferences): List<MorningScheduleEntry> =
+        listOf(
+            MorningScheduleEntry(MorningSchedules.PRIMARY_ID, prefs.schedule.time, prefs.schedule.days),
+        ) + prefs.additionalMorningSchedules
+
+    /**
+     * Applies a partition [transform] to the unified morning casts (primary +
+     * additional), persists the result, and reconciles the per-entry alarms.
+     * No-op when the transform changes nothing (e.g. a refused day move).
+     */
+    private fun updateMorning(transform: (List<MorningScheduleEntry>) -> List<MorningScheduleEntry>) {
         viewModelScope.launch {
-            settingsRepository.setSchedule(time, days)
-            // Re-arm the alarm immediately so the next occurrence picks up the new wall-clock.
-            // The repository resolves zoneId fresh on each emission, so the schedule we read
-            // back is the new one with the current zone.
-            val updated = settingsRepository.preferences.first().schedule
-            rearmAlarm(updated, ForecastPeriod.TODAY)
+            val before = settingsRepository.preferences.first()
+            val current = unifiedMorning(before)
+            val next = transform(current)
+            if (next == current) return@launch
+            val primary = next.first { it.id == MorningSchedules.PRIMARY_ID }
+            val extras = next.filter { it.id != MorningSchedules.PRIMARY_ID }
+            settingsRepository.setSchedule(primary.time, primary.days)
+            settingsRepository.setAdditionalMorningSchedules(extras)
+
+            // Re-arm against the persisted (normalized) state so the alarms match
+            // storage exactly. zoneId is re-resolved fresh on each emission.
+            val after = settingsRepository.preferences.first()
+            val zone = after.schedule.zoneId
+            val survivingIds = after.additionalMorningSchedules.map { it.id }.toSet()
+            before.additionalMorningSchedules
+                .map { it.id }
+                .filterNot { it in survivingIds }
+                .forEach { cancelMorningExtra(it) }
+            if (after.dailyEnabled) {
+                rearmAlarm(after.schedule, ForecastPeriod.TODAY)
+                after.additionalMorningSchedules.forEach { e ->
+                    rearmMorningExtra(Schedule(e.time, e.days, zone), e.id)
+                }
+            } else {
+                after.additionalMorningSchedules.forEach { cancelMorningExtra(it.id) }
+            }
         }
     }
 
@@ -1178,8 +1256,12 @@ class SettingsViewModel(
             val prefs = settingsRepository.preferences.first()
             if (prefs.dailyEnabled) {
                 rearmAlarm(prefs.schedule, ForecastPeriod.TODAY)
+                prefs.additionalMorningSchedules.forEach { e ->
+                    rearmMorningExtra(Schedule(e.time, e.days, prefs.schedule.zoneId), e.id)
+                }
             } else {
                 cancelAlarm(ForecastPeriod.TODAY)
+                prefs.additionalMorningSchedules.forEach { cancelMorningExtra(it.id) }
             }
         }
     }
@@ -1206,6 +1288,8 @@ class SettingsViewModel(
         private val keyStore: SecureKeyStore,
         private val rearmAlarm: (Schedule, ForecastPeriod) -> Unit,
         private val cancelAlarm: (ForecastPeriod) -> Unit,
+        private val rearmMorningExtra: (Schedule, Int) -> Unit = { _, _ -> },
+        private val cancelMorningExtra: (Int) -> Unit = {},
         private val geocodingClient: OpenMeteoGeocodingClient,
         private val voiceEnumerator: TtsVoiceEnumerator,
         private val applyAppLocale: (Region) -> Unit,
@@ -1232,6 +1316,8 @@ class SettingsViewModel(
                 keyStore = keyStore,
                 rearmAlarm = rearmAlarm,
                 cancelAlarm = cancelAlarm,
+                rearmMorningExtra = rearmMorningExtra,
+                cancelMorningExtra = cancelMorningExtra,
                 geocodingClient = geocodingClient,
                 voiceEnumerator = voiceEnumerator,
                 refreshOutfitWidget = refreshOutfitWidget,

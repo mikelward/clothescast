@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.clothescast.core.domain.model.Garment
+import app.clothescast.core.domain.model.MorningScheduleEntry
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.DeltaFormat
@@ -38,6 +39,7 @@ import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.diag.ClothesRulesSnapshot
 import app.clothescast.diag.SettingsAnalyticsSnapshot
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.doubles.plusOrMinus
@@ -127,6 +129,56 @@ class SettingsRepositoryTest {
         val prefs = subject.preferences.first()
         prefs.schedule.time shouldBe LocalTime.of(6, 30)
         prefs.schedule.days.shouldContainExactlyInAnyOrder(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)
+    }
+
+    @Test
+    fun `additionalMorningSchedules default to empty and round-trip`() = runTest {
+        subject.preferences.first().additionalMorningSchedules.shouldBeEmpty()
+
+        subject.setSchedule(LocalTime.of(7, 0), setOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY))
+        subject.setAdditionalMorningSchedules(
+            listOf(
+                MorningScheduleEntry(
+                    id = 1,
+                    time = LocalTime.of(9, 0),
+                    days = setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
+                ),
+            ),
+        )
+
+        val entries = subject.preferences.first().additionalMorningSchedules
+        entries.size shouldBe 1
+        entries[0].id shouldBe 1
+        entries[0].time shouldBe LocalTime.of(9, 0)
+        entries[0].days.shouldContainExactlyInAnyOrder(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+    }
+
+    @Test
+    fun `additionalMorningSchedules drop overlap with the primary on read`() = runTest {
+        // Primary owns Mon-Fri; a stored extra that also claims Friday should have
+        // Friday stripped on read so a day never fires two morning casts.
+        subject.setSchedule(
+            LocalTime.of(7, 0),
+            setOf(
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY,
+            ),
+        )
+        subject.setAdditionalMorningSchedules(
+            listOf(
+                MorningScheduleEntry(
+                    id = 1,
+                    time = LocalTime.of(9, 0),
+                    days = setOf(DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
+                ),
+            ),
+        )
+
+        val entries = subject.preferences.first().additionalMorningSchedules
+        entries[0].days.shouldContainExactlyInAnyOrder(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
     }
 
     @Test

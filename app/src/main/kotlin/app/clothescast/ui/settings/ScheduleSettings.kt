@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
@@ -21,7 +22,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +32,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
@@ -55,6 +59,7 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.MorningScheduleEntry
 import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.location.hasBackgroundLocationPermission
 import app.clothescast.location.hasCoarseLocationPermission
@@ -71,6 +76,7 @@ import java.time.format.TextStyle
 internal fun ScheduleContent(
     time: LocalTime,
     days: Set<DayOfWeek>,
+    additionalMorningSchedules: List<MorningScheduleEntry>,
     dailyEnabled: Boolean,
     tonightTime: LocalTime,
     tonightDays: Set<DayOfWeek>,
@@ -91,6 +97,14 @@ internal fun ScheduleContent(
     padding: PaddingValues,
     onSetSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetDailyEnabled: (Boolean) -> Unit,
+    // Additional morning casts (the weekday/weekend split). Each entry shares the
+    // morning delivery mode + smart-home destinations; only its time and days
+    // differ. The day chips partition the week — assigning a day to one cast
+    // strips it from the others (the ViewModel owns that math).
+    onSetMorningTime: (Int, LocalTime) -> Unit = { _, _ -> },
+    onToggleMorningDay: (Int, DayOfWeek) -> Unit = { _, _ -> },
+    onAddMorningSchedule: () -> Unit = {},
+    onRemoveMorningSchedule: (Int) -> Unit = {},
     onSetTonightSchedule: (LocalTime, Set<DayOfWeek>) -> Unit,
     onSetTonightEnabled: (Boolean) -> Unit,
     onSetUseDeviceLocation: (Boolean) -> Unit,
@@ -296,6 +310,23 @@ internal fun ScheduleContent(
                 onPreview = { triggerPreview(context, ForecastPeriod.TODAY) },
                 previewEnabled = previewEnabled,
             )
+            // Additional morning casts + the "add another time" affordance, only
+            // while the morning master switch is on (they ride the same toggle).
+            if (dailyEnabled) {
+                additionalMorningSchedules.forEach { entry ->
+                    ExtraMorningCard(
+                        entry = entry,
+                        onSetTime = { newTime -> onSetMorningTime(entry.id, newTime) },
+                        onToggleDay = { day -> onToggleMorningDay(entry.id, day) },
+                        onRemove = { onRemoveMorningSchedule(entry.id) },
+                    )
+                }
+                // A new cast is split off the primary's days, so it's only offered
+                // while the primary still owns at least two days to divide.
+                if (days.size >= 2) {
+                    AddMorningButton(onClick = onAddMorningSchedule)
+                }
+            }
             NightCard(
                 time = tonightTime,
                 days = tonightDays,
@@ -642,6 +673,120 @@ private fun DaysSelector(
                     val next = if (selected) days - dow else days + dow
                     if (next.isNotEmpty()) onChange(next)
                 },
+                label = {
+                    Text(text = dow.getDisplayName(TextStyle.SHORT, uiLocale))
+                },
+                leadingIcon = if (selected) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                },
+                colors = FilterChipDefaults.filterChipColors(),
+            )
+        }
+    }
+}
+
+/**
+ * One additional morning cast: a time + the days it covers + a remove button.
+ * Delivery mode, evening extras, and the preview live on the primary morning
+ * card only — an extra is just "the same morning cast, at a different time on
+ * these days." The day chips partition the week with the primary and the other
+ * extras: tapping a day claims it here (stripping it from whoever held it), so
+ * a single tap is enough — there's no separate "remove from the other card" step.
+ */
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun ExtraMorningCard(
+    entry: MorningScheduleEntry,
+    onSetTime: (LocalTime) -> Unit,
+    onToggleDay: (DayOfWeek) -> Unit,
+    onRemove: () -> Unit,
+) {
+    var pickerOpen by remember { mutableStateOf(false) }
+
+    SectionCard(title = stringResource(R.string.settings_schedule_additional_title)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.settings_schedule_time_label),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(end = 12.dp),
+            )
+            OutlinedButton(onClick = { pickerOpen = true }) {
+                Text(text = formatHourMinute(entry.time))
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = onRemove) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.settings_schedule_remove_morning),
+                )
+            }
+        }
+        ToggleDaysSelector(days = entry.days, onToggleDay = onToggleDay)
+    }
+
+    if (pickerOpen) {
+        TimePickerDialog(
+            initial = entry.time,
+            onDismiss = { pickerOpen = false },
+            onConfirm = { newTime ->
+                pickerOpen = false
+                onSetTime(newTime)
+            },
+        )
+    }
+}
+
+/** "Add another morning time" — splits a new cast off the primary's days. */
+@Composable
+private fun AddMorningButton(onClick: () -> Unit) {
+    OutlinedButton(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = null,
+            modifier = Modifier.size(FilterChipDefaults.IconSize),
+        )
+        Text(
+            text = stringResource(R.string.settings_schedule_add_morning),
+            modifier = Modifier.padding(start = 8.dp),
+        )
+    }
+}
+
+/**
+ * Day-of-week chips for a partitioned cast: each tap toggles one day via
+ * [onToggleDay] and the caller (ViewModel) resolves it against the rest of the
+ * partition — claim from whoever owns it, or release it to no cast. Unlike
+ * [DaysSelector] there's no "keep at least one" guard here: releasing an extra's
+ * last day legitimately deletes the extra.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ToggleDaysSelector(
+    days: Set<DayOfWeek>,
+    onToggleDay: (DayOfWeek) -> Unit,
+) {
+    val uiLocale = LocalContext.current.resourcesLocale()
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        DayOfWeek.entries.forEach { dow ->
+            val selected = dow in days
+            FilterChip(
+                selected = selected,
+                onClick = { onToggleDay(dow) },
                 label = {
                     Text(text = dow.getDisplayName(TextStyle.SHORT, uiLocale))
                 },

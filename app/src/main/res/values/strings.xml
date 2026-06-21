@@ -799,6 +799,13 @@
     <string name="settings_schedule_title">Daily ClothesCast</string>
     <string name="settings_schedule_enabled">Daily ClothesCast</string>
     <string name="settings_schedule_time_label">Time</string>
+    <!-- Title of an additional morning-cast card (e.g. a weekend morning at a
+         different time from the weekday one). -->
+    <string name="settings_schedule_additional_title">Another morning time</string>
+    <!-- Button that adds another morning cast, splitting some days off the main one. -->
+    <string name="settings_schedule_add_morning">Add another morning time</string>
+    <!-- Content description for the button that removes an additional morning cast. -->
+    <string name="settings_schedule_remove_morning">Remove this morning time</string>
     <!-- "Play now" button at the bottom of each schedule section, previewing
          that section's cast on demand. -->
     <string name="settings_schedule_preview">Play now</string>

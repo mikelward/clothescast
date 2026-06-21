@@ -12,6 +12,7 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
+import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.DistanceUnit
 import app.clothescast.core.domain.model.DistanceUnitSetting
 import app.clothescast.core.domain.model.EventKind
@@ -41,7 +42,11 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.serialization.json.Json as KotlinxJson
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
+import java.time.DayOfWeek
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -220,6 +225,51 @@ class SettingsViewModelTest {
         val prefs = settingsRepository.preferences.first()
         prefs.deliveryMode shouldBe DeliveryMode.NOTIFICATION_ONLY
         prefs.tonightDeliveryMode shouldBe DeliveryMode.TTS_ONLY
+    }
+
+    @Test
+    fun `addMorningSchedule splits the weekend off the all-week primary`() = runTest {
+        subject.addMorningSchedule()
+
+        val state = subject.state.first { it.additionalMorningSchedules.isNotEmpty() }
+        state.scheduleDays.shouldContainExactlyInAnyOrder(
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+        )
+        val extra = state.additionalMorningSchedules.single()
+        extra.days.shouldContainExactlyInAnyOrder(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+        settingsRepository.preferences.first().additionalMorningSchedules
+            .single().days.shouldContainExactlyInAnyOrder(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+    }
+
+    @Test
+    fun `toggleMorningScheduleDay moves a day from the primary to the entry`() = runTest {
+        subject.addMorningSchedule()
+        val id = subject.state.first { it.additionalMorningSchedules.isNotEmpty() }
+            .additionalMorningSchedules.single().id
+
+        subject.toggleMorningScheduleDay(id, DayOfWeek.FRIDAY)
+
+        val state = subject.state.first { st ->
+            st.additionalMorningSchedules.any { DayOfWeek.FRIDAY in it.days }
+        }
+        state.scheduleDays.shouldNotContain(DayOfWeek.FRIDAY)
+        state.additionalMorningSchedules.single().days.shouldContain(DayOfWeek.FRIDAY)
+    }
+
+    @Test
+    fun `removeMorningSchedule returns its days to the primary`() = runTest {
+        subject.addMorningSchedule()
+        val id = subject.state.first { it.additionalMorningSchedules.isNotEmpty() }
+            .additionalMorningSchedules.single().id
+
+        subject.removeMorningSchedule(id)
+
+        val state = subject.state.first { it.additionalMorningSchedules.isEmpty() }
+        state.scheduleDays shouldBe Schedule.EVERY_DAY
     }
 
     @Test

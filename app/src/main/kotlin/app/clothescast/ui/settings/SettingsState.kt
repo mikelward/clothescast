@@ -17,6 +17,7 @@ import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.MorningScheduleEntry
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RangeFormat
@@ -46,6 +47,12 @@ import java.util.Locale
 data class SettingsState(
     val scheduleTime: LocalTime = LocalTime.of(7, 0),
     val scheduleDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
+    /**
+     * Additional morning casts beyond the primary [scheduleTime] / [scheduleDays]
+     * one — the weekday/weekend split. Empty by default (one morning cast). The
+     * day sets here are disjoint from the primary and from each other.
+     */
+    val additionalMorningSchedules: List<MorningScheduleEntry> = emptyList(),
     // On by default to mirror the repository (see UserPreferences.dailyEnabled,
     // where an absent key resolves to enabled): the morning cast ships on out of
     // the box, so the first render before DataStore emits must not show the

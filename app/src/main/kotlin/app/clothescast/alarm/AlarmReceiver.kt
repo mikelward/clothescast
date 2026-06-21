@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import app.clothescast.diag.DiagLog
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.playsSpeech
 import app.clothescast.core.domain.model.postsNotification
@@ -43,9 +44,16 @@ import kotlinx.coroutines.launch
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val period = when (intent.action) {
-            ACTION_FIRE -> ForecastPeriod.TODAY
+            ACTION_FIRE, ACTION_FIRE_MORNING_EXTRA -> ForecastPeriod.TODAY
             ACTION_FIRE_TONIGHT -> ForecastPeriod.TONIGHT
             else -> return
+        }
+        // Set only for an additional morning cast — identifies which entry fired so
+        // we re-arm that one (and bail if it was deleted since the alarm was set).
+        val morningExtraId = if (intent.action == ACTION_FIRE_MORNING_EXTRA) {
+            intent.getIntExtra(DailyAlarmScheduler.EXTRA_ENTRY_ID, -1)
+        } else {
+            null
         }
         // Stamped by DailyAlarmScheduler at schedule time; the alarm-fire timestamp
         // is captured below as `firedAtMs`. The pair lets the worker emit the
@@ -70,9 +78,24 @@ class AlarmReceiver : BroadcastReceiver() {
                 val prefs = app.settingsRepository.preferences.first()
                 if (period == ForecastPeriod.TODAY && !prefs.dailyEnabled) {
                     // Mirror of the tonight branch below: the user disabled the
-                    // daily ClothesCast after this alarm was already armed.
+                    // daily ClothesCast after this alarm was already armed. The
+                    // morning master switch gates the additional casts too.
                     DiagLog.i(TAG, "Daily alarm fired but daily is disabled; cancelling and not re-arming.")
-                    scheduler.cancel(ForecastPeriod.TODAY)
+                    if (morningExtraId != null) {
+                        scheduler.cancelMorningExtra(morningExtraId)
+                    } else {
+                        scheduler.cancel(ForecastPeriod.TODAY)
+                    }
+                    return@launch
+                }
+                // The additional cast may have been deleted (or its days reassigned
+                // away) since the alarm was armed; cancel the stale alarm and bail.
+                val morningExtra = morningExtraId?.let { id ->
+                    prefs.additionalMorningSchedules.firstOrNull { it.id == id }
+                }
+                if (morningExtraId != null && morningExtra == null) {
+                    DiagLog.i(TAG, "Morning-extra alarm #$morningExtraId fired but the entry is gone; cancelling.")
+                    scheduler.cancelMorningExtra(morningExtraId)
                     return@launch
                 }
                 if (period == ForecastPeriod.TONIGHT && !prefs.tonightEnabled) {
@@ -101,11 +124,19 @@ class AlarmReceiver : BroadcastReceiver() {
                     tryStartService(appCtx, period, prefs, workId.toString())
                 }
 
-                val schedule = when (period) {
-                    ForecastPeriod.TODAY -> prefs.schedule
-                    ForecastPeriod.TONIGHT -> prefs.tonightSchedule
+                if (morningExtra != null) {
+                    // Re-arm this specific additional cast for its next occurrence.
+                    scheduler.scheduleMorningExtra(
+                        Schedule(morningExtra.time, morningExtra.days, prefs.schedule.zoneId),
+                        morningExtra.id,
+                    )
+                } else {
+                    val schedule = when (period) {
+                        ForecastPeriod.TODAY -> prefs.schedule
+                        ForecastPeriod.TONIGHT -> prefs.tonightSchedule
+                    }
+                    scheduler.schedule(schedule, period)
                 }
-                scheduler.schedule(schedule, period)
             } catch (t: Throwable) {
                 DiagLog.e(TAG, "Re-arm failed for $period", t)
                 // Best-effort: still enqueue the worker even if pref read failed,
@@ -202,6 +233,7 @@ class AlarmReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_FIRE = "app.clothescast.alarm.FIRE"
         const val ACTION_FIRE_TONIGHT = "app.clothescast.alarm.FIRE_TONIGHT"
+        const val ACTION_FIRE_MORNING_EXTRA = "app.clothescast.alarm.FIRE_MORNING_EXTRA"
         private const val TAG = "AlarmReceiver"
     }
 }

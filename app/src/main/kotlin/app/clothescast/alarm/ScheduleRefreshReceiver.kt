@@ -6,6 +6,7 @@ import android.content.Intent
 import app.clothescast.ClothesCastApplication
 import app.clothescast.diag.DiagLog
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Schedule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -37,8 +38,16 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
                 val scheduler = DailyAlarmScheduler(context.applicationContext)
                 if (prefs.dailyEnabled) {
                     scheduler.schedule(prefs.schedule, ForecastPeriod.TODAY)
+                    // Additional morning casts ride the same master switch.
+                    prefs.additionalMorningSchedules.forEach { entry ->
+                        scheduler.scheduleMorningExtra(
+                            Schedule(entry.time, entry.days, prefs.schedule.zoneId),
+                            entry.id,
+                        )
+                    }
                 } else {
                     scheduler.cancel(ForecastPeriod.TODAY)
+                    prefs.additionalMorningSchedules.forEach { scheduler.cancelMorningExtra(it.id) }
                 }
                 if (prefs.tonightEnabled) {
                     scheduler.schedule(prefs.tonightSchedule, ForecastPeriod.TONIGHT)

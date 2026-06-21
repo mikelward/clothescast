@@ -30,6 +30,8 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.MorningScheduleEntry
+import app.clothescast.core.domain.model.MorningSchedules
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RangeFormat
@@ -53,6 +55,7 @@ import app.clothescast.tts.resolve
 import app.clothescast.tts.toJavaLocale
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -193,6 +196,16 @@ class SettingsRepository(
             prefs[TONIGHT_TIME] = TIME_FORMAT.format(time)
             prefs[TONIGHT_DAYS] = days.map { it.name }.toSet()
         }
+    }
+
+    /**
+     * Persists the additional morning casts (beyond the primary [setSchedule]
+     * one). Stored as a compact JSON list; the partition invariant — day sets
+     * disjoint from the primary and from each other — is the caller's to
+     * maintain (see [MorningSchedules]) and is re-checked defensively on read.
+     */
+    suspend fun setAdditionalMorningSchedules(entries: List<MorningScheduleEntry>) {
+        dataStore.edit { it.writeJson(ADDITIONAL_MORNING_SCHEDULES, entries.map { e -> e.toDto() }) }
     }
 
     suspend fun setDailyEnabled(enabled: Boolean) {
@@ -1008,6 +1021,10 @@ class SettingsRepository(
         // the schedule page — which is where the just-in-time POST_NOTIFICATIONS
         // prompt fires. Only an explicit stored `true` enables either slot.
         val dailyEnabled = this[DAILY_ENABLED] == true
+        // Disjoint from the primary `days` (computed above) — the parse strips any
+        // overlap so a day never fires two morning casts.
+        val additionalMorningSchedules =
+            parseAdditionalMorningSchedules(this[ADDITIONAL_MORNING_SCHEDULES], days)
         val tonightEnabled = this[TONIGHT_ENABLED] == true
         val tonightNotifyOnlyOnEvents = this[TONIGHT_NOTIFY_ONLY_ON_EVENTS] == true
         val dailyMentionEveningEvents = this[DAILY_MENTION_EVENING_EVENTS] == true
@@ -1202,6 +1219,7 @@ class SettingsRepository(
             castMorning = castMorning,
             castTonight = castTonight,
             castSkipPhoneSpeech = castSkipPhoneSpeech,
+            additionalMorningSchedules = additionalMorningSchedules,
         )
     }
 
@@ -1397,6 +1415,47 @@ class SettingsRepository(
                 .toMap()
         }
 
+    private fun MorningScheduleEntry.toDto(): MorningScheduleDto =
+        MorningScheduleDto(id = id, time = TIME_FORMAT.format(time), days = days.map { it.name })
+
+    /**
+     * Decodes the additional morning casts and re-establishes the partition
+     * invariant defensively: a day owned by the primary cast ([primaryDays]) or
+     * an earlier entry can't also be owned here, ids stay unique, and an entry
+     * left with no days is dropped. A corrupt / forward-incompatible payload
+     * falls back to "no additional casts" rather than throwing on every emission.
+     */
+    private fun parseAdditionalMorningSchedules(
+        raw: String?,
+        primaryDays: Set<DayOfWeek>,
+    ): List<MorningScheduleEntry> {
+        val decoded = decodeJson(raw, emptyList<MorningScheduleEntry>()) {
+            json.decodeFromString<List<MorningScheduleDto>>(it).mapNotNull { dto ->
+                val parsedTime = runCatching { LocalTime.parse(dto.time, TIME_FORMAT) }.getOrNull()
+                    ?: return@mapNotNull null
+                val parsedDays = dto.days
+                    .mapNotNull { name -> runCatching { DayOfWeek.valueOf(name) }.getOrNull() }
+                    .toSet()
+                // Drop empties and anything claiming the reserved primary id.
+                if (parsedDays.isEmpty() || dto.id == MorningSchedules.PRIMARY_ID) {
+                    return@mapNotNull null
+                }
+                MorningScheduleEntry(id = dto.id, time = parsedTime, days = parsedDays)
+            }
+        }
+        val taken = primaryDays.toMutableSet()
+        val seenIds = mutableSetOf<Int>()
+        val result = mutableListOf<MorningScheduleEntry>()
+        for (entry in decoded) {
+            if (!seenIds.add(entry.id)) continue
+            val days = entry.days - taken
+            if (days.isEmpty()) continue
+            taken += days
+            result += entry.copy(days = days)
+        }
+        return result
+    }
+
     private fun parseRules(raw: String?): List<ClothesRule> =
         decodeJson(raw, ClothesRule.DEFAULTS) {
             // Drop any stored rule whose item isn't a catalog garment (legacy
@@ -1465,6 +1524,8 @@ class SettingsRepository(
             longPreferencesKey("gemini_tts_limit_dismissed_at_ms")
         private val CALENDAR_PERMISSION_RECHECK_TICK = longPreferencesKey("calendar_permission_recheck_tick")
         private val DAILY_ENABLED = booleanPreferencesKey("daily_enabled")
+        private val ADDITIONAL_MORNING_SCHEDULES =
+            stringPreferencesKey("additional_morning_schedules_json")
         private val TONIGHT_TIME = stringPreferencesKey("tonight_time_hhmm")
         private val TONIGHT_DAYS = stringSetPreferencesKey("tonight_days")
         private val TONIGHT_ENABLED = booleanPreferencesKey("tonight_enabled")
@@ -2029,3 +2090,16 @@ internal fun defaultTimeFormatFor(locale: Locale): TimeFormat {
     val pattern = (df as? java.text.SimpleDateFormat)?.toPattern() ?: return TimeFormat.TWENTY_FOUR_HOUR
     return if (pattern.containsTwelveHourPatternField()) TimeFormat.TWELVE_HOUR else TimeFormat.TWENTY_FOUR_HOUR
 }
+
+/**
+ * On-disk shape for an [app.clothescast.core.domain.model.MorningScheduleEntry].
+ * Kept as a private DTO (a versioned schema boundary) so the wire format stays
+ * decoupled from the domain model — see [JsonPreferenceStore]. Time is the same
+ * `HH:mm` string the primary schedule uses; days are [java.time.DayOfWeek] names.
+ */
+@Serializable
+private data class MorningScheduleDto(
+    val id: Int,
+    val time: String,
+    val days: List<String>,
+)

@@ -186,6 +186,7 @@ internal fun SchedulePage(
         ScheduleContent(
             time = state.scheduleTime,
             days = state.scheduleDays,
+            additionalMorningSchedules = state.additionalMorningSchedules,
             dailyEnabled = state.dailyEnabled,
             tonightTime = state.tonightTime,
             tonightDays = state.tonightDays,
@@ -200,6 +201,10 @@ internal fun SchedulePage(
             padding = padding,
             onSetSchedule = viewModel::setSchedule,
             onSetDailyEnabled = viewModel::setDailyEnabled,
+            onSetMorningTime = viewModel::setMorningScheduleTime,
+            onToggleMorningDay = viewModel::toggleMorningScheduleDay,
+            onAddMorningSchedule = viewModel::addMorningSchedule,
+            onRemoveMorningSchedule = viewModel::removeMorningSchedule,
             onSetUseDeviceLocation = viewModel::setUseDeviceLocation,
             onSetTonightSchedule = viewModel::setTonightSchedule,
             onSetTonightEnabled = viewModel::setTonightEnabled,

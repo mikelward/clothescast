@@ -17,6 +17,7 @@ import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.OpenMeteoClient
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.defaultsFor
 import app.clothescast.core.domain.repository.CachingWeatherRepository
 import app.clothescast.core.domain.repository.CalendarEventReader
@@ -350,8 +351,15 @@ class ClothesCastApplication : Application() {
                 AppLocale.apply(this@ClothesCastApplication, prefs.region)
                 if (prefs.dailyEnabled) {
                     dailyAlarmScheduler.schedule(prefs.schedule, ForecastPeriod.TODAY)
+                    prefs.additionalMorningSchedules.forEach { entry ->
+                        dailyAlarmScheduler.scheduleMorningExtra(
+                            Schedule(entry.time, entry.days, prefs.schedule.zoneId),
+                            entry.id,
+                        )
+                    }
                 } else {
                     dailyAlarmScheduler.cancel(ForecastPeriod.TODAY)
+                    prefs.additionalMorningSchedules.forEach { dailyAlarmScheduler.cancelMorningExtra(it.id) }
                 }
                 if (prefs.tonightEnabled) {
                     dailyAlarmScheduler.schedule(prefs.tonightSchedule, ForecastPeriod.TONIGHT)

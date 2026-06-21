@@ -2,19 +2,12 @@ package app.clothescast.ui.today
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +15,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -322,14 +314,11 @@ internal fun SevenDayPage(
         // card does on pages 0 / 1 — keeping the outfit row at a consistent
         // vertical offset across a swipe whichever order the user picked.
         insightSlot = {
-        // Page header — same visual treatment as [InsightCard] on pages 0 / 1:
-        // a 20.dp-padded Card with the chevron in a 28.dp slot on the left,
-        // a "Next 7 days" label in the centered position the per-period
-        // label occupies on those pages, and the prose headline below in
-        // headlineSmall (matching the per-period insight prose typography).
-        // Reserving 28.dp on the right keeps the label in the same horizontal
-        // position as the per-period label on pages 0 / 1, so swiping between
-        // pages doesn't jitter the centered label sideways.
+        // Page header — same shell as [InsightCard] on pages 0 / 1 (see
+        // [InsightCardShell]): a 20.dp-padded Card, a back chevron in the left
+        // 28.dp slot, the title in the centered label position, a 28.dp slot
+        // reserved on the right for an optional forward chevron to the
+        // following week, and the prose headline below in headlineSmall.
         //
         // The prose slot shows the week-ahead headline when one fires (rain,
         // a notable temperature shift, or a persistent hot / cold run); a
@@ -337,95 +326,44 @@ internal fun SevenDayPage(
         // always carries content; and the legacy "Will be ready after the
         // next forecast." line on pre-7-day-fetch cached payloads where
         // [days] is empty or has fewer than 2 entries.
-        //
-        // TODO: extract an `InsightCardShell` composable shared with
-        // [InsightCard] so the chevron-row geometry / padding / spacing live
-        // in one place. Today this block is a hand-rolled copy of
-        // InsightCard's Card+Row+Column scaffolding (TodayScreen.kt:1784–1859);
-        // if someone retunes the chevron slot size, the inter-row spacing, or
-        // the centered-label typography there, this card silently drifts.
-        // The refactor needs the shell flexible enough for both shapes
-        // (optional center content: date+location chip vs. plain label;
-        // optional right chevron) and touches
-        // the today/tonight code path + every snapshot through `InsightCard`,
-        // which is why it's deferred to a follow-up rather than landed here.
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(28.dp)) {
-                        IconButton(
-                            onClick = onChevronTap,
-                            modifier = Modifier.size(28.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                contentDescription = stringResource(R.string.today_back_to_primary),
-                            )
-                        }
-                    }
-                    val locationLabel = shortLocationLabel(location?.displayName)
-                        ?: location?.let { stringResource(R.string.today_location_unknown) }
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = stringResource(titleRes),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        if (location != null && locationLabel != null) {
-                            Text(
-                                text = " · ",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                text = locationLabel,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                                // Tapping the city name opens the Location
-                                // settings page — same affordance as the
-                                // per-period [InsightCard] header. Falls back
-                                // to inert text when no nav callback is wired
-                                // (previews / tests).
-                                modifier = if (onNavigateToLocation != null) {
-                                    Modifier.clickable { onNavigateToLocation() }
-                                } else {
-                                    Modifier
-                                },
-                            )
-                        }
-                    }
-                    Box(modifier = Modifier.size(28.dp)) {
-                        if (onForwardChevronTap != null) {
-                            IconButton(
-                                onClick = onForwardChevronTap,
-                                modifier = Modifier.size(28.dp),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription =
-                                        stringResource(R.string.today_forward_to_following_week),
-                                )
-                            }
-                        }
-                    }
-                }
-                val proseText = when {
-                    days.size < 2 -> stringResource(R.string.today_week_empty)
-                    weekAheadText != null -> weekAheadText
-                    else -> stringResource(R.string.today_week_ahead_steady)
-                }
-                Text(
-                    text = proseText,
-                    style = MaterialTheme.typography.headlineSmall,
+        val locationLabel = shortLocationLabel(location?.displayName)
+            ?: location?.let { stringResource(R.string.today_location_unknown) }
+        val proseText = when {
+            days.size < 2 -> stringResource(R.string.today_week_empty)
+            weekAheadText != null -> weekAheadText
+            else -> stringResource(R.string.today_week_ahead_steady)
+        }
+        InsightCardShell(
+            leftSlot = {
+                InsightCardChevron(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = stringResource(R.string.today_back_to_primary),
+                    onClick = onChevronTap,
                 )
-            }
+            },
+            rightSlot = {
+                if (onForwardChevronTap != null) {
+                    InsightCardChevron(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = stringResource(R.string.today_forward_to_following_week),
+                        onClick = onForwardChevronTap,
+                    )
+                }
+            },
+            centerContent = {
+                // Same affordance as the per-period card's header: the city
+                // suffix opens Location settings (inert in previews / tests).
+                InsightCardCenterLabel(
+                    label = stringResource(titleRes),
+                    locationLabel = locationLabel,
+                    onNavigateToLocation = onNavigateToLocation,
+                )
+            },
+        ) {
+            Text(
+                text = proseText,
+                style = MaterialTheme.typography.headlineSmall,
+            )
         }
         },
         // The chart deck — its own reorderable section, same as on the

@@ -468,13 +468,6 @@ class TodayViewModel(
      */
     private val deriveInsight: DeriveInsight = DeriveInsight(),
     /**
-     * Pushes the home-screen widget after a clothes-rule nudge so the icon
-     * out on the launcher refreshes in the same frame as the Today screen.
-     * Defaulted to a no-op so pure-VM tests don't need an Android Context;
-     * the Activity wires `OutfitWidget().updateAll(applicationContext)`.
-     */
-    private val refreshOutfitWidget: suspend () -> Unit = {},
-    /**
      * Source of "today" for the holiday resolver. Held as a [Clock] (not
      * `() -> LocalDate`) so tests can pin a specific instant while production
      * uses the system zone. Defaulted to system clock so callers that don't
@@ -944,7 +937,6 @@ class TodayViewModel(
         private val insightCache: InsightCache,
         private val workManager: WorkManager,
         private val settingsRepository: SettingsRepository,
-        private val refreshOutfitWidget: suspend () -> Unit,
         private val deriveInsight: DeriveInsight = DeriveInsight(),
         private val calendarEventReader: CalendarEventReader? = null,
         private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
@@ -959,7 +951,6 @@ class TodayViewModel(
                 insightCache = insightCache,
                 workManager = workManager,
                 settingsRepository = settingsRepository,
-                refreshOutfitWidget = refreshOutfitWidget,
                 deriveInsight = deriveInsight,
                 calendarEventReader = calendarEventReader,
                 geminiKeyConfigured = geminiKeyConfigured,

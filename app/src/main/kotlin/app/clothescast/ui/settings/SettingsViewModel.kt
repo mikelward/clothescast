@@ -93,17 +93,6 @@ class SettingsViewModel(
      */
     private val voiceEnumerationDispatcher: CoroutineDispatcher = Dispatchers.IO,
     /**
-     * Pokes the home-screen widget after a settings change so the launcher
-     * icon catches up in the same frame as the Today screen. The cache no
-     * longer needs a recompute — the snapshot it holds is settings-
-     * independent and the widget re-derives at every `provideGlance()` —
-     * but the widget doesn't observe the settings flow itself, so a `+1°`
-     * tap that flips the icon tier needs this nudge to repaint the launcher.
-     * Defaulted to a no-op for pure-VM tests; the Activity wires the real
-     * `OutfitWidget().updateAll(...)` call.
-     */
-    private val refreshOutfitWidget: suspend () -> Unit = {},
-    /**
      * Pushes the chosen [Region] into the platform locale machinery
      * (Locale.setDefault + LocaleManager / attachBaseContext cache) so the
      * whole UI re-renders in the chosen language. Defaulted to a no-op so
@@ -511,16 +500,10 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setTonightDeliveryMode(mode) }
     }
 
-    // Display settings below all poke refreshOutfitWidget() after the write.
-    // The home-screen widgets render from a one-shot prefs snapshot and don't
-    // subscribe to the prefs flow (unlike the Today screen), so they only
-    // repaint when updateAllClothesCastWidgets() is called or at the next
-    // scheduled refresh. The ConditionsWidget reads temperatureUnit /
-    // windSpeedUnit; the FeelsLikeWidget reads temperatureUnit / timeFormat /
-    // colorPalette / themeMode; region changes the AUTO-resolved units. Without
-    // the nudge the launcher shows the old value until the next worker run.
-    // (Same contract the outfit-color setters below follow; see the
-    // refreshOutfitWidget note in ClothesCastNavHost.)
+    // Widgets repaint reactively: ClothesCastApplication observes the
+    // widget-relevant slice of preferences (see WidgetInputs) and calls
+    // updateAllClothesCastWidgets on any change, so these setters just write
+    // and don't poke the launcher themselves.
     fun setRegion(region: Region) {
         // Apply the locale up front so the UI recreates immediately; the
         // DataStore write happens in the background. The Application's
@@ -529,55 +512,48 @@ class SettingsViewModel(
         applyAppLocale(region)
         viewModelScope.launch {
             settingsRepository.setRegion(region)
-            refreshOutfitWidget()
         }
     }
 
     fun setTemperatureUnitSetting(setting: TemperatureUnitSetting) {
         viewModelScope.launch {
             settingsRepository.setTemperatureUnitSetting(setting)
-            refreshOutfitWidget()
         }
     }
 
     fun setWindSpeedUnitSetting(setting: WindSpeedUnitSetting) {
         viewModelScope.launch {
             settingsRepository.setWindSpeedUnitSetting(setting)
-            refreshOutfitWidget()
         }
     }
 
     fun setTimeFormatSetting(setting: TimeFormatSetting) {
         viewModelScope.launch {
             settingsRepository.setTimeFormatSetting(setting)
-            refreshOutfitWidget()
         }
     }
 
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
             settingsRepository.setThemeMode(mode)
-            refreshOutfitWidget()
         }
     }
 
     fun setColorPalette(palette: ColorPalette) {
         viewModelScope.launch {
             settingsRepository.setColorPalette(palette)
-            refreshOutfitWidget()
         }
     }
 
     /**
      * Sets the user's fill-colour override for the [top] icon (or clears it
-     * with `argb = null`). Re-renders the cached outfit + widget so the
-     * Today screen and any home-screen widget pick up the new colour in
-     * the same frame as the picker dismisses.
+     * with `argb = null`). The Today screen re-renders reactively off the
+     * prefs flow; the home-screen widget repaints via the preferences observer
+     * in ClothesCastApplication (see WidgetInputs).
      */
     fun setOutfitTopColor(top: OutfitSuggestion.Top, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitTopColor(top, argb)
-            refreshOutfitWidget()
         }
     }
 
@@ -585,7 +561,6 @@ class SettingsViewModel(
     fun setOutfitBottomColor(bottom: OutfitSuggestion.Bottom, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitBottomColor(bottom, argb)
-            refreshOutfitWidget()
         }
     }
 
@@ -593,7 +568,6 @@ class SettingsViewModel(
     fun setOutfitHandsColor(hands: OutfitSuggestion.Hands, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitHandsColor(hands, argb)
-            refreshOutfitWidget()
         }
     }
 
@@ -601,7 +575,6 @@ class SettingsViewModel(
     fun setOutfitCarriedColor(carried: OutfitSuggestion.Carried, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitCarriedColor(carried, argb)
-            refreshOutfitWidget()
         }
     }
 
@@ -609,7 +582,6 @@ class SettingsViewModel(
     fun setOutfitOuterColor(outer: OutfitSuggestion.Outer, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitOuterColor(outer, argb)
-            refreshOutfitWidget()
         }
     }
 
@@ -657,7 +629,6 @@ class SettingsViewModel(
     fun addClothesRule(rule: ClothesRule) {
         viewModelScope.launch {
             settingsRepository.setClothesRules(_state.value.clothesRules + rule)
-            refreshOutfitWidget()
         }
     }
 
@@ -666,7 +637,6 @@ class SettingsViewModel(
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { this[index] = rule })
-            refreshOutfitWidget()
         }
     }
 
@@ -675,7 +645,6 @@ class SettingsViewModel(
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
             settingsRepository.setClothesRules(current.toMutableList().apply { removeAt(index) })
-            refreshOutfitWidget()
         }
     }
 
@@ -697,14 +666,12 @@ class SettingsViewModel(
     fun setDefaultBottom(bottom: OutfitSuggestion.Bottom) {
         viewModelScope.launch {
             settingsRepository.setDefaultBottom(bottom)
-            refreshOutfitWidget()
         }
     }
 
     fun setDefaultTop(top: OutfitSuggestion.Top) {
         viewModelScope.launch {
             settingsRepository.setDefaultTop(top)
-            refreshOutfitWidget()
         }
     }
 
@@ -1238,7 +1205,6 @@ class SettingsViewModel(
         private val voiceEnumerator: TtsVoiceEnumerator,
         private val applyAppLocale: (Region) -> Unit,
         private val refreshLocationCache: () -> Unit,
-        private val refreshOutfitWidget: suspend () -> Unit,
         private val workManager: WorkManager? = null,
         private val mqttPublisher: MqttPublisher? = null,
         private val fullPublish: (suspend () -> MqttPublishOutcome)? = null,
@@ -1262,7 +1228,6 @@ class SettingsViewModel(
                 cancelAlarm = cancelAlarm,
                 geocodingClient = geocodingClient,
                 voiceEnumerator = voiceEnumerator,
-                refreshOutfitWidget = refreshOutfitWidget,
                 applyAppLocale = applyAppLocale,
                 refreshLocationCache = refreshLocationCache,
                 workManager = workManager,

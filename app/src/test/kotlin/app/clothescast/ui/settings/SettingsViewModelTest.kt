@@ -414,89 +414,9 @@ class SettingsViewModelTest {
         refreshCount shouldBe 1
     }
 
-    @Test
-    fun `clothes-rule edits and setDefaultBottom kick the cached-outfit refresh`() = runTest {
-        // The Activity wires this lambda to OutfitWidget().updateAll()
-        // pair so the home-screen icon flips immediately on every clothes-rule
-        // change. Without the refresh, settings writes would only land on the
-        // Today screen at the next worker run — the bug Codex flagged on PR
-        // #419.
-        var refreshCount = 0
-        val refreshSubject = track(
-            SettingsViewModel(
-                settingsRepository = settingsRepository,
-                keyStore = keyStore,
-                rearmAlarm = { _, _ -> },
-                cancelAlarm = { _ -> },
-                geocodingClient = OpenMeteoGeocodingClient(
-                    HttpClient(MockEngine { respond("""{"results":[]}""") }) {
-                        install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) }
-                    },
-                ),
-                voiceEnumerator = EmptyVoiceEnumerator,
-                voiceEnumerationDispatcher = dispatcher,
-                refreshOutfitWidget = { refreshCount++ },
-            ),
-        )
-
-        refreshSubject.addClothesRule(ClothesRule(Garment.HOODIE, ClothesRule.TemperatureBelow(0.0)))
-        refreshSubject.state.first { it.clothesRules.any { rule -> rule.item == Garment.HOODIE } }
-        refreshCount shouldBe 1
-
-        refreshSubject.replaceClothesRule(0, ClothesRule(Garment.PUFFER, ClothesRule.TemperatureBelow(0.0)))
-        refreshSubject.state.first { it.clothesRules.first().item == Garment.PUFFER }
-        refreshCount shouldBe 2
-
-        refreshSubject.deleteClothesRule(0)
-        refreshSubject.state.first { it.clothesRules.none { rule -> rule.item == Garment.PUFFER } }
-        refreshCount shouldBe 3
-
-        refreshSubject.setDefaultBottom(OutfitSuggestion.Bottom.JEANS)
-        refreshSubject.state.first { it.defaultBottom == OutfitSuggestion.Bottom.JEANS }
-        refreshCount shouldBe 4
-
-        // clothesMentionMode and deltaThresholdC are prose-only — the Today
-        // screen / Format settings preview / cast / MQTT re-derive from the
-        // cached snapshot reactively against the prefs flow, so no widget
-        // poke is needed (the widget renders just the outfit icon, which
-        // these two settings don't touch).
-        refreshSubject.setClothesMentionMode(ClothesMentionMode.NEVER)
-        refreshSubject.state.first { it.clothesMentionMode == ClothesMentionMode.NEVER }
-        refreshCount shouldBe 4
-
-        refreshSubject.setDeltaThresholdC(8.0)
-        refreshSubject.state.first { it.deltaThresholdC == 8.0 }
-        refreshCount shouldBe 4
-
-        // Display settings that change what a home-screen widget renders must
-        // poke it too — the widgets don't subscribe to the prefs flow.
-        // ConditionsWidget reads temperatureUnit / windSpeedUnit; FeelsLikeWidget
-        // reads temperatureUnit / timeFormat / colorPalette / themeMode; region
-        // changes the AUTO-resolved units. (Codex flag on PR #1072.)
-        refreshSubject.setWindSpeedUnitSetting(WindSpeedUnitSetting.KNOTS)
-        refreshSubject.state.first { it.windSpeedUnitSetting == WindSpeedUnitSetting.KNOTS }
-        refreshCount shouldBe 5
-
-        refreshSubject.setTemperatureUnitSetting(TemperatureUnitSetting.FAHRENHEIT)
-        refreshSubject.state.first { it.temperatureUnitSetting == TemperatureUnitSetting.FAHRENHEIT }
-        refreshCount shouldBe 6
-
-        refreshSubject.setTimeFormatSetting(TimeFormatSetting.TWELVE_HOUR)
-        refreshSubject.state.first { it.timeFormatSetting == TimeFormatSetting.TWELVE_HOUR }
-        refreshCount shouldBe 7
-
-        refreshSubject.setColorPalette(ColorPalette.ACCESSIBLE)
-        refreshSubject.state.first { it.colorPalette == ColorPalette.ACCESSIBLE }
-        refreshCount shouldBe 8
-
-        refreshSubject.setThemeMode(ThemeMode.DARK)
-        refreshSubject.state.first { it.themeMode == ThemeMode.DARK }
-        refreshCount shouldBe 9
-
-        refreshSubject.setRegion(Region.EN_US)
-        refreshSubject.state.first { it.region == Region.EN_US }
-        refreshCount shouldBe 10
-    }
+    // Widget repaint is no longer pushed from each setter — ClothesCastApplication
+    // observes the widget-relevant slice of preferences and repaints on change.
+    // WidgetInputsTest guards which fields belong in that slice.
 
     @Test
     fun `setTemperatureUnitSetting and setWindSpeedUnitSetting persist independently`() = runTest {

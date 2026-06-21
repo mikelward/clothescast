@@ -54,7 +54,6 @@ import app.clothescast.ui.settings.SmartHomePage
 import app.clothescast.ui.settings.VoicePage
 import app.clothescast.ui.today.TodayScreen
 import app.clothescast.ui.today.TodayViewModel
-import app.clothescast.widget.updateAllClothesCastWidgets
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -325,9 +324,6 @@ private fun todayViewModelFactory(app: ClothesCastApplication) =
         insightCache = app.insightCache,
         workManager = WorkManager.getInstance(app),
         settingsRepository = app.settingsRepository,
-        refreshOutfitWidget = {
-            updateAllClothesCastWidgets(app)
-        },
         deriveInsight = app.deriveInsight,
         calendarEventReader = app.calendarEventReader,
         geminiKeyConfigured = app.secureKeyStore.geminiKeyConfiguredFlow,
@@ -353,15 +349,6 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
         },
         refreshLocationCache = {
             FetchAndNotifyWorker.enqueueLocationCacheRefresh(app)
-        },
-        refreshOutfitWidget = {
-            // No cache work needed — the cache holds the raw ForecastSnapshot,
-            // and every consumer (Today screen, Format settings preview, cast,
-            // MQTT) re-derives off the current prefs reactively. The widgets
-            // don't subscribe to the prefs flow themselves, so a settings write
-            // that changes what they render (outfit icon, or the chart's
-            // temperature unit) needs an explicit nudge to repaint the launcher.
-            updateAllClothesCastWidgets(app)
         },
         workManager = WorkManager.getInstance(app),
         insightCache = app.insightCache,

@@ -35,6 +35,8 @@ import app.clothescast.discovery.HomeAssistantDiscovery
 import app.clothescast.discovery.NsdHomeAssistantDiscovery
 import app.clothescast.diag.Telemetry
 import app.clothescast.diag.TelemetryApiCallLogger
+import app.clothescast.widget.toWidgetInputs
+import app.clothescast.widget.updateAllClothesCastWidgets
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
 import app.clothescast.location.ReverseGeocoder
@@ -51,11 +53,15 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.lang.ref.WeakReference
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -339,6 +345,33 @@ class ClothesCastApplication : Application() {
             // edit's worth of disk I/O.
             runCatching { settingsRepository.clearLegacyHomePreferences() }
                 .onFailure { DiagLog.w(TAG, "Legacy home-pref cleanup failed", it) }
+        }
+        applicationScope.launch {
+            // Repaint placed home-screen widgets whenever a setting they render
+            // changes. Glance widgets don't observe the preferences flow (they
+            // render from a one-shot snapshot), so a single observer here is the
+            // one place that pokes the launcher — the settings setters just
+            // write. distinctUntilChanged on the widget-relevant slice (see
+            // WidgetInputs) avoids needless repaints on unrelated edits; drop(1)
+            // skips the value present at process start (the widgets already show
+            // it). Settings only change while the app is foregrounded, so this
+            // process-scoped collector reliably catches every edit.
+            settingsRepository.preferences
+                .map { it.toWidgetInputs() }
+                .distinctUntilChanged()
+                .drop(1)
+                .collect {
+                    try {
+                        updateAllClothesCastWidgets(this@ClothesCastApplication)
+                    } catch (c: CancellationException) {
+                        throw c
+                    } catch (t: Throwable) {
+                        // A repaint failure (e.g. Glance host transiently
+                        // unavailable) shouldn't kill the observer; the next
+                        // change — or the scheduled worker — repaints anyway.
+                        DiagLog.w(TAG, "Widget refresh after settings change failed", t)
+                    }
+                }
         }
         applicationScope.launch {
             try {

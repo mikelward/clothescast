@@ -19,6 +19,12 @@ import kotlinx.coroutines.launch
  * accent / TTS configuration into Firebase Analytics user properties so
  * aggregate reports can break usage events down by configuration.
  *
+ * It also reports caught-but-recovered errors as Crashlytics non-fatals by
+ * registering [recordHandledError] on [DiagLog.errorSink] — every
+ * `DiagLog.e(…, throwable)` is sanitized (class names + stack trace only, every
+ * free-form message stripped) before it leaves the device, so the reliability
+ * long tail surfaces in aggregate without a free-form text channel for PII.
+ *
  * The contract for what may / may not appear in those payloads is in
  * PRIVACY.md — calendar event data, location, insight prose, notification
  * text, and API keys are out of scope. This class deliberately does NOT set
@@ -43,6 +49,26 @@ object Telemetry {
      */
     @Volatile
     private var analyticsRef: FirebaseAnalytics? = null
+
+    /**
+     * Captured in [start] so [recordHandledError] can report caught exceptions
+     * forwarded from [DiagLog.errorSink] without re-resolving the SDK. Null on
+     * builds without google-services.json (CI) and on the sub-minSdk bypass
+     * path, where the sink is never registered.
+     */
+    @Volatile
+    private var crashlyticsRef: FirebaseCrashlytics? = null
+
+    /**
+     * Mirror of the user's Privacy toggle, kept so [recordHandledError] can skip
+     * reporting when collection is off. Crashlytics also suppresses upload via
+     * [FirebaseCrashlytics.setCrashlyticsCollectionEnabled], but a buffered
+     * `recordException` could otherwise be flushed if the user re-enables later;
+     * gating here keeps a disabled session from queuing anything at all. Starts
+     * `false` so nothing is reported before the toggle's first value is read.
+     */
+    @Volatile
+    private var collectionEnabled = false
 
     /**
      * Subscribes to [settings]'s telemetry preference and pushes each change
@@ -79,11 +105,18 @@ object Telemetry {
             return
         }
         analyticsRef = analytics
+        crashlyticsRef = crashlytics
+        // Forward caught-but-recovered errors logged via DiagLog.e to Crashlytics
+        // as non-fatal reports. Only the developer-constant tag + a sanitized
+        // throwable (class names + stack trace, every free-form message stripped)
+        // cross the boundary — see sanitizeHandledError / PRIVACY.md.
+        DiagLog.errorSink = ::recordHandledError
         scope.launch {
             settings.preferences
                 .map { it.telemetryEnabled }
                 .distinctUntilChanged()
                 .collect { enabled ->
+                    collectionEnabled = enabled
                     analytics.setAnalyticsCollectionEnabled(enabled)
                     crashlytics.setCrashlyticsCollectionEnabled(enabled)
                 }
@@ -103,6 +136,24 @@ object Telemetry {
                 .distinctUntilChanged()
                 .collect { snapshot -> logClothesRulesSnapshot(snapshot) }
         }
+    }
+
+    /**
+     * Reports a caught-but-recovered error as a Crashlytics non-fatal. Wired to
+     * [DiagLog.errorSink] in [start], so every `DiagLog.e(tag, msg, throwable)`
+     * call funnels here. [throwable] is sanitized via [sanitizeHandledError]
+     * before it leaves the device: the free-form log `msg` is never passed in,
+     * and the throwable's own messages are stripped to class names — only the
+     * exception type, a coarse [ErrorCategory], and the stack trace are sent.
+     *
+     * No-op when Firebase didn't initialise or when the user's Privacy toggle
+     * has collection off (the latter checked here so a disabled session doesn't
+     * even buffer a report).
+     */
+    private fun recordHandledError(tag: String, throwable: Throwable) {
+        val crashlytics = crashlyticsRef ?: return
+        if (!collectionEnabled) return
+        crashlytics.recordException(sanitizeHandledError(tag, throwable))
     }
 
     /**

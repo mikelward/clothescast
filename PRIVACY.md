@@ -359,6 +359,17 @@ What's sent:
 - **Crash reports:** stack trace, app version, Android version, device
   model, and a non-resettable install identifier used to group duplicate
   crashes. Sent automatically when a crash occurs.
+- **Non-fatal error reports:** when the app catches and recovers from an
+  internal error — a failed network call, a TTS or Cast hiccup, an MQTT
+  publish failure, a calendar read that fell back to "no events", and the
+  like — it sends the exception type and stack trace, grouped under a
+  coarse category (`network` / `tts` / `cast` / `mqtt` / `calendar` /
+  `widget` / `location` / …), so recurring reliability problems surface in
+  aggregate without waiting for a hard crash. The free-form error
+  *message* is stripped before sending: only the exception class name and
+  the stack trace (file and line — no captured values) cross the device
+  boundary, so a message that happened to quote a place name, a forecast
+  sentence, or a key can't ride along. Same on/off toggle as crash reports.
 - **Aggregate usage events:** the values of your in-app settings — TTS
   engine, schedule cadence, delivery mode, units, notification time,
   clothes-rule customisations, and the like — plus basic lifecycle

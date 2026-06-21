@@ -117,6 +117,18 @@ object DiagLog {
      */
     val unacknowledgedCrash: StateFlow<Boolean> = unacknowledgedCrashState.asStateFlow()
 
+    /**
+     * Optional sink notified of every [e] call that carries a [Throwable], so a
+     * higher layer (see [Telemetry]) can forward caught-but-recovered errors to
+     * the crash-reporting service without [DiagLog] itself depending on Firebase.
+     * Receives only the developer-constant `tag` and the throwable — never the
+     * free-form `msg`, which can hold user content. Stays null on builds that
+     * don't wire telemetry (CI), where [e] just no-ops the sink. Only [e] fires
+     * it; warnings, the uncaught-crash path, and lower levels don't.
+     */
+    @Volatile
+    var errorSink: ((tag: String, throwable: Throwable) -> Unit)? = null
+
     fun v(tag: String, msg: String, t: Throwable? = null) = log('V', tag, msg, t).also {
         if (t == null) Log.v(tag, msg) else Log.v(tag, msg, t)
     }
@@ -135,6 +147,19 @@ object DiagLog {
 
     fun e(tag: String, msg: String, t: Throwable? = null) = log('E', tag, msg, t).also {
         if (t == null) Log.e(tag, msg) else Log.e(tag, msg, t)
+        if (t != null) notifyErrorSink(tag, t)
+    }
+
+    private fun notifyErrorSink(tag: String, t: Throwable) {
+        val sink = errorSink ?: return
+        // A telemetry-side failure must never break logging, and we can't route
+        // it back through DiagLog.e without recursing into this same sink. Log it
+        // at debug instead — d() doesn't fire the sink — so a dropped non-fatal
+        // report still leaves a breadcrumb in the on-device diag log (which is
+        // never sent off device) rather than vanishing silently.
+        runCatching { sink(tag, t) }.onFailure { sinkError ->
+            d("DiagLog", "errorSink failed for tag=$tag; non-fatal report dropped.", sinkError)
+        }
     }
 
     /**

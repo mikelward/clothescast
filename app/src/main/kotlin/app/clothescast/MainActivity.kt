@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.sanitizeHandledError
 import app.clothescast.locale.AppLocale
 import app.clothescast.ui.nav.ClothesCastNavHost
 import app.clothescast.ui.theme.ClothesCastTheme
@@ -140,7 +141,12 @@ class MainActivity : ComponentActivity() {
             if (FirebaseApp.getApps(this).isNotEmpty()) {
                 FirebaseCrashlytics.getInstance().apply {
                     setCustomKey("compose_startup_unsupported", true)
-                    recordException(error)
+                    // Sanitize like every other non-fatal report so the
+                    // PRIVACY.md "messages stripped" guarantee holds uniformly —
+                    // the compose_startup_unsupported key above already marks
+                    // this specific incompatibility, and the stack trace is
+                    // preserved for grouping.
+                    recordException(sanitizeHandledError("ComposeStartup", error))
                 }
             }
         }

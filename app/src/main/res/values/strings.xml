@@ -666,7 +666,7 @@
          have to leave the app to find out. -->
     <string name="settings_privacy_telemetry_title">Crash and usage reports</string>
     <string name="settings_privacy_telemetry_label">Send crash and usage data</string>
-    <string name="settings_privacy_telemetry_description">Sends anonymous crash reports and aggregate usage stats to help the developer fix bugs and decide which features to keep.</string>
+    <string name="settings_privacy_telemetry_description">Sends anonymous crash and error reports plus aggregate usage stats to help the developer fix bugs and decide which features to keep.</string>
     <string name="settings_privacy_telemetry_limits">Never sent: calendar events, location coordinates or place names, insight text or notification text, API keys, precise GPS, advertising IDs.</string>
     <string name="settings_privacy_open_policy">Privacy policy</string>
 

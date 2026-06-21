@@ -303,9 +303,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_temperature_unit_title">የሙቀት ክፍል</string>
     <string name="settings_temperature_unit_celsius">ሴልሺየስ (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">ፋረንሃይት (°F)</string>
-    <string name="settings_distance_unit_title">የርቀት ክፍል</string>
-    <string name="settings_distance_unit_kilometers">ኪሎሜትር</string>
-    <string name="settings_distance_unit_miles">ማይሎች</string>
+    <string name="settings_wind_speed_unit_title">የነፋስ ፍጥነት መለኪያ</string>
 
     <!-- Settings — notifications permission -->
     <string name="settings_notification_permission_title">ማሳወቂያዎች ታግደዋል</string>

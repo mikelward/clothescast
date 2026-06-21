@@ -12,8 +12,8 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
-import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.WindSpeedUnit
+import app.clothescast.core.domain.model.WindSpeedUnitSetting
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
@@ -177,7 +177,7 @@ class SettingsViewModelTest {
             !it.apiKeyConfigured && it.deliveryMode == DeliveryMode.NOTIFICATION_AND_TTS
         }
         state.temperatureUnit shouldBe TemperatureUnit.CELSIUS
-        state.distanceUnit shouldBe DistanceUnit.KILOMETERS
+        state.windSpeedUnit shouldBe WindSpeedUnit.KMH
     }
 
     @Test
@@ -464,20 +464,27 @@ class SettingsViewModelTest {
         refreshSubject.setDeltaThresholdC(8.0)
         refreshSubject.state.first { it.deltaThresholdC == 8.0 }
         refreshCount shouldBe 4
+
+        // The wind-speed unit changes the Conditions widget's wind label, which
+        // doesn't subscribe to the prefs flow — so the setter must poke the
+        // widget (Codex flag on PR #1072).
+        refreshSubject.setWindSpeedUnitSetting(WindSpeedUnitSetting.KNOTS)
+        refreshSubject.state.first { it.windSpeedUnitSetting == WindSpeedUnitSetting.KNOTS }
+        refreshCount shouldBe 5
     }
 
     @Test
-    fun `setTemperatureUnitSetting and setDistanceUnitSetting persist independently`() = runTest {
+    fun `setTemperatureUnitSetting and setWindSpeedUnitSetting persist independently`() = runTest {
         subject.setTemperatureUnitSetting(TemperatureUnitSetting.FAHRENHEIT)
-        subject.setDistanceUnitSetting(DistanceUnitSetting.MILES)
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.MPH)
 
         val state = subject.state.first {
-            it.temperatureUnit == TemperatureUnit.FAHRENHEIT && it.distanceUnit == DistanceUnit.MILES
+            it.temperatureUnit == TemperatureUnit.FAHRENHEIT && it.windSpeedUnit == WindSpeedUnit.MPH
         }
         state.temperatureUnit shouldBe TemperatureUnit.FAHRENHEIT
-        state.distanceUnit shouldBe DistanceUnit.MILES
+        state.windSpeedUnit shouldBe WindSpeedUnit.MPH
         state.temperatureUnitSetting shouldBe TemperatureUnitSetting.FAHRENHEIT
-        state.distanceUnitSetting shouldBe DistanceUnitSetting.MILES
+        state.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.MPH
     }
 
     @Test

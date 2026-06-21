@@ -52,15 +52,26 @@ class UnitsTest {
     }
 
     @Test
-    fun `wind speed unit symbols are the lowercase abbreviations`() {
-        WindSpeedUnit.KMH.symbol() shouldBe "km/h"
-        WindSpeedUnit.MPH.symbol() shouldBe "mph"
+    fun `knots conversion matches the nautical-mile factor`() {
+        // 1 knot = 1.852 km/h exactly (one nautical mile per hour).
+        1.852.toWindSpeedUnit(WindSpeedUnit.KNOTS) shouldBe (1.0 plusOrMinus 1e-9)
+        100.0.toWindSpeedUnit(WindSpeedUnit.KNOTS) shouldBe (53.9956803 plusOrMinus 1e-6)
+        0.0.toWindSpeedUnit(WindSpeedUnit.KNOTS) shouldBe (0.0 plusOrMinus 1e-9)
     }
 
     @Test
-    fun `wind speed unit derives from the chosen distance unit`() {
-        DistanceUnit.KILOMETERS.windSpeedUnit() shouldBe WindSpeedUnit.KMH
-        DistanceUnit.MILES.windSpeedUnit() shouldBe WindSpeedUnit.MPH
+    fun `metres-per-second conversion is km per hour over 3_6`() {
+        3.6.toWindSpeedUnit(WindSpeedUnit.MS) shouldBe (1.0 plusOrMinus 1e-9)
+        36.0.toWindSpeedUnit(WindSpeedUnit.MS) shouldBe (10.0 plusOrMinus 1e-9)
+        0.0.toWindSpeedUnit(WindSpeedUnit.MS) shouldBe (0.0 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `wind speed unit symbols are the standard abbreviations`() {
+        WindSpeedUnit.KMH.symbol() shouldBe "km/h"
+        WindSpeedUnit.MPH.symbol() shouldBe "mph"
+        WindSpeedUnit.KNOTS.symbol() shouldBe "kn"
+        WindSpeedUnit.MS.symbol() shouldBe "m/s"
     }
 
     @Test

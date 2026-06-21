@@ -149,9 +149,7 @@ displayed label localizes.
     <string name="settings_temperature_unit_title">Sıcaklık birimi</string>
     <string name="settings_temperature_unit_celsius">Santigrat (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Mesafe birimi</string>
-    <string name="settings_distance_unit_kilometers">Kilometre</string>
-    <string name="settings_distance_unit_miles">Mil</string>
+    <string name="settings_wind_speed_unit_title">Rüzgar hızı birimi</string>
 
     <string name="settings_tts_voice_locale_en_us">İngilizce (ABD)</string>
     <string name="settings_tts_voice_locale_en_gb">İngilizce (Birleşik Krallık)</string>

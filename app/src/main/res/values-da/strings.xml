@@ -199,9 +199,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_temperature_unit_title">Temperaturenhed</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Afstandsenhed</string>
-    <string name="settings_distance_unit_kilometers">Kilometer</string>
-    <string name="settings_distance_unit_miles">Miles</string>
+    <string name="settings_wind_speed_unit_title">Enhed for vindhastighed</string>
 
     <!-- Voice locale picker labels (Danish names for all locales). -->
     <string name="settings_tts_voice_locale_en_us">Engelsk (USA)</string>

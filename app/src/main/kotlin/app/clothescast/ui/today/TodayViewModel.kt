@@ -11,7 +11,7 @@ import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.PreambleVisibility
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HomeSection
@@ -93,7 +93,7 @@ data class TodayState(
     val accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
     val periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     val wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
-    val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
+    val windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
     val region: Region = Region.SYSTEM,
     val timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOUR,
     // Window boundaries used by manual Refresh to decide TODAY vs TONIGHT.
@@ -728,7 +728,7 @@ class TodayViewModel(
             accessoriesFormat = prefs.accessoriesFormat,
             periodPreamble = prefs.periodPreamble,
             wearPreamble = prefs.wearPreamble,
-            distanceUnit = prefs.distanceUnit,
+            windSpeedUnit = prefs.windSpeedUnit,
             region = prefs.region,
             timeFormat = prefs.timeFormat,
             morningTime = prefs.schedule.time,

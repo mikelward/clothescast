@@ -198,9 +198,7 @@ displayed label localizes.
     <string name="settings_temperature_unit_title">온도 단위</string>
     <string name="settings_temperature_unit_celsius">섭씨 (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">화씨 (°F)</string>
-    <string name="settings_distance_unit_title">거리 단위</string>
-    <string name="settings_distance_unit_kilometers">킬로미터</string>
-    <string name="settings_distance_unit_miles">마일</string>
+    <string name="settings_wind_speed_unit_title">풍속 단위</string>
 
     <!--
     Voice locale picker labels — same Korean language-name translations

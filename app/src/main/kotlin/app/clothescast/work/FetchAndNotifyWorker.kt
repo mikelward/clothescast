@@ -33,7 +33,6 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.playsSpeech
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.model.windSpeedUnit
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.CastInsightController
 import app.clothescast.cast.Mp4Encoder
@@ -1497,7 +1496,7 @@ class FetchAndNotifyWorker(
                 formatter = formatter,
                 hourly = insight.hourly,
                 temperatureUnit = prefs.temperatureUnit,
-                windSpeedUnit = prefs.distanceUnit.windSpeedUnit(),
+                windSpeedUnit = prefs.windSpeedUnit,
             )
             val header = applicationContext.getString(
                 if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today

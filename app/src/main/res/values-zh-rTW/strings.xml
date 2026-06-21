@@ -179,9 +179,7 @@ label localises.
     <string name="settings_temperature_unit_title">溫度單位</string>
     <string name="settings_temperature_unit_celsius">攝氏（°C）</string>
     <string name="settings_temperature_unit_fahrenheit">華氏（°F）</string>
-    <string name="settings_distance_unit_title">距離單位</string>
-    <string name="settings_distance_unit_kilometers">公里</string>
-    <string name="settings_distance_unit_miles">英里</string>
+    <string name="settings_wind_speed_unit_title">風速單位</string>
 
     <!--
     Voice locale picker labels — same Chinese language-name translations

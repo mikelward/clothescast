@@ -20,30 +20,23 @@ fun TemperatureUnit.symbol(): String = when (this) {
     TemperatureUnit.FAHRENHEIT -> "°F"
 }
 
-/** Receiver is in km/h (Open-Meteo's native wind unit); converts to [unit]. */
+/**
+ * Receiver is in km/h (Open-Meteo's native wind unit); converts to [unit].
+ * Conversion factors are exact: 1 mph = 1.609344 km/h, 1 knot = 1.852 km/h
+ * (one nautical mile per hour), 1 m/s = 3.6 km/h.
+ */
 fun Double.toWindSpeedUnit(unit: WindSpeedUnit): Double = when (unit) {
     WindSpeedUnit.KMH -> this
     WindSpeedUnit.MPH -> this / 1.609344
+    WindSpeedUnit.KNOTS -> this / 1.852
+    WindSpeedUnit.MS -> this / 3.6
 }
 
 fun WindSpeedUnit.symbol(): String = when (this) {
     WindSpeedUnit.KMH -> "km/h"
     WindSpeedUnit.MPH -> "mph"
-}
-
-fun DistanceUnit.symbol(): String = when (this) {
-    DistanceUnit.KILOMETERS -> "km"
-    DistanceUnit.MILES -> "mi"
-}
-
-/**
- * Picks the wind-speed unit that pairs naturally with a chosen distance unit:
- * metric users get km/h, imperial users get mph. Kept as a derivation rather
- * than a separate stored setting until knots / m/s join the picker.
- */
-fun DistanceUnit.windSpeedUnit(): WindSpeedUnit = when (this) {
-    DistanceUnit.KILOMETERS -> WindSpeedUnit.KMH
-    DistanceUnit.MILES -> WindSpeedUnit.MPH
+    WindSpeedUnit.KNOTS -> "kn"
+    WindSpeedUnit.MS -> "m/s"
 }
 
 /**

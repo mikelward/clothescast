@@ -184,9 +184,7 @@ the displayed label localizes.
     <string name="settings_temperature_unit_title">温度単位</string>
     <string name="settings_temperature_unit_celsius">摂氏（°C）</string>
     <string name="settings_temperature_unit_fahrenheit">華氏（°F）</string>
-    <string name="settings_distance_unit_title">距離単位</string>
-    <string name="settings_distance_unit_kilometers">キロメートル</string>
-    <string name="settings_distance_unit_miles">マイル</string>
+    <string name="settings_wind_speed_unit_title">風速の単位</string>
 
     <!--
     Voice locale picker labels — same Japanese language-name translations

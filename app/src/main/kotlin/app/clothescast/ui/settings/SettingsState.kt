@@ -8,8 +8,8 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
-import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.WindSpeedUnit
+import app.clothescast.core.domain.model.WindSpeedUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
@@ -33,7 +33,7 @@ import app.clothescast.core.domain.model.CalendarInfo
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
-import app.clothescast.data.defaultDistanceUnitFor
+import app.clothescast.data.defaultWindSpeedUnitFor
 import app.clothescast.data.defaultTemperatureUnitFor
 import app.clothescast.data.defaultTimeFormatFor
 import app.clothescast.discovery.DiscoveredService
@@ -98,9 +98,9 @@ data class SettingsState(
     // briefly render °C / km before the first DataStore emission overrides it.
     // Region.SYSTEM falls through to the phone locale, mirroring the repository.
     val temperatureUnit: TemperatureUnit = defaultTemperatureUnitFor(Locale.getDefault()),
-    val distanceUnit: DistanceUnit = defaultDistanceUnitFor(Locale.getDefault()),
+    val windSpeedUnit: WindSpeedUnit = defaultWindSpeedUnitFor(Locale.getDefault()),
     val temperatureUnitSetting: TemperatureUnitSetting = TemperatureUnitSetting.AUTO,
-    val distanceUnitSetting: DistanceUnitSetting = DistanceUnitSetting.AUTO,
+    val windSpeedUnitSetting: WindSpeedUnitSetting = WindSpeedUnitSetting.AUTO,
     val timeFormat: TimeFormat = defaultTimeFormatFor(Locale.getDefault()),
     val timeFormatSetting: TimeFormatSetting = TimeFormatSetting.AUTO,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,

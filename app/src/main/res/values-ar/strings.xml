@@ -377,9 +377,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_temperature_unit_title">وحدة درجة الحرارة</string>
     <string name="settings_temperature_unit_celsius">مئوية (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">فهرنهايت (°F)</string>
-    <string name="settings_distance_unit_title">وحدة المسافة</string>
-    <string name="settings_distance_unit_kilometers">كيلومترات</string>
-    <string name="settings_distance_unit_miles">أميال</string>
+    <string name="settings_wind_speed_unit_title">وحدة سرعة الرياح</string>
 
     <!-- Settings — clothes rules -->
     <string name="settings_clothes_title">قواعد الملابس</string>

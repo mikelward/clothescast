@@ -332,9 +332,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_temperature_unit_title">Kitengo cha halijoto</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Kitengo cha umbali</string>
-    <string name="settings_distance_unit_kilometers">Kilomita</string>
-    <string name="settings_distance_unit_miles">Maili</string>
+    <string name="settings_wind_speed_unit_title">Kipimo cha kasi ya upepo</string>
 
     <!-- Settings: clothes -->
     <string name="settings_clothes_title">Sheria za mavazi</string>

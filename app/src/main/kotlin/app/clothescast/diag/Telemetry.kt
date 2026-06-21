@@ -260,8 +260,8 @@ object Telemetry {
         analytics.logEvent(EVENT_SETTINGS_REGION, Bundle().apply {
             putString("temperature_unit_setting", snapshot.temperatureUnitSetting)
             putString("temperature_unit_effective", snapshot.temperatureUnitEffective)
-            putString("distance_unit_setting", snapshot.distanceUnitSetting)
-            putString("distance_unit_effective", snapshot.distanceUnitEffective)
+            putString("wind_speed_unit_setting", snapshot.windSpeedUnitSetting)
+            putString("wind_speed_unit_effective", snapshot.windSpeedUnitEffective)
         })
         analytics.logEvent(EVENT_SETTINGS_DISPLAY, Bundle().apply {
             putString("theme_mode", snapshot.themeMode)

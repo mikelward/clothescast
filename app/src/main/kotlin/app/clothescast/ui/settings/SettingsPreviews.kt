@@ -29,8 +29,8 @@ import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Garment
-import app.clothescast.core.domain.model.DistanceUnit
-import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.WindSpeedUnit
+import app.clothescast.core.domain.model.WindSpeedUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HolidayCatalog
 import app.clothescast.core.domain.model.HolidayCountrySelection
@@ -381,15 +381,15 @@ internal fun SettingsRegionPreview() {
         RegionContent(
             region = Region.SYSTEM,
             temperatureUnitSetting = TemperatureUnitSetting.AUTO,
-            distanceUnitSetting = DistanceUnitSetting.AUTO,
+            windSpeedUnitSetting = WindSpeedUnitSetting.AUTO,
             timeFormatSetting = TimeFormatSetting.AUTO,
             resolvedTemperatureUnit = TemperatureUnit.CELSIUS,
-            resolvedDistanceUnit = DistanceUnit.KILOMETERS,
+            resolvedWindSpeedUnit = WindSpeedUnit.KMH,
             resolvedTimeFormat = TimeFormat.TWENTY_FOUR_HOUR,
             padding = PaddingValues(0.dp),
             onSetRegion = {},
             onSetTemperatureUnit = {},
-            onSetDistanceUnit = {},
+            onSetWindSpeedUnit = {},
             onSetTimeFormat = {},
         )
     }

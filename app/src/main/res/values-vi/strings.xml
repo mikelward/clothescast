@@ -531,10 +531,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_temperature_unit_title">Đơn vị nhiệt độ</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
+    <string name="settings_wind_speed_unit_title">Đơn vị tốc độ gió</string>
 
-    <string name="settings_distance_unit_title">Đơn vị khoảng cách</string>
-    <string name="settings_distance_unit_kilometers">Kilômét</string>
-    <string name="settings_distance_unit_miles">Dặm</string>
 
     <!-- =====================================================================
          Settings — Clothes

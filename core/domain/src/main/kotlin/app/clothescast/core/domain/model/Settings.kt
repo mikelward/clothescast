@@ -2,13 +2,8 @@ package app.clothescast.core.domain.model
 
 enum class TemperatureUnit { CELSIUS, FAHRENHEIT }
 
-enum class DistanceUnit { KILOMETERS, MILES }
-
 /** User-facing unit preference, including [AUTO] to follow the device/region locale. */
 enum class TemperatureUnitSetting { AUTO, CELSIUS, FAHRENHEIT }
-
-/** User-facing unit preference, including [AUTO] to follow the device/region locale. */
-enum class DistanceUnitSetting { AUTO, KILOMETERS, MILES }
 
 /** Resolved clock-format the UI renders ("14:00" vs "2 PM"). */
 enum class TimeFormat { TWELVE_HOUR, TWENTY_FOUR_HOUR }
@@ -17,13 +12,20 @@ enum class TimeFormat { TWELVE_HOUR, TWENTY_FOUR_HOUR }
 enum class TimeFormatSetting { AUTO, TWELVE_HOUR, TWENTY_FOUR_HOUR }
 
 /**
- * Wind-speed display unit. Currently derived from [DistanceUnit] at the call
- * site (see `DistanceUnit.windSpeedUnit()` in Units.kt) — a metric user sees
- * km/h, an imperial user sees mph. TODO: add `KNOTS` (and possibly `MS`) and
- * promote this to its own user-facing setting so sailors / pilots can pick a
- * wind unit independent of the distance preference.
+ * Wind-speed display unit. [KMH] / [MPH] are the everyday-forecast units (metric
+ * vs. imperial); [KNOTS] and [MS] serve users who think in marine / aviation
+ * (knots) or scientific / Nordic-public (metres per second) terms. See
+ * `Double.toWindSpeedUnit` / `WindSpeedUnit.symbol` in Units.kt.
  */
-enum class WindSpeedUnit { KMH, MPH }
+enum class WindSpeedUnit { KMH, MPH, KNOTS, MS }
+
+/**
+ * User-facing wind-speed unit preference. [AUTO] follows the device/region
+ * locale (km/h for metric, mph for US/UK); the explicit values let a sailor /
+ * pilot pick [KNOTS] or [MS] regardless of locale. No locale resolves to
+ * [KNOTS] or [MS] under [AUTO] — they're opt-in only.
+ */
+enum class WindSpeedUnitSetting { AUTO, KMH, MPH, KNOTS, MS }
 
 /**
  * Which delivery channels the ClothesCast surfaces on:
@@ -554,9 +556,9 @@ data class UserPreferences(
     val deliveryMode: DeliveryMode,
     val region: Region = Region.SYSTEM,
     val temperatureUnit: TemperatureUnit,
-    val distanceUnit: DistanceUnit,
+    val windSpeedUnit: WindSpeedUnit,
     val temperatureUnitSetting: TemperatureUnitSetting = TemperatureUnitSetting.AUTO,
-    val distanceUnitSetting: DistanceUnitSetting = DistanceUnitSetting.AUTO,
+    val windSpeedUnitSetting: WindSpeedUnitSetting = WindSpeedUnitSetting.AUTO,
     val timeFormat: TimeFormat = TimeFormat.TWENTY_FOUR_HOUR,
     val timeFormatSetting: TimeFormatSetting = TimeFormatSetting.AUTO,
     val themeMode: ThemeMode = ThemeMode.SYSTEM,

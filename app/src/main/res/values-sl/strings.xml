@@ -512,9 +512,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_temperature_unit_title">Enota temperature</string>
     <string name="settings_temperature_unit_celsius">Celzij (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Enota razdalje</string>
-    <string name="settings_distance_unit_kilometers">Kilometri</string>
-    <string name="settings_distance_unit_miles">Milje</string>
+    <string name="settings_wind_speed_unit_title">Enota hitrosti vetra</string>
 
     <!-- Clothes rules screen. -->
     <string name="settings_clothes_title">Pravila oblačil</string>

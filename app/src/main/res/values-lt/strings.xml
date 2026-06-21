@@ -506,9 +506,7 @@ What is NOT overridden, by design:
     <string name="settings_temperature_unit_title">Temperatūros vienetas</string>
     <string name="settings_temperature_unit_celsius">Celsijus (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Farenheitas (°F)</string>
-    <string name="settings_distance_unit_title">Atstumo vienetas</string>
-    <string name="settings_distance_unit_kilometers">Kilometrai</string>
-    <string name="settings_distance_unit_miles">Mylios</string>
+    <string name="settings_wind_speed_unit_title">Vėjo greičio vienetas</string>
 
     <!-- Clothes settings. -->
     <string name="settings_clothes_title">Aprangos taisyklės</string>

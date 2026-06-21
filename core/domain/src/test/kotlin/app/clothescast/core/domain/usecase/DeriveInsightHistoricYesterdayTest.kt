@@ -6,7 +6,7 @@ import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DailyHistoryEntry
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.DeltaClause
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.ForecastSnapshot
@@ -63,7 +63,7 @@ class DeriveInsightHistoricYesterdayTest {
         schedule = Schedule.default(ZoneOffset.UTC),
         deliveryMode = DeliveryMode.NOTIFICATION_ONLY,
         temperatureUnit = TemperatureUnit.CELSIUS,
-        distanceUnit = DistanceUnit.KILOMETERS,
+        windSpeedUnit = WindSpeedUnit.KMH,
         clothesRules = ClothesRule.DEFAULTS,
     )
 

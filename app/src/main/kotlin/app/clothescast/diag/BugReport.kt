@@ -171,7 +171,7 @@ object BugReport {
     ) {
         appendLine("Region: ${prefs.region.name} (${prefs.region.bcp47 ?: "system"})")
         appendLine("Temperature unit: ${prefs.temperatureUnit.name}")
-        appendLine("Distance unit: ${prefs.distanceUnit.name}")
+        appendLine("Wind speed unit: ${prefs.windSpeedUnit.name}")
         appendLine("Daily enabled: ${prefs.dailyEnabled}")
         appendLine("Schedule: ${prefs.schedule.time} ${prefs.schedule.days.sorted()} (${prefs.schedule.zoneId})")
         appendLine("Tonight enabled: ${prefs.tonightEnabled}")

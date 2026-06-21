@@ -368,9 +368,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_temperature_unit_title">واحد دما</string>
     <string name="settings_temperature_unit_celsius">سلسیوس (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">فارنهایت (°F)</string>
-    <string name="settings_distance_unit_title">واحد فاصله</string>
-    <string name="settings_distance_unit_kilometers">کیلومتر</string>
-    <string name="settings_distance_unit_miles">مایل</string>
+    <string name="settings_wind_speed_unit_title">واحد سرعت باد</string>
 
     <!-- Settings — clothes rules -->
     <string name="settings_clothes_title">قوانین لباس</string>

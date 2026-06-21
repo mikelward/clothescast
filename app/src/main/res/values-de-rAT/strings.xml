@@ -192,9 +192,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_temperature_unit_title">Temperatureinheit</string>
     <string name="settings_temperature_unit_celsius">Celsius (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fahrenheit (°F)</string>
-    <string name="settings_distance_unit_title">Entfernungseinheit</string>
-    <string name="settings_distance_unit_kilometers">Kilometer</string>
-    <string name="settings_distance_unit_miles">Meilen</string>
+    <string name="settings_wind_speed_unit_title">Einheit der Windgeschwindigkeit</string>
 
     <!--
     Voice locale picker labels — same German language-name translations as

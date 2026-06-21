@@ -22,8 +22,8 @@ import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
-import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.WindSpeedUnit
+import app.clothescast.core.domain.model.WindSpeedUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.HolidayCountrySelection
 import app.clothescast.core.domain.model.HolidayId
@@ -272,11 +272,15 @@ class SettingsRepository(
         }
     }
 
-    suspend fun setDistanceUnitSetting(setting: DistanceUnitSetting) {
+    suspend fun setWindSpeedUnitSetting(setting: WindSpeedUnitSetting) {
         dataStore.edit { prefs ->
+            // Drop the legacy distance_unit key on any write so a migrated install
+            // doesn't keep a stale value that could resurface if the new key were
+            // ever cleared.
+            prefs.remove(LEGACY_DISTANCE_UNIT)
             when (setting) {
-                DistanceUnitSetting.AUTO -> prefs.remove(DISTANCE_UNIT)
-                else -> prefs[DISTANCE_UNIT] = setting.name
+                WindSpeedUnitSetting.AUTO -> prefs.remove(WIND_SPEED_UNIT)
+                else -> prefs[WIND_SPEED_UNIT] = setting.name
             }
         }
     }
@@ -937,13 +941,26 @@ class SettingsRepository(
             TemperatureUnitSetting.CELSIUS -> TemperatureUnit.CELSIUS
             TemperatureUnitSetting.FAHRENHEIT -> TemperatureUnit.FAHRENHEIT
         }
-        val distanceUnitSetting = this[DISTANCE_UNIT]
-            ?.let { runCatching { DistanceUnitSetting.valueOf(it) }.getOrNull() }
-            ?: DistanceUnitSetting.AUTO
-        val distanceUnit = when (distanceUnitSetting) {
-            DistanceUnitSetting.AUTO -> defaultDistanceUnitFor(regionLocale)
-            DistanceUnitSetting.KILOMETERS -> DistanceUnit.KILOMETERS
-            DistanceUnitSetting.MILES -> DistanceUnit.MILES
+        // Prefer the wind_speed_unit key; fall back to the legacy distance_unit
+        // key (which only ever drove the wind unit) so an existing install that
+        // picked miles keeps seeing mph after the rename. KILOMETERS → KMH,
+        // MILES → MPH; the legacy key never held knots / m/s.
+        val windSpeedUnitSetting = this[WIND_SPEED_UNIT]
+            ?.let { runCatching { WindSpeedUnitSetting.valueOf(it) }.getOrNull() }
+            ?: this[LEGACY_DISTANCE_UNIT]?.let {
+                when (it) {
+                    "KILOMETERS" -> WindSpeedUnitSetting.KMH
+                    "MILES" -> WindSpeedUnitSetting.MPH
+                    else -> null
+                }
+            }
+            ?: WindSpeedUnitSetting.AUTO
+        val windSpeedUnit = when (windSpeedUnitSetting) {
+            WindSpeedUnitSetting.AUTO -> defaultWindSpeedUnitFor(regionLocale)
+            WindSpeedUnitSetting.KMH -> WindSpeedUnit.KMH
+            WindSpeedUnitSetting.MPH -> WindSpeedUnit.MPH
+            WindSpeedUnitSetting.KNOTS -> WindSpeedUnit.KNOTS
+            WindSpeedUnitSetting.MS -> WindSpeedUnit.MS
         }
         val timeFormatSetting = this[TIME_FORMAT_SETTING]
             ?.let { runCatching { TimeFormatSetting.valueOf(it) }.getOrNull() }
@@ -1135,9 +1152,9 @@ class SettingsRepository(
             deliveryMode = deliveryMode,
             region = region,
             temperatureUnit = temperatureUnit,
-            distanceUnit = distanceUnit,
+            windSpeedUnit = windSpeedUnit,
             temperatureUnitSetting = temperatureUnitSetting,
-            distanceUnitSetting = distanceUnitSetting,
+            windSpeedUnitSetting = windSpeedUnitSetting,
             timeFormat = timeFormat,
             timeFormatSetting = timeFormatSetting,
             themeMode = themeMode,
@@ -1254,8 +1271,8 @@ class SettingsRepository(
     private fun UserPreferences.toSettingsSnapshot(): SettingsSnapshot = SettingsSnapshot(
         temperatureUnitSetting = temperatureUnitSetting.name,
         temperatureUnitEffective = temperatureUnit.name,
-        distanceUnitSetting = distanceUnitSetting.name,
-        distanceUnitEffective = distanceUnit.name,
+        windSpeedUnitSetting = windSpeedUnitSetting.name,
+        windSpeedUnitEffective = windSpeedUnit.name,
         deliveryModeDaily = deliveryMode.name,
         deliveryModeTonight = tonightDeliveryMode.name,
         themeMode = themeMode.name,
@@ -1432,7 +1449,11 @@ class SettingsRepository(
         private val DELIVERY_MODE = stringPreferencesKey("delivery_mode")
         private val REGION = stringPreferencesKey("region")
         private val TEMPERATURE_UNIT = stringPreferencesKey("temperature_unit")
-        private val DISTANCE_UNIT = stringPreferencesKey("distance_unit")
+        private val WIND_SPEED_UNIT = stringPreferencesKey("wind_speed_unit")
+        // Legacy: the wind unit used to ride on the distance-unit preference
+        // (KILOMETERS / MILES). Read once for migration into WIND_SPEED_UNIT and
+        // cleared on the next write; see the reader above.
+        private val LEGACY_DISTANCE_UNIT = stringPreferencesKey("distance_unit")
         private val TIME_FORMAT_SETTING = stringPreferencesKey("time_format")
         private val THEME_MODE = stringPreferencesKey("theme_mode")
         private val CLOTHES_RULES = stringPreferencesKey("clothes_rules_json")
@@ -2009,12 +2030,12 @@ private const val NEW_UMBRELLA_DEFAULT_PCT = 10.0
 internal fun defaultTemperatureUnitFor(locale: Locale): TemperatureUnit =
     if (locale.country == "US") TemperatureUnit.FAHRENHEIT else TemperatureUnit.CELSIUS
 
-// US and UK both use miles for everyday distance / speed (mph on roads,
-// wind in mph). UK weather apps report wind in mph and walkers think in
-// miles, so MILES is the right default even though UK rainfall is in mm and
-// temperatures in Celsius.
-internal fun defaultDistanceUnitFor(locale: Locale): DistanceUnit =
-    if (locale.country in setOf("US", "GB")) DistanceUnit.MILES else DistanceUnit.KILOMETERS
+// US and UK public forecasts report wind in mph (Met Office included), so
+// those two locales default to MPH; everyone else defaults to km/h. Knots and
+// m/s are never an auto default — no country uses them for everyday public
+// land forecasts, so they stay opt-in via the picker.
+internal fun defaultWindSpeedUnitFor(locale: Locale): WindSpeedUnit =
+    if (locale.country in setOf("US", "GB")) WindSpeedUnit.MPH else WindSpeedUnit.KMH
 
 // Derive the locale's everyday clock convention by inspecting the SHORT
 // time-format pattern for an unquoted 12h hour field. The quote-aware

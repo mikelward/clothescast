@@ -2,7 +2,7 @@ package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
+import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
@@ -24,7 +24,7 @@ class DeliveryGatesTest {
         schedule = Schedule.default(ZoneOffset.UTC),
         deliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
         temperatureUnit = TemperatureUnit.CELSIUS,
-        distanceUnit = DistanceUnit.KILOMETERS,
+        windSpeedUnit = WindSpeedUnit.KMH,
         clothesRules = ClothesRule.DEFAULTS,
         // Cast now defaults off (opt-in); these gate tests exercise an
         // enabled-cast baseline and set castRouteId per case. The master-off

@@ -171,10 +171,13 @@ Open:
 - [ ] **Clothes rule presets** ("Cyclist", "Commuter", "Dog walker") — pick a
       preset, customise from there.
 - [ ] **Quiet hours** — don't fire if the device is in DND.
-- [x] **Per-locale defaults** — Fahrenheit / miles when the system locale is
-      en-US. Shipped via `TemperatureUnitSetting.AUTO` / `DistanceUnitSetting.AUTO`
+- [x] **Per-locale defaults** — Fahrenheit / mph when the system locale is
+      en-US. Shipped via `TemperatureUnitSetting.AUTO` / `WindSpeedUnitSetting.AUTO`
       (the defaults in `UserPreferences`), which resolve from the device/region
       locale at read time.
+- [x] **Wind speed unit picker** — km/h / mph / knots / m/s, independent of
+      locale (knots & m/s are opt-in, never an auto default). Replaced the old
+      distance-unit setting, which only ever drove the wind unit.
 - [ ] **Multiple schedule profiles** — weekday vs weekend.
 - [x] **Gemini model picker** — Flash Lite (cheapest), Flash (default), Pro
       (highest quality, slowest, costliest). User picks from Settings; the

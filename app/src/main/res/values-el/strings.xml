@@ -215,9 +215,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_temperature_unit_title">Μονάδα θερμοκρασίας</string>
     <string name="settings_temperature_unit_celsius">Κελσίου (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Φαρενάιτ (°F)</string>
-    <string name="settings_distance_unit_title">Μονάδα απόστασης</string>
-    <string name="settings_distance_unit_kilometers">Χιλιόμετρα</string>
-    <string name="settings_distance_unit_miles">Μίλια</string>
+    <string name="settings_wind_speed_unit_title">Μονάδα ταχύτητας ανέμου</string>
 
     <!--
     Voice locale picker labels — same Greek language-name translations

@@ -180,9 +180,7 @@ label localizes.
     <string name="settings_temperature_unit_title">温度单位</string>
     <string name="settings_temperature_unit_celsius">摄氏度（°C）</string>
     <string name="settings_temperature_unit_fahrenheit">华氏度（°F）</string>
-    <string name="settings_distance_unit_title">距离单位</string>
-    <string name="settings_distance_unit_kilometers">公里</string>
-    <string name="settings_distance_unit_miles">英里</string>
+    <string name="settings_wind_speed_unit_title">风速单位</string>
 
     <!--
     Voice locale picker labels — same Chinese language-name translations

@@ -17,8 +17,8 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
-import app.clothescast.core.domain.model.DistanceUnit
-import app.clothescast.core.domain.model.DistanceUnitSetting
+import app.clothescast.core.domain.model.WindSpeedUnit
+import app.clothescast.core.domain.model.WindSpeedUnitSetting
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -108,7 +108,7 @@ class SettingsRepositoryTest {
         prefs.schedule.zoneId shouldBe zone
         prefs.deliveryMode shouldBe DeliveryMode.NOTIFICATION_AND_TTS
         prefs.temperatureUnit shouldBe TemperatureUnit.CELSIUS
-        prefs.distanceUnit shouldBe DistanceUnit.MILES   // setUp pins Locale.UK → miles
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.MPH   // setUp pins Locale.UK → mph
         prefs.clothesRules shouldBe ClothesRule.DEFAULTS
         // Both scheduled slots are opt-in out of the box (no onboarding to gather
         // the notification permission upfront).
@@ -648,22 +648,22 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `distance default follows region locale - en-US picks miles`() = runTest {
+    fun `wind-speed default follows region locale - en-US picks mph`() = runTest {
         subject.setRegion(Region.EN_US)
-        subject.preferences.first().distanceUnit shouldBe DistanceUnit.MILES
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.MPH
     }
 
     @Test
     fun `temperature default falls back to system locale when region is SYSTEM`() = runTest {
-        // setUp pins systemLocaleProvider to Locale.UK → Celsius + miles.
+        // setUp pins systemLocaleProvider to Locale.UK → Celsius + mph.
         subject.preferences.first().temperatureUnit shouldBe TemperatureUnit.CELSIUS
-        subject.preferences.first().distanceUnit shouldBe DistanceUnit.MILES
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.MPH
     }
 
     @Test
-    fun `distance default follows region locale - en-GB picks miles`() = runTest {
+    fun `wind-speed default follows region locale - en-GB picks mph`() = runTest {
         subject.setRegion(Region.EN_GB)
-        subject.preferences.first().distanceUnit shouldBe DistanceUnit.MILES
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.MPH
     }
 
     @Test
@@ -676,41 +676,99 @@ class SettingsRepositoryTest {
     fun `explicitly chosen unit overrides the region-derived default`() = runTest {
         subject.setRegion(Region.EN_US)
         subject.setTemperatureUnitSetting(TemperatureUnitSetting.CELSIUS)
-        subject.setDistanceUnitSetting(DistanceUnitSetting.KILOMETERS)
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.KMH)
 
         val prefs = subject.preferences.first()
         prefs.temperatureUnit shouldBe TemperatureUnit.CELSIUS
-        prefs.distanceUnit shouldBe DistanceUnit.KILOMETERS
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.KMH
         prefs.temperatureUnitSetting shouldBe TemperatureUnitSetting.CELSIUS
-        prefs.distanceUnitSetting shouldBe DistanceUnitSetting.KILOMETERS
+        prefs.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.KMH
     }
 
     @Test
     fun `setUnits round-trips both`() = runTest {
         subject.setTemperatureUnitSetting(TemperatureUnitSetting.FAHRENHEIT)
-        subject.setDistanceUnitSetting(DistanceUnitSetting.MILES)
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.MPH)
 
         val prefs = subject.preferences.first()
         prefs.temperatureUnit shouldBe TemperatureUnit.FAHRENHEIT
-        prefs.distanceUnit shouldBe DistanceUnit.MILES
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.MPH
         prefs.temperatureUnitSetting shouldBe TemperatureUnitSetting.FAHRENHEIT
-        prefs.distanceUnitSetting shouldBe DistanceUnitSetting.MILES
+        prefs.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.MPH
     }
 
     @Test
     fun `AUTO re-derives from locale after explicit choice`() = runTest {
         subject.setRegion(Region.EN_US)
         subject.setTemperatureUnitSetting(TemperatureUnitSetting.CELSIUS)
-        subject.setDistanceUnitSetting(DistanceUnitSetting.KILOMETERS)
-        // Reset to AUTO — should re-derive from en-US → Fahrenheit + miles.
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.KMH)
+        // Reset to AUTO — should re-derive from en-US → Fahrenheit + mph.
         subject.setTemperatureUnitSetting(TemperatureUnitSetting.AUTO)
-        subject.setDistanceUnitSetting(DistanceUnitSetting.AUTO)
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.AUTO)
 
         val prefs = subject.preferences.first()
         prefs.temperatureUnitSetting shouldBe TemperatureUnitSetting.AUTO
-        prefs.distanceUnitSetting shouldBe DistanceUnitSetting.AUTO
+        prefs.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.AUTO
         prefs.temperatureUnit shouldBe TemperatureUnit.FAHRENHEIT
-        prefs.distanceUnit shouldBe DistanceUnit.MILES
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.MPH
+    }
+
+    @Test
+    fun `knots persists and resolves regardless of locale`() = runTest {
+        // Knots is opt-in only — never an AUTO default — so a UK install
+        // (mph by default) that explicitly picks knots must keep it.
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.KNOTS)
+
+        val prefs = subject.preferences.first()
+        prefs.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.KNOTS
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.KNOTS
+    }
+
+    @Test
+    fun `metres per second persists and resolves`() = runTest {
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.MS)
+
+        val prefs = subject.preferences.first()
+        prefs.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.MS
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.MS
+    }
+
+    @Test
+    fun `legacy distance_unit MILES migrates to mph`() = runTest {
+        // Pre-rename installs stored the wind unit on the distance-unit key.
+        dataStore.edit { it[stringPreferencesKey("distance_unit")] = "MILES" }
+
+        val prefs = subject.preferences.first()
+        prefs.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.MPH
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.MPH
+    }
+
+    @Test
+    fun `legacy distance_unit KILOMETERS migrates to km per hour`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("distance_unit")] = "KILOMETERS" }
+
+        val prefs = subject.preferences.first()
+        prefs.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.KMH
+        prefs.windSpeedUnit shouldBe WindSpeedUnit.KMH
+    }
+
+    @Test
+    fun `new wind_speed_unit key wins over a stale legacy distance_unit key`() = runTest {
+        dataStore.edit {
+            it[stringPreferencesKey("distance_unit")] = "MILES"
+            it[stringPreferencesKey("wind_speed_unit")] = "KNOTS"
+        }
+
+        subject.preferences.first().windSpeedUnitSetting shouldBe WindSpeedUnitSetting.KNOTS
+    }
+
+    @Test
+    fun `writing the wind unit clears the legacy distance_unit key`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("distance_unit")] = "MILES" }
+        subject.setWindSpeedUnitSetting(WindSpeedUnitSetting.KMH)
+
+        dataStore.data.first()[stringPreferencesKey("distance_unit")] shouldBe null
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.KMH
     }
 
     @Test
@@ -1220,15 +1278,15 @@ class SettingsRepositoryTest {
     @Test
     fun `settingsSnapshot reflects effective values and hour-bucketed schedule`() = runTest {
         // Pinned systemLocaleProvider is Locale.UK → temperature CELSIUS,
-        // distance MILES (UK uses miles for everyday distances per
-        // defaultDistanceUnitFor). Defaults give NOTIFICATION_AND_TTS for both
+        // wind speed MPH (UK public forecasts report wind in mph per
+        // defaultWindSpeedUnitFor). Defaults give NOTIFICATION_AND_TTS for both
         // slots and 07:00 / 19:00 every day.
         val defaults = subject.settingsSnapshot.first()
 
         defaults.temperatureUnitSetting shouldBe TemperatureUnitSetting.AUTO.name
         defaults.temperatureUnitEffective shouldBe TemperatureUnit.CELSIUS.name
-        defaults.distanceUnitSetting shouldBe DistanceUnitSetting.AUTO.name
-        defaults.distanceUnitEffective shouldBe DistanceUnit.MILES.name
+        defaults.windSpeedUnitSetting shouldBe WindSpeedUnitSetting.AUTO.name
+        defaults.windSpeedUnitEffective shouldBe WindSpeedUnit.MPH.name
         defaults.deliveryModeDaily shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.deliveryModeTonight shouldBe DeliveryMode.NOTIFICATION_AND_TTS.name
         defaults.themeMode shouldBe ThemeMode.SYSTEM.name

@@ -476,9 +476,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_temperature_unit_title">Temperatūras vienība</string>
     <string name="settings_temperature_unit_celsius">Celsijs (°C)</string>
     <string name="settings_temperature_unit_fahrenheit">Fārenheits (°F)</string>
-    <string name="settings_distance_unit_title">Attāluma vienība</string>
-    <string name="settings_distance_unit_kilometers">Kilometri</string>
-    <string name="settings_distance_unit_miles">Jūdzes</string>
+    <string name="settings_wind_speed_unit_title">Vēja ātruma mērvienība</string>
 
     <!-- Notifications -->
     <string name="notification_daily_insight_title">Šodienas ClothesCast</string>

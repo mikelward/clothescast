@@ -2030,12 +2030,21 @@ private const val NEW_UMBRELLA_DEFAULT_PCT = 10.0
 internal fun defaultTemperatureUnitFor(locale: Locale): TemperatureUnit =
     if (locale.country == "US") TemperatureUnit.FAHRENHEIT else TemperatureUnit.CELSIUS
 
-// US and UK public forecasts report wind in mph (Met Office included), so
-// those two locales default to MPH; everyone else defaults to km/h. Knots and
-// m/s are never an auto default — no country uses them for everyday public
-// land forecasts, so they stay opt-in via the picker.
-internal fun defaultWindSpeedUnitFor(locale: Locale): WindSpeedUnit =
-    if (locale.country in setOf("US", "GB")) WindSpeedUnit.MPH else WindSpeedUnit.KMH
+// Per-region wind-unit defaults for AUTO, by everyday public-forecast
+// convention:
+//  - US / UK report wind in mph (Met Office included) → MPH.
+//  - The Nordics report wind in m/s (SMHI, MET Norway, DMI, FMI, Veðurstofa
+//    Íslands) → MS.
+//  - Everyone else → km/h.
+// Knots is never an auto default — it's an aviation / marine unit no country
+// uses for everyday public land forecasts — so it stays opt-in via the picker.
+private val MPH_COUNTRIES = setOf("US", "GB")
+private val MS_COUNTRIES = setOf("SE", "NO", "DK", "FI", "IS")
+internal fun defaultWindSpeedUnitFor(locale: Locale): WindSpeedUnit = when (locale.country) {
+    in MPH_COUNTRIES -> WindSpeedUnit.MPH
+    in MS_COUNTRIES -> WindSpeedUnit.MS
+    else -> WindSpeedUnit.KMH
+}
 
 // Derive the locale's everyday clock convention by inspecting the SHORT
 // time-format pattern for an unquoted 12h hour field. The quote-aware

@@ -667,6 +667,31 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `wind-speed default follows region locale - Nordic locales pick m per s`() = runTest {
+        // Sweden, Norway, Denmark, and Finland report public wind in m/s, so
+        // AUTO resolves to MS there rather than the km/h global default.
+        subject.setRegion(Region.SV_SE)
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.MS
+
+        subject.setRegion(Region.NB_NO)
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.MS
+
+        subject.setRegion(Region.DA_DK)
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.MS
+
+        subject.setRegion(Region.FI_FI)
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.MS
+    }
+
+    @Test
+    fun `wind-speed default follows region locale - de-DE keeps km per h`() = runTest {
+        // Germany is metric but reports public wind in km/h, not m/s — the
+        // m/s default is Nordic-specific, not all-metric.
+        subject.setRegion(Region.DE_DE)
+        subject.preferences.first().windSpeedUnit shouldBe WindSpeedUnit.KMH
+    }
+
+    @Test
     fun `temperature default follows region locale - en-GB picks Celsius`() = runTest {
         subject.setRegion(Region.EN_GB)
         subject.preferences.first().temperatureUnit shouldBe TemperatureUnit.CELSIUS

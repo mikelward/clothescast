@@ -511,41 +511,61 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setTonightDeliveryMode(mode) }
     }
 
+    // Display settings below all poke refreshOutfitWidget() after the write.
+    // The home-screen widgets render from a one-shot prefs snapshot and don't
+    // subscribe to the prefs flow (unlike the Today screen), so they only
+    // repaint when updateAllClothesCastWidgets() is called or at the next
+    // scheduled refresh. The ConditionsWidget reads temperatureUnit /
+    // windSpeedUnit; the FeelsLikeWidget reads temperatureUnit / timeFormat /
+    // colorPalette / themeMode; region changes the AUTO-resolved units. Without
+    // the nudge the launcher shows the old value until the next worker run.
+    // (Same contract the outfit-color setters below follow; see the
+    // refreshOutfitWidget note in ClothesCastNavHost.)
     fun setRegion(region: Region) {
         // Apply the locale up front so the UI recreates immediately; the
         // DataStore write happens in the background. The Application's
         // onCreate reconciler re-applies on next cold start, so the order
         // here can't drift out of sync.
         applyAppLocale(region)
-        viewModelScope.launch { settingsRepository.setRegion(region) }
+        viewModelScope.launch {
+            settingsRepository.setRegion(region)
+            refreshOutfitWidget()
+        }
     }
 
     fun setTemperatureUnitSetting(setting: TemperatureUnitSetting) {
-        viewModelScope.launch { settingsRepository.setTemperatureUnitSetting(setting) }
+        viewModelScope.launch {
+            settingsRepository.setTemperatureUnitSetting(setting)
+            refreshOutfitWidget()
+        }
     }
 
     fun setWindSpeedUnitSetting(setting: WindSpeedUnitSetting) {
         viewModelScope.launch {
             settingsRepository.setWindSpeedUnitSetting(setting)
-            // The Conditions widget renders the wind label off prefs.windSpeedUnit
-            // but doesn't subscribe to the prefs flow, so nudge it to repaint —
-            // otherwise the launcher keeps the old unit until the next scheduled
-            // cache/widget refresh. (Same reason the outfit-color setters below
-            // refresh; see the refreshOutfitWidget note in ClothesCastNavHost.)
             refreshOutfitWidget()
         }
     }
 
     fun setTimeFormatSetting(setting: TimeFormatSetting) {
-        viewModelScope.launch { settingsRepository.setTimeFormatSetting(setting) }
+        viewModelScope.launch {
+            settingsRepository.setTimeFormatSetting(setting)
+            refreshOutfitWidget()
+        }
     }
 
     fun setThemeMode(mode: ThemeMode) {
-        viewModelScope.launch { settingsRepository.setThemeMode(mode) }
+        viewModelScope.launch {
+            settingsRepository.setThemeMode(mode)
+            refreshOutfitWidget()
+        }
     }
 
     fun setColorPalette(palette: ColorPalette) {
-        viewModelScope.launch { settingsRepository.setColorPalette(palette) }
+        viewModelScope.launch {
+            settingsRepository.setColorPalette(palette)
+            refreshOutfitWidget()
+        }
     }
 
     /**

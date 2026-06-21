@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.WindSpeedUnitSetting
@@ -19,6 +20,8 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TemperatureUnitSetting
+import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.data.SecureKeyStore
@@ -465,12 +468,34 @@ class SettingsViewModelTest {
         refreshSubject.state.first { it.deltaThresholdC == 8.0 }
         refreshCount shouldBe 4
 
-        // The wind-speed unit changes the Conditions widget's wind label, which
-        // doesn't subscribe to the prefs flow — so the setter must poke the
-        // widget (Codex flag on PR #1072).
+        // Display settings that change what a home-screen widget renders must
+        // poke it too — the widgets don't subscribe to the prefs flow.
+        // ConditionsWidget reads temperatureUnit / windSpeedUnit; FeelsLikeWidget
+        // reads temperatureUnit / timeFormat / colorPalette / themeMode; region
+        // changes the AUTO-resolved units. (Codex flag on PR #1072.)
         refreshSubject.setWindSpeedUnitSetting(WindSpeedUnitSetting.KNOTS)
         refreshSubject.state.first { it.windSpeedUnitSetting == WindSpeedUnitSetting.KNOTS }
         refreshCount shouldBe 5
+
+        refreshSubject.setTemperatureUnitSetting(TemperatureUnitSetting.FAHRENHEIT)
+        refreshSubject.state.first { it.temperatureUnitSetting == TemperatureUnitSetting.FAHRENHEIT }
+        refreshCount shouldBe 6
+
+        refreshSubject.setTimeFormatSetting(TimeFormatSetting.TWELVE_HOUR)
+        refreshSubject.state.first { it.timeFormatSetting == TimeFormatSetting.TWELVE_HOUR }
+        refreshCount shouldBe 7
+
+        refreshSubject.setColorPalette(ColorPalette.ACCESSIBLE)
+        refreshSubject.state.first { it.colorPalette == ColorPalette.ACCESSIBLE }
+        refreshCount shouldBe 8
+
+        refreshSubject.setThemeMode(ThemeMode.DARK)
+        refreshSubject.state.first { it.themeMode == ThemeMode.DARK }
+        refreshCount shouldBe 9
+
+        refreshSubject.setRegion(Region.EN_US)
+        refreshSubject.state.first { it.region == Region.EN_US }
+        refreshCount shouldBe 10
     }
 
     @Test

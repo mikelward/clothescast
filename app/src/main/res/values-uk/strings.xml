@@ -93,7 +93,6 @@ only the displayed label localizes.
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Щоденний ClothesCast</string>
     <string name="settings_schedule_time_label">Час</string>
-    <string name="settings_daily_mention_evening_events">Згадувати вечірні події</string>
     <string name="settings_schedule_preview">Відтворити зараз</string>
 
     <string name="settings_tonight_title">Вечірній ClothesCast</string>
@@ -974,8 +973,8 @@ only the displayed label localizes.
     <string name="settings_calendar_master">Використовувати мій календар</string>
     <string name="settings_calendar_master_description">Дозвольте ClothesCast читати ваші календарі, щоб персоналізувати прогнози та образи. Нічого не покидає пристрій.</string>
     <string name="settings_calendar_features_title">Особисті календарі</string>
-    <string name="settings_calendar_evening_tie_ins">Прив\'язка до вечірніх подій</string>
-    <string name="settings_calendar_evening_tie_ins_description">Якщо ви кудись ідете ввечері, ранковий прогноз підкаже, чи потрібно взяти щось додатково.</string>
+    <string name="settings_evening_add_ons">Доповнення на вечір</string>
+    <string name="settings_evening_add_ons_description">Якщо ви кудись ідете ввечері, ранковий прогноз підкаже, чи потрібно взяти щось додатково.</string>
     <string name="settings_calendar_birthdays_description">Спеціальні кольори та повідомлення для днів народження у ваших календарях.</string>
     <string name="settings_calendar_public_holidays_description">Спеціальні кольори та повідомлення для державних свят у ваших календарях.</string>
     <string name="settings_calendar_open_system_settings">Відкрити системні налаштування</string>

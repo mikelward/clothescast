@@ -93,7 +93,6 @@ the displayed label localizes.
     -->
     <string name="settings_schedule_title">毎日の ClothesCast</string>
     <string name="settings_schedule_time_label">時刻</string>
-    <string name="settings_daily_mention_evening_events">夜の予定に言及する</string>
     <string name="settings_schedule_preview">今すぐ再生</string>
 
     <string name="settings_tonight_title">夜間の ClothesCast</string>
@@ -1127,8 +1126,8 @@ the displayed label localizes.
     <string name="settings_calendar_master">カレンダーを使用</string>
     <string name="settings_calendar_master_description">ClothesCast がカレンダーを読み取り、予報と服装をパーソナライズします。端末から外に出るものは何もありません。</string>
     <string name="settings_calendar_features_title">個人のカレンダー</string>
-    <string name="settings_calendar_evening_tie_ins">夜の予定との連動</string>
-    <string name="settings_calendar_evening_tie_ins_description">夜に外出する場合、朝の予報で追加で持っていくべきものがあるかをお知らせします。</string>
+    <string name="settings_evening_add_ons">夜の追加アイテム</string>
+    <string name="settings_evening_add_ons_description">夜に外出する場合、朝の予報で追加で持っていくべきものがあるかをお知らせします。</string>
     <string name="settings_calendar_birthdays_description">カレンダーの誕生日に特別な色とメッセージを使用します。</string>
     <string name="settings_calendar_public_holidays_description">カレンダーの祝日に特別な色とメッセージを使用します。</string>
     <string name="settings_calendar_open_system_settings">システム設定を開く</string>

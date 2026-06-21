@@ -187,7 +187,6 @@ surfaces.
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Дневни ClothesCast</string>
     <string name="settings_schedule_time_label">Време</string>
-    <string name="settings_daily_mention_evening_events">Помени вечерње догађаје</string>
     <string name="settings_schedule_preview">Пусти сада</string>
 
     <string name="settings_tonight_title">Ноћни ClothesCast</string>
@@ -954,8 +953,8 @@ surfaces.
     <string name="settings_calendar_master">Користи мој календар</string>
     <string name="settings_calendar_master_description">Дозволи ClothesCastу да чита твоје календаре ради персонализације прогноза и оутфита. Ништа не напушта уређај.</string>
     <string name="settings_calendar_features_title">Лични календари</string>
-    <string name="settings_calendar_evening_tie_ins">Вечерње повезнице</string>
-    <string name="settings_calendar_evening_tie_ins_description">Ако увече излазиш, јутарња прогноза ти каже да ли треба да понесеш нешто додатно.</string>
+    <string name="settings_evening_add_ons">Вечерњи додаци</string>
+    <string name="settings_evening_add_ons_description">Ако увече излазиш, јутарња прогноза ти каже да ли треба да понесеш нешто додатно.</string>
     <string name="settings_calendar_birthdays_description">Користи посебне боје и поруке за рођендане у твојим календарима.</string>
     <string name="settings_calendar_public_holidays_description">Користи посебне боје и поруке за државне празнике у твојим календарима.</string>
     <string name="settings_calendar_open_system_settings">Отвори системска подешавања</string>

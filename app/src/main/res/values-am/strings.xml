@@ -277,7 +277,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Settings — schedule -->
     <string name="settings_schedule_title">ዕለታዊ ClothesCast</string>
     <string name="settings_schedule_time_label">ጊዜ</string>
-    <string name="settings_daily_mention_evening_events">የምሽት ዝግጅቶችን ጥቀስ</string>
     <string name="settings_schedule_preview">አሁን አጫውት</string>
     <string name="settings_tonight_title">ምሽታዊ ClothesCast</string>
     <string name="settings_tonight_enabled">ምሽታዊ ClothesCast አሳይ</string>
@@ -945,8 +944,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_calendar_master">የእኔን የቀን መቁጠሪያ ተጠቀም</string>
     <string name="settings_calendar_master_description">ትንበያዎችንና ልብሶችን ለማበጀት ClothesCast የቀን መቁጠሪያዎችዎን እንዲያነብ ይፍቀዱ። ምንም ከመሳሪያው አይወጣም።</string>
     <string name="settings_calendar_features_title">የግል የቀን መቁጠሪያዎች</string>
-    <string name="settings_calendar_evening_tie_ins">የምሽት ግንኙነቶች</string>
-    <string name="settings_calendar_evening_tie_ins_description">ምሽት ላይ ቢወጡ የጠዋቱ ትንበያ ተጨማሪ ነገር ይዘው መሄድ አለመሄድዎን ይነግርዎታል።</string>
+    <string name="settings_evening_add_ons">የምሽት ተጨማሪዎች</string>
+    <string name="settings_evening_add_ons_description">ምሽት ላይ ቢወጡ የጠዋቱ ትንበያ ተጨማሪ ነገር ይዘው መሄድ አለመሄድዎን ይነግርዎታል።</string>
     <string name="settings_calendar_birthdays_description">በቀን መቁጠሪያዎ ውስጥ ላሉ ልደቶች ልዩ ቀለሞችንና መልዕክቶችን ይጠቀሙ።</string>
     <string name="settings_calendar_public_holidays_description">በቀን መቁጠሪያዎ ውስጥ ላሉ የህዝብ በዓሎች ልዩ ቀለሞችንና መልዕክቶችን ይጠቀሙ።</string>
     <string name="settings_calendar_open_system_settings">የስርዓት ቅንብሮችን ክፈት</string>

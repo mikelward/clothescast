@@ -344,7 +344,6 @@ to values/strings.xml (English).
     <!-- Schedule settings -->
     <string name="settings_schedule_title">ClothesCast Harian</string>
     <string name="settings_schedule_time_label">Waktu</string>
-    <string name="settings_daily_mention_evening_events">Sebutkan acara malam</string>
     <string name="settings_schedule_preview">Putar sekarang</string>
     <string name="settings_tonight_title">ClothesCast Malam</string>
     <string name="settings_tonight_enabled">Tampilkan ClothesCast malam</string>
@@ -977,8 +976,8 @@ to values/strings.xml (English).
     <string name="settings_calendar_master">Gunakan kalender saya</string>
     <string name="settings_calendar_master_description">Izinkan ClothesCast membaca kalender Anda untuk mempersonalisasi prakiraan dan pakaian. Tidak ada yang meninggalkan perangkat.</string>
     <string name="settings_calendar_features_title">Kalender pribadi</string>
-    <string name="settings_calendar_evening_tie_ins">Keterhubungan acara malam</string>
-    <string name="settings_calendar_evening_tie_ins_description">Jika Anda keluar di malam hari, prakiraan pagi akan memberi tahu apakah Anda perlu membawa sesuatu yang lain.</string>
+    <string name="settings_evening_add_ons">Tambahan untuk malam</string>
+    <string name="settings_evening_add_ons_description">Jika Anda keluar di malam hari, prakiraan pagi akan memberi tahu apakah Anda perlu membawa sesuatu yang lain.</string>
     <string name="settings_calendar_birthdays_description">Gunakan warna dan pesan khusus untuk ulang tahun di kalender Anda.</string>
     <string name="settings_calendar_public_holidays_description">Gunakan warna dan pesan khusus untuk hari libur nasional di kalender Anda.</string>
     <string name="settings_calendar_open_system_settings">Buka pengaturan sistem</string>

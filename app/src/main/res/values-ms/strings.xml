@@ -346,7 +346,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- Schedule settings -->
     <string name="settings_schedule_title">ClothesCast Harian</string>
     <string name="settings_schedule_time_label">Masa</string>
-    <string name="settings_daily_mention_evening_events">Sebut acara petang</string>
     <string name="settings_schedule_preview">Main sekarang</string>
     <string name="settings_tonight_title">ClothesCast Malam</string>
     <string name="settings_tonight_enabled">Tunjukkan ClothesCast malam</string>
@@ -984,8 +983,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_calendar_master">Gunakan kalendar saya</string>
     <string name="settings_calendar_master_description">Benarkan ClothesCast membaca kalendar anda untuk memperibadikan ramalan dan pakaian. Tiada apa yang meninggalkan peranti.</string>
     <string name="settings_calendar_features_title">Kalendar peribadi</string>
-    <string name="settings_calendar_evening_tie_ins">Kaitan acara petang</string>
-    <string name="settings_calendar_evening_tie_ins_description">Jika anda keluar pada waktu petang, ramalan pagi akan memberitahu anda jika anda perlu membawa sesuatu yang tambahan.</string>
+    <string name="settings_evening_add_ons">Tambahan untuk petang</string>
+    <string name="settings_evening_add_ons_description">Jika anda keluar pada waktu petang, ramalan pagi akan memberitahu anda jika anda perlu membawa sesuatu yang tambahan.</string>
     <string name="settings_calendar_birthdays_description">Gunakan warna dan mesej khas untuk hari jadi dalam kalendar anda.</string>
     <string name="settings_calendar_public_holidays_description">Gunakan warna dan mesej khas untuk hari kelepasan am dalam kalendar anda.</string>
     <string name="settings_calendar_open_system_settings">Buka tetapan sistem</string>

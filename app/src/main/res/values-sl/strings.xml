@@ -360,7 +360,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dnevni ClothesCast</string>
     <string name="settings_schedule_time_label">Čas</string>
-    <string name="settings_daily_mention_evening_events">Omeni večerne dogodke</string>
     <string name="settings_schedule_preview">Predvajaj zdaj</string>
 
     <string name="settings_tonight_title">Nočni ClothesCast</string>
@@ -962,8 +961,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_calendar_master">Uporabi moj koledar</string>
     <string name="settings_calendar_master_description">Dovoli ClothesCastu branje tvojih koledarjev za prilagajanje napovedi in oblek. Nič ne zapusti naprave.</string>
     <string name="settings_calendar_features_title">Osebni koledarji</string>
-    <string name="settings_calendar_evening_tie_ins">Večerne povezave</string>
-    <string name="settings_calendar_evening_tie_ins_description">Če greš zvečer ven, ti jutranja napoved pove, ali moraš s seboj vzeti kaj dodatnega.</string>
+    <string name="settings_evening_add_ons">Večerni dodatki</string>
+    <string name="settings_evening_add_ons_description">Če greš zvečer ven, ti jutranja napoved pove, ali moraš s seboj vzeti kaj dodatnega.</string>
     <string name="settings_calendar_birthdays_description">Uporabi posebne barve in sporočila za rojstne dneve v tvojih koledarjih.</string>
     <string name="settings_calendar_public_holidays_description">Uporabi posebne barve in sporočila za državne praznike v tvojih koledarjih.</string>
     <string name="settings_calendar_open_system_settings">Odpri sistemske nastavitve</string>

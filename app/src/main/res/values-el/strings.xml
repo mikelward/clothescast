@@ -111,7 +111,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     -->
     <string name="settings_schedule_title">Καθημερινός ClothesCast</string>
     <string name="settings_schedule_time_label">Ώρα</string>
-    <string name="settings_daily_mention_evening_events">Αναφορά βραδινών συμβάντων</string>
     <string name="settings_schedule_preview">Αναπαραγωγή τώρα</string>
 
     <string name="settings_tonight_title">Νυχτερινός ClothesCast</string>
@@ -1097,8 +1096,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Χρήση του ημερολογίου μου</string>
     <string name="settings_calendar_master_description">Άφησε το ClothesCast να διαβάζει τα ημερολόγιά σου για να προσαρμόζει προγνώσεις και στολές. Τίποτα δεν φεύγει από τη συσκευή.</string>
     <string name="settings_calendar_features_title">Προσωπικά ημερολόγια</string>
-    <string name="settings_calendar_evening_tie_ins">Βραδινές συνδέσεις</string>
-    <string name="settings_calendar_evening_tie_ins_description">Αν βγαίνεις το βράδυ, η πρωινή πρόγνωση σου λέει αν πρέπει να πάρεις κάτι επιπλέον.</string>
+    <string name="settings_evening_add_ons">Πρόσθετα για το βράδυ</string>
+    <string name="settings_evening_add_ons_description">Αν βγαίνεις το βράδυ, η πρωινή πρόγνωση σου λέει αν πρέπει να πάρεις κάτι επιπλέον.</string>
     <string name="settings_calendar_birthdays_description">Χρήση ειδικών χρωμάτων και μηνυμάτων για γενέθλια στα ημερολόγιά σου.</string>
     <string name="settings_calendar_public_holidays_description">Χρήση ειδικών χρωμάτων και μηνυμάτων για επίσημες αργίες στα ημερολόγιά σου.</string>
     <string name="settings_calendar_open_system_settings">Άνοιξε τις ρυθμίσεις συστήματος</string>

@@ -346,7 +346,6 @@ standard in Israeli digital communication.
     <!-- Settings — schedule (daily + nightly) -->
     <string name="settings_schedule_title">ClothesCast יומי</string>
     <string name="settings_schedule_time_label">שעה</string>
-    <string name="settings_daily_mention_evening_events">ציין/י אירועי ערב</string>
     <string name="settings_schedule_preview">הפעל עכשיו</string>
     <string name="settings_tonight_title">ClothesCast לילי</string>
     <string name="settings_tonight_enabled">הצג/י ClothesCast לילי</string>
@@ -971,8 +970,8 @@ standard in Israeli digital communication.
     <string name="settings_calendar_master">השתמש/י ביומן שלי</string>
     <string name="settings_calendar_master_description">אפשר/י ל-ClothesCast לקרוא את היומנים שלך כדי להתאים אישית תחזיות ולבוש. שום דבר לא יוצא מהמכשיר.</string>
     <string name="settings_calendar_features_title">יומנים אישיים</string>
-    <string name="settings_calendar_evening_tie_ins">קישורי ערב</string>
-    <string name="settings_calendar_evening_tie_ins_description">אם את/ה יוצא/ת בערב, תחזית הבוקר אומרת לך אם צריך לקחת משהו נוסף.</string>
+    <string name="settings_evening_add_ons">תוספות לערב</string>
+    <string name="settings_evening_add_ons_description">אם את/ה יוצא/ת בערב, תחזית הבוקר אומרת לך אם צריך לקחת משהו נוסף.</string>
     <string name="settings_calendar_birthdays_description">השתמש/י בצבעים ובהודעות מיוחדים לימי הולדת ביומנים שלך.</string>
     <string name="settings_calendar_public_holidays_description">השתמש/י בצבעים ובהודעות מיוחדים לחגים ביומנים שלך.</string>
     <string name="settings_calendar_open_system_settings">פתח/י הגדרות מערכת</string>

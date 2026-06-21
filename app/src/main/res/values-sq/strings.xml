@@ -605,7 +605,6 @@
     <string name="settings_schedule_title">ClothesCast-i ditor</string>
     <string name="settings_schedule_enabled">ClothesCast-i ditor</string>
     <string name="settings_schedule_time_label">Ora</string>
-    <string name="settings_daily_mention_evening_events">Përmend ngjarjet e mbrëmjes</string>
     <string name="settings_schedule_preview">Luaj tani</string>
     <string name="settings_clothes_mention_label">Veshjet</string>
     <string name="settings_clothes_mention_always">Gjithmonë</string>
@@ -755,8 +754,8 @@
     <string name="settings_calendar_master">Përdor kalendarin tim</string>
     <string name="settings_calendar_master_description">Lëre ClothesCast-in të lexojë kalendarët e tu për të personalizuar parashikimet dhe kombinimet. Asgjë nuk largohet nga pajisja.</string>
     <string name="settings_calendar_features_title">Kalendarët personalë</string>
-    <string name="settings_calendar_evening_tie_ins">Lidhjet e mbrëmjes</string>
-    <string name="settings_calendar_evening_tie_ins_description">Nëse del në mbrëmje, parashikimi i mëngjesit të thotë nëse të duhet të marrësh diçka shtesë.</string>
+    <string name="settings_evening_add_ons">Shtesa për mbrëmjen</string>
+    <string name="settings_evening_add_ons_description">Nëse del në mbrëmje, parashikimi i mëngjesit të thotë nëse të duhet të marrësh diçka shtesë.</string>
     <string name="settings_calendar_birthdays">Ditëlindjet</string>
     <string name="settings_calendar_birthdays_description">Përdor ngjyra dhe mesazhe të veçanta për ditëlindjet në kalendarët e tu.</string>
     <string name="settings_calendar_public_holidays">Festat zyrtare</string>

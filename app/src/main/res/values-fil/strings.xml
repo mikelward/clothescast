@@ -361,7 +361,6 @@ The rest of the UI falls through to values/strings.xml (English).
          ============================================================ -->
     <string name="settings_schedule_title">Pang-araw na ClothesCast</string>
     <string name="settings_schedule_time_label">Oras</string>
-    <string name="settings_daily_mention_evening_events">Banggitin ang mga gabi na evento</string>
     <string name="settings_schedule_preview">I-play ngayon</string>
 
     <string name="settings_tonight_title">Pang-gabing ClothesCast</string>
@@ -1028,8 +1027,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_calendar_master">Gamitin ang aking kalendaryo</string>
     <string name="settings_calendar_master_description">Payagan ang ClothesCast na basahin ang iyong mga kalendaryo upang ipersonalisa ang mga forecast at outfit. Walang lumalabas sa device.</string>
     <string name="settings_calendar_features_title">Mga personal na kalendaryo</string>
-    <string name="settings_calendar_evening_tie_ins">Pagdurugtong sa gabi</string>
-    <string name="settings_calendar_evening_tie_ins_description">Kung lumalabas ka sa gabi, sasabihin ng forecast sa umaga kung kailangan mong magdala ng anumang dagdag.</string>
+    <string name="settings_evening_add_ons">Mga dagdag sa gabi</string>
+    <string name="settings_evening_add_ons_description">Kung lumalabas ka sa gabi, sasabihin ng forecast sa umaga kung kailangan mong magdala ng anumang dagdag.</string>
     <string name="settings_calendar_birthdays_description">Gumamit ng mga espesyal na kulay at mensahe para sa mga kaarawan sa iyong mga kalendaryo.</string>
     <string name="settings_calendar_public_holidays_description">Gumamit ng mga espesyal na kulay at mensahe para sa mga public holiday sa iyong mga kalendaryo.</string>
     <string name="settings_calendar_open_system_settings">Buksan ang mga setting ng system</string>

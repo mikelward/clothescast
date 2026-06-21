@@ -239,7 +239,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="settings_schedule_title">Igapäevane ClothesCast</string>
     <string name="settings_schedule_time_label">Kellaaeg</string>
-    <string name="settings_daily_mention_evening_events">Maini õhtuseid sündmusi</string>
     <string name="settings_schedule_preview">Esita kohe</string>
 
     <string name="settings_tonight_title">Õhtune ClothesCast</string>
@@ -921,8 +920,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_calendar_master">Kasuta minu kalendrit</string>
     <string name="settings_calendar_master_description">Luba ClothesCast\'il lugeda sinu kalendreid, et kohandada prognoose ja riietust. Midagi ei lahku seadmest.</string>
     <string name="settings_calendar_features_title">Isiklikud kalendrid</string>
-    <string name="settings_calendar_evening_tie_ins">Õhtused sidemed</string>
-    <string name="settings_calendar_evening_tie_ins_description">Kui sa lähed õhtul välja, ütleb hommikuprognoos sulle, kas pead midagi lisaks kaasa võtma.</string>
+    <string name="settings_evening_add_ons">Õhtused lisad</string>
+    <string name="settings_evening_add_ons_description">Kui sa lähed õhtul välja, ütleb hommikuprognoos sulle, kas pead midagi lisaks kaasa võtma.</string>
     <string name="settings_calendar_birthdays_description">Eripärased värvid ja sõnumid sinu kalendrite sünnipäevadele.</string>
     <string name="settings_calendar_public_holidays_description">Eripärased värvid ja sõnumid sinu kalendrite riigipühadele.</string>
     <string name="settings_calendar_open_system_settings">Ava süsteemiseaded</string>

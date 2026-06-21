@@ -70,7 +70,6 @@ displayed label localizes.
 
     <string name="settings_schedule_title">Günlük ClothesCast</string>
     <string name="settings_schedule_time_label">Saat</string>
-    <string name="settings_daily_mention_evening_events">Akşam etkinliklerinden bahset</string>
     <string name="settings_schedule_preview">Şimdi oynat</string>
 
     <string name="settings_tonight_title">Gecelik ClothesCast</string>
@@ -977,8 +976,8 @@ displayed label localizes.
     <string name="settings_calendar_master">Takvimimi kullan</string>
     <string name="settings_calendar_master_description">ClothesCast\'ın tahminleri ve kıyafetleri kişiselleştirmek için takvimlerini okumasına izin ver. Hiçbir şey cihazdan çıkmaz.</string>
     <string name="settings_calendar_features_title">Kişisel takvimler</string>
-    <string name="settings_calendar_evening_tie_ins">Akşam bağlantıları</string>
-    <string name="settings_calendar_evening_tie_ins_description">Akşam dışarı çıkacaksan sabah tahmini sana yanına fazladan bir şey alman gerekip gerekmediğini söyler.</string>
+    <string name="settings_evening_add_ons">Akşam eklentileri</string>
+    <string name="settings_evening_add_ons_description">Akşam dışarı çıkacaksan sabah tahmini sana yanına fazladan bir şey alman gerekip gerekmediğini söyler.</string>
     <string name="settings_calendar_birthdays_description">Takvimlerindeki doğum günleri için özel renkler ve mesajlar kullan.</string>
     <string name="settings_calendar_public_holidays_description">Takvimlerindeki resmi tatiller için özel renkler ve mesajlar kullan.</string>
     <string name="settings_calendar_open_system_settings">Sistem ayarlarını aç</string>

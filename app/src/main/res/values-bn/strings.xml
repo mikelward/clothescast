@@ -330,7 +330,6 @@ West Bengal vocabulary differences in a future PR.
 
     <string name="settings_schedule_title">দৈনিক ClothesCast</string>
     <string name="settings_schedule_time_label">সময়</string>
-    <string name="settings_daily_mention_evening_events">সন্ধ্যার ইভেন্ট উল্লেখ করুন</string>
     <string name="settings_schedule_preview">এখন চালান</string>
     <string name="settings_tonight_title">রাতের ClothesCast</string>
     <string name="settings_tonight_enabled">রাতের ClothesCast দেখান</string>
@@ -1049,8 +1048,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_calendar_master">আমার ক্যালেন্ডার ব্যবহার করুন</string>
     <string name="settings_calendar_master_description">পূর্বাভাস ও পোশাক ব্যক্তিগত করতে ClothesCast-কে আপনার ক্যালেন্ডার পড়ার সুযোগ দিন। কিছুই ডিভাইস ছাড়ে না।</string>
     <string name="settings_calendar_features_title">ব্যক্তিগত ক্যালেন্ডার</string>
-    <string name="settings_calendar_evening_tie_ins">সন্ধ্যার যোগসূত্র</string>
-    <string name="settings_calendar_evening_tie_ins_description">যদি আপনি সন্ধ্যায় বাইরে যান, সকালের পূর্বাভাস আপনাকে জানায় যে কিছু অতিরিক্ত আনার প্রয়োজন আছে কিনা।</string>
+    <string name="settings_evening_add_ons">সন্ধ্যার অতিরিক্ত জিনিস</string>
+    <string name="settings_evening_add_ons_description">যদি আপনি সন্ধ্যায় বাইরে যান, সকালের পূর্বাভাস আপনাকে জানায় যে কিছু অতিরিক্ত আনার প্রয়োজন আছে কিনা।</string>
     <string name="settings_calendar_birthdays_description">আপনার ক্যালেন্ডারের জন্মদিনের জন্য বিশেষ রঙ ও বার্তা ব্যবহার করুন।</string>
     <string name="settings_calendar_public_holidays_description">আপনার ক্যালেন্ডারের সরকারি ছুটির জন্য বিশেষ রঙ ও বার্তা ব্যবহার করুন।</string>
     <string name="settings_calendar_open_system_settings">সিস্টেম সেটিংস খুলুন</string>

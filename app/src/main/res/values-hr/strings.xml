@@ -66,7 +66,6 @@ spousal register), matching the existing insight prose ("Ponesi …",
     -->
     <string name="settings_schedule_title">Dnevni ClothesCast</string>
     <string name="settings_schedule_time_label">Vrijeme</string>
-    <string name="settings_daily_mention_evening_events">Spomeni večernje događaje</string>
     <string name="settings_schedule_preview">Reproduciraj sada</string>
 
     <string name="settings_tonight_title">Noćni ClothesCast</string>
@@ -1046,8 +1045,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_calendar_master">Koristi moj kalendar</string>
     <string name="settings_calendar_master_description">Dopusti ClothesCastu čitanje tvojih kalendara za prilagodbu prognoza i outfita. Ništa ne napušta uređaj.</string>
     <string name="settings_calendar_features_title">Osobni kalendari</string>
-    <string name="settings_calendar_evening_tie_ins">Večernje poveznice</string>
-    <string name="settings_calendar_evening_tie_ins_description">Ako navečer izlaziš, jutarnja prognoza ti kaže trebaš li ponijeti nešto dodatno.</string>
+    <string name="settings_evening_add_ons">Večernji dodaci</string>
+    <string name="settings_evening_add_ons_description">Ako navečer izlaziš, jutarnja prognoza ti kaže trebaš li ponijeti nešto dodatno.</string>
     <string name="settings_calendar_birthdays_description">Koristi posebne boje i poruke za rođendane u tvojim kalendarima.</string>
     <string name="settings_calendar_public_holidays_description">Koristi posebne boje i poruke za državne blagdane u tvojim kalendarima.</string>
     <string name="settings_calendar_open_system_settings">Otvori sistemske postavke</string>

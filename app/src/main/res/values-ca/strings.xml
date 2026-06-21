@@ -237,7 +237,6 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="settings_schedule_title">ClothesCast diari</string>
     <string name="settings_schedule_time_label">Hora</string>
-    <string name="settings_daily_mention_evening_events">Menciona els esdeveniments del vespre</string>
     <string name="settings_schedule_preview">Reprodueix ara</string>
 
     <string name="settings_tonight_title">ClothesCast nocturn</string>
@@ -917,8 +916,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_calendar_master">Utilitza el meu calendari</string>
     <string name="settings_calendar_master_description">Permet que ClothesCast llegeixi els teus calendaris per personalitzar previsions i vestits. Res no surt del dispositiu.</string>
     <string name="settings_calendar_features_title">Calendaris personals</string>
-    <string name="settings_calendar_evening_tie_ins">Referències al vespre</string>
-    <string name="settings_calendar_evening_tie_ins_description">Si surts al vespre, la previsió del matí t\'indica si has de portar alguna cosa extra.</string>
+    <string name="settings_evening_add_ons">Complements del vespre</string>
+    <string name="settings_evening_add_ons_description">Si surts al vespre, la previsió del matí t\'indica si has de portar alguna cosa extra.</string>
     <string name="settings_calendar_birthdays_description">Utilitza colors i missatges especials per als aniversaris dels teus calendaris.</string>
     <string name="settings_calendar_public_holidays_description">Utilitza colors i missatges especials per als festius dels teus calendaris.</string>
     <string name="settings_calendar_open_system_settings">Obre la configuració del sistema</string>

@@ -97,7 +97,6 @@ displayed label localizes.
     -->
     <string name="settings_schedule_title">매일 ClothesCast</string>
     <string name="settings_schedule_time_label">시간</string>
-    <string name="settings_daily_mention_evening_events">저녁 일정 언급</string>
     <string name="settings_schedule_preview">지금 재생</string>
 
     <string name="settings_tonight_title">야간 ClothesCast</string>
@@ -1131,8 +1130,8 @@ displayed label localizes.
     <string name="settings_calendar_master">내 캘린더 사용</string>
     <string name="settings_calendar_master_description">ClothesCast가 캘린더를 읽어 예보와 옷차림을 개인화해요. 어떤 정보도 기기 밖으로 나가지 않습니다.</string>
     <string name="settings_calendar_features_title">개인 캘린더</string>
-    <string name="settings_calendar_evening_tie_ins">저녁 연계</string>
-    <string name="settings_calendar_evening_tie_ins_description">저녁에 외출할 경우, 아침 예보에서 추가로 챙길 것이 있는지 알려드려요.</string>
+    <string name="settings_evening_add_ons">저녁 추가 준비물</string>
+    <string name="settings_evening_add_ons_description">저녁에 외출할 경우, 아침 예보에서 추가로 챙길 것이 있는지 알려드려요.</string>
     <string name="settings_calendar_birthdays_description">캘린더의 생일에 특별한 색상과 메시지를 사용해요.</string>
     <string name="settings_calendar_public_holidays_description">캘린더의 공휴일에 특별한 색상과 메시지를 사용해요.</string>
     <string name="settings_calendar_open_system_settings">시스템 설정 열기</string>

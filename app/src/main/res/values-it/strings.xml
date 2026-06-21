@@ -83,7 +83,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     -->
     <string name="settings_schedule_title">ClothesCast quotidiano</string>
     <string name="settings_schedule_time_label">Ora</string>
-    <string name="settings_daily_mention_evening_events">Cita gli eventi serali</string>
     <string name="settings_schedule_preview">Riproduci ora</string>
 
     <string name="settings_tonight_title">ClothesCast serale</string>
@@ -1090,8 +1089,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Usa il mio calendario</string>
     <string name="settings_calendar_master_description">Consenti a ClothesCast di leggere i tuoi calendari per personalizzare previsioni e outfit. Nulla lascia il dispositivo.</string>
     <string name="settings_calendar_features_title">Calendari personali</string>
-    <string name="settings_calendar_evening_tie_ins">Riferimenti alla serata</string>
-    <string name="settings_calendar_evening_tie_ins_description">Se esci la sera, la previsione del mattino ti dice se devi portare qualcosa in più.</string>
+    <string name="settings_evening_add_ons">Extra per la sera</string>
+    <string name="settings_evening_add_ons_description">Se esci la sera, la previsione del mattino ti dice se devi portare qualcosa in più.</string>
     <string name="settings_calendar_birthdays_description">Usa colori e messaggi speciali per i compleanni nei tuoi calendari.</string>
     <string name="settings_calendar_public_holidays_description">Usa colori e messaggi speciali per le festività nei tuoi calendari.</string>
     <string name="settings_calendar_open_system_settings">Apri impostazioni di sistema</string>

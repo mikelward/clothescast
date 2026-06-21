@@ -79,7 +79,6 @@ Not overridden by design:
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">दैनिक ClothesCast</string>
     <string name="settings_schedule_time_label">समय</string>
-    <string name="settings_daily_mention_evening_events">शाम की घटनाओं का उल्लेख करें</string>
     <string name="settings_schedule_preview">अभी चलाएँ</string>
 
     <string name="settings_tonight_title">रात्रि ClothesCast</string>
@@ -1008,8 +1007,8 @@ Not overridden by design:
     <string name="settings_calendar_master">मेरे कैलेंडर का उपयोग करें</string>
     <string name="settings_calendar_master_description">ClothesCast को आपके कैलेंडर पढ़ने दें ताकि पूर्वानुमान और पोशाक व्यक्तिगत बनाई जा सके। कुछ भी डिवाइस से बाहर नहीं जाता।</string>
     <string name="settings_calendar_features_title">व्यक्तिगत कैलेंडर</string>
-    <string name="settings_calendar_evening_tie_ins">शाम की घटनाओं का जिक्र</string>
-    <string name="settings_calendar_evening_tie_ins_description">यदि आप शाम को बाहर जा रहे हैं, तो सुबह का पूर्वानुमान बताता है कि कुछ अतिरिक्त साथ लेना है या नहीं।</string>
+    <string name="settings_evening_add_ons">शाम के लिए अतिरिक्त चीज़ें</string>
+    <string name="settings_evening_add_ons_description">यदि आप शाम को बाहर जा रहे हैं, तो सुबह का पूर्वानुमान बताता है कि कुछ अतिरिक्त साथ लेना है या नहीं।</string>
     <string name="settings_calendar_birthdays_description">अपने कैलेंडर में जन्मदिनों के लिए विशेष रंग और संदेश उपयोग करें।</string>
     <string name="settings_calendar_public_holidays_description">अपने कैलेंडर में सार्वजनिक छुट्टियों के लिए विशेष रंग और संदेश उपयोग करें।</string>
     <string name="settings_calendar_open_system_settings">सिस्टम सेटिंग खोलें</string>

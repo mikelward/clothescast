@@ -205,7 +205,6 @@ What is NOT overridden, by design:
     -->
     <string name="settings_schedule_title">Denný ClothesCast</string>
     <string name="settings_schedule_time_label">Čas</string>
-    <string name="settings_daily_mention_evening_events">Spomínať večerné udalosti</string>
     <string name="settings_schedule_preview">Prehrať teraz</string>
 
     <string name="settings_tonight_title">Nočný ClothesCast</string>
@@ -999,8 +998,8 @@ What is NOT overridden, by design:
     <string name="settings_calendar_master">Použiť môj kalendár</string>
     <string name="settings_calendar_master_description">Povoľ ClothesCastu čítať tvoje kalendáre, aby mohol prispôsobiť predpovede a outfity. Nič neopustí zariadenie.</string>
     <string name="settings_calendar_features_title">Osobné kalendáre</string>
-    <string name="settings_calendar_evening_tie_ins">Večerné prepojenia</string>
-    <string name="settings_calendar_evening_tie_ins_description">Ak ideš večer von, ranná predpoveď ti povie, či si máš vziať niečo navyše.</string>
+    <string name="settings_evening_add_ons">Večerné doplnky</string>
+    <string name="settings_evening_add_ons_description">Ak ideš večer von, ranná predpoveď ti povie, či si máš vziať niečo navyše.</string>
     <string name="settings_calendar_birthdays_description">Použi špeciálne farby a správy pre narodeniny v tvojich kalendároch.</string>
     <string name="settings_calendar_public_holidays_description">Použi špeciálne farby a správy pre štátne sviatky v tvojich kalendároch.</string>
     <string name="settings_calendar_open_system_settings">Otvoriť systémové nastavenia</string>

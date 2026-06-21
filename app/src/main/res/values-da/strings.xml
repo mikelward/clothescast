@@ -85,7 +85,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dagligt ClothesCast</string>
     <string name="settings_schedule_time_label">Tidspunkt</string>
-    <string name="settings_daily_mention_evening_events">Nævn aftenbegivenheder</string>
     <string name="settings_schedule_preview">Afspil nu</string>
 
     <string name="settings_tonight_title">Aftenens ClothesCast</string>
@@ -1007,8 +1006,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_calendar_master">Brug min kalender</string>
     <string name="settings_calendar_master_description">Lad ClothesCast læse dine kalendere for at tilpasse prognoser og outfits. Intet forlader enheden.</string>
     <string name="settings_calendar_features_title">Personlige kalendere</string>
-    <string name="settings_calendar_evening_tie_ins">Aftenforbindelser</string>
-    <string name="settings_calendar_evening_tie_ins_description">Hvis du går ud om aftenen, fortæller morgenprognoserne dig, om du skal tage noget ekstra med.</string>
+    <string name="settings_evening_add_ons">Ekstra til aftenen</string>
+    <string name="settings_evening_add_ons_description">Hvis du går ud om aftenen, fortæller morgenprognoserne dig, om du skal tage noget ekstra med.</string>
     <string name="settings_calendar_birthdays_description">Brug særlige farver og beskeder til fødselsdage i dine kalendere.</string>
     <string name="settings_calendar_public_holidays_description">Brug særlige farver og beskeder til helligdage i dine kalendere.</string>
     <string name="settings_calendar_open_system_settings">Åbn systemindstillinger</string>

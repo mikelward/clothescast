@@ -200,7 +200,6 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Denní ClothesCast</string>
     <string name="settings_schedule_time_label">Čas</string>
-    <string name="settings_daily_mention_evening_events">Zmiňovat večerní události</string>
     <string name="settings_schedule_preview">Přehrát nyní</string>
 
     <string name="settings_tonight_title">Noční ClothesCast</string>
@@ -985,8 +984,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_calendar_master">Použít můj kalendář</string>
     <string name="settings_calendar_master_description">Povol ClothesCastu číst tvé kalendáře, aby mohl přizpůsobit předpovědi a outfity. Nic neopustí zařízení.</string>
     <string name="settings_calendar_features_title">Osobní kalendáře</string>
-    <string name="settings_calendar_evening_tie_ins">Večerní propojení</string>
-    <string name="settings_calendar_evening_tie_ins_description">Pokud jdeš večer ven, ranní předpověď ti řekne, jestli si máš vzít něco navíc.</string>
+    <string name="settings_evening_add_ons">Večerní doplňky</string>
+    <string name="settings_evening_add_ons_description">Pokud jdeš večer ven, ranní předpověď ti řekne, jestli si máš vzít něco navíc.</string>
     <string name="settings_calendar_birthdays_description">Použij speciální barvy a zprávy pro narozeniny ve tvých kalendářích.</string>
     <string name="settings_calendar_public_holidays_description">Použij speciální barvy a zprávy pro státní svátky ve tvých kalendářích.</string>
     <string name="settings_calendar_open_system_settings">Otevřít systémová nastavení</string>

@@ -301,7 +301,7 @@ class InsightFormatter(
                 formatExtras(summary.period, extras.item)?.let(::add)
             }
             summary.eveningEventExtras
-                ?.let { formatEveningEventExtras(it, precipAccessoryKeys) }
+                ?.let { formatEveningEventExtras(it, precipAccessoryKeys, summary.precip) }
                 ?.let(::add)
         }
         // Whether a leading temperature sentence exists to carry the period
@@ -453,13 +453,6 @@ class InsightFormatter(
         return "($preamble) $tail"
     }
 
-    // TODO(insight-tweak): when the morning precip clause already names a
-    //  daytime peak ("Rain at 3pm.") and the evening extras also names an
-    //  evening rain ("…, rain at 9pm, bring a jacket."), the listener hears
-    //  two distinct rain times back-to-back. Consider folding both peaks into
-    //  one mention ("Rain at 3pm and 9pm.") or suppressing the second when
-    //  the extras adds no new clothes vocabulary beyond rain.
-    //
     // TODO(accessories-catalog): accessories are silenced rather than
     //  rendered. To bring them back, build a domain-side ClothesRule
     //  item-kind classification (garment / accessory) so each item knows
@@ -751,6 +744,7 @@ class InsightFormatter(
     private fun formatEveningEventExtras(
         extras: EveningEventExtrasClause,
         alreadyMentionedAccessories: Set<String> = emptySet(),
+        daytimePrecip: PrecipClause? = null,
     ): String? {
         val rainTime = extras.rainTime
         // Accessories (umbrella) are silenced from the incoming items list for
@@ -796,6 +790,22 @@ class InsightFormatter(
             // collapses to the bare-rain prose (the only signal left);
             // otherwise the whole extras is empty and we drop it.
             if (rainTime == null) return null
+            // Drop the bare evening rain echo when the daytime precip clause
+            // already named the same condition at least as confidently — the
+            // listener would otherwise hear "rain" twice with no new clothes
+            // vocabulary between them ("Rain. Tonight, rain."). A different
+            // evening condition (snow day + evening rain) or an escalation from
+            // a hedged daytime "chance of rain" to a confident evening "rain"
+            // still surfaces, and an item-led evening clause adds vocabulary so
+            // it never reaches this branch. A post-midnight peak is deduped the
+            // same as any other — the bare "overnight" qualifier isn't worth
+            // repeating a rain the daytime clause already named.
+            if (daytimePrecip != null &&
+                daytimePrecip.condition == (extras.precipCondition ?: WeatherCondition.RAIN) &&
+                daytimePrecip.likelihood <= extras.likelihood
+            ) {
+                return null
+            }
             val template = when (extras.likelihood) {
                 PrecipLikelihood.LIKELY -> R.string.insight_evening_rain
                 PrecipLikelihood.POSSIBLE -> R.string.insight_evening_rain_chance

@@ -999,6 +999,89 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `bare evening rain is suppressed when the daytime precip already named rain`() {
+        // The daytime clause already says "Rain."; a bare evening rain echo with
+        // no new clothes vocabulary would just repeat the word, so we drop it.
+        val out = subject.format(
+            summary(
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+                eveningEventExtras = EveningEventExtrasClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Rain."
+    }
+
+    @Test
+    fun `bare overnight rain is suppressed too when the day already named rain`() {
+        // A post-midnight peak would add "overnight", but that bare qualifier
+        // isn't interesting enough to repeat a rain the daytime clause already
+        // named — so it's deduped the same as any other evening peak.
+        val out = subject.format(
+            summary(
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+                eveningEventExtras = EveningEventExtrasClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(2, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Rain."
+    }
+
+    @Test
+    fun `bare evening rain still surfaces when the daytime condition differs`() {
+        // A snow day plus a separate evening rain are two distinct messages, not
+        // a repeat — keep both.
+        val out = subject.format(
+            summary(
+                precip = PrecipClause(WeatherCondition.SNOW, LocalTime.of(15, 0)),
+                eveningEventExtras = EveningEventExtrasClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    precipCondition = WeatherCondition.RAIN,
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Snow. Tonight, rain."
+    }
+
+    @Test
+    fun `bare evening rain still surfaces when it escalates a hedged daytime chance`() {
+        // Daytime only hedged ("Chance of rain."); a confident evening "rain" is
+        // an escalation, not a repeat, so it stays.
+        val out = subject.format(
+            summary(
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0), PrecipLikelihood.POSSIBLE),
+                eveningEventExtras = EveningEventExtrasClause(
+                    items = emptyList(),
+                    rainTime = LocalTime.of(21, 0),
+                    likelihood = PrecipLikelihood.LIKELY,
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Chance of rain. Tonight, rain."
+    }
+
+    @Test
+    fun `evening rain with clothes items survives the daytime precip dedup`() {
+        // The evening clause adds new clothes vocabulary ("bring a jacket"), so
+        // it's kept even though the daytime clause already named rain.
+        val out = subject.format(
+            summary(
+                precip = PrecipClause(WeatherCondition.RAIN, LocalTime.of(15, 0)),
+                eveningEventExtras = EveningEventExtrasClause(
+                    items = listOf("jacket"),
+                    rainTime = LocalTime.of(21, 0),
+                ),
+            ),
+        )
+        out shouldBe "Today, it will be 21°. Rain. Tonight, rain, bring a jacket."
+    }
+
+    @Test
     fun `evening event extras says 'overnight' for a post-midnight rain peak`() {
         // A peak in the early hours (00:00–04:59) appends "overnight",
         // flagging the post-midnight window the "Tonight," lead doesn't
@@ -1480,11 +1563,12 @@ class InsightFormatterTest {
 
     @Test
     fun `evening extras drops the umbrella the main precip clause already named`() {
-        // Bug: the morning precip clause ("Drizzle, bring an umbrella.") and the
-        // evening extras both carry the same fired umbrella rule, so the prose
-        // said "bring an umbrella" twice. The extras now suppresses the repeat
-        // and falls back to the bare-rain wording — the evening rain still
-        // surfaces, just without re-naming the carry.
+        // The morning precip clause ("Drizzle, bring an umbrella.") and the
+        // evening extras both carry the same fired umbrella rule. After the
+        // umbrella repeat is suppressed the evening clause has no new vocabulary
+        // left — just the same DRIZZLE condition the daytime clause already named
+        // at least as confidently — so the bare condition-echo is dropped too,
+        // rather than tacking on a redundant "Tonight, chance of drizzle."
         umbrellaSubject.format(
             summary(
                 carriedAccessories = listOf("umbrella"),
@@ -1496,7 +1580,7 @@ class InsightFormatterTest {
                     precipCondition = WeatherCondition.DRIZZLE,
                 ),
             ),
-        ) shouldBe "Today, it will be 21°. Drizzle, bring an umbrella. Tonight, chance of drizzle."
+        ) shouldBe "Today, it will be 21°. Drizzle, bring an umbrella."
     }
 
     @Test

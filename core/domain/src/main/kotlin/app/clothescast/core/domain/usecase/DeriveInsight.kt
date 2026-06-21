@@ -3,7 +3,7 @@ package app.clothescast.core.domain.usecase
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ConfidenceInfo
 import app.clothescast.core.domain.model.DailyForecast
-import app.clothescast.core.domain.model.EveningEventTieInClause
+import app.clothescast.core.domain.model.EveningEventExtrasClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.Garment
@@ -25,7 +25,7 @@ import java.time.LocalTime
  * Pure-function builder for [DailyInsightResult] from a captured [ForecastSnapshot]
  * + the user's current [UserPreferences]. This is the part of the daily pipeline
  * that doesn't touch the network or the calendar provider — it slices the bundle
- * into period windows, evaluates clothes rules, composes the evening-event tie-in
+ * into period windows, evaluates clothes rules, composes the evening-event extras
  * from a sub-render of the night slice, and runs [RenderInsightSummary].
  *
  * Splitting this out of [GenerateDailyInsight] lets the cache layer store the
@@ -37,9 +37,9 @@ import java.time.LocalTime
  * Day / night windows are derived entirely from the user's notification times
  * (`prefs.schedule.time` / `prefs.tonightSchedule.time`, defaulting to 07:00 and
  * 19:00). TODAY covers `[morning, tonight)`; TONIGHT covers `[tonight, next
- * morning)` wrapping past midnight. The morning insight's evening tie-in is
+ * morning)` wrapping past midnight. The morning insight's evening extras is
  * derived by running this same renderer against the night slice — i.e. the
- * tie-in's clothes + rain mention is whatever the 7pm night notification would
+ * extras's clothes + rain mention is whatever the 7pm night notification would
  * itself say — and only emits when the user has at least one non-all-day
  * calendar event with a location in the night window (an event "away from
  * home"). That away-from-home gate is the only behavioural asymmetry between
@@ -69,12 +69,12 @@ class DeriveInsight(
         // today. Only ever set with TONIGHT.
         val overnight = snapshot.overnight
 
-        // Calendar events feed the evening tie-in and [Insight.hasEvents] only
-        // while the calendar tie-in is currently active. The fetch path already
+        // Calendar events feed the evening extras and [Insight.hasEvents] only
+        // while the calendar extras is currently active. The fetch path already
         // drops events when it's off (GenerateDailyInsight gates the reader on
         // calendarEventMentionsActive), but a cache hit / replay re-derives from
         // snapshot.events, which can still hold events captured before the user
-        // turned the tie-in off. Gate here too, so a stale event can't resurface
+        // turned the extras off. Gate here too, so a stale event can't resurface
         // in the prose, hasEvents, the delivery gates, or the MQTT has_events
         // flag after the setting was disabled.
         val activeEvents = if (prefs.calendarEventMentionsActive) snapshot.events else emptyList()
@@ -89,8 +89,8 @@ class DeriveInsight(
             overnight = overnight,
         )
 
-        val eveningEventTieIn = if (period == ForecastPeriod.TODAY && prefs.dailyMentionEveningEvents) {
-            buildEveningEventTieIn(
+        val eveningEventExtras = if (period == ForecastPeriod.TODAY && prefs.dailyMentionEveningEvents) {
+            buildEveningEventExtras(
                 bundle = bundle,
                 prefs = prefs,
                 morningStart = morningStart,
@@ -135,7 +135,7 @@ class DeriveInsight(
             events = periodView.events,
             period = period,
             todayForDelta = periodView.deltaToday,
-            eveningEventTieIn = eveningEventTieIn,
+            eveningEventExtras = eveningEventExtras,
             deltaThresholdC = prefs.deltaThresholdC,
             deltaFormat = prefs.deltaFormat,
             clothesMentionMode = prefs.clothesMentionMode,
@@ -278,14 +278,14 @@ class DeriveInsight(
         )
     }
 
-    private fun buildEveningEventTieIn(
+    private fun buildEveningEventExtras(
         bundle: ForecastBundle,
         prefs: UserPreferences,
         morningStart: LocalTime,
         tonightStart: LocalTime,
         allEvents: List<CalendarEvent>,
         todayItems: List<String>,
-    ): EveningEventTieInClause? {
+    ): EveningEventExtrasClause? {
         val nightEvents = filterEventsForPeriod(
             events = allEvents,
             period = ForecastPeriod.TONIGHT,
@@ -303,7 +303,7 @@ class DeriveInsight(
             morningStart = morningStart,
             tonightStart = tonightStart,
             events = allEvents,
-            // The morning insight's evening tie-in is about *tonight* (the coming
+            // The morning insight's evening extras is about *tonight* (the coming
             // night of today), never the ongoing overnight.
             overnight = false,
         )
@@ -314,7 +314,7 @@ class DeriveInsight(
             events = nightView.events,
             period = ForecastPeriod.TONIGHT,
             todayForDelta = nightView.deltaToday,
-            eveningEventTieIn = null,
+            eveningEventExtras = null,
             deltaThresholdC = prefs.deltaThresholdC,
             deltaFormat = prefs.deltaFormat,
             todayRuleItems = Garment.layerReduce(nightView.triggeredOutfit.rules).map { it.item.itemKey },
@@ -337,7 +337,7 @@ class DeriveInsight(
         val precip = nightSummary.precip
         if (clothesDelta.isEmpty() && precip == null) return null
 
-        return EveningEventTieInClause(
+        return EveningEventExtrasClause(
             items = clothesDelta + eveningAccessories,
             rainTime = precip?.time,
             likelihood = precip?.likelihood ?: PrecipLikelihood.LIKELY,
@@ -398,7 +398,7 @@ class DeriveInsight(
             val g = Garment.fromKey(item) ?: return@filter false
             when {
                 // Carried accessories (umbrella) are handled separately in
-                // buildEveningEventTieIn so they survive the day-dedup; keep
+                // buildEveningEventExtras so they survive the day-dedup; keep
                 // them out of the worn-garment delta to avoid a double mention.
                 g.slot == Garment.Slot.CARRIED -> false
                 // OUTER rain shell: additive and rain-keyed, never warmth-gated.
@@ -421,7 +421,7 @@ class DeriveInsight(
         // carry dates. Keep any event that *overlaps* the window, not just
         // those that start inside it: an 18:30–21:30 dinner straddles a 19:00
         // tonight start, and excluding it made the 7pm notification silent
-        // (hasEvents false) and hid the away-from-home tie-in even though the
+        // (hasEvents false) and hid the away-from-home extras even though the
         // user is out for most of the evening. The upper bound matters too —
         // the two-day fetch now surfaces tomorrow's events, and a
         // tomorrow-19:30 dinner must not count for tonight, while a

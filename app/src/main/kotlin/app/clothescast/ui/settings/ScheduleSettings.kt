@@ -453,8 +453,8 @@ private fun DayCard(
                 onRequestSpeechSetup = onRequestSpeechSetup,
             )
             ToggleRow(
-                label = stringResource(R.string.settings_evening_add_ons),
-                description = stringResource(R.string.settings_evening_add_ons_description),
+                label = stringResource(R.string.settings_evening_extras),
+                description = stringResource(R.string.settings_evening_extras_description),
                 checked = mentionEveningEvents,
                 onCheckedChange = onSetMentionEveningEvents,
             )

@@ -16,7 +16,7 @@ See [PRIVACY.md](PRIVACY.md) for what data leaves the device and when.
 Working v1: full ClothesCast pipeline (Open-Meteo → on-device rendering →
 notification, phone TTS, Cast, MQTT, widgets, and cached Today refreshes),
 Compose Settings UI for location, schedule, delivery toggles, units, clothes
-rules, voice, API keys, calendar tie-in, smart-home outputs, privacy, and
+rules, voice, API keys, calendar extras, smart-home outputs, privacy, and
 telemetry, runtime permission UX, boot/timezone/locale alarm re-arm, and debug
 / manual actions for testing without waiting until the scheduled time.
 
@@ -41,7 +41,7 @@ artifact (see below) for sideload installs.
   (default, fully on-device), or an online voice via the Gemini API.
   Online engines are BYOK; keys are encrypted on-device via Tink +
   Android Keystore + DataStore Preferences.
-- **Optional calendar tie-in**: with `READ_CALENDAR` granted, calendar
+- **Optional calendar extras**: with `READ_CALENDAR` granted, calendar
   events can gate event-relevant weather advice without turning event titles
   into notification, voice, MQTT, or Cast content.
 - **Optional device location**: with `ACCESS_COARSE_LOCATION` granted, the
@@ -95,7 +95,7 @@ Three options, in roughly increasing order of friction:
 5. **Voice** (optional): the platform TTS engine works out of the box. To
    use a more natural online voice, pick Gemini in Settings → Voice and
    paste your API key in Settings → API Keys.
-6. **Calendar tie-in** (optional): toggle _Use calendar events_ in
+6. **Calendar extras** (optional): toggle _Use calendar events_ in
    Settings → Data Sources and grant `READ_CALENDAR` to let calendar presence
    gate event-relevant advice without putting event titles in rendered output.
    See [docs/calendar-holidays.md](docs/calendar-holidays.md) for how holidays

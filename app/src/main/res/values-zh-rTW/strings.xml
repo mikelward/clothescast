@@ -441,8 +441,8 @@ label localises.
     <string name="insight_condition_thunderstorm">雷暴</string>
     <string name="insight_condition_unknown">未知</string>
     <!-- "為15點的會議帶上雨傘。" — time before event name follows Chinese convention. -->
-    <string name="insight_tie_in">今晚帶上%1$s。</string>
-    <string name="insight_tie_in_with_rain">今晚帶上%1$s，有%3$s。</string>
+    <string name="insight_extras">今晚帶上%1$s。</string>
+    <string name="insight_extras_with_rain">今晚帶上%1$s，有%3$s。</string>
     <!-- "15點" / "15點30分" — Chinese spoken time. insight_precip_at_time is a passthrough. -->
     <string name="insight_time_hour">%1$d點</string>
     <string name="insight_time_hour_minutes">%1$d點%2$02d分</string>
@@ -700,8 +700,8 @@ label localises.
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "可能" — invariant adverb; works for any precip noun. -->
     <string name="insight_precip_chance">可能%1$s。</string>
-    <string name="insight_tie_in_at_night">帶上%1$s。</string>
-    <string name="insight_tie_in_with_rain_chance">今晚帶上%1$s，可能有%3$s。</string>
+    <string name="insight_extras_at_night">帶上%1$s。</string>
+    <string name="insight_extras_with_rain_chance">今晚帶上%1$s，可能有%3$s。</string>
     <string name="insight_evening_rain">今晚有%2$s。</string>
     <string name="insight_evening_rain_chance">今晚可能有%2$s。</string>
 
@@ -1140,8 +1140,8 @@ label localises.
     <string name="settings_calendar_master">使用我的行事曆</string>
     <string name="settings_calendar_master_description">讀取你的行事曆，以個人化預報和穿搭。預設情況下，不會有任何資料離開你的裝置。</string>
     <string name="settings_calendar_features_title">個人行事曆</string>
-    <string name="settings_evening_add_ons">晚間額外物品</string>
-    <string name="settings_evening_add_ons_description">如果你晚上要外出，早晨預報會告訴你是否需要額外帶點什麼。</string>
+    <string name="settings_evening_extras">晚間額外物品</string>
+    <string name="settings_evening_extras_description">如果你晚上要外出，早晨預報會告訴你是否需要額外帶點什麼。</string>
     <string name="settings_calendar_birthdays_description">為行事曆中的生日使用特別的顏色與訊息。</string>
     <string name="settings_calendar_public_holidays_description">為行事曆中的國定假日使用特別的顏色與訊息。</string>
     <string name="settings_calendar_open_system_settings">開啟系統設定</string>

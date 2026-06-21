@@ -98,8 +98,8 @@ they work correctly in both the single-band and range templates.
     <string name="insight_condition_snow">ثلج</string>
     <string name="insight_condition_thunderstorm">عاصفة رعدية</string>
     <string name="insight_condition_unknown">غير معروف</string>
-    <string name="insight_tie_in">خذ %1$s الليلة.</string>
-    <string name="insight_tie_in_with_rain">خذ %1$s الليلة، %3$s.</string>
+    <string name="insight_extras">خذ %1$s الليلة.</string>
+    <string name="insight_extras_with_rain">خذ %1$s الليلة، %3$s.</string>
     <!-- Bare number; "في الساعة" comes from insight_precip_at_time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -442,8 +442,8 @@ they work correctly in both the single-band and range templates.
 
     <!-- Insight prose (additional templates) -->
     <string name="insight_precip_chance">احتمال %1$s.</string>
-    <string name="insight_tie_in_at_night">خذ %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">خذ %1$s الليلة، احتمال %3$s.</string>
+    <string name="insight_extras_at_night">خذ %1$s.</string>
+    <string name="insight_extras_with_rain_chance">خذ %1$s الليلة، احتمال %3$s.</string>
     <string name="insight_evening_rain">الليلة، %2$s.</string>
     <string name="insight_evening_rain_chance">الليلة، احتمال %2$s.</string>
 
@@ -972,8 +972,8 @@ they work correctly in both the single-band and range templates.
     <string name="settings_calendar_master">استخدام تقويمي</string>
     <string name="settings_calendar_master_description">يقرأ تقاويمك لتخصيص التوقعات والأزياء. لا شيء يغادر جهازك افتراضيًا.</string>
     <string name="settings_calendar_features_title">التقاويم الشخصية</string>
-    <string name="settings_evening_add_ons">إضافات المساء</string>
-    <string name="settings_evening_add_ons_description">إذا كنت ستخرج في المساء، تخبرك توقعات الصباح بما إذا كنت بحاجة إلى إحضار أي شيء إضافي.</string>
+    <string name="settings_evening_extras">إضافات المساء</string>
+    <string name="settings_evening_extras_description">إذا كنت ستخرج في المساء، تخبرك توقعات الصباح بما إذا كنت بحاجة إلى إحضار أي شيء إضافي.</string>
     <string name="settings_calendar_birthdays_description">استخدم ألوانًا ورسائل خاصة لأعياد الميلاد في تقاويمك.</string>
     <string name="settings_calendar_public_holidays_description">استخدم ألوانًا ورسائل خاصة للعطلات الرسمية في تقاويمك.</string>
     <string name="settings_calendar_open_system_settings">فتح إعدادات النظام</string>

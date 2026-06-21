@@ -639,10 +639,10 @@ only the displayed label localizes.
     <string name="insight_condition_snow">Снег</string>
     <string name="insight_condition_thunderstorm">Гроза</string>
     <string name="insight_condition_unknown">Неизвестно</string>
-    <string name="insight_tie_in">Возьми %1$s сегодня вечером.</string>
-    <string name="insight_tie_in_at_night">Возьми %1$s сегодня вечером.</string>
-    <string name="insight_tie_in_with_rain">Возьми %1$s сегодня вечером, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Возможен %3$s — возьми %1$s.</string>
+    <string name="insight_extras">Возьми %1$s сегодня вечером.</string>
+    <string name="insight_extras_at_night">Возьми %1$s сегодня вечером.</string>
+    <string name="insight_extras_with_rain">Возьми %1$s сегодня вечером, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Возможен %3$s — возьми %1$s.</string>
     <string name="insight_evening_rain">Сегодня вечером %2$s.</string>
     <string name="insight_evening_rain_chance">Сегодня вечером возможен %2$s.</string>
     <!-- "15" — preposition "в" comes from surrounding templates. -->
@@ -1030,8 +1030,8 @@ only the displayed label localizes.
     <string name="settings_calendar_master">Использовать мой календарь</string>
     <string name="settings_calendar_master_description">Читает твои календари, чтобы подбирать прогнозы и наряды. По умолчанию ничего не покидает твоё устройство.</string>
     <string name="settings_calendar_features_title">Личные календари</string>
-    <string name="settings_evening_add_ons">Дополнения на вечер</string>
-    <string name="settings_evening_add_ons_description">Если ты собираешься куда-то вечером, утренний прогноз подскажет, нужно ли взять что-то с собой.</string>
+    <string name="settings_evening_extras">Дополнения на вечер</string>
+    <string name="settings_evening_extras_description">Если ты собираешься куда-то вечером, утренний прогноз подскажет, нужно ли взять что-то с собой.</string>
     <string name="settings_calendar_birthdays_description">Особые цвета и сообщения для дней рождения из твоих календарей.</string>
     <string name="settings_calendar_public_holidays_description">Особые цвета и сообщения для государственных праздников из твоих календарей.</string>
     <string name="settings_calendar_open_system_settings">Открыть системные настройки</string>

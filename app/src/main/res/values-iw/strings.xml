@@ -98,8 +98,8 @@ standard in Israeli digital communication.
     <string name="insight_condition_snow">שלג</string>
     <string name="insight_condition_thunderstorm">סופת רעמים</string>
     <string name="insight_condition_unknown">לא ידוע</string>
-    <string name="insight_tie_in">קח/י %1$s הלילה.</string>
-    <string name="insight_tie_in_with_rain">קח/י %1$s הלילה, %3$s.</string>
+    <string name="insight_extras">קח/י %1$s הלילה.</string>
+    <string name="insight_extras_with_rain">קח/י %1$s הלילה, %3$s.</string>
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
 
@@ -437,8 +437,8 @@ standard in Israeli digital communication.
 
     <!-- Insight prose templates (additional) -->
     <string name="insight_precip_chance">סיכוי ל%1$s.</string>
-    <string name="insight_tie_in_at_night">קח/י %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">קח/י %1$s הלילה, סיכוי ל%3$s.</string>
+    <string name="insight_extras_at_night">קח/י %1$s.</string>
+    <string name="insight_extras_with_rain_chance">קח/י %1$s הלילה, סיכוי ל%3$s.</string>
     <string name="insight_evening_rain">הלילה, %2$s.</string>
     <string name="insight_evening_rain_chance">הלילה, סיכוי ל%2$s.</string>
 
@@ -970,8 +970,8 @@ standard in Israeli digital communication.
     <string name="settings_calendar_master">השתמש/י ביומן שלי</string>
     <string name="settings_calendar_master_description">קורא את היומנים שלך כדי להתאים אישית תחזיות ולבוש. כברירת מחדל, שום דבר לא יוצא מהמכשיר שלך.</string>
     <string name="settings_calendar_features_title">יומנים אישיים</string>
-    <string name="settings_evening_add_ons">תוספות לערב</string>
-    <string name="settings_evening_add_ons_description">אם את/ה יוצא/ת בערב, תחזית הבוקר אומרת לך אם צריך לקחת משהו נוסף.</string>
+    <string name="settings_evening_extras">תוספות לערב</string>
+    <string name="settings_evening_extras_description">אם את/ה יוצא/ת בערב, תחזית הבוקר אומרת לך אם צריך לקחת משהו נוסף.</string>
     <string name="settings_calendar_birthdays_description">השתמש/י בצבעים ובהודעות מיוחדים לימי הולדת ביומנים שלך.</string>
     <string name="settings_calendar_public_holidays_description">השתמש/י בצבעים ובהודעות מיוחדים לחגים ביומנים שלך.</string>
     <string name="settings_calendar_open_system_settings">פתח/י הגדרות מערכת</string>

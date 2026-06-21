@@ -227,7 +227,7 @@ Open work:
       be passed in at the type level. New entries trip the allowlists and
       force a conscious PR-time decision.
 - [ ] **Insight-composition events — decide separately.** Which evening
-      tie-in path fired (clothes-rule vs per-model rain bare warning vs
+      extras path fired (clothes-rule vs per-model rain bare warning vs
       none), which confidence tier emitted, whether tonight was
       suppressed. Useful but a new category of "what the engine
       decided" telemetry; revisit once the settings + refresh streams

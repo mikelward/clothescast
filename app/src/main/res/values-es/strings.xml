@@ -453,14 +453,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_snow">Nieve</string>
     <string name="insight_condition_thunderstorm">Tormenta</string>
     <string name="insight_condition_unknown">Desconocido</string>
-    <!-- Evening tie-in counterparts of the English insight_tie_in / insight_tie_in_with_rain.
+    <!-- Evening extras counterparts of the English insight_extras / insight_extras_with_rain.
          Without these the Spanish formatter falls through to another locale that *does*
          have the keys (German), which is how "sieben Grad" leaks into Spanish output. -->
-    <string name="insight_tie_in">Lleva %1$s esta noche.</string>
+    <string name="insight_extras">Lleva %1$s esta noche.</string>
     <!-- Counterpart used on a TONIGHT insight where the band lead already
          says "Esta noche …"; drops "esta noche" so it isn't repeated. -->
-    <string name="insight_tie_in_at_night">Lleva %1$s.</string>
-    <string name="insight_tie_in_with_rain">Lleva %1$s esta noche, %3$s.</string>
+    <string name="insight_extras_at_night">Lleva %1$s.</string>
+    <string name="insight_extras_with_rain">Lleva %1$s esta noche, %3$s.</string>
     <!-- "15" — prepositions ("a las", "de las") come from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -686,7 +686,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <string name="insight_precip_chance">Posibilidad de %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Esta noche, posibilidad de %3$s, lleva %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Esta noche, posibilidad de %3$s, lleva %1$s.</string>
     <string name="insight_evening_rain">Esta noche, %2$s.</string>
     <string name="insight_evening_rain_chance">Esta noche, posibilidad de %2$s.</string>
 
@@ -1104,8 +1104,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Usar mi calendario</string>
     <string name="settings_calendar_master_description">Lee tus calendarios para personalizar previsiones y atuendos. De forma predeterminada, nada sale de tu dispositivo.</string>
     <string name="settings_calendar_features_title">Calendarios personales</string>
-    <string name="settings_evening_add_ons">Extras para la tarde</string>
-    <string name="settings_evening_add_ons_description">Si sales por la tarde, la previsión de la mañana te dice si necesitas llevar algo extra.</string>
+    <string name="settings_evening_extras">Extras para la tarde</string>
+    <string name="settings_evening_extras_description">Si sales por la tarde, la previsión de la mañana te dice si necesitas llevar algo extra.</string>
     <string name="settings_calendar_birthdays_description">Usa colores y mensajes especiales para los cumpleaños de tus calendarios.</string>
     <string name="settings_calendar_public_holidays_description">Usa colores y mensajes especiales para los festivos de tus calendarios.</string>
     <string name="settings_calendar_open_system_settings">Abrir ajustes del sistema</string>

@@ -3,7 +3,7 @@ package app.clothescast.core.domain.model
 /**
  * A calendar present on the device, surfaced to the per-calendar
  * enable/disable setting so the user can choose which calendars feed
- * ClothesCast (theming, evening tie-ins, the celebration listings).
+ * ClothesCast (theming, evening extras, the celebration listings).
  *
  * [id] is the calendar's **stable provider identity, scoped to its account** —
  * `account/syncId`, where syncId is the sync adapter's server-side calendar id

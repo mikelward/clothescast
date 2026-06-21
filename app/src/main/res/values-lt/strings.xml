@@ -97,8 +97,8 @@ What is NOT overridden, by design:
     <string name="insight_condition_snow">Sniegas</string>
     <string name="insight_condition_thunderstorm">Perkūnija</string>
     <string name="insight_condition_unknown">Nežinoma</string>
-    <string name="insight_tie_in">Pasiimk %1$s šįvakar.</string>
-    <string name="insight_tie_in_with_rain">Pasiimk %1$s šįvakar, %3$s.</string>
+    <string name="insight_extras">Pasiimk %1$s šįvakar.</string>
+    <string name="insight_extras_with_rain">Pasiimk %1$s šįvakar, %3$s.</string>
     <!-- Lithuanian time uses "val." (= o\'clock) suffix; minutes joined by ":". -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -577,8 +577,8 @@ What is NOT overridden, by design:
 
     <!-- Additional insight prose templates. -->
     <string name="insight_precip_chance">Gali būti %1$s.</string>
-    <string name="insight_tie_in_at_night">Pasiimk %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Pasiimk %1$s šįvakar, gali būti %3$s.</string>
+    <string name="insight_extras_at_night">Pasiimk %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Pasiimk %1$s šįvakar, gali būti %3$s.</string>
     <string name="insight_evening_rain">Šįvakar %2$s.</string>
     <string name="insight_evening_rain_chance">Šįvakar gali būti %2$s.</string>
 
@@ -964,8 +964,8 @@ What is NOT overridden, by design:
     <string name="settings_calendar_master">Naudoti mano kalendorių</string>
     <string name="settings_calendar_master_description">Skaito tavo kalendorius, kad pritaikytų prognozes ir aprangą. Pagal numatytuosius nustatymus niekas nepalieka tavo įrenginio.</string>
     <string name="settings_calendar_features_title">Asmeniniai kalendoriai</string>
-    <string name="settings_evening_add_ons">Vakaro priedai</string>
-    <string name="settings_evening_add_ons_description">Jei vakare kažkur eini, ryto prognozė pasakys, ar reikia pasiimti kažką papildomai.</string>
+    <string name="settings_evening_extras">Vakaro priedai</string>
+    <string name="settings_evening_extras_description">Jei vakare kažkur eini, ryto prognozė pasakys, ar reikia pasiimti kažką papildomai.</string>
     <string name="settings_calendar_birthdays_description">Naudoti specialias spalvas ir žinutes tavo kalendorių gimtadieniams.</string>
     <string name="settings_calendar_public_holidays_description">Naudoti specialias spalvas ir žinutes tavo kalendorių valstybinėms šventėms.</string>
     <string name="settings_calendar_open_system_settings">Atidaryti sistemos nustatymus</string>

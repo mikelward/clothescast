@@ -94,8 +94,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="insight_condition_thunderstorm">বজ্রপাত</string>
     <string name="insight_condition_unknown">অজানা</string>
     <!-- "মিটিং (15)-এর জন্য কোট নিন।" -->
-    <string name="insight_tie_in">আজ রাতে %1$s নিন।</string>
-    <string name="insight_tie_in_with_rain">আজ রাতে %1$s নিন, %3$s।</string>
+    <string name="insight_extras">আজ রাতে %1$s নিন।</string>
+    <string name="insight_extras_with_rain">আজ রাতে %1$s নিন, %3$s।</string>
     <!-- "15" — suffix "-এ" comes from insight_precip_at_time wrapper. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -105,8 +105,8 @@ West Bengal vocabulary differences in a future PR.
          ============================================================ -->
 
     <string name="insight_precip_chance">%1$s হওয়ার সম্ভাবনা।</string>
-    <string name="insight_tie_in_at_night">%1$s নিন।</string>
-    <string name="insight_tie_in_with_rain_chance">আজ রাতে %1$s নিন, %3$s সম্ভাবনা।</string>
+    <string name="insight_extras_at_night">%1$s নিন।</string>
+    <string name="insight_extras_with_rain_chance">আজ রাতে %1$s নিন, %3$s সম্ভাবনা।</string>
     <string name="insight_evening_rain">আজ রাতে %2$s।</string>
     <string name="insight_evening_rain_chance">আজ রাতে %2$s সম্ভাবনা।</string>
 
@@ -1048,8 +1048,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_calendar_master">আমার ক্যালেন্ডার ব্যবহার করুন</string>
     <string name="settings_calendar_master_description">পূর্বাভাস ও পোশাক ব্যক্তিগত করতে আপনার ক্যালেন্ডার পড়ে। ডিফল্টভাবে কিছুই আপনার ডিভাইস ছাড়ে না।</string>
     <string name="settings_calendar_features_title">ব্যক্তিগত ক্যালেন্ডার</string>
-    <string name="settings_evening_add_ons">সন্ধ্যার অতিরিক্ত জিনিস</string>
-    <string name="settings_evening_add_ons_description">যদি আপনি সন্ধ্যায় বাইরে যান, সকালের পূর্বাভাস আপনাকে জানায় যে কিছু অতিরিক্ত আনার প্রয়োজন আছে কিনা।</string>
+    <string name="settings_evening_extras">সন্ধ্যার অতিরিক্ত জিনিস</string>
+    <string name="settings_evening_extras_description">যদি আপনি সন্ধ্যায় বাইরে যান, সকালের পূর্বাভাস আপনাকে জানায় যে কিছু অতিরিক্ত আনার প্রয়োজন আছে কিনা।</string>
     <string name="settings_calendar_birthdays_description">আপনার ক্যালেন্ডারের জন্মদিনের জন্য বিশেষ রঙ ও বার্তা ব্যবহার করুন।</string>
     <string name="settings_calendar_public_holidays_description">আপনার ক্যালেন্ডারের সরকারি ছুটির জন্য বিশেষ রঙ ও বার্তা ব্যবহার করুন।</string>
     <string name="settings_calendar_open_system_settings">সিস্টেম সেটিংস খুলুন</string>

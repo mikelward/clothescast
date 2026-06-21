@@ -146,17 +146,17 @@ class DeriveInsightHistoricYesterdayTest {
     )
 
     @Test
-    fun `hasEvents is true when the calendar tie-in is active`() {
+    fun `hasEvents is true when the calendar extras is active`() {
         val active = prefs.copy(calendarEnabled = true, useCalendarEvents = true)
         DeriveInsight()(snapshotWithEvents(listOf(locatedEvent)), active).insight.hasEvents shouldBe true
     }
 
     @Test
-    fun `cached events are dropped when the calendar tie-in is off`() {
-        // Simulates a cache hit / replay after the user turned the tie-in off:
+    fun `cached events are dropped when the calendar extras is off`() {
+        // Simulates a cache hit / replay after the user turned the extras off:
         // the snapshot still holds an event captured while it was on, but the
         // re-derive must not resurface it in hasEvents (and so not in the prose
-        // tie-in, the delivery gates, or the MQTT has_events flag either).
+        // extras, the delivery gates, or the MQTT has_events flag either).
         val off = prefs.copy(calendarEnabled = true, useCalendarEvents = false)
         DeriveInsight()(snapshotWithEvents(listOf(locatedEvent)), off).insight.hasEvents shouldBe false
     }

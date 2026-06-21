@@ -483,11 +483,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_unknown">Unbekannt</string>
 
     <!-- "Denk an Regenschirm für heute Abend." / "…, Regen um 21 Uhr." -->
-    <string name="insight_tie_in">Denk an %1$s für heute Abend.</string>
+    <string name="insight_extras">Denk an %1$s für heute Abend.</string>
     <!-- Counterpart used on a TONIGHT insight where the band lead already
          says "Heute Abend …"; drops "heute Abend" so it isn't repeated. -->
-    <string name="insight_tie_in_at_night">Denk an %1$s.</string>
-    <string name="insight_tie_in_with_rain">Denk an %1$s für heute Abend, %3$s.</string>
+    <string name="insight_extras_at_night">Denk an %1$s.</string>
+    <string name="insight_extras_with_rain">Denk an %1$s für heute Abend, %3$s.</string>
     <!-- "15 Uhr" / "15 Uhr 30" — read naturally by German TTS. -->
     <string name="insight_time_hour">%1$d Uhr</string>
     <string name="insight_time_hour_minutes">%1$d Uhr %2$02d</string>
@@ -716,7 +716,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "Evtl." (eventuell) is an invariable adverb — no gender agreement needed. -->
     <string name="insight_precip_chance">Evtl. %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Evtl. %3$s — denk an %1$s für heute Abend.</string>
+    <string name="insight_extras_with_rain_chance">Evtl. %3$s — denk an %1$s für heute Abend.</string>
     <string name="insight_evening_rain">Heute Abend %2$s.</string>
     <string name="insight_evening_rain_chance">Evtl. %2$s heute Abend.</string>
     <!-- Precip + accessory carry: "Regen, denk an Regenschirm." %1$s = condition, %2$s = accessory. -->
@@ -1137,8 +1137,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Meinen Kalender verwenden</string>
     <string name="settings_calendar_master_description">Liest deine Kalender, um Vorhersagen und Outfits zu personalisieren. Standardmäßig verlässt nichts dein Gerät.</string>
     <string name="settings_calendar_features_title">Persönliche Kalender</string>
-    <string name="settings_evening_add_ons">Extras für den Abend</string>
-    <string name="settings_evening_add_ons_description">Wenn du abends ausgehst, sagt dir die Morgenvorhersage, ob du etwas mitnehmen solltest.</string>
+    <string name="settings_evening_extras">Extras für den Abend</string>
+    <string name="settings_evening_extras_description">Wenn du abends ausgehst, sagt dir die Morgenvorhersage, ob du etwas mitnehmen solltest.</string>
     <string name="settings_calendar_birthdays_description">Verwende besondere Farben und Nachrichten für Geburtstage in deinen Kalendern.</string>
     <string name="settings_calendar_public_holidays_description">Verwende besondere Farben und Nachrichten für Feiertage in deinen Kalendern.</string>
     <string name="settings_calendar_open_system_settings">Systemeinstellungen öffnen</string>

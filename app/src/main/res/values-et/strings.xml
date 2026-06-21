@@ -527,11 +527,11 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="insight_condition_thunderstorm">Äike</string>
     <string name="insight_condition_unknown">Teadmata</string>
     <!-- Morning form: fronts "täna õhtul" since tonight context isn't yet set. -->
-    <string name="insight_tie_in">Võta %1$s täna õhtul kaasa.</string>
+    <string name="insight_extras">Võta %1$s täna õhtul kaasa.</string>
     <!-- No-prefix tonight form: band lead already established the night context. -->
-    <string name="insight_tie_in_at_night">Võta %1$s kaasa.</string>
-    <string name="insight_tie_in_with_rain">Võta %1$s täna õhtul kaasa, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Täna õhtul %3$s võimalus, võta %1$s kaasa.</string>
+    <string name="insight_extras_at_night">Võta %1$s kaasa.</string>
+    <string name="insight_extras_with_rain">Võta %1$s täna õhtul kaasa, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Täna õhtul %3$s võimalus, võta %1$s kaasa.</string>
     <string name="insight_evening_rain">Täna õhtul %2$s.</string>
     <string name="insight_evening_rain_chance">Täna õhtul %2$s võimalus.</string>
     <!-- Estonian time format uses "." separator: "kell 15.30". -->
@@ -920,8 +920,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_calendar_master">Kasuta minu kalendrit</string>
     <string name="settings_calendar_master_description">Loeb sinu kalendreid, et kohandada prognoose ja riietust. Vaikimisi ei lahku miski sinu seadmest.</string>
     <string name="settings_calendar_features_title">Isiklikud kalendrid</string>
-    <string name="settings_evening_add_ons">Õhtused lisad</string>
-    <string name="settings_evening_add_ons_description">Kui sa lähed õhtul välja, ütleb hommikuprognoos sulle, kas pead midagi lisaks kaasa võtma.</string>
+    <string name="settings_evening_extras">Õhtused lisad</string>
+    <string name="settings_evening_extras_description">Kui sa lähed õhtul välja, ütleb hommikuprognoos sulle, kas pead midagi lisaks kaasa võtma.</string>
     <string name="settings_calendar_birthdays_description">Eripärased värvid ja sõnumid sinu kalendrite sünnipäevadele.</string>
     <string name="settings_calendar_public_holidays_description">Eripärased värvid ja sõnumid sinu kalendrite riigipühadele.</string>
     <string name="settings_calendar_open_system_settings">Ava süsteemiseaded</string>

@@ -91,8 +91,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_snow">Theluji</string>
     <string name="insight_condition_thunderstorm">Dhoruba ya radi</string>
     <string name="insight_condition_unknown">Haijulikana</string>
-    <string name="insight_tie_in">Chukua %1$s usiku huu.</string>
-    <string name="insight_tie_in_with_rain">Chukua %1$s usiku huu, %3$s.</string>
+    <string name="insight_extras">Chukua %1$s usiku huu.</string>
+    <string name="insight_extras_with_rain">Chukua %1$s usiku huu, %3$s.</string>
     <!-- Swahili: bare digits for TTS-friendly 24h time. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -413,10 +413,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="bug_report_consent_continue">Endelea</string>
     <string name="bug_report_consent_cancel">Ghairi</string>
 
-    <!-- Insight: precipitation / tie-in templates (new variants) -->
+    <!-- Insight: precipitation / extras templates (new variants) -->
     <string name="insight_precip_chance">Uwezekano wa %1$s.</string>
-    <string name="insight_tie_in_at_night">Chukua %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Usiku huu, uwezekano wa %3$s, chukua %1$s.</string>
+    <string name="insight_extras_at_night">Chukua %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Usiku huu, uwezekano wa %3$s, chukua %1$s.</string>
     <string name="insight_evening_rain">Usiku huu, %2$s.</string>
     <string name="insight_evening_rain_chance">Usiku huu, uwezekano wa %2$s.</string>
 
@@ -945,8 +945,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_calendar_master">Tumia kalenda yangu</string>
     <string name="settings_calendar_master_description">Husoma kalenda zako ili kubinafsisha utabiri na mavazi. Kwa chaguo-msingi, hakuna kinachoacha kifaa chako.</string>
     <string name="settings_calendar_features_title">Kalenda za kibinafsi</string>
-    <string name="settings_evening_add_ons">Nyongeza za jioni</string>
-    <string name="settings_evening_add_ons_description">Ikiwa unaenda nje jioni, utabiri wa asubuhi unakuambia ikiwa unahitaji kuchukua kitu chochote zaidi.</string>
+    <string name="settings_evening_extras">Nyongeza za jioni</string>
+    <string name="settings_evening_extras_description">Ikiwa unaenda nje jioni, utabiri wa asubuhi unakuambia ikiwa unahitaji kuchukua kitu chochote zaidi.</string>
     <string name="settings_calendar_birthdays_description">Tumia rangi na ujumbe maalum kwa siku za kuzaliwa katika kalenda zako.</string>
     <string name="settings_calendar_public_holidays_description">Tumia rangi na ujumbe maalum kwa likizo za umma katika kalenda zako.</string>
     <string name="settings_calendar_open_system_settings">Fungua mipangilio ya mfumo</string>

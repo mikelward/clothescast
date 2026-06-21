@@ -447,7 +447,7 @@ class InsightCache(
      *
      * Titles and free-form location strings are deliberately dropped, matching
      * the privacy posture of the previous derived-insight cache (which stored
-     * `CalendarTieInClause(item: String)` — a garment name, never the event
+     * `CalendarExtrasClause(item: String)` — a garment name, never the event
      * title). The renderer's only reads of `location` are presence checks
      * (`!it.location.isNullOrBlank()`), so on materialisation we surface a
      * placeholder `"x"` when `hasLocation == true` and `null` otherwise; titles

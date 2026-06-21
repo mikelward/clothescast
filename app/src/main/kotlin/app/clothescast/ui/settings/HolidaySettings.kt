@@ -74,7 +74,7 @@ import java.util.Locale
 /**
  * The Calendar settings page. Top to bottom: a "Use my calendar" permission
  * master toggle, a "What to use it for" card with the three calendar-sourced
- * feature toggles (Evening tie-ins, Birthdays, Public holidays), the two
+ * feature toggles (Evening extras, Birthdays, Public holidays), the two
  * upcoming-celebration listings (Birthdays / Public holidays), the
  * country-source toggles (Region / Location / Global / Funny / All), the
  * currently-enabled country collapsibles surfaced at the top level, and
@@ -350,8 +350,8 @@ internal fun CalendarContent(
                     ) { Text(stringResource(R.string.settings_calendar_open_system_settings)) }
                 }
                 CalendarFeatureRow(
-                    label = stringResource(R.string.settings_evening_add_ons),
-                    description = stringResource(R.string.settings_evening_add_ons_description),
+                    label = stringResource(R.string.settings_evening_extras),
+                    description = stringResource(R.string.settings_evening_extras_description),
                     checked = calendarEnabled && useCalendarEvents && permissionGranted,
                     onToggle = { wantsOn ->
                         if (wantsOn) requestThenEnable { onSetUseCalendarEvents(true) }
@@ -1120,7 +1120,7 @@ private fun CelebrationRow(
  * effective state is the user's explicit override when set, otherwise the
  * calendar's visibility in the host calendar app (so a fresh install mirrors
  * Google Calendar). Disabling a calendar stops ClothesCast reading it for
- * theming, evening tie-ins, the listings, and the insight prose. Gated like
+ * theming, evening extras, the listings, and the insight prose. Gated like
  * the celebration listings: master switch first, then READ_CALENDAR.
  */
 @Composable

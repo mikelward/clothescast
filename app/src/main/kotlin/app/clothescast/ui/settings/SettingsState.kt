@@ -60,7 +60,7 @@ data class SettingsState(
     val tonightDeliveryMode: DeliveryMode = DeliveryMode.NOTIFICATION_AND_TTS,
     // Off by default to mirror the repository (see
     // UserPreferences.dailyMentionEveningEvents, where an absent key resolves to
-    // disabled): the evening tie-in stays opt-in, so the first render before
+    // disabled): the evening extras stays opt-in, so the first render before
     // DataStore emits must not show the switch on.
     val dailyMentionEveningEvents: Boolean = false,
     val clothesMentionMode: ClothesMentionMode = ClothesMentionMode.ALWAYS,

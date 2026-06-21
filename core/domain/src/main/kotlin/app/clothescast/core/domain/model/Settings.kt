@@ -781,7 +781,7 @@ data class UserPreferences(
      * that), and only fires when at least one clothes rule triggers against
      * the evening hourly slice. Off by default — even with calendar events
      * enabled, the morning insight stays focused on the day ahead until the
-     * user opts the evening tie-in in.
+     * user opts the evening extras in.
      */
     val dailyMentionEveningEvents: Boolean = false,
     /**
@@ -949,7 +949,7 @@ data class UserPreferences(
      * calendar app". So the effective decision for a calendar is
      * `calendarOverrides[id] ?: visible`, and a fresh install (empty map)
      * simply mirrors what the user sees in Google Calendar. Disabling a
-     * calendar removes its events from theming, evening tie-ins, the
+     * calendar removes its events from theming, evening extras, the
      * listings, *and* the insight prose fed to the TTS — strictly less data
      * leaves the device. Stored as `STATE:id` pairs in a stringSet (STATE
      * first so a colon inside the id can't confuse the split).

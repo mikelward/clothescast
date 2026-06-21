@@ -30,11 +30,11 @@ have over it.
 - If you opt in to **online text-to-speech**, the short spoken sentence
   (e.g. _"50% chance of rain at 3pm — take an umbrella"_) is sent to the
   TTS provider you chose (Google Gemini) so it can return the audio.
-- If you opt in to **calendar tie-in**, the app reads today's events on
+- If you opt in to **calendar extras**, the app reads today's events on
   your device. The event title may appear inside the spoken sentence
   (e.g. _"Bring a jacket for your concert tonight"_), and is therefore
   also sent to the TTS provider in that one case — only when both calendar
-  tie-in and online TTS are enabled. If you also enable the MQTT bridge
+  extras and online TTS are enabled. If you also enable the MQTT bridge
   below, one calendar-derived boolean — whether the window has a located
   event, with no titles, times, or locations — is published to your own
   broker.
@@ -96,12 +96,12 @@ The source code is at <https://github.com/mikelward/clothescast>.
 
 - **What:** Today's events — title, start/end time, location, all-day
   flag — read via Android's `CalendarContract` only when you grant
-  `READ_CALENDAR` and enable the calendar tie-in setting.
+  `READ_CALENDAR` and enable the calendar extras setting.
 - **Why:** To pair a clothes recommendation with a meeting that overlaps
   bad weather (e.g. _"Bring a jacket for your concert tonight"_).
 - **Where it goes:** Calendar reading happens entirely on your device.
   Two narrow paths can let calendar-derived data leave it: (a) if the
-  tie-in fires for today's forecast _and_ you have online TTS enabled, the
+  extras fires for today's forecast _and_ you have online TTS enabled, the
   rendered sentence (which can include the event title) is sent to your
   chosen TTS provider for vocalization; and (b) if you enable the Smart
   Home MQTT bridge, a single event-presence boolean (`has_events` — no
@@ -220,9 +220,9 @@ The source code is at <https://github.com/mikelward/clothescast>.
   tell a deliberately-quiet evening (when "notify only on event nights"
   keeps the phone silent) from an outage. It's the only calendar-derived
   field here, and it carries no event titles, times, or locations. The
-  payload includes any calendar-event tie-in clause that fires
+  payload includes any calendar-event extras clause that fires
   (e.g. _"Bring a jacket for your concert tonight"_) when you have the
-  calendar tie-in enabled, because that clause is part of the rendered
+  calendar extras enabled, because that clause is part of the rendered
   sentence. No coordinates, no API keys, no settings values, no device
   identifiers travel with any of these messages.
 - **Authentication:** If you set a broker username, the bridge sends
@@ -488,7 +488,7 @@ email the address listed on the Play Store listing.
   quiet evening (when "notify only on event nights" keeps the phone silent)
   from an outage. This is a new calendar-derived field crossing the device
   boundary — but only to your own broker, only when you have both the
-  calendar tie-in and the bridge enabled, and it carries no event titles,
+  calendar extras and the bridge enabled, and it carries no event titles,
   times, or locations, just the single boolean. See the updated "Smart Home
   / Home Assistant bridge" and "Calendar events" sections above.
 - **2026-06-17** — Rain gear (umbrella, rain jacket) now also fires on the

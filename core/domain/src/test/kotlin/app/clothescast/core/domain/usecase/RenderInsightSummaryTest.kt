@@ -5,7 +5,7 @@ import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DeltaClause
 import app.clothescast.core.domain.model.DeltaFormat
-import app.clothescast.core.domain.model.EveningEventTieInClause
+import app.clothescast.core.domain.model.EveningEventExtrasClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PrecipLikelihood
@@ -45,7 +45,7 @@ class RenderInsightSummaryTest {
         condition = WeatherCondition.PARTLY_CLOUDY,
     )
 
-    // The TONIGHT calendar tie-in dates the precip peak with the tonightWindow
+    // The TONIGHT calendar extras dates the precip peak with the tonightWindow
     // wrap convention: hours before the default 19:00 tonight start — like the
     // 15:00 peak these fixtures use — fall on the day *after* mildToday.date,
     // so events meant to overlap (or be compared against) that peak are dated
@@ -429,12 +429,12 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `evening event tie-in passes through whatever the caller built`() {
-        // The renderer no longer composes the evening tie-in — GenerateDailyInsight
+    fun `evening event extras passes through whatever the caller built`() {
+        // The renderer no longer composes the evening extras — GenerateDailyInsight
         // builds it by re-running the renderer against the night slice and
         // folding clothes + precip into the clause. The renderer just passes
         // it through.
-        val tieIn = EveningEventTieInClause(
+        val extras = EveningEventExtrasClause(
             items = listOf("jacket"),
             rainTime = LocalTime.of(21, 0),
             likelihood = PrecipLikelihood.POSSIBLE,
@@ -443,23 +443,23 @@ class RenderInsightSummaryTest {
             today = mildToday,
             yesterday = yesterday,
             todayItems = emptyList(),
-            eveningEventTieIn = tieIn,
+            eveningEventExtras = extras,
         )
-        out.eveningEventTieIn shouldBe tieIn
+        out.eveningEventExtras shouldBe extras
     }
 
     @Test
-    fun `evening event tie-in defaults to null when caller doesn't supply one`() {
-        subject(mildToday, yesterday, emptyList()).eveningEventTieIn.shouldBeNull()
+    fun `evening event extras defaults to null when caller doesn't supply one`() {
+        subject(mildToday, yesterday, emptyList()).eveningEventExtras.shouldBeNull()
     }
 
     @Test
-    fun `calendar tie-in is suppressed on the today period`() {
+    fun `calendar extras is suppressed on the today period`() {
         // The morning insight no longer chains a "Bring an umbrella." sentence
         // after "Rain at 3pm." — the listener already knows
         // about their morning event and the bare precip clause is enough.
-        // Tonight events get a separate evening-event tie-in via
-        // [eveningEventTieIn] when the user has the "Mention evening events"
+        // Tonight events get a separate evening-event extras via
+        // [eveningEventExtras] when the user has the "Mention evening events"
         // setting on.
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
@@ -467,14 +467,14 @@ class RenderInsightSummaryTest {
             hourly = listOf(HourlyForecast(LocalTime.of(15, 0), 22.0, 22.0, 60.0, WeatherCondition.RAIN)),
         )
         val event = CalendarEvent("standup", mildToday.date.atTime(14, 30), mildToday.date.atTime(16, 0))
-        subject(today, yesterday, listOf("umbrella"), events = listOf(event)).calendarTieIn.shouldBeNull()
+        subject(today, yesterday, listOf("umbrella"), events = listOf(event)).calendarExtras.shouldBeNull()
     }
 
     @Test
-    fun `calendar tie-in fires on a high-POP cloudy peak once it coerces to rain`() {
+    fun `calendar extras fires on a high-POP cloudy peak once it coerces to rain`() {
         // A cloudy peak at 60% now coerces to a RAIN precip clause (the single
         // number drives the prose), so an overlapping event plus the umbrella rule
-        // motivate the tie-in — agreeing with the umbrella the rule already
+        // motivate the extras — agreeing with the umbrella the rule already
         // suggests, rather than leaving it unanchored.
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
@@ -486,7 +486,7 @@ class RenderInsightSummaryTest {
             today, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn
+        ).calendarExtras
         out.shouldNotBeNull()
         out!!.item shouldBe "umbrella"
     }
@@ -513,16 +513,16 @@ class RenderInsightSummaryTest {
         out.clothes!!.items.shouldContainExactly("sweater", "umbrella")
         out.precip!!.condition shouldBe WeatherCondition.RAIN
         out.precip!!.time shouldBe LocalTime.of(15, 0)
-        out.calendarTieIn.shouldBeNull()
+        out.calendarExtras.shouldBeNull()
     }
 
     @Test
-    fun `calendar tie-in is omitted when the only clothes items are tier defaults`() {
+    fun `calendar extras is omitted when the only clothes items are tier defaults`() {
         // Codex-flagged: passing the full TriggeredOutfit.items into the
         // renderer (so the prose `clothes` clause can name the baseline
-        // outfit on mild days) used to also feed the calendar tie-in,
+        // outfit on mild days) used to also feed the calendar extras,
         // which would then surface "Bring a t-shirt." on
-        // any rainy mild evening with an overlapping event. The tie-in
+        // any rainy mild evening with an overlapping event. The extras
         // takes a separate todayRuleItems list now — defaults aren't
         // "extras to bring," so they shouldn't trigger the clause.
         val today = mildToday.copy(
@@ -538,11 +538,11 @@ class RenderInsightSummaryTest {
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
             todayRuleItems = emptyList(),
-        ).calendarTieIn.shouldBeNull()
+        ).calendarExtras.shouldBeNull()
     }
 
     @Test
-    fun `calendar tie-in fires when clothes + precip + overlapping event all present`() {
+    fun `calendar extras fires when clothes + precip + overlapping event all present`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.RAIN,
@@ -559,7 +559,7 @@ class RenderInsightSummaryTest {
             today, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn
+        ).calendarExtras
         out.shouldNotBeNull()
         out!!.item shouldBe "umbrella"
         // No time or title in the clause — the clause only carries the
@@ -569,7 +569,7 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `calendar tie-in picks the first triggered item in rule order`() {
+    fun `calendar extras picks the first triggered item in rule order`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.RAIN,
@@ -580,13 +580,13 @@ class RenderInsightSummaryTest {
             today, yesterday, listOf("sweater", "jacket"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn
+        ).calendarExtras
         out.shouldNotBeNull()
         out!!.item shouldBe "sweater"
     }
 
     @Test
-    fun `calendar tie-in is omitted when no event overlaps the precip peak`() {
+    fun `calendar extras is omitted when no event overlaps the precip peak`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.RAIN,
@@ -597,11 +597,11 @@ class RenderInsightSummaryTest {
             today, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn.shouldBeNull()
+        ).calendarExtras.shouldBeNull()
     }
 
     @Test
-    fun `calendar tie-in is omitted when no clothes rule fires`() {
+    fun `calendar extras is omitted when no clothes rule fires`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.RAIN,
@@ -612,21 +612,21 @@ class RenderInsightSummaryTest {
             today, yesterday, emptyList(),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn.shouldBeNull()
+        ).calendarExtras.shouldBeNull()
     }
 
     @Test
-    fun `calendar tie-in is omitted on a dry day even when an event exists`() {
+    fun `calendar extras is omitted on a dry day even when an event exists`() {
         val event = CalendarEvent("park run", tonightPeakDate.atTime(11, 0), tonightPeakDate.atTime(13, 0))
         subject(
             mildToday, yesterday, listOf("umbrella"),
             events = listOf(event),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn.shouldBeNull()
+        ).calendarExtras.shouldBeNull()
     }
 
     @Test
-    fun `calendar tie-in skips all-day events`() {
+    fun `calendar extras skips all-day events`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.RAIN,
@@ -642,7 +642,7 @@ class RenderInsightSummaryTest {
             today, yesterday, listOf("umbrella"),
             events = listOf(holiday),
             period = ForecastPeriod.TONIGHT,
-        ).calendarTieIn.shouldBeNull()
+        ).calendarExtras.shouldBeNull()
     }
 
     @Test

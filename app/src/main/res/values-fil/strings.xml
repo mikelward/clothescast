@@ -91,8 +91,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="insight_condition_snow">Niyebe</string>
     <string name="insight_condition_thunderstorm">Bagyo</string>
     <string name="insight_condition_unknown">Hindi kilala</string>
-    <string name="insight_tie_in">Magdala ng %1$s ngayong gabi.</string>
-    <string name="insight_tie_in_with_rain">Magdala ng %1$s ngayong gabi, %3$s.</string>
+    <string name="insight_extras">Magdala ng %1$s ngayong gabi.</string>
+    <string name="insight_extras_with_rain">Magdala ng %1$s ngayong gabi, %3$s.</string>
     <!-- "15" — preposition "ng" comes from surrounding templates. -->
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d:%2$02d</string>
@@ -608,8 +608,8 @@ The rest of the UI falls through to values/strings.xml (English).
          Additional insight prose templates
          ============================================================ -->
     <string name="insight_precip_chance">Posibilidad ng %1$s.</string>
-    <string name="insight_tie_in_at_night">Magdala ng %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Ngayong gabi, posibilidad ng %3$s, magdala ng %1$s.</string>
+    <string name="insight_extras_at_night">Magdala ng %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Ngayong gabi, posibilidad ng %3$s, magdala ng %1$s.</string>
     <string name="insight_evening_rain">Ngayong gabi, %2$s.</string>
     <string name="insight_evening_rain_chance">Ngayong gabi, posibilidad ng %2$s.</string>
 
@@ -1027,8 +1027,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_calendar_master">Gamitin ang aking kalendaryo</string>
     <string name="settings_calendar_master_description">Binabasa ang iyong mga kalendaryo para ipersonalisa ang mga forecast at outfit. Bilang default, walang lumalabas sa iyong device.</string>
     <string name="settings_calendar_features_title">Mga personal na kalendaryo</string>
-    <string name="settings_evening_add_ons">Mga dagdag sa gabi</string>
-    <string name="settings_evening_add_ons_description">Kung lumalabas ka sa gabi, sasabihin ng forecast sa umaga kung kailangan mong magdala ng anumang dagdag.</string>
+    <string name="settings_evening_extras">Mga dagdag sa gabi</string>
+    <string name="settings_evening_extras_description">Kung lumalabas ka sa gabi, sasabihin ng forecast sa umaga kung kailangan mong magdala ng anumang dagdag.</string>
     <string name="settings_calendar_birthdays_description">Gumamit ng mga espesyal na kulay at mensahe para sa mga kaarawan sa iyong mga kalendaryo.</string>
     <string name="settings_calendar_public_holidays_description">Gumamit ng mga espesyal na kulay at mensahe para sa mga public holiday sa iyong mga kalendaryo.</string>
     <string name="settings_calendar_open_system_settings">Buksan ang mga setting ng system</string>

@@ -10,7 +10,7 @@ import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesClause
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaClause
-import app.clothescast.core.domain.model.EveningEventTieInClause
+import app.clothescast.core.domain.model.EveningEventExtrasClause
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.InsightSummary
@@ -63,8 +63,8 @@ enum class InsightSurface { SPEECH, VISUAL, SETTINGS_PREVIEW }
  * from `insight_time_hour` / `insight_time_hour_minutes` resources (e.g.
  * "15 Uhr", "15時") so TTS reads them as words rather than digit-colon-digit.
  * Early-morning precip peaks (00:00–04:59) always collapse to "overnight" —
- * the previous "only when no tie-in pins this hour" carve-out is gone now
- * that tie-in clauses no longer name a specific time.
+ * the previous "only when no extras pins this hour" carve-out is gone now
+ * that extras clauses no longer name a specific time.
  */
 class InsightFormatter(
     private val resources: Resources,
@@ -104,11 +104,11 @@ class InsightFormatter(
     /**
      * Whether the carried umbrella is spoken in the prose. See
      * [AccessoriesFormat]. Default [AccessoriesFormat.ALWAYS] folds the
-     * umbrella into the precip clause and evening tie-in as before;
+     * umbrella into the precip clause and evening extras as before;
      * [AccessoriesFormat.NEVER] drops every spoken mention — rain still
      * surfaces and the outfit-card icon is untouched, so the user sees the
      * umbrella without hearing it. Gates [formatPrecip] and
-     * [formatEveningEventTieIn] alike so the two clauses can't drift.
+     * [formatEveningEventExtras] alike so the two clauses can't drift.
      */
     private val accessoriesFormat: AccessoriesFormat = AccessoriesFormat.ALWAYS,
     /**
@@ -198,9 +198,9 @@ class InsightFormatter(
     ): String {
         // Carried accessories (umbrella) are filtered out of the *wear* clause
         // — "Wear an umbrella" reads wrong — but they're not dropped: the
-        // precip clause and the evening tie-in fold them in from the fired rule
+        // precip clause and the evening extras fold them in from the fired rule
         // ("Rain at 3pm, bring an umbrella."), so rain and the umbrella travel
-        // together. See formatPrecip / formatEveningEventTieIn.
+        // together. See formatPrecip / formatEveningEventExtras.
         //
         // Layer-count mode is a single warmth signal — under
         // [BottomsFormat.IF_GARMENTS] (default) and [BottomsFormat.NEVER] we
@@ -229,15 +229,15 @@ class InsightFormatter(
             }
         }
         // Items already in the wear sentence shouldn't be repeated by a
-        // tie-in — a calendar tie-in that picks "sweater" when the wear
+        // extras — a calendar extras that picks "sweater" when the wear
         // sentence already said "Wear a sweater" adds nothing. Dedup on the
         // post-filter list (umbrella isn't surfaced anywhere, so it can't
         // dedup against anything either).
         val mentionedKeys = wearItems.map(::normalizeItemKey).toSet()
         // The content splits into daytime content (band / delta / clothes /
-        // precip) and tie-in clauses. Tie-ins carry their own temporal lead
+        // precip) and extras clauses. Extras carry their own temporal lead
         // ("Tonight, bring …"), so when we omit the range the day lead is folded
-        // only into the first daytime clause — never a tie-in, which would
+        // only into the first daytime clause — never an extras, which would
         // double the lead ("Today, tonight, …"). See [renderLeadOnly].
         // A BANDS-style delta is the user's Band change-format: today's high band
         // changed vs yesterday. It *replaces* the temperature sentence with an
@@ -283,9 +283,9 @@ class InsightFormatter(
         // The carried accessory the main precip clause already named ("Drizzle,
         // bring an umbrella.") — gated exactly as formatPrecip gates it, so we
         // only treat it as "mentioned" when it actually rendered. The evening
-        // tie-in re-injects the umbrella from its own fired rule; without this
+        // extras re-injects the umbrella from its own fired rule; without this
         // it double-names it ("…, bring an umbrella. Tonight, drizzle, bring an
-        // umbrella."). Suppressing the second mention drops the tie-in back to
+        // umbrella."). Suppressing the second mention drops the extras back to
         // the bare-rain wording so the evening rain still surfaces.
         val precipAccessoryKeys = buildSet {
             summary.precip
@@ -294,14 +294,14 @@ class InsightFormatter(
                 ?.let { summary.carriedAccessories.firstOrNull() }
                 ?.let { add(normalizeItemKey(it)) }
         }
-        val tieInClauses = buildList {
-            summary.calendarTieIn?.let { tieIn ->
-                if (isAccessory(tieIn.item)) return@let
-                if (normalizeItemKey(tieIn.item) in mentionedKeys) return@let
-                formatTieIn(summary.period, tieIn.item)?.let(::add)
+        val extrasClauses = buildList {
+            summary.calendarExtras?.let { extras ->
+                if (isAccessory(extras.item)) return@let
+                if (normalizeItemKey(extras.item) in mentionedKeys) return@let
+                formatExtras(summary.period, extras.item)?.let(::add)
             }
-            summary.eveningEventTieIn
-                ?.let { formatEveningEventTieIn(it, precipAccessoryKeys) }
+            summary.eveningEventExtras
+                ?.let { formatEveningEventExtras(it, precipAccessoryKeys) }
                 ?.let(::add)
         }
         // Whether a leading temperature sentence exists to carry the period
@@ -315,9 +315,9 @@ class InsightFormatter(
             // present it's the first primary clause. It renders as the
             // self-introducing "it will be …" fragment (insight_delta_*_lead)
             // that the period lead folds into ("Today, it will be 5° warmer …").
-            renderLeadOnly(summary.period, isFutureDay, primaryClauses, tieInClauses, omitLead, summary.overnight)
+            renderLeadOnly(summary.period, isFutureDay, primaryClauses, extrasClauses, omitLead, summary.overnight)
         } else {
-            (primaryClauses + tieInClauses).joinToString(" ")
+            (primaryClauses + extrasClauses).joinToString(" ")
         }
         val rendered = body
         if (rendered.isNotBlank()) return rendered
@@ -343,9 +343,9 @@ class InsightFormatter(
      * Build the body when the temperature range is omitted. The period lead
      * ("Today" / "Tonight" / "Tomorrow") is folded into the first daytime
      * clause, lowercasing its first letter so it reads as a continuation —
-     * "Today, wear a sweater. Rain at 3pm." Tie-in clauses are appended as-is:
+     * "Today, wear a sweater. Rain at 3pm." Extras clauses are appended as-is:
      * they already front their own "Tonight, …" lead, so prepending the day
-     * lead would double it. When there's no daytime clause the tie-ins stand
+     * lead would double it. When there's no daytime clause the extras stand
      * on their own ("Tonight, bring a jacket."); when nothing survives at all
      * the body is empty — [format] turns that into "Today, it will be the same
      * as yesterday." for display or an empty string for TTS, so we never emit a
@@ -355,21 +355,21 @@ class InsightFormatter(
         period: ForecastPeriod,
         isFutureDay: Boolean,
         primaryClauses: List<String>,
-        tieInClauses: List<String>,
+        extrasClauses: List<String>,
         omitLead: Boolean,
         overnight: Boolean,
     ): String {
         if (primaryClauses.isEmpty()) {
-            return tieInClauses.joinToString(" ")
+            return extrasClauses.joinToString(" ")
         }
         // No lead-in wanted (Today card): drop the period word and just
         // capitalise the first clause so it opens like a sentence — the
         // self-leading delta fragment "it will be 5° warmer …" becomes "It will
         // be 5° warmer …", and an already-capital clause ("Wear a sweater.")
-        // is unchanged. Tie-ins keep their own "Tonight, …" lead untouched.
+        // is unchanged. Extras keep their own "Tonight, …" lead untouched.
         if (omitLead) {
             val first = capitalize(primaryClauses.first())
-            return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
+            return (listOf(first) + primaryClauses.drop(1) + extrasClauses).joinToString(" ")
         }
         val lead = resources.getString(leadRes(period, isFutureDay, overnight))
         val first = resources.getString(
@@ -377,7 +377,7 @@ class InsightFormatter(
             lead,
             decapitalize(primaryClauses.first()),
         )
-        return (listOf(first) + primaryClauses.drop(1) + tieInClauses).joinToString(" ")
+        return (listOf(first) + primaryClauses.drop(1) + extrasClauses).joinToString(" ")
     }
 
     /** Lowercase only the first character (locale-aware), leaving the rest untouched. */
@@ -454,11 +454,11 @@ class InsightFormatter(
     }
 
     // TODO(insight-tweak): when the morning precip clause already names a
-    //  daytime peak ("Rain at 3pm.") and the evening tie-in also names an
+    //  daytime peak ("Rain at 3pm.") and the evening extras also names an
     //  evening rain ("…, rain at 9pm, bring a jacket."), the listener hears
     //  two distinct rain times back-to-back. Consider folding both peaks into
     //  one mention ("Rain at 3pm and 9pm.") or suppressing the second when
-    //  the tie-in adds no new clothes vocabulary beyond rain.
+    //  the extras adds no new clothes vocabulary beyond rain.
     //
     // TODO(accessories-catalog): accessories are silenced rather than
     //  rendered. To bring them back, build a domain-side ClothesRule
@@ -728,12 +728,12 @@ class InsightFormatter(
     }
 
     /**
-     * Single-item tie-in / clothes-carry sentence. Period-aware: on TODAY the
+     * Single-item extras / clothes-carry sentence. Period-aware: on TODAY the
      * sentence introduces the evening with "Tonight, bring …"; on TONIGHT the
      * band lead already established the night context, so we use the short
      * "Bring …" template to avoid a redundant second "Tonight" intro.
      */
-    private fun formatTieIn(period: ForecastPeriod, item: String): String? {
+    private fun formatExtras(period: ForecastPeriod, item: String): String? {
         // Short-circuit before article picking: prefixArticle("") emits "a "
         // via the "a %1$s" template, which is non-blank and would slip past a
         // post-rendering isBlank() check.
@@ -741,41 +741,41 @@ class InsightFormatter(
         val renderedItem = phraser.withArticle(item)
         if (renderedItem.isBlank()) return null
         val template = if (period == ForecastPeriod.TONIGHT) {
-            R.string.insight_tie_in_at_night
+            R.string.insight_extras_at_night
         } else {
-            R.string.insight_tie_in
+            R.string.insight_extras
         }
         return resources.getString(template, renderedItem)
     }
 
-    private fun formatEveningEventTieIn(
-        tieIn: EveningEventTieInClause,
+    private fun formatEveningEventExtras(
+        extras: EveningEventExtrasClause,
         alreadyMentionedAccessories: Set<String> = emptySet(),
     ): String? {
-        val rainTime = tieIn.rainTime
+        val rainTime = extras.rainTime
         // Accessories (umbrella) are silenced from the incoming items list for
         // the same reason they're silenced in the main wear-list: until the
         // accessory catalog lands we only name temperature-driven clothing
         // there. If the user has opted into the umbrella rule and the evening's
         // peak condition warrants one (RAIN / DRIZZLE / THUNDERSTORM — see
         // [warrantsRainAccessory]), we re-inject the chosen accessory below so
-        // the existing insight_tie_in_with_rain template carries it ("…, bring
+        // the existing insight_extras_with_rain template carries it ("…, bring
         // a jacket and an umbrella.") and the bare-rain path is promoted to
         // the item-led template. SNOW peaks (or a null condition on a
         // pre-field cached payload) skip the injection — same gating as
         // formatPrecip — so "Tonight, rain, bring an umbrella."
         // doesn't slip out when the underlying peak is actually snow.
-        val filteredItems = tieIn.items.filterNot(::isAccessory)
-        // The carried accessory rides in on the tie-in's own items (the fired
+        val filteredItems = extras.items.filterNot(::isAccessory)
+        // The carried accessory rides in on the extras's own items (the fired
         // umbrella rule), unless the daytime precip clause already named it —
         // re-naming the same umbrella the morning sentence carried adds nothing
         // ("…, bring an umbrella. Tonight, drizzle, bring an umbrella."). When
         // it's already mentioned the injection drops and the clause falls back
         // to the bare-rain wording ("Tonight, chance of drizzle.") so the
         // evening rain still surfaces without the redundant carry.
-        val accessoryKey = tieIn.items.firstOrNull(::isAccessory)
+        val accessoryKey = extras.items.firstOrNull(::isAccessory)
             ?.takeIf { accessoriesFormat == AccessoriesFormat.ALWAYS }
-            ?.takeIf { rainTime != null && tieIn.precipCondition?.warrantsRainAccessory() == true }
+            ?.takeIf { rainTime != null && extras.precipCondition?.warrantsRainAccessory() == true }
             ?.takeIf { normalizeItemKey(it) !in alreadyMentionedAccessories }
         val items = if (accessoryKey != null) filteredItems + accessoryKey else filteredItems
         val renderedItems = if (items.isEmpty()) "" else phraser.joinItems(items)
@@ -789,34 +789,34 @@ class InsightFormatter(
         // field existed — fall back to RAIN so they keep their prior wording
         // rather than guessing a different noun.
         val conditionNoun =
-            resources.getString(conditionRes(tieIn.precipCondition ?: WeatherCondition.RAIN))
+            resources.getString(conditionRes(extras.precipCondition ?: WeatherCondition.RAIN))
                 .lowercase(locale)
         if (renderedItems.isBlank()) {
             // No items left to name. If there's a rain time, the clause
             // collapses to the bare-rain prose (the only signal left);
-            // otherwise the whole tie-in is empty and we drop it.
+            // otherwise the whole extras is empty and we drop it.
             if (rainTime == null) return null
-            val template = when (tieIn.likelihood) {
+            val template = when (extras.likelihood) {
                 PrecipLikelihood.LIKELY -> R.string.insight_evening_rain
                 PrecipLikelihood.POSSIBLE -> R.string.insight_evening_rain_chance
             }
             return resources.getString(template, overnightQualifier(rainTime), conditionNoun)
         }
         // No rain — bare item-led sentence. Always uses the TODAY-context
-        // "Tonight, bring …" template because the evening tie-in only fires
-        // on TODAY (the TONIGHT pass uses calendarTieIn for event-anchored
-        // tie-ins).
-        rainTime ?: return resources.getString(R.string.insight_tie_in, renderedItems)
+        // "Tonight, bring …" template because the evening extras only fires
+        // on TODAY (the TONIGHT pass uses calendarExtras for event-anchored
+        // extras).
+        rainTime ?: return resources.getString(R.string.insight_extras, renderedItems)
         // Hedge the item-led wording when only one model spotted the rain,
         // matching the bare-rain path's chance-of-rain template.
-        val template = when (tieIn.likelihood) {
-            PrecipLikelihood.LIKELY -> R.string.insight_tie_in_with_rain
-            PrecipLikelihood.POSSIBLE -> R.string.insight_tie_in_with_rain_chance
+        val template = when (extras.likelihood) {
+            PrecipLikelihood.LIKELY -> R.string.insight_extras_with_rain
+            PrecipLikelihood.POSSIBLE -> R.string.insight_extras_with_rain_chance
         }
         return resources.getString(template, renderedItems, overnightQualifier(rainTime), conditionNoun)
     }
 
-    // Timing qualifier for the evening tie-in's rain mention: post-midnight
+    // Timing qualifier for the evening extras's rain mention: post-midnight
     // peaks (00:00–04:59) read " overnight" — the one case the clause's
     // "Tonight," lead doesn't cover — and everything else gets no qualifier
     // at all, because repeating "tonight" mid-sentence stuttered ("Tonight,

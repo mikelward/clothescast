@@ -450,8 +450,8 @@ label localizes.
     <string name="insight_condition_thunderstorm">雷暴</string>
     <string name="insight_condition_unknown">未知</string>
     <!-- "为15点的会议带上雨伞。" — time before event name follows Chinese convention. -->
-    <string name="insight_tie_in">今晚带上%1$s。</string>
-    <string name="insight_tie_in_with_rain">今晚带上%1$s，有%3$s。</string>
+    <string name="insight_extras">今晚带上%1$s。</string>
+    <string name="insight_extras_with_rain">今晚带上%1$s，有%3$s。</string>
     <!-- "15点" / "15点30分" — Chinese spoken time. insight_precip_at_time is a passthrough. -->
     <string name="insight_time_hour">%1$d点</string>
     <string name="insight_time_hour_minutes">%1$d点%2$02d分</string>
@@ -685,8 +685,8 @@ label localizes.
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "可能" — invariant adverb; works for any precip noun. -->
     <string name="insight_precip_chance">可能%1$s。</string>
-    <string name="insight_tie_in_at_night">带上%1$s。</string>
-    <string name="insight_tie_in_with_rain_chance">今晚带上%1$s，可能有%3$s。</string>
+    <string name="insight_extras_at_night">带上%1$s。</string>
+    <string name="insight_extras_with_rain_chance">今晚带上%1$s，可能有%3$s。</string>
     <string name="insight_evening_rain">今晚有%2$s。</string>
     <string name="insight_evening_rain_chance">今晚可能有%2$s。</string>
 
@@ -1125,8 +1125,8 @@ label localizes.
     <string name="settings_calendar_master">使用我的日历</string>
     <string name="settings_calendar_master_description">读取你的日历，以个性化预报和穿搭。默认情况下，不会有任何信息离开你的设备。</string>
     <string name="settings_calendar_features_title">个人日历</string>
-    <string name="settings_evening_add_ons">晚间额外物品</string>
-    <string name="settings_evening_add_ons_description">如果你晚上要外出，早晨预报会告诉你是否需要额外带点什么。</string>
+    <string name="settings_evening_extras">晚间额外物品</string>
+    <string name="settings_evening_extras_description">如果你晚上要外出，早晨预报会告诉你是否需要额外带点什么。</string>
     <string name="settings_calendar_birthdays_description">为日历中的生日使用特别的颜色和提示。</string>
     <string name="settings_calendar_public_holidays_description">为日历中的公共假日使用特别的颜色和提示。</string>
     <string name="settings_calendar_open_system_settings">打开系统设置</string>

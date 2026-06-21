@@ -93,15 +93,15 @@ to values/strings.xml (English).
     <string name="insight_condition_snow">Salju</string>
     <string name="insight_condition_thunderstorm">Badai petir</string>
     <string name="insight_condition_unknown">Tidak diketahui</string>
-    <string name="insight_tie_in">Bawa %1$s malam ini.</string>
-    <string name="insight_tie_in_with_rain">Bawa %1$s malam ini, %3$s.</string>
+    <string name="insight_extras">Bawa %1$s malam ini.</string>
+    <string name="insight_extras_with_rain">Bawa %1$s malam ini, %3$s.</string>
     <string name="insight_time_hour">%1$d</string>
     <string name="insight_time_hour_minutes">%1$d.%2$02d</string>
 
     <!-- Insight prose: precip chance hedge and evening rain -->
     <string name="insight_precip_chance">Kemungkinan %1$s.</string>
-    <string name="insight_tie_in_at_night">Bawa %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Malam ini, kemungkinan %3$s, bawa %1$s.</string>
+    <string name="insight_extras_at_night">Bawa %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Malam ini, kemungkinan %3$s, bawa %1$s.</string>
     <string name="insight_evening_rain">Malam ini, %2$s.</string>
     <string name="insight_evening_rain_chance">Malam ini, kemungkinan %2$s.</string>
 
@@ -976,8 +976,8 @@ to values/strings.xml (English).
     <string name="settings_calendar_master">Gunakan kalender saya</string>
     <string name="settings_calendar_master_description">Membaca kalender Anda untuk mempersonalisasi prakiraan dan pakaian. Secara default, tidak ada yang meninggalkan perangkat Anda.</string>
     <string name="settings_calendar_features_title">Kalender pribadi</string>
-    <string name="settings_evening_add_ons">Tambahan untuk malam</string>
-    <string name="settings_evening_add_ons_description">Jika Anda keluar di malam hari, prakiraan pagi akan memberi tahu apakah Anda perlu membawa sesuatu yang lain.</string>
+    <string name="settings_evening_extras">Tambahan untuk malam</string>
+    <string name="settings_evening_extras_description">Jika Anda keluar di malam hari, prakiraan pagi akan memberi tahu apakah Anda perlu membawa sesuatu yang lain.</string>
     <string name="settings_calendar_birthdays_description">Gunakan warna dan pesan khusus untuk ulang tahun di kalender Anda.</string>
     <string name="settings_calendar_public_holidays_description">Gunakan warna dan pesan khusus untuk hari libur nasional di kalender Anda.</string>
     <string name="settings_calendar_open_system_settings">Buka pengaturan sistem</string>

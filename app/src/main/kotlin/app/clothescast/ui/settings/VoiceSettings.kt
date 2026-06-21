@@ -764,7 +764,7 @@ internal fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {
 // is available yet (fresh install / cleared cache). A cold day with a 4°-9°C
 // feels-like range, 7°C down on yesterday, sweater + jacket as the clothes
 // pick. Exercises band (range, not single-degree), delta, and a multi-item
-// clothes clause without dragging in a precip / tie-in time. With Celsius +
+// clothes clause without dragging in a precip / extras time. With Celsius +
 // degrees-range + items-clothes this renders (en-US) as "Today, it will be
 // 4° to 9°. 7° cooler than yesterday. Wear a sweater and jacket." — the exact
 // prose shifts with voice locale and the user's format settings (temperature

@@ -910,5 +910,5 @@ See [PRIVACY.md](../PRIVACY.md) for the full data-handling boundary.
 Quickly: the bridge is off by default, and turning it on sends the
 rendered forecast sentence to **your own broker** — not to a
 developer-operated service. The payload is the same string you see in
-the notification, including any calendar-event tie-in clause if you
-have the calendar tie-in enabled.
+the notification, including any calendar-event extras clause if you
+have the calendar extras enabled.

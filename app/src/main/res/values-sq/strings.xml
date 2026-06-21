@@ -175,10 +175,10 @@
     <string name="insight_condition_snow">Borë</string>
     <string name="insight_condition_thunderstorm">Stuhi me bubullima</string>
     <string name="insight_condition_unknown">E panjohur</string>
-    <string name="insight_tie_in">Merr %1$s sonte.</string>
-    <string name="insight_tie_in_at_night">Merr %1$s.</string>
-    <string name="insight_tie_in_with_rain">Merr %1$s sonte, %3$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Sonte mundësi për %3$s, merr %1$s.</string>
+    <string name="insight_extras">Merr %1$s sonte.</string>
+    <string name="insight_extras_at_night">Merr %1$s.</string>
+    <string name="insight_extras_with_rain">Merr %1$s sonte, %3$s.</string>
+    <string name="insight_extras_with_rain_chance">Sonte mundësi për %3$s, merr %1$s.</string>
     <string name="insight_evening_rain">Sonte %2$s.</string>
     <string name="insight_evening_rain_chance">Sonte mundësi për %2$s.</string>
     <string name="insight_time_hour">%1$d</string>
@@ -754,8 +754,8 @@
     <string name="settings_calendar_master">Përdor kalendarin tim</string>
     <string name="settings_calendar_master_description">Lexon kalendarët e tu për të personalizuar parashikimet dhe kombinimet. Si parazgjedhje, asgjë nuk largohet nga pajisja jote.</string>
     <string name="settings_calendar_features_title">Kalendarët personalë</string>
-    <string name="settings_evening_add_ons">Shtesa për mbrëmjen</string>
-    <string name="settings_evening_add_ons_description">Nëse del në mbrëmje, parashikimi i mëngjesit të thotë nëse të duhet të marrësh diçka shtesë.</string>
+    <string name="settings_evening_extras">Shtesa për mbrëmjen</string>
+    <string name="settings_evening_extras_description">Nëse del në mbrëmje, parashikimi i mëngjesit të thotë nëse të duhet të marrësh diçka shtesë.</string>
     <string name="settings_calendar_birthdays">Ditëlindjet</string>
     <string name="settings_calendar_birthdays_description">Përdor ngjyra dhe mesazhe të veçanta për ditëlindjet në kalendarët e tu.</string>
     <string name="settings_calendar_public_holidays">Festat zyrtare</string>

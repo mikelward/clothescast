@@ -117,7 +117,7 @@ class MultiModelConfidenceFetcherTest {
         // days" and "Following 7 days") so the per-model diagnostic cards
         // (wind / humidity / cloud / solar / UV / sunshine) and model-spread
         // overlays render across both weeks, and keeps the wrap-past-midnight
-        // evening tie-in able to see tomorrow's pre-dawn rain that one model
+        // evening extras able to see tomorrow's pre-dawn rain that one model
         // spots but the base forecast under-calls.
         req.url.parameters["forecast_days"] shouldBe "14"
         // past_days=1 reaches back into yesterday evening so the Overnight

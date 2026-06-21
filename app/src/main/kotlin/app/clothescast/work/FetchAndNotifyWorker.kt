@@ -612,7 +612,7 @@ class FetchAndNotifyWorker(
             // What "next" means depends on which alarm fired:
             //  - Morning (period=TODAY): next is *tonight* of the same date
             //    (the morning fetch already includes the tonight slice for
-            //    the evening tie-in).
+            //    the evening extras).
             //  - Evening (period=TONIGHT): next is *tomorrow's daytime*
             //    (Open-Meteo's `forecast_days=2` response includes tomorrow's
             //    full daily aggregates + hourly, so the day-after-the-alarm

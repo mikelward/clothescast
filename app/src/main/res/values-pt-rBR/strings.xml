@@ -460,8 +460,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="insight_condition_snow">Neve</string>
     <string name="insight_condition_thunderstorm">Tempestade</string>
     <string name="insight_condition_unknown">Desconhecido</string>
-    <string name="insight_tie_in">Leve %1$s esta noite.</string>
-    <string name="insight_tie_in_with_rain">Leve %1$s esta noite, %3$s.</string>
+    <string name="insight_extras">Leve %1$s esta noite.</string>
+    <string name="insight_extras_with_rain">Leve %1$s esta noite, %3$s.</string>
     <!-- "15h" / "15h30" — Brazilian Portuguese hour notation, TTS reads naturally. -->
     <string name="insight_time_hour">%1$dh</string>
     <string name="insight_time_hour_minutes">%1$dh%2$02d</string>
@@ -653,8 +653,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="bug_report_consent_cancel">Cancelar</string>
 
     <string name="insight_precip_chance">Chance de %1$s.</string>
-    <string name="insight_tie_in_at_night">Leve %1$s.</string>
-    <string name="insight_tie_in_with_rain_chance">Esta noite, chance de %3$s, leve %1$s.</string>
+    <string name="insight_extras_at_night">Leve %1$s.</string>
+    <string name="insight_extras_with_rain_chance">Esta noite, chance de %3$s, leve %1$s.</string>
     <string name="insight_evening_rain">Esta noite, %2$s.</string>
     <string name="insight_evening_rain_chance">Esta noite, chance de %2$s.</string>
 
@@ -1061,8 +1061,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_calendar_master">Usar meu calendário</string>
     <string name="settings_calendar_master_description">Lê seus calendários para personalizar previsões e roupas. Por padrão, nada sai do seu dispositivo.</string>
     <string name="settings_calendar_features_title">Calendários pessoais</string>
-    <string name="settings_evening_add_ons">Extras para a noite</string>
-    <string name="settings_evening_add_ons_description">Se você for sair à noite, a previsão da manhã avisa se precisa levar algo a mais.</string>
+    <string name="settings_evening_extras">Extras para a noite</string>
+    <string name="settings_evening_extras_description">Se você for sair à noite, a previsão da manhã avisa se precisa levar algo a mais.</string>
     <string name="settings_calendar_birthdays_description">Use cores e mensagens especiais para os aniversários nos seus calendários.</string>
     <string name="settings_calendar_public_holidays_description">Use cores e mensagens especiais para os feriados nos seus calendários.</string>
     <string name="settings_calendar_open_system_settings">Abrir configurações do sistema</string>

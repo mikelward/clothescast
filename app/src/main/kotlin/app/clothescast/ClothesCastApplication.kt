@@ -300,11 +300,13 @@ class ClothesCastApplication : Application() {
             freshnessKeyProvider = { location ->
                 val prefs = settingsRepository.preferences.first()
                 val models = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
-                // Fold in whether Google is contributing (a Gemini key is
-                // configured) so toggling the key on/off invalidates the cache
+                // Fold in the Gemini key's fingerprint (null when unset) so
+                // adding, clearing, OR replacing the key invalidates the cache
                 // instead of waiting out the 1 h TTL — otherwise the blend would
-                // keep including (or excluding) Google until expiry.
-                models to secureKeyStore.geminiKeyConfiguredFlow.first()
+                // keep including (or excluding) Google until expiry, and swapping
+                // a key that 403'd Google for a working one wouldn't take effect
+                // on a manual refresh. Subsumes the old "configured" boolean.
+                models to secureKeyStore.geminiKeyFingerprint()
             },
         )
     }

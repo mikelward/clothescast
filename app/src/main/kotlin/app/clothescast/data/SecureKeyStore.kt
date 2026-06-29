@@ -90,6 +90,20 @@ class SecureKeyStore(
         .distinctUntilChanged()
 
     /**
+     * In-memory fingerprint of the stored Gemini key ciphertext, or null when no
+     * key is stored. Changes whenever the key is set, replaced, or cleared — Tink
+     * re-encrypts with a fresh nonce on every save, so even re-saving the same
+     * key yields a new fingerprint. Used as a cache discriminator (see
+     * [app.clothescast.ClothesCastApplication]'s weather-cache freshness key) so
+     * replacing the key busts a stale forecast bundle — e.g. swapping a key that
+     * 403'd Google Weather for a working one refreshes immediately instead of
+     * waiting out the TTL. Reads only the ciphertext's hash, never the plaintext,
+     * and performs no decrypt.
+     */
+    suspend fun geminiKeyFingerprint(): Int? =
+        dataStore.data.map { it[GEMINI_PREF_KEY] }.first()?.hashCode()
+
+    /**
      * True after a stored Gemini key failed to decrypt and was cleared. Stays
      * true until the user re-enters or explicitly clears the key so retries
      * keep the BYOK privacy boundary instead of falling through to the shared

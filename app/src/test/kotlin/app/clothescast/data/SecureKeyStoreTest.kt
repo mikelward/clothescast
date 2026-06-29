@@ -10,6 +10,7 @@ import app.clothescast.core.data.insight.MissingApiKeyException
 import com.google.crypto.tink.Aead
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -70,6 +71,23 @@ class SecureKeyStoreTest {
         subject.clear()
 
         shouldThrow<MissingApiKeyException> { subject.get() }
+    }
+
+    @Test
+    fun `geminiKeyFingerprint is null unset, set after a key, changes on replace, and clears`() = runTest {
+        subject.geminiKeyFingerprint() shouldBe null
+
+        subject.set("AIzaKeyOne")
+        val first = subject.geminiKeyFingerprint()
+        first shouldNotBe null
+
+        // Replacing with a different key must change the fingerprint so the
+        // forecast cache busts (e.g. swapping a 403'ing key for a working one).
+        subject.set("AIzaKeyTwo")
+        subject.geminiKeyFingerprint() shouldNotBe first
+
+        subject.clear()
+        subject.geminiKeyFingerprint() shouldBe null
     }
 
     @Test

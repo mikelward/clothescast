@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TriggeredOutfit
@@ -158,7 +159,7 @@ class DeriveInsight(
             confidence = if (bundle.perModelHourly == null) {
                 bundle.confidence
             } else {
-                periodView.perModelForRender?.let { ConfidenceInfo.computeFrom(it) }
+                periodView.confidencePerModel?.let { ConfidenceInfo.computeFrom(it) }
             },
             perModelHourly = periodView.perModelForRender,
             // Derive the displayed icon from the *same* TriggeredOutfit that
@@ -242,14 +243,21 @@ class DeriveInsight(
         // blended-consensus probability already on the sliced forecast, so no
         // per-model enrichment is needed.
         val nextForecast = rawNextForecast
-        val perModelForRender = bundle.perModelHourly?.slicedTo(
-            when (period) {
-                ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
-                // The night window is dated off its base day (yesterday for the
-                // ongoing overnight, today for the coming night).
-                ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, nightBase.date, tonightStart)
-            },
-        )
+        val window = when (period) {
+            ForecastPeriod.TODAY -> todayWindow(periodForecast.hourly, bundle.today.date)
+            // The night window is dated off its base day (yesterday for the
+            // ongoing overnight, today for the coming night).
+            ForecastPeriod.TONIGHT -> tonightWindow(periodForecast.hourly, nightBase.date, tonightStart)
+        }
+        val perModelForRender = bundle.perModelHourly?.slicedTo(window)
+        // The day-level confidence compares each model's min/max over the
+        // window, so a model that only covers part of it skews the spread.
+        // Google's forecast starts at the current hour, so a midday refresh
+        // leaves its sliced series front-truncated (missing the morning) — drop
+        // it from the confidence input unless it actually covers the window
+        // start. It still draws on the chart ([perModelForRender]) and still
+        // votes in the per-hour consensus blend.
+        val confidencePerModel = perModelForRender?.confidenceInput(window)
         // The rule engine reads the blended-consensus chance of rain already on
         // the sliced forecast (precipitationProbabilityMaxPct), so the umbrella /
         // rain-jacket rules fire off the same number the prose and strip use — no
@@ -272,6 +280,7 @@ class DeriveInsight(
             triggeredOutfit = triggeredOutfit,
             events = filterEventsForPeriod(events, period, nightBase.date, morningStart, tonightStart),
             perModelForRender = perModelForRender,
+            confidencePerModel = confidencePerModel,
             deltaToday = deltaToday,
             deltaYesterday = deltaYesterday,
             yesterdayTriggeredItems = yesterdayTriggeredItems,
@@ -462,6 +471,7 @@ class DeriveInsight(
         val triggeredOutfit: TriggeredOutfit,
         val events: List<CalendarEvent>,
         val perModelForRender: PerModelHourly?,
+        val confidencePerModel: PerModelHourly?,
         val deltaToday: DailyForecast,
         val deltaYesterday: DailyForecast,
         val yesterdayTriggeredItems: List<String>,
@@ -512,6 +522,39 @@ internal fun PerModelHourly.slicedTo(window: List<LocalDateTime>): PerModelHourl
         .mapValues { (_, entries) -> entries.filter { it.time in windowSet } }
         .filterValues { it.isNotEmpty() }
     return if (filtered.isEmpty()) null else PerModelHourly(filtered)
+}
+
+/**
+ * The subset of [this] to feed day-level confidence ([ConfidenceInfo.computeFrom]).
+ *
+ * Confidence compares each model's daily high/low over [window], so a model
+ * that only covers part of the window biases the spread. Google's forecast
+ * starts at the current hour, so on a midday refresh its sliced series is
+ * front-truncated relative to the Open-Meteo models that span the whole day —
+ * its partial min/max would inject a coverage-driven (not real) disagreement
+ * and wrongly downgrade the chip. So drop Google from the confidence input
+ * unless it actually covers the window's first hour. Google still draws on the
+ * chart (the full [slicedTo] series) and still votes in the per-hour consensus
+ * blend; only the day-extreme comparison excludes it when its coverage doesn't
+ * reach the window start. Open-Meteo models (which carry the whole day via
+ * `past_days`) are unaffected.
+ *
+ * Guard: Google is only dropped when at least two *other* consulted models
+ * remain. For a Google + one-Open-Meteo selection (which the picker allows),
+ * removing front-truncated Google would leave a single consulted model and
+ * [ConfidenceInfo.computeFrom] — which excludes `best_match` and needs two —
+ * would return null, hiding the chip entirely. Google's slightly partial
+ * contribution is better than no chip, so in that case it's kept.
+ */
+internal fun PerModelHourly.confidenceInput(window: List<LocalDateTime>): PerModelHourly {
+    val googleId = ForecastModel.GOOGLE_WEATHER.openMeteoId
+    if (byModel[googleId] == null) return this
+    val start = window.minOrNull() ?: return this
+    if (byModel.getValue(googleId).any { it.time == start }) return this
+    val otherConsulted = byModel.keys.count {
+        it != googleId && it != PerModelHourly.BEST_MATCH_MODEL_ID
+    }
+    return if (otherConsulted >= 2) PerModelHourly(byModel - googleId) else this
 }
 
 internal fun todayWindow(windowHourly: List<HourlyForecast>, todayDate: LocalDate): List<LocalDateTime> =

@@ -3605,6 +3605,7 @@ private fun friendlyModelName(modelId: String): String = when (modelId) {
     "ukmo_seamless" -> "UKMO"
     "jma_seamless" -> "JMA"
     "ecmwf_aifs025_single" -> "AIFS"
+    "google" -> "Google"
     PerModelHourly.BEST_MATCH_MODEL_ID -> "Auto"
     else -> modelId
 }

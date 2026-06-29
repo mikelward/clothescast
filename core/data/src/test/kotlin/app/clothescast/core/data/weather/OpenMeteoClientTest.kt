@@ -1,10 +1,13 @@
 package app.clothescast.core.data.weather
 
 import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.WeatherCondition
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
@@ -22,6 +25,7 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
+import java.time.LocalDateTime
 
 class OpenMeteoClientTest {
     private val london = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
@@ -189,6 +193,168 @@ class OpenMeteoClientTest {
         bestMatch.map { it.time.hour } shouldBe listOf(12)
         bestMatch[0].windSpeedKmh shouldBe 10.0
         bestMatch[0].uvIndex shouldBe 4.0
+    }
+
+    @Test
+    fun `google is treated as just another model - votes in the blend and lands in the stored per-model map`() = runTest {
+        // Same two-model side-band (GFS + ICON) and best_match primary as the
+        // synthetic-zero test above. At 12:00 best_match=20, GFS=21, ICON=23.
+        // Folding Google in (temp 27, precip 90) must shift the blended mean to
+        // a four-way average — Google is one more equal-weight vote — and it must
+        // also land in the stored per-model map under "google" so it draws on
+        // the charts and votes in the confidence chip + divergence hint.
+        val primaryJson = """
+            {
+              "timezone": "Europe/London",
+              "daily": {
+                "time": ["2026-04-24", "2026-04-25"],
+                "temperature_2m_min": [12.0, 16.0],
+                "temperature_2m_max": [18.0, 24.0],
+                "apparent_temperature_min": [10.0, 15.0],
+                "apparent_temperature_max": [17.0, 23.0],
+                "precipitation_probability_max": [5, 60],
+                "precipitation_sum": [0.0, 4.5],
+                "weather_code": [2, 63]
+              },
+              "hourly": {
+                "time": ["2026-04-25T12:00"],
+                "temperature_2m": [20.0],
+                "apparent_temperature": [20.0],
+                "precipitation_probability": [40],
+                "weather_code": [2],
+                "wind_speed_10m": [10.0],
+                "uv_index": [4.0]
+              }
+            }
+        """.trimIndent()
+        val confidenceJson = """
+            {
+              "daily": {"time": ["2026-04-25"]},
+              "hourly": {
+                "time": ["2026-04-25T12:00"],
+                "temperature_2m_gfs_seamless": [21.0],
+                "apparent_temperature_gfs_seamless": [21.0],
+                "precipitation_probability_gfs_seamless": [50],
+                "temperature_2m_icon_seamless": [23.0],
+                "apparent_temperature_icon_seamless": [23.0],
+                "precipitation_probability_icon_seamless": [70]
+              }
+            }
+        """.trimIndent()
+        val engine = MockEngine { request ->
+            val isPrimary = request.url.parameters["models"] == null
+            respond(
+                content = if (isPrimary) primaryJson else confidenceJson,
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val client = OpenMeteoClient(
+            HttpClient(engine) {
+                install(ContentNegotiation) {
+                    json(Json { ignoreUnknownKeys = true })
+                }
+            },
+            extraModelHourly = {
+                listOf(
+                    PerModelHour(
+                        time = LocalDateTime.of(2026, 4, 25, 12, 0),
+                        apparentTemperatureC = 27.0,
+                        temperatureC = 27.0,
+                        precipitationProbabilityPct = 90.0,
+                        condition = WeatherCondition.RAIN,
+                    ),
+                )
+            },
+        )
+
+        val bundle = client.fetchForecast(london)
+
+        // Four equal-weight votes: best_match 20, GFS 21, ICON 23, Google 27.
+        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0 + 27.0) / 4 plusOrMinus 1e-6)
+        bundle.today.hourly[0].precipitationProbabilityPct shouldBe ((40.0 + 50.0 + 70.0 + 90.0) / 4 plusOrMinus 1e-6)
+
+        // Google sits in the stored per-model series alongside the source models
+        // and best_match, so the chart overlay, confidence chip, and divergence
+        // hint all see it as a peer.
+        val byModel = checkNotNull(bundle.perModelHourly).byModel
+        byModel.keys shouldContainAll
+            listOf(GOOGLE_MODEL_ID, "gfs_seamless", "icon_seamless", PerModelHourly.BEST_MATCH_MODEL_ID)
+        byModel.getValue(GOOGLE_MODEL_ID).single().temperatureC shouldBe 27.0
+    }
+
+    @Test
+    fun `google can rescue the blend when the open-meteo side-band fails`() = runTest {
+        // The multi-model side-band 500s, so there are no consulted Open-Meteo
+        // models — normally best_match alone can't blend (one model isn't a
+        // consensus). With Google present, best_match + Google clear the
+        // two-model bar and the blend still applies.
+        val primaryJson = """
+            {
+              "timezone": "Europe/London",
+              "daily": {
+                "time": ["2026-04-24", "2026-04-25"],
+                "temperature_2m_min": [12.0, 16.0],
+                "temperature_2m_max": [18.0, 24.0],
+                "apparent_temperature_min": [10.0, 15.0],
+                "apparent_temperature_max": [17.0, 23.0],
+                "precipitation_probability_max": [5, 60],
+                "precipitation_sum": [0.0, 4.5],
+                "weather_code": [2, 63]
+              },
+              "hourly": {
+                "time": ["2026-04-25T12:00"],
+                "temperature_2m": [20.0],
+                "apparent_temperature": [20.0],
+                "precipitation_probability": [40],
+                "weather_code": [2],
+                "wind_speed_10m": [10.0],
+                "uv_index": [4.0]
+              }
+            }
+        """.trimIndent()
+        val engine = MockEngine { request ->
+            val isPrimary = request.url.parameters["models"] == null
+            if (isPrimary) {
+                respond(
+                    content = primaryJson,
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            } else {
+                respond(
+                    content = "<html>500</html>",
+                    status = HttpStatusCode.InternalServerError,
+                    headers = headersOf(HttpHeaders.ContentType, "text/html"),
+                )
+            }
+        }
+        val client = OpenMeteoClient(
+            HttpClient(engine) {
+                install(ContentNegotiation) {
+                    json(Json { ignoreUnknownKeys = true })
+                }
+            },
+            extraModelHourly = {
+                listOf(
+                    PerModelHour(
+                        time = LocalDateTime.of(2026, 4, 25, 12, 0),
+                        apparentTemperatureC = 26.0,
+                        temperatureC = 26.0,
+                        precipitationProbabilityPct = 80.0,
+                        condition = WeatherCondition.RAIN,
+                    ),
+                )
+            },
+        )
+
+        val bundle = client.fetchForecast(london)
+
+        // best_match 20 + Google 26 → 23.0.
+        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 26.0) / 2 plusOrMinus 1e-6)
+        // The side-band failed, so the stored map is just best_match + Google.
+        val byModel = checkNotNull(bundle.perModelHourly).byModel
+        byModel.keys shouldContainExactlyInAnyOrder listOf(PerModelHourly.BEST_MATCH_MODEL_ID, GOOGLE_MODEL_ID)
     }
 
     @Test

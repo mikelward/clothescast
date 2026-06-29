@@ -26,6 +26,13 @@ import java.time.LocalDate
 
 internal const val OPEN_METEO_HOST = "api.open-meteo.com"
 
+// Per-model map key for Google's forecast. Matches ForecastModel.GOOGLE_WEATHER's
+// openMeteoId so the chart's MODEL_DRAW_ORDER, the palette, and the legend all
+// reach it like any other forecaster. Distinct from every Open-Meteo id and from
+// best_match, so it's one more equal-weight vote in [blendConsensusHourly] and a
+// regular entry for ConfidenceInfo.computeFrom / ModelDivergenceSummary.
+internal const val GOOGLE_MODEL_ID = "google"
+
 /**
  * Open-Meteo `forecast` endpoint with past_days=1&forecast_days=14, returning yesterday's
  * actuals plus a 14-day forecast in one call. Free, key-less. Free-tier soft cap is
@@ -71,6 +78,24 @@ class OpenMeteoClient(
      */
     private val confidenceModelsProvider: suspend (Location) -> List<String> =
         { _ -> MultiModelConfidenceFetcher.DEFAULT_MODELS },
+    /**
+     * Optional supplier of an extra per-model hourly series to fold in as **just
+     * another forecaster** — used to add Google's Maps-Platform Weather forecast
+     * alongside the Open-Meteo models when the user has selected the Google
+     * forecaster *and* has a Gemini key configured (the `:app` wiring checks both
+     * and resolves the key; see [GoogleWeatherModelClient]). Takes the request's
+     * [Location] and returns the Google series, or null when Google shouldn't /
+     * couldn't contribute (not selected, no key, or the best-effort fetch
+     * failed). Defaults to null so tests and any caller without it behave exactly
+     * as before.
+     *
+     * The returned series is stored under the "google" id in
+     * [ForecastBundle.perModelHourly], so it's a full peer everywhere downstream:
+     * it draws on the charts, votes in the confidence chip + divergence hint
+     * (via ConfidenceInfo.computeFrom / ModelDivergenceSummary), and votes in the
+     * consensus blend.
+     */
+    private val extraModelHourly: (suspend (Location) -> List<PerModelHour>?)? = null,
 ) : WeatherRepository {
 
     // Constructed once per client. Exposing it on the public constructor would
@@ -90,10 +115,14 @@ class OpenMeteoClient(
         val primary = async { fetchPrimary(location) }
         val models = confidenceModelsProvider(location)
         val multiModel = async { confidenceFetcher.fetch(location, models) }
+        // Google's forecast (when a key is configured) rides alongside the
+        // Open-Meteo calls so its latency hides behind the primary fetch.
+        val googleModel = extraModelHourly?.let { provider -> async { provider(location) } }
 
         val response = primary.await()
         val bundle = OpenMeteoMapper.toBundle(response)
         val multi = multiModel.await()
+        val googleHours = googleModel?.await()
 
         // Replace today's hourly + the derived daily extremes with the
         // consensus mean across the per-model series (ECMWF / GFS / ICON
@@ -130,11 +159,28 @@ class OpenMeteoClient(
         val tomorrowDate = bundle.today.date.plusDays(1)
         val bestMatchPerModel =
             response.hourly.asBestMatchPerModelHours(firstForecastDate = bundle.today.date)
-        val perModelWithBestMatch = multi?.hourly?.let { existing ->
-            existing.copy(
-                byModel = existing.byModel +
-                    (PerModelHourly.BEST_MATCH_MODEL_ID to bestMatchPerModel),
-            )
+
+        // Fold best_match and (when the user enabled it) Google into the
+        // per-model map. Google is stored alongside the Open-Meteo source models
+        // — not split into a blend-only input — so it's treated as just another
+        // forecaster everywhere downstream: it draws on the charts
+        // (MODEL_DRAW_ORDER reaches it via its "google" id), votes in the
+        // confidence chip and divergence hint (ConfidenceInfo.computeFrom /
+        // ModelDivergenceSummary read this map), and votes in the consensus
+        // blend. When the Open-Meteo side-band fetch failed but Google returned,
+        // best_match + Google still clear the blender's two-model bar, so Google
+        // can carry the consensus on its own.
+        val extraSeries: Map<String, List<PerModelHour>> = buildMap {
+            put(PerModelHourly.BEST_MATCH_MODEL_ID, bestMatchPerModel)
+            googleHours?.takeIf { it.isNotEmpty() }?.let { put(GOOGLE_MODEL_ID, it) }
+        }
+        val perModelWithBestMatch: PerModelHourly? = when {
+            multi?.hourly != null -> multi.hourly.copy(byModel = multi.hourly.byModel + extraSeries)
+            // No consulted Open-Meteo series. With Google present, best_match +
+            // Google still blend; without it, best_match alone isn't a consensus,
+            // so leave the map null exactly as before.
+            googleHours.isNullOrEmpty() -> null
+            else -> PerModelHourly(byModel = extraSeries)
         }
 
         // Recompute daily aggregates only when at least one hour actually got

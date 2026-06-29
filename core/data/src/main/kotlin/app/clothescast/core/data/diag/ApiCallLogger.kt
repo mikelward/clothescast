@@ -12,6 +12,7 @@ object ApiEndpoints {
     const val OPEN_METEO_FORECAST: String = "open_meteo_forecast"
     const val OPEN_METEO_CONFIDENCE: String = "open_meteo_confidence"
     const val OPEN_METEO_GEOCODING: String = "open_meteo_geocoding"
+    const val GOOGLE_WEATHER: String = "google_weather"
     const val GEMINI_TTS: String = "gemini_tts"
 }
 

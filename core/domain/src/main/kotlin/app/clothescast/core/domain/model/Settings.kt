@@ -965,6 +965,15 @@ data class UserPreferences(
      */
     val forecastModels: Set<ForecastModel>? = null,
     /**
+     * Persisted chart-colour slot per forecaster ([ForecastModel.openMeteoId] →
+     * slot index). Computed on every explicit [forecastModels] write via
+     * [ForecastModel.assignColorSlots] so a forecaster surviving an edit keeps
+     * its colour and only newly-added ones pick up a fresh slot. Empty until the
+     * user customises; in Auto mode the assignment is derived from the default
+     * set at read time. The chart palette resolves slot → colour from its pool.
+     */
+    val forecasterColorSlots: Map<String, Int> = emptyMap(),
+    /**
      * Optional Smart Home / Home Assistant MQTT bridge. When [mqttBridgeEnabled]
      * is true and [mqttHost] is set, the worker publishes the rendered insight
      * prose to a retained topic on the user's MQTT broker after each twice-daily
@@ -1172,6 +1181,42 @@ enum class ForecastModel(val openMeteoId: String, val requiresGeminiKey: Boolean
          */
         fun openMeteoIds(models: Iterable<ForecastModel>): List<String> =
             models.filterNot { it.requiresGeminiKey }.map { it.openMeteoId }
+
+        /**
+         * Most forecasters the picker lets a user enable at once, and so the
+         * number of distinct chart colours needed. The chart palette carries a
+         * pool of exactly this many colours, assigned to the selected
+         * forecasters via [assignColorSlots]; the picker enforces the same cap.
+         */
+        const val MAX_MODELS = 5
+
+        /**
+         * Assigns each forecaster in [selection] a colour slot in `0 until
+         * [slotCount]`, reusing [prior] so a forecaster surviving an edit keeps
+         * its colour. Survivors keep their prior slot; newly-added forecasters
+         * take the lowest free slot, in enum order for determinism. Returned map
+         * is keyed by [openMeteoId] (so it lines up with the chart's per-model
+         * map). [selection] is expected to fit within [slotCount] (the picker
+         * caps it at [MAX_MODELS]); were it ever larger, the overflow wraps.
+         */
+        fun assignColorSlots(
+            selection: Set<ForecastModel>,
+            prior: Map<String, Int>,
+            slotCount: Int = MAX_MODELS,
+        ): Map<String, Int> {
+            val ordered = entries.filter { it in selection }
+            val result = LinkedHashMap<String, Int>()
+            ordered.forEach { model ->
+                prior[model.openMeteoId]?.let { result[model.openMeteoId] = it }
+            }
+            val free = (0 until slotCount).filterTo(ArrayDeque()) { it !in result.values.toSet() }
+            ordered.forEach { model ->
+                if (model.openMeteoId !in result) {
+                    result[model.openMeteoId] = free.removeFirstOrNull() ?: (result.size % slotCount)
+                }
+            }
+            return result
+        }
     }
 }
 

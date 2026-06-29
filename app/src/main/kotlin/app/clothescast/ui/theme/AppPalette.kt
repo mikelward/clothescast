@@ -7,6 +7,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.ForecastConfidence
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.PerModelHourly.Companion.BEST_MATCH_MODEL_ID
 
 /**
@@ -56,23 +57,20 @@ data class AppPalette(
  * the picker caps a selection at five, but the palette covers every model
  * so the chart never crashes on a `modelColors.getValue` lookup.
  */
-internal fun rainbowPalette(scheme: ColorScheme): AppPalette = AppPalette(
-    modelColors = mapOf(
-        "ecmwf_ifs025" to Color(0xFFD81B60),
-        "gfs_seamless" to Color(0xFFFB8C00),
-        "icon_seamless" to Color(0xFF43A047),
-        "gem_seamless" to Color(0xFF8E24AA),
-        "meteofrance_seamless" to Color(0xFF1E88E5),
-        "ukmo_seamless" to Color(0xFFFBC02D),
-        "jma_seamless" to Color(0xFF00897B),
-        // AIFS — ECMWF's AI model. Brown, well separated from the pink ECMWF
-        // line it sits alongside and from the other Material-600 hues.
-        "ecmwf_aifs025_single" to Color(0xFF6D4C41),
-        // Google — its brand blue, distinct from the Material-600 blue ARPEGE
-        // line it can sit alongside.
-        "google" to Color(0xFF4285F4),
-        BEST_MATCH_MODEL_ID to Color(0xFF9E9E9E),
-    ),
+// The Rainbow colour pool: five Material-600 hues assigned to the selected
+// forecasters by slot (see [poolModelColors]). The first three keep the
+// original ECMWF-pink / GFS-orange / ICON-green so the default first-week trio
+// looks unchanged; slots 3–4 are purple and blue for the fourth / fifth picks.
+private val RAINBOW_POOL = listOf(
+    Color(0xFFD81B60),
+    Color(0xFFFB8C00),
+    Color(0xFF43A047),
+    Color(0xFF8E24AA),
+    Color(0xFF1E88E5),
+)
+
+internal fun rainbowPalette(scheme: ColorScheme, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
+    modelColors = poolModelColors(RAINBOW_POOL, Color(0xFF9E9E9E), slots),
     confidence = mapOf(
         ForecastConfidence.HIGH to ConfidenceColors(
             background = scheme.secondaryContainer,
@@ -105,33 +103,23 @@ internal fun rainbowPalette(scheme: ColorScheme): AppPalette = AppPalette(
  * (Android 12+) — a Wallpaper-derived teal-ish `secondaryContainer` on the
  * device would defeat the whole point of the accessible path.
  */
-internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
-    modelColors = mapOf(
-        // Okabe-Ito vermillion, orange, bluish-green — all three readable on
-        // both light and dark surfaces and distinguishable under deutan / protan
-        // / tritan simulations.
-        "ecmwf_ifs025" to Color(0xFFD55E00),
-        "gfs_seamless" to Color(0xFFE69F00),
-        "icon_seamless" to Color(0xFF009E73),
-        // Additional Okabe-Ito-derived hues for the models added in the
-        // Forecasters picker. Yellow (#F0E442) is famously low-contrast on
-        // white in the original palette, so UKMO drops to a dark amber that
-        // still reads as the same hue family but clears WCAG 3:1 against
-        // the light surfaceContainer. BOM uses a coffee brown — outside
-        // Okabe-Ito strictly but with sufficient hue separation from the
-        // rest to stay distinguishable under all three CVD profiles.
-        "gem_seamless" to Color(0xFF0072B2),
-        "meteofrance_seamless" to Color(0xFF56B4E9),
-        "ukmo_seamless" to Color(0xFFB47C00),
-        "jma_seamless" to Color(0xFFCC79A7),
-        // AIFS — a CVD-safe indigo (IBM palette), distinct from the blue GEM
-        // and sky-blue ARPEGE under deutan / protan / tritan simulation.
-        "ecmwf_aifs025_single" to Color(0xFF785EF0),
-        // Google — a mid blue distinct from the GEM/ARPEGE blues; readable on
-        // both surfaces and separable from the other hues under the common CVD
-        // profiles at the ≤5 lines the picker draws at once.
-        "google" to Color(0xFF4285F4),
-        BEST_MATCH_MODEL_ID to if (darkTheme) Color(0xFFBFBFBF) else Color(0xFF595959),
+// The Accessible colour pool: Okabe-Ito-derived hues that stay distinguishable
+// under deutan / protan / tritan CVD at the ≤5 lines the picker draws. First
+// three are the vermillion / orange / bluish-green that differ in hue *and*
+// luminance; slots 3–4 add a CVD-safe blue and sky blue.
+private val ACCESSIBLE_POOL = listOf(
+    Color(0xFFD55E00),
+    Color(0xFFE69F00),
+    Color(0xFF009E73),
+    Color(0xFF0072B2),
+    Color(0xFF56B4E9),
+)
+
+internal fun accessiblePalette(darkTheme: Boolean, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
+    modelColors = poolModelColors(
+        ACCESSIBLE_POOL,
+        if (darkTheme) Color(0xFFBFBFBF) else Color(0xFF595959),
+        slots,
     ),
     confidence = if (darkTheme) {
         mapOf(
@@ -222,59 +210,31 @@ internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
  * light-and-dark inversion contract as [accessiblePalette]. Hard-coded so
  * dynamic colour on Android 12+ can't dilute the look.
  */
-internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
-    modelColors = if (darkTheme) {
-        mapOf(
-            // Full neon on dark — chart card is dark, every line glows.
-            "ecmwf_ifs025" to Color(0xFFFF2D95),
-            "gfs_seamless" to Color(0xFFFFEB3B),
-            "icon_seamless" to Color(0xFF00E5FF),
-            // Five more neon-ish hues for the Forecasters picker additions.
-            // Saturation stays high; luminance is similar to the original
-            // trio so they read as the same arcade-cabinet family.
-            // Distinguishability across 8 lines is a stretch — at full
-            // selection the chart turns into a noisy rainbow — but every
-            // pair stays separable, and most users will pick 3-4 models.
-            "gem_seamless" to Color(0xFFB388FF),
-            "meteofrance_seamless" to Color(0xFF00FFA1),
-            "ukmo_seamless" to Color(0xFFFF7043),
-            "jma_seamless" to Color(0xFFFF6EC7),
-            // AIFS — neon blue-violet, deeper than GEM's lavender so the two
-            // stay separable in the full-neon dark set.
-            "ecmwf_aifs025_single" to Color(0xFF7C4DFF),
-            // Google — a glowy periwinkle, separable from the cyan ICON and the
-            // blue-violet AIFS in the full-neon dark set.
-            "google" to Color(0xFF82B1FF),
-            BEST_MATCH_MODEL_ID to Color(0xFFEAEAEA),
-        )
-    } else {
-        mapOf(
-            // Same hue families as the dark set, darkened just enough to
-            // clear 3:1 contrast (WCAG 1.4.11) against the light
-            // surfaceContainer card. Magenta already passes at full neon
-            // (luminance ≈ 0.25); yellow and cyan don't, so they drop to
-            // dark amber and deep electric blue. The palette still reads
-            // as "neon-ish" because saturation stays high — only luminance
-            // shifts.
-            "ecmwf_ifs025" to Color(0xFFFF2D95),
-            "gfs_seamless" to Color(0xFFB58A00),
-            "icon_seamless" to Color(0xFF0277BD),
-            // Light-theme variants of the Forecasters additions — same hue
-            // family as the dark map, darkened to clear the 3:1 contrast
-            // floor on the near-white surfaceContainer.
-            "gem_seamless" to Color(0xFF6A1B9A),
-            "meteofrance_seamless" to Color(0xFF2E7D32),
-            "ukmo_seamless" to Color(0xFFBF360C),
-            "jma_seamless" to Color(0xFFAD1457),
-            // AIFS — deep indigo, darkened from the dark set's blue-violet to
-            // clear 3:1 contrast on the near-white light surfaceContainer.
-            "ecmwf_aifs025_single" to Color(0xFF4527A0),
-            // Google — a deep blue, darkened from the dark set's periwinkle to
-            // clear 3:1 contrast on the near-white light surfaceContainer.
-            "google" to Color(0xFF1A56DB),
-            BEST_MATCH_MODEL_ID to Color(0xFF2A2A2A),
-        )
-    },
+// The Highlighter neon pool, dark and light variants. First three keep the
+// magenta / yellow / cyan (dark) and their WCAG-darkened counterparts (light);
+// slots 3–4 add neon lavender and spring-green (dark) / deep purple and green
+// (light). Assigned to selected forecasters by slot via [poolModelColors].
+private val HIGHLIGHTER_POOL_DARK = listOf(
+    Color(0xFFFF2D95),
+    Color(0xFFFFEB3B),
+    Color(0xFF00E5FF),
+    Color(0xFFB388FF),
+    Color(0xFF00FFA1),
+)
+private val HIGHLIGHTER_POOL_LIGHT = listOf(
+    Color(0xFFFF2D95),
+    Color(0xFFB58A00),
+    Color(0xFF0277BD),
+    Color(0xFF6A1B9A),
+    Color(0xFF2E7D32),
+)
+
+internal fun highlighterPalette(darkTheme: Boolean, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
+    modelColors = poolModelColors(
+        if (darkTheme) HIGHLIGHTER_POOL_DARK else HIGHLIGHTER_POOL_LIGHT,
+        if (darkTheme) Color(0xFFEAEAEA) else Color(0xFF2A2A2A),
+        slots,
+    ),
     // The Combined main line lives outside the model-overlay trio, but it
     // sits on the same chart and needs to read as distinct from both the
     // cyan ICON line and the pale Auto best_match line. Material's theme
@@ -353,21 +313,44 @@ object AppTheme {
             ?: androidx.compose.material3.MaterialTheme.colorScheme.primary
 }
 
-/** Resolves the palette to provide given the active scheme and user pick. */
+/**
+ * Builds the per-model colour map the charts read, assigning each forecaster a
+ * colour from [pool] by its slot in [slots] ([ForecastModel.openMeteoId] → slot,
+ * persisted and reconciled on selection edits — see
+ * [ForecastModel.assignColorSlots]). Every [ForecastModel] gets an entry so a
+ * `.getValue(modelId)` lookup never misses, even for a stale cached overlay
+ * whose model was just deselected: a model without a stored slot falls back to
+ * its enum ordinal (mod pool size), which is a stable, distinct-enough colour
+ * for the rare unselected-but-still-drawn case. `best_match` keeps its fixed
+ * neutral [bestMatch] colour outside the pool.
+ */
+private fun poolModelColors(
+    pool: List<Color>,
+    bestMatch: Color,
+    slots: Map<String, Int>,
+): Map<String, Color> =
+    ForecastModel.entries.associate { model ->
+        val slot = slots[model.openMeteoId] ?: model.ordinal
+        model.openMeteoId to pool[slot.mod(pool.size)]
+    } + (BEST_MATCH_MODEL_ID to bestMatch)
+
+/** Resolves the palette to provide given the active scheme, user pick, and colour-slot assignment. */
 @Composable
 internal fun rememberAppPalette(
     scheme: ColorScheme,
     darkTheme: Boolean,
     colorPalette: ColorPalette,
-): AppPalette = appPaletteFor(scheme, darkTheme, colorPalette)
+    colorSlots: Map<String, Int> = emptyMap(),
+): AppPalette = appPaletteFor(scheme, darkTheme, colorPalette, colorSlots)
 
 /** Non-`@Composable` accessor used by tests that don't spin up a Compose runtime. */
 internal fun appPaletteFor(
     scheme: ColorScheme,
     darkTheme: Boolean,
     colorPalette: ColorPalette,
+    colorSlots: Map<String, Int> = emptyMap(),
 ): AppPalette = when (colorPalette) {
-    ColorPalette.RAINBOW -> rainbowPalette(scheme)
-    ColorPalette.ACCESSIBLE -> accessiblePalette(darkTheme)
-    ColorPalette.HIGHLIGHTER -> highlighterPalette(darkTheme)
+    ColorPalette.RAINBOW -> rainbowPalette(scheme, colorSlots)
+    ColorPalette.ACCESSIBLE -> accessiblePalette(darkTheme, colorSlots)
+    ColorPalette.HIGHLIGHTER -> highlighterPalette(darkTheme, colorSlots)
 }

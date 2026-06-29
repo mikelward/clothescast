@@ -21,7 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.core.domain.model.defaultsFor
 import app.clothescast.diag.DiagLog
 import app.clothescast.locale.AppLocale
 import app.clothescast.ui.nav.ClothesCastNavHost
@@ -34,6 +37,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
+
+/**
+ * Resolves the per-forecaster chart-colour slot assignment from prefs: the
+ * explicit selection (or the location-aware Auto default) reconciled against the
+ * persisted slot map, so each forecaster's overlay colour is stable across edits.
+ */
+private fun colorSlotsOf(prefs: UserPreferences): Map<String, Int> =
+    ForecastModel.assignColorSlots(
+        prefs.forecastModels ?: ForecastModel.defaultsFor(prefs.location),
+        prefs.forecasterColorSlots,
+    )
 
 class MainActivity : ComponentActivity() {
     // The latest intent delivered while the activity is already running (a
@@ -62,21 +76,25 @@ class MainActivity : ComponentActivity() {
         // Read the persisted theme synchronously so the first frame already
         // matches the user's pick (no flash of the wrong theme before the
         // collected flow catches up).
-        val initialPrefs = runBlocking {
-            app.settingsRepository.preferences.first().let {
-                it.themeMode to it.colorPalette
-            }
-        }
+        val initialSnapshot = runBlocking { app.settingsRepository.preferences.first() }
+        val initialPrefs = initialSnapshot.themeMode to initialSnapshot.colorPalette
+        val initialColorSlots = colorSlotsOf(initialSnapshot)
         // Derive the theme/palette flows outside composition — invoking flow
         // operators (map) inside setContent recreates them on every recompose.
         val themeModeFlow = app.settingsRepository.preferences.map { it.themeMode }
         val colorPaletteFlow = app.settingsRepository.preferences.map { it.colorPalette }
+        // Per-forecaster chart-colour slots: resolve the selection (or the
+        // location-aware Auto default) against the persisted slot map so each
+        // forecaster's overlay colour stays put across selection edits.
+        val colorSlotsFlow = app.settingsRepository.preferences.map { colorSlotsOf(it) }
         try {
             setContent {
                 val themeMode by themeModeFlow
                     .collectAsStateWithLifecycle(initialValue = initialPrefs.first)
                 val colorPalette by colorPaletteFlow
                     .collectAsStateWithLifecycle(initialValue = initialPrefs.second)
+                val colorSlots by colorSlotsFlow
+                    .collectAsStateWithLifecycle(initialValue = initialColorSlots)
                 val darkTheme = when (themeMode) {
                     ThemeMode.SYSTEM -> isSystemInDarkTheme()
                     ThemeMode.LIGHT -> false
@@ -111,7 +129,11 @@ class MainActivity : ComponentActivity() {
                     window.isNavigationBarContrastEnforced = false
                     onDispose {}
                 }
-                ClothesCastTheme(darkTheme = darkTheme, colorPalette = colorPalette) {
+                ClothesCastTheme(
+                    darkTheme = darkTheme,
+                    colorPalette = colorPalette,
+                    colorSlots = colorSlots,
+                ) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,

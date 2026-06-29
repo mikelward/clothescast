@@ -36,6 +36,10 @@ fun ClothesCastTheme(
     // Display settings. See [AppPalette] for what each palette swaps and
     // why.
     colorPalette: ColorPalette = ColorPalette.RAINBOW,
+    // Per-forecaster chart-colour slot assignment (openMeteoId → pool slot),
+    // resolved from the user's selection + persisted slots. Empty falls back to
+    // each model's enum-ordinal colour (see [poolModelColors]).
+    colorSlots: Map<String, Int> = emptyMap(),
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -50,6 +54,7 @@ fun ClothesCastTheme(
         scheme = colorScheme,
         darkTheme = darkTheme,
         colorPalette = colorPalette,
+        colorSlots = colorSlots,
     )
     MaterialTheme(colorScheme = colorScheme) {
         CompositionLocalProvider(LocalAppPalette provides palette, content = content)

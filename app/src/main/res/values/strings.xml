@@ -651,6 +651,10 @@
     <string name="settings_forecasters_jma_subtitle">Japanese — strong over Asia-Pacific. 3- to 6-hourly on the open feed.</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF\'s AI model — skillful out to 15 days, so it carries the second-week charts. Some detail charts may not show a line for it.</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google\'s AI weather forecast. Uses your Gemini API key.</string>
+    <string name="settings_forecasters_gemini_key_header">Gemini API key</string>
+    <string name="settings_forecasters_gemini_key_unset">Add a Gemini key to turn on the Google forecaster. The same key powers the Gemini voice.</string>
     <!-- BOM is still omitted from the ForecastModel enum while Open-Meteo's
          BOM open-data delivery is suspended, but the picker surfaces it as a
          permanently-disabled row so users looking for the Australian model

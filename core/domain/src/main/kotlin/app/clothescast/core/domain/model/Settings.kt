@@ -1098,7 +1098,7 @@ data class UserPreferences(
  * series it doesn't return. This matters for the per-model chart's
  * hour-by-hour curves but not for the daily-aggregate confidence chip.
  */
-enum class ForecastModel(val openMeteoId: String) {
+enum class ForecastModel(val openMeteoId: String, val requiresGeminiKey: Boolean = false) {
     // Order matters: the chart's MODEL_DRAW_ORDER and the per-model legend
     // derive from `entries`, so the per-overlay z-order on Today's charts is
     // best_match first (drawn underneath as a thicker reference baseline)
@@ -1120,7 +1120,18 @@ enum class ForecastModel(val openMeteoId: String) {
     METEOFRANCE_SEAMLESS("meteofrance_seamless"),
     UKMO_SEAMLESS("ukmo_seamless"),
     JMA_SEAMLESS("jma_seamless"),
-    ECMWF_AIFS025_SINGLE("ecmwf_aifs025_single");
+    ECMWF_AIFS025_SINGLE("ecmwf_aifs025_single"),
+
+    // Google's Maps-Platform Weather forecast, treated as just another
+    // forecaster: selectable on the Forecasters page, drawn on the charts, and
+    // a vote in the consensus blend + confidence. It is NOT an Open-Meteo model
+    // — [requiresGeminiKey] marks it so callers filter it out of Open-Meteo's
+    // `models=` list (which would 400 on an unknown id) and out of [defaultsFor]
+    // (it's opt-in only). It contributes only when the user has a Gemini key
+    // configured; Google's AIza key also authorizes weather.googleapis.com when
+    // that project has the Weather API enabled. The `openMeteoId` "google" is
+    // reused purely as the per-model map / chart-overlay key.
+    GOOGLE_WEATHER("google", requiresGeminiKey = true);
     // BOM_ACCESS_GLOBAL deliberately excluded — Open-Meteo's BOM docs note
     // that "BOM is currently upgrading its key platforms and services. During
     // this process, open-data delivery has been temporarily suspended." With
@@ -1152,6 +1163,15 @@ enum class ForecastModel(val openMeteoId: String) {
             GEM_SEAMLESS,
             ECMWF_AIFS025_SINGLE,
         )
+
+        /**
+         * The Open-Meteo `models=` ids for [models], excluding any forecaster
+         * that isn't an Open-Meteo model (currently [GOOGLE_WEATHER]). Use this
+         * everywhere the selection is turned into an Open-Meteo request so a
+         * non-Open-Meteo id never reaches the API (it would 400 the whole batch).
+         */
+        fun openMeteoIds(models: Iterable<ForecastModel>): List<String> =
+            models.filterNot { it.requiresGeminiKey }.map { it.openMeteoId }
     }
 }
 

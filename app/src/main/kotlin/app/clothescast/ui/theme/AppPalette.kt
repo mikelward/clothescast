@@ -68,6 +68,9 @@ internal fun rainbowPalette(scheme: ColorScheme): AppPalette = AppPalette(
         // AIFS — ECMWF's AI model. Brown, well separated from the pink ECMWF
         // line it sits alongside and from the other Material-600 hues.
         "ecmwf_aifs025_single" to Color(0xFF6D4C41),
+        // Google — its brand blue, distinct from the Material-600 blue ARPEGE
+        // line it can sit alongside.
+        "google" to Color(0xFF4285F4),
         BEST_MATCH_MODEL_ID to Color(0xFF9E9E9E),
     ),
     confidence = mapOf(
@@ -124,6 +127,10 @@ internal fun accessiblePalette(darkTheme: Boolean): AppPalette = AppPalette(
         // AIFS — a CVD-safe indigo (IBM palette), distinct from the blue GEM
         // and sky-blue ARPEGE under deutan / protan / tritan simulation.
         "ecmwf_aifs025_single" to Color(0xFF785EF0),
+        // Google — a mid blue distinct from the GEM/ARPEGE blues; readable on
+        // both surfaces and separable from the other hues under the common CVD
+        // profiles at the ≤5 lines the picker draws at once.
+        "google" to Color(0xFF4285F4),
         BEST_MATCH_MODEL_ID to if (darkTheme) Color(0xFFBFBFBF) else Color(0xFF595959),
     ),
     confidence = if (darkTheme) {
@@ -235,6 +242,9 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             // AIFS — neon blue-violet, deeper than GEM's lavender so the two
             // stay separable in the full-neon dark set.
             "ecmwf_aifs025_single" to Color(0xFF7C4DFF),
+            // Google — a glowy periwinkle, separable from the cyan ICON and the
+            // blue-violet AIFS in the full-neon dark set.
+            "google" to Color(0xFF82B1FF),
             BEST_MATCH_MODEL_ID to Color(0xFFEAEAEA),
         )
     } else {
@@ -259,6 +269,9 @@ internal fun highlighterPalette(darkTheme: Boolean): AppPalette = AppPalette(
             // AIFS — deep indigo, darkened from the dark set's blue-violet to
             // clear 3:1 contrast on the near-white light surfaceContainer.
             "ecmwf_aifs025_single" to Color(0xFF4527A0),
+            // Google — a deep blue, darkened from the dark set's periwinkle to
+            // clear 3:1 contrast on the near-white light surfaceContainer.
+            "google" to Color(0xFF1A56DB),
             BEST_MATCH_MODEL_ID to Color(0xFF2A2A2A),
         )
     },

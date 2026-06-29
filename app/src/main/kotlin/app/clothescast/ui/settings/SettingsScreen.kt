@@ -415,6 +415,9 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             location = state.location,
             padding = padding,
             onSetForecastModels = viewModel::setForecastModels,
+            apiKeyConfigured = state.apiKeyConfigured,
+            onSetApiKey = viewModel::setApiKey,
+            onClearApiKey = viewModel::clearApiKey,
         )
     }
 }

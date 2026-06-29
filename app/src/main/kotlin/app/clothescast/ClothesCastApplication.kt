@@ -14,6 +14,7 @@ import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.DEFAULT_GEMINI_TTS_MODEL
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
+import app.clothescast.core.data.weather.GoogleWeatherModelClient
 import app.clothescast.core.data.weather.OpenMeteoClient
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -218,6 +219,22 @@ class ClothesCastApplication : Application() {
     // is a clean read on rate limits and transient server issues.
     private val apiCallLogger: ApiCallLogger by lazy { TelemetryApiCallLogger(this) }
 
+    // Google's Maps-Platform Weather client. Folded into the consensus blend as
+    // an equal-weight peer alongside the Open-Meteo models, but only when the
+    // user has a Gemini key configured — Google's AIza keys are project-scoped,
+    // so the same key calls weather.googleapis.com when that project has the
+    // Weather API enabled and billing on. Best-effort: a 403 (Weather API not
+    // enabled) or any failure drops Google from the blend, never the forecast.
+    private val googleWeatherClient: GoogleWeatherModelClient by lazy {
+        GoogleWeatherModelClient(
+            httpClient = httpClient,
+            logger = ConfidenceFetchLogger { message, throwable ->
+                DiagLog.w("GoogleWeather", message, throwable)
+            },
+            apiCallLogger = apiCallLogger,
+        )
+    }
+
     val weatherRepository: WeatherRepository by lazy {
         // Wrap the network client in a 1 h in-memory cache so a manual
         // refresh on the Today screen — or back-to-back worker fires — reuse
@@ -243,7 +260,33 @@ class ClothesCastApplication : Application() {
                 confidenceModelsProvider = { location ->
                     val prefs = settingsRepository.preferences.first()
                     val effective = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
-                    effective.map { it.openMeteoId }
+                    // Google isn't an Open-Meteo model — openMeteoIds() drops it
+                    // so it never reaches the `models=` param (which would 400).
+                    ForecastModel.openMeteoIds(effective)
+                },
+                // Fetch Google's forecast only when the user has enabled the
+                // Google forecaster on the Forecasters page AND has a Gemini key
+                // configured (its AIza key also authorizes the Weather API). Not
+                // selected or no key → no Google series → today's Open-Meteo
+                // consensus exactly. Key present but unreadable (needs re-entry
+                // after a Keystore reset) → skip Google rather than fail.
+                extraModelHourly = { location ->
+                    val prefs = settingsRepository.preferences.first()
+                    val effective = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
+                    val googleSelected = ForecastModel.GOOGLE_WEATHER in effective
+                    if (!googleSelected || !secureKeyStore.geminiKeyConfiguredFlow.first()) {
+                        null
+                    } else {
+                        val key = try {
+                            secureKeyStore.get()
+                        } catch (ce: CancellationException) {
+                            throw ce
+                        } catch (e: Exception) {
+                            DiagLog.w("GoogleWeather", "Gemini key unavailable; skipping Google", e)
+                            null
+                        }
+                        key?.let { googleWeatherClient.fetchHourly(location, it) }
+                    }
                 },
             ),
             // Make the cache invalidate when the *effective* Forecasters set
@@ -256,7 +299,12 @@ class ClothesCastApplication : Application() {
             // location.
             freshnessKeyProvider = { location ->
                 val prefs = settingsRepository.preferences.first()
-                prefs.forecastModels ?: ForecastModel.defaultsFor(location)
+                val models = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
+                // Fold in whether Google is contributing (a Gemini key is
+                // configured) so toggling the key on/off invalidates the cache
+                // instead of waiting out the 1 h TTL — otherwise the blend would
+                // keep including (or excluding) Google until expiry.
+                models to secureKeyStore.geminiKeyConfiguredFlow.first()
             },
         )
     }

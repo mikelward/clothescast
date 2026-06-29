@@ -79,8 +79,16 @@ The source code is at <https://github.com/mikelward/clothescast>.
     (used to pre-select holidays in your country). On AOSP / non-Play
     devices `Geocoder` reports no backend and we skip the lookup;
     the Today header falls back to a date-only label.
+  - **Google's Weather API** ([Google Maps Platform](https://developers.google.com/maps/documentation/weather)) —
+    receives the coarse coordinate to return a weather forecast, **only
+    if** you turn on the "Google" forecaster on the Settings → Forecasters
+    page. That forecaster reuses your own Gemini API key (Google's keys
+    are project-scoped, so the same key calls the Weather API when your
+    project has it enabled), so the key is sent to Google with the
+    request. Off by default; nothing goes to Google's Weather API unless
+    you enable the forecaster and have set your own Gemini key.
 
-  Neither service receives an account, device identifier, or any
+  None of these services receives an account, device identifier, or any
   other payload beyond the items listed above.
 - **Stored on device:** Your chosen location is saved in app settings so
   the daily refresh can run without re-prompting you.
@@ -304,6 +312,7 @@ policies apply to anything they receive:
 |---|---|---|
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use the Settings location picker | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
+| [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate and your own Gemini API key | Only if you enable the "Google" forecaster on the Forecasters page and have set your own Gemini key |
 | Google Firebase Authentication | An App Check attestation, to mint and refresh an anonymous identifier (no name, email, or password) | First use of the shared-key path, then periodic token refreshes |
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, an anonymous app identifier (as a signed Firebase ID token; plus a Firebase Installation ID during the current rollout), a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
@@ -365,8 +374,9 @@ What's sent:
   events such as app open and daily refresh, so unused options can be
   pruned and defaults tuned.
 - **API-call outcomes:** one event per outgoing network request to
-  Open-Meteo or Gemini, carrying the endpoint identifier (e.g.
-  `open_meteo_forecast`), the HTTP status code, an outcome bucket
+  Open-Meteo, Google's Weather API (only if you enable the Google
+  forecaster), or Gemini, carrying the endpoint identifier (e.g.
+  `open_meteo_forecast`, `google_weather`), the HTTP status code, an outcome bucket
   (`success` / `http_error` / `timeout` / `network_error` /
   `other_error`), and the request latency in milliseconds. No URL
   parameters, no request or response bodies — the endpoint identifier

@@ -25,6 +25,7 @@ import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.data.SecureKeyStore
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.data.SettingsRepository
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.HomeAssistantDiscovery
@@ -203,6 +204,44 @@ class SettingsViewModelTest {
         subject.state.first { it.apiKeyConfigured }
         subject.clearApiKey()
         subject.state.first { !it.apiKeyConfigured }
+    }
+
+    @Test
+    fun `clearApiKey drops the Google forecaster from a custom selection`() = runTest {
+        // Google needs the key; clearing it (from any screen wired to this VM
+        // method) must remove Google so the selection doesn't keep a forecaster
+        // that can no longer contribute.
+        subject.setApiKey("AIzaSyKey")
+        subject.state.first { it.apiKeyConfigured }
+        subject.setForecastModels(
+            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS, ForecastModel.GOOGLE_WEATHER),
+        )
+        settingsRepository.preferences.first {
+            it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
+        }
+
+        subject.clearApiKey()
+
+        settingsRepository.preferences
+            .first { it.forecastModels == setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS) }
+            .forecastModels shouldBe setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS)
+    }
+
+    @Test
+    fun `clearApiKey falls back to Auto when dropping Google would leave too few models`() = runTest {
+        // Google + one Open-Meteo model: removing Google leaves a single model,
+        // below the two-model consensus floor, so the selection reverts to Auto.
+        subject.setApiKey("AIzaSyKey")
+        subject.state.first { it.apiKeyConfigured }
+        subject.setForecastModels(setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GOOGLE_WEATHER))
+        settingsRepository.preferences.first {
+            it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
+        }
+
+        subject.clearApiKey()
+
+        settingsRepository.preferences.first { it.forecastModels == null }
+            .forecastModels shouldBe null
     }
 
     @Test

@@ -74,6 +74,14 @@ private fun List<WorkInfo>.hasActiveWork(): Boolean = any { info ->
         info.state == WorkInfo.State.BLOCKED
 }
 
+/**
+ * Smallest forecaster selection the confidence spread can be computed from
+ * (mirrors the Forecasters picker's MIN_MODELS). Used when clearing the Gemini
+ * key drops the Google forecaster: if too few models would remain, fall back to
+ * Auto rather than persist a one-model selection.
+ */
+private const val MIN_CONSENSUS_MODELS = 2
+
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
     private val keyStore: SecureKeyStore,
@@ -468,6 +476,17 @@ class SettingsViewModel(
         viewModelScope.launch {
             keyStore.clear()
             refreshApiKeyStatus()
+            // The Google forecaster relies on this key. Whichever screen
+            // cleared it (Voice settings or the Forecasters page both wire here),
+            // drop Google from a custom selection so a "Google + one Open-Meteo"
+            // pair can't silently collapse to a single contributing model and
+            // lose the confidence chip. Fall back to Auto if fewer than two
+            // models would remain (the confidence spread needs at least two).
+            val selected = settingsRepository.preferences.first().forecastModels
+            if (selected != null && ForecastModel.GOOGLE_WEATHER in selected) {
+                val remaining = selected - ForecastModel.GOOGLE_WEATHER
+                settingsRepository.setForecastModels(remaining.takeIf { it.size >= MIN_CONSENSUS_MODELS })
+            }
         }
     }
 

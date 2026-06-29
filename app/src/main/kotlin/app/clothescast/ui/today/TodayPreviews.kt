@@ -78,10 +78,24 @@ import java.time.LocalTime
 // captured artifacts is obvious from a single file.
 //
 
+// Chart-colour slot assignment for the sample per-model data used by the
+// model-spread previews ({ECMWF, GFS, ICON, UKMO}). Mirrors what
+// [ForecastModel.assignColorSlots] would persist for that selection — distinct
+// slots in enum order — so the preview shows the colours the real app would,
+// instead of the bare enum-ordinal fallback (where UKMO's ordinal 5 wraps onto
+// ECMWF's slot 0). Non-chart previews ignore it.
+internal val SAMPLE_COLOR_SLOTS: Map<String, Int> = mapOf(
+    "ecmwf_ifs025" to 0,
+    "gfs_seamless" to 1,
+    "icon_seamless" to 2,
+    "ukmo_seamless" to 3,
+)
+
 @Composable
 internal fun Frame(
     darkTheme: Boolean = false,
     colorPalette: ColorPalette = ColorPalette.RAINBOW,
+    colorSlots: Map<String, Int> = SAMPLE_COLOR_SLOTS,
     content: @Composable () -> Unit,
 ) {
     // Render every preview in inspection mode, exactly as Android Studio's
@@ -95,7 +109,12 @@ internal fun Frame(
     // guards in the *Banner wrappers don't bite here: the banner previews
     // render the stateless *Card variants directly, which carry no guard.
     CompositionLocalProvider(LocalInspectionMode provides true) {
-        ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false, colorPalette = colorPalette) {
+        ClothesCastTheme(
+            darkTheme = darkTheme,
+            dynamicColor = false,
+            colorPalette = colorPalette,
+            colorSlots = colorSlots,
+        ) {
             Surface { Column(modifier = Modifier.padding(16.dp)) { content() } }
         }
     }

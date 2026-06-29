@@ -780,8 +780,15 @@ class SettingsRepository(
         dataStore.edit { prefs ->
             if (models.isNullOrEmpty()) {
                 prefs.remove(FORECAST_MODELS)
+                // Leave the colour slots untouched: flipping back to a custom
+                // selection should restore surviving forecasters' colours, and
+                // Auto derives its assignment from the default set at read time.
             } else {
                 prefs[FORECAST_MODELS] = models.map { it.name }.toSet()
+                // Recompute colour slots, keeping survivors' slots and giving
+                // newly-added forecasters the lowest free one.
+                val prior = parseForecasterColorSlots(prefs[FORECASTER_COLOR_SLOTS])
+                prefs.writeJson(FORECASTER_COLOR_SLOTS, ForecastModel.assignColorSlots(models, prior))
             }
         }
     }
@@ -1206,6 +1213,7 @@ class SettingsRepository(
             holidayOverrides = holidayOverrides,
             calendarOverrides = calendarOverrides,
             forecastModels = forecastModels,
+            forecasterColorSlots = parseForecasterColorSlots(this[FORECASTER_COLOR_SLOTS]),
             mqttBridgeEnabled = mqttBridgeEnabled,
             mqttHost = mqttHost,
             mqttPort = mqttPort,
@@ -1414,6 +1422,9 @@ class SettingsRepository(
                 .toMap()
         }
 
+    private fun parseForecasterColorSlots(raw: String?): Map<String, Int> =
+        decodeJson(raw, emptyMap()) { json.decodeFromString<Map<String, Int>>(it) }
+
     private fun parseRules(raw: String?): List<ClothesRule> =
         decodeJson(raw, ClothesRule.DEFAULTS) {
             // Drop any stored rule whose item isn't a catalog garment (legacy
@@ -1533,6 +1544,7 @@ class SettingsRepository(
         private val HOLIDAY_COUNTRY_ALL = booleanPreferencesKey("holiday_country_all")
         private val HOLIDAY_COUNTRY_OVERRIDES = stringSetPreferencesKey("holiday_country_overrides")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
+        private val FORECASTER_COLOR_SLOTS = stringPreferencesKey("forecaster_color_slots_json")
         // Legacy persisted name for the ECMWF model, retired when Open-Meteo
         // moved the IFS open feed from 0.4° to 0.25° (ecmwf_ifs04 →
         // ecmwf_ifs025). Migrated forward on read — see forecastModels above.

@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
@@ -670,6 +671,31 @@ internal fun SettingsForecastersPreview() {
             ),
             padding = PaddingValues(0.dp),
             onSetForecastModels = {},
+        )
+    }
+}
+
+// Google selected with a blocked key — exercises the probe status line's
+// error path (the 403 "enable the Weather API" guidance) and the "Check
+// again" affordance.
+@Preview(name = "Settings · Forecasters · Google blocked", widthDp = 360)
+@Composable
+internal fun SettingsForecastersGoogleBlockedPreview() {
+    SettingsFrame {
+        ForecastersContent(
+            forecastModels = setOf(
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.UKMO_SEAMLESS,
+                ForecastModel.GOOGLE_WEATHER,
+            ),
+            location = Location(
+                latitude = 51.5074,
+                longitude = -0.1278,
+            ),
+            padding = PaddingValues(0.dp),
+            onSetForecastModels = {},
+            apiKeyConfigured = true,
+            googleProbeResult = GoogleWeatherProbe.Forbidden,
         )
     }
 }

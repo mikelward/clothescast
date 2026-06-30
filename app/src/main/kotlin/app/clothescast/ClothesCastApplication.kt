@@ -225,7 +225,7 @@ class ClothesCastApplication : Application() {
     // so the same key calls weather.googleapis.com when that project has the
     // Weather API enabled and billing on. Best-effort: a 403 (Weather API not
     // enabled) or any failure drops Google from the blend, never the forecast.
-    private val googleWeatherClient: GoogleWeatherModelClient by lazy {
+    val googleWeatherClient: GoogleWeatherModelClient by lazy {
         GoogleWeatherModelClient(
             httpClient = httpClient,
             logger = ConfidenceFetchLogger { message, throwable ->

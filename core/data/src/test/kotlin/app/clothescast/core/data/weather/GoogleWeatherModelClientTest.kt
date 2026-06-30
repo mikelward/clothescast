@@ -144,4 +144,35 @@ class GoogleWeatherModelClientTest {
             .fetchHourly(london, "AIza-test-key")
             .shouldBeNull()
     }
+
+    @Test
+    fun `probe reports the hour count when the key reaches the API`() = runTest {
+        client().probe(london, "AIza-test-key") shouldBe GoogleWeatherProbe.Reachable(hours = 2)
+    }
+
+    @Test
+    fun `probe reports a blank key distinctly from a fetch failure`() = runTest {
+        var called = false
+        val result = client(captureRequest = { called = true }).probe(london, "")
+        result shouldBe GoogleWeatherProbe.NoKey
+        called shouldBe false
+    }
+
+    @Test
+    fun `probe singles out a 403 so the UI can point at the Cloud Console fix`() = runTest {
+        client(status = HttpStatusCode.Forbidden).probe(london, "AIza-test-key") shouldBe
+            GoogleWeatherProbe.Forbidden
+    }
+
+    @Test
+    fun `probe carries the HTTP status for other server failures`() = runTest {
+        client(status = HttpStatusCode.TooManyRequests).probe(london, "AIza-test-key") shouldBe
+            GoogleWeatherProbe.Failed(httpStatus = 429)
+    }
+
+    @Test
+    fun `probe treats an empty forecast as a failure rather than reachable`() = runTest {
+        client(body = """{"forecastHours":[]}""").probe(london, "AIza-test-key") shouldBe
+            GoogleWeatherProbe.Failed(httpStatus = null)
+    }
 }

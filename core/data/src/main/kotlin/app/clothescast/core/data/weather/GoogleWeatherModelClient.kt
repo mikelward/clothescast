@@ -9,10 +9,12 @@ import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.WeatherCondition
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLProtocol
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerialName
@@ -20,6 +22,36 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 internal const val GOOGLE_WEATHER_HOST = "weather.googleapis.com"
+
+/**
+ * Outcome of [GoogleWeatherModelClient.probe] — a user-facing connectivity
+ * check for the Google forecaster. Unlike the forecast path's null-on-failure
+ * contract, this keeps enough detail for the Forecasters settings page to tell
+ * the user whether Google will actually contribute to their charts, and what to
+ * do if it won't.
+ */
+sealed interface GoogleWeatherProbe {
+    /** The key reached the Weather API and it returned [hours] usable hours. */
+    data class Reachable(val hours: Int) : GoogleWeatherProbe
+
+    /** No Gemini key configured — there's nothing to probe with. */
+    data object NoKey : GoogleWeatherProbe
+
+    /**
+     * The API rejected the key with 403 PERMISSION_DENIED. The single most
+     * common Google-on-the-charts failure, and the one with a concrete fix:
+     * enable the Weather API + billing for the key's Google Cloud project, and
+     * make sure the key's API restrictions don't exclude it.
+     */
+    data object Forbidden : GoogleWeatherProbe
+
+    /**
+     * Any other failure — a network drop, quota rejection (429), 5xx, a parse
+     * error, or a 200 with no usable hours. [httpStatus] carries the HTTP code
+     * when the failure was an HTTP error, else null.
+     */
+    data class Failed(val httpStatus: Int?) : GoogleWeatherProbe
+}
 
 /**
  * Fetches Google's Maps-Platform Weather forecast for a location and maps it to
@@ -67,6 +99,46 @@ class GoogleWeatherModelClient(
             return null
         }
         return parse(response)
+    }
+
+    /**
+     * One-shot connectivity check for the Forecasters settings page: hits the
+     * same endpoint as [fetchHourly] but keeps the failure detail instead of
+     * collapsing it to null, so the UI can tell the user *why* Google would sit
+     * out of the blend the moment they enable it — rather than leaving them to
+     * notice a missing line on the chart and dig through the diag log.
+     *
+     * The split is deliberate: [fetchHourly] is the hot forecast path and stays
+     * "any failure → null, never break the surrounding forecast"; [probe] is the
+     * cold, user-initiated path where the distinction between "the key is blocked
+     * (fixable)" and "the network blipped (transient)" is exactly what the user
+     * needs to act. Both share [request]/[parse], so they can't drift apart.
+     */
+    suspend fun probe(location: Location, apiKey: String): GoogleWeatherProbe {
+        if (apiKey.isBlank()) return GoogleWeatherProbe.NoKey
+        val response = try {
+            request(location, apiKey)
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            logger.log("Google Weather probe failed", t)
+            // A 403 PERMISSION_DENIED is the common, actionable case — the
+            // Weather API isn't enabled for the key's project, billing is off,
+            // or the key's API restrictions exclude it. Surface it distinctly
+            // from a transient network / quota / 5xx failure so the UI can point
+            // at the Cloud Console fix rather than "try again later".
+            val status = (t as? ResponseException)?.response?.status?.value
+            return if (status == HttpStatusCode.Forbidden.value) {
+                GoogleWeatherProbe.Forbidden
+            } else {
+                GoogleWeatherProbe.Failed(status)
+            }
+        }
+        val hours = parse(response)?.size ?: 0
+        // A 200 with no usable hours is treated as a failure: the key reached the
+        // API but there's nothing to fold into the blend, so "Google is
+        // contributing" would be a lie. Rare for a valid key, but honest.
+        return if (hours > 0) GoogleWeatherProbe.Reachable(hours) else GoogleWeatherProbe.Failed(null)
     }
 
     private suspend fun request(location: Location, apiKey: String): GoogleHourlyResponse =

@@ -33,6 +33,7 @@ import app.clothescast.core.domain.model.CalendarInfo
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.data.defaultWindSpeedUnitFor
 import app.clothescast.data.defaultTemperatureUnitFor
 import app.clothescast.data.defaultTimeFormatFor
@@ -229,6 +230,21 @@ data class SettingsState(
      * mapping the Auto state resolves through.
      */
     val forecastModels: Set<ForecastModel>? = null,
+    /**
+     * True while a one-shot Google Weather connectivity probe is in flight.
+     * The Forecasters page kicks one when the Google forecaster is enabled (or
+     * the page is opened with it already on) so the user sees whether their
+     * Gemini key actually reaches the Weather API, rather than noticing a
+     * missing line on the chart and digging through the diag log.
+     */
+    val googleProbeRunning: Boolean = false,
+    /**
+     * Outcome of the most recent Google Weather probe this session, or `null`
+     * before the first probe. Drives the status line under the Google row:
+     * a 403 points the user at the Cloud Console fix (enable the Weather API +
+     * billing, unrestrict the key); other failures read as transient.
+     */
+    val googleProbeResult: GoogleWeatherProbe? = null,
     /**
      * Smart Home / Home Assistant MQTT bridge configuration. Master toggle
      * (`mqttBridgeEnabled`) gates the publisher; the rest mirror the values

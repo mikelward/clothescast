@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
@@ -193,6 +194,14 @@ class SettingsViewModel(
      * preview in the same frame as the dropdown closes.
      */
     private val insightCache: InsightCache? = null,
+    /**
+     * One-shot Google Weather connectivity probe used by [probeGoogleWeather].
+     * Resolves the current location + Gemini key and hits the Weather API,
+     * returning a [GoogleWeatherProbe] the Forecasters page renders as a status
+     * line. Null in pure-VM tests that don't need network; [probeGoogleWeather]
+     * then no-ops and the status stays unset.
+     */
+    private val googleWeatherProbe: (suspend () -> GoogleWeatherProbe)? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -215,6 +224,12 @@ class SettingsViewModel(
     private var calendarCelebrationsJob: Job? = null
     /** In-flight device-calendar enumeration; guards against overlapping loads. */
     private var availableCalendarsJob: Job? = null
+    /**
+     * In-flight Google Weather probe. A new probe supersedes it (cancel +
+     * restart) rather than being dropped, so replacing the key mid-probe
+     * re-runs against the new key and the latest verdict is the one that lands.
+     */
+    private var googleProbeJob: Job? = null
     /**
      * The most recently enumerated effective locale, used to detect when
      * re-enumeration is needed. Stored as a resolved [Locale] rather than
@@ -469,6 +484,18 @@ class SettingsViewModel(
         viewModelScope.launch {
             keyStore.set(key.trim())
             refreshApiKeyStatus()
+            // Re-probe Google when the key changes while Google is selected.
+            // The Forecasters page's LaunchedEffect only fires on the
+            // apiKeyConfigured false→true edge, so replacing an already-set key
+            // (the key-recovery flow this status is meant to support) wouldn't
+            // refresh it — leaving a stale "Google rejected your key" 403 next
+            // to the freshly-pasted replacement until the user tapped "Check
+            // again". Probing here keys the diagnostic off the new key. Harmless
+            // when called from the Voice page (the result only shows on
+            // Forecasters) and only probes when Google is actually selected.
+            if (_state.value.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true) {
+                probeGoogleWeather()
+            }
         }
     }
 
@@ -930,6 +957,48 @@ class SettingsViewModel(
     }
 
     /**
+     * Runs a one-shot Google Weather connectivity probe and surfaces the result
+     * on the Forecasters page. The page calls this when the Google forecaster
+     * is enabled (or opened with it already on) and from a "Check again" action,
+     * so the user learns immediately whether their key reaches the Weather API
+     * — instead of a silent missing line on the chart. No-ops when no probe
+     * backend is wired (pure-VM tests). [SettingsState.googleProbeRunning] is
+     * true for the duration.
+     *
+     * A new probe *supersedes* any in-flight one rather than being dropped: if
+     * the user replaces the key while a probe is still running, that running
+     * probe is hitting the API with the OLD key, so we cancel it and re-run
+     * against the new key. Without this, the stale request could land its
+     * verdict (e.g. a 403 for the replaced key) and the page would show a
+     * rejection for a key that actually works until the user tapped "Check
+     * again". The job is assigned *before* the previous one is cancelled and
+     * launched LAZY so the cancelled probe's finally sees the newer job as the
+     * current one and leaves its running flag / verdict alone (same identity-
+     * guard pattern as [startDiscovery]).
+     */
+    fun probeGoogleWeather() {
+        val probe = googleWeatherProbe ?: return
+        val previous = googleProbeJob
+        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+            _state.update { it.copy(googleProbeRunning = true) }
+            try {
+                val result = probe()
+                _state.update { it.copy(googleProbeResult = result) }
+            } finally {
+                // Only the latest probe owns the running flag — a superseded
+                // probe must not switch the spinner off after a newer one took
+                // over.
+                if (googleProbeJob === coroutineContext[Job]) {
+                    _state.update { it.copy(googleProbeRunning = false) }
+                }
+            }
+        }
+        googleProbeJob = job
+        previous?.cancel()
+        job.start()
+    }
+
+    /**
      * Starts an mDNS / DNS-SD scan for Home Assistant and MQTT brokers on
      * the local network. Subsequent batches arrive via the discovery flow
      * and are folded into [SettingsState.discoveredServices]. Idempotent —
@@ -1234,6 +1303,7 @@ class SettingsViewModel(
         private val sharedTtsAvailable: Boolean = false,
         private val calendarEventReader: CalendarEventReader? = null,
         private val insightCache: InsightCache? = null,
+        private val googleWeatherProbe: (suspend () -> GoogleWeatherProbe)? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -1259,6 +1329,7 @@ class SettingsViewModel(
                 sharedTtsAvailable = sharedTtsAvailable,
                 calendarEventReader = calendarEventReader,
                 insightCache = insightCache,
+                googleWeatherProbe = googleWeatherProbe,
             ) as T
         }
     }

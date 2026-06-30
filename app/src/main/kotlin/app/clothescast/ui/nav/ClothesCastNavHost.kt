@@ -24,7 +24,9 @@ import app.clothescast.MainActivity
 import app.clothescast.R
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.castCurrentInsight
+import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.diag.DiagLog
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.locale.AppLocale
@@ -55,6 +57,7 @@ import app.clothescast.ui.settings.VoicePage
 import app.clothescast.ui.today.TodayScreen
 import app.clothescast.ui.today.TodayViewModel
 import app.clothescast.work.FetchAndNotifyWorker
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -430,6 +433,42 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                     locale = LocaleListCompat.getAdjustedDefault().get(0)
                         ?: java.util.Locale.getDefault(),
                 )
+            }
+        },
+        googleWeatherProbe = {
+            // Probe with the same location the forecast would use, gated the
+            // same way: the cached settings location, falling back to a device
+            // fix ONLY when the user has device location enabled (mirrors
+            // FetchAndNotifyWorker.resolveLocation). Without this gate, opening
+            // the page with device location off and no saved city would resolve
+            // and send device coordinates to Google in a state where the
+            // forecast itself would report "no location". The key rides the
+            // same BYOK Gemini slot the forecast path reads.
+            val prefs = app.settingsRepository.preferences.first()
+            val location = prefs.location
+                ?: if (prefs.useDeviceLocation) app.locationResolver.resolve() else null
+            // Rethrow cancellation rather than swallowing it: if the probe is
+            // superseded (key replaced mid-probe) or the VM is cleared while
+            // get() is suspended, a runCatching would turn the cancel into an
+            // empty key -> NoKey and let the dead probe publish a stale result,
+            // breaking the supersede contract. Only a genuine read failure
+            // (e.g. corrupt ciphertext after a Keystore reset) degrades to the
+            // blank-key/NoKey path. Mirrors the extraModelHourly wiring in
+            // ClothesCastApplication.
+            val key = try {
+                app.secureKeyStore.get()
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                DiagLog.w("GoogleWeather", "Gemini key unavailable; probe reports no key", e)
+                ""
+            }
+            when {
+                key.isBlank() -> GoogleWeatherProbe.NoKey
+                // No location to probe with — report a generic failure rather
+                // than guess coordinates; the status line invites a retry.
+                location == null -> GoogleWeatherProbe.Failed(httpStatus = null)
+                else -> app.googleWeatherClient.probe(location, key)
             }
         },
     )

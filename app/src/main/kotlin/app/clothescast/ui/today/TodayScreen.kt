@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -3538,6 +3540,7 @@ internal fun PrecipitationAmountCard(
  * Pass [mainLine] when the chart has a blended main line alongside the
  * overlays (temp + rain cards); the diagnostic cards leave it null.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun ModelSpreadLegend(
     visibleModelIds: List<String>,
@@ -3549,10 +3552,13 @@ internal fun ModelSpreadLegend(
     val modelColors = AppTheme.palette.modelColors
     // No "Models:" prefix — the coloured chips under a titled chart read as
     // the line key on their own, and dropping the word buys horizontal room
-    // to keep the full default set on one line.
-    Row(
+    // to keep the full default set on one line. A FlowRow so a full
+    // five-model pick (Average + Auto + five overlays = seven chips) wraps
+    // onto a second line instead of squeezing the last chip's label into a
+    // column of single letters.
+    FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         mainLine?.let {
             LegendChip(

@@ -141,27 +141,15 @@ class AppPaletteTest {
     }
 
     @Test
-    fun `HIGHLIGHTER palette overrides the Combined main-line colour`() {
-        // Rainbow and Accessible leave mainLineColor null (fallback to
-        // Material primary). Highlighter's ICON cyan crowds the theme
-        // primary blue on the same chart, and the pale Auto best_match
-        // overlay (#EAEAEA on dark) would crowd pure white — so it sets
-        // the main line explicitly. Deep purple on light, Material's
-        // recommended dark-theme purple #BB86FC on dark: both sit clearly
-        // off the grey-white axis while staying readable against the
-        // surface.
-        val light = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
-        val dark = appPaletteFor(scheme, darkTheme = true, colorPalette = ColorPalette.HIGHLIGHTER)
-        light.mainLineColor shouldBe Color(0xFF6200EA)
-        dark.mainLineColor shouldBe Color(0xFFBB86FC)
-    }
-
-    @Test
-    fun `RAINBOW and ACCESSIBLE palettes leave the Combined main-line colour to the theme`() {
-        val rainbow = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.RAINBOW)
-        val accessible = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.ACCESSIBLE)
-        rainbow.mainLineColor shouldBe null
-        accessible.mainLineColor shouldBe null
+    fun `every palette leaves the Combined main-line colour to the theme`() {
+        // All palettes now defer mainLineColor to the theme, which resolves to
+        // onBackground (near-black on light, near-white on dark) — so the
+        // blended "Average" line matches the spread-off main line and frees blue
+        // for the model pools. None overrides it.
+        ColorPalette.entries.forEach { palette ->
+            appPaletteFor(scheme, darkTheme = false, colorPalette = palette).mainLineColor shouldBe null
+            appPaletteFor(scheme, darkTheme = true, colorPalette = palette).mainLineColor shouldBe null
+        }
     }
 
     @Test

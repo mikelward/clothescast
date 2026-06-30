@@ -57,19 +57,19 @@ data class AppPalette(
  * the picker caps a selection at five, but the palette covers every model
  * so the chart never crashes on a `modelColors.getValue` lookup.
  */
-// The Rainbow colour pool: five vivid, maximally-distinct hues assigned to the
-// selected forecasters by slot (see [poolModelColors]), ordered most-distinct
-// first so a typical 3–4-model pick gets the widest separation. Deliberately NO
-// blue and no grey: the blended "Average" main line is the theme's blue and the
-// "Auto" best_match overlay is grey, so a blue/grey pool colour would collide
-// with them. Red / green / amber / purple cover the common picks; pink (only
-// near-neighbour is red) sits last, co-occurring only at a full five-model set.
+// The Rainbow colour pool: five vivid, maximally-distinct Material-500 hues
+// assigned to the selected forecasters by slot (see [poolModelColors]), ordered
+// most-distinct first so a typical 3–4-model pick gets the widest separation.
+// Blue / red / green / purple cover the common picks; amber sits last. No
+// brown / muddy tones, and grey is avoided (it's the "Auto" overlay). Blue is
+// fine here because the blended "Average" main line is now near-black/near-white
+// (theme onBackground), not blue — see [AppTheme.mainLineColor].
 private val RAINBOW_POOL = listOf(
-    Color(0xFFE53935),
-    Color(0xFF43A047),
-    Color(0xFFF9A825),
-    Color(0xFF8E24AA),
-    Color(0xFFD81B60),
+    Color(0xFF2196F3),
+    Color(0xFFF44336),
+    Color(0xFF4CAF50),
+    Color(0xFF9C27B0),
+    Color(0xFFFFC107),
 )
 
 internal fun rainbowPalette(scheme: ColorScheme, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
@@ -108,25 +108,21 @@ internal fun rainbowPalette(scheme: ColorScheme, slots: Map<String, Int> = empty
  */
 // The Accessible colour pool: five Okabe-Ito hues that stay distinguishable
 // under deutan / protan / tritan CVD at the ≤5 lines the picker draws, ordered
-// most-distinct first. Vermillion / bluish-green / reddish-purple cover the
-// common 3-model pick (all non-blue, so none collides with the blue "Average"
-// main line); orange is the 4th and Okabe-Ito blue sits last, co-occurring with
-// the blue main line only at a full five-model set. Okabe-Ito yellow (#F0E442)
-// is dropped — too low-contrast on the near-white chart card.
+// most-distinct first. Blue / reddish-purple / bluish-green cover the common
+// 3-model pick; orange (a clear goldenrod, not a muddy brown) is 4th and sky
+// blue last. Okabe-Ito vermillion (#D55E00, a muddy brown) and yellow (#F0E442,
+// too low-contrast on the near-white card) are both dropped. Blue is fine now
+// the "Average" main line is near-black/white rather than blue.
 private val ACCESSIBLE_POOL = listOf(
-    Color(0xFFD55E00),
-    Color(0xFF009E73),
-    Color(0xFFCC79A7),
-    Color(0xFFE69F00),
     Color(0xFF0072B2),
+    Color(0xFFCC79A7),
+    Color(0xFF009E73),
+    Color(0xFFE69F00),
+    Color(0xFF56B4E9),
 )
 
 internal fun accessiblePalette(darkTheme: Boolean, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
-    modelColors = poolModelColors(
-        ACCESSIBLE_POOL,
-        if (darkTheme) Color(0xFFBFBFBF) else Color(0xFF595959),
-        slots,
-    ),
+    modelColors = poolModelColors(ACCESSIBLE_POOL, Color(0xFF9E9E9E), slots),
     confidence = if (darkTheme) {
         mapOf(
             ForecastConfidence.HIGH to ConfidenceColors(
@@ -228,31 +224,27 @@ private val HIGHLIGHTER_POOL_DARK = listOf(
     Color(0xFFFFEB3B),
     Color(0xFFB388FF),
 )
+// Light variant: WCAG-darkened counterparts that clear 3:1 on the near-white
+// card. Slot 3 is a clean red (the old dark-amber #B58A00 read as muddy brown);
+// no brown anywhere.
 private val HIGHLIGHTER_POOL_LIGHT = listOf(
     Color(0xFFFF2D95),
     Color(0xFF0277BD),
     Color(0xFF2E7D32),
-    Color(0xFFB58A00),
+    Color(0xFFD32F2F),
     Color(0xFF6A1B9A),
 )
 
 internal fun highlighterPalette(darkTheme: Boolean, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
     modelColors = poolModelColors(
         if (darkTheme) HIGHLIGHTER_POOL_DARK else HIGHLIGHTER_POOL_LIGHT,
-        if (darkTheme) Color(0xFFEAEAEA) else Color(0xFF2A2A2A),
+        Color(0xFF9E9E9E),
         slots,
     ),
-    // The Combined main line lives outside the model-overlay trio, but it
-    // sits on the same chart and needs to read as distinct from both the
-    // cyan ICON line and the pale Auto best_match line. Material's theme
-    // primary (a blue) collapses against the cyan, so we route it through
-    // the palette: deep purple on light theme, light purple on dark. We
-    // can't use pure white on dark because the best_match overlay is
-    // #EAEAEA — the two reads as the same pale line. Material's
-    // recommended dark-theme purple (`#BB86FC`) sits clearly off the
-    // grey-white axis while staying high-luminance enough to read against
-    // a dark surface.
-    mainLineColor = if (darkTheme) Color(0xFFBB86FC) else Color(0xFF6200EA),
+    // Main line defers to the shared near-black/white (theme onBackground) like
+    // the other palettes — see [AppTheme.mainLineColor]. The grey Auto overlay
+    // is a mid-grey (#9E9E9E), so it stays clear of both the main line and the
+    // neon model hues.
     confidence = if (darkTheme) {
         mapOf(
             ForecastConfidence.HIGH to ConfidenceColors(
@@ -306,18 +298,18 @@ object AppTheme {
         get() = LocalAppPalette.current
 
     /**
-     * Effective blended-main-line colour for the current palette: the
-     * palette's [AppPalette.mainLineColor] when set, otherwise Material's
-     * scheme primary. Use this in chart wrappers instead of reading
-     * `MaterialTheme.colorScheme.primary` directly so palettes can override
-     * the main line when their model-overlay hues already include the
-     * primary's blue.
+     * Effective blended-main-line colour for the current palette: the palette's
+     * [AppPalette.mainLineColor] when set, otherwise the theme's `onBackground`
+     * (near-black on light, near-white on dark). That keeps the "Average" line
+     * the same as the spread-off main line, and — by not being blue — frees blue
+     * for the per-model pools. Use this in chart wrappers rather than reading
+     * `MaterialTheme.colorScheme.primary` directly.
      */
     val mainLineColor: Color
         @Composable
         @ReadOnlyComposable
         get() = LocalAppPalette.current.mainLineColor
-            ?: androidx.compose.material3.MaterialTheme.colorScheme.primary
+            ?: androidx.compose.material3.MaterialTheme.colorScheme.onBackground
 }
 
 /**

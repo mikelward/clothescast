@@ -57,16 +57,18 @@ data class AppPalette(
  * the picker caps a selection at five, but the palette covers every model
  * so the chart never crashes on a `modelColors.getValue` lookup.
  */
-// The Rainbow colour pool: five vivid, maximally-distinct Material-500 hues
-// assigned to the selected forecasters by slot (see [poolModelColors]), ordered
-// most-distinct first so a typical 3–4-model pick gets the widest separation.
-// Blue / red / green / purple cover the common picks; amber sits last. No
-// brown / muddy tones, and grey is avoided (it's the "Auto" overlay). Blue is
-// fine here because the blended "Average" main line is now near-black/near-white
-// (theme onBackground), not blue — see [AppTheme.mainLineColor].
+// The Rainbow colour pool: five vivid, maximally-distinct hues assigned to the
+// selected forecasters by slot (see [poolModelColors]), ordered most-distinct
+// first so a typical 3–4-model pick gets the widest separation. Blue / red /
+// green / purple cover the common picks; amber sits last. The red is a pure
+// #FF0000 rather than Material Red 500 (#F44336), whose orange tilt read as a
+// warm brick/brown. No brown / muddy tones, and grey is avoided (it's the
+// "Auto" overlay). Blue is fine here because the blended "Average" main line is
+// now near-black/near-white (theme onBackground), not blue — see
+// [AppTheme.mainLineColor].
 private val RAINBOW_POOL = listOf(
     Color(0xFF2196F3),
-    Color(0xFFF44336),
+    Color(0xFFFF0000),
     Color(0xFF4CAF50),
     Color(0xFF9C27B0),
     Color(0xFFFFC107),

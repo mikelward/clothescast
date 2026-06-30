@@ -166,13 +166,20 @@ internal fun ForecastersContent(
                     onToggle = {},
                 )
                 // Google sits last — it isn't an Open-Meteo model and needs the
-                // user's BYOK Google API key. The checkbox is disabled until a
-                // key is configured (so the picker can't allow a key-less Google
-                // + one Open-Meteo "two-model" selection that would leave just
-                // one contributing model). The key entry sits directly below it.
+                // user's BYOK Google API key. *Adding* Google requires a key (so
+                // the picker can't allow a key-less Google + one Open-Meteo
+                // "two-model" selection that would leave just one contributing
+                // model). But an already-checked Google row stays removable
+                // without a key — otherwise a selection carried over from before
+                // the key split (no carry-over from the Gemini key) would leave
+                // a non-contributing Google stuck in the set, un-removable
+                // without first pasting a key or toggling Auto. So gate only the
+                // check path on the key; mirror the Open-Meteo rows for uncheck.
                 val googleChecked = ForecastModel.GOOGLE_WEATHER in effective
-                val googleEnabled = googleApiKeyConfigured && !isAuto &&
-                    (if (googleChecked) effective.size > MIN_MODELS else !atCap)
+                val googleEnabled = !isAuto && (
+                    if (googleChecked) effective.size > MIN_MODELS
+                    else googleApiKeyConfigured && !atCap
+                )
                 ForecasterRow(
                     label = stringResource(forecastModelLabel(ForecastModel.GOOGLE_WEATHER)),
                     subtitle = stringResource(forecastModelSubtitle(ForecastModel.GOOGLE_WEATHER)),

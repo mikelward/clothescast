@@ -43,6 +43,7 @@ import app.clothescast.ui.settings.SettingsClothesRulePrecipDialogPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsDoneBarPreview
 import app.clothescast.ui.settings.SettingsForecastersGoogleBlockedPreview
+import app.clothescast.ui.settings.SettingsForecastersGoogleNoKeyPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsFormatClothesNeverPreview
 import app.clothescast.ui.settings.SettingsFormatCurrentForecastPreview
@@ -734,6 +735,11 @@ class PreviewSnapshots {
     @Test
     @Config(qualifiers = "w360dp-h1400dp-xhdpi")
     fun settings_forecasters_google_blocked() = capture { SettingsForecastersGoogleBlockedPreview() }
+
+    // Google checked with no key — the row stays enabled so it can be removed.
+    @Test
+    @Config(qualifiers = "w360dp-h1400dp-xhdpi")
+    fun settings_forecasters_google_no_key() = capture { SettingsForecastersGoogleNoKeyPreview() }
 
     // The merged Calendar page renders the permission + feature toggle cards,
     // the celebration sources card, the two calendar listings, one collapsible

@@ -68,12 +68,8 @@ class GoogleForecastCache(
         maxAge: Duration = defaultTtl,
     ): List<PerModelHour>? {
         val raw = readRaw() ?: return null
-        val entry = try {
-            json.decodeFromString<Entry>(raw)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            DiagLog.w(TAG, "Google forecast cache decode failed; dropping the entry", e)
+        val entry = decode(raw) ?: run {
+            // Corrupt entry — drop it so the next fetch re-populates.
             clear()
             return null
         }
@@ -93,16 +89,30 @@ class GoogleForecastCache(
      * Stores [hours] as the extended series for [location], stamped now. A
      * persistence failure is logged and swallowed — the caller already has the
      * series in hand for this fetch, and the next foreground walk re-stamps it.
+     *
+     * Google's hourly endpoint only serves from the current hour forward, so a
+     * fresh walk carries nothing for the part of *today* that has already
+     * elapsed. Writing just that from-now series would discard the morning the
+     * previous walk had captured, front-truncating Google's contribution to the
+     * current day's window — which then gets it dropped from the cross-model
+     * confidence comparison (see
+     * [app.clothescast.core.domain.usecase.confidenceInput], which excludes a
+     * model that doesn't reach the window's first hour). So carry the prior
+     * entry's already-elapsed same-day hours forward and merge the fresh series
+     * over them, keeping the cached series spanning the whole period. The fresh
+     * forecast always wins from its first hour on; only strictly-earlier hours
+     * of the same local day are retained.
      */
     suspend fun put(location: Location, apiKeyFingerprint: Int?, hours: List<PerModelHour>) {
         if (hours.isEmpty()) return
         val key = keyOf(location)
+        val merged = mergeRetainingEarlierToday(key, apiKeyFingerprint, hours)
         val entry = Entry(
             latBucket = key.first,
             lonBucket = key.second,
             apiKeyFingerprint = apiKeyFingerprint,
             fetchedAtMs = clock.instant().toEpochMilli(),
-            hours = hours.map { it.toDto() },
+            hours = merged.map { it.toDto() },
         )
         val encoded = try {
             json.encodeToString(entry)
@@ -119,6 +129,56 @@ class GoogleForecastCache(
         } catch (e: Exception) {
             DiagLog.w(TAG, "Google forecast cache write failed", e)
         }
+    }
+
+    /**
+     * Merges [fresh] over the prior cached entry, carrying forward only the
+     * already-elapsed hours of the current local day so the stored series still
+     * spans the whole period (see [put]). Returns [fresh] unchanged when there's
+     * no usable prior entry, it's for a different location / key, or it holds no
+     * earlier same-day hour to keep.
+     *
+     * "Current day" is read off the fresh series' own earliest timestamp (which
+     * is ~now in the location's local wall-clock) rather than [clock], so it
+     * needs no timezone of the location: only prior hours sharing that local
+     * date and falling strictly before the fresh series begin are retained.
+     * Retaining from a prior entry of *any* age is deliberate — the prior walk's
+     * forecast for this morning is the only Google data we'll ever have for
+     * hours Google no longer returns, and it's exactly the morning the day's
+     * low is read from. The fresh series owns every hour from its first onward,
+     * so nothing stale survives into the future.
+     */
+    private suspend fun mergeRetainingEarlierToday(
+        key: Pair<Long, Long>,
+        apiKeyFingerprint: Int?,
+        fresh: List<PerModelHour>,
+    ): List<PerModelHour> {
+        val newFirst = fresh.minByOrNull { it.time }?.time ?: return fresh
+        val prior = readRaw()?.let { decode(it) } ?: return fresh
+        // Only carry hours from an entry for the same location + key; a
+        // different bucket or a swapped key is unrelated data.
+        if (prior.apiKeyFingerprint != apiKeyFingerprint ||
+            prior.latBucket != key.first ||
+            prior.lonBucket != key.second
+        ) {
+            return fresh
+        }
+        val today = newFirst.toLocalDate()
+        val retained = prior.hours
+            .mapNotNull { it.toDomain() }
+            .filter { it.time.toLocalDate() == today && it.time.isBefore(newFirst) }
+        return if (retained.isEmpty()) fresh else (retained + fresh).sortedBy { it.time }
+    }
+
+    /**
+     * Decodes a stored [Entry], or null on a malformed payload (logged, no
+     * side effects — callers decide whether to clear). Not suspend: pure JSON.
+     */
+    private fun decode(raw: String): Entry? = try {
+        json.decodeFromString<Entry>(raw)
+    } catch (e: Exception) {
+        DiagLog.w(TAG, "Google forecast cache decode failed", e)
+        null
     }
 
     private suspend fun readRaw(): String? = try {

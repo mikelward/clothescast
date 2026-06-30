@@ -171,8 +171,10 @@ internal fun accessiblePalette(darkTheme: Boolean, slots: Map<String, Int> = emp
  *  - **Hot magenta** (`#FF2D95`) sits on the red end of the wheel far enough
  *    from Rainbow's pink that the two don't read as the same hue family on a
  *    phone screen.
- *  - **Highlighter yellow** (`#FFEB3B`) is the bright slot in the classic
- *    CMY (Tron-canon) trio. The trade-off is tritanopia: cyan-vs-yellow
+ *  - **Fluorescent yellow** (`#EEFF00`) is the bright slot in the classic
+ *    CMY (Tron-canon) trio — an acid, marker-pen yellow with a slight green
+ *    push so it actually glows on the dark card rather than reading as a
+ *    muted Material yellow. The trade-off is tritanopia: cyan-vs-yellow
  *    collapses on the blue-yellow CVD axis. Tritanopia affects <0.01% of
  *    males, so the deutan / protan / "no CVD" majority still gets the
  *    cleanest distinction.
@@ -225,7 +227,7 @@ private val HIGHLIGHTER_POOL_DARK = listOf(
     Color(0xFFFF2D95),
     Color(0xFF00E5FF),
     Color(0xFF00FFA1),
-    Color(0xFFFFEB3B),
+    Color(0xFFEEFF00),
     Color(0xFFB388FF),
 )
 // Light variant: WCAG-darkened counterparts that clear 3:1 on the near-white

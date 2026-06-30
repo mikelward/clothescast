@@ -133,4 +133,69 @@ class GoogleForecastCacheTest {
 
         cacheAt(t0.plus(Duration.ofHours(1))).fresh(london, keyA) shouldBe null
     }
+
+    // --- merge: retain the current day's already-elapsed hours on re-put ---
+
+    /** Minimal hour on 2026-06-[day] at [hour]:00, just enough to round-trip. */
+    private fun hr(day: Int, hour: Int, temp: Double = 15.0) = PerModelHour(
+        time = LocalDateTime.of(2026, 6, day, hour, 0),
+        apparentTemperatureC = temp,
+        temperatureC = temp + 1.0,
+        precipitationProbabilityPct = null,
+    )
+
+    @Test
+    fun `put carries earlier same-day hours forward instead of overwriting them`() = runTest {
+        // A morning walk captures 06:00–09:00 today.
+        val morning = listOf(hr(30, 6), hr(30, 7), hr(30, 8), hr(30, 9))
+        cacheAt(t0).put(london, keyA, morning)
+
+        // A later walk returns only from 10:00 onward, as Google's endpoint does.
+        val fromTen = listOf(hr(30, 10), hr(30, 11), hr(30, 12))
+        cacheAt(t0.plus(Duration.ofHours(4))).put(london, keyA, fromTen)
+
+        // The stored series still spans 06:00–12:00 rather than starting at 10:00.
+        cacheAt(t0.plus(Duration.ofHours(5))).fresh(london, keyA) shouldBe (morning + fromTen)
+    }
+
+    @Test
+    fun `a stale prior entry still backfills today's already-elapsed hours`() = runTest {
+        // Yesterday evening's walk forecast into today, including this morning.
+        // It's now older than the TTL, but its morning hours are the only Google
+        // data we'll have for hours Google no longer returns.
+        val priorWalk = listOf(hr(29, 21), hr(30, 6), hr(30, 7), hr(30, 8), hr(30, 9), hr(30, 10))
+        cacheAt(t0.minus(Duration.ofHours(13))).put(london, keyA, priorWalk)
+
+        // Today's first walk only reaches back to 10:00, with a fresher value there.
+        val todayWalk = listOf(hr(30, 10, temp = 20.0), hr(30, 11), hr(30, 12))
+        cacheAt(t0.plus(Duration.ofHours(4))).put(london, keyA, todayWalk)
+
+        // Morning (06–09) from the prior walk; today's walk owns 10:00 onward
+        // (its fresher 10:00 wins), and yesterday's 21:00 is not carried.
+        cacheAt(t0.plus(Duration.ofHours(5))).fresh(london, keyA) shouldBe
+            (listOf(hr(30, 6), hr(30, 7), hr(30, 8), hr(30, 9)) + todayWalk)
+    }
+
+    @Test
+    fun `put does not carry forward hours from an earlier day`() = runTest {
+        val yesterday = listOf(hr(29, 18), hr(29, 20), hr(29, 22))
+        cacheAt(t0.minus(Duration.ofHours(12))).put(london, keyA, yesterday)
+
+        val today = listOf(hr(30, 10), hr(30, 11))
+        cacheAt(t0.plus(Duration.ofHours(4))).put(london, keyA, today)
+
+        cacheAt(t0.plus(Duration.ofHours(5))).fresh(london, keyA) shouldBe today
+    }
+
+    @Test
+    fun `put does not carry forward hours fetched under a different key`() = runTest {
+        val morning = listOf(hr(30, 6), hr(30, 7))
+        cacheAt(t0).put(london, keyA, morning)
+
+        // The user swapped keys; keyB's entry must not inherit keyA's morning.
+        val fromTen = listOf(hr(30, 10), hr(30, 11))
+        cacheAt(t0.plus(Duration.ofHours(4))).put(london, keyB, fromTen)
+
+        cacheAt(t0.plus(Duration.ofHours(5))).fresh(london, keyB) shouldBe fromTen
+    }
 }

@@ -62,12 +62,13 @@ internal fun ForecastersContent(
     location: Location?,
     padding: PaddingValues,
     onSetForecastModels: (Set<ForecastModel>?) -> Unit,
-    // The Google forecaster reuses the BYOK Gemini key; pass the key state and
-    // set/clear actions so the row can disable without a key and the key entry
-    // can sit right below it. Defaulted so previews / other callers compile.
-    apiKeyConfigured: Boolean = false,
-    onSetApiKey: (String) -> Unit = {},
-    onClearApiKey: () -> Unit = {},
+    // The Google forecaster uses its own BYOK Google API key (separate slot from
+    // the Gemini TTS key); pass the key state and set/clear actions so the row
+    // can disable without a key and the key entry can sit right below it.
+    // Defaulted so previews / other callers compile.
+    googleApiKeyConfigured: Boolean = false,
+    onSetGoogleApiKey: (String) -> Unit = {},
+    onClearGoogleApiKey: () -> Unit = {},
     // Google connectivity probe: the page kicks one when Google is enabled (or
     // opened with it on) so the user sees whether their key reaches the Weather
     // API, plus a manual "Check again". Defaulted so previews compile.
@@ -165,12 +166,12 @@ internal fun ForecastersContent(
                     onToggle = {},
                 )
                 // Google sits last — it isn't an Open-Meteo model and needs the
-                // user's BYOK Gemini key. The checkbox is disabled until a key
-                // is configured (so the picker can't allow a key-less Google +
-                // one Open-Meteo "two-model" selection that would leave just one
-                // contributing model). The key entry sits directly below it.
+                // user's BYOK Google API key. The checkbox is disabled until a
+                // key is configured (so the picker can't allow a key-less Google
+                // + one Open-Meteo "two-model" selection that would leave just
+                // one contributing model). The key entry sits directly below it.
                 val googleChecked = ForecastModel.GOOGLE_WEATHER in effective
-                val googleEnabled = apiKeyConfigured && !isAuto &&
+                val googleEnabled = googleApiKeyConfigured && !isAuto &&
                     (if (googleChecked) effective.size > MIN_MODELS else !atCap)
                 ForecasterRow(
                     label = stringResource(forecastModelLabel(ForecastModel.GOOGLE_WEATHER)),
@@ -199,25 +200,24 @@ internal fun ForecastersContent(
                 }
                 HorizontalDivider()
                 Text(
-                    text = stringResource(R.string.settings_forecasters_gemini_key_header),
+                    text = stringResource(R.string.settings_forecasters_google_key_header),
                     style = MaterialTheme.typography.titleSmall,
                 )
                 KeyEntryFields(
-                    configured = apiKeyConfigured,
+                    configured = googleApiKeyConfigured,
                     statusText = stringResource(
-                        if (apiKeyConfigured) R.string.settings_api_key_status_set
-                        else R.string.settings_forecasters_gemini_key_unset,
+                        if (googleApiKeyConfigured) R.string.settings_forecasters_google_key_set
+                        else R.string.settings_forecasters_google_key_unset,
                     ),
-                    placeholder = stringResource(R.string.settings_api_key_placeholder),
-                    saveLabel = stringResource(R.string.settings_api_key_save),
-                    replaceLabel = stringResource(R.string.settings_api_key_replace),
-                    clearLabel = stringResource(R.string.settings_api_key_clear),
-                    onSave = onSetApiKey,
+                    placeholder = stringResource(R.string.settings_forecasters_google_key_placeholder),
+                    saveLabel = stringResource(R.string.settings_forecasters_google_key_save),
+                    replaceLabel = stringResource(R.string.settings_forecasters_google_key_replace),
+                    clearLabel = stringResource(R.string.settings_forecasters_google_key_clear),
+                    onSave = onSetGoogleApiKey,
                     // Clearing the key drops the Google forecaster from the
-                    // selection too — that cleanup lives in the shared
-                    // SettingsViewModel.clearApiKey() so it also runs when the
-                    // key is cleared from the Voice settings page.
-                    onClear = onClearApiKey,
+                    // selection too (it can't contribute without a key); that
+                    // cleanup lives in SettingsViewModel.clearGoogleApiKey().
+                    onClear = onClearGoogleApiKey,
                 )
                 TextButton(
                     onClick = { openUrl(context, OPEN_METEO_URL) },

@@ -416,8 +416,8 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     // Keyed on the two booleans (not the whole model set) so changing an
     // unrelated model doesn't trigger a redundant probe.
     val googleSelected = state.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
-    LaunchedEffect(googleSelected, state.apiKeyConfigured) {
-        if (googleSelected && state.apiKeyConfigured) viewModel.probeGoogleWeather()
+    LaunchedEffect(googleSelected, state.googleApiKeyConfigured) {
+        if (googleSelected && state.googleApiKeyConfigured) viewModel.probeGoogleWeather()
     }
     SettingsScaffold(R.string.settings_page_forecasters, onBack) { padding ->
         ForecastersContent(
@@ -425,9 +425,9 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             location = state.location,
             padding = padding,
             onSetForecastModels = viewModel::setForecastModels,
-            apiKeyConfigured = state.apiKeyConfigured,
-            onSetApiKey = viewModel::setApiKey,
-            onClearApiKey = viewModel::clearApiKey,
+            googleApiKeyConfigured = state.googleApiKeyConfigured,
+            onSetGoogleApiKey = viewModel::setGoogleApiKey,
+            onClearGoogleApiKey = viewModel::clearGoogleApiKey,
             googleProbeRunning = state.googleProbeRunning,
             googleProbeResult = state.googleProbeResult,
             onCheckGoogleWeather = viewModel::probeGoogleWeather,

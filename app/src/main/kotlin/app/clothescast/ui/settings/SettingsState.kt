@@ -198,6 +198,14 @@ data class SettingsState(
     val telemetryEnabled: Boolean = true,
     val apiKeyConfigured: Boolean = false,
     /**
+     * True when a Google API key is stored (separate slot from the Gemini key).
+     * The Google forecaster gates on this — the checkbox stays disabled and the
+     * probe reports `NoKey` until a Google key is saved. A user can paste the
+     * same `AIza*` key as their Gemini one (if its Cloud project has the Weather
+     * API enabled) or a different key.
+     */
+    val googleApiKeyConfigured: Boolean = false,
+    /**
      * True when this build can synthesise Gemini TTS through the developer's
      * Cloud Function proxy (Firebase initialised + `GEMINI_PROXY_URL` set).
      * The Voice screen ORs this with [apiKeyConfigured] so users without a

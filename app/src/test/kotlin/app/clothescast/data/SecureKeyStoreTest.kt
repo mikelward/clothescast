@@ -91,6 +91,48 @@ class SecureKeyStoreTest {
     }
 
     @Test
+    fun `google api key round-trips and is independent of the gemini slot`() = runTest {
+        subject.set("AIzaGemini")
+        subject.setGoogleApiKey("AIzaGoogle")
+
+        // Separate slots — neither read sees the other's value.
+        subject.get() shouldBe "AIzaGemini"
+        subject.getGoogleApiKey() shouldBe "AIzaGoogle"
+
+        // Clearing one leaves the other intact.
+        subject.clearGoogleApiKey()
+        subject.getGoogleApiKey() shouldBe null
+        subject.get() shouldBe "AIzaGemini"
+    }
+
+    @Test
+    fun `getGoogleApiKey returns null when unset rather than throwing`() = runTest {
+        subject.getGoogleApiKey() shouldBe null
+    }
+
+    @Test
+    fun `googleApiKeyConfiguredFlow and fingerprint track the separate slot`() = runTest {
+        subject.googleApiKeyConfiguredFlow.first() shouldBe false
+        subject.googleApiKeyFingerprint() shouldBe null
+
+        subject.setGoogleApiKey("AIzaGoogleOne")
+        subject.googleApiKeyConfiguredFlow.first() shouldBe true
+        val first = subject.googleApiKeyFingerprint()
+        first shouldNotBe null
+
+        // Replacing busts the cache via a new fingerprint; a Gemini write does not.
+        subject.setGoogleApiKey("AIzaGoogleTwo")
+        subject.googleApiKeyFingerprint() shouldNotBe first
+        val afterReplace = subject.googleApiKeyFingerprint()
+        subject.set("AIzaGemini")
+        subject.googleApiKeyFingerprint() shouldBe afterReplace
+
+        subject.clearGoogleApiKey()
+        subject.googleApiKeyConfiguredFlow.first() shouldBe false
+        subject.googleApiKeyFingerprint() shouldBe null
+    }
+
+    @Test
     fun `set replaces the previous key`() = runTest {
         subject.set("first")
         subject.set("second")

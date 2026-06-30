@@ -652,9 +652,18 @@
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF\'s AI model — skillful out to 15 days, so it carries the second-week charts. Some detail charts may not show a line for it.</string>
     <string name="settings_forecasters_google">Google</string>
-    <string name="settings_forecasters_google_subtitle">Google\'s AI weather forecast. Uses your Gemini API key.</string>
-    <string name="settings_forecasters_gemini_key_header">Gemini API key</string>
-    <string name="settings_forecasters_gemini_key_unset">Add a Gemini key to turn on the Google forecaster. The same key powers the Gemini voice.</string>
+    <string name="settings_forecasters_google_subtitle">Google\'s AI weather forecast. Uses a Google API key.</string>
+    <!-- The Google forecaster's key lives in its own slot, separate from the
+         Gemini voice key — a project-scoped Cloud key with the Weather API
+         enabled. Users can paste the same AIza key as Gemini (if its project
+         has the Weather API on) or a different one. -->
+    <string name="settings_forecasters_google_key_header">Google API key</string>
+    <string name="settings_forecasters_google_key_set">A Google API key is configured.</string>
+    <string name="settings_forecasters_google_key_unset">Add a Google API key to turn on the Google forecaster. Paste the same key as your Gemini voice if its Google Cloud project has the Weather API enabled, or use a different key.</string>
+    <string name="settings_forecasters_google_key_placeholder">Paste your Google API key</string>
+    <string name="settings_forecasters_google_key_save">Save Google key</string>
+    <string name="settings_forecasters_google_key_replace">Replace Google key</string>
+    <string name="settings_forecasters_google_key_clear">Clear stored Google key</string>
     <!-- Status line shown under the Google row once it's selected, driven by a
          live connectivity probe so a blocked key shows up here instead of as a
          silently missing line on the chart. -->

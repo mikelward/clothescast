@@ -209,12 +209,12 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `clearApiKey drops the Google forecaster from a custom selection`() = runTest {
-        // Google needs the key; clearing it (from any screen wired to this VM
-        // method) must remove Google so the selection doesn't keep a forecaster
-        // that can no longer contribute.
-        subject.setApiKey("AIzaSyKey")
-        subject.state.first { it.apiKeyConfigured }
+    fun `clearGoogleApiKey drops the Google forecaster from a custom selection`() = runTest {
+        // Google needs its own key; clearing it must remove Google so the
+        // selection doesn't keep a forecaster that can no longer contribute.
+        // Clearing the Gemini key, by contrast, leaves the selection alone.
+        subject.setGoogleApiKey("AIzaSyKey")
+        subject.state.first { it.googleApiKeyConfigured }
         subject.setForecastModels(
             setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS, ForecastModel.GOOGLE_WEATHER),
         )
@@ -222,7 +222,7 @@ class SettingsViewModelTest {
             it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
         }
 
-        subject.clearApiKey()
+        subject.clearGoogleApiKey()
 
         settingsRepository.preferences
             .first { it.forecastModels == setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS) }
@@ -230,17 +230,39 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `clearApiKey falls back to Auto when dropping Google would leave too few models`() = runTest {
+    fun `clearApiKey leaves the Google forecaster selection alone`() = runTest {
+        // The Gemini key no longer powers Google, so clearing it must not touch
+        // the Forecasters selection.
+        subject.setGoogleApiKey("AIzaGoogle")
+        subject.state.first { it.googleApiKeyConfigured }
+        subject.setForecastModels(
+            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS, ForecastModel.GOOGLE_WEATHER),
+        )
+        settingsRepository.preferences.first {
+            it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
+        }
+
+        subject.setApiKey("AIzaGemini")
+        subject.state.first { it.apiKeyConfigured }
+        subject.clearApiKey()
+        subject.state.first { !it.apiKeyConfigured }
+
+        settingsRepository.preferences.first().forecastModels shouldBe
+            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS, ForecastModel.GOOGLE_WEATHER)
+    }
+
+    @Test
+    fun `clearGoogleApiKey falls back to Auto when dropping Google would leave too few models`() = runTest {
         // Google + one Open-Meteo model: removing Google leaves a single model,
         // below the two-model consensus floor, so the selection reverts to Auto.
-        subject.setApiKey("AIzaSyKey")
-        subject.state.first { it.apiKeyConfigured }
+        subject.setGoogleApiKey("AIzaSyKey")
+        subject.state.first { it.googleApiKeyConfigured }
         subject.setForecastModels(setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GOOGLE_WEATHER))
         settingsRepository.preferences.first {
             it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
         }
 
-        subject.clearApiKey()
+        subject.clearGoogleApiKey()
 
         settingsRepository.preferences.first { it.forecastModels == null }
             .forecastModels shouldBe null
@@ -276,7 +298,7 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `setApiKey re-probes Google when it is selected so a replaced key refreshes the status`() = runTest {
+    fun `setGoogleApiKey re-probes Google when it is selected so a replaced key refreshes the status`() = runTest {
         var probeCount = 0
         val vm = track(
             SettingsViewModel(
@@ -298,8 +320,8 @@ class SettingsViewModelTest {
                 googleWeatherProbe = { probeCount++; GoogleWeatherProbe.Reachable(hours = 12) },
             ),
         )
-        vm.setApiKey("AIzaFirst")
-        vm.state.first { it.apiKeyConfigured }
+        vm.setGoogleApiKey("AIzaFirst")
+        vm.state.first { it.googleApiKeyConfigured }
         vm.setForecastModels(setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GOOGLE_WEATHER))
         vm.state.first { it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true }
 
@@ -307,13 +329,13 @@ class SettingsViewModelTest {
         // replacing the key while Google is selected must, so the recovery flow
         // doesn't leave a stale verdict against the old key.
         val before = probeCount
-        vm.setApiKey("AIzaReplacement")
+        vm.setGoogleApiKey("AIzaReplacement")
         vm.state.first { it.googleProbeResult == GoogleWeatherProbe.Reachable(hours = 12) }
         (probeCount > before) shouldBe true
     }
 
     @Test
-    fun `setApiKey does not probe Google when it is not selected`() = runTest {
+    fun `setGoogleApiKey does not probe Google when it is not selected`() = runTest {
         var probeCount = 0
         val vm = track(
             SettingsViewModel(
@@ -335,8 +357,8 @@ class SettingsViewModelTest {
                 googleWeatherProbe = { probeCount++; GoogleWeatherProbe.Reachable(hours = 12) },
             ),
         )
-        vm.setApiKey("AIzaKey")
-        vm.state.first { it.apiKeyConfigured }
+        vm.setGoogleApiKey("AIzaKey")
+        vm.state.first { it.googleApiKeyConfigured }
         probeCount shouldBe 0
     }
 

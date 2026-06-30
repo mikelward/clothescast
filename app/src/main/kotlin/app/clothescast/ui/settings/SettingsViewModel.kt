@@ -386,6 +386,13 @@ class SettingsViewModel(
         viewModelScope.launch {
             keyStore.geminiKeyConfiguredFlow.collect { refreshApiKeyStatus() }
         }
+        // Mirror the Gemini collector for the separate Google API key so a key
+        // written from any screen flips the Forecasters gate. Decrypts on each
+        // presence change (distinctUntilChanged upstream) so a corrupt value
+        // reads as unset rather than "configured".
+        viewModelScope.launch {
+            keyStore.googleApiKeyConfiguredFlow.collect { refreshGoogleApiKeyStatus() }
+        }
         viewModelScope.launch {
             keyStore.mqttPasswordConfiguredFlow.collect { set ->
                 _state.update { it.copy(mqttPasswordSet = set) }
@@ -484,18 +491,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             keyStore.set(key.trim())
             refreshApiKeyStatus()
-            // Re-probe Google when the key changes while Google is selected.
-            // The Forecasters page's LaunchedEffect only fires on the
-            // apiKeyConfigured false→true edge, so replacing an already-set key
-            // (the key-recovery flow this status is meant to support) wouldn't
-            // refresh it — leaving a stale "Google rejected your key" 403 next
-            // to the freshly-pasted replacement until the user tapped "Check
-            // again". Probing here keys the diagnostic off the new key. Harmless
-            // when called from the Voice page (the result only shows on
-            // Forecasters) and only probes when Google is actually selected.
-            if (_state.value.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true) {
-                probeGoogleWeather()
-            }
         }
     }
 
@@ -503,12 +498,37 @@ class SettingsViewModel(
         viewModelScope.launch {
             keyStore.clear()
             refreshApiKeyStatus()
-            // The Google forecaster relies on this key. Whichever screen
-            // cleared it (Voice settings or the Forecasters page both wire here),
-            // drop Google from a custom selection so a "Google + one Open-Meteo"
-            // pair can't silently collapse to a single contributing model and
-            // lose the confidence chip. Fall back to Auto if fewer than two
-            // models would remain (the confidence spread needs at least two).
+        }
+    }
+
+    /**
+     * Persists the Google API key (separate slot from the Gemini key) and
+     * re-probes when the Google forecaster is selected. The Forecasters page's
+     * LaunchedEffect only fires on the configured false→true edge, so replacing
+     * an already-set key — the key-recovery flow this status supports — wouldn't
+     * refresh the verdict otherwise, leaving a stale 403 next to the freshly
+     * pasted replacement until the user tapped "Check again".
+     */
+    fun setGoogleApiKey(key: String) {
+        viewModelScope.launch {
+            keyStore.setGoogleApiKey(key.trim())
+            refreshGoogleApiKeyStatus()
+            if (_state.value.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true) {
+                probeGoogleWeather()
+            }
+        }
+    }
+
+    /**
+     * Clears the Google API key and drops the Google forecaster from a custom
+     * selection — it can no longer contribute without the key. Falls back to
+     * Auto if fewer than two models would remain (the confidence spread needs at
+     * least two), mirroring the old Gemini-key cleanup that this replaces.
+     */
+    fun clearGoogleApiKey() {
+        viewModelScope.launch {
+            keyStore.clearGoogleApiKey()
+            refreshGoogleApiKeyStatus()
             val selected = settingsRepository.preferences.first().forecastModels
             if (selected != null && ForecastModel.GOOGLE_WEATHER in selected) {
                 val remaining = selected - ForecastModel.GOOGLE_WEATHER
@@ -1282,6 +1302,11 @@ class SettingsViewModel(
     private suspend fun refreshApiKeyStatus() {
         val gemini = runCatching { keyStore.get().isNotBlank() }.getOrDefault(false)
         _state.update { it.copy(apiKeyConfigured = gemini) }
+    }
+
+    private suspend fun refreshGoogleApiKeyStatus() {
+        val google = runCatching { keyStore.getGoogleApiKey()?.isNotBlank() == true }.getOrDefault(false)
+        _state.update { it.copy(googleApiKeyConfigured = google) }
     }
 
     class Factory(

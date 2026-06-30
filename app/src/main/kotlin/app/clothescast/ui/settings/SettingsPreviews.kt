@@ -694,7 +694,7 @@ internal fun SettingsForecastersGoogleBlockedPreview() {
             ),
             padding = PaddingValues(0.dp),
             onSetForecastModels = {},
-            apiKeyConfigured = true,
+            googleApiKeyConfigured = true,
             googleProbeResult = GoogleWeatherProbe.Forbidden,
         )
     }

@@ -463,6 +463,10 @@ class PreviewSnapshots {
     @Test fun precipitation_amount_card_consensus() = capture { PrecipitationAmountCardConsensusPreview() }
     @Test fun forecast_card_scrubbed() = capture { ForecastCardScrubbedPreview() }
     @Test fun air_temperature_card_with_model_spread() = capture { AirTemperatureCardWithModelSpreadPreview() }
+    @Test fun air_temperature_card_five_model_spread() = capture { AirTemperatureCardFiveModelSpreadPreview() }
+    @Test fun air_temperature_card_five_model_spread_dark() = capture { AirTemperatureCardFiveModelSpreadDarkPreview() }
+    @Test fun air_temperature_card_five_model_spread_accessible() = capture { AirTemperatureCardFiveModelSpreadAccessiblePreview() }
+    @Test fun air_temperature_card_five_model_spread_highlighter() = capture { AirTemperatureCardFiveModelSpreadHighlighterPreview() }
     @Test fun precipitation_card_with_model_spread() = capture { PrecipitationCardWithModelSpreadPreview() }
     @Test fun forecast_card_with_model_spread_accessible() = capture { ForecastCardWithModelSpreadAccessiblePreview() }
     @Test fun precipitation_card_with_model_spread_accessible() = capture { PrecipitationCardWithModelSpreadAccessiblePreview() }

@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesMentionMode
@@ -46,6 +47,7 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.serialization.json.Json as KotlinxJson
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -242,6 +244,156 @@ class SettingsViewModelTest {
 
         settingsRepository.preferences.first { it.forecastModels == null }
             .forecastModels shouldBe null
+    }
+
+    @Test
+    fun `probeGoogleWeather surfaces the probe result in state`() = runTest {
+        val vm = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine {
+                        respond(
+                            content = ByteReadChannel("""{"results":[]}"""),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    }) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
+                googleWeatherProbe = { GoogleWeatherProbe.Forbidden },
+            ),
+        )
+
+        vm.probeGoogleWeather()
+
+        vm.state.first { it.googleProbeResult == GoogleWeatherProbe.Forbidden }
+        vm.state.first { !it.googleProbeRunning }
+    }
+
+    @Test
+    fun `setApiKey re-probes Google when it is selected so a replaced key refreshes the status`() = runTest {
+        var probeCount = 0
+        val vm = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine {
+                        respond(
+                            content = ByteReadChannel("""{"results":[]}"""),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    }) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
+                googleWeatherProbe = { probeCount++; GoogleWeatherProbe.Reachable(hours = 12) },
+            ),
+        )
+        vm.setApiKey("AIzaFirst")
+        vm.state.first { it.apiKeyConfigured }
+        vm.setForecastModels(setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GOOGLE_WEATHER))
+        vm.state.first { it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true }
+
+        // Selecting Google doesn't probe (that's the UI LaunchedEffect's job);
+        // replacing the key while Google is selected must, so the recovery flow
+        // doesn't leave a stale verdict against the old key.
+        val before = probeCount
+        vm.setApiKey("AIzaReplacement")
+        vm.state.first { it.googleProbeResult == GoogleWeatherProbe.Reachable(hours = 12) }
+        (probeCount > before) shouldBe true
+    }
+
+    @Test
+    fun `setApiKey does not probe Google when it is not selected`() = runTest {
+        var probeCount = 0
+        val vm = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine {
+                        respond(
+                            content = ByteReadChannel("""{"results":[]}"""),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    }) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
+                googleWeatherProbe = { probeCount++; GoogleWeatherProbe.Reachable(hours = 12) },
+            ),
+        )
+        vm.setApiKey("AIzaKey")
+        vm.state.first { it.apiKeyConfigured }
+        probeCount shouldBe 0
+    }
+
+    @Test
+    fun `probeGoogleWeather supersedes an in-flight probe so a key swap mid-probe wins`() = runTest {
+        // First probe blocks on a gate (mimics an old-key request still in
+        // flight); the second must cancel it and land its own verdict, and the
+        // first's stale result must never overwrite the fresh one.
+        val gate = CompletableDeferred<Unit>()
+        var starts = 0
+        val vm = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine {
+                        respond(
+                            content = ByteReadChannel("""{"results":[]}"""),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    }) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
+                googleWeatherProbe = {
+                    starts++
+                    if (starts == 1) {
+                        gate.await() // old-key probe hangs, then would return a stale verdict
+                        GoogleWeatherProbe.Forbidden
+                    } else {
+                        GoogleWeatherProbe.Reachable(hours = 12)
+                    }
+                },
+            ),
+        )
+
+        vm.probeGoogleWeather()
+        vm.state.first { it.googleProbeRunning }
+        vm.probeGoogleWeather() // supersede the gated first probe
+
+        vm.state.first { it.googleProbeResult == GoogleWeatherProbe.Reachable(hours = 12) }
+        starts shouldBe 2
+        // Releasing the cancelled first probe must not resurrect its 403.
+        gate.complete(Unit)
+        vm.state.first { !it.googleProbeRunning }
+        vm.state.first().googleProbeResult shouldBe GoogleWeatherProbe.Reachable(hours = 12)
+    }
+
+    @Test
+    fun `probeGoogleWeather no-ops without a probe backend`() = runTest {
+        // The default subject is wired without a probe (pure-VM); the call is
+        // inert and the status stays unset rather than throwing.
+        subject.probeGoogleWeather()
+        subject.state.first().googleProbeResult shouldBe null
     }
 
     @Test

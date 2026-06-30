@@ -42,6 +42,7 @@ import app.clothescast.ui.settings.SettingsClothesRuleDialogPreview
 import app.clothescast.ui.settings.SettingsClothesRulePrecipDialogPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsDoneBarPreview
+import app.clothescast.ui.settings.SettingsForecastersGoogleBlockedPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsFormatClothesNeverPreview
 import app.clothescast.ui.settings.SettingsFormatCurrentForecastPreview
@@ -725,6 +726,14 @@ class PreviewSnapshots {
     @Test
     @Config(qualifiers = "w360dp-h1024dp-xhdpi")
     fun settings_forecasters() = capture { SettingsForecastersPreview() }
+
+    // Google forecaster selected with a blocked key — captures the probe
+    // status line's error path (the 403 guidance + "Check again"). Taller than
+    // the plain Forecasters preview so the status block + key entry below the
+    // Google row aren't clipped.
+    @Test
+    @Config(qualifiers = "w360dp-h1400dp-xhdpi")
+    fun settings_forecasters_google_blocked() = capture { SettingsForecastersGoogleBlockedPreview() }
 
     // The merged Calendar page renders the permission + feature toggle cards,
     // the celebration sources card, the two calendar listings, one collapsible

@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -27,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.defaultsFor
@@ -65,6 +68,12 @@ internal fun ForecastersContent(
     apiKeyConfigured: Boolean = false,
     onSetApiKey: (String) -> Unit = {},
     onClearApiKey: () -> Unit = {},
+    // Google connectivity probe: the page kicks one when Google is enabled (or
+    // opened with it on) so the user sees whether their key reaches the Weather
+    // API, plus a manual "Check again". Defaulted so previews compile.
+    googleProbeRunning: Boolean = false,
+    googleProbeResult: GoogleWeatherProbe? = null,
+    onCheckGoogleWeather: () -> Unit = {},
 ) {
     val context = LocalContext.current
     // When the stored selection is null we're in Auto mode: derive a
@@ -177,6 +186,17 @@ internal fun ForecastersContent(
                         if (updated.size in MIN_MODELS..MAX_MODELS) onSetForecastModels(updated)
                     },
                 )
+                // Connectivity status for the Google forecaster — only while
+                // it's actually selected. Tells the user whether their key
+                // reaches the Weather API so a 403 doesn't just show up as a
+                // missing line on the chart.
+                if (googleChecked) {
+                    GoogleProbeStatus(
+                        running = googleProbeRunning,
+                        result = googleProbeResult,
+                        onCheckAgain = onCheckGoogleWeather,
+                    )
+                }
                 HorizontalDivider()
                 Text(
                     text = stringResource(R.string.settings_forecasters_gemini_key_header),
@@ -267,6 +287,66 @@ private fun ForecasterRow(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+    }
+}
+
+/**
+ * Status line shown under the Google row while the Google forecaster is
+ * selected. Mirrors the most recent [GoogleWeatherProbe]: a spinner while the
+ * probe runs, a confirmation when the key reaches the Weather API, or an
+ * actionable error (the 403 case names the Cloud Console fix) with a "Check
+ * again" retry. [GoogleWeatherProbe.NoKey] renders nothing — the key entry
+ * directly below already explains that case.
+ */
+@Composable
+private fun GoogleProbeStatus(
+    running: Boolean,
+    result: GoogleWeatherProbe?,
+    onCheckAgain: () -> Unit,
+) {
+    if (running) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+            Text(
+                text = stringResource(R.string.settings_forecasters_google_probe_checking),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        return
+    }
+    // Nothing to show before the first probe, or when there's simply no key.
+    if (result == null || result is GoogleWeatherProbe.NoKey) return
+
+    val isError = result !is GoogleWeatherProbe.Reachable
+    val message = when (result) {
+        is GoogleWeatherProbe.Reachable ->
+            stringResource(R.string.settings_forecasters_google_probe_ok)
+        is GoogleWeatherProbe.Forbidden ->
+            stringResource(R.string.settings_forecasters_google_probe_forbidden)
+        is GoogleWeatherProbe.Failed ->
+            result.httpStatus?.let {
+                stringResource(R.string.settings_forecasters_google_probe_failed_http, it)
+            } ?: stringResource(R.string.settings_forecasters_google_probe_failed)
+        is GoogleWeatherProbe.NoKey -> return // handled above
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodySmall,
+            color = if (isError) MaterialTheme.colorScheme.error
+            else MaterialTheme.colorScheme.primary,
+        )
+        TextButton(
+            onClick = onCheckAgain,
+            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+        ) {
+            Text(stringResource(R.string.settings_forecasters_google_probe_retry))
         }
     }
 }

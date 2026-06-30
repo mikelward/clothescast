@@ -655,6 +655,16 @@
     <string name="settings_forecasters_google_subtitle">Google\'s AI weather forecast. Uses your Gemini API key.</string>
     <string name="settings_forecasters_gemini_key_header">Gemini API key</string>
     <string name="settings_forecasters_gemini_key_unset">Add a Gemini key to turn on the Google forecaster. The same key powers the Gemini voice.</string>
+    <!-- Status line shown under the Google row once it's selected, driven by a
+         live connectivity probe so a blocked key shows up here instead of as a
+         silently missing line on the chart. -->
+    <string name="settings_forecasters_google_probe_checking">Checking Google\'s forecast…</string>
+    <string name="settings_forecasters_google_probe_ok">Connected. Google is contributing to your forecast.</string>
+    <!-- The 403 case is the common, fixable one — name the Cloud Console steps. -->
+    <string name="settings_forecasters_google_probe_forbidden">Google rejected your key. In Google Cloud, enable the Weather API and billing for the key\'s project, and make sure the key isn\'t restricted to exclude it. Until then, Google is left out of your forecast.</string>
+    <string name="settings_forecasters_google_probe_failed">Couldn\'t reach Google\'s forecast. It\'ll be left out until this clears.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Couldn\'t reach Google\'s forecast (HTTP %1$d). It\'ll be left out until this clears.</string>
+    <string name="settings_forecasters_google_probe_retry">Check again</string>
     <!-- BOM is still omitted from the ForecastModel enum while Open-Meteo's
          BOM open-data delivery is suspended, but the picker surfaces it as a
          permanently-disabled row so users looking for the Australian model

@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
+import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.BugReportOverflowMenu
 import app.clothescast.ui.EdgeFadeOverlay
@@ -409,6 +411,14 @@ internal fun CalendarPage(
 @Composable
 internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    // Probe Google whenever it becomes the selected-and-keyed state — covers
+    // both opening the page with Google already on and toggling it on here.
+    // Keyed on the two booleans (not the whole model set) so changing an
+    // unrelated model doesn't trigger a redundant probe.
+    val googleSelected = state.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
+    LaunchedEffect(googleSelected, state.apiKeyConfigured) {
+        if (googleSelected && state.apiKeyConfigured) viewModel.probeGoogleWeather()
+    }
     SettingsScaffold(R.string.settings_page_forecasters, onBack) { padding ->
         ForecastersContent(
             forecastModels = state.forecastModels,
@@ -418,6 +428,9 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             apiKeyConfigured = state.apiKeyConfigured,
             onSetApiKey = viewModel::setApiKey,
             onClearApiKey = viewModel::clearApiKey,
+            googleProbeRunning = state.googleProbeRunning,
+            googleProbeResult = state.googleProbeResult,
+            onCheckGoogleWeather = viewModel::probeGoogleWeather,
         )
     }
 }

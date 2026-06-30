@@ -227,12 +227,14 @@ class GoogleWeatherModelClientTest {
     }
 
     @Test
-    fun `probe stays a single round-trip even when more pages are available`() = runTest {
+    fun `probe stays a single round-trip on the near window even when more pages are available`() = runTest {
         val captured = mutableListOf<HttpRequestData>()
         pagingClient(pages = listOf(page(hour = 11, nextPageToken = "p2"), page(hour = 12)), captured = captured)
             .probe(london, "AIza-test-key") shouldBe GoogleWeatherProbe.Reachable(hours = 1)
 
+        // One page only, asking Google for just the 24-hour connectivity window.
         captured.size shouldBe 1
+        captured.single().url.parameters["hours"] shouldBe "24"
     }
 
     @Test

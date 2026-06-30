@@ -133,6 +133,32 @@ class SecureKeyStoreTest {
     }
 
     @Test
+    fun `getGoogleApiKeyWithFingerprint reads key and matching fingerprint atomically`() = runTest {
+        // Unset → both null.
+        subject.getGoogleApiKeyWithFingerprint() shouldBe (null to null)
+
+        subject.setGoogleApiKey("AIzaGoogle")
+        val (key, fingerprint) = subject.getGoogleApiKeyWithFingerprint()
+        key shouldBe "AIzaGoogle"
+        // Same fingerprint the standalone accessor (and the outer cache) computes.
+        fingerprint shouldBe subject.googleApiKeyFingerprint()
+        fingerprint shouldNotBe null
+
+        subject.clearGoogleApiKey()
+        subject.getGoogleApiKeyWithFingerprint() shouldBe (null to null)
+    }
+
+    @Test
+    fun `getGoogleApiKeyWithFingerprint drops and clears an undecryptable key`() = runTest {
+        val failing = SecureKeyStore(aead = DecryptFailsFakeAead, dataStore = dataStore)
+        failing.setGoogleApiKey("AIzaGoogleCorrupt")
+
+        // Decrypt fails → returns nulls (Google sits out) and clears the bad value.
+        failing.getGoogleApiKeyWithFingerprint() shouldBe (null to null)
+        failing.googleApiKeyConfiguredFlow.first() shouldBe false
+    }
+
+    @Test
     fun `set replaces the previous key`() = runTest {
         subject.set("first")
         subject.set("second")

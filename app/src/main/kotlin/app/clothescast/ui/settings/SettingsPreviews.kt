@@ -700,6 +700,31 @@ internal fun SettingsForecastersGoogleBlockedPreview() {
     }
 }
 
+// Google checked but no Google key — the carried-over-without-carry-over
+// state. The Google row must stay ENABLED (solid checkbox) so the user can
+// remove the non-contributing forecaster without first pasting a key; the
+// three-model selection keeps removal above the two-model floor.
+@Preview(name = "Settings · Forecasters · Google no key", widthDp = 360)
+@Composable
+internal fun SettingsForecastersGoogleNoKeyPreview() {
+    SettingsFrame {
+        ForecastersContent(
+            forecastModels = setOf(
+                ForecastModel.ECMWF_IFS025,
+                ForecastModel.UKMO_SEAMLESS,
+                ForecastModel.GOOGLE_WEATHER,
+            ),
+            location = Location(
+                latitude = 51.5074,
+                longitude = -0.1278,
+            ),
+            padding = PaddingValues(0.dp),
+            onSetForecastModels = {},
+            googleApiKeyConfigured = false,
+        )
+    }
+}
+
 // The merged Calendar page: the permission master + feature toggles on top,
 // then the curated celebration sources and catalogue with a representative
 // mix of enabled / disabled rows so the snapshot covers both per-country and

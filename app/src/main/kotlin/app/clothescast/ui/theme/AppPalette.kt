@@ -94,7 +94,7 @@ internal fun rainbowPalette(scheme: ColorScheme, slots: Map<String, Int> = empty
  * The "Accessible" palette is Okabe-Ito-derived and designed to stay
  * distinguishable under all three common colour-blindness types
  * (deuteranopia, protanopia, tritanopia). Chart overlay hues drop the
- * red-green pair (ECMWF pink ↔ ICON green) for vermillion / orange /
+ * red-green pair (ECMWF pink ↔ ICON green) for reddish-purple / orange /
  * bluish-green, which differ in both hue *and* luminance so the lines stay
  * readable even when hue collapses. Confidence backgrounds drop the Material
  * teal-vs-red contrast — which is the textbook deuteranopia trap — for sky
@@ -106,18 +106,22 @@ internal fun rainbowPalette(scheme: ColorScheme, slots: Map<String, Int> = empty
  * (Android 12+) — a Wallpaper-derived teal-ish `secondaryContainer` on the
  * device would defeat the whole point of the accessible path.
  */
-// The Accessible colour pool: five Okabe-Ito hues that stay distinguishable
-// under deutan / protan / tritan CVD at the ≤5 lines the picker draws, ordered
-// most-distinct first. Blue / reddish-purple / bluish-green cover the common
-// 3-model pick; orange (a clear goldenrod, not a muddy brown) is 4th and sky
-// blue last. Okabe-Ito vermillion (#D55E00, a muddy brown) and yellow (#F0E442,
-// too low-contrast on the near-white card) are both dropped. Blue is fine now
-// the "Average" main line is near-black/white rather than blue.
+// The Accessible colour pool: four Okabe-Ito hues plus a vivid orange, ordered
+// most-distinct first and kept distinguishable under deutan / protan / tritan
+// CVD at the ≤5 lines the picker draws. Blue / reddish-purple / bluish-green
+// cover the common 3-model pick; orange is 4th and sky blue last. The warm slot
+// is Material Orange 700 (#F57C00) rather than Okabe-Ito's orange (#E69F00):
+// the goldenrod sits dark and yellow-tilted enough to read as mustard/brown on
+// the near-white card, while #F57C00 is brighter and redder — unmistakably
+// orange, *higher* contrast there, and still luminance-distinct from the green
+// and the blues. Okabe-Ito vermillion (#D55E00, a muddy brown) and yellow
+// (#F0E442, too low-contrast on the near-white card) are both dropped. Blue is
+// fine now the "Average" main line is near-black/white rather than blue.
 private val ACCESSIBLE_POOL = listOf(
     Color(0xFF0072B2),
     Color(0xFFCC79A7),
     Color(0xFF009E73),
-    Color(0xFFE69F00),
+    Color(0xFFF57C00),
     Color(0xFF56B4E9),
 )
 

@@ -426,13 +426,8 @@ only the displayed label localizes.
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Моделі:</string>
     <string name="today_chart_main_line_label">Середнє</string>
-    <string name="today_chart_divergence_summary">Найбільше розходження о %1$s (Δ %2$.1f%3$s відчуваної) — переважно %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">температура повітря</string>
-    <string name="today_factor_wind_speed">швидкість вітру</string>
-    <string name="today_factor_cloud_cover">хмарність</string>
-    <string name="today_factor_humidity">вологість</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Швидкість вітру</string>

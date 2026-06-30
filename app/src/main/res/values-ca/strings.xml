@@ -80,12 +80,7 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="today_chart_model_legend_label">Models:</string>
     <string name="today_chart_main_line_label">Mitjana</string>
-    <string name="today_chart_divergence_summary">Els models discrepan més a les %1$s (Δ %2$.1f%3$s sensació) — principalment %4$s, %5$s</string>
 
-    <string name="today_factor_air_temperature">temperatura de l\'aire</string>
-    <string name="today_factor_wind_speed">velocitat del vent</string>
-    <string name="today_factor_cloud_cover">nuvolositat</string>
-    <string name="today_factor_humidity">humitat</string>
 
     <string name="today_wind_title">Velocitat del vent</string>
     <string name="today_wind_subtitle">Velocitat del vent (%1$s) per hora</string>

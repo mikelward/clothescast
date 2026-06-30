@@ -594,14 +594,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modelos:</string>
     <string name="today_chart_main_line_label">Media</string>
-    <string name="today_chart_divergence_summary">Los modelos discrepan más a las %1$s (Δ %2$.1f%3$s sensación) — principalmente %4$s, %5$s</string>
     <string name="today_confidence_precip_spread">Los modelos discrepan en la lluvia (Δ %1$.0f%% entre %2$d modelos)</string>
 
-    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
-    <string name="today_factor_air_temperature">temperatura del aire</string>
-    <string name="today_factor_wind_speed">velocidad del viento</string>
-    <string name="today_factor_cloud_cover">cobertura de nubes</string>
-    <string name="today_factor_humidity">humedad</string>
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">Velocidad del viento</string>

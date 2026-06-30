@@ -80,12 +80,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="today_chart_model_legend_label">Mudelid:</string>
     <string name="today_chart_main_line_label">Keskmine</string>
-    <string name="today_chart_divergence_summary">Mudelid lahknevad kõige rohkem kell %1$s (Δ %2$.1f%3$s tunnetatav) — peamiselt %4$s, %5$s</string>
 
-    <string name="today_factor_air_temperature">õhutemperatuur</string>
-    <string name="today_factor_wind_speed">tuule kiirus</string>
-    <string name="today_factor_cloud_cover">pilvisus</string>
-    <string name="today_factor_humidity">niiskus</string>
 
     <string name="today_wind_title">Tuule kiirus</string>
     <string name="today_wind_subtitle">Tuule kiirus (%1$s) tunni kaupa</string>

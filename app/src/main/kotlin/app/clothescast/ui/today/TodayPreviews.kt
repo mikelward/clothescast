@@ -734,7 +734,6 @@ internal fun ConfidenceHighPreview() {
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
-            windSpeedUnit = WindSpeedUnit.KMH,
             onToggleModelSpread = {},
         )
     }
@@ -753,7 +752,6 @@ internal fun ConfidenceMediumPreview() {
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
-            windSpeedUnit = WindSpeedUnit.KMH,
             onToggleModelSpread = {},
         )
     }
@@ -772,7 +770,6 @@ internal fun ConfidenceLowPreview() {
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
-            windSpeedUnit = WindSpeedUnit.KMH,
             onToggleModelSpread = {},
         )
     }
@@ -795,7 +792,6 @@ internal fun ConfidenceMediumTapToShowPreview() {
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
-            windSpeedUnit = WindSpeedUnit.KMH,
             showModelSpread = false,
             onToggleModelSpread = {},
         )
@@ -815,7 +811,6 @@ internal fun ConfidenceMediumTapToHidePreview() {
             ),
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             temperatureUnit = TemperatureUnit.CELSIUS,
-            windSpeedUnit = WindSpeedUnit.KMH,
             showModelSpread = true,
             onToggleModelSpread = {},
         )
@@ -850,7 +845,6 @@ internal fun ConfidenceMediumPrecipOnlyPreview() {
             ),
             perModelHourly = null,
             temperatureUnit = TemperatureUnit.CELSIUS,
-            windSpeedUnit = WindSpeedUnit.KMH,
             showModelSpread = false,
             onToggleModelSpread = {},
         )
@@ -870,7 +864,6 @@ internal fun ConfidenceMediumNoDetailPreview() {
             ),
             perModelHourly = null,
             temperatureUnit = TemperatureUnit.CELSIUS,
-            windSpeedUnit = WindSpeedUnit.KMH,
             showModelSpread = false,
             onToggleModelSpread = {},
         )

@@ -425,13 +425,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeller:</string>
     <string name="today_chart_main_line_label">Medel</string>
-    <string name="today_chart_divergence_summary">Modellerna avviker mest kl. %1$s (Δ %2$.1f%3$s upplevd temp.) — framför allt %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">Lufttemperatur</string>
-    <string name="today_factor_wind_speed">Vindhastighet</string>
-    <string name="today_factor_cloud_cover">Molntäcke</string>
-    <string name="today_factor_humidity">Luftfuktighet</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vindhastighet</string>

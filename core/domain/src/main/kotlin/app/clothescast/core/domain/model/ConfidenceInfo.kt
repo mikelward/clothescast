@@ -159,8 +159,14 @@ data class ConfidenceInfo(
          * rating conservative — it never hides real disagreement behind a
          * data gap. [hours] is assumed ascending by time, as the parser and
          * window slices produce it.
+         *
+         * `internal` rather than `private` so [ModelDivergenceSummary] can
+         * read each model's daily high/low off the *same* spike-filtered
+         * series the tier picker uses — keeping the chip's title (the tier)
+         * and its detail line (the divergence hint) describing the identical
+         * maxima and minima.
          */
-        private fun medianFiltered(hours: List<PerModelHour>): List<Double> {
+        internal fun medianFiltered(hours: List<PerModelHour>): List<Double> {
             val temps = hours.map { it.apparentTemperatureC }
             if (temps.size < 3) return temps
             return temps.indices.map { i ->

@@ -179,13 +179,8 @@ What is NOT overridden, by design:
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeliai:</string>
     <string name="today_chart_main_line_label">Vidurkis</string>
-    <string name="today_chart_divergence_summary">Modeliai labiausiai skiriasi %1$s (Δ %2$.1f%3$s juntama) — daugiausia %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">oro temperatūra</string>
-    <string name="today_factor_wind_speed">vėjo greitis</string>
-    <string name="today_factor_cloud_cover">debesuotumas</string>
-    <string name="today_factor_humidity">drėgmė</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vėjo greitis</string>

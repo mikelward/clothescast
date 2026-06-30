@@ -176,13 +176,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Mga modelo:</string>
     <string name="today_chart_main_line_label">Average</string>
-    <string name="today_chart_divergence_summary">Pinaka-nagkakaiba ang mga modelo ng %1$s (Δ %2$.1f%3$s nararamdamang temperatura) — kadalasang %4$s, %5$s</string>
 
     <!-- Factor names -->
-    <string name="today_factor_air_temperature">temperatura ng hangin</string>
-    <string name="today_factor_wind_speed">bilis ng hangin</string>
-    <string name="today_factor_cloud_cover">takip ng ulap</string>
-    <string name="today_factor_humidity">halumigmig</string>
 
     <!-- Diagnostic cards -->
     <string name="today_wind_title">Bilis ng hangin</string>

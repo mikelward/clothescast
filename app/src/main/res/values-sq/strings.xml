@@ -334,12 +334,7 @@
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="outfit_card_header_today">ClothesCast-i i sotëm</string>
     <string name="outfit_card_header_tonight">ClothesCast-i i sotëm i natës</string>
-    <string name="today_chart_divergence_summary">Modelet nuk pajtohen më shumë në %1$s (Δ %2$.1f%3$s e ndjeshme) — kryesisht %4$s, %5$s</string>
     <string name="today_confidence_precip_spread">Modelet nuk pajtohen për shiun (Δ %1$.0f%% në %2$d modele)</string>
-    <string name="today_factor_air_temperature">temperatura e ajrit</string>
-    <string name="today_factor_wind_speed">shpejtësia e erës</string>
-    <string name="today_factor_cloud_cover">mbulesa me re</string>
-    <string name="today_factor_humidity">lagështia</string>
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm me diell sot</string>
     <string name="today_sunshine_total_hours_only">%1$dh me diell sot</string>
     <string name="today_sunshine_total_minutes_only">%1$dm me diell sot</string>

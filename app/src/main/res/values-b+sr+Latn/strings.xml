@@ -472,13 +472,8 @@ default English (matching values-pl / values-uk).
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>
     <string name="today_chart_main_line_label">Prosek</string>
-    <string name="today_chart_divergence_summary">Modeli se najviše razlikuju u %1$s (Δ %2$.1f%3$s osećajna temp.) — uglavnom %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">temperatura vazduha</string>
-    <string name="today_factor_wind_speed">brzina vetra</string>
-    <string name="today_factor_cloud_cover">oblačnost</string>
-    <string name="today_factor_humidity">vlažnost</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Brzina vetra</string>

@@ -635,12 +635,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 
     <string name="today_chart_model_legend_label">Modelos:</string>
     <string name="today_chart_main_line_label">Média</string>
-    <string name="today_chart_divergence_summary">Os modelos discordam mais às %1$s (Δ %2$.1f%3$s de sensação térmica) — principalmente %4$s, %5$s</string>
 
-    <string name="today_factor_air_temperature">temperatura do ar</string>
-    <string name="today_factor_wind_speed">velocidade do vento</string>
-    <string name="today_factor_cloud_cover">cobertura de nuvens</string>
-    <string name="today_factor_humidity">humidade</string>
 
     <string name="today_wind_title">Velocidade do vento</string>
     <string name="today_wind_subtitle">Velocidade do vento (%1$s) por hora</string>

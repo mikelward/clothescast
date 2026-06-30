@@ -16,37 +16,31 @@ class ModelDivergenceSummaryTest {
     private fun entry(
         hour: Int,
         apparent: Double,
-        air: Double,
-        precip: Double = 0.0,
-        wind: Double? = null,
-        humidity: Double? = null,
-        cloud: Double? = null,
+        air: Double = apparent,
     ) = PerModelHour(
         time = LocalDateTime.of(today, LocalTime.of(hour, 0)),
         apparentTemperatureC = apparent,
         temperatureC = air,
-        precipitationProbabilityPct = precip,
-        windSpeedKmh = wind,
-        relativeHumidityPct = humidity,
-        cloudCoverPct = cloud,
+        precipitationProbabilityPct = 0.0,
     )
 
     @Test
     fun `returns null when there is fewer than two models`() {
         val data = PerModelHourly(
-            byModel = mapOf("gfs_seamless" to listOf(entry(12, 10.0, 11.0))),
+            byModel = mapOf("gfs_seamless" to listOf(entry(12, 10.0))),
         )
 
         ModelDivergenceSummary.computeFrom(data).shouldBeNull()
     }
 
     @Test
-    fun `returns null when the peak feels-like spread is below the threshold`() {
-        // 0.5 °C spread is well below MIN_FEELS_LIKE_SPREAD_C = 1.5 °C.
+    fun `returns null when both extremes agree within the threshold`() {
+        // High spread 0.5 °C, low spread 0.5 °C — both well below
+        // MIN_SPREAD_C = 1.5 °C, so there's nothing worth surfacing.
         val data = PerModelHourly(
             byModel = mapOf(
-                "gfs_seamless" to listOf(entry(12, 10.0, 11.0, cloud = 20.0)),
-                "icon_seamless" to listOf(entry(12, 10.5, 11.0, cloud = 80.0)),
+                "gfs_seamless" to listOf(entry(6, 10.0), entry(14, 20.0)),
+                "icon_seamless" to listOf(entry(6, 10.5), entry(14, 20.5)),
             ),
         )
 
@@ -54,168 +48,101 @@ class ModelDivergenceSummaryTest {
     }
 
     @Test
-    fun `picks the peak feels-like-spread hour across the day`() {
-        // At 12:00 the spread is 1.0 °C; at 15:00 it's 4.0 °C — the larger
-        // hour should win regardless of the order the entries appear in.
+    fun `surfaces the high when models split more on the daily high`() {
+        // Highs 20 vs 24 → spread 4; lows 10 vs 10.5 → spread 0.5. The high
+        // is the wider disagreement, so it's what the summary describes.
         val data = PerModelHourly(
             byModel = mapOf(
-                "gfs_seamless" to listOf(
-                    entry(12, 10.0, 11.0, cloud = 30.0),
-                    entry(15, 12.0, 13.0, cloud = 40.0),
-                ),
-                "icon_seamless" to listOf(
-                    entry(12, 11.0, 12.0, cloud = 35.0),
-                    entry(15, 16.0, 17.0, cloud = 85.0),
-                ),
+                "gfs_seamless" to listOf(entry(6, 10.0), entry(14, 20.0)),
+                "icon_seamless" to listOf(entry(6, 10.5), entry(14, 24.0)),
             ),
         )
 
         val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
 
-        summary.peakHour shouldBe LocalTime.of(15, 0)
-        summary.feelsLikeSpreadC shouldBe (4.0 plusOrMinus 0.0001)
+        summary.extreme shouldBe ModelDivergenceSummary.Extreme.HIGH
+        summary.spreadC shouldBe (4.0 plusOrMinus 0.0001)
+        summary.minC shouldBe (20.0 plusOrMinus 0.0001)
+        summary.maxC shouldBe (24.0 plusOrMinus 0.0001)
     }
 
     @Test
-    fun `picks the factor with the widest normalised spread`() {
-        // At the peak hour:
-        //   air-temp spread = 1 °C   →  normalised 1.0 / 1.5  = 0.67
-        //   wind  spread    = 6 km/h →  normalised 6.0 / 10.0 = 0.6
-        //   cloud spread    = 50 pp  →  normalised 50  / 30   = 1.67  <-- wins
-        //   humidity spread = 10 pp  →  normalised 10  / 20   = 0.5
+    fun `surfaces the low when models split more on the daily low`() {
+        // Highs 20 vs 21 → spread 1; lows 8 vs 12 → spread 4. The low wins,
+        // and the reported range is the models' lows (8–12), not their highs.
         val data = PerModelHourly(
             byModel = mapOf(
-                "gfs_seamless" to listOf(
-                    entry(13, 7.0, 9.0, wind = 5.0, humidity = 70.0, cloud = 20.0),
-                ),
-                "icon_seamless" to listOf(
-                    entry(13, 10.0, 10.0, wind = 11.0, humidity = 80.0, cloud = 70.0),
-                ),
+                "gfs_seamless" to listOf(entry(6, 8.0), entry(14, 20.0)),
+                "icon_seamless" to listOf(entry(6, 12.0), entry(14, 21.0)),
             ),
         )
 
         val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
 
-        summary.topFactor shouldBe ModelDivergenceSummary.Factor.CLOUD_COVER
-        summary.topFactorMin shouldBe (20.0 plusOrMinus 0.0001)
-        summary.topFactorMax shouldBe (70.0 plusOrMinus 0.0001)
+        summary.extreme shouldBe ModelDivergenceSummary.Extreme.LOW
+        summary.spreadC shouldBe (4.0 plusOrMinus 0.0001)
+        summary.minC shouldBe (8.0 plusOrMinus 0.0001)
+        summary.maxC shouldBe (12.0 plusOrMinus 0.0001)
     }
 
     @Test
-    fun `excludes a factor reported by only one model`() {
-        // Cloud cover would otherwise dominate, but only one model reported
-        // it — a single-model "spread" is meaningless. Wind has two models
-        // and should win instead.
+    fun `a differently-shaped diurnal curve does not register as disagreement`() {
+        // Both models reach a high of 20 and a low of 12, but the second warms
+        // up faster — at 12:00 it's already at 20 while the first is still at
+        // 16, a 4 °C mid-curve gap. Because the summary keys off the maxima and
+        // minima only, that timing artifact is ignored: the highs match, the
+        // lows match, so there's nothing to surface. (Hours are 3 h apart, so
+        // the spike filter leaves them untouched and can't be what hides it.)
         val data = PerModelHourly(
             byModel = mapOf(
                 "gfs_seamless" to listOf(
-                    entry(13, 7.0, 9.0, wind = 5.0, cloud = 10.0),
+                    entry(9, 12.0), entry(12, 16.0), entry(15, 20.0), entry(18, 14.0),
                 ),
                 "icon_seamless" to listOf(
-                    entry(13, 10.0, 10.0, wind = 25.0, cloud = null),
+                    entry(9, 12.0), entry(12, 20.0), entry(15, 20.0), entry(18, 14.0),
                 ),
             ),
         )
 
-        val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
-
-        summary.topFactor shouldBe ModelDivergenceSummary.Factor.WIND_SPEED
-        summary.topFactorMin shouldBe (5.0 plusOrMinus 0.0001)
-        summary.topFactorMax shouldBe (25.0 plusOrMinus 0.0001)
+        ModelDivergenceSummary.computeFrom(data).shouldBeNull()
     }
 
     @Test
-    fun `still returns a summary when only air temperature is available`() {
-        // Wind / cloud / humidity all null — the temp comparison still
-        // works because it's a required field on PerModelHour.
+    fun `a lone spike hour is filtered and cannot fake a high disagreement`() {
+        // The second model has a single 16 °C spike at 13:00 between two 10 °C
+        // hours; everything else sits at 10 °C. The spike filter (shared with
+        // the confidence tier) replaces it with the median of its neighbors, so
+        // its true high is 10 °C — matching the first model — and no
+        // disagreement is surfaced. Without the filter the spike would read as a
+        // 6 °C high spread.
         val data = PerModelHourly(
             byModel = mapOf(
-                "gfs_seamless" to listOf(entry(13, 7.0, 9.0)),
-                "icon_seamless" to listOf(entry(13, 10.0, 12.5)),
+                "gfs_seamless" to listOf(entry(12, 10.0), entry(13, 10.0), entry(14, 10.0)),
+                "icon_seamless" to listOf(entry(12, 10.0), entry(13, 16.0), entry(14, 10.0)),
             ),
         )
 
-        val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
-
-        summary.topFactor shouldBe ModelDivergenceSummary.Factor.AIR_TEMPERATURE
-        summary.peakHour shouldBe LocalTime.of(13, 0)
+        ModelDivergenceSummary.computeFrom(data).shouldBeNull()
     }
 
     @Test
     fun `includes the best-match overlay in the spread calc`() {
-        // best_match is treated as a regular model here, matching the
-        // consensus blend's posture: if it's the outlier on a given hour
-        // the divergence summary surfaces that disagreement rather than
-        // hiding it. GFS / ICON agree at ~7 °C feels-like; best_match is
-        // a wild outlier at 20 °C; including all three gives a 13 °C
-        // spread which clears the MIN_FEELS_LIKE_SPREAD_C threshold.
+        // best_match is treated as a regular model here, matching the consensus
+        // blend's posture: if it's the outlier on the day's extreme the summary
+        // surfaces that rather than hiding it. GFS / ICON agree at ~7 °C;
+        // best_match is a wild outlier at 20 °C, giving a 13 °C spread.
         val data = PerModelHourly(
             byModel = mapOf(
-                "gfs_seamless" to listOf(entry(13, 7.0, 9.0)),
-                "icon_seamless" to listOf(entry(13, 8.0, 10.0)),
-                PerModelHourly.BEST_MATCH_MODEL_ID to listOf(entry(13, 20.0, 22.0)),
+                "gfs_seamless" to listOf(entry(13, 7.0)),
+                "icon_seamless" to listOf(entry(13, 8.0)),
+                PerModelHourly.BEST_MATCH_MODEL_ID to listOf(entry(13, 20.0)),
             ),
         )
 
         val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
 
-        summary.feelsLikeSpreadC shouldBe (13.0 plusOrMinus 0.0001)
-    }
-
-    @Test
-    fun `returns null when every available factor has zero spread`() {
-        // Feels-like spread of 2.0 °C clears the threshold, but air
-        // temperature is the only available factor and both models report
-        // the same value — picking it would produce a misleading
-        // "mostly air temperature, 11–11 °C" attribution.
-        val data = PerModelHourly(
-            byModel = mapOf(
-                "gfs_seamless" to listOf(entry(13, 9.0, 11.0)),
-                "icon_seamless" to listOf(entry(13, 11.0, 11.0)),
-            ),
-        )
-
-        ModelDivergenceSummary.computeFrom(data).shouldBeNull()
-    }
-
-    @Test
-    fun `skips zero-spread factors in favour of a non-zero one`() {
-        // Air temp agrees exactly across models, but wind disagrees —
-        // we should attribute the feels-like spread to wind rather than
-        // pick the alphabetically-first zero-spread factor.
-        val data = PerModelHourly(
-            byModel = mapOf(
-                "gfs_seamless" to listOf(entry(13, 7.0, 10.0, wind = 5.0)),
-                "icon_seamless" to listOf(entry(13, 10.0, 10.0, wind = 25.0)),
-            ),
-        )
-
-        val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
-
-        summary.topFactor shouldBe ModelDivergenceSummary.Factor.WIND_SPEED
-        summary.topFactorMin shouldBe (5.0 plusOrMinus 0.0001)
-        summary.topFactorMax shouldBe (25.0 plusOrMinus 0.0001)
-    }
-
-    @Test
-    fun `ignores hours that only one model reported`() {
-        // 12:00 has a 5 °C spread but only one model is present — skipped.
-        // 15:00 has a 2 °C spread across both — this is the real peak.
-        val data = PerModelHourly(
-            byModel = mapOf(
-                "gfs_seamless" to listOf(
-                    entry(12, 5.0, 7.0),
-                    entry(15, 11.0, 13.0),
-                ),
-                "icon_seamless" to listOf(
-                    entry(15, 13.0, 15.0),
-                ),
-            ),
-        )
-
-        val summary = ModelDivergenceSummary.computeFrom(data).shouldNotBeNull()
-
-        summary.peakHour shouldBe LocalTime.of(15, 0)
-        summary.feelsLikeSpreadC shouldBe (2.0 plusOrMinus 0.0001)
+        summary.spreadC shouldBe (13.0 plusOrMinus 0.0001)
+        summary.minC shouldBe (7.0 plusOrMinus 0.0001)
+        summary.maxC shouldBe (20.0 plusOrMinus 0.0001)
     }
 }

@@ -493,13 +493,7 @@ Not overridden by design:
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">मॉडल:</string>
     <string name="today_chart_main_line_label">औसत</string>
-    <string name="today_chart_divergence_summary">मॉडलों में सबसे ज़्यादा मतभेद %1$s पर (अनुभव तापमान Δ %2$.1f%3$s) — मुख्यतः %4$s, %5$s</string>
 
-    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
-    <string name="today_factor_air_temperature">हवा का तापमान</string>
-    <string name="today_factor_wind_speed">हवा की गति</string>
-    <string name="today_factor_cloud_cover">बादल छाव</string>
-    <string name="today_factor_humidity">आर्द्रता</string>
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">हवा की गति</string>

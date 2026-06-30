@@ -170,13 +170,8 @@ West Bengal vocabulary differences in a future PR.
     <!-- Model spread / charts -->
     <string name="today_chart_model_legend_label">মডেল:</string>
     <string name="today_chart_main_line_label">গড়</string>
-    <string name="today_chart_divergence_summary">%1$s-এ মডেলগুলো সবচেয়ে বেশি ভিন্নমত পোষণ করে (Δ %2$.1f%3$s অনুভূত) — মূলত %4$s, %5$s</string>
 
     <!-- Factor names -->
-    <string name="today_factor_air_temperature">বায়ু তাপমাত্রা</string>
-    <string name="today_factor_wind_speed">বাতাসের গতি</string>
-    <string name="today_factor_cloud_cover">মেঘাচ্ছন্নতা</string>
-    <string name="today_factor_humidity">আর্দ্রতা</string>
 
     <!-- Wind / cloud / humidity diagnostic cards -->
     <string name="today_wind_title">বাতাসের গতি</string>

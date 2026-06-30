@@ -1712,6 +1712,115 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
     )
 }
 
+// A full five-model selection so every chart-colour pool slot (0..4) renders
+// at once alongside the black Combined line and the grey Auto (best_match)
+// line — seven overlays in one card. The four-model SAMPLE_PER_MODEL_HOURLY
+// above only exercises slots 0..3; this fixture adds GEM at slot 4 so a
+// reviewer can eyeball all five pool colours and the two reference lines
+// together. Same `shift` shape as the four-model fixture.
+private val SAMPLE_PER_MODEL_HOURLY_FIVE: PerModelHourly = run {
+    fun shift(
+        deltaC: Double,
+        windBase: Double,
+        cloudBase: Double,
+    ) = SAMPLE_HOURLY_RAINY.mapIndexed { i, h ->
+        val hourPhase = (i - 6).coerceAtLeast(0).coerceAtMost(12)
+        PerModelHour(
+            time = java.time.LocalDateTime.of(SAMPLE_PER_MODEL_DATE, h.time),
+            apparentTemperatureC = h.feelsLikeC + deltaC,
+            temperatureC = h.temperatureC + deltaC,
+            precipitationProbabilityPct = h.precipitationProbabilityPct,
+            precipitationMm = h.precipitationMm,
+            windSpeedKmh = windBase + hourPhase * 0.6,
+            relativeHumidityPct = 70.0 - hourPhase * 0.5,
+            cloudCoverPct = (cloudBase + hourPhase * 2.0).coerceIn(0.0, 100.0),
+            shortwaveRadiationWm2 = null,
+            sunshineDurationSec = null,
+            uvIndex = null,
+        )
+    }
+    PerModelHourly(
+        byModel = mapOf(
+            "ecmwf_ifs025" to shift(deltaC = -1.5, windBase = 8.0, cloudBase = 55.0),
+            "gfs_seamless" to shift(deltaC = 0.5, windBase = 12.0, cloudBase = 70.0),
+            "icon_seamless" to shift(deltaC = 2.0, windBase = 6.0, cloudBase = 40.0),
+            "ukmo_seamless" to shift(deltaC = -3.0, windBase = 10.0, cloudBase = 80.0),
+            "gem_seamless" to shift(deltaC = 3.5, windBase = 5.0, cloudBase = 30.0),
+            PerModelHourly.BEST_MATCH_MODEL_ID to shift(deltaC = -1.5, windBase = 0.0, cloudBase = 0.0)
+                .map {
+                    it.copy(windSpeedKmh = null, relativeHumidityPct = null, cloudCoverPct = null)
+                },
+        ),
+    )
+}
+
+// Slot assignment for the five-model fixture: each consulted model takes its
+// own pool slot 0..4 so all five colours render distinctly. Mirrors what
+// [ForecastModel.assignColorSlots] persists for a five-model selection.
+private val SAMPLE_COLOR_SLOTS_FIVE: Map<String, Int> = mapOf(
+    "ecmwf_ifs025" to 0,
+    "gfs_seamless" to 1,
+    "icon_seamless" to 2,
+    "ukmo_seamless" to 3,
+    "gem_seamless" to 4,
+)
+
+@Preview(name = "Air temperature card · five model colors", widthDp = 360)
+@Composable
+internal fun AirTemperatureCardFiveModelSpreadPreview() {
+    Frame(colorSlots = SAMPLE_COLOR_SLOTS_FIVE) {
+        AirTemperatureCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY_FIVE,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Air temperature card · five model colors (dark)", widthDp = 360)
+@Composable
+internal fun AirTemperatureCardFiveModelSpreadDarkPreview() {
+    Frame(darkTheme = true, colorSlots = SAMPLE_COLOR_SLOTS_FIVE) {
+        AirTemperatureCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY_FIVE,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Air temperature card · five model colors (accessible)", widthDp = 360)
+@Composable
+internal fun AirTemperatureCardFiveModelSpreadAccessiblePreview() {
+    Frame(colorPalette = ColorPalette.ACCESSIBLE, colorSlots = SAMPLE_COLOR_SLOTS_FIVE) {
+        AirTemperatureCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY_FIVE,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Air temperature card · five model colors (highlighter)", widthDp = 360)
+@Composable
+internal fun AirTemperatureCardFiveModelSpreadHighlighterPreview() {
+    Frame(colorPalette = ColorPalette.HIGHLIGHTER, darkTheme = true, colorSlots = SAMPLE_COLOR_SLOTS_FIVE) {
+        AirTemperatureCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY_FIVE,
+            showModelSpread = true,
+        )
+    }
+}
+
 // "Consensus-only" variants (showModelSpread = false) — the default state of
 // each diagnostic card. The chart draws a single main line computed as the
 // per-hour cross-model mean; no per-model overlay, no legend.

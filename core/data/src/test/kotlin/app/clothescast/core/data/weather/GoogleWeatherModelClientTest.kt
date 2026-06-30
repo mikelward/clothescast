@@ -45,8 +45,7 @@ class GoogleWeatherModelClientTest {
               "wind": {"speed":{"value":12.0}}
             }
           ],
-          "timeZone": {"id":"Europe/London"},
-          "nextPageToken": "abc"
+          "timeZone": {"id":"Europe/London"}
         }
     """.trimIndent()
 
@@ -65,6 +64,50 @@ class GoogleWeatherModelClientTest {
                 )
             } else {
                 respondError(status)
+            }
+        }
+        val http = HttpClient(engine) {
+            install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+        }
+        return GoogleWeatherModelClient(http)
+    }
+
+    /** A single forecast page carrying one hour at [hour] and an optional [nextPageToken]. */
+    private fun page(hour: Int, nextPageToken: String? = null): String {
+        val token = nextPageToken?.let { ""","nextPageToken":"$it"""" } ?: ""
+        return """
+            {
+              "forecastHours": [
+                {
+                  "displayDateTime": {"year":2026,"month":6,"day":29,"hours":$hour,"minutes":0},
+                  "temperature": {"degrees":15.0}
+                }
+              ]$token
+            }
+        """.trimIndent()
+    }
+
+    /**
+     * Serves [pages] in order, one per request (capturing each request), then —
+     * once the list is exhausted — replays the last page forever. Replaying a page
+     * that still carries a token lets a test exercise the MAX_PAGES backstop.
+     */
+    private fun pagingClient(
+        pages: List<String>,
+        captured: MutableList<HttpRequestData> = mutableListOf(),
+        failOnRequest: Int? = null,
+    ): GoogleWeatherModelClient {
+        val engine = MockEngine { request ->
+            val index = captured.size
+            captured.add(request)
+            if (failOnRequest != null && index + 1 == failOnRequest) {
+                respondError(HttpStatusCode.InternalServerError)
+            } else {
+                respond(
+                    content = ByteReadChannel(pages[index.coerceAtMost(pages.lastIndex)]),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
             }
         }
         val http = HttpClient(engine) {
@@ -120,6 +163,76 @@ class GoogleWeatherModelClientTest {
         params["location.latitude"] shouldBe "51.5074"
         params["location.longitude"] shouldBe "-0.1278"
         params["unitsSystem"] shouldBe "METRIC"
+        // The full 10-day horizon, fetched 24 hours at a time via pagination.
+        params["hours"] shouldBe "240"
+        params["pageSize"] shouldBe "24"
+        // No token on the first page.
+        params["pageToken"].shouldBeNull()
+    }
+
+    @Test
+    fun `follows nextPageToken across pages and concatenates the hours`() = runTest {
+        val captured = mutableListOf<HttpRequestData>()
+        val result = checkNotNull(
+            pagingClient(
+                pages = listOf(page(hour = 11, nextPageToken = "p2"), page(hour = 12, nextPageToken = "p3"), page(hour = 13)),
+                captured = captured,
+            ).fetchHourly(london, "AIza-test-key"),
+        )
+
+        // One PerModelHour per page, in order.
+        result.map { it.time.hour } shouldBe listOf(11, 12, 13)
+        // Stopped after the tokenless third page — exactly three round-trips.
+        captured.size shouldBe 3
+        // Each follow-up page carried the prior page's token; the first carried none.
+        captured.map { it.url.parameters["pageToken"] } shouldBe listOf(null, "p2", "p3")
+    }
+
+    @Test
+    fun `a page failing partway keeps the hours already gathered`() = runTest {
+        val captured = mutableListOf<HttpRequestData>()
+        // Page 1 succeeds and points at page 2; page 2 errors.
+        val result = checkNotNull(
+            pagingClient(
+                pages = listOf(page(hour = 11, nextPageToken = "p2"), page(hour = 12)),
+                captured = captured,
+                failOnRequest = 2,
+            ).fetchHourly(london, "AIza-test-key"),
+        )
+
+        result.map { it.time.hour } shouldBe listOf(11)
+        captured.size shouldBe 2
+    }
+
+    @Test
+    fun `the first page failing drops Google entirely`() = runTest {
+        // No partial result to keep — a page-one failure is the fetch failing.
+        pagingClient(pages = listOf(page(hour = 11)), failOnRequest = 1)
+            .fetchHourly(london, "AIza-test-key")
+            .shouldBeNull()
+    }
+
+    @Test
+    fun `pagination stops at the page cap even when Google keeps handing back a token`() = runTest {
+        val captured = mutableListOf<HttpRequestData>()
+        // Every page carries a token, so only the MAX_PAGES backstop ends the walk.
+        val result = checkNotNull(
+            pagingClient(pages = listOf(page(hour = 11, nextPageToken = "loop")), captured = captured)
+                .fetchHourly(london, "AIza-test-key"),
+        )
+
+        // 240 hours / 24 per page = 10 pages, and no more.
+        captured.size shouldBe 10
+        result.size shouldBe 10
+    }
+
+    @Test
+    fun `probe stays a single round-trip even when more pages are available`() = runTest {
+        val captured = mutableListOf<HttpRequestData>()
+        pagingClient(pages = listOf(page(hour = 11, nextPageToken = "p2"), page(hour = 12)), captured = captured)
+            .probe(london, "AIza-test-key") shouldBe GoogleWeatherProbe.Reachable(hours = 1)
+
+        captured.size shouldBe 1
     }
 
     @Test

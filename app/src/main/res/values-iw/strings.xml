@@ -181,11 +181,6 @@ standard in Israeli digital communication.
     <!-- Today — model divergence / confidence -->
     <string name="today_chart_model_legend_label">מודלים:</string>
     <string name="today_chart_main_line_label">ממוצע</string>
-    <string name="today_chart_divergence_summary">המודלים חלוקים ביותר בשעה %1$s (Δ %2$.1f%3$s מורגש) — בעיקר %4$s, %5$s</string>
-    <string name="today_factor_air_temperature">טמפרטורת אוויר</string>
-    <string name="today_factor_wind_speed">מהירות רוח</string>
-    <string name="today_factor_cloud_cover">כיסוי ענן</string>
-    <string name="today_factor_humidity">לחות</string>
 
     <!-- Today — wind / cloud / humidity charts -->
     <string name="today_wind_title">מהירות רוח</string>

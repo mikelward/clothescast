@@ -410,13 +410,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modely:</string>
     <string name="today_chart_main_line_label">Průměr</string>
-    <string name="today_chart_divergence_summary">Modely se nejvíce rozcházejí v %1$s (Δ %2$.1f%3$s pocitová teplota) — zejména %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">Teplota vzduchu</string>
-    <string name="today_factor_wind_speed">Rychlost větru</string>
-    <string name="today_factor_cloud_cover">Oblačnost</string>
-    <string name="today_factor_humidity">Vlhkost vzduchu</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Rychlost větru</string>

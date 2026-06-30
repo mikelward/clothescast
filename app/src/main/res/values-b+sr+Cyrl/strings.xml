@@ -460,13 +460,8 @@ surfaces.
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Модели:</string>
     <string name="today_chart_main_line_label">Просек</string>
-    <string name="today_chart_divergence_summary">Модели се највише разликују у %1$s (Δ %2$.1f%3$s осећајна темп.) — углавном %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">температура ваздуха</string>
-    <string name="today_factor_wind_speed">брзина ветра</string>
-    <string name="today_factor_cloud_cover">облачност</string>
-    <string name="today_factor_humidity">влажност</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Брзина ветра</string>

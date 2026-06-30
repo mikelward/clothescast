@@ -1307,7 +1307,6 @@ private fun TodayPage(
                         info = confidence,
                         perModelHourly = insight.perModelHourly,
                         temperatureUnit = state.temperatureUnit,
-                        windSpeedUnit = state.windSpeedUnit,
                         showModelSpread = state.showModelSpread,
                         onToggleModelSpread = onChipTap,
                     )
@@ -2588,18 +2587,17 @@ internal fun InsightCard(
  * Okabe-Ito-derived sky blue / neutral / amber when the user has picked the
  * Accessible palette in Display settings. On MEDIUM/LOW tiers the card adds a
  * detail line (or two): a feels-like divergence hint from
- * [ModelDivergenceSummary] explaining *what* the models disagree on (e.g.
- * "Models disagree most at 15:00 (Δ 2.4°C feels-like) — mostly air
- * temperature, 11–14°C") and, when precip spread crosses the HIGH/MEDIUM
- * boundary, a parallel rain-disagreement line. HIGH tiers stay quiet — title
- * + tap hint only.
+ * [ModelDivergenceSummary] naming which extreme the models split on
+ * and by how much (e.g. "Forecasters differ on the high feels-like by Δ3.0°C
+ * (21–24°C)") and, when precip spread crosses the HIGH/MEDIUM boundary, a
+ * parallel rain-disagreement line. HIGH tiers stay quiet — title + tap hint
+ * only.
  */
 @Composable
 internal fun ConfidenceChip(
     info: ConfidenceInfo,
     perModelHourly: PerModelHourly?,
     temperatureUnit: TemperatureUnit,
-    windSpeedUnit: WindSpeedUnit,
     showModelSpread: Boolean = false,
     onToggleModelSpread: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
@@ -2628,14 +2626,12 @@ internal fun ConfidenceChip(
                 style = MaterialTheme.typography.titleSmall,
             )
             // Detail lines only render when the chip's tier shows disagreement.
-            // On HIGH days the title is the message ("Forecasters agree"); per-
-            // hour or timing-only spreads aren't worth surfacing here when the
-            // daily aggregates driving info.level match — surfacing them would
-            // contradict the title (e.g. "Forecasters agree" sitting directly
-            // above "Models disagree most at 15:00…" on a day where models
-            // share a daily maximum but peak at different hours). Power users
-            // can still toggle the per-model overlay on the charts below to
-            // see the curves themselves.
+            // On HIGH days the title is the message ("Forecasters agree") and
+            // the hint reads the same spike-filtered daily high/low the tier
+            // does, so a HIGH tier means the temperature spread is below the
+            // hint's threshold anyway — the gate just keeps the card to a
+            // single line. Power users can still toggle the per-model overlay
+            // on the charts below to see the curves themselves.
             if (info.level != ForecastConfidence.HIGH) {
                 // Filter perModelHourly to the consulted-models subset before
                 // computing the feels-like divergence hint. ConfidenceInfo's
@@ -2654,7 +2650,6 @@ internal fun ConfidenceChip(
                     ModelDivergenceHint(
                         perModelHourly = consultedHourly,
                         temperatureUnit = temperatureUnit,
-                        windSpeedUnit = windSpeedUnit,
                     )
                 }
                 // Precip spread can drive MEDIUM/LOW on its own (tight temps,
@@ -2832,10 +2827,10 @@ internal fun AirTemperatureCard(
 }
 
 /**
- * One-line "why do the models disagree?" hint rendered inside the forecast
+ * One-line "where do the models disagree?" hint rendered inside the forecast
  * confidence card as the chip's detail line. See
- * [ModelDivergenceSummary.computeFrom] for the threshold + factor-ranking
- * heuristic; this composable just formats the result. Color is left
+ * [ModelDivergenceSummary.computeFrom] for the daily-high-vs-low comparison
+ * and threshold; this composable just formats the result. Color is left
  * inherited so it picks up the chip's `contentColor` (which tracks the
  * confidence tier — secondary / surface / error container).
  */
@@ -2843,58 +2838,31 @@ internal fun AirTemperatureCard(
 private fun ModelDivergenceHint(
     perModelHourly: PerModelHourly,
     temperatureUnit: TemperatureUnit,
-    windSpeedUnit: WindSpeedUnit,
 ) {
     val summary = remember(perModelHourly) {
         ModelDivergenceSummary.computeFrom(perModelHourly)
     } ?: return
-    val factorLabel = stringResource(
-        when (summary.topFactor) {
-            ModelDivergenceSummary.Factor.AIR_TEMPERATURE -> R.string.today_factor_air_temperature
-            ModelDivergenceSummary.Factor.WIND_SPEED -> R.string.today_factor_wind_speed
-            ModelDivergenceSummary.Factor.CLOUD_COVER -> R.string.today_factor_cloud_cover
-            ModelDivergenceSummary.Factor.RELATIVE_HUMIDITY -> R.string.today_factor_humidity
-        },
-    )
-    val rangeText = formatTopFactorRange(summary, temperatureUnit, windSpeedUnit)
     // A feels-like *delta* converts to °F by simple multiplication (no
     // offset), unlike absolute temperatures. Express in the user's unit so
     // a Fahrenheit user doesn't see °C in the spread number.
     val spreadInUserUnit = when (temperatureUnit) {
-        TemperatureUnit.CELSIUS -> summary.feelsLikeSpreadC
-        TemperatureUnit.FAHRENHEIT -> summary.feelsLikeSpreadC * 1.8
+        TemperatureUnit.CELSIUS -> summary.spreadC
+        TemperatureUnit.FAHRENHEIT -> summary.spreadC * 1.8
+    }
+    val symbol = temperatureUnit.symbol()
+    // The extreme's value range *is* an absolute temperature, so it converts
+    // with the unit's offset (toUnit), unlike the delta above.
+    val min = summary.minC.toUnit(temperatureUnit).roundToInt()
+    val max = summary.maxC.toUnit(temperatureUnit).roundToInt()
+    val rangeText = "$min–$max$symbol"
+    val template = when (summary.extreme) {
+        ModelDivergenceSummary.Extreme.HIGH -> R.string.today_chart_divergence_high
+        ModelDivergenceSummary.Extreme.LOW -> R.string.today_chart_divergence_low
     }
     Text(
-        text = stringResource(
-            R.string.today_chart_divergence_summary,
-            formatHourMinute(summary.peakHour),
-            spreadInUserUnit,
-            temperatureUnit.symbol(),
-            factorLabel,
-            rangeText,
-        ),
+        text = stringResource(template, spreadInUserUnit, symbol, rangeText),
         style = MaterialTheme.typography.bodyMedium,
     )
-}
-
-private fun formatTopFactorRange(
-    summary: ModelDivergenceSummary,
-    temperatureUnit: TemperatureUnit,
-    windSpeedUnit: WindSpeedUnit,
-): String = when (summary.topFactor) {
-    ModelDivergenceSummary.Factor.AIR_TEMPERATURE -> {
-        val min = summary.topFactorMin.toUnit(temperatureUnit).roundToInt()
-        val max = summary.topFactorMax.toUnit(temperatureUnit).roundToInt()
-        "$min–$max${temperatureUnit.symbol()}"
-    }
-    ModelDivergenceSummary.Factor.WIND_SPEED -> {
-        val min = summary.topFactorMin.toWindSpeedUnit(windSpeedUnit).roundToInt()
-        val max = summary.topFactorMax.toWindSpeedUnit(windSpeedUnit).roundToInt()
-        "$min–$max ${windSpeedUnit.symbol()}"
-    }
-    ModelDivergenceSummary.Factor.CLOUD_COVER,
-    ModelDivergenceSummary.Factor.RELATIVE_HUMIDITY ->
-        "${summary.topFactorMin.roundToInt()}–${summary.topFactorMax.roundToInt()}%"
 }
 
 /**

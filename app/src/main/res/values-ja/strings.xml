@@ -600,13 +600,7 @@ the displayed label localizes.
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">モデル:</string>
     <string name="today_chart_main_line_label">平均</string>
-    <string name="today_chart_divergence_summary">モデル間の差が最も大きいのは %1$s（体感温度 Δ %2$.1f%3$s）— 主に %4$s、%5$s</string>
 
-    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
-    <string name="today_factor_air_temperature">気温</string>
-    <string name="today_factor_wind_speed">風速</string>
-    <string name="today_factor_cloud_cover">雲量</string>
-    <string name="today_factor_humidity">湿度</string>
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">風速</string>

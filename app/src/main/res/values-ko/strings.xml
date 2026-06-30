@@ -604,13 +604,7 @@ displayed label localizes.
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">모델:</string>
     <string name="today_chart_main_line_label">평균</string>
-    <string name="today_chart_divergence_summary">모델 간 차이가 가장 큰 시간은 %1$s (체감 Δ %2$.1f%3$s) — 주로 %4$s, %5$s</string>
 
-    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
-    <string name="today_factor_air_temperature">기온</string>
-    <string name="today_factor_wind_speed">풍속</string>
-    <string name="today_factor_cloud_cover">구름량</string>
-    <string name="today_factor_humidity">습도</string>
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">풍속</string>

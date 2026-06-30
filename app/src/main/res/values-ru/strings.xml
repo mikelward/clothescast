@@ -449,13 +449,7 @@ only the displayed label localizes.
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Модели:</string>
     <string name="today_chart_main_line_label">Среднее</string>
-    <string name="today_chart_divergence_summary">Максимальное расхождение в %1$s (Δ %2$.1f%3$s ощущений) — в основном %4$s, %5$s</string>
 
-    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
-    <string name="today_factor_air_temperature">температура воздуха</string>
-    <string name="today_factor_wind_speed">скорость ветра</string>
-    <string name="today_factor_cloud_cover">облачность</string>
-    <string name="today_factor_humidity">влажность</string>
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">Скорость ветра</string>

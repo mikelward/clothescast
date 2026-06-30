@@ -490,12 +490,7 @@ displayed label localizes.
 
     <string name="today_chart_model_legend_label">Mallit:</string>
     <string name="today_chart_main_line_label">Ka.</string>
-    <string name="today_chart_divergence_summary">Mallit poikkeavat eniten kello %1$s (Δ %2$.1f%3$s tuntuva lämpötila) — pääasiassa %4$s, %5$s</string>
 
-    <string name="today_factor_air_temperature">Ilmalämpötila</string>
-    <string name="today_factor_wind_speed">Tuulennopeus</string>
-    <string name="today_factor_cloud_cover">Pilvisyys</string>
-    <string name="today_factor_humidity">Kosteus</string>
 
     <string name="today_wind_title">Tuulennopeus</string>
     <string name="today_wind_subtitle">Tuulennopeus (%1$s) tunnissa</string>

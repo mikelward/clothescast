@@ -179,11 +179,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_precipitation_dry_week">بارندگی انتظار نمی‌رود</string>
     <string name="today_chart_model_legend_label">مدل‌ها:</string>
     <string name="today_chart_main_line_label">میانگین</string>
-    <string name="today_chart_divergence_summary">مدل‌ها بیشترین اختلاف را در ساعت %1$s دارند (Δ %2$.1f%3$s احساس‌شده) — عمدتاً %4$s، %5$s</string>
-    <string name="today_factor_air_temperature">دمای هوا</string>
-    <string name="today_factor_wind_speed">سرعت باد</string>
-    <string name="today_factor_cloud_cover">پوشش ابری</string>
-    <string name="today_factor_humidity">رطوبت</string>
     <string name="today_wind_title">سرعت باد</string>
     <string name="today_wind_subtitle">سرعت باد (%1$s) به ازای ساعت</string>
     <string name="today_cloud_title">پوشش ابری</string>

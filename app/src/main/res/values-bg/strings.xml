@@ -192,13 +192,8 @@ What is NOT overridden, by design:
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Модели:</string>
     <string name="today_chart_main_line_label">Средно</string>
-    <string name="today_chart_divergence_summary">Моделите се разминават най-много в %1$s (Δ %2$.1f%3$s усещана) — предимно %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">температура на въздуха</string>
-    <string name="today_factor_wind_speed">скорост на вятъра</string>
-    <string name="today_factor_cloud_cover">облачност</string>
-    <string name="today_factor_humidity">влажност</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Скорост на вятъра</string>

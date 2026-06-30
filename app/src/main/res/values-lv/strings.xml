@@ -177,11 +177,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_precipitation_dry_week">Lietus nav paredzams</string>
     <string name="today_chart_model_legend_label">Modeļi:</string>
     <string name="today_chart_main_line_label">Vidējais</string>
-    <string name="today_chart_divergence_summary">Modeļi visvairāk atšķiras plkst. %1$s (Δ %2$.1f%3$s sajustā) — galvenokārt %4$s, %5$s</string>
-    <string name="today_factor_air_temperature">gaisa temperatūra</string>
-    <string name="today_factor_wind_speed">vēja ātrums</string>
-    <string name="today_factor_cloud_cover">mākoņu daudzums</string>
-    <string name="today_factor_humidity">mitrums</string>
     <string name="today_wind_title">Vēja ātrums</string>
     <string name="today_wind_subtitle">Vēja ātrums (%1$s) pa stundām</string>
     <string name="today_cloud_title">Mākoņu daudzums</string>

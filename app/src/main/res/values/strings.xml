@@ -206,14 +206,23 @@
          %2$s = time formatted to the locale's short style. -->
     <string name="today_chart_readout">%1$s at %2$s</string>
 
-    <!-- Per-hour divergence summary rendered inside the forecast confidence
-         card as the chip's detail line, when the consulted models disagree
-         enough on feels-like to surface a peak hour.
-         %1$s = hour (e.g. "13:00"), %2$.1f = spread magnitude in the user's
-         temperature unit (it's a delta, no offset needed), %3$s = unit
-         symbol ("°C" / "°F"), %4$s = factor name ("cloud cover" etc.),
-         %5$s = pre-formatted factor range (e.g. "20–75%%"). -->
-    <string name="today_chart_divergence_summary">Models disagree most at %1$s (Δ %2$.1f%3$s feels-like) — mostly %4$s, %5$s</string>
+    <!-- Feels-like divergence detail line, rendered inside the forecast
+         confidence card as the chip's detail line when the consulted models
+         disagree enough on the window's high (or low) feels-like to surface.
+         Keyed to the extremes only — never an in-between hour — so a model
+         whose diurnal curve is merely shaped differently (warms faster, cools
+         slower) doesn't register as disagreement when it still lands on the
+         same high and low. Wording is period-neutral: the same ConfidenceChip
+         renders on the Today and Tonight pages over different windows, so the
+         copy says "the … high/low" rather than "today's", which would be wrong
+         on the Tonight chip (it describes the night window). One string per
+         extreme so translators get natural word order rather than a
+         substituted "high"/"low" token.
+         %1$.1f = spread magnitude in the user's temperature unit (it's a
+         delta, no offset needed), %2$s = unit symbol ("°C" / "°F"), %3$s =
+         pre-formatted value range across the models (e.g. "21–24°C"). -->
+    <string name="today_chart_divergence_high">Forecasters differ on the high feels-like by Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Forecasters differ on the low feels-like by Δ%1$.1f%2$s (%3$s)</string>
 
     <!-- Precipitation-disagreement detail line, rendered inside the forecast
          confidence card alongside (or instead of) the feels-like divergence
@@ -221,19 +230,11 @@
          enough to surface — without this, a LOW/MEDIUM tier driven by precip
          disagreement (tight temperature, wide rain spread) would leave the
          user with "Forecasters disagree…" and no explanation, since
-         ModelDivergenceSummary only describes feels-like factors. %1$.0f =
+         ModelDivergenceSummary only describes the feels-like extremes. %1$.0f =
          precipitation-probability spread in percentage points, written as
          "%%" so the user sees "35%%" (not "35pp"). %2$d = number of models
          consulted (typically 2–3 across ECMWF / GFS / ICON). -->
     <string name="today_confidence_precip_spread">Models disagree on rain (Δ %1$.0f%% across %2$d models)</string>
-
-    <!-- Lowercase factor names used inside the divergence-summary string
-         above. Kept short so the whole line fits on one row at typical
-         widths. -->
-    <string name="today_factor_air_temperature">air temperature</string>
-    <string name="today_factor_wind_speed">wind speed</string>
-    <string name="today_factor_cloud_cover">cloud cover</string>
-    <string name="today_factor_humidity">humidity</string>
 
     <!-- Wind diagnostic card, only rendered when "Show model spread" is on and
          at least one consulted model returned a wind speed series. Sits under

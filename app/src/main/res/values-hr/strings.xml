@@ -559,14 +559,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>
     <string name="today_chart_main_line_label">Prosjek</string>
-    <string name="today_chart_divergence_summary">Modeli se najviše razlikuju u %1$s (Δ %2$.1f%3$s osjećajna temp.) — uglavnom %4$s, %5$s</string>
     <string name="today_confidence_precip_spread">Modeli se razlikuju oko kiše (Δ %1$.0f%% kroz %2$d modela)</string>
 
-    <!-- Divergence factor names (used inside today_chart_divergence_summary). -->
-    <string name="today_factor_air_temperature">temperatura zraka</string>
-    <string name="today_factor_wind_speed">brzina vjetra</string>
-    <string name="today_factor_cloud_cover">naoblaka</string>
-    <string name="today_factor_humidity">vlažnost</string>
 
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">Brzina vjetra</string>

@@ -187,13 +187,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>
     <string name="today_chart_main_line_label">Povp.</string>
-    <string name="today_chart_divergence_summary">Modeli se najbolj razlikujejo ob %1$s (Δ %2$.1f%3$s občutena temp.) — predvsem %4$s, %5$s</string>
 
     <!-- Divergence factor names. -->
-    <string name="today_factor_air_temperature">temperatura zraka</string>
-    <string name="today_factor_wind_speed">hitrost vetra</string>
-    <string name="today_factor_cloud_cover">oblačnost</string>
-    <string name="today_factor_humidity">vlažnost</string>
 
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Hitrost vetra</string>

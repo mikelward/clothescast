@@ -74,11 +74,15 @@ sealed interface GoogleWeatherProbe {
  * blend proceeds on the Open-Meteo models alone. The fetch never fails the
  * surrounding forecast.
  *
- * One page of [FORECAST_HOURS] hours (the current hour forward) is requested in
- * a single call — that covers today + tonight + early tomorrow, the window the
- * outfit / tonight insight / conditions strip actually lean on. Extending
- * Google's reach across the full 10-day horizon (which Google paginates) is a
- * possible follow-up; this keeps it to one round-trip.
+ * [fetchHourly] walks Google's pagination to cover the full [FORECAST_HOURS]-hour
+ * (10-day) horizon — Google caps each page at [PAGE_SIZE] hours and hands back a
+ * `nextPageToken`, so the series is assembled across up to [MAX_PAGES] round-trips,
+ * matching the Open-Meteo models' forward reach so Google votes in the consensus on
+ * every day rather than just today + tomorrow. A page that fails partway keeps the
+ * hours already gathered (so a late network blip still contributes the near days)
+ * rather than dropping Google entirely. [probe], the cold connectivity check, stays
+ * a single round-trip — it only needs to know the key reaches the API and returns
+ * usable hours, not the whole horizon.
  */
 class GoogleWeatherModelClient(
     private val httpClient: HttpClient,
@@ -87,8 +91,8 @@ class GoogleWeatherModelClient(
 ) {
     suspend fun fetchHourly(location: Location, apiKey: String): List<PerModelHour>? {
         if (apiKey.isBlank()) return null
-        val response = try {
-            request(location, apiKey)
+        val hours = try {
+            requestAllPages(location, apiKey)
         } catch (ce: CancellationException) {
             // Narrow the catch and rethrow cancellation so a cancelled fetch
             // doesn't get masked as "Google unavailable" and break structured
@@ -98,7 +102,7 @@ class GoogleWeatherModelClient(
             logger.log("Google Weather fetch failed; dropping Google from the blend", t)
             return null
         }
-        return parse(response)
+        return parse(hours)
     }
 
     /**
@@ -117,7 +121,9 @@ class GoogleWeatherModelClient(
     suspend fun probe(location: Location, apiKey: String): GoogleWeatherProbe {
         if (apiKey.isBlank()) return GoogleWeatherProbe.NoKey
         val response = try {
-            request(location, apiKey)
+            // Single page is enough for a connectivity check — no need to walk
+            // the full horizon just to learn the key reaches the API.
+            request(location, apiKey, pageToken = null)
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
@@ -134,14 +140,52 @@ class GoogleWeatherModelClient(
                 GoogleWeatherProbe.Failed(status)
             }
         }
-        val hours = parse(response)?.size ?: 0
+        val hours = parse(response.forecastHours)?.size ?: 0
         // A 200 with no usable hours is treated as a failure: the key reached the
         // API but there's nothing to fold into the blend, so "Google is
         // contributing" would be a lie. Rare for a valid key, but honest.
         return if (hours > 0) GoogleWeatherProbe.Reachable(hours) else GoogleWeatherProbe.Failed(null)
     }
 
-    private suspend fun request(location: Location, apiKey: String): GoogleHourlyResponse =
+    /**
+     * Walks Google's pagination to gather up to [FORECAST_HOURS] hours, following
+     * each page's `nextPageToken` until it runs dry, the hour budget is met, or
+     * [MAX_PAGES] is hit (a backstop so a misbehaving token can't loop forever).
+     *
+     * The first page's failure propagates so the caller's catch can classify it
+     * (the probe's 403 handling, fetchHourly's drop-to-null). A *later* page's
+     * failure is caught and the walk stops with what it already has — a network
+     * blip on page 7 shouldn't throw away the six days already in hand.
+     */
+    private suspend fun requestAllPages(location: Location, apiKey: String): List<GoogleForecastHour> {
+        val all = mutableListOf<GoogleForecastHour>()
+        var pageToken: String? = null
+        var pages = 0
+        do {
+            val response = if (all.isEmpty()) {
+                request(location, apiKey, pageToken)
+            } else {
+                try {
+                    request(location, apiKey, pageToken)
+                } catch (ce: CancellationException) {
+                    throw ce
+                } catch (t: Throwable) {
+                    logger.log("Google Weather page ${pages + 1} failed; keeping ${all.size} hours gathered so far", t)
+                    break
+                }
+            }
+            all += response.forecastHours
+            pages++
+            pageToken = response.nextPageToken?.takeIf { it.isNotBlank() }
+        } while (pageToken != null && all.size < FORECAST_HOURS && pages < MAX_PAGES)
+        return all
+    }
+
+    private suspend fun request(
+        location: Location,
+        apiKey: String,
+        pageToken: String?,
+    ): GoogleHourlyResponse =
         apiCallLogger.instrument(ApiEndpoints.GOOGLE_WEATHER) {
             httpClient.get {
                 expectSuccess = true
@@ -163,17 +207,20 @@ class GoogleWeatherModelClient(
                 parameter("location.latitude", location.latitude)
                 parameter("location.longitude", location.longitude)
                 parameter("hours", FORECAST_HOURS)
-                // One page covering the whole window — Google paginates hourly
-                // results and defaults to a smaller page; ask for the lot at once.
-                parameter("pageSize", FORECAST_HOURS)
+                // Google caps the hourly page at PAGE_SIZE; the rest of the
+                // FORECAST_HOURS window arrives via nextPageToken (see
+                // [requestAllPages]).
+                parameter("pageSize", PAGE_SIZE)
                 // METRIC so temperatures come back in °C and wind in km/h, the
                 // units PerModelHour / the domain already speak — no conversion.
                 parameter("unitsSystem", "METRIC")
+                // Subsequent pages: hand back the token from the prior page.
+                if (pageToken != null) parameter("pageToken", pageToken)
             }.body()
         }
 
-    private fun parse(response: GoogleHourlyResponse): List<PerModelHour>? {
-        val hours = response.forecastHours.mapNotNull { hour ->
+    private fun parse(forecastHours: List<GoogleForecastHour>): List<PerModelHour>? {
+        val hours = forecastHours.mapNotNull { hour ->
             val time = hour.displayDateTime?.toLocalDateTime() ?: return@mapNotNull null
             // Air temperature is the hard requirement, mirroring the Open-Meteo
             // per-model parse: without it there's nothing to average into the
@@ -205,17 +252,26 @@ class GoogleWeatherModelClient(
     }
 
     companion object {
-        // One page of hourly forecast. Covers today + tonight + early tomorrow
-        // in a single round-trip — the window the outfit / tonight insight lean
-        // on. Google's hourly endpoint serves up to 240 hours via pagination;
-        // reaching further is a follow-up.
-        private const val FORECAST_HOURS = 24
+        // The full horizon Google's hourly endpoint serves — 240 hours / 10 days
+        // — so Google reaches as far forward as the Open-Meteo models and votes in
+        // the consensus on every day, not just today + tomorrow.
+        private const val FORECAST_HOURS = 240
+
+        // Google caps each hourly page at 24 hours; the rest of FORECAST_HOURS
+        // arrives by following nextPageToken (see [requestAllPages]).
+        private const val PAGE_SIZE = 24
+
+        // Backstop on the pagination walk: ceil(FORECAST_HOURS / PAGE_SIZE) pages
+        // cover the whole horizon, with no extra round-trips beyond that even if
+        // Google keeps handing back a token.
+        private const val MAX_PAGES = FORECAST_HOURS / PAGE_SIZE
     }
 }
 
 @Serializable
 private data class GoogleHourlyResponse(
     val forecastHours: List<GoogleForecastHour> = emptyList(),
+    val nextPageToken: String? = null,
 )
 
 @Serializable

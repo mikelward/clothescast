@@ -57,16 +57,19 @@ data class AppPalette(
  * the picker caps a selection at five, but the palette covers every model
  * so the chart never crashes on a `modelColors.getValue` lookup.
  */
-// The Rainbow colour pool: five Material-600 hues assigned to the selected
-// forecasters by slot (see [poolModelColors]). The first three keep the
-// original ECMWF-pink / GFS-orange / ICON-green so the default first-week trio
-// looks unchanged; slots 3–4 are purple and blue for the fourth / fifth picks.
+// The Rainbow colour pool: five vivid, maximally-distinct hues assigned to the
+// selected forecasters by slot (see [poolModelColors]), ordered most-distinct
+// first so a typical 3–4-model pick gets the widest separation. Deliberately NO
+// blue and no grey: the blended "Average" main line is the theme's blue and the
+// "Auto" best_match overlay is grey, so a blue/grey pool colour would collide
+// with them. Red / green / amber / purple cover the common picks; pink (only
+// near-neighbour is red) sits last, co-occurring only at a full five-model set.
 private val RAINBOW_POOL = listOf(
-    Color(0xFFD81B60),
-    Color(0xFFFB8C00),
+    Color(0xFFE53935),
     Color(0xFF43A047),
+    Color(0xFFF9A825),
     Color(0xFF8E24AA),
-    Color(0xFF1E88E5),
+    Color(0xFFD81B60),
 )
 
 internal fun rainbowPalette(scheme: ColorScheme, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
@@ -103,16 +106,19 @@ internal fun rainbowPalette(scheme: ColorScheme, slots: Map<String, Int> = empty
  * (Android 12+) — a Wallpaper-derived teal-ish `secondaryContainer` on the
  * device would defeat the whole point of the accessible path.
  */
-// The Accessible colour pool: Okabe-Ito-derived hues that stay distinguishable
-// under deutan / protan / tritan CVD at the ≤5 lines the picker draws. First
-// three are the vermillion / orange / bluish-green that differ in hue *and*
-// luminance; slots 3–4 add a CVD-safe blue and sky blue.
+// The Accessible colour pool: five Okabe-Ito hues that stay distinguishable
+// under deutan / protan / tritan CVD at the ≤5 lines the picker draws, ordered
+// most-distinct first. Vermillion / bluish-green / reddish-purple cover the
+// common 3-model pick (all non-blue, so none collides with the blue "Average"
+// main line); orange is the 4th and Okabe-Ito blue sits last, co-occurring with
+// the blue main line only at a full five-model set. Okabe-Ito yellow (#F0E442)
+// is dropped — too low-contrast on the near-white chart card.
 private val ACCESSIBLE_POOL = listOf(
     Color(0xFFD55E00),
-    Color(0xFFE69F00),
     Color(0xFF009E73),
+    Color(0xFFCC79A7),
+    Color(0xFFE69F00),
     Color(0xFF0072B2),
-    Color(0xFF56B4E9),
 )
 
 internal fun accessiblePalette(darkTheme: Boolean, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(
@@ -210,23 +216,24 @@ internal fun accessiblePalette(darkTheme: Boolean, slots: Map<String, Int> = emp
  * light-and-dark inversion contract as [accessiblePalette]. Hard-coded so
  * dynamic colour on Android 12+ can't dilute the look.
  */
-// The Highlighter neon pool, dark and light variants. First three keep the
-// magenta / yellow / cyan (dark) and their WCAG-darkened counterparts (light);
-// slots 3–4 add neon lavender and spring-green (dark) / deep purple and green
-// (light). Assigned to selected forecasters by slot via [poolModelColors].
+// The Highlighter neon pool, dark and light variants, ordered most-distinct
+// first. Dark stays full neon (magenta / cyan / spring-green / yellow) with
+// lavender — the magenta's nearest neighbour — last; light uses WCAG-darkened
+// counterparts that clear 3:1 on the near-white card (magenta / deep-blue /
+// green / amber / purple). Assigned to forecasters by slot via [poolModelColors].
 private val HIGHLIGHTER_POOL_DARK = listOf(
     Color(0xFFFF2D95),
-    Color(0xFFFFEB3B),
     Color(0xFF00E5FF),
-    Color(0xFFB388FF),
     Color(0xFF00FFA1),
+    Color(0xFFFFEB3B),
+    Color(0xFFB388FF),
 )
 private val HIGHLIGHTER_POOL_LIGHT = listOf(
     Color(0xFFFF2D95),
-    Color(0xFFB58A00),
     Color(0xFF0277BD),
-    Color(0xFF6A1B9A),
     Color(0xFF2E7D32),
+    Color(0xFFB58A00),
+    Color(0xFF6A1B9A),
 )
 
 internal fun highlighterPalette(darkTheme: Boolean, slots: Map<String, Int> = emptyMap()): AppPalette = AppPalette(

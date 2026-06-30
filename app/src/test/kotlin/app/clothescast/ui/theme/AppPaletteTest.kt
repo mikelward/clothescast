@@ -114,7 +114,7 @@ class AppPaletteTest {
     }
 
     @Test
-    fun `HIGHLIGHTER dark palette pins the neon magenta yellow cyan hues`() {
+    fun `HIGHLIGHTER dark palette pins the neon magenta cyan spring-green hues`() {
         // Pin the exact dark-theme hex values that drive the "visibly
         // different from Rainbow" guarantee. Drift on any of these is a UX
         // regression, not a refactor — call it out at test level so a
@@ -122,9 +122,10 @@ class AppPaletteTest {
         // variant uses darker counterparts for WCAG contrast; see the
         // separate light-theme test.
         val palette = appPaletteFor(scheme, darkTheme = true, colorPalette = ColorPalette.HIGHLIGHTER)
+        // Pool slots 0/1/2 under the empty-slot (enum-ordinal) fallback.
         palette.modelColors.getValue("ecmwf_ifs025") shouldBe Color(0xFFFF2D95)
-        palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFFFFEB3B)
-        palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF00E5FF)
+        palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFF00E5FF)
+        palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF00FFA1)
     }
 
     @Test
@@ -133,9 +134,10 @@ class AppPaletteTest {
         // drops the yellow and cyan slots to deeper hues so they aren't
         // washed out against the near-white card surface.
         val palette = appPaletteFor(scheme, darkTheme = false, colorPalette = ColorPalette.HIGHLIGHTER)
+        // Pool slots 0/1/2 under the empty-slot (enum-ordinal) fallback.
         palette.modelColors.getValue("ecmwf_ifs025") shouldBe Color(0xFFFF2D95)
-        palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFFB58A00)
-        palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF0277BD)
+        palette.modelColors.getValue("gfs_seamless") shouldBe Color(0xFF0277BD)
+        palette.modelColors.getValue("icon_seamless") shouldBe Color(0xFF2E7D32)
     }
 
     @Test

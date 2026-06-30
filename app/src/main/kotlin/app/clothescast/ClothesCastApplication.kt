@@ -265,27 +265,28 @@ class ClothesCastApplication : Application() {
                     ForecastModel.openMeteoIds(effective)
                 },
                 // Fetch Google's forecast only when the user has enabled the
-                // Google forecaster on the Forecasters page AND has a Gemini key
-                // configured (its AIza key also authorizes the Weather API). Not
-                // selected or no key → no Google series → today's Open-Meteo
-                // consensus exactly. Key present but unreadable (needs re-entry
-                // after a Keystore reset) → skip Google rather than fail.
+                // Google forecaster on the Forecasters page AND has a Google API
+                // key configured (a project-scoped Cloud key with the Weather
+                // API enabled — separate from the Gemini TTS key). Not selected
+                // or no key → no Google series → today's Open-Meteo consensus
+                // exactly. Key present but unreadable (corrupt ciphertext after
+                // a Keystore reset) reads as null → skip Google rather than fail.
                 extraModelHourly = { location ->
                     val prefs = settingsRepository.preferences.first()
                     val effective = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
                     val googleSelected = ForecastModel.GOOGLE_WEATHER in effective
-                    if (!googleSelected || !secureKeyStore.geminiKeyConfiguredFlow.first()) {
+                    if (!googleSelected) {
                         null
                     } else {
                         val key = try {
-                            secureKeyStore.get()
+                            secureKeyStore.getGoogleApiKey()
                         } catch (ce: CancellationException) {
                             throw ce
                         } catch (e: Exception) {
-                            DiagLog.w("GoogleWeather", "Gemini key unavailable; skipping Google", e)
+                            DiagLog.w("GoogleWeather", "Google API key unavailable; skipping Google", e)
                             null
                         }
-                        key?.let { googleWeatherClient.fetchHourly(location, it) }
+                        key?.takeIf { it.isNotBlank() }?.let { googleWeatherClient.fetchHourly(location, it) }
                     }
                 },
             ),
@@ -300,13 +301,13 @@ class ClothesCastApplication : Application() {
             freshnessKeyProvider = { location ->
                 val prefs = settingsRepository.preferences.first()
                 val models = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
-                // Fold in the Gemini key's fingerprint (null when unset) so
-                // adding, clearing, OR replacing the key invalidates the cache
+                // Fold in the Google key's fingerprint (null when unset) so
+                // adding, clearing, OR replacing it invalidates the cache
                 // instead of waiting out the 1 h TTL — otherwise the blend would
                 // keep including (or excluding) Google until expiry, and swapping
-                // a key that 403'd Google for a working one wouldn't take effect
-                // on a manual refresh. Subsumes the old "configured" boolean.
-                models to secureKeyStore.geminiKeyFingerprint()
+                // a key that 403'd the Weather API for a working one wouldn't
+                // take effect on a manual refresh.
+                models to secureKeyStore.googleApiKeyFingerprint()
             },
         )
     }

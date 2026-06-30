@@ -81,6 +81,51 @@ class SecureKeyStore(
     suspend fun clearMqttPassword() = remove(MQTT_PASS_PREF_KEY)
 
     /**
+     * Google Maps-Platform API key for the Google Weather forecaster. Kept in a
+     * separate slot from the Gemini key: although both are project-scoped
+     * `AIza*` Cloud keys, the Weather API must be enabled (and billing on) for
+     * whichever project the key belongs to, so a user may want a different key
+     * here than the one driving Gemini TTS — or the same one if its project has
+     * the Weather API enabled. Returns `null` when unset (or after a decrypt
+     * failure clears a corrupt value), mirroring [getMqttPassword]: there's no
+     * shared fallback for Weather, so "no key" simply means Google sits out of
+     * the blend.
+     */
+    suspend fun getGoogleApiKey(): String? = try {
+        read(
+            prefKey = GOOGLE_PREF_KEY,
+            invalidPrefKey = null,
+            aad = GOOGLE_AAD,
+            provider = "Google",
+        )
+    } catch (_: MissingApiKeyException) {
+        null
+    }
+
+    suspend fun setGoogleApiKey(key: String) = write(GOOGLE_PREF_KEY, GOOGLE_AAD, key)
+
+    suspend fun clearGoogleApiKey() = remove(GOOGLE_PREF_KEY)
+
+    /**
+     * Reactive "is a Google API key stored." Drives the Google forecaster's
+     * checkbox-enabled state and the key-status indicator on the Forecasters
+     * page. Presence only — no decrypt.
+     */
+    val googleApiKeyConfiguredFlow: Flow<Boolean> = dataStore.data
+        .map { it[GOOGLE_PREF_KEY] != null }
+        .distinctUntilChanged()
+
+    /**
+     * Sibling of [geminiKeyFingerprint] for the Google key — folded into the
+     * weather-cache freshness key so adding / replacing / clearing the Google
+     * key busts a stale forecast bundle (e.g. swapping a key that 403'd the
+     * Weather API for a working one refreshes Google into the blend immediately
+     * instead of waiting out the TTL). Hashes ciphertext only, no decrypt.
+     */
+    suspend fun googleApiKeyFingerprint(): Int? =
+        dataStore.data.map { it[GOOGLE_PREF_KEY] }.first()?.hashCode()
+
+    /**
      * Reactive view of "is a Gemini key currently stored." Used by the Today screen's
      * welcome card to decide whether to nudge the user to set a key. Reads only the
      * presence of ciphertext, not the plaintext value, so no decrypt happens here.
@@ -177,6 +222,8 @@ class SecureKeyStore(
         private val GEMINI_AAD = "clothescast:gemini_api_key:v1".toByteArray(Charsets.UTF_8)
         private val MQTT_PASS_PREF_KEY = stringPreferencesKey("mqtt_password_v1")
         private val MQTT_PASS_AAD = "clothescast:mqtt_password:v1".toByteArray(Charsets.UTF_8)
+        private val GOOGLE_PREF_KEY = stringPreferencesKey("google_api_key_v1")
+        private val GOOGLE_AAD = "clothescast:google_api_key:v1".toByteArray(Charsets.UTF_8)
 
         private const val MASTER_KEY_URI = "android-keystore://clothescast_master_key"
         private const val KEYSET_PREFS = "clothescast_master_prefs"

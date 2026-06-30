@@ -449,18 +449,18 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                 ?: if (prefs.useDeviceLocation) app.locationResolver.resolve() else null
             // Rethrow cancellation rather than swallowing it: if the probe is
             // superseded (key replaced mid-probe) or the VM is cleared while
-            // get() is suspended, a runCatching would turn the cancel into an
-            // empty key -> NoKey and let the dead probe publish a stale result,
-            // breaking the supersede contract. Only a genuine read failure
-            // (e.g. corrupt ciphertext after a Keystore reset) degrades to the
-            // blank-key/NoKey path. Mirrors the extraModelHourly wiring in
-            // ClothesCastApplication.
+            // the key read is suspended, a runCatching would turn the cancel
+            // into an empty key -> NoKey and let the dead probe publish a stale
+            // result, breaking the supersede contract. Only a genuine read
+            // failure (e.g. corrupt ciphertext after a Keystore reset) degrades
+            // to the blank-key/NoKey path. Mirrors the extraModelHourly wiring
+            // in ClothesCastApplication.
             val key = try {
-                app.secureKeyStore.get()
+                app.secureKeyStore.getGoogleApiKey().orEmpty()
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
-                DiagLog.w("GoogleWeather", "Gemini key unavailable; probe reports no key", e)
+                DiagLog.w("GoogleWeather", "Google API key unavailable; probe reports no key", e)
                 ""
             }
             when {

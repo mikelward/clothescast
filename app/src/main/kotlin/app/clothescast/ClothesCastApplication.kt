@@ -18,6 +18,8 @@ import app.clothescast.core.data.weather.GoogleWeatherModelClient
 import app.clothescast.core.data.weather.OpenMeteoClient
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Location
+import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.defaultsFor
 import app.clothescast.core.domain.repository.CachingWeatherRepository
 import app.clothescast.core.domain.repository.CalendarEventReader
@@ -27,6 +29,7 @@ import app.clothescast.core.domain.usecase.GenerateDailyInsight
 import app.clothescast.data.AppCheckGeminiCallPlanner
 import app.clothescast.data.DailyHistoryStore
 import app.clothescast.data.provideAppCheckProviderFactory
+import app.clothescast.data.GoogleForecastCache
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
@@ -81,6 +84,9 @@ class ClothesCastApplication : Application() {
     val settingsRepository: SettingsRepository by lazy { SettingsRepository.create(this) }
     val deriveInsight: DeriveInsight by lazy { DeriveInsight() }
     val insightCache: InsightCache by lazy { InsightCache.create(this, deriveInsight) }
+    // Caches the extended (10-day) Google forecast so its ~10-page walk happens
+    // at most a couple of times a day; see [fetchGoogleSeries].
+    val googleForecastCache: GoogleForecastCache by lazy { GoogleForecastCache.create(this) }
     val dailyHistoryStore: DailyHistoryStore by lazy { DailyHistoryStore.create(this) }
     val locationResolver: LocationResolver by lazy { LocationResolver(this) }
     val reverseGeocoder: ReverseGeocoder by lazy { ReverseGeocoder(this) }
@@ -278,15 +284,18 @@ class ClothesCastApplication : Application() {
                     if (!googleSelected) {
                         null
                     } else {
-                        val key = try {
-                            secureKeyStore.getGoogleApiKey()
+                        // Read the key and its fingerprint from one snapshot so a
+                        // key edit racing this fetch can't cache the old key's
+                        // series under the new key's fingerprint.
+                        val (key, fingerprint) = try {
+                            secureKeyStore.getGoogleApiKeyWithFingerprint()
                         } catch (ce: CancellationException) {
                             throw ce
                         } catch (e: Exception) {
                             DiagLog.w("GoogleWeather", "Google API key unavailable; skipping Google", e)
-                            null
+                            null to null
                         }
-                        key?.takeIf { it.isNotBlank() }?.let { googleWeatherClient.fetchHourly(location, it) }
+                        key?.takeIf { it.isNotBlank() }?.let { fetchGoogleSeries(location, it, fingerprint) }
                     }
                 },
             ),
@@ -307,6 +316,10 @@ class ClothesCastApplication : Application() {
                 // keep including (or excluding) Google until expiry, and swapping
                 // a key that 403'd the Weather API for a working one wouldn't
                 // take effect on a manual refresh.
+                // Google now always contributes the same extended (10-day) series
+                // — gated only by GoogleForecastCache's TTL, not by who's fetching
+                // — so the bundle's Google depth no longer varies with the caller
+                // and the freshness key only needs the model set + key fingerprint.
                 models to secureKeyStore.googleApiKeyFingerprint()
             },
         )
@@ -340,6 +353,46 @@ class ClothesCastApplication : Application() {
 
     /** The Activity currently in the resumed state, or null when none is. */
     fun currentResumedActivity(): Activity? = resumedActivity?.get()
+
+    /**
+     * Resolves the Google forecaster's contribution to one consensus blend.
+     *
+     * The full 10-day walk ([GoogleWeatherModelClient.EXTENDED_HOURS]) is
+     * expensive (~10 paginated, billed calls), so it's rate-limited behind
+     * [GoogleForecastCache] (a ~12 h TTL) rather than gated per caller: a fresh
+     * cached series serves *every* refresh path — app opens and background
+     * refreshes (scheduled alarms, widget self-heals) alike — and a cache miss
+     * walks the horizon once and persists it. Net effect: the walk runs at most
+     * ~twice a day, and every surface that needs the week-ahead — the Today
+     * screen's week pages, the home-screen 7-day widget (rendered in the
+     * background), the evening tomorrow pre-render — gets Google's vote, not just
+     * surfaces the user happens to have open.
+     *
+     * Returns null (Google sits out of the blend) on any fetch failure, exactly
+     * as before — best-effort, never fails the surrounding forecast.
+     */
+    private suspend fun fetchGoogleSeries(
+        location: Location,
+        apiKey: String,
+        fingerprint: Int?,
+    ): List<PerModelHour>? {
+        // [fingerprint] is read atomically with [apiKey] by the caller and keys
+        // the cache the same way the outer freshness key does, so a swap to a key
+        // that 403s the Weather API drops the old key's series rather than serving
+        // it for the rest of the TTL.
+        googleForecastCache.fresh(location, fingerprint)?.let { return it }
+
+        return googleWeatherClient.fetchHourly(location, apiKey)?.also { series ->
+            // Persist only a (near-)complete walk — a transient mid-walk page
+            // failure truncates the result to a near-length series, and freezing
+            // that into the 12 h cache would keep week-ahead Google missing for the
+            // whole TTL. The partial still feeds *this* blend; the next refresh
+            // retries the full walk.
+            if (series.size >= MIN_CACHEABLE_EXTENDED_HOURS) {
+                googleForecastCache.put(location, fingerprint, series)
+            }
+        }
+    }
 
     override fun attachBaseContext(base: Context) {
         // Re-apply the persisted per-app locale before the framework caches a
@@ -480,5 +533,15 @@ class ClothesCastApplication : Application() {
 
     companion object {
         private const val TAG = "ClothesCastApplication"
+
+        // Only freeze a (near-)complete extended walk into GoogleForecastCache.
+        // requestAllPages returns the pages gathered so far if a page fails
+        // partway (PR #1084), so a transient mid-walk failure yields a
+        // near-length series; caching that would keep week-ahead Google missing
+        // for the whole 12 h TTL. 7 days clears a healthy 10-day walk (and a walk
+        // that lost only its last page or two) while rejecting an early
+        // truncation. A genuine sub-7-day success just re-walks on the next
+        // refresh — safe.
+        private const val MIN_CACHEABLE_EXTENDED_HOURS = 168
     }
 }

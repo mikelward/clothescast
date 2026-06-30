@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.clothescast.core.data.insight.InvalidApiKeyException
 import app.clothescast.core.data.insight.MissingApiKeyException
+import app.clothescast.diag.DiagLog
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.aead.AeadConfig
@@ -124,6 +125,35 @@ class SecureKeyStore(
      */
     suspend fun googleApiKeyFingerprint(): Int? =
         dataStore.data.map { it[GOOGLE_PREF_KEY] }.first()?.hashCode()
+
+    /**
+     * The Google key plaintext and its [googleApiKeyFingerprint] read from a
+     * single DataStore snapshot. A caller that needs both — the weather blend,
+     * which fetches with the key and then caches the result under the fingerprint
+     * — must read them atomically: two separate reads can straddle a key edit and
+     * cache the *old* key's series under the *new* key's fingerprint, defeating
+     * the swap-invalidation the fingerprint exists for. Returns `(null, null)`
+     * when unset or after a decrypt failure clears a corrupt value, mirroring
+     * [getGoogleApiKey]. The fingerprint matches [googleApiKeyFingerprint] (same
+     * ciphertext hash), so the inner and outer caches key on the same value.
+     */
+    suspend fun getGoogleApiKeyWithFingerprint(): Pair<String?, Int?> {
+        val ciphertextB64 = dataStore.data.map { it[GOOGLE_PREF_KEY] }.first() ?: return null to null
+        val fingerprint = ciphertextB64.hashCode()
+        return try {
+            val ciphertext = Base64.getDecoder().decode(ciphertextB64)
+            aead.decrypt(ciphertext, GOOGLE_AAD).toString(Charsets.UTF_8) to fingerprint
+        } catch (e: Exception) {
+            // Corrupt ciphertext / unrecoverable Keystore state — log why Google
+            // is about to drop out of the blend (no diag trace otherwise), then
+            // drop the bad value so the next attempt starts clean, mirroring
+            // [read]. Returns nulls rather than rethrowing: the forecast path
+            // treats a missing Google key as "Google sits out", not an error.
+            DiagLog.w("SecureKeyStore", "Google key decrypt failed; clearing the corrupt value", e)
+            dataStore.edit { it.remove(GOOGLE_PREF_KEY) }
+            null to null
+        }
+    }
 
     /**
      * Reactive view of "is a Gemini key currently stored." Used by the Today screen's

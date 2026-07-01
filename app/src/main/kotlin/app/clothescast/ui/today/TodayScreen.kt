@@ -73,6 +73,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -161,6 +162,8 @@ import java.time.ZoneId
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -500,11 +503,15 @@ private fun TodayContent(
             // the pager fill only what's left after the header so the
             // scroll viewport matches the visible region.
             val pagerScope = rememberCoroutineScope()
-            // Shared across both pages so swiping from page 1 to page 2
-            // lands at the same vertical offset — if the user is reading
-            // the rain chart on Today, swiping to Tomorrow keeps them
-            // on the rain chart rather than snapping back to the top.
-            val scrollState = rememberScrollState()
+            // One vertical offset mirrored across the pages (each page owns its
+            // own ScrollState in the pager body below). Sharing a single
+            // ScrollState across pages of different heights corrupted its
+            // maxValue — the shorter page's smaller max won the one shared
+            // field, so a taller page's last chart couldn't scroll clear of the
+            // nav bar after a swipe. Kept as a shared *value* so a swipe still
+            // lands on the same row: reading the rain chart on Today and swiping
+            // to Tonight keeps you on the rain chart rather than snapping to top.
+            var sharedScrollValue by rememberSaveable { mutableIntStateOf(0) }
             // Placeholder period for page 1 when its slot is empty —
             // whatever the next 12-hour window after `thisPeriodInsight` is.
             // The worker writes [InsightCache.Slot.NEXT_PERIOD] paired with
@@ -525,6 +532,26 @@ private fun TodayContent(
                     .weight(1f)
                     .fillMaxWidth(),
             ) { page ->
+                // Each page owns its ScrollState (see [sharedScrollValue]). To
+                // still land a swipe on the same row we mirror one offset across
+                // the pages: while a page is the settled page it publishes its
+                // scroll offset; while it isn't it follows the shared offset, so
+                // it's already aligned when swiped into view (no post-swipe
+                // jump). collectLatest cancels the opposite role when the page's
+                // current-ness flips. scrollTo clamps to this page's own
+                // maxValue, so a shorter page can't pin a taller one short.
+                val pageScrollState = rememberScrollState()
+                LaunchedEffect(pageScrollState, pagerState, page) {
+                    snapshotFlow { pagerState.settledPage == page }.collectLatest { isCurrent ->
+                        if (isCurrent) {
+                            snapshotFlow { pageScrollState.value }
+                                .collect { sharedScrollValue = it }
+                        } else {
+                            snapshotFlow { sharedScrollValue }
+                                .collect { pageScrollState.scrollTo(it) }
+                        }
+                    }
+                }
                 if (page == 2 || page == 3) {
                     val currentDay = state.thisPeriodInsight.currentDay
                     val upcoming = state.thisPeriodInsight.upcomingDays
@@ -564,7 +591,7 @@ private fun TodayContent(
                         // out past day 7). The near-week page keeps the strict
                         // all-days gate so a stale cache there stays hidden.
                         allowPartialModelCoverage = isFollowingWeek,
-                        scrollState = scrollState,
+                        scrollState = pageScrollState,
                         workStatusToShow = workStatusToShow,
                         locationActionRequired = locationActionRequired,
                         onChevronTap = {
@@ -611,7 +638,7 @@ private fun TodayContent(
                     insight = pageInsight,
                     fallbackPeriod = pagePeriod,
                     state = state,
-                    scrollState = scrollState,
+                    scrollState = pageScrollState,
                     // Same outfit row on all three pages — pages 0 / 1 and
                     // the 7-day page all show this period's pair, not the
                     // current page's period's pair. Pinning the row at the
@@ -1166,9 +1193,11 @@ private fun conditionsStripDescription(info: OutfitCardInfoLines): String =
  * [MissingPeriodPlaceholder] for [fallbackPeriod] so the user understands
  * when to expect content there.
  *
- * [scrollState] is hoisted to the pager so both pages share a single
- * vertical offset — swiping mid-page lands the user at the same row on
- * the other day's content.
+ * [scrollState] is this page's own ScrollState, created per page in the pager
+ * body. A single offset is mirrored across the pages' separate states (see
+ * `sharedScrollValue`) so swiping mid-page still lands the user at the same row
+ * on the other day's content — without sharing one ScrollState, which corrupted
+ * its maxValue and left a taller page's last chart stuck behind the nav bar.
  */
 @Composable
 private fun TodayPage(

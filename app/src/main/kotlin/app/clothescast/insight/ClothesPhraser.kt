@@ -80,9 +80,14 @@ internal class EnglishClothesPhraser(private val resources: Resources) : Clothes
         val lastIdx = translated.lastIndex
         val rendered = translated.mapIndexed { i, item ->
             val articleHere = when {
-                // Suppressed when the caller drops the leading article (wear
-                // preamble); the Oxford-comma trailing article still applies.
-                i == firstArticleIdx -> leadingArticle
+                // Suppressed only when the article is genuinely *leading* —
+                // i.e. the first item takes one, so dropping "Wear" leaves
+                // "A sweater and jacket" → "Sweater and jacket". A first
+                // article-taking item further down the list ("shorts and a
+                // t-shirt") isn't adjacent to the removed preamble and keeps
+                // its article; the Oxford-comma trailing article likewise
+                // still applies.
+                i == firstArticleIdx -> leadingArticle || i > 0
                 translated.size >= 3 && i == lastIdx && takesArticle(item) -> true
                 else -> false
             }

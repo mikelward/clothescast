@@ -239,6 +239,30 @@ class InsightFormatterTest {
     }
 
     @Test
+    fun `wear preamble Never keeps a mid-list article after a plural first item`() {
+        // Only the *leading* article sits next to the dropped "Wear", so a
+        // first article-taking item deeper in the list keeps its article:
+        // "Wear shorts and a t-shirt." → "Shorts and a t-shirt.", never the
+        // ungrammatical "Shorts and t-shirt."
+        val wearNever =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.NEVER)
+        wearNever.format(summary(clothes = ClothesClause(listOf("shorts", "t-shirt")))) shouldBe
+            "Today, it will be 21°. Shorts and a t-shirt."
+    }
+
+    @Test
+    fun `wear preamble Never keeps the trailing Oxford article after a plural first item`() {
+        // The Oxford-last article never abuts the dropped preamble, so it
+        // survives even when it belongs to the list's first article-taking
+        // item: "Wear shorts, gloves, and a scarf." → "Shorts, gloves, and a
+        // scarf."
+        val wearNever =
+            InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.NEVER)
+        wearNever.format(summary(clothes = ClothesClause(listOf("shorts", "gloves", "scarf")))) shouldBe
+            "Today, it will be 21°. Shorts, gloves, and a scarf."
+    }
+
+    @Test
     fun `wear preamble Speech-only drops Wear on the visual surface`() {
         val wearSpeechOnly =
             InsightFormatter.forContext(context, Locale.ENGLISH, wearPreamble = PreambleVisibility.SPEECH_ONLY)

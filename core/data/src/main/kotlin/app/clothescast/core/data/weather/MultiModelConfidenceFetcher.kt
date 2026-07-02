@@ -238,9 +238,10 @@ internal class MultiModelConfidenceFetcher(
 
     private fun computeConfidence(daily: JsonObject, models: List<String>): ConfidenceInfo? {
         val todayIndex = todayDailyIndex(daily)
+        val soleModel = models.size == 1
         val results = buildList {
             for (model in models) {
-                when (val outcome = readModelDaily(daily, model, todayIndex)) {
+                when (val outcome = readModelDaily(daily, model, todayIndex, soleModel)) {
                     is ReadOutcome.Usable -> add(model to outcome.values)
                     is ReadOutcome.Dropped ->
                         logger.log("model $model dropped: ${outcome.reason}")
@@ -260,25 +261,30 @@ internal class MultiModelConfidenceFetcher(
     private fun parseHourly(hourly: JsonObject?, models: List<String>): PerModelHourly? {
         val obj = hourly ?: return null
         val times = (obj["time"] as? JsonArray) ?: return null
+        // Open-Meteo only suffixes variables with the model id when two or
+        // more models are requested; a single-entry `models=` list comes back
+        // with plain names (`temperature_2m`, not `temperature_2m_<model>`).
+        // See [seriesFor].
+        val soleModel = models.size == 1
         val byModel = buildMap<String, List<PerModelHour>> {
             for (model in models) {
-                val apparentTemps = obj["apparent_temperature_$model"] as? JsonArray
-                val airTemps = obj["temperature_2m_$model"] as? JsonArray
-                val precips = obj["precipitation_probability_$model"] as? JsonArray
-                val precipMm = obj["precipitation_$model"] as? JsonArray
-                val winds = obj["wind_speed_10m_$model"] as? JsonArray
-                val humidities = obj["relative_humidity_2m_$model"] as? JsonArray
+                val apparentTemps = seriesFor(obj, "apparent_temperature", model, soleModel)
+                val airTemps = seriesFor(obj, "temperature_2m", model, soleModel)
+                val precips = seriesFor(obj, "precipitation_probability", model, soleModel)
+                val precipMm = seriesFor(obj, "precipitation", model, soleModel)
+                val winds = seriesFor(obj, "wind_speed_10m", model, soleModel)
+                val humidities = seriesFor(obj, "relative_humidity_2m", model, soleModel)
                 // We request cloud_cover_low but keep the domain field named
                 // `cloudCoverPct` — the value is still a percent, just for the
                 // low deck. See [PerModelHour.cloudCoverPct] for the rationale.
-                val clouds = obj["cloud_cover_low_$model"] as? JsonArray
-                val solar = obj["shortwave_radiation_$model"] as? JsonArray
-                val sunshine = obj["sunshine_duration_$model"] as? JsonArray
+                val clouds = seriesFor(obj, "cloud_cover_low", model, soleModel)
+                val solar = seriesFor(obj, "shortwave_radiation", model, soleModel)
+                val sunshine = seriesFor(obj, "sunshine_duration", model, soleModel)
                 // UV index per-model: Open-Meteo exposes `uv_index_$model` on
                 // most models. When a particular model omits it the field is
                 // simply absent for that model and the UV card hides its line.
-                val uv = obj["uv_index_$model"] as? JsonArray
-                val weatherCodes = obj["weather_code_$model"] as? JsonArray
+                val uv = seriesFor(obj, "uv_index", model, soleModel)
+                val weatherCodes = seriesFor(obj, "weather_code", model, soleModel)
                 // Hard requirement: temperature_2m. Without it the chart has
                 // nothing to plot for this model and the consensus blend
                 // can't average it in. Open-Meteo silently omits per-model
@@ -400,14 +406,38 @@ internal class MultiModelConfidenceFetcher(
         return if (times.size >= 2) 1 else 0
     }
 
-    private fun readModelDaily(daily: JsonObject, model: String, todayIndex: Int): ReadOutcome {
-        val tempMax = numberAt(daily["apparent_temperature_max_$model"] as? JsonArray, todayIndex)?.toDouble()
+    /**
+     * The per-model series for [field], honoring Open-Meteo's suffix rule:
+     * with two or more `models=` entries every variable is suffixed with the
+     * model id (`temperature_2m_gfs_seamless`), but a single-model request
+     * comes back with plain, unsuffixed names. Without the fallback a
+     * one-model fetch — reachable when the picker's selection filters down
+     * to a single Open-Meteo id, or when the invalid-model prune-and-retry
+     * leaves one survivor — parses to nothing and silently drops the whole
+     * per-model feature.
+     */
+    private fun seriesFor(
+        obj: JsonObject,
+        field: String,
+        model: String,
+        soleModel: Boolean,
+    ): JsonArray? =
+        (obj["${field}_$model"] as? JsonArray)
+            ?: if (soleModel) obj[field] as? JsonArray else null
+
+    private fun readModelDaily(
+        daily: JsonObject,
+        model: String,
+        todayIndex: Int,
+        soleModel: Boolean,
+    ): ReadOutcome {
+        val tempMax = numberAt(seriesFor(daily, "apparent_temperature_max", model, soleModel), todayIndex)?.toDouble()
         // Soft field: the daily low feeds the low-disagreement half of the
         // temp spread, but a model that reports a high without a low still
         // contributes its high. When missing it simply drops out of the
         // low-spread calculation (see [compute]) rather than dropping the
         // whole model.
-        val tempMin = numberAt(daily["apparent_temperature_min_$model"] as? JsonArray, todayIndex)?.toDouble()
+        val tempMin = numberAt(seriesFor(daily, "apparent_temperature_min", model, soleModel), todayIndex)?.toDouble()
         // Soft field: Open-Meteo omits daily precipitation_probability_max for
         // several models (verified 2026-06-09 against the live API — among
         // DEFAULT_MODELS, ecmwf_aifs025_single returns null at all three of
@@ -420,7 +450,7 @@ internal class MultiModelConfidenceFetcher(
         // path's soft precip handling and the daily-low handling above.
         // apparent_temperature_max stays the only hard requirement: without it
         // the model has no temperature vote to cast.
-        val precipMax = numberAt(daily["precipitation_probability_max_$model"] as? JsonArray, todayIndex)?.toDouble()
+        val precipMax = numberAt(seriesFor(daily, "precipitation_probability_max", model, soleModel), todayIndex)?.toDouble()
         if (precipMax == null) {
             logger.log("model $model daily: precipitation_probability_max missing, precip-spread will skip this model")
         }

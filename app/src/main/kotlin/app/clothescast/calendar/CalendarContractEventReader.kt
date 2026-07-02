@@ -59,12 +59,15 @@ class CalendarContractEventReader(
         val overrides = calendarOverridesProvider()
         return withContext(Dispatchers.IO) {
             coRunCatching {
-                // Drop all-day rows whose UTC date isn't today: in zones east of
-                // UTC, yesterday's all-day event overlaps the start of today's
-                // local-day window and would otherwise bleed in. Timed rows are
-                // kept as-is — the Instances window already scoped them.
+                // Drop all-day rows whose UTC span doesn't cover today: in zones
+                // east of UTC, yesterday's all-day event overlaps the start of
+                // today's local-day window and would otherwise bleed in. Checked
+                // against the row's full [date, endDateExclusive) span — not just
+                // its first day — so a multi-day all-day event still counts on
+                // days two onward. Timed rows are kept as-is — the Instances
+                // window already scoped them.
                 query(date, date.plusDays(1), zoneId, overrides = overrides)
-                    .filterNot { it.event.allDay && it.date != date }
+                    .filterNot { it.event.allDay && (date < it.date || date >= it.endDateExclusive) }
                     .map { it.event }
             }
                 .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
@@ -110,8 +113,17 @@ class CalendarContractEventReader(
         }
     }
 
-    /** A classified event paired with the local date it falls on. */
-    private data class DatedEvent(val date: LocalDate, val event: CalendarEvent)
+    /**
+     * A classified event paired with the local date it falls on (its first
+     * day, for a multi-day all-day event) and the exclusive end of its
+     * date span. Timed rows always span a single date; all-day rows carry
+     * their real UTC span so [eventsForDay] can match days after the first.
+     */
+    private data class DatedEvent(
+        val date: LocalDate,
+        val event: CalendarEvent,
+        val endDateExclusive: LocalDate = date.plusDays(1),
+    )
 
     @SuppressLint("MissingPermission")
     private fun query(
@@ -159,6 +171,7 @@ class CalendarContractEventReader(
         // kind before deciding whether the FREE filter applies.
         data class Row(
             val date: LocalDate,
+            val endDateExclusive: LocalDate,
             val title: String,
             val start: LocalDateTime,
             val end: LocalDateTime,
@@ -232,8 +245,18 @@ class CalendarContractEventReader(
                     val zonedEnd = Instant.ofEpochMilli(end).atZone(zoneId).toLocalDateTime()
                     Triple(zonedBegin.toLocalDate(), zonedBegin, zonedEnd)
                 }
+                // A multi-day all-day event is one Instances row whose END is
+                // the UTC midnight after its last day; carry that span so the
+                // single-day read can match days after the first. Clamped to
+                // at least one day against a malformed END at-or-before BEGIN.
+                val endDateExclusive = if (allDay) {
+                    Instant.ofEpochMilli(end).atZone(ZoneOffset.UTC).toLocalDate()
+                        .coerceAtLeast(date.plusDays(1))
+                } else {
+                    date.plusDays(1)
+                }
 
-                rows += Row(date, title, start, finish, location, allDay, calendarId, eventType, availability)
+                rows += Row(date, endDateExclusive, title, start, finish, location, allDay, calendarId, eventType, availability)
                 if (calendarId >= 0) calendarIds += calendarId
             }
         }
@@ -268,6 +291,7 @@ class CalendarContractEventReader(
             classificationTally[key] = (classificationTally[key] ?: 0) + 1
             DatedEvent(
                 date = row.date,
+                endDateExclusive = row.endDateExclusive,
                 event = CalendarEvent(
                     title = row.title,
                     start = row.start,

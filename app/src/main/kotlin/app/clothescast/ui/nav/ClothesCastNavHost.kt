@@ -160,6 +160,7 @@ fun ClothesCastNavHost(
         composable<PairingRoute> {
             val pairing: PairingViewModel = viewModel(
                 factory = PairingViewModel.Factory(
+                    appContext = app,
                     secureKeyStore = app.secureKeyStore,
                     settingsRepository = app.settingsRepository,
                 ),

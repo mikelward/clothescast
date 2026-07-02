@@ -2529,8 +2529,10 @@ internal fun InsightCard(
     // Page 2 caches tomorrow's daytime insight after the evening worker run;
     // surface it as "Tomorrow" rather than "Today" so the heading matches the
     // prose lead-in below. The ongoing overnight (post-midnight tail) is flagged
-    // on the insight itself — "Overnight", not "Tonight".
-    val isFutureDay = insight.forDate.isAfter(LocalDate.now())
+    // on the insight itself — "Overnight", not "Tonight". Compared in the
+    // forecast location's zone — `forDate` is that zone's date, so a device
+    // in a different timezone would otherwise mislabel the current day.
+    val isFutureDay = insight.forDate.isAfter(LocalDate.now(insight.forecastZone ?: ZoneId.systemDefault()))
     val periodLabel = stringResource(
         when (insight.period) {
             ForecastPeriod.TODAY ->

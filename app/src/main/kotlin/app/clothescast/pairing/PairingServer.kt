@@ -1,17 +1,20 @@
 package app.clothescast.pairing
 
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.request.receiveParameters
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import java.net.ServerSocket
 import java.security.SecureRandom
+import kotlin.concurrent.thread
 
 /**
  * Minimal HTTP server that brokers the phone→TV API key transfer.
@@ -42,6 +45,14 @@ class PairingServer(
 
     private var server: EmbeddedServer<*, *>? = null
 
+    // Revoked synchronously by [stop], before the engine wind-down is handed
+    // to its background thread. The routes authorize on `token && active`
+    // rather than the token alone, so a submission landing in the wind-down
+    // window — or after a failed engine shutdown left the socket open —
+    // can't invoke [onKeyReceived] once pairing has been closed.
+    @Volatile
+    private var active = true
+
     /**
      * Starts the HTTP server on an available local port and returns that port.
      * Must be called at most once. The server runs until [stop] is called.
@@ -51,9 +62,17 @@ class PairingServer(
         val srv = embeddedServer(CIO, port = port) {
             routing {
                 get("/pair/$token") {
+                    if (!active) {
+                        call.respond(HttpStatusCode.NotFound)
+                        return@get
+                    }
                     call.respondText(htmlForm(), ContentType.Text.Html)
                 }
                 post("/pair/$token") {
+                    if (!active) {
+                        call.respond(HttpStatusCode.NotFound)
+                        return@post
+                    }
                     val params = call.receiveParameters()
                     val key = params["gemini_key"]?.trim()
                     if (key.isNullOrEmpty()) {
@@ -62,10 +81,25 @@ class PairingServer(
                     }
                     // Serialize concurrent POSTs so callback invocations don't
                     // interleave; last submission wins (see the class doc).
-                    synchronized(this@PairingServer) {
-                        onKeyReceived(key)
+                    // Re-check [active] under the lock: a stop() landing after
+                    // the gate above (while receiveParameters was suspended)
+                    // must not have its revocation overtaken by an in-flight
+                    // submission — and when the revocation wins, answer 404
+                    // like the gate does, not a success page claiming a key
+                    // that was deliberately never stored was "sent".
+                    val accepted = synchronized(this@PairingServer) {
+                        if (active) {
+                            onKeyReceived(key)
+                            true
+                        } else {
+                            false
+                        }
                     }
-                    call.respondText(htmlSuccess(), ContentType.Text.Html)
+                    if (accepted) {
+                        call.respondText(htmlSuccess(), ContentType.Text.Html)
+                    } else {
+                        call.respond(HttpStatusCode.NotFound)
+                    }
                 }
             }
         }
@@ -76,8 +110,22 @@ class PairingServer(
 
     /** Stops the server. Safe to call even if [start] was never called or already stopped. */
     fun stop() {
-        server?.stop(gracePeriodMillis = 0, timeoutMillis = 500)
+        // Revoke the token gate first, so no submission arriving after this
+        // point can reach [onKeyReceived] — regardless of how long the
+        // engine's asynchronous wind-down below takes (or whether it fails).
+        active = false
+        val srv = server
         server = null
+        // Engine shutdown blocks the calling thread for up to its timeout,
+        // and stop() arrives on the main thread (the pairing ViewModel's
+        // onCleared / timeout path) — a 500 ms stall there is visible jank
+        // as the user leaves the screen. Hand the engine to a background
+        // thread; the [active] gate above already closed the routes.
+        if (srv != null) {
+            thread(name = "PairingServer.stop", isDaemon = true) {
+                srv.stop(gracePeriodMillis = 0, timeoutMillis = 500)
+            }
+        }
     }
 
     private fun htmlForm(error: Boolean = false): String = buildString {

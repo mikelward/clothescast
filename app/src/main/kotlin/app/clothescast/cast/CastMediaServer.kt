@@ -14,6 +14,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeoutOrNull
 import java.net.ServerSocket
 import java.security.SecureRandom
+import kotlin.concurrent.thread
 
 /**
  * Tiny HTTP server that exposes one media buffer to a Cast receiver on
@@ -139,7 +140,7 @@ class CastMediaServer {
     /** Stops the server, if running, and clears the buffered media + the path token. */
     @Synchronized
     fun stop() {
-        server?.stop(gracePeriodMillis = 0, timeoutMillis = 500)
+        val srv = server
         server = null
         buffer = null
         pathToken = ""
@@ -147,6 +148,18 @@ class CastMediaServer {
         // Drop the reference so any in-flight [awaitFetch] times out
         // rather than waiting forever after the session ends.
         fetched = null
+        // Engine shutdown blocks the calling thread for up to its timeout,
+        // and stop() arrives on the main thread (the Cast session listener's
+        // onSessionEnded) — a 500 ms stall there is dropped frames right as
+        // the user disconnects. Hand the engine to a background thread; the
+        // token and buffer are already cleared above, so a request slipping
+        // in while it winds down 404s, and a re-publish starts a fresh
+        // server on a fresh port without waiting for this one.
+        if (srv != null) {
+            thread(name = "CastMediaServer.stop", isDaemon = true) {
+                srv.stop(gracePeriodMillis = 0, timeoutMillis = 500)
+            }
+        }
     }
 
     /** Currently-bound port, or 0 if the server isn't running. Test hook. */

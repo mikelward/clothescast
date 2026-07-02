@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.ZoneId
 
 /**
  * Outcome of a "Cast now" test: carries the same (error, publishedAt,
@@ -85,7 +86,9 @@ internal suspend fun castCurrentInsight(
         prefs.periodPreamble,
         prefs.wearPreamble,
     )
-    val isFutureDay = insight.forDate.isAfter(LocalDate.now())
+    // Compared in the forecast location's zone (see InsightCard) — the
+    // device's own date mislabels the current day when the two differ.
+    val isFutureDay = insight.forDate.isAfter(LocalDate.now(insight.forecastZone ?: ZoneId.systemDefault()))
     val prose = formatter.format(insight.summary, isFutureDay = isFutureDay)
     val info = outfitCardInfoLines(
         context = context,

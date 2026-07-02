@@ -31,6 +31,7 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.symbol
+import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import kotlinx.coroutines.flow.first
@@ -87,30 +88,33 @@ object BugReport {
     }
 
     private suspend fun buildPayload(context: Context, app: ClothesCastApplication): String {
-        val prefs = runCatching { app.settingsRepository.preferences.first() }.getOrNull()
-        val geminiKeyConfigured = runCatching {
+        // coRunCatching, not runCatching: these reads suspend, and the stdlib
+        // form would swallow a cancellation of the sharing coroutine and keep
+        // building (and then sharing) a gutted report from a cancelled scope.
+        val prefs = coRunCatching { app.settingsRepository.preferences.first() }.getOrNull()
+        val geminiKeyConfigured = coRunCatching {
             app.secureKeyStore.geminiKeyConfiguredFlow.first()
         }.getOrDefault(false)
-        val mqttPasswordConfigured = runCatching {
+        val mqttPasswordConfigured = coRunCatching {
             app.secureKeyStore.mqttPasswordConfiguredFlow.first()
         }.getOrDefault(false)
-        val mqttPublishStatus = runCatching {
+        val mqttPublishStatus = coRunCatching {
             app.settingsRepository.mqttPublishStatus.first()
         }.getOrNull()
-        val castStatus = runCatching {
+        val castStatus = coRunCatching {
             app.settingsRepository.castStatus.first()
         }.getOrNull()
-        val thisSnapshot = runCatching {
+        val thisSnapshot = coRunCatching {
             app.insightCache.thisPeriod.first()
         }.getOrNull()
-        val nextSnapshot = runCatching {
+        val nextSnapshot = coRunCatching {
             app.insightCache.nextPeriod.first()
         }.getOrNull()
         val thisPeriod = if (thisSnapshot != null && prefs != null) {
-            runCatching { app.deriveInsight(thisSnapshot, prefs).insight }.getOrNull()
+            coRunCatching { app.deriveInsight(thisSnapshot, prefs).insight }.getOrNull()
         } else null
         val nextPeriod = if (nextSnapshot != null && prefs != null) {
-            runCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
+            coRunCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
         } else null
         val crash = DiagLog.readPersistedCrash()
         val recent = DiagLog.snapshot().takeLast(MAX_LOG_LINES)
@@ -400,7 +404,7 @@ object BugReport {
     }
 
     private suspend fun captureAndPersistScreenshot(activity: Activity): Uri? {
-        val bitmap = runCatching { captureWindow(activity) }.getOrNull() ?: return null
+        val bitmap = coRunCatching { captureWindow(activity) }.getOrNull() ?: return null
         return runCatching {
             val dir = File(activity.cacheDir, "bug-reports").apply { mkdirs() }
             // Wipe older screenshots — keep only the freshest one to avoid cache bloat.

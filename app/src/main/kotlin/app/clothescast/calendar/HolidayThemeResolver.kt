@@ -5,6 +5,7 @@ import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.ThemeForToday
+import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.tts.toJavaLocale
 import java.time.LocalDate
 import java.util.Locale
@@ -18,8 +19,9 @@ import java.util.Locale
  * to the user's default outfit colours.
  *
  * Calendar events are only read when the user has opted into
- * calendar-sourced theming; the read is wrapped in [runCatching] so a
- * missing READ_CALENDAR permission silently falls through to "no events".
+ * calendar-sourced theming; the read is wrapped in [coRunCatching] so a
+ * missing READ_CALENDAR permission silently falls through to "no events"
+ * while a caller cancellation still unwinds instead of being swallowed.
  *
  * [today] defaults to the user's wall-clock date but is injectable so
  * tests can pin a specific calendar date (avoids flake when the test
@@ -32,7 +34,7 @@ suspend fun resolveHolidayTheme(
 ): HolidayTheme? {
     val needEvents = prefs.calendarHolidayThemingActive || prefs.calendarBirthdayThemingActive
     val events = if (needEvents) {
-        runCatching {
+        coRunCatching {
             calendarEventReader.eventsForDay(today, prefs.schedule.zoneId)
         }.getOrDefault(emptyList())
     } else {

@@ -21,6 +21,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.UUID
 
@@ -211,17 +212,27 @@ class ScheduledDeliveryService : Service() {
      * guard, the stale watcher would `stopForeground(REMOVE)` on the
      * *new* run's notification and leave its scheduled TTS without the
      * FGS it relies on.
+     *
+     * The check and the stop it guards run as one main-thread block: the
+     * shepherd swap in [onStartCommand] also runs on main, so the two can't
+     * interleave — a guard evaluated on `Dispatchers.Default` could pass and
+     * *then* lose the CPU to a swap, letting the stale watcher strip the new
+     * run's FGS anyway (the check-then-act gap the guard alone left open).
+     * A watcher cancelled by the swap before this block is dispatched never
+     * runs it at all — `withContext` aborts on the cancelled job.
      */
-    private fun teardown(workId: UUID) {
-        if (foregroundWorkId == workId) {
-            stopForeground(STOP_FOREGROUND_REMOVE)
-            foregroundWorkId = null
-            // Bare stopSelf (no startId) so any startIds the overlap-rejection
-            // branch left dangling don't keep the service alive past the
-            // shepherded run.
-            stopSelf()
-        } else {
-            DiagLog.i(TAG, "Skipping teardown for workId=$workId; current foregroundWorkId=$foregroundWorkId")
+    private suspend fun teardown(workId: UUID) {
+        withContext(Dispatchers.Main.immediate) {
+            if (foregroundWorkId == workId) {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+                foregroundWorkId = null
+                // Bare stopSelf (no startId) so any startIds the overlap-rejection
+                // branch left dangling don't keep the service alive past the
+                // shepherded run.
+                stopSelf()
+            } else {
+                DiagLog.i(TAG, "Skipping teardown for workId=$workId; current foregroundWorkId=$foregroundWorkId")
+            }
         }
     }
 

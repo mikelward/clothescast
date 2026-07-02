@@ -1,5 +1,6 @@
 package app.clothescast.pairing
 
+import android.util.Log
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -12,7 +13,8 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import java.net.ServerSocket
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.security.SecureRandom
 import kotlin.concurrent.thread
 
@@ -56,10 +58,14 @@ class PairingServer(
     /**
      * Starts the HTTP server on an available local port and returns that port.
      * Must be called at most once. The server runs until [stop] is called.
+     *
+     * Suspends until the engine is bound: the port comes from binding port 0
+     * and reading the kernel's assignment back (no probe-then-rebind race),
+     * and the bind itself runs off the caller's thread — the pairing
+     * ViewModel calls this from the main dispatcher.
      */
-    fun start(): Int {
-        val port = findFreePort()
-        val srv = embeddedServer(CIO, port = port) {
+    suspend fun start(): Int {
+        val srv = embeddedServer(CIO, port = 0) {
             routing {
                 get("/pair/$token") {
                     if (!active) {
@@ -103,9 +109,19 @@ class PairingServer(
                 }
             }
         }
-        srv.start(wait = false)
+        // Register the engine before the first suspension point, and shut it
+        // down on any failure *or cancellation* below — the pairing screen
+        // can be dismissed while the caller is still suspended in here, and
+        // an engine that started but was never handed back would keep the
+        // LAN pairing endpoint (and its token) alive with no remaining owner.
         server = srv
-        return port
+        try {
+            withContext(Dispatchers.IO) { srv.start(wait = false) }
+            return srv.engine.resolvedConnectors().first().port
+        } catch (t: Throwable) {
+            stop()
+            throw t
+        }
     }
 
     /** Stops the server. Safe to call even if [start] was never called or already stopped. */
@@ -123,7 +139,11 @@ class PairingServer(
         // thread; the [active] gate above already closed the routes.
         if (srv != null) {
             thread(name = "PairingServer.stop", isDaemon = true) {
-                srv.stop(gracePeriodMillis = 0, timeoutMillis = 500)
+                // An uncaught throw on a bare thread kills the process on
+                // Android; a failed engine shutdown isn't worth that — log
+                // and let the daemon thread die.
+                runCatching { srv.stop(gracePeriodMillis = 0, timeoutMillis = 500) }
+                    .onFailure { Log.w(TAG, "Pairing server engine shutdown failed", it) }
             }
         }
     }
@@ -176,13 +196,12 @@ class PairingServer(
 </html>"""
 
     companion object {
+        private const val TAG = "PairingServer"
+
         private fun generateToken(): String {
             val bytes = ByteArray(6)
             SecureRandom().nextBytes(bytes)
             return bytes.joinToString("") { "%02x".format(it) }
         }
-
-        private fun findFreePort(): Int =
-            ServerSocket(0).use { it.localPort }
     }
 }

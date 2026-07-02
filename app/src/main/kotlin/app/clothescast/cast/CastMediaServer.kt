@@ -1,5 +1,6 @@
 package app.clothescast.cast
 
+import app.clothescast.diag.DiagLog
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -11,8 +12,8 @@ import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
-import java.net.ServerSocket
 import java.security.SecureRandom
 import kotlin.concurrent.thread
 
@@ -157,7 +158,10 @@ class CastMediaServer {
         // server on a fresh port without waiting for this one.
         if (srv != null) {
             thread(name = "CastMediaServer.stop", isDaemon = true) {
-                srv.stop(gracePeriodMillis = 0, timeoutMillis = 500)
+                // An uncaught throw on a bare thread kills the process on
+                // Android; a failed engine shutdown isn't worth that.
+                runCatching { srv.stop(gracePeriodMillis = 0, timeoutMillis = 500) }
+                    .onFailure { DiagLog.w(TAG, "Cast media server engine shutdown failed", it) }
             }
         }
     }
@@ -167,8 +171,7 @@ class CastMediaServer {
     internal fun port(): Int = port
 
     private fun start() {
-        port = ServerSocket(0).use { it.localPort }
-        val srv = embeddedServer(CIO, port = port) {
+        val srv = embeddedServer(CIO, port = 0) {
             routing {
                 // Wildcard filename so the same route serves whichever
                 // suffix the active [CastMediaKind] minted (insight.mp4 /
@@ -195,6 +198,14 @@ class CastMediaServer {
             }
         }
         srv.start(wait = false)
+        // Bind port 0 and read the kernel-assigned port back, rather than
+        // probing a free port with a throwaway ServerSocket and re-binding
+        // it — any other socket on the device could claim the probed port
+        // in that window and fail the publish. resolvedConnectors suspends
+        // until the engine is actually bound; [publish] is documented
+        // off-main (see Threading above), so the brief blocking wait here
+        // replaces the equally blocking probe bind it removes.
+        port = runBlocking { srv.engine.resolvedConnectors().first().port }
         server = srv
     }
 
@@ -217,6 +228,8 @@ class CastMediaServer {
     data class MediaUrl(val url: String)
 
     companion object {
+        private const val TAG = "CastMediaServer"
+
         // 128 bits of entropy in the URL path. Enough that scanning the
         // open ephemeral port for the buffer is computationally hopeless
         // even on a fast LAN; same order as a UUID4.

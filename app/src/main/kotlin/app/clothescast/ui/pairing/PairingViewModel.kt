@@ -15,6 +15,7 @@ import app.clothescast.data.SettingsRepository
 import app.clothescast.pairing.PairingServer
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -65,6 +66,7 @@ class PairingViewModel(
     val state: StateFlow<PairingState> = _state.asStateFlow()
 
     private var server: PairingServer? = null
+    private var startJob: Job? = null
     private var timeoutJob: Job? = null
 
     init {
@@ -77,7 +79,13 @@ class PairingViewModel(
     }
 
     private fun startPairing() {
-        viewModelScope.launch {
+        // Tracked so [stopServer] can cancel a start still suspended in
+        // srv.start(): at that point [server] is unassigned, so without the
+        // job cancel a retry would race the pending launch — the old
+        // coroutine could resume later, publish a stale QR and timeout job,
+        // and leave one of the two servers running with a live token.
+        // PairingServer.start cleans its own engine up on cancellation.
+        startJob = viewModelScope.launch {
             val ip = LanAddress.resolve(appContext)
             if (ip == null) {
                 Log.w(TAG, "No LAN-routable IPv4 on the active network; cannot pair.")
@@ -96,6 +104,12 @@ class PairingViewModel(
             }
             val port = try {
                 srv.start()
+            } catch (ce: CancellationException) {
+                // start() suspends now, so the screen being dismissed can
+                // cancel us mid-bind — the server cleans itself up on that
+                // path; swallowing the cancellation here would keep this
+                // dead coroutine running. Rethrow, don't report Error.
+                throw ce
             } catch (e: Exception) {
                 Log.e(TAG, "PairingServer failed to start", e)
                 _state.value = PairingState.Error
@@ -118,6 +132,11 @@ class PairingViewModel(
     }
 
     private fun stopServer() {
+        // No-op when called from within the (completed) start coroutine's
+        // own timeout path; load-bearing when retry / onCleared arrive while
+        // the start is still suspended and [server] is unassigned.
+        startJob?.cancel()
+        startJob = null
         timeoutJob?.cancel()
         timeoutJob = null
         server?.stop()

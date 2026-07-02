@@ -252,8 +252,9 @@ private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boo
 
 // Derives the off-screen bitmap size from the widget's actual cell, so the chart
 // scales with the space the user gave it. The launcher reports the cell extent
-// (in dp) via the AppWidget options bundle: for the visible orientation that's
-// MAX width × MIN height — the other pair describes the *rotated* extent. We
+// (in dp) via the AppWidget options bundle: the portrait cell is MIN width ×
+// MAX height and the landscape cell is MAX width × MIN height (the AppWidget
+// contract — portrait launchers are taller and narrower). We
 // render at the cell's own aspect (clamped to
 // [MIN_ASPECT_RATIO]..[MAX_ASPECT_RATIO]) so ContentScale.Fit fills the cell on
 // a wide placement instead of leaving side gaps, while keeping the chart
@@ -271,12 +272,12 @@ private fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
 
     val portrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
     val widthDp = options.getInt(
-        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH
-        else AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
+        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH
+        else AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
     )
     val heightDp = options.getInt(
-        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT
-        else AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
+        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT
+        else AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
     )
     if (widthDp <= 0 || heightDp <= 0) return fallback
 

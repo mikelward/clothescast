@@ -19,6 +19,8 @@ import kotlinx.coroutines.launch
  *  - device boot (alarms are wiped)
  *  - app update (Android also wipes alarms)
  *  - timezone change (the user travelled across zones)
+ *  - clock change (a manual or carrier correction moves the wall clock, so the
+ *    armed RTC instant no longer matches the scheduled wall-clock time)
  *  - locale change (the next insight should be generated in the new language)
  *
  * The schedules' `zoneId` is re-resolved from `ZoneId.systemDefault()` at read time, so

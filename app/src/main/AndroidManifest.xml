@@ -156,10 +156,13 @@
             android:name=".notification.NotificationDismissReceiver"
             android:exported="false" />
 
-        <!-- System broadcasts that should re-arm the daily alarm. All four
+        <!-- System broadcasts that should re-arm the daily alarm. All five
              actions are protected system broadcasts, which the OS delivers
              to unexported receivers — exported="false" just keeps other
-             apps from poking the receiver directly. -->
+             apps from poking the receiver directly. TIME_SET matters because
+             alarms are armed as absolute RTC epoch millis: correcting a wrong
+             clock shifts the armed instant relative to the intended wall-clock
+             time, so the fire time must be recomputed from the fixed clock. -->
         <receiver
             android:name=".alarm.ScheduleRefreshReceiver"
             android:exported="false">
@@ -167,6 +170,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
         </receiver>

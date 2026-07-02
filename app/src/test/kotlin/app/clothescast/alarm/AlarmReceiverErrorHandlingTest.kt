@@ -40,8 +40,12 @@ import java.util.concurrent.TimeUnit
  *  - on TODAY the best-effort fallback inside the catch still enqueues the
  *    worker so the morning insight runs even when prefs blew up (the whole
  *    reason the fallback exists);
- *  - on TONIGHT the receiver bails silently — no fallback enqueue, per the
- *    "only the morning slot gets the fallback" comment in [AlarmReceiver].
+ *  - on TONIGHT no fallback worker is enqueued, per the "only the morning
+ *    slot gets the fallback" comment in [AlarmReceiver];
+ *  - on BOTH slots the catch re-arms the alarm (with the slot's default
+ *    schedule, since prefs never materialized) — the chain is
+ *    self-perpetuating, so a transient failure that skipped the re-arm would
+ *    silently end every future delivery until the next app open / reboot.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [33])
@@ -85,9 +89,13 @@ class AlarmReceiverErrorHandlingTest {
         waitForAlarms(2)
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TODAY))
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TONIGHT))
-        // The startup pass also enqueues no worker, so the WorkManager queue is
-        // empty here — assertions on the unique-work lists start from a clean
-        // slate without needing an explicit cancel.
+        // WorkManager's instance is a process-wide static that survives
+        // Robolectric's per-test application reset, so unique work enqueued by
+        // an earlier test in this class leaks into the next one (JUnit 4's
+        // hash-based method order decides which runs first). Cancel it so the
+        // non-finished-work assertions below start from a clean slate in
+        // either order.
+        workManager.cancelUniqueWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME).result.get()
 
         collectLatch = CountDownLatch(1)
         originalDelegate = swapRepository(throwingRepository(collectLatch))
@@ -101,7 +109,7 @@ class AlarmReceiverErrorHandlingTest {
     }
 
     @Test
-    fun `TODAY fire falls back to worker enqueue when preferences read fails`() {
+    fun `TODAY fire falls back to worker enqueue and re-arm when preferences read fails`() {
         AlarmReceiver().onReceive(
             context,
             Intent(AlarmReceiver.ACTION_FIRE).setPackage(context.packageName),
@@ -113,26 +121,29 @@ class AlarmReceiverErrorHandlingTest {
         collectLatch.shouldHaveTickedDown()
         val infos = waitForWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME, expected = 1)
         infos shouldHaveAtLeastSize 1
+        // The catch also keeps the self-perpetuating chain alive by re-arming
+        // with the slot's default schedule.
+        waitForAlarms(1)
+        shadowOf(alarmManager).scheduledAlarms shouldHaveAtLeastSize 1
     }
 
     @Test
-    fun `TONIGHT fire does not enqueue a worker when preferences read fails`() {
+    fun `TONIGHT fire re-arms the alarm but enqueues no worker when preferences read fails`() {
         AlarmReceiver().onReceive(
             context,
             Intent(AlarmReceiver.ACTION_FIRE_TONIGHT).setPackage(context.packageName),
         )
 
         collectLatch.shouldHaveTickedDown()
-        // Give the goAsync coroutine time to walk out of the catch and finish.
-        // The catch for TONIGHT does nothing observable, so we can't poll for a
-        // positive signal — wait a beat, then assert nothing was enqueued.
-        Thread.sleep(500)
-        workManager.getWorkInfosForUniqueWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
-            .get()
-            .shouldBeEmpty()
-        // The alarm was also never re-armed (scheduler.schedule lives inside
-        // the failing try block), so the alarm slot stays clear too.
-        shadowOf(alarmManager).scheduledAlarms.shouldBeEmpty()
+        // The catch's last observable act is the fallback re-arm; once the
+        // alarm lands, the coroutine has walked past the (TODAY-only) worker
+        // fallback, so the queue's emptiness is a settled fact, not a race.
+        waitForAlarms(1)
+        shadowOf(alarmManager).scheduledAlarms shouldHaveAtLeastSize 1
+        // Non-finished only: the @Before cancel leaves earlier tests' leaked
+        // work in CANCELLED state, which still shows up in the unique-work
+        // list. Only a live enqueue from *this* fire would appear here.
+        activeWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME).shouldBeEmpty()
     }
 
     private fun throwingRepository(latch: CountDownLatch): SettingsRepository {
@@ -185,10 +196,15 @@ class AlarmReceiverErrorHandlingTest {
     private fun waitForWork(workName: String, expected: Int): List<WorkInfo> {
         val deadline = System.currentTimeMillis() + 5_000
         while (System.currentTimeMillis() < deadline) {
-            val infos = workManager.getWorkInfosForUniqueWork(workName).get()
+            val infos = activeWork(workName)
             if (infos.size >= expected) return infos
             Thread.sleep(25)
         }
-        return workManager.getWorkInfosForUniqueWork(workName).get()
+        return activeWork(workName)
     }
+
+    // The unique-work list filtered to live entries — CANCELLED leftovers from
+    // the @Before cleanup (or a REPLACE) don't count as an enqueue.
+    private fun activeWork(workName: String): List<WorkInfo> =
+        workManager.getWorkInfosForUniqueWork(workName).get().filterNot { it.state.isFinished }
 }

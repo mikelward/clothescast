@@ -489,6 +489,34 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `tomorrow pre-render (dayOffset 1) keeps upcomingDays after the promoted day`() = runTest {
+        // The evening worker's "next" pre-render shifts the bundle so tomorrow
+        // becomes today. upcomingDays duplicates tomorrow at index 0 (the
+        // bundle's convention), so the shift must drop it — otherwise the
+        // derived insight's upcomingDays[0] equals its own forDate, violating
+        // Insight.upcomingDays' "days after forDate" contract and
+        // double-plotting the day on any week series built as
+        // currentDay + upcomingDays.
+        val tomorrowDay = today.copy(date = today.date.plusDays(1))
+        val dayAfter = today.copy(date = today.date.plusDays(2))
+        val weather = FakeWeatherRepository(
+            ForecastBundle(
+                today = today,
+                yesterday = yesterday,
+                tomorrow = tomorrowDay,
+                upcomingDays = listOf(tomorrowDay, dayAfter),
+            ),
+        )
+        val subject = GenerateDailyInsight(weather, clock = clock)
+
+        val result = subject(london, prefs, ForecastPeriod.TODAY, dayOffset = 1).insight
+
+        result.forDate shouldBe tomorrowDay.date
+        result.currentDay?.date shouldBe tomorrowDay.date
+        result.upcomingDays.map { it.date } shouldContainExactly listOf(dayAfter.date)
+    }
+
+    @Test
     fun `the coming night (TONIGHT, not overnight) is dated today`() = runTest {
         val weather = FakeWeatherRepository(
             ForecastBundle(

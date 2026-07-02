@@ -491,7 +491,11 @@ class DeriveInsight(
  * `tomorrowHourly` fields drop to empty — we don't have day-after-tomorrow
  * data, so a hypothetical tonight-period generation off the shifted bundle
  * would lose its overnight wrap; that's why the public `dayOffset=1` path is
- * gated to TODAY-period only.
+ * gated to TODAY-period only. [ForecastBundle.upcomingDays] leads with the
+ * promoted day (it duplicates `tomorrow` at index 0), so the shift drops it —
+ * otherwise the derived insight's `upcomingDays[0]` would equal its own
+ * `forDate`, violating that field's "days after" contract and double-plotting
+ * the day on any week series built as `currentDay + upcomingDays`.
  */
 internal fun ForecastBundle.shiftedToTomorrow(): ForecastBundle? {
     val tmrw = tomorrow ?: return null
@@ -500,6 +504,7 @@ internal fun ForecastBundle.shiftedToTomorrow(): ForecastBundle? {
         yesterday = today,
         tomorrow = null,
         tomorrowHourly = emptyList(),
+        upcomingDays = upcomingDays.dropWhile { !it.date.isAfter(tmrw.date) },
     )
 }
 

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import app.clothescast.diag.DiagLog
 import app.clothescast.ClothesCastApplication
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.playsSpeech
 import app.clothescast.core.domain.model.postsNotification
@@ -66,8 +67,10 @@ class AlarmReceiver : BroadcastReceiver() {
             val appCtx = context.applicationContext
             val app = appCtx as ClothesCastApplication
             val scheduler = DailyAlarmScheduler(appCtx)
+            var readPrefs: UserPreferences? = null
             try {
                 val prefs = app.settingsRepository.preferences.first()
+                readPrefs = prefs
                 if (period == ForecastPeriod.TODAY && !prefs.dailyEnabled) {
                     // Mirror of the tonight branch below: the user disabled the
                     // daily ClothesCast after this alarm was already armed.
@@ -107,17 +110,33 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
                 scheduler.schedule(schedule, period)
             } catch (t: Throwable) {
-                DiagLog.e(TAG, "Re-arm failed for $period", t)
+                DiagLog.e(TAG, "Alarm handling failed for $period", t)
                 // Best-effort: still enqueue the worker even if pref read failed,
                 // so the user gets *something* if it's the morning slot.
                 if (period == ForecastPeriod.TODAY) {
-                    FetchAndNotifyWorker.enqueueOneShot(
-                        appCtx,
-                        period = period,
-                        alarmScheduledAtMs = scheduledAtMs,
-                        alarmFiredAtMs = firedAtMs,
-                    )
+                    runCatching {
+                        FetchAndNotifyWorker.enqueueOneShot(
+                            appCtx,
+                            period = period,
+                            alarmScheduledAtMs = scheduledAtMs,
+                            alarmFiredAtMs = firedAtMs,
+                        )
+                    }.onFailure { DiagLog.e(TAG, "Fallback worker enqueue failed for $period", it) }
                 }
+                // Keep the self-perpetuating alarm chain alive: each fire arms
+                // the next, so a single transient failure (a DataStore read
+                // hiccup, an AlarmManager refusal) would otherwise silently end
+                // every future delivery until the next app open / reboot /
+                // update. Use the read prefs' schedule when we got that far,
+                // else the slot's default time; if the slot was actually
+                // disabled, the next fire reads prefs and cancels itself.
+                runCatching {
+                    val schedule = when (period) {
+                        ForecastPeriod.TODAY -> readPrefs?.schedule ?: Schedule.default()
+                        ForecastPeriod.TONIGHT -> readPrefs?.tonightSchedule ?: Schedule.defaultTonight()
+                    }
+                    scheduler.schedule(schedule, period)
+                }.onFailure { DiagLog.e(TAG, "Fallback re-arm failed for $period", it) }
             } finally {
                 pending.finish()
                 scope.cancel()
@@ -157,11 +176,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
     /**
      * Starts the Service with the specific [workId] to watch, and the
-     * pre-resolved mode flags. Catches both the exception path
-     * (`ForegroundServiceStartNotAllowedException` and friends) and the
-     * silent-null return — `startForegroundService` returns the
-     * `ComponentName` of the started service, or null when the system
-     * couldn't resolve it.
+     * pre-resolved mode flags. Best-effort: a refusal
+     * (`ForegroundServiceStartNotAllowedException` and friends) is logged
+     * and the worker-only path covers the delivery.
      */
     private fun tryStartService(
         context: Context,
@@ -189,14 +206,10 @@ class AlarmReceiver : BroadcastReceiver() {
             playsSpeech = deliveryMode.playsSpeech,
             deliveringWantsForeground = deliveringWantsForeground,
         )
-        val result = runCatching { ContextCompat.startForegroundService(context, intent) }
+        runCatching { ContextCompat.startForegroundService(context, intent) }
             .onFailure { t ->
                 DiagLog.w(TAG, "startForegroundService for $period refused; falling back to worker-only path", t)
             }
-            .getOrNull()
-        if (result == null) {
-            DiagLog.w(TAG, "startForegroundService for $period returned null (system declined); falling back to worker-only path")
-        }
     }
 
     companion object {

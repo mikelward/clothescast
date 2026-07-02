@@ -3,10 +3,12 @@ package app.clothescast.discovery
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.os.Build
 import app.clothescast.diag.DiagLog
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import java.net.Inet4Address
 import java.net.Inet6Address
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
@@ -189,7 +191,23 @@ internal class NsdHomeAssistantDiscovery(context: Context) : HomeAssistantDiscov
         }
 
         private fun hostStringOf(info: NsdServiceInfo): String? {
-            val address = info.host ?: return null
+            val candidates = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                info.hostAddresses
+            } else {
+                @Suppress("DEPRECATION") // Single-address `host` is the only pre-34 API.
+                listOfNotNull(info.host)
+            }
+            // Prefer an IPv4 address: services often advertise both A and AAAA
+            // records and Android's resolver can surface the IPv6 one first —
+            // frequently a link-local `fe80::…`, which is unroutable once the
+            // zone index below is stripped, so the prefilled host could never
+            // connect even though the broker is reachable over IPv4. Failing
+            // that, prefer a routable (non-link-local) IPv6 before falling
+            // back to whatever was reported.
+            val address = candidates.firstOrNull { it is Inet4Address }
+                ?: candidates.firstOrNull { !it.isLinkLocalAddress }
+                ?: candidates.firstOrNull()
+                ?: return null
             // Strip the IPv6 zone index (`fe80::1%wlan0`) — useless once written
             // back as a plain string and broker libraries reject it.
             val raw = address.hostAddress ?: return null

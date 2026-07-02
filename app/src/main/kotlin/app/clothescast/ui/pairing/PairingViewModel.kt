@@ -1,5 +1,6 @@
 package app.clothescast.ui.pairing
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
@@ -7,6 +8,7 @@ import androidx.core.graphics.createBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import app.clothescast.cast.LanAddress
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
@@ -19,8 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.net.Inet4Address
-import java.net.NetworkInterface
 
 /** How long the pairing server stays open before it times out. */
 private const val PAIRING_TIMEOUT_MS = 5 * 60 * 1_000L
@@ -46,7 +46,9 @@ sealed interface PairingState {
  * Drives the phone-pairing screen.
  *
  * On creation it:
- *   1. Discovers the device's LAN IPv4 address.
+ *   1. Discovers the device's LAN IPv4 address via [LanAddress] — the
+ *      active network's site-local address, never a VPN / cellular /
+ *      loopback interface the phone's browser couldn't reach.
  *   2. Starts [PairingServer] on a random local port.
  *   3. Generates a QR code encoding `http://<ip>:<port>/pair/<token>`.
  *   4. Exposes [state] so the UI can render the QR code or react to success / timeout.
@@ -54,6 +56,7 @@ sealed interface PairingState {
  * The server is stopped and cleaned up in [onCleared] or when [retry] restarts it.
  */
 class PairingViewModel(
+    private val appContext: Context,
     private val secureKeyStore: SecureKeyStore,
     private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
@@ -75,8 +78,9 @@ class PairingViewModel(
 
     private fun startPairing() {
         viewModelScope.launch {
-            val ip = getLocalIpAddress()
+            val ip = LanAddress.resolve(appContext)
             if (ip == null) {
+                Log.w(TAG, "No LAN-routable IPv4 on the active network; cannot pair.")
                 _state.value = PairingState.Error
                 return@launch
             }
@@ -126,6 +130,7 @@ class PairingViewModel(
     }
 
     class Factory(
+        private val appContext: Context,
         private val secureKeyStore: SecureKeyStore,
         private val settingsRepository: SettingsRepository,
     ) : ViewModelProvider.Factory {
@@ -134,7 +139,7 @@ class PairingViewModel(
             require(modelClass.isAssignableFrom(PairingViewModel::class.java)) {
                 "Unknown ViewModel: ${modelClass.name}"
             }
-            return PairingViewModel(secureKeyStore, settingsRepository) as T
+            return PairingViewModel(appContext, secureKeyStore, settingsRepository) as T
         }
     }
 
@@ -142,13 +147,6 @@ class PairingViewModel(
         private const val TAG = "PairingViewModel"
     }
 }
-
-private fun getLocalIpAddress(): String? =
-    NetworkInterface.getNetworkInterfaces()
-        ?.asSequence()
-        ?.flatMap { it.inetAddresses.asSequence() }
-        ?.firstOrNull { !it.isLoopbackAddress && it is Inet4Address }
-        ?.hostAddress
 
 private fun generateQrBitmap(content: String): Bitmap {
     val bits = QRCodeWriter().encode(content, BarcodeFormat.QR_CODE, QR_SIZE_PX, QR_SIZE_PX)

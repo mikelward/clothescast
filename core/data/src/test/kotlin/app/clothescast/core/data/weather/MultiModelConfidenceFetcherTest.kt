@@ -248,6 +248,41 @@ class MultiModelConfidenceFetcherTest {
     }
 
     @Test
+    fun `single-model request parses Open-Meteo's unsuffixed response`() = runTest {
+        // Open-Meteo only suffixes variables with the model id when two or
+        // more models are requested; a lone `models=` entry answers with
+        // plain names (`temperature_2m`, `apparent_temperature_max`). This is
+        // reachable via the Forecasters picker (a selection whose only other
+        // entry is Google, which isn't an Open-Meteo id) and via the
+        // invalid-model prune-and-retry leaving one survivor — in both cases
+        // the suffixed-only parser silently dropped the entire per-model
+        // feature even though the server returned usable data.
+        val data = fetcherWith(SINGLE_MODEL_UNSUFFIXED).fetch(london, listOf("ecmwf_ifs025"))
+            .shouldNotBeNull()
+
+        // One model can't measure cross-model spread, so no confidence…
+        data.confidence.shouldBeNull()
+        // …but its hourly series still feeds the charts and the blend.
+        val hourly = data.hourly.shouldNotBeNull()
+        val ecmwf = hourly.byModel.getValue("ecmwf_ifs025")
+        ecmwf.size shouldBe 2
+        ecmwf[0].time shouldBe LocalDateTime.parse("2026-05-12T00:00")
+        ecmwf[0].apparentTemperatureC shouldBe (12.0 plusOrMinus 0.0001)
+        ecmwf[0].temperatureC shouldBe (14.0 plusOrMinus 0.0001)
+        ecmwf[0].precipitationProbabilityPct shouldBe (10.0 plusOrMinus 0.0001)
+    }
+
+    @Test
+    fun `multi-model request ignores unsuffixed fields rather than misattributing them`() = runTest {
+        // The unsuffixed fallback is scoped to single-model requests: a
+        // two-model response only ever carries suffixed series, and a stray
+        // unsuffixed field must not be parsed as belonging to every model.
+        fetcherWith(SINGLE_MODEL_UNSUFFIXED)
+            .fetch(london, listOf("ecmwf_ifs025", "gfs_seamless"))
+            .shouldBeNull()
+    }
+
+    @Test
     fun `diagnostic fields stay null when the response omits them`() = runTest {
         // Backwards-compat: the temp / precip overlay still works on responses
         // that don't include wind / humidity / cloud (legacy fixtures, or a
@@ -602,6 +637,26 @@ class MultiModelConfidenceFetcherTest {
                 "precipitation_probability_max_ecmwf_ifs025": [10],
                 "precipitation_probability_max_gfs_seamless": [15],
                 "precipitation_probability_max_icon_seamless": [20]
+              }
+            }
+        """.trimIndent()
+
+        // The suffix-free shape Open-Meteo returns for a single-entry
+        // `models=` list (verified against the live API): every daily and
+        // hourly variable appears under its plain name, no model suffix.
+        private val SINGLE_MODEL_UNSUFFIXED = """
+            {
+              "daily": {
+                "time": ["2026-05-12"],
+                "apparent_temperature_max": [21.0],
+                "apparent_temperature_min": [12.0],
+                "precipitation_probability_max": [10]
+              },
+              "hourly": {
+                "time": ["2026-05-12T00:00", "2026-05-12T01:00"],
+                "apparent_temperature": [12.0, 11.5],
+                "temperature_2m": [14.0, 13.5],
+                "precipitation_probability": [10, 15]
               }
             }
         """.trimIndent()

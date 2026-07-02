@@ -4,8 +4,8 @@ package app.clothescast.core.domain.model
  * Blends per-hour values from the consulted models — including Open-Meteo's
  * `best_match` overlay — into a single [HourlyForecast] series, replacing
  * the corresponding [bestMatch] entry with the arithmetic mean across
- * models. Covers temperature, feels-like, precipitation probability, wind
- * speed, UV index, and the weather condition. Used to drive the chart's
+ * models. Covers temperature, feels-like, precipitation probability, rain
+ * amount, wind speed, UV index, and the weather condition. Used to drive the chart's
  * "Combined" main line and — crucially — the clothes-rule + insight-prose
  * pipeline and the conditions strip, so on days when best_match diverges
  * from the consulted ECMWF / GFS / ICON consensus (the rain case the user
@@ -95,10 +95,20 @@ fun blendConsensusHourly(
             val blendedWind = if (windCandidates.isEmpty()) hour.windSpeedKmh else windCandidates.average()
             val uvCandidates = candidates.mapNotNull { it.uvIndex }
             val blendedUv = if (uvCandidates.isEmpty()) hour.uvIndex else uvCandidates.average()
+            // Rain amount blends like the rest: skip models that didn't
+            // report it, fall back to best_match when none did. Keeping
+            // best_match's raw mm here while the synthesized path below
+            // averages the models produced a series whose hour-to-hour shape
+            // reflected best_match's *coverage*, not the weather — 0 mm on a
+            // covered hour next to 2 mm on a synthesized one when the models
+            // agreed on 2 mm all along.
+            val mmCandidates = candidates.mapNotNull { it.precipitationMm }
+            val blendedMm = if (mmCandidates.isEmpty()) hour.precipitationMm else mmCandidates.average()
             hour.copy(
                 temperatureC = candidates.map { it.temperatureC }.average(),
                 feelsLikeC = candidates.map { it.apparentTemperatureC }.average(),
                 precipitationProbabilityPct = blendedPrecip,
+                precipitationMm = blendedMm,
                 windSpeedKmh = blendedWind,
                 uvIndex = blendedUv,
                 condition = consensusCondition(
@@ -205,6 +215,11 @@ fun DailyForecast.withAggregatesFrom(blendedHourly: List<HourlyForecast>): Daily
         feelsLikeMaxC = blendedHourly.maxOf { it.feelsLikeC },
         precipitationProbabilityMaxPct = blendedHourly
             .maxOfOrNull { it.precipitationProbabilityPct } ?: precipitationProbabilityMaxPct,
+        // Sum of the blended per-hour amounts, so the daily total agrees with
+        // the hourly series the chart draws (both now carry the cross-model
+        // mean; previously this stayed best_match's total while the hourly
+        // series blended, and the two could tell different stories).
+        precipitationMmTotal = blendedHourly.sumOf { it.precipitationMm },
         // Take the condition from the peak-precip hour of the blended series
         // (mirroring DailyForecast.slicedForToday), so a day the consensus
         // turns wet carries a precipitating daily condition. Without this the
@@ -217,7 +232,5 @@ fun DailyForecast.withAggregatesFrom(blendedHourly: List<HourlyForecast>): Daily
             ?.condition
             ?.takeIf { it != WeatherCondition.UNKNOWN }
             ?: condition,
-        // precipitationMmTotal stays from best_match — the per-model fetcher
-        // doesn't carry a hourly mm series, only probability percent.
     )
 }

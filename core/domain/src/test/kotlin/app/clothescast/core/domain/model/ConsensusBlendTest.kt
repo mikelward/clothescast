@@ -21,6 +21,7 @@ class ConsensusBlendTest {
         temp: Double,
         feels: Double = temp - 1.0,
         precip: Double = 0.0,
+        mm: Double = 0.0,
         wind: Double? = null,
         uv: Double? = null,
         condition: WeatherCondition = WeatherCondition.CLEAR,
@@ -29,6 +30,7 @@ class ConsensusBlendTest {
         temperatureC = temp,
         feelsLikeC = feels,
         precipitationProbabilityPct = precip,
+        precipitationMm = mm,
         windSpeedKmh = wind,
         uvIndex = uv,
         condition = condition,
@@ -39,6 +41,7 @@ class ConsensusBlendTest {
         apparent: Double,
         air: Double,
         precip: Double? = 0.0,
+        mm: Double? = null,
         wind: Double? = null,
         uv: Double? = null,
         condition: WeatherCondition? = null,
@@ -48,6 +51,7 @@ class ConsensusBlendTest {
         apparentTemperatureC = apparent,
         temperatureC = air,
         precipitationProbabilityPct = precip,
+        precipitationMm = mm,
         windSpeedKmh = wind,
         uvIndex = uv,
         condition = condition,
@@ -248,6 +252,44 @@ class ConsensusBlendTest {
     }
 
     @Test
+    fun `rain amount blends on hours best-match covers, like the synthesized path`() {
+        // best_match says 0 mm at noon while the consulted models agree on
+        // 2 mm. Keeping best_match's raw amount on covered hours (while
+        // synthesized hours average the models) made the series' shape
+        // reflect best_match's coverage, not the weather — the blend must
+        // treat both paths the same.
+        val best = listOf(hour(12, temp = 10.0, feels = 9.0, mm = 0.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, mm = 2.0)),
+                "icon_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0, mm = 2.0)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended[0].precipitationMm shouldBe (2.0 plusOrMinus 0.0001)
+    }
+
+    @Test
+    fun `rain amount falls back to best-match when no candidate reported it`() {
+        // Models reported the hour but neither carried an mm series (Open-
+        // Meteo omits it for some models) — keep best_match's own amount
+        // rather than zeroing a wet hour.
+        val best = listOf(hour(12, temp = 10.0, feels = 9.0, mm = 1.5))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(perModel(12, apparent = 11.0, air = 12.0, mm = null)),
+                "icon_seamless" to listOf(perModel(12, apparent = 13.0, air = 14.0, mm = null)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended[0].precipitationMm shouldBe (1.5 plusOrMinus 0.0001)
+    }
+
+    @Test
     fun `wind and uv are averaged across the candidates that reported them`() {
         // A model whose per-model entry carries null wind / UV (older cached
         // payloads; model runs that omit the field) sits the hour out — here
@@ -414,9 +456,9 @@ class ConsensusBlendTest {
             condition = WeatherCondition.CLEAR,
         )
         val blended = listOf(
-            hour(12, temp = 12.0, feels = 10.0, precip = 80.0),
-            hour(15, temp = 14.0, feels = 12.0, precip = 90.0),
-            hour(18, temp = 10.0, feels = 8.0, precip = 60.0),
+            hour(12, temp = 12.0, feels = 10.0, precip = 80.0, mm = 0.2),
+            hour(15, temp = 14.0, feels = 12.0, precip = 90.0, mm = 0.5),
+            hour(18, temp = 10.0, feels = 8.0, precip = 60.0, mm = 0.2),
         )
 
         val out = daily.withAggregatesFrom(blended)
@@ -429,9 +471,10 @@ class ConsensusBlendTest {
         // umbrella rule keys off this, so without recomputation the chart
         // would show "100% rain" while the umbrella stayed unrecommended.
         out.precipitationProbabilityMaxPct shouldBe (90.0 plusOrMinus 0.0001)
-        // Precip mm stays from best_match (no consensus available). Condition is
-        // recomputed from the peak-precip hour, which is CLEAR here too.
-        out.precipitationMmTotal shouldBe daily.precipitationMmTotal
+        // The daily rain total is the sum of the blended per-hour amounts,
+        // keeping it in step with the hourly series the chart draws.
+        // Condition is recomputed from the peak-precip hour, CLEAR here too.
+        out.precipitationMmTotal shouldBe (0.9 plusOrMinus 0.0001)
         out.condition shouldBe WeatherCondition.CLEAR
     }
 

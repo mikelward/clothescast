@@ -754,6 +754,29 @@ class GeminiTtsClientTest {
         shouldThrow<GeminiTtsEmptyResponseException> { client.synthesize(text = "hi") }
     }
 
+    @Test
+    fun `legacy ISO-639 language codes map to the directive tables' modern keys`() {
+        // Android's Locale.getLanguage() reports "iw" / "in" / "ji" for
+        // Hebrew / Indonesian / Yiddish — even for a locale built from the
+        // modern tag "he-IL" — while JVMs since JDK 17 report the modern
+        // codes, so this can only be covered at the string seam. Without the
+        // normalization, the on-device lookup misses the "he" / "id" entries
+        // and Hebrew / Indonesian voices lose their language steering.
+        modernLanguageCode("iw") shouldBe "he"
+        modernLanguageCode("in") shouldBe "id"
+        modernLanguageCode("ji") shouldBe "yi"
+        modernLanguageCode("he") shouldBe "he"
+        modernLanguageCode("en") shouldBe "en"
+    }
+
+    @Test
+    fun `Hebrew and Indonesian voice locales resolve their directives`() {
+        geminiAccentDirectiveFor(Locale.forLanguageTag("he-IL")) shouldBe
+            "קרא/י את הטקסט הבא בעברית."
+        geminiLanguageDirectiveFor(Locale.forLanguageTag("he-IL")) shouldBe "Speak in Hebrew."
+        geminiLanguageDirectiveFor(Locale.forLanguageTag("id-ID")) shouldBe "Speak in Indonesian."
+    }
+
     private companion object {
         // 0xDE 0xAD 0xBE 0xEF base64-encoded.
         const val SUCCESS_BODY = """

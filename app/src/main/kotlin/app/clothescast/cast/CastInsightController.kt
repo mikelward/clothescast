@@ -322,16 +322,32 @@ class CastInsightController(
             // thread on network I/O.
             val resolved = withContext(Dispatchers.Main.immediate) {
                 val route = findRoute(routeId, discoveryTimeoutMs)
-                    ?: return@withContext null
+                    ?: return@withContext RouteResolution.NotFound
                 val session = ensureSession(route, sessionTimeoutMs)
-                val client = session.remoteMediaClient ?: return@withContext null
-                ResolvedRoute(client, classifyRoute(route))
+                val client = session.remoteMediaClient
+                    ?: return@withContext RouteResolution.NoRemoteMediaClient
+                RouteResolution.Ready(ResolvedRoute(client, classifyRoute(route)))
             }
-            if (resolved == null) {
-                DiagLog.w(TAG, "Cast route $routeId not discovered within ${discoveryTimeoutMs}ms; skipping cast.")
-                return CastWorkerOutcome.SkippedNoRoute
+            val ready = when (resolved) {
+                RouteResolution.NotFound -> {
+                    DiagLog.w(TAG, "Cast route $routeId not discovered within ${discoveryTimeoutMs}ms; skipping cast.")
+                    return CastWorkerOutcome.SkippedNoRoute
+                }
+                // Distinct from NotFound: the session *started* — the device
+                // was reachable and is now sitting on the receiver splash —
+                // but exposed no RemoteMediaClient to load into. Reporting
+                // it as SkippedNoRoute pointed the Settings status row at
+                // the network when the problem is the playback layer
+                // (matches castToSavedRoute's NoRemoteMediaClient failure).
+                RouteResolution.NoRemoteMediaClient -> {
+                    DiagLog.w(TAG, "Cast route $routeId session started but exposed no RemoteMediaClient.")
+                    return CastWorkerOutcome.Failed(
+                        CastFailure.NoRemoteMediaClient.message ?: "Smart device did not accept playback",
+                    )
+                }
+                is RouteResolution.Ready -> resolved.route
             }
-            val client = resolved.client
+            val client = ready.client
             val host = resolveLanIp(context)
                 ?: run {
                     DiagLog.w(TAG, "No LAN IPv4 on the phone; cannot host cast media.")
@@ -341,7 +357,7 @@ class CastInsightController(
             // origin + bytes so a bug report can correlate the worker's
             // publish with later route-handler entries without leaking
             // the secret that gates the buffer.
-            val request = when (mediaPlanFor(resolved.deviceClass, hasRealAudio = hasRealAudio)) {
+            val request = when (mediaPlanFor(ready.deviceClass, hasRealAudio = hasRealAudio)) {
                 CastMediaPlan.SkipNoAudio -> {
                     // Audio-only device with no spoken forecast: a silent
                     // track would just be dead air on a speaker. Skip the
@@ -754,4 +770,17 @@ class CastInsightController(
         val client: RemoteMediaClient,
         val deviceClass: CastDeviceClass,
     )
+
+    /**
+     * Outcome of the main-thread route/session/client resolution in
+     * [castWithPreparedMedia]. Two distinct failure shapes so the caller
+     * can report "device not reachable" (route never discovered) apart
+     * from "device reachable but playback unavailable" (session started,
+     * no [RemoteMediaClient]).
+     */
+    private sealed interface RouteResolution {
+        data object NotFound : RouteResolution
+        data object NoRemoteMediaClient : RouteResolution
+        data class Ready(val route: ResolvedRoute) : RouteResolution
+    }
 }

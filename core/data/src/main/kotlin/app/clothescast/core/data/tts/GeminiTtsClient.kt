@@ -244,11 +244,28 @@ internal fun directiveFor(style: TtsStyle, locale: Locale?): String {
  * is acceptable.
  */
 internal fun geminiLanguageDirectiveFor(locale: Locale): String? {
+    val language = modernLanguageCode(locale.language)
     val country = locale.country
     if (country.isNotEmpty()) {
-        LANGUAGE_DIRECTIVES["${locale.language}-$country"]?.let { return it }
+        LANGUAGE_DIRECTIVES["$language-$country"]?.let { return it }
     }
-    return LANGUAGE_DIRECTIVES[locale.language]
+    return LANGUAGE_DIRECTIVES[language]
+}
+
+/**
+ * On Android, [Locale.getLanguage] returns the *legacy* ISO-639 codes for a
+ * handful of languages ("iw" for Hebrew, "in" for Indonesian, "ji" for
+ * Yiddish) — even when the locale was built from a modern BCP-47 tag like
+ * "he-IL". (JVMs since JDK 17 default to the modern codes, so unit tests
+ * can't reproduce the device behavior — hence this string-level seam.) The
+ * directive tables key on the modern codes, so normalize before lookup or
+ * Hebrew/Indonesian voices silently lose their language steering.
+ */
+internal fun modernLanguageCode(language: String): String = when (language) {
+    "iw" -> "he"
+    "in" -> "id"
+    "ji" -> "yi"
+    else -> language
 }
 
 private val LANGUAGE_DIRECTIVES: Map<String, String> = mapOf(
@@ -326,11 +343,12 @@ private val LANGUAGE_DIRECTIVES: Map<String, String> = mapOf(
  * [ACCENT_DIRECTIVES].
  */
 internal fun geminiAccentDirectiveFor(locale: Locale): String? {
+    val language = modernLanguageCode(locale.language)
     val country = locale.country
     if (country.isNotEmpty()) {
-        ACCENT_DIRECTIVES["${locale.language}-$country"]?.let { return it }
+        ACCENT_DIRECTIVES["$language-$country"]?.let { return it }
     }
-    return ACCENT_DIRECTIVES[locale.language]
+    return ACCENT_DIRECTIVES[language]
 }
 
 // Each entry names the language and (where meaningful) a regional variety.

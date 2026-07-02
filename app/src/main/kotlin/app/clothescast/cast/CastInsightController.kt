@@ -20,13 +20,10 @@ import com.google.android.gms.cast.framework.CastSession
 import com.google.android.gms.cast.framework.SessionManager
 import com.google.android.gms.cast.framework.SessionManagerListener
 import com.google.android.gms.cast.framework.media.RemoteMediaClient
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
@@ -46,16 +43,14 @@ import kotlin.coroutines.resumeWithException
  * [SessionManagerListener] just stops the media server when the
  * receiver disconnects, so we're not leaving an open port behind.
  *
- * The "select a route then cast" orchestration lives in the caller —
- * the controller assumes a session is already active when [cast] is
- * called, and returns a [CastResult] describing why a cast was skipped
- * otherwise.
+ * The "select a route then cast" orchestration lives in
+ * [castToSavedRoute] (throws [CastFailure] describing why a cast was
+ * skipped) and [castWithPreparedMedia] (returns a [CastWorkerOutcome]).
  */
 class CastInsightController(
     private val context: Context,
     private val castContext: CastContext,
     private val ttsClient: GeminiTtsClient,
-    private val applicationScope: CoroutineScope,
     private val resolveLanIp: (Context) -> String? = LanAddress::resolve,
     private val server: CastMediaServer = CastMediaServer(),
 ) {
@@ -94,64 +89,6 @@ class CastInsightController(
         server.stop()
         bound = false
     }
-
-    /**
-     * Casts the given insight to the currently-connected smart display, if
-     * any. Returns [CastAttempt] describing the outcome of the pre-flight
-     * checks; the [CastAttempt.job] is the synth + publish + load coroutine,
-     * non-null only when [CastResult.Loaded] was returned.
-     */
-    fun cast(
-        prose: String,
-        locale: Locale,
-        voiceName: String,
-        style: TtsStyle,
-        outfitPng: ByteArray,
-        title: String,
-        subtitle: String?,
-    ): CastAttempt {
-        val session = sessionManager.currentCastSession
-        if (session == null || !session.isConnected) {
-            return CastAttempt(CastResult.NoActiveSession, job = null)
-        }
-        val client = session.remoteMediaClient
-            ?: return CastAttempt(CastResult.NoRemoteMediaClient, job = null)
-        val host = resolveLanIp(context)
-            ?: return CastAttempt(CastResult.NoLanAddress, job = null)
-
-        val job = applicationScope.launch {
-            try {
-                val pcm = ttsClient.synthesize(
-                    text = prose,
-                    voiceName = voiceName,
-                    locale = locale,
-                    style = style,
-                )
-                val wav = WavEncoder.encode(padPcmToMinimumDuration(pcm))
-                val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
-                val urls = server.publish(host = host, media = mp4, kind = CastMediaKind.MP4)
-                client.load(
-                    MediaLoadRequestData.Builder()
-                        .setMediaInfo(buildMediaInfo(urls.url, title, subtitle))
-                        .build(),
-                )
-            } catch (t: Throwable) {
-                DiagLog.e(TAG, "Cast publish failed", t)
-                server.stop()
-                throw t
-            }
-        }
-        return CastAttempt(CastResult.Loaded, job = job)
-    }
-
-    sealed interface CastResult {
-        data object Loaded : CastResult
-        data object NoActiveSession : CastResult
-        data object NoRemoteMediaClient : CastResult
-        data object NoLanAddress : CastResult
-    }
-
-    data class CastAttempt(val result: CastResult, val job: Job?)
 
     /**
      * Selects the user's saved Cast route (by [routeId]), waits for the

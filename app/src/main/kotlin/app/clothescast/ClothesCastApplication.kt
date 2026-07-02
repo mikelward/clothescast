@@ -203,7 +203,6 @@ class ClothesCastApplication : Application() {
                 context = this,
                 castContext = it,
                 ttsClient = geminiTtsClient,
-                applicationScope = applicationScope,
             )
         }
     }

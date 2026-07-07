@@ -12,6 +12,7 @@
 
     <string name="today_title">Today</string>
     <string name="today_open_settings">Open Settings</string>
+    <string name="today_go_home">Go to current period</string>
     <string name="today_more_options">More options</string>
     <string name="today_report_a_bug">Report a bug</string>
     <string name="today_refresh">Refresh</string>

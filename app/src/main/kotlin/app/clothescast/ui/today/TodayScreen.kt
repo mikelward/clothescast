@@ -44,6 +44,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
@@ -230,6 +231,25 @@ fun TodayScreen(
             TopAppBar(
                 title = { Text(stringResource(titleRes)) },
                 actions = {
+                    // On any period page past the current window (Tomorrow, Next
+                    // 7 days, Following 7 days) offer a one-tap jump back to page
+                    // 0 — the stepwise left chevron / system back only walk back a
+                    // single page at a time. Hidden on page 0, where there's
+                    // nowhere to go home to.
+                    if (pagerState.currentPage != 0) {
+                        IconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(0)
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Home,
+                                contentDescription = stringResource(R.string.today_go_home),
+                            )
+                        }
+                    }
                     // While anything's active on the alarm or replay queues we
                     // disable Refresh and (during the fetch phase) swap the icon
                     // for a spinner. The work makes a billed Gemini insight call

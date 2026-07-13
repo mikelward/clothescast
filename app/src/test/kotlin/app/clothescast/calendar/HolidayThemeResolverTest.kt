@@ -50,7 +50,7 @@ class HolidayThemeResolverTest {
     private val nonHolidayDate: LocalDate = LocalDate.of(2026, 8, 11)
 
     @Test
-    fun `birthday event resolves to a synthetic birthday theme`() = runBlocking {
+    fun `birthday event resolves to a synthetic birthday theme`() = runBlocking<Unit> {
         val prefs = basePrefs.copy(themeFromCalendarBirthdays = true)
         val reader = object : CalendarEventReader {
             override suspend fun eventsForDay(date: LocalDate, zoneId: ZoneId): List<CalendarEvent> =

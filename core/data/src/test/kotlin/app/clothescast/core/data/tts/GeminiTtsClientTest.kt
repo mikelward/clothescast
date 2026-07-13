@@ -249,6 +249,52 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `request body includes a french directive for non-enumerated fr variants`() = runTest {
+        // Bare `fr` is a declared app locale and fr-CH / fr-BE resolve through
+        // the language-only fallback — without a bare `fr` key those devices
+        // got no French steering at all while France and Québec did.
+        var capturedBody: String? = null
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) {
+                capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
+                    .bytes()
+                    .toString(Charsets.UTF_8)
+            },
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "bonjour", locale = Locale.forLanguageTag("fr-CH"))
+
+        val body = checkNotNull(capturedBody)
+        body.shouldContain("Parle en français.")
+        // The regional entries stay reserved for their own tags.
+        body.shouldNotContain("parisien")
+        body.shouldNotContain("québécois")
+    }
+
+    @Test
+    fun `request body includes a spanish directive for non-enumerated es variants`() = runTest {
+        // Same fallback shape as `fr`: bare `es` is a declared app locale and
+        // es-AR / es-US resolve through the language-only key.
+        var capturedBody: String? = null
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) {
+                capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
+                    .bytes()
+                    .toString(Charsets.UTF_8)
+            },
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "hola", locale = Locale.forLanguageTag("es-AR"))
+
+        val body = checkNotNull(capturedBody)
+        body.shouldContain("Habla en español.")
+        body.shouldNotContain("castellano")
+        body.shouldNotContain("mexicano")
+    }
+
+    @Test
     fun `request body includes an austrian accent directive for de-AT locale`() = runTest {
         var capturedBody: String? = null
         val client = GeminiTtsClient(

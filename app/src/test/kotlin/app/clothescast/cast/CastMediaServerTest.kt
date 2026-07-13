@@ -86,7 +86,7 @@ class CastMediaServerTest {
     }
 
     @Test
-    fun `awaitFetch returns true once a receiver GETs the active URL`() = runBlocking {
+    fun `awaitFetch returns true once a receiver GETs the active URL`() = runBlocking<Unit> {
         val urls = server.publish(host = "127.0.0.1", media = byteArrayOf(1, 2, 3))
 
         // Await before the GET — the deferred must not be pre-completed.
@@ -113,7 +113,7 @@ class CastMediaServerTest {
     }
 
     @Test
-    fun `awaitFetch is not satisfied by a wrong-token request`() = runBlocking {
+    fun `awaitFetch is not satisfied by a wrong-token request`() = runBlocking<Unit> {
         val urls = server.publish(host = "127.0.0.1", media = byteArrayOf(7))
         val origin = URL(urls.url).let { "http://${it.host}:${it.port}" }
 
@@ -125,7 +125,7 @@ class CastMediaServerTest {
     }
 
     @Test
-    fun `awaitFetch returns true after a republish once the new URL is GET'd`() = runBlocking {
+    fun `awaitFetch returns true after a republish once the new URL is GET'd`() = runBlocking<Unit> {
         server.publish(host = "127.0.0.1", media = "first".toByteArray())
         // No GET on the first URL — its deferred never completes.
 
@@ -146,6 +146,47 @@ class CastMediaServerTest {
 
         server.stop()
         server.port() shouldBe 0
+    }
+
+    @Test
+    fun `range requests are answered with 206 and the requested slice`() {
+        // Cast receivers probe the MP4 tail for the moov atom (MediaMuxer
+        // writes it after mdat) with a Range GET; the server must answer
+        // 206 with just the slice, not the whole body from byte 0.
+        val mp4 = byteArrayOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+        val urls = server.publish(host = "127.0.0.1", media = mp4)
+
+        // Warm up the accept loop through the retrying helper first.
+        fetch(urls.url).status shouldBe 200
+
+        val conn = URL(urls.url).openConnection() as HttpURLConnection
+        conn.setRequestProperty("Range", "bytes=6-")
+        try {
+            conn.responseCode shouldBe 206
+            conn.inputStream.use { it.readBytes() } shouldBe byteArrayOf(6, 7, 8, 9)
+        } finally {
+            conn.disconnect()
+        }
+    }
+
+    @Test
+    fun `HEAD is answered without confirming the fetch`() = runBlocking<Unit> {
+        // Some players lead with a HEAD probe. It must succeed (it 404'd
+        // before AutoHeadResponse) but must NOT complete the fetch
+        // confirmation — no media bytes crossed the LAN yet.
+        val urls = server.publish(host = "127.0.0.1", media = byteArrayOf(1, 2, 3))
+        fetch(urls.url).status shouldBe 200 // warm-up GET on the old token…
+        val fresh = server.publish(host = "127.0.0.1", media = byteArrayOf(1, 2, 3))
+
+        val conn = URL(fresh.url).openConnection() as HttpURLConnection
+        conn.requestMethod = "HEAD"
+        try {
+            conn.responseCode shouldBe 200
+        } finally {
+            conn.disconnect()
+        }
+
+        server.awaitFetch(timeoutMs = 100) shouldBe false
     }
 
     private data class Response(val status: Int, val contentType: String?, val body: ByteArray)

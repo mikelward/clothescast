@@ -152,7 +152,13 @@ class CastInsightController(
             CastMediaPlan.SkipNoAudio -> throw CastFailure.NoAudioForSpeaker
             CastMediaPlan.Wav -> {
                 val wav = WavEncoder.encode(pcm!!)
-                val urls = server.publish(host = host, media = wav, kind = CastMediaKind.WAV)
+                // This path enters from viewModelScope (Settings "Cast now"),
+                // i.e. on Main — publish binds a socket and blocks on the CIO
+                // engine start, so hop it off the UI thread (matching the
+                // Threading contract documented on [CastMediaServer]).
+                val urls = withContext(Dispatchers.IO) {
+                    server.publish(host = host, media = wav, kind = CastMediaKind.WAV)
+                }
                 DiagLog.i(
                     TAG,
                     "Cast test: hosting ${wav.size}B wav on http://$host:${server.port()}/<token>/insight.wav " +
@@ -170,7 +176,10 @@ class CastInsightController(
                     silentWavStub
                 }
                 val mp4 = withContext(Dispatchers.Default) { Mp4Encoder.encode(outfitPng, wav) }
-                val urls = server.publish(host = host, media = mp4, kind = CastMediaKind.MP4)
+                // Off-main for the socket bind — see the WAV branch above.
+                val urls = withContext(Dispatchers.IO) {
+                    server.publish(host = host, media = mp4, kind = CastMediaKind.MP4)
+                }
                 DiagLog.i(
                     TAG,
                     "Cast test: hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
@@ -713,7 +722,20 @@ class CastInsightController(
          */
         internal fun padWavToMinimumDuration(wav: ByteArray): ByteArray {
             val info = Mp4Encoder.WavInfo.parse(wav)
-            val minBytes = info.sampleRate * MIN_CAST_DURATION_SECONDS * 2 * info.channels
+            // WavEncoder writes a mono header unconditionally, so re-encoding
+            // a multi-channel payload here would relabel stereo as mono —
+            // half-speed playback with corrupted interleave. No producer
+            // sends stereo today (Gemini TTS is mono); if one ever does,
+            // skip the padding rather than corrupt the audio.
+            if (info.channels != 1) {
+                DiagLog.w(
+                    TAG,
+                    "Skipping minimum-duration pad for ${info.channels}-channel WAV; " +
+                        "WavEncoder only writes mono headers.",
+                )
+                return wav
+            }
+            val minBytes = info.sampleRate * MIN_CAST_DURATION_SECONDS * 2
             if (info.pcm.size >= minBytes) return wav
             val padded = ByteArray(minBytes)
             info.pcm.copyInto(padded)

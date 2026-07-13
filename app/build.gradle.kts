@@ -609,6 +609,12 @@ dependencies {
     // Cast media-hosting endpoint (the receiver fetches PNG + WAV from a
     // tiny LAN server on the phone — Cast doesn't accept sender-pushed bytes).
     implementation(libs.ktor.server.cio)
+    // Range-request (206) and HEAD support for the Cast media server —
+    // Cast receivers probe MP4s with Range GETs (the MediaMuxer moov atom
+    // sits after mdat, so players seek to the tail before the first frame)
+    // and Google's media-server requirements mandate range support.
+    implementation(libs.ktor.server.partial.content)
+    implementation(libs.ktor.server.auto.head.response)
 
     // Google Cast — adds the route discovery / session APIs (via
     // androidx.mediarouter) and RemoteMediaClient. Initialised lazily in

@@ -45,7 +45,14 @@ internal suspend fun loadCurrentInsight(context: Context): Pair<Insight, UserPre
         .onFailure { DiagLog.w(TAG, "Widget: reading cached snapshot failed", it) }
         .getOrNull()
     if (snapshot == null) {
-        DiagLog.i(TAG, "Widget: no cached forecast yet — showing empty state")
+        // Nothing cached yet — a freshly placed widget on a fresh install, or a
+        // cache that never filled because both delivery slots are opt-in and the
+        // user hasn't opened the app / tapped Refresh. Show the empty state, but
+        // kick a silent refresh so the widget self-heals once the fetch lands
+        // (the worker's cache write fires updateAll). Deduped REPLACE, so repeat
+        // repaints coalesce onto one in-flight run.
+        DiagLog.i(TAG, "Widget: no cached forecast yet — showing empty state and kicking a silent refresh")
+        FetchAndNotifyWorker.enqueueSilentRefresh(context)
         return null
     }
     val insight = runCatching { app.deriveInsight(snapshot, prefs).insight }

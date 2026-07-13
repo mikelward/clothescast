@@ -2030,8 +2030,11 @@ class FetchAndNotifyWorker(
         const val UNIQUE_WORK_NAME_LOCATION_CACHE = "location_cache_refresh"
         // Distinct queue from the alarm-driven daily / tonight runs so a
         // silent app-open refresh in flight doesn't get cancelled by an
-        // alarm fire (and vice versa). KEEP-deduped so config-change
-        // re-triggers on app open coalesce into the one in-flight worker.
+        // alarm fire (and vice versa). REPLACE-deduped within the queue so a
+        // fresh app-open / widget self-heal kick supersedes any earlier silent
+        // refresh — including one stuck in retry-backoff after a transient
+        // failure, which KEEP would let swallow every later kick (the widget
+        // then stays on its empty state and re-opening the app can't fix it).
         const val UNIQUE_WORK_NAME_SILENT = "silent_insight_refresh"
         // Distinct queue from the daily / tonight runs so an offline Play
         // tap sitting in the queue can't block the morning alarm: alarm
@@ -2401,12 +2404,25 @@ class FetchAndNotifyWorker(
         }
 
         /**
-         * Opportunistic refresh fired on app open when the cached insight is
-         * older than [SILENT_REFRESH_MIN_AGE]. Runs the full fetch + cache
-         * pipeline but skips notification, TTS, MQTT, and cast — the Today
-         * screen re-renders silently when the new snapshot lands in
-         * [InsightCache.thisPeriod]. KEEP so config-change retriggers on the
-         * same app-open coalesce into the one in-flight run.
+         * Opportunistic refresh fired on app open (and by a home-screen widget
+         * that has nothing current to show) when the cache is empty or its
+         * snapshot is older than [SILENT_REFRESH_MIN_AGE]. Runs the full fetch +
+         * cache pipeline but skips notification, TTS, MQTT, and cast — the Today
+         * screen and widgets re-render silently when the new snapshot lands in
+         * [InsightCache.thisPeriod].
+         *
+         * REPLACE, not KEEP: the newest kick always wins. A prior silent refresh
+         * that returned [Result.retry] (e.g. a transient device-location read)
+         * sits ENQUEUED through WorkManager's exponential backoff, and under KEEP
+         * every later kick — the user re-opening the app to fix a blank widget
+         * included — would be dropped until that backoff run finally completed,
+         * so the widget stayed stuck on its empty state. REPLACE cancels the
+         * stuck run and starts a fresh attempt immediately (the same reason the
+         * alarm / manual-Refresh queue uses REPLACE — see [enqueueOneShot]).
+         * Kicks are event-paced (app open, widget repaint), not a tight loop, so
+         * cancel-and-restart doesn't thrash; a burst from one `updateAll` still
+         * collapses to a single trailing run. The queue is still distinct from
+         * the alarm / play queues, so this only supersedes other silent runs.
          *
          * The period is resolved inside the worker via [currentPeriodForSchedule]
          * so we refresh whichever window the user is *currently* in — not
@@ -2432,21 +2448,27 @@ class FetchAndNotifyWorker(
             WorkManager.getInstance(context)
                 .enqueueUniqueWork(
                     UNIQUE_WORK_NAME_SILENT,
-                    ExistingWorkPolicy.KEEP,
+                    ExistingWorkPolicy.REPLACE,
                     request,
                 )
         }
 
         /**
-         * App-open freshness predicate: true when [snapshot] is non-null and
-         * its [ForecastSnapshot.generatedAt] is at least [SILENT_REFRESH_MIN_AGE]
-         * before [now]. Null snapshot returns false — the app hasn't
-         * successfully fetched yet, so there's nothing user-visible to
-         * silently replace (the alarm or onboarding flow drives the first
-         * fetch).
+         * App-open freshness predicate: true when there's nothing cached yet, or
+         * the cached [snapshot]'s [ForecastSnapshot.generatedAt] is at least
+         * [SILENT_REFRESH_MIN_AGE] before [now].
+         *
+         * Null snapshot returns *true* — the app has no forecast to show, so an
+         * open should populate one. (This used to fail closed, deferring the
+         * first fetch to onboarding or a scheduled alarm; onboarding has since
+         * been removed and both delivery slots are opt-in, so nothing else
+         * drives that first fetch — a fresh install with a widget placed but
+         * notifications off would otherwise never fill the cache just by opening
+         * the app.) A brand-new snapshot (under the threshold) still stays put so
+         * routine re-opens don't burn Open-Meteo calls.
          */
         fun shouldSilentlyRefresh(snapshot: ForecastSnapshot?, now: Instant): Boolean {
-            if (snapshot == null) return false
+            if (snapshot == null) return true
             return Duration.between(snapshot.generatedAt, now) >= SILENT_REFRESH_MIN_AGE
         }
 

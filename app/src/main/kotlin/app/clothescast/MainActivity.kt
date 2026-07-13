@@ -188,23 +188,28 @@ class MainActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Opportunistic refresh: when the user opens the app to a cached
-        // insight that's gone stale (>= SILENT_REFRESH_MIN_AGE since the
-        // last fetch), kick a silent background fetch so the screen
-        // re-renders off fresh data without waiting for the next scheduled
-        // alarm. The worker picks the period itself based on the user's
-        // schedule + wall-clock time (see [FetchAndNotifyWorker.currentPeriodForSchedule]),
-        // so a cache stuck in the wrong window after a missed alarm gets
-        // corrected on the next open. KEEP-deduped on the worker side, so
-        // the per-recreate onStart fires (config changes, returning from a
-        // permission dialog) coalesce into the one in-flight run.
+        // Opportunistic refresh: when the user opens the app to an empty cache
+        // or a cached insight that's gone stale (>= SILENT_REFRESH_MIN_AGE since
+        // the last fetch), kick a silent background fetch so the screen (and any
+        // home-screen widget) re-renders off fresh data without waiting for the
+        // next scheduled alarm. The empty-cache case matters now that onboarding
+        // is gone and both delivery slots are opt-in — otherwise a fresh install
+        // that never enabled notifications would sit on "No forecast yet" until
+        // the user found the manual Refresh. The worker picks the period itself
+        // based on the user's schedule + wall-clock time (see
+        // [FetchAndNotifyWorker.currentPeriodForSchedule]), so a cache stuck in
+        // the wrong window after a missed alarm gets corrected on the next open.
+        // REPLACE-deduped on the worker side, so the per-recreate onStart fires
+        // (config changes, returning from a permission dialog) coalesce into a
+        // single trailing run and can't be swallowed by an earlier one stuck in
+        // retry-backoff.
         val app = application as ClothesCastApplication
         lifecycleScope.launch {
             val snapshot = runCatching { app.insightCache.thisPeriod.first() }
                 .getOrElse {
                     DiagLog.w(TAG, "App-open freshness check failed; skipping silent refresh.", it)
                     return@launch
-                } ?: return@launch
+                }
             if (!FetchAndNotifyWorker.shouldSilentlyRefresh(snapshot, Instant.now())) return@launch
             FetchAndNotifyWorker.enqueueSilentRefresh(applicationContext)
         }

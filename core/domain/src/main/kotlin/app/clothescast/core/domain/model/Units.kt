@@ -61,7 +61,11 @@ fun WindSpeedUnit.symbol(): String = when (this) {
  *  branch so the chart subtitles read tight.
  */
 fun TimeFormat.formatHourMinute(time: LocalTime, locale: Locale): String = when (this) {
-    TimeFormat.TWENTY_FOUR_HOUR -> "%02d:%02d".format(time.hour, time.minute)
+    // Format against the passed locale, not the JVM default: the localeless
+    // String.format overload localizes %d digits via Locale.getDefault(FORMAT),
+    // so a device set to e.g. Persian would leak its digit shapes into a
+    // reading the caller explicitly asked for in another locale.
+    TimeFormat.TWENTY_FOUR_HOUR -> "%02d:%02d".format(locale, time.hour, time.minute)
     TimeFormat.TWELVE_HOUR -> formatTwelveHour(time, locale, includeMinutes = true)
 }
 
@@ -73,7 +77,8 @@ fun TimeFormat.formatHourMinute(time: LocalTime, locale: Locale): String = when 
  * the subtitle tight under narrow charts.
  */
 fun TimeFormat.formatTopOfHour(time: LocalTime, locale: Locale): String = when (this) {
-    TimeFormat.TWENTY_FOUR_HOUR -> "%02d:%02d".format(time.hour, time.minute)
+    // Localeless format leaks default-locale digits — see [formatHourMinute].
+    TimeFormat.TWENTY_FOUR_HOUR -> "%02d:%02d".format(locale, time.hour, time.minute)
     TimeFormat.TWELVE_HOUR -> formatTwelveHour(time, locale, includeMinutes = false)
 }
 
@@ -82,7 +87,8 @@ private fun formatTwelveHour(time: LocalTime, locale: Locale, includeMinutes: Bo
         val hour12 = ((time.hour + 11) % 12) + 1
         val suffix = if (time.hour < 12) "am" else "pm"
         return if (includeMinutes && time.minute != 0) {
-            "%d:%02d%s".format(hour12, time.minute, suffix)
+            // Locale-pinned like the 24h branch — see [formatHourMinute].
+            "%d:%02d%s".format(locale, hour12, time.minute, suffix)
         } else {
             "$hour12$suffix"
         }

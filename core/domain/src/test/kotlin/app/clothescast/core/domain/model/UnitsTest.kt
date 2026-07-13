@@ -110,6 +110,23 @@ class UnitsTest {
     }
 
     @Test
+    fun `clock digits follow the passed locale, not the JVM default`() {
+        // A device default with non-ASCII digit shapes (Persian) must not
+        // leak into a reading the caller asked for in an explicit locale —
+        // the localeless String.format overload localizes %d through
+        // Locale.getDefault(FORMAT), which is exactly the leak this pins.
+        val saved = Locale.getDefault(Locale.Category.FORMAT)
+        try {
+            Locale.setDefault(Locale.Category.FORMAT, Locale.forLanguageTag("fa-IR"))
+            TimeFormat.TWENTY_FOUR_HOUR.formatHourMinute(LocalTime.of(14, 0), Locale.US) shouldBe "14:00"
+            TimeFormat.TWENTY_FOUR_HOUR.formatTopOfHour(LocalTime.of(9, 0), Locale.UK) shouldBe "09:00"
+            TimeFormat.TWELVE_HOUR.formatHourMinute(LocalTime.of(19, 5), Locale.US) shouldBe "7:05pm"
+        } finally {
+            Locale.setDefault(Locale.Category.FORMAT, saved)
+        }
+    }
+
+    @Test
     fun `pattern scanner ignores 12h field characters inside single-quoted literals`() {
         // fr_CA: "HH 'h' mm" — the quoted 'h' is the French separator, not an
         // hour field. Misclassifying it as 12h flips the Auto picker to AM/PM

@@ -7,6 +7,7 @@ import app.clothescast.diag.DiagLog
 import app.clothescast.core.data.tts.PcmAudio
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
@@ -24,6 +25,12 @@ import kotlin.coroutines.resume
 internal object PcmAudioPlayer {
 
     private const val TAG = "PcmAudioPlayer"
+
+    // Headroom past the clip's nominal duration before giving up on the
+    // end-of-playback marker — covers the buffered tail plus scheduling
+    // jitter on slow devices without meaningfully delaying a genuinely
+    // missing marker.
+    private const val MARKER_TIMEOUT_MARGIN_MS = 2_000L
 
     suspend fun play(audio: PcmAudio) {
         val pcm = audio.bytes
@@ -95,7 +102,26 @@ internal object PcmAudioPlayer {
                 }
                 offset += written
             }
-            awaitMarker(track, totalFrames)
+            // Bound the wait: AudioTrack's end-of-buffer marker is flaky on
+            // some devices (an underrun that stops the head *at* rather than
+            // past the marker, or a dropped callback on the stop transition
+            // never fires onMarkerReached). Un-bounded, that suspends this
+            // coroutine forever — pinning the delivery worker until
+            // WorkManager kills it, or hanging the Settings voice preview.
+            // The full clip length plus a generous margin can only trip when
+            // the marker genuinely went missing: by this point every byte is
+            // queued, so at most one buffer of audio remains.
+            val clipMillis = totalFrames * 1000L / audio.sampleRate
+            val completed = withTimeoutOrNull(clipMillis + MARKER_TIMEOUT_MARGIN_MS) {
+                awaitMarker(track, totalFrames)
+            }
+            if (completed == null) {
+                DiagLog.w(
+                    TAG,
+                    "End-of-playback marker never fired for $totalFrames frames " +
+                        "(~${clipMillis}ms); releasing the track anyway.",
+                )
+            }
         } finally {
             runCatching { track.stop() }
             track.release()

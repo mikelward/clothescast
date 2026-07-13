@@ -106,28 +106,31 @@ class GoogleForecastCache(
     suspend fun put(location: Location, apiKeyFingerprint: Int?, hours: List<PerModelHour>) {
         if (hours.isEmpty()) return
         val key = keyOf(location)
-        val merged = mergeRetainingEarlierToday(key, apiKeyFingerprint, hours)
-        val entry = Entry(
-            latBucket = key.first,
-            lonBucket = key.second,
-            apiKeyFingerprint = apiKeyFingerprint,
-            fetchedAtMs = clock.instant().toEpochMilli(),
-            hours = merged.map { it.toDto() },
-        )
-        val encoded = try {
-            json.encodeToString(entry)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            DiagLog.w(TAG, "Google forecast cache encode failed; not persisting", e)
-            return
-        }
         try {
-            dataStore.edit { it[ENTRY_KEY] = encoded }
+            // Read-merge-write inside one edit transaction (the same shape
+            // DailyHistoryStore.put uses): merging from a separate read lets
+            // two near-simultaneous puts (foreground walk + background
+            // refresh) both merge against the same prior entry and the
+            // second write silently drop the first's retained morning hours
+            // — exactly the front-truncation the merge exists to prevent.
+            dataStore.edit { prefs ->
+                val merged = mergeRetainingEarlierToday(prefs[ENTRY_KEY], key, apiKeyFingerprint, hours)
+                val entry = Entry(
+                    latBucket = key.first,
+                    lonBucket = key.second,
+                    apiKeyFingerprint = apiKeyFingerprint,
+                    fetchedAtMs = clock.instant().toEpochMilli(),
+                    hours = merged.map { it.toDto() },
+                )
+                prefs[ENTRY_KEY] = json.encodeToString(entry)
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            DiagLog.w(TAG, "Google forecast cache write failed", e)
+            // Covers both a serialization failure and a DataStore write
+            // failure; the caller already holds the series for this fetch,
+            // and the next foreground walk re-stamps it.
+            DiagLog.w(TAG, "Google forecast cache write failed; not persisting", e)
         }
     }
 
@@ -148,13 +151,14 @@ class GoogleForecastCache(
      * low is read from. The fresh series owns every hour from its first onward,
      * so nothing stale survives into the future.
      */
-    private suspend fun mergeRetainingEarlierToday(
+    private fun mergeRetainingEarlierToday(
+        priorRaw: String?,
         key: Pair<Long, Long>,
         apiKeyFingerprint: Int?,
         fresh: List<PerModelHour>,
     ): List<PerModelHour> {
         val newFirst = fresh.minByOrNull { it.time }?.time ?: return fresh
-        val prior = readRaw()?.let { decode(it) } ?: return fresh
+        val prior = priorRaw?.let { decode(it) } ?: return fresh
         // Only carry hours from an entry for the same location + key; a
         // different bucket or a swapped key is unrelated data.
         if (prior.apiKeyFingerprint != apiKeyFingerprint ||

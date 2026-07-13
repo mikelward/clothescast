@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
+import androidx.work.Constraints
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker.Result
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
@@ -357,6 +361,33 @@ class FetchAndNotifyWorkerTest {
 
         workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT).map { it.state } shouldContainExactlyInAnyOrder
             listOf(WorkInfo.State.ENQUEUED)
+    }
+
+    @Test
+    fun `enqueueSilentRefresh supersedes an in-flight silent refresh instead of coalescing into it`() {
+        // Convergence guarantee: a fresh app-open / widget self-heal kick must
+        // REPLACE any earlier silent refresh, including one WorkManager is
+        // holding ENQUEUED through retry-backoff after a transient failure.
+        // Under the old KEEP policy that stuck run swallowed every later kick,
+        // so re-opening the app couldn't clear a blank widget. Stand in an
+        // earlier run (kept ENQUEUED by the CONNECTED constraint) and assert the
+        // next enqueue cancels it rather than being dropped.
+        val stuck = OneTimeWorkRequestBuilder<FetchAndNotifyWorker>()
+            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+            .setInputData(workDataOf(FetchAndNotifyWorker.KEY_SILENT_REFRESH to true))
+            .build()
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT,
+            ExistingWorkPolicy.REPLACE,
+            stuck,
+        )
+
+        FetchAndNotifyWorker.enqueueSilentRefresh(context)
+
+        WorkManager.getInstance(context).getWorkInfoById(stuck.id).get()!!.state shouldBe WorkInfo.State.CANCELLED
+        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT).count {
+            it.state == WorkInfo.State.ENQUEUED
+        } shouldBe 1
     }
 
     @Test

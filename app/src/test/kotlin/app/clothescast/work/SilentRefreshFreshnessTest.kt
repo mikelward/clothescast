@@ -25,11 +25,12 @@ import java.time.ZoneId
 
 /**
  * Drives the app-open opportunistic-refresh decision used by
- * [app.clothescast.MainActivity.onStart]. The predicate has to fail closed in
- * the no-cache case (nothing to silently replace) and only kick a fresh fetch
- * once the stored snapshot's age has crossed the documented threshold —
- * otherwise routine app re-opens would burn Open-Meteo calls (and the
- * Gemini-keyed TTS budget on a forced-refresh equivalent).
+ * [app.clothescast.MainActivity.onStart]. The predicate kicks a fetch when
+ * there's nothing cached yet (a fresh install with notifications opt-out would
+ * otherwise never fill the cache just by opening the app) and once a stored
+ * snapshot's age has crossed the documented threshold — but leaves a
+ * still-fresh snapshot put, so routine app re-opens don't burn Open-Meteo calls
+ * (and the Gemini-keyed TTS budget on a forced-refresh equivalent).
  */
 class SilentRefreshFreshnessTest {
     private val now = Instant.parse("2026-04-25T09:00:00Z")
@@ -61,8 +62,10 @@ class SilentRefreshFreshnessTest {
     )
 
     @Test
-    fun `null snapshot does not trigger a silent refresh`() {
-        FetchAndNotifyWorker.shouldSilentlyRefresh(snapshot = null, now = now) shouldBe false
+    fun `null snapshot triggers a silent refresh to populate the empty cache`() {
+        // Onboarding is gone and both delivery slots are opt-in, so opening the
+        // app (or placing a widget) is the only thing that fills a fresh cache.
+        FetchAndNotifyWorker.shouldSilentlyRefresh(snapshot = null, now = now) shouldBe true
     }
 
     @Test

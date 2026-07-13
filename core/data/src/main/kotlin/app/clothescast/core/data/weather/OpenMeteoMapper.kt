@@ -109,7 +109,13 @@ internal object OpenMeteoMapper {
     private fun HourlyData.forDate(date: LocalDate): List<HourlyForecast> {
         val out = ArrayList<HourlyForecast>(24)
         for (i in time.indices) {
-            val ts = LocalDateTime.parse(time[i])
+            // Skip an unparseable timestamp instead of throwing: one mangled
+            // entry (truncated by a proxy, upstream glitch) must degrade to a
+            // dropped hour — the same policy the other two parsers of this
+            // stream apply (OpenMeteoClient.asBestMatchPerModelHours,
+            // MultiModelConfidenceFetcher.parseHour) — not void the whole
+            // 14-day payload.
+            val ts = runCatching { LocalDateTime.parse(time[i]) }.getOrNull() ?: continue
             if (ts.toLocalDate() != date) continue
             // An hour without temperature_2m (horizon edge of the 14-day
             // window, an upstream run still warming up) is dropped, not

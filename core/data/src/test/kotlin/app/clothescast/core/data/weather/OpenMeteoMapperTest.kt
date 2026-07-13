@@ -417,6 +417,39 @@ class OpenMeteoMapperTest {
     }
 
     @Test
+    fun `a malformed hourly timestamp drops that hour, not the whole payload`() {
+        // One mangled entry (proxy truncation, upstream glitch) must degrade
+        // to a dropped hour — the policy the sibling parsers already apply —
+        // instead of a DateTimeParseException voiding the whole forecast.
+        val mangled = OpenMeteoResponse(
+            timezone = "UTC",
+            daily = DailyData(
+                time = listOf("2026-04-24", "2026-04-25"),
+                temperatureMin = listOf(12.0, 16.0),
+                temperatureMax = listOf(18.0, 24.0),
+                feelsLikeMin = listOf(10.0, 15.0),
+                feelsLikeMax = listOf(17.0, 23.0),
+                precipitationProbabilityMax = listOf(5, 60),
+                precipitationSum = listOf(0.0, 4.5),
+                weatherCode = listOf(2, 63),
+            ),
+            hourly = HourlyData(
+                time = listOf("2026-04-25T09:00", "2026-04-2", ""),
+                temperature = listOf(18.0, 19.0, 20.0),
+                feelsLike = listOf(17.0, 18.0, 19.0),
+                precipitationProbability = listOf(20, 20, 20),
+                weatherCode = listOf(63, 63, 63),
+            ),
+        )
+
+        val today = OpenMeteoMapper.toBundle(mangled).today
+
+        val survivor = today.hourly.single()
+        survivor.time shouldBe LocalTime.of(9, 0)
+        survivor.temperatureC shouldBe 18.0
+    }
+
+    @Test
     fun `rejects responses missing two daily entries`() {
         val short = OpenMeteoResponse(
             timezone = "UTC",

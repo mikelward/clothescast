@@ -1584,8 +1584,9 @@ class SettingsRepository(
         // Master switch for scheduled casting + per-period cast toggles +
         // the "smart display speaks, mute the phone" suppression. Stored
         // separately from CAST_ROUTE_ID so the user's picked display
-        // survives an off / on flip; default true on first read
-        // (mirrors the data-class defaults).
+        // survives an off / on flip; absent key reads as OFF — casting is
+        // opt-in (see castEnabledOptInMigration, which preserved the old
+        // default-on only for installs that predate the flip).
         private val CAST_ENABLED = booleanPreferencesKey("cast_enabled")
         private val CAST_MORNING = booleanPreferencesKey("cast_morning")
         private val CAST_TONIGHT = booleanPreferencesKey("cast_tonight")

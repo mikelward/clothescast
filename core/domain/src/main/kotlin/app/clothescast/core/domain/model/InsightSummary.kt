@@ -216,7 +216,8 @@ data class CalendarExtrasClause(val item: String)
  * formatter renders "Tonight, rain at 9pm." (or "Tonight, chance of rain at
  * 9pm." when [likelihood] is POSSIBLE).
  *
- * When the evening forecast slice has rain ≥ 20%, [rainTime] carries the peak
+ * When the evening forecast slice has rain ≥ 10% (the POSSIBLE bar — see
+ * [PrecipLikelihood]), [rainTime] carries the peak
  * hour and the formatter folds it into the same sentence ("Tonight, rain at
  * 9pm, bring a jacket.") — keeps the morning insight's mention of evening rain
  * tied to the evening event, rather than emitting a second precip clause that

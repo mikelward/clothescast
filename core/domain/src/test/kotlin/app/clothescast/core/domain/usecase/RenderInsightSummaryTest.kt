@@ -307,7 +307,7 @@ class RenderInsightSummaryTest {
     }
 
     @Test
-    fun `precip clause emits with peak hour and condition when chance is at least 30 percent`() {
+    fun `precip clause emits with peak hour and condition when chance clears the rain bar`() {
         val today = mildToday.copy(
             precipitationProbabilityMaxPct = 60.0,
             condition = WeatherCondition.RAIN,

@@ -5,6 +5,7 @@ import app.clothescast.core.domain.model.HolidayDate
 import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HolidayTheme
+import app.clothescast.core.domain.model.isFunny
 import java.time.LocalDate
 
 /**
@@ -92,9 +93,18 @@ class HolidayResolver(
      * fallback when resolve returned null. An OFF override on a holiday
      * whose country *is* enabled still suppresses the fallback — the
      * user's explicit opt-out beats a calendar event with the same date.
+     *
+     * Funny-bucket entries never count as a match: a joke observance
+     * (Talk Like a Pirate Day, Towel Day) can share a date with a real
+     * public holiday in *some* country's calendar, and it isn't a
+     * duplicate of it — the composed banner is built to join the two
+     * ("Happy bank holiday and don't forget your towel"), so the joke
+     * must not silence the calendar holiday.
      */
     fun hasCatalogMatch(date: LocalDate, enabledCountries: Set<String>): Boolean =
         catalog.any { (predicate, theme) ->
-            predicate.matches(date) && theme.countries.any { it in enabledCountries }
+            !theme.isFunny &&
+                predicate.matches(date) &&
+                theme.countries.any { it in enabledCountries }
         }
 }

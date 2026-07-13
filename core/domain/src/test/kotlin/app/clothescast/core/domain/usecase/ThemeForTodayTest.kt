@@ -284,6 +284,32 @@ class ThemeForTodayTest {
     }
 
     @Test
+    fun `funny-only curated date doesn't suppress a real calendar holiday`() {
+        // 2026-05-25's only catalog entry for this user is Towel Day (the
+        // FUNNY bucket) — their own country has no curated entry that day,
+        // but their holiday calendar carries a real public holiday. A joke
+        // observance isn't a duplicate of a national holiday, so the
+        // calendar fallback must fire and join the Towel Day clause
+        // instead of being silenced by it.
+        val theme = subject.resolve(
+            date = LocalDate.of(2026, Month.MAY, 25),
+            overrides = noOverrides,
+            enabledCountries = setOf(HolidayCatalog.FUNNY),
+            events = listOf(publicHoliday("National Day")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        // Colours come from the Funny theme; banner leads with the real
+        // holiday and ends with the funny join clause.
+        theme.id shouldBe HolidayId.TOWEL_DAY
+        val segments = theme.bannerSegments
+        segments.shouldNotBeNull()
+        segments[0].literalText shouldBe "National Day"
+        segments[1].textKey shouldBe "holiday_banner_join_towel_day"
+    }
+
+    @Test
     fun `solemn day suppresses the Towel Day clause on a collision`() {
         // Same date, but a US user: Memorial Day is solemn, so Towel Day is
         // dropped entirely — no playful clause beside "Honoring our fallen".

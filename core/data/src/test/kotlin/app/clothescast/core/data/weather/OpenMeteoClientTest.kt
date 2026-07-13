@@ -196,6 +196,74 @@ class OpenMeteoClientTest {
     }
 
     @Test
+    fun `best_match per-model series keeps yesterday's hours for the overnight chart`() = runTest {
+        // Both the primary call and the confidence side-band fetch past_days=1,
+        // so the consulted models' series reach back to yesterday evening for
+        // the Overnight chart's pre-midnight hours. best_match must too — a
+        // today-only filter made the "Auto" line alone start at midnight.
+        val primaryJson = """
+            {
+              "timezone": "Europe/London",
+              "daily": {
+                "time": ["2026-04-24", "2026-04-25"],
+                "temperature_2m_min": [12.0, 16.0],
+                "temperature_2m_max": [18.0, 24.0],
+                "apparent_temperature_min": [10.0, 15.0],
+                "apparent_temperature_max": [17.0, 23.0],
+                "precipitation_probability_max": [5, 60],
+                "precipitation_sum": [0.0, 4.5],
+                "weather_code": [2, 63]
+              },
+              "hourly": {
+                "time": ["2026-04-24T21:00", "2026-04-25T12:00"],
+                "temperature_2m": [14.0, 20.0],
+                "apparent_temperature": [13.0, 20.0],
+                "precipitation_probability": [10, 40],
+                "weather_code": [2, 2],
+                "wind_speed_10m": [8.0, 10.0],
+                "uv_index": [0.0, 4.0]
+              }
+            }
+        """.trimIndent()
+        val confidenceJson = """
+            {
+              "daily": {"time": ["2026-04-25"]},
+              "hourly": {
+                "time": ["2026-04-24T21:00", "2026-04-25T12:00"],
+                "temperature_2m_gfs_seamless": [15.0, 21.0],
+                "apparent_temperature_gfs_seamless": [15.0, 21.0],
+                "temperature_2m_icon_seamless": [13.0, 23.0],
+                "apparent_temperature_icon_seamless": [13.0, 23.0]
+              }
+            }
+        """.trimIndent()
+        val engine = MockEngine { request ->
+            val isPrimary = request.url.parameters["models"] == null
+            respond(
+                content = if (isPrimary) primaryJson else confidenceJson,
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val client = OpenMeteoClient(
+            HttpClient(engine) {
+                install(ContentNegotiation) {
+                    json(Json { ignoreUnknownKeys = true })
+                }
+            },
+        )
+
+        val bundle = client.fetchForecast(london)
+
+        val bestMatch = checkNotNull(bundle.perModelHourly)
+            .byModel.getValue(PerModelHourly.BEST_MATCH_MODEL_ID)
+        bestMatch.map { it.time } shouldBe listOf(
+            java.time.LocalDateTime.parse("2026-04-24T21:00"),
+            java.time.LocalDateTime.parse("2026-04-25T12:00"),
+        )
+    }
+
+    @Test
     fun `google is treated as just another model - votes in the blend and lands in the stored per-model map`() = runTest {
         // Same two-model side-band (GFS + ICON) and best_match primary as the
         // synthetic-zero test above. At 12:00 best_match=20, GFS=21, ICON=23.

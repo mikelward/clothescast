@@ -157,8 +157,7 @@ class OpenMeteoClient(
         // best_match stays a real vote in the consensus blend on both sides of
         // the midnight boundary.
         val tomorrowDate = bundle.today.date.plusDays(1)
-        val bestMatchPerModel =
-            response.hourly.asBestMatchPerModelHours(firstForecastDate = bundle.today.date)
+        val bestMatchPerModel = response.hourly.asBestMatchPerModelHours()
 
         // Fold best_match and (when the user enabled it) Google into the
         // per-model map. Google is stored alongside the Open-Meteo source models
@@ -220,13 +219,17 @@ class OpenMeteoClient(
     // without temperature_2m is dropped (no synthetic 0 °C vote), apparent
     // falls back to air, and the precipitation fields stay null when absent so
     // precip-specific aggregates skip them instead of counting a fake dry hour.
-    private fun HourlyData.asBestMatchPerModelHours(firstForecastDate: LocalDate): List<PerModelHour> =
+    private fun HourlyData.asBestMatchPerModelHours(): List<PerModelHour> =
         buildList {
             for (i in time.indices) {
                 val ts = runCatching { LocalDateTime.parse(time[i]) }.getOrNull() ?: continue
-                // Yesterday is historical with no side-band per-model coverage;
-                // start best_match's series where the consulted models start.
-                if (ts.toLocalDate() < firstForecastDate) continue
+                // Yesterday's hours stay in: both this call and the side-band
+                // confidence call fetch past_days=1, so the consulted models'
+                // series reach back to yesterday 00:00 — filtering best_match
+                // to today made the "Auto" line alone start at midnight on the
+                // Overnight chart's pre-midnight hours. Day-keyed consumers
+                // (the consensus blend) never look yesterday up, so the extra
+                // entries are inert outside the charts.
                 val air = temperature.getOrNull(i) ?: continue
                 add(
                     PerModelHour(

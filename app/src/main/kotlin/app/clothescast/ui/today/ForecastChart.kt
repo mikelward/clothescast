@@ -153,15 +153,15 @@ fun ForecastChart(
     // hour offset. See [hourlyTimestampIndices].
     val indexByTime = remember(hourly, startDate) { hourlyTimestampIndices(hourly, startDate) }
     val overlays = perModelHourly?.byModel.orEmpty()
+    // Only models with at least one point inside this chart's window.
+    // [rememberPinnedLineProvider] assigns line colors by position in
+    // this list against the series emitted below, so the two must stay
+    // in lockstep — emitting fewer series than entries here would shift
+    // every later model onto the wrong color. Shared with the cards'
+    // legends via [visibleSpreadModelIds] so the legend lists exactly
+    // the plotted models.
     val visibleModels = if (showModelSpread) {
-        // Only models with at least one point inside this chart's window.
-        // [rememberPinnedLineProvider] assigns line colors by position in
-        // this list against the series emitted below, so the two must stay
-        // in lockstep — emitting fewer series than entries here would shift
-        // every later model onto the wrong color.
-        MODEL_DRAW_ORDER.filter { modelId ->
-            overlays[modelId].orEmpty().any { it.time in indexByTime }
-        }
+        visibleSpreadModelIds(perModelHourly, indexByTime)
     } else {
         emptyList()
     }

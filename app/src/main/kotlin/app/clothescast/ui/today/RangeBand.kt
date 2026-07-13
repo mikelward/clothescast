@@ -58,6 +58,27 @@ internal fun hourlyTimestampIndices(
 }
 
 /**
+ * Model ids with at least one entry inside the chart window ([indexByTime])
+ * carrying a value [hasValue] accepts — the per-model visibility filter the
+ * charts apply when emitting series, shared with the cards' legends so a
+ * legend can never list a model whose line isn't actually plotted (e.g. a
+ * series that stops before the window's post-midnight hours, or a model
+ * Open-Meteo omits the metric for). Charts additionally rely on this list's
+ * order matching the emitted series order (pinned line providers assign
+ * colors by position), so both must come from this one function.
+ */
+internal fun visibleSpreadModelIds(
+    perModelHourly: PerModelHourly?,
+    indexByTime: Map<LocalDateTime, Int>,
+    hasValue: (PerModelHour) -> Boolean = { true },
+): List<String> {
+    val overlays = perModelHourly?.byModel.orEmpty()
+    return MODEL_DRAW_ORDER.filter { modelId ->
+        overlays[modelId].orEmpty().any { it.time in indexByTime && hasValue(it) }
+    }
+}
+
+/**
  * Per-hour min and max of [picker] across the consulted models — the envelope
  * the [rememberRangeBandDecoration] band fills. Returned as `(hourIndex, value)`
  * lists at the series' original indices, computed only where at least two models

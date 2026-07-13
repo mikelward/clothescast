@@ -47,12 +47,12 @@ import java.util.Locale
 data class SettingsState(
     val scheduleTime: LocalTime = LocalTime.of(7, 0),
     val scheduleDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
-    // On by default to mirror the repository (see UserPreferences.dailyEnabled,
-    // where an absent key resolves to enabled): the morning cast ships on out of
-    // the box, so the first render before DataStore emits must not show the
-    // switch off, or the user could leave Schedule believing the morning cast is
-    // off while the app has already scheduled it.
-    val dailyEnabled: Boolean = true,
+    // Off by default to mirror the repository (see UserPreferences.dailyEnabled,
+    // where an absent key resolves to disabled — both scheduled slots are
+    // opt-in now): the first render before DataStore emits must not show the
+    // switch on, or a fresh install's Schedule page would flash the morning
+    // cast as already scheduled when nothing is.
+    val dailyEnabled: Boolean = false,
     val tonightTime: LocalTime = LocalTime.of(19, 0),
     val tonightDays: Set<DayOfWeek> = Schedule.EVERY_DAY,
     val tonightEnabled: Boolean = false,

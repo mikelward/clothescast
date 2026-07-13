@@ -29,6 +29,7 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import app.clothescast.R
+import app.clothescast.diag.DiagLog
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.ui.garment.OutfitCardInfoLines
 import app.clothescast.ui.garment.STRIP_SURFACE_DARK_ARGB
@@ -55,6 +56,10 @@ import app.clothescast.ui.garment.renderConditionsStripBitmap
  */
 class ConditionsWidget : GlanceAppWidget() {
 
+    private companion object {
+        const val TAG = "ConditionsWidget"
+    }
+
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -80,6 +85,11 @@ class ConditionsWidget : GlanceAppWidget() {
                     temperatureUnit = prefs.temperatureUnit,
                     windSpeedUnit = prefs.windSpeedUnit,
                 )
+            }.onFailure {
+                // A formatter / strip-math failure blanks the widget to its
+                // empty state; without a log that's indistinguishable from
+                // "no data yet" when chasing a blank-widget report.
+                DiagLog.w(TAG, "Conditions strip computation failed; showing empty state", it)
             }.getOrNull()
         } else {
             null

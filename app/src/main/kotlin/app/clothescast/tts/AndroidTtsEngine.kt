@@ -38,26 +38,36 @@ internal suspend fun initAndroidTtsEngine(context: Context): TextToSpeech =
             initOneAttempt(context, null)
         }
 
-private suspend fun initOneAttempt(context: Context, enginePackage: String?): TextToSpeech =
+private suspend fun initOneAttempt(context: Context, enginePackage: String?): TextToSpeech {
+    // The listener resumes with Unit and the engine is returned from the
+    // local below, NOT captured in a var the listener dereferences: onInit
+    // arrives on the main thread while the constructor returns on this
+    // (worker) thread, and a plain captured var has no happens-before edge
+    // between that write and the callback's read — the listener could
+    // observe null and NPE inside a main-thread callback, crashing the
+    // process instead of failing one TTS attempt. Reading the local after
+    // the suspension is safe: the assignment happens in this coroutine
+    // before it suspends, and coroutine resumption establishes the edge.
+    lateinit var engine: TextToSpeech
     suspendCancellableCoroutine { cont ->
-        var engineRef: TextToSpeech? = null
         val listener = TextToSpeech.OnInitListener { status ->
             if (status == TextToSpeech.SUCCESS) {
-                cont.resume(engineRef!!)
+                cont.resume(Unit)
             } else {
                 cont.resumeWithException(
                     IllegalStateException("TTS engine init failed (status=$status)"),
                 )
             }
         }
-        val engine = if (enginePackage != null) {
+        engine = if (enginePackage != null) {
             TextToSpeech(context, listener, enginePackage)
         } else {
             TextToSpeech(context, listener)
         }
-        engineRef = engine
         cont.invokeOnCancellation { runCatching { engine.shutdown() } }
     }
+    return engine
+}
 
 /**
  * Auto-picks the highest-quality voice for [locale] from [voices], or `null`

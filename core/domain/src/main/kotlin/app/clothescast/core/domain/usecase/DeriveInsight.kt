@@ -626,8 +626,18 @@ internal fun DailyForecast.slicedForTonight(
     morningEnd: LocalTime,
     tomorrowHourly: List<HourlyForecast>,
 ): DailyForecast {
-    val tonightHours = hourly.filter { it.time >= tonightStart }
-    val tomorrowMorning = if (tonightStart.isBefore(morningEnd)) {
+    // An after-midnight tonight time (tonightStart < morningEnd) puts the
+    // whole window before the same day's morning — [00:30, 07:00) — so it
+    // must also truncate at morningEnd, or a night-owl's "Tonight" would
+    // aggregate every hour through the following afternoon (a 28° daytime
+    // high reading as a hot night, suppressing the jacket the pre-dawn
+    // hours warrant). The wrapped shape [19:00, 07:00) reaches into
+    // tomorrowHourly instead.
+    val sameDayWindow = tonightStart.isBefore(morningEnd)
+    val tonightHours = hourly.filter {
+        it.time >= tonightStart && (!sameDayWindow || it.time < morningEnd)
+    }
+    val tomorrowMorning = if (sameDayWindow) {
         emptyList()
     } else {
         tomorrowHourly.filter { it.time < morningEnd }

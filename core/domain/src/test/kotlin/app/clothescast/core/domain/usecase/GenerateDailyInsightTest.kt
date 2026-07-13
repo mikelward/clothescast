@@ -1827,6 +1827,42 @@ class GenerateDailyInsightTest {
     }
 
     @Test
+    fun `tonight window set after midnight stays bounded by the morning`() = runTest {
+        // A night-owl tonight time of 00:30 puts the whole window on the same
+        // calendar day — [00:30, 07:00) — so the slice must stop at the
+        // morning boundary instead of running through tomorrow afternoon
+        // (which would let a warm daytime high masquerade as the night's max
+        // and suppress the jacket the pre-dawn hours warrant).
+        val todayHourly = listOf(
+            HourlyForecast(LocalTime.of(1, 0), 8.0, 6.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(4, 0), 6.0, 4.0, 5.0, WeatherCondition.CLEAR),
+            // Past the default 07:00 morning end — tomorrow's daytime, not tonight.
+            HourlyForecast(LocalTime.of(12, 0), 24.0, 24.0, 5.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), 28.0, 28.0, 5.0, WeatherCondition.CLEAR),
+        )
+        val todayWithHourly = today.copy(hourly = todayHourly)
+        val weather = FakeWeatherRepository(ForecastBundle(todayWithHourly, yesterday))
+        val subject = GenerateDailyInsight(weather, clock = clock)
+        val nightOwlPrefs = prefs.copy(
+            tonightSchedule = Schedule(
+                time = LocalTime.of(0, 30),
+                days = Schedule.EVERY_DAY,
+                zoneId = ZoneOffset.UTC,
+            ),
+        )
+
+        val result = subject(london, nightOwlPrefs, ForecastPeriod.TONIGHT)
+
+        result.insight.hourly.map { it.time } shouldBe listOf(
+            LocalTime.of(1, 0),
+            LocalTime.of(4, 0),
+        )
+        // Aggregates come from the pre-dawn hours only — a cold night, not
+        // the following afternoon's 28°.
+        result.insight.summary.band.high shouldBe TemperatureBand.COLD
+    }
+
+    @Test
     fun `today period populates nextOutfit from the overnight slice when hourly carries tonight hours`() = runTest {
         val todayHourly = listOf(
             HourlyForecast(LocalTime.of(8, 0), 22.0, 22.0, 5.0, WeatherCondition.CLEAR),

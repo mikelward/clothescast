@@ -2801,8 +2801,13 @@ internal fun ForecastCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     if (perModelHourly != null) {
+                        // Same in-window filter [ForecastChart] applies —
+                        // see [visibleSpreadModelIds].
+                        val indexByTime = remember(hourly, startDate) {
+                            hourlyTimestampIndices(hourly, startDate)
+                        }
                         ModelSpreadLegend(
-                            visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                            visibleModelIds = if (showModelSpread) visibleSpreadModelIds(perModelHourly, indexByTime) else emptyList(),
                             mainLine = MainLineLegend(
                                 color = AppTheme.mainLineColor,
                                 label = stringResource(R.string.today_chart_main_line_label),
@@ -2863,8 +2868,13 @@ internal fun AirTemperatureCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 if (perModelHourly != null) {
+                    // Same in-window filter [ForecastChart] applies —
+                    // see [visibleSpreadModelIds].
+                    val indexByTime = remember(hourly, startDate) {
+                        hourlyTimestampIndices(hourly, startDate)
+                    }
                     ModelSpreadLegend(
-                        visibleModelIds = if (showModelSpread) MODEL_DRAW_ORDER.filter { it in perModelHourly.byModel } else emptyList(),
+                        visibleModelIds = if (showModelSpread) visibleSpreadModelIds(perModelHourly, indexByTime) else emptyList(),
                         mainLine = MainLineLegend(
                             color = AppTheme.mainLineColor,
                             label = stringResource(R.string.today_chart_main_line_label),
@@ -3378,18 +3388,16 @@ internal fun PrecipitationCard(
                     showModelSpread = showModelSpread,
                 )
                 if (perModelHourly != null) {
-                    // Mirror the chart's per-model visibility filter (see
-                    // [PrecipitationChart]) — list only the models that
-                    // actually have a probability line plotted, not every
-                    // model in byModel. Open-Meteo omits
-                    // `precipitation_probability_<model>` for some models
-                    // (UKMO, JMA, …) even though they report temperature and
-                    // precipitation_mm, so a bare `it in byModel` filter shows
-                    // a legend chip with no corresponding line on the chart.
+                    // Same visibility filter the chart applies (see
+                    // [PrecipitationChart] / [visibleSpreadModelIds]) — a
+                    // model without a probability line plotted inside this
+                    // window must not get a legend chip.
+                    val indexByTime = remember(hourly, startDate) {
+                        hourlyTimestampIndices(hourly, startDate)
+                    }
                     val visibleIds = if (showModelSpread) {
-                        MODEL_DRAW_ORDER.filter { modelId ->
-                            perModelHourly.byModel[modelId]
-                                ?.any { it.precipitationProbabilityPct != null } == true
+                        visibleSpreadModelIds(perModelHourly, indexByTime) {
+                            it.precipitationProbabilityPct != null
                         }
                     } else emptyList()
                     ModelSpreadLegend(
@@ -3511,15 +3519,14 @@ internal fun PrecipitationAmountCard(
                     showModelSpread = showModelSpread,
                 )
                 if (perModelHourly != null) {
-                    // Mirror the chart's per-model visibility filter — list
-                    // only the models that actually have a precipitation_mm
-                    // line plotted, not every model in byModel. Without
-                    // this filter, models whose Open-Meteo response omitted
-                    // `precipitation_<model>` (UKMO, JMA, …) show up as
-                    // legend chips with no corresponding line on the chart.
+                    // Same visibility filter the chart applies (see
+                    // [PrecipitationAmountChart] / [visibleSpreadModelIds]) —
+                    // a model without a precipitation_mm line plotted inside
+                    // this window must not get a legend chip. Reads the
+                    // card-level [indexByTime] the chart's inputs share.
                     val visibleIds = if (showModelSpread) {
-                        MODEL_DRAW_ORDER.filter { modelId ->
-                            perModelHourly.byModel[modelId]?.any { it.precipitationMm != null } == true
+                        visibleSpreadModelIds(perModelHourly, indexByTime) {
+                            it.precipitationMm != null
                         }
                     } else emptyList()
                     ModelSpreadLegend(

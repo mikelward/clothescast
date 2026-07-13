@@ -64,12 +64,9 @@ fun PrecipitationAmountChart(
     // Only models with ≥1 plottable point (non-null mm, inside this chart's
     // window): the pinned line provider assigns colors by position in this
     // list against the series emitted below, so the two must stay in lockstep.
+    // Shared with the card's legend via [visibleSpreadModelIds].
     val visibleModels = if (showModelSpread) {
-        MODEL_DRAW_ORDER.filter { modelId ->
-            overlays[modelId].orEmpty().any {
-                it.precipitationMm != null && it.time in indexByTime
-            }
-        }
+        visibleSpreadModelIds(perModelHourly, indexByTime) { it.precipitationMm != null }
     } else {
         emptyList()
     }
@@ -216,7 +213,12 @@ internal const val PRECIPITATION_AMOUNT_MIN_SPAN_MM: Double = 5.0
 /**
  * Per-hour main-line series for the precipitation-amount chart and its
  * scrub readout — cross-model mean of `precipitationMm` across whichever
- * consulted models reported at each hour. Falls back to the best-match
+ * models reported at each hour, best_match (Auto) included as an
+ * equal-weight vote, matching the domain consensus blend's posture (see
+ * [app.clothescast.core.domain.model.blendConsensusHourly]). Note the
+ * min–max range band deliberately excludes best_match
+ * (see [perModelEnvelope]), so when Auto is an outlier this mean can sit
+ * outside the shaded band. Falls back to the best-match
  * line ([HourlyForecast.precipitationMm]) at hours where no per-model
  * reported, so the main line stays continuous over the full window and
  * aligns with the readout's hour-by-hour indexing.

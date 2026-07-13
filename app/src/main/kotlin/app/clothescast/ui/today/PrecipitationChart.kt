@@ -71,11 +71,7 @@ fun PrecipitationChart(
     // color. The model still appears on the temperature chart via
     // [ForecastChart], which only needs air-temp.
     val visibleModels = if (showModelSpread) {
-        MODEL_DRAW_ORDER.filter { modelId ->
-            overlays[modelId].orEmpty().any {
-                it.precipitationProbabilityPct != null && it.time in indexByTime
-            }
-        }
+        visibleSpreadModelIds(perModelHourly, indexByTime) { it.precipitationProbabilityPct != null }
     } else {
         emptyList()
     }

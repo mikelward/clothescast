@@ -279,6 +279,7 @@ private val LANGUAGE_DIRECTIVES: Map<String, String> = mapOf(
     "fr" to "Speak in French.",
     "fr-CA" to "Speak in Canadian French.",
     "it" to "Speak in Italian.",
+    "es" to "Speak in Spanish.",
     "es-ES" to "Speak in Spanish.",
     "es-MX" to "Speak in Mexican Spanish.",
     "ca" to "Speak in Catalan.",
@@ -378,9 +379,17 @@ private val ACCENT_DIRECTIVES: Map<String, String> = mapOf(
     "de" to "Sprich auf Deutsch in einem hochdeutschen Akzent.",
     "de-AT" to "Sprich auf Deutsch mit einem österreichischen Akzent.",
     "de-CH" to "Sprich auf Deutsch mit einem deutschschweizerischen Akzent.",
+    // Language-only fallback for bare `fr` (an app locale) and any fr-*
+    // variant not enumerated (fr-CH, fr-BE, …); France and Québec keep
+    // their own regional entries below.
+    "fr" to "Parle en français.",
     "fr-FR" to "Parle en français de France avec un accent parisien.",
     "fr-CA" to "Parle en français québécois avec un accent canadien-français.",
     "it" to "Parla in italiano.",
+    // Language-only fallback for bare `es` (an app locale) and any es-*
+    // variant not enumerated (es-AR, es-US, …); Spain and Mexico keep
+    // their own regional entries below.
+    "es" to "Habla en español.",
     "es-ES" to "Habla en español de España con un acento castellano.",
     "es-MX" to "Habla en español mexicano con un acento neutro.",
     "ca" to "Parla en català.",

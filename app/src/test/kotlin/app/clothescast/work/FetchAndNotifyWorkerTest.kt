@@ -384,10 +384,15 @@ class FetchAndNotifyWorkerTest {
 
         FetchAndNotifyWorker.enqueueSilentRefresh(context)
 
-        WorkManager.getInstance(context).getWorkInfoById(stuck.id).get()!!.state shouldBe WorkInfo.State.CANCELLED
-        workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT).count {
-            it.state == WorkInfo.State.ENQUEUED
-        } shouldBe 1
+        // REPLACE deletes the superseded request outright (so querying it by id
+        // can come back null), so assert on the queue instead: exactly one run
+        // is ENQUEUED and it is no longer the earlier `stuck` request. Under the
+        // old KEEP the second enqueue would have been dropped and `stuck` would
+        // still be the one ENQUEUED.
+        val enqueued = workInfosFor(FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT)
+            .filter { it.state == WorkInfo.State.ENQUEUED }
+        enqueued shouldHaveSize 1
+        (enqueued.single().id == stuck.id) shouldBe false
     }
 
     @Test

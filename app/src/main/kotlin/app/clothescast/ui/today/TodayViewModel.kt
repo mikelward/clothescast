@@ -202,9 +202,11 @@ data class TodayState(
     val schedulePromoCardVisible: Boolean = false,
     /**
      * Whether the "Preview your daily ClothesCast now" promo card is eligible —
-     * true iff the user hasn't dismissed it AND at least one cast slot is
-     * enabled (the morning slot is on by default, so this normally holds). It
-     * points at the top-bar play button so the user can hear a cast on demand.
+     * true iff the user hasn't dismissed it AND at least one schedule slot
+     * ([UserPreferences.dailyEnabled] / [UserPreferences.tonightEnabled]) is
+     * enabled. Both slots are opt-in, so this card follows the schedule promo:
+     * once the user sets up a schedule, it points at the top-bar play button
+     * so they learn they can also hear a cast on demand.
      */
     val playPromoCardVisible: Boolean = false,
     /**
@@ -747,7 +749,8 @@ class TodayViewModel(
                 !prefs.calendarBirthdayThemingActive,
             clothesPromoCardVisible = !prefs.clothesPromoCardDismissed &&
                 prefs.clothesRules == ClothesRule.DEFAULTS,
-            schedulePromoCardVisible = !prefs.scheduleCardDismissed,
+            schedulePromoCardVisible = !prefs.scheduleCardDismissed &&
+                !prefs.dailyEnabled && !prefs.tonightEnabled,
             playPromoCardVisible = !prefs.playCardDismissed &&
                 (prefs.dailyEnabled || prefs.tonightEnabled),
             // Stand the "try high-quality voices" promo down while the limit

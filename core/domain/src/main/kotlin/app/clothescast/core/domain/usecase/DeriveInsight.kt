@@ -129,6 +129,19 @@ class DeriveInsight(
             }
             ?: periodView.deltaYesterday
 
+        // The IF_CHANGED clothes gate compares today's items against
+        // yesterday's, so yesterday's outfit has to be evaluated against the
+        // same corrected day the delta clause reads — re-running the rules on
+        // the hindcast would reintroduce exactly the wrong-yesterday the
+        // historic record exists to bypass (a hindcast that missed a warm day
+        // "fires" a sweater the user was never told about, and today's real
+        // sweater is then suppressed as unchanged).
+        val yesterdayTriggeredItems = if (deltaYesterdayForRender === periodView.deltaYesterday) {
+            periodView.yesterdayTriggeredItems
+        } else {
+            evaluateClothesRules(deltaYesterdayForRender, rules, defaultTop, defaultBottom).items
+        }
+
         val summary = renderInsightSummary(
             today = periodView.forecast,
             yesterday = deltaYesterdayForRender,
@@ -140,7 +153,7 @@ class DeriveInsight(
             deltaThresholdC = prefs.deltaThresholdC,
             deltaFormat = prefs.deltaFormat,
             clothesMentionMode = prefs.clothesMentionMode,
-            yesterdayTriggeredItems = periodView.yesterdayTriggeredItems,
+            yesterdayTriggeredItems = yesterdayTriggeredItems,
             todayRuleItems = Garment.layerReduce(periodView.triggeredOutfit.rules).map { it.item.itemKey },
             tonightStart = tonightStart,
             diagLog = diagLog,

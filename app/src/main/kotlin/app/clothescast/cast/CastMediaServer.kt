@@ -2,15 +2,20 @@ package app.clothescast.cast
 
 import app.clothescast.diag.DiagLog
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.OutgoingContent
 import io.ktor.server.application.call
+import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
+import io.ktor.server.plugins.autohead.AutoHeadResponse
+import io.ktor.server.plugins.partialcontent.PartialContent
 import io.ktor.server.response.respond
-import io.ktor.server.response.respondBytes
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
@@ -172,6 +177,16 @@ class CastMediaServer {
 
     private fun start() {
         val srv = embeddedServer(CIO, port = 0) {
+            // Cast receivers probe MP4s with Range GETs — MediaMuxer writes
+            // the moov atom after mdat (no faststart), so the player seeks
+            // to the file tail before the first frame. Without 206 support
+            // every probe gets the whole body from byte 0: buffering the
+            // full resource at best, a failed load on stricter receiver
+            // firmware at worst. PartialContent turns the channel-backed
+            // response below into a range-aware one; AutoHeadResponse
+            // answers the HEAD some players lead with (it 404'd before).
+            install(PartialContent)
+            install(AutoHeadResponse)
             routing {
                 // Wildcard filename so the same route serves whichever
                 // suffix the active [CastMediaKind] minted (insight.mp4 /
@@ -182,15 +197,32 @@ class CastMediaServer {
                     val buf = buffer
                     val incoming = call.parameters["token"]
                     // Capture the active buffer kind + fetch deferred at
-                    // match time rather than re-reading post-respondBytes —
+                    // match time rather than re-reading post-respond —
                     // a concurrent publish would otherwise serve the new
                     // content type or redirect the signal onto the new
                     // awaiter instead of the one whose URL was just served.
                     val capturedKind = kind
                     val capturedFetched = fetched
                     if (buf != null && tokenMatches(incoming)) {
-                        call.respondBytes(buf, capturedKind.contentType)
-                        capturedFetched?.complete(Unit)
+                        // ReadChannelContent, not respondBytes: PartialContent
+                        // only rewrites channel-backed content into 206s —
+                        // a plain ByteArrayContent bypasses it and every
+                        // Range probe would get the whole body as a 200.
+                        call.respond(MediaBufferContent(buf, capturedKind.contentType))
+                        // Only a real GET confirms the fetch: AutoHeadResponse
+                        // routes HEAD probes through this handler with the
+                        // body discarded, and a HEAD moves no media bytes —
+                        // completing the deferred on one would fake the
+                        // "bytes actually crossed the LAN" signal awaitFetch
+                        // exists to provide. (A Range GET still counts; bytes
+                        // flow on it.) Read the raw method off request.local:
+                        // AutoHeadResponse rewrites the origin method to GET
+                        // before the handler runs (that's how the get() route
+                        // matches at all), so request.httpMethod reads GET
+                        // even for a HEAD probe — verified against Ktor 3.5.
+                        if (call.request.local.method == HttpMethod.Get) {
+                            capturedFetched?.complete(Unit)
+                        }
                     } else {
                         call.respond(HttpStatusCode.NotFound)
                     }
@@ -226,6 +258,21 @@ class CastMediaServer {
     }
 
     data class MediaUrl(val url: String)
+
+    /**
+     * Channel-backed wrapper for the in-memory media buffer. Exists so
+     * [PartialContent] can slice it: the plugin only rewrites
+     * [OutgoingContent.ReadChannelContent] responses into 206s (its
+     * range-cut path goes through [readFrom]), so a `respondBytes`
+     * ByteArrayContent would silently opt the serve out of range support.
+     */
+    private class MediaBufferContent(
+        private val bytes: ByteArray,
+        override val contentType: ContentType,
+    ) : OutgoingContent.ReadChannelContent() {
+        override val contentLength: Long = bytes.size.toLong()
+        override fun readFrom(): ByteReadChannel = ByteReadChannel(bytes)
+    }
 
     companion object {
         private const val TAG = "CastMediaServer"

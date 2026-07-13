@@ -1,7 +1,9 @@
 package app.clothescast.core.domain.usecase
 
 import app.clothescast.core.domain.model.CalendarEvent
+import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
+import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.DailyForecast
 import app.clothescast.core.domain.model.DailyHistoryEntry
 import app.clothescast.core.domain.model.DeliveryMode
@@ -118,6 +120,36 @@ class DeriveInsightHistoricYesterdayTest {
         result.insight.summary.delta.shouldNotBeNull()
         result.insight.summary.delta!!.degrees shouldBe 4
         result.insight.summary.delta!!.direction shouldBe DeltaClause.Direction.WARMER
+    }
+
+    @Test
+    fun `IF_CHANGED compares against the historic yesterday, not the hindcast`() {
+        // Sweater below 16° feels-like. Today (12..22) fires it. The bogus
+        // hindcast (14..18) would also fire it — making today read as
+        // "unchanged" and suppressing the clothes clause. But the day we
+        // actually delivered was warm (18..28): the user was told the t-shirt
+        // baseline, so today's sweater IS a change and must be named.
+        val sweaterRule = ClothesRule(
+            item = Garment.SWEATER,
+            condition = ClothesRule.TemperatureBelow(16.0),
+        )
+        val ifChangedPrefs = prefs.copy(
+            clothesRules = listOf(sweaterRule),
+            clothesMentionMode = ClothesMentionMode.IF_CHANGED,
+        )
+        val warmDelivered = DailyHistoryEntry(
+            date = LocalDate.of(2026, 5, 23),
+            feelsLikeMinC = 18.0,
+            feelsLikeMaxC = 28.0,
+        )
+
+        val withOverride = DeriveInsight()(snapshot(warmDelivered), ifChangedPrefs)
+        val withoutOverride = DeriveInsight()(snapshot(historic = null), ifChangedPrefs)
+
+        // Hindcast comparison: sweater "fired" yesterday too → suppressed.
+        withoutOverride.insight.summary.clothes.shouldBeNull()
+        // Historic comparison: yesterday was the baseline outfit → named.
+        withOverride.insight.summary.clothes.shouldNotBeNull()
     }
 
     @Test

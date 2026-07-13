@@ -382,20 +382,35 @@ class FetchAndNotifyWorker(
                     // than push a stale bundle to the day/night topic.
                     // `today` is the base date deliveredForToday() just confirmed
                     // THIS_PERIOD is for, so the expected next-window date is it
-                    // (day run) or the day after (night run -> tomorrow's day).
-                    // Also require the cached sibling to be for *this run's*
-                    // location: a refresh can update THIS_PERIOD to a new city
-                    // while a failed generatePairedInsight() leaves a same-date
-                    // sibling for the old one, which we must not publish.
+                    // (day run) or the day after (night run -> tomorrow's day)
+                    // — EXCEPT the post-midnight overnight, whose sibling is
+                    // *today's* daytime (generatePairedInsight pairs
+                    // primaryOvernight with TODAY at dayOffset 0), not
+                    // tomorrow's. Also require the cached sibling to be for
+                    // *this run's* location: a refresh can update THIS_PERIOD
+                    // to a new city while a failed generatePairedInsight()
+                    // leaves a same-date sibling for the old one, which we
+                    // must not publish.
                     val expectedPeriod = period.opposite()
-                    val expectedDate = today.plusDays(if (period == ForecastPeriod.TONIGHT) 1L else 0L)
+                    val expectedDate = today.plusDays(
+                        if (period == ForecastPeriod.TONIGHT && !overnight) 1L else 0L,
+                    )
                     val nextSnapshot = runCatching { app.insightCache.nextPeriod.first() }
                         .onFailure { t -> if (t is CancellationException) throw t }
                         .getOrNull()
+                    // Proximity, not data-class equality: resolveLocation()
+                    // builds a fresh Location every run (new GPS fix a few
+                    // meters off, re-geocoded display fields), so exact
+                    // equality almost never holds for device-location users
+                    // even when they haven't moved — which silently skipped
+                    // every next-window publish. Same "same place" radius the
+                    // label-reuse path uses.
+                    val sameLocation = nextSnapshot?.location
+                        ?.isWithin(REUSE_LABEL_RADIUS_METERS, of = location) == true
                     if (nextSnapshot != null &&
                         nextSnapshot.period == expectedPeriod &&
                         nextSnapshot.bundle.today.date == expectedDate &&
-                        nextSnapshot.location == location
+                        sameLocation
                     ) {
                         publishNextWindowFromSnapshot(nextSnapshot, prefs)
                     } else {
@@ -455,10 +470,23 @@ class FetchAndNotifyWorker(
         // without a fetch. A snapshot for the wrong day — e.g. this morning's
         // already-delivered daytime cast when the user wants tomorrow's daily —
         // is skipped and falls through to a fresh fetch.
-        val cached = listOfNotNull(
-            app.insightCache.thisPeriod.first(),
-            app.insightCache.nextPeriod.first(),
-        ).firstOrNull { it.period == requestedPeriod && it.bundle.today.date == targetDate }
+        // A corrupted cache (DataStore IO error, snapshot that no longer
+        // deserializes) degrades to a miss — Play falls through to the fresh
+        // fetch below — rather than throwing out of the worker: an unhandled
+        // throw here becomes an unstamped Result.failure (no KEY_REASON, no
+        // KEY_COMPLETED_AT), which both surfaces a refresh-failure banner the
+        // Play contract says it never should and mis-sorts against other
+        // terminal work in TodayViewModel.selectStatus.
+        val cached = runCatching {
+            listOfNotNull(
+                app.insightCache.thisPeriod.first(),
+                app.insightCache.nextPeriod.first(),
+            ).firstOrNull { it.period == requestedPeriod && it.bundle.today.date == targetDate }
+        }.getOrElse {
+            if (it is CancellationException) throw it
+            DiagLog.e(TAG, "Play cache read failed; treating as a miss.", it)
+            null
+        }
 
         if (cached != null) {
             // Cache hit replays without fetching; signal "fetch is done"
@@ -467,9 +495,19 @@ class FetchAndNotifyWorker(
             // delivery via TodayState.anyWorkActive, which keys off
             // WorkInfo.state directly.)
             markFetchComplete()
-            val insight = app.deriveInsight(cached, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
-            val prose = formatProse(insight, prefs)
-            return deliverBestEffort(insight, prefs, prose, "Replayed", forceNotifyAndSpeak)
+            return try {
+                val insight = app.deriveInsight(cached, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
+                val prose = formatProse(insight, prefs)
+                deliverBestEffort(insight, prefs, prose, "Replayed", forceNotifyAndSpeak)
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (t: Throwable) {
+                // Same best-effort posture as deliverBestEffort: a replay
+                // that fails to derive shouldn't surface as a refresh
+                // failure — whatever's on screen is still valid.
+                DiagLog.e(TAG, "Play replay derivation failed.", t)
+                Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
+            }
         }
 
         // Cache miss — fetch fresh for the requested period.
@@ -973,7 +1011,13 @@ class FetchAndNotifyWorker(
         return try {
             manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ||
                 manager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)
-        } catch (_: Throwable) {
+        } catch (e: Exception) {
+            // Some OEM builds throw from isProviderEnabled. Returning false
+            // reclassifies a transient device-location failure as permanent
+            // misconfiguration (REASON_NO_LOCATION failure instead of a
+            // retry), so leave a trace for when that misdiagnosis is being
+            // chased in the field.
+            DiagLog.w(TAG, "isProviderEnabled threw; treating location services as off", e)
             false
         }
     }

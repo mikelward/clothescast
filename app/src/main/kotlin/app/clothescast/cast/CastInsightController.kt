@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.diag.DiagLog
 import app.clothescast.net.NetworkErrorKind
 import app.clothescast.net.classifyNetworkError
+import app.clothescast.tts.prepareForTts
 import com.google.android.gms.cast.CastMediaControlIntent
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadRequestData
@@ -139,8 +140,13 @@ class CastInsightController(
         // Other synth failures (network, etc.) still surface as a cast error
         // so the user knows audio genuinely broke.
         val pcm = try {
+            // Same spoken-text transform every other speech path applies
+            // (AndroidTtsSpeaker, GeminiTtsSpeaker — see the TtsSpeaker
+            // contract): brand pronounced as two syllables, English degree
+            // glyphs spelled out. Without it the "Cast now" audio diverges
+            // from the scheduled cast it exists to preview.
             ttsClient.synthesize(
-                text = prose,
+                text = prepareForTts(prose, locale),
                 voiceName = voiceName,
                 locale = locale,
                 style = style,

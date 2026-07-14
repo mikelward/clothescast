@@ -31,13 +31,13 @@ internal const val CHANNEL_PLAYBACK = "playback_v2"
 private const val CHANNEL_WEATHER_ALERTS_RETIRED = "weather_alerts_v1"
 // Pre-collapse forecast channels. The three of them — morning (HIGH), evening-
 // with-events (DEFAULT), evening-empty (LOW silent) — were replaced by the
-// single DEFAULT-importance CHANNEL_SCHEDULED_INSIGHT above. The
-// notifyOnlyOnEvents preference now drives "post or don't post" at the worker
-// level, not channel routing, so the silent channel no longer makes sense:
-// the user picked "only on events", so an empty evening should produce no
-// notification, not a quiet one. And both periods at the same DEFAULT
-// importance keeps a night-worker primary tonight slot just as loud as a
-// day-worker primary morning slot.
+// single CHANNEL_SCHEDULED_INSIGHT above (now LOW/silent — see the v1
+// retirement below). The notifyOnlyOnEvents preference now drives "post or
+// don't post" at the worker level, not channel routing, so the silent channel
+// no longer makes sense: the user picked "only on events", so an empty
+// evening should produce no notification, not a quiet one. And both periods
+// at the same importance keeps a night-worker primary tonight slot reading
+// exactly like a day-worker primary morning slot.
 private const val CHANNEL_DAILY_INSIGHT_RETIRED_V1 = "daily_insight_v1"
 // Brief interim ID introduced and immediately collapsed into
 // CHANNEL_SCHEDULED_INSIGHT — retire it too in case any dev / TestFlight build
@@ -80,8 +80,8 @@ object NotificationChannelRegistrar {
         // settings forever.
         //
         // The collapse from three forecast channels into one is a fresh
-        // start: we create the new channel at DEFAULT regardless of what
-        // the user did to the old ones. Trying to migrate the prior opt-out
+        // start: we create the new channel at its own importance (LOW,
+        // below) regardless of what the user did to the old ones. Trying to migrate the prior opt-out
         // state has no clean answer when three channels with different
         // user preferences fold into one — and surprise-muting a user who
         // only silenced (say) the empty-evening silent channel would

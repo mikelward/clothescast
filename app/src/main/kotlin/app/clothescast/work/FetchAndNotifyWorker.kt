@@ -16,7 +16,6 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
@@ -64,7 +63,6 @@ import app.clothescast.tts.InsightTtsUtterance
 import app.clothescast.tts.insightTtsUtterance
 import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.tts.withSpeechAudioFocus
-import app.clothescast.ui.today.WorkInfoLite
 import app.clothescast.ui.today.toLite
 import app.clothescast.R
 import app.clothescast.ui.garment.outfitCardInfoLines
@@ -2036,13 +2034,13 @@ class FetchAndNotifyWorker(
         // failure, which KEEP would let swallow every later kick (the widget
         // then stays on its empty state and re-opening the app can't fix it).
         const val UNIQUE_WORK_NAME_SILENT = "silent_insight_refresh"
-        // Distinct queue from the daily / tonight runs so an offline Play
-        // tap sitting in the queue can't block the morning alarm: alarm
-        // enqueues use ExistingWorkPolicy.KEEP and would otherwise be
-        // dropped in favour of the pending play, leaving the user
-        // listening to yesterday's cached insight at 7am instead of the
-        // fresh forecast. Race vs. concurrent plays is handled in the
-        // UI gate — see TodayState.anyWorkActive.
+        // Distinct queue from the daily / tonight runs so a Play tap and
+        // the alarms can't cancel each other: every enqueue uses
+        // ExistingWorkPolicy.REPLACE, so on a shared queue whichever lands
+        // second would silently wipe the other — a 7am alarm cancelling an
+        // offline Play still waiting on connectivity, or a Play tap
+        // cancelling an in-flight scheduled delivery. Race vs. concurrent
+        // plays is handled in the UI gate — see TodayState.anyWorkActive.
         const val UNIQUE_WORK_NAME_PLAY = "insight_play"
 
         // Foreground-service notification ID for the playback service. Distinct
@@ -2579,28 +2577,3 @@ class FetchAndNotifyWorker(
     }
 }
 
-/**
- * True when [infos] (one observed queue's WorkManager history) shows a *stale*
- * no-location failure: nothing currently active, and the most-recent terminal
- * run is a [FetchAndNotifyWorker.REASON_NO_LOCATION] failure. Mirrors
- * [app.clothescast.ui.today.selectStatus]'s "latest terminal by completed-at,
- * active runs win" rule so the cache-only recovery clears exactly the failure
- * the Today banner would otherwise surface.
- *
- * Top-level + [WorkInfoLite]-based (rather than a private method querying
- * WorkManager) so it's directly unit-testable — same pattern as `selectStatus`.
- */
-internal fun staleNoLocationFailure(infos: List<WorkInfoLite>): Boolean {
-    val active = infos.any {
-        it.state == WorkInfo.State.ENQUEUED ||
-            it.state == WorkInfo.State.RUNNING ||
-            it.state == WorkInfo.State.BLOCKED
-    }
-    if (active) return false
-    val latest = infos
-        .filter { it.state == WorkInfo.State.SUCCEEDED || it.state == WorkInfo.State.FAILED }
-        .maxByOrNull { it.outputData.getLong(FetchAndNotifyWorker.KEY_COMPLETED_AT, 0L) }
-        ?: return false
-    return latest.state == WorkInfo.State.FAILED &&
-        latest.outputData.getString(FetchAndNotifyWorker.KEY_REASON) == FetchAndNotifyWorker.REASON_NO_LOCATION
-}

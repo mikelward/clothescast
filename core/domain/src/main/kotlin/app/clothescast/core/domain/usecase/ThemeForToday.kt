@@ -53,7 +53,16 @@ class ThemeForToday(
         // A remembrance day mutes every playful clause for the day.
         val funnies = if (primaries.any { it.solemn }) emptyList() else catalogMatches.filter { it.isFunny }
 
+        // A curated primary that already fired suppresses the calendar
+        // fallback outright — without this, a holiday force-ON'd from
+        // outside the enabled countries (which hasCatalogMatch's country
+        // gate can't see) would double up with the synced calendar's event
+        // for the same day ("Happy Australia Day and Australia Day").
+        // hasCatalogMatch still handles the no-primary cases: an
+        // OFF-overridden holiday whose country is enabled keeps suppressing
+        // the fallback (explicit opt-out beats the calendar event).
         val calendarHolidays = if (themeFromCalendarHolidays &&
+            primaries.isEmpty() &&
             !holidayResolver.hasCatalogMatch(date, enabledCountries)
         ) {
             events.firstOrNull { it.kind == EventKind.PUBLIC_HOLIDAY }

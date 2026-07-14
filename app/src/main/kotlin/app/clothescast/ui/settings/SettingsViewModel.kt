@@ -692,9 +692,17 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setHolidayCountryOverride(code, override) }
     }
 
+    // The list setters below read-modify-write against _state, so they update
+    // _state synchronously (before the suspending DataStore write) the way
+    // [setDeviceVoice] does. Without that, a second edit landing before the
+    // first write's preferences-flow round trip reads the stale list and
+    // silently reverts the first edit — two quick rule edits or drag-reorders
+    // are enough. The DataStore emission that follows is idempotent.
     fun addClothesRule(rule: ClothesRule) {
         viewModelScope.launch {
-            settingsRepository.setClothesRules(_state.value.clothesRules + rule)
+            val updated = _state.value.clothesRules + rule
+            _state.update { it.copy(clothesRules = updated) }
+            settingsRepository.setClothesRules(updated)
         }
     }
 
@@ -702,7 +710,9 @@ class SettingsViewModel(
         viewModelScope.launch {
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
-            settingsRepository.setClothesRules(current.toMutableList().apply { this[index] = rule })
+            val updated = current.toMutableList().apply { this[index] = rule }
+            _state.update { it.copy(clothesRules = updated) }
+            settingsRepository.setClothesRules(updated)
         }
     }
 
@@ -710,7 +720,9 @@ class SettingsViewModel(
         viewModelScope.launch {
             val current = _state.value.clothesRules
             if (index !in current.indices) return@launch
-            settingsRepository.setClothesRules(current.toMutableList().apply { removeAt(index) })
+            val updated = current.toMutableList().apply { removeAt(index) }
+            _state.update { it.copy(clothesRules = updated) }
+            settingsRepository.setClothesRules(updated)
         }
     }
 
@@ -725,6 +737,7 @@ class SettingsViewModel(
             val current = _state.value.homeSectionOrder
             if (from !in current.indices || to !in current.indices || from == to) return@launch
             val reordered = current.toMutableList().apply { add(to, removeAt(from)) }
+            _state.update { it.copy(homeSectionOrder = reordered) }
             settingsRepository.setHomeSectionOrder(reordered)
         }
     }

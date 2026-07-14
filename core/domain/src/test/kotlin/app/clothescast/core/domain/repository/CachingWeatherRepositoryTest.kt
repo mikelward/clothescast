@@ -150,6 +150,56 @@ class CachingWeatherRepositoryTest {
     }
 
     @Test
+    fun `bundle dated behind a device east of the location still hits cache`() = runTest {
+        // Device in Sydney (UTC+10), saved location London (UTC+1): from
+        // Sydney's midnight until London's, the device date runs a day ahead
+        // of the bundle's location-local today.date. The bundle still
+        // describes London's current day, so the cache must hit — judging it
+        // by the device date would refetch on every call for hours (each
+        // refetch returns the same London-dated bundle, still "stale").
+        val londonBundle = ForecastBundle(
+            today = today,
+            yesterday = yesterday,
+            forecastZone = java.time.ZoneId.of("Europe/London"),
+        )
+        val delegate = CountingRepository(response = { londonBundle })
+        // 2026-04-25T20:00Z = Apr 26 in Sydney, still Apr 25 in London.
+        val clock = object : Clock() {
+            override fun instant(): Instant = Instant.parse("2026-04-25T20:00:00Z")
+            override fun getZone() = java.time.ZoneId.of("Australia/Sydney")
+            override fun withZone(zone: java.time.ZoneId): Clock = this
+        }
+        val subject = CachingWeatherRepository(delegate, clock = clock)
+
+        subject.fetchForecast(london)
+        subject.fetchForecast(london)
+
+        delegate.callCount.get() shouldBe 1
+    }
+
+    @Test
+    fun `cache invalidated when the date rolls over in the forecast zone`() = runTest {
+        // The mirror of the case above: once the *location's* date rolls
+        // past the bundle's today.date, the bundle describes yesterday and
+        // must refetch even inside the TTL — regardless of the device zone.
+        val londonBundle = ForecastBundle(
+            today = today,
+            yesterday = yesterday,
+            forecastZone = java.time.ZoneId.of("Europe/London"),
+        )
+        val delegate = CountingRepository(response = { londonBundle })
+        // Bundle's today.date is 2026-04-25; London rolls to Apr 26 at 23:00Z.
+        val clock = MutableClock(Instant.parse("2026-04-25T22:50:00Z"))
+        val subject = CachingWeatherRepository(delegate, clock = clock)
+
+        subject.fetchForecast(london)
+        clock.advance(Duration.ofMinutes(15))
+        subject.fetchForecast(london)
+
+        delegate.callCount.get() shouldBe 2
+    }
+
+    @Test
     fun `cache invalidated when local date rolls over even within TTL`() = runTest {
         val delegate = CountingRepository(response = ::bundle)
         // Fixture bundle's today.date = 2026-04-25. Start the clock at

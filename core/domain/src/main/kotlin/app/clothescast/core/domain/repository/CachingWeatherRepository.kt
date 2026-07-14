@@ -27,10 +27,9 @@ import kotlin.math.roundToLong
  */
 class CachingWeatherRepository(
     private val delegate: WeatherRepository,
-    // Default to the device's local zone so the date-rollover check below
-    // compares against the same wall-clock day the user — and the insight
-    // worker, which stamps `Insight.forDate` from the device's local date —
-    // is looking at.
+    // The date-rollover check reads the current date in the cached bundle's
+    // own forecast zone via clock.instant(); the clock's zone only matters
+    // as the fallback for legacy bundles that don't carry a zone.
     private val clock: Clock = Clock.systemDefaultZone(),
     private val ttl: Duration = Duration.ofHours(1),
     private val locationGridDegrees: Double = 0.01,
@@ -77,18 +76,29 @@ class CachingWeatherRepository(
         val key = keyOf(location)
         val freshnessKey = freshnessKeyProvider(location)
         val now = clock.instant()
-        val today = LocalDate.now(clock)
         val cached = entry
-        // Date check uses `isBefore` rather than `==` because Open-Meteo
-        // returns dates in the forecast location's local zone (timezone=auto).
-        // When the device zone is east of the location's zone, the cached
-        // bundle's today.date can sit one day ahead of the device's local
-        // date without being stale — only invalidate when it lags behind.
+        // Open-Meteo returns dates in the forecast location's local zone
+        // (timezone=auto), so "the bundle no longer describes today" is
+        // judged against the *location's* current date, not the device's.
+        // Comparing against the device date breaks whenever the two zones
+        // straddle midnight: a device east of the location rolls its date
+        // hours earlier, and every refetch returns the same location-local
+        // date — still "stale" — so the cache would be defeated (and
+        // Open-Meteo hammered) for the rest of the device's day. Bundles
+        // without a zone (legacy fixtures) fall back to the device date.
+        // `isBefore` rather than `==` so a bundle dated ahead (device west
+        // of the location) still hits.
+        val bundleStale = cached != null && run {
+            val todayAtLocation = cached.bundle.forecastZone
+                ?.let { now.atZone(it).toLocalDate() }
+                ?: LocalDate.now(clock)
+            cached.bundle.today.date.isBefore(todayAtLocation)
+        }
         if (
             cached != null &&
             cached.key == key &&
             cached.freshnessKey == freshnessKey &&
-            !cached.bundle.today.date.isBefore(today) &&
+            !bundleStale &&
             Duration.between(cached.fetchedAt, now) < ttl
         ) {
             return@withLock cached.bundle

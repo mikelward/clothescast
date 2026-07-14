@@ -354,6 +354,55 @@ class ConsensusBlendTest {
     }
 
     @Test
+    fun `a model reporting the DST fall-back hour twice votes once in the mean`() {
+        // On the fall-back day Open-Meteo's local-time array repeats an hour,
+        // so a model's series carries two physical entries at the same
+        // LocalDateTime. The pair must collapse to one vote per model —
+        // otherwise the duplicated model is double-weighted against a model
+        // that reported the hour once (the double-voting policy
+        // consensusPerModelAverage already documents and guards).
+        val best = listOf(hour(1, temp = 12.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                // Both physical 01:00s at 10° → one collapsed 10° vote.
+                "gfs_seamless" to listOf(
+                    perModel(1, apparent = 9.0, air = 10.0),
+                    perModel(1, apparent = 9.0, air = 10.0),
+                ),
+                "ecmwf_ifs04" to listOf(perModel(1, apparent = 15.0, air = 16.0)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel)
+
+        blended.shouldNotBeNull()
+        // Equal-weight mean (10+16)/2 = 13, not the double-vote (10+10+16)/3 = 12.
+        blended.single().temperatureC shouldBe (13.0 plusOrMinus 1e-9)
+        blended.single().feelsLikeC shouldBe (12.0 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `a lone model's duplicated fall-back hour is not a consensus`() {
+        // One model reporting the repeated hour twice is still one model —
+        // its duplicate pair must not clear the two-candidates bar and
+        // overwrite best_match with a single-source "consensus".
+        val best = listOf(hour(1, temp = 12.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(
+                    perModel(1, apparent = 9.0, air = 10.0),
+                    perModel(1, apparent = 9.0, air = 10.0),
+                ),
+                // Second model exists but covers a different hour, so the
+                // blend has no ≥2-model hour and returns null overall.
+                "ecmwf_ifs04" to listOf(perModel(5, apparent = 15.0, air = 16.0)),
+            ),
+        )
+
+        blendConsensusHourly(today, best, perModel).shouldBeNull()
+    }
+
+    @Test
     fun `condition is aggregated modally across models`() {
         // best_match says CLEAR but two of three consulted models say RAIN —
         // mode wins. This is the case the modal aggregation was added to

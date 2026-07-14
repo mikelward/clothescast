@@ -347,7 +347,7 @@ class FetchAndNotifyWorker(
             null
         } else {
             runCatching {
-                app.insightCache.deliveredForToday(today, period, prefs, diagLog = { DiagLog.i(TAG, it) })
+                app.insightCache.deliveredForToday(today, period, prefs, overnight = overnight, diagLog = { DiagLog.i(TAG, it) })
             }.getOrNull()
         }
         if (cached != null) {

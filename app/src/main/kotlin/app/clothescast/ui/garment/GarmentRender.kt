@@ -1133,11 +1133,14 @@ private data class ConditionsStripCacheKey(
 )
 
 // Small bound: a placed conditions widget hits a handful of distinct
-// (size, theme, label) tuples across a refresh cycle. Mirrors [bitmapCache].
-private val conditionsStripCache = object : LinkedHashMap<ConditionsStripCacheKey, Bitmap>(16, 0.75f, true) {
-    override fun removeEldestEntry(eldest: Map.Entry<ConditionsStripCacheKey, Bitmap>): Boolean = size > MAX
-    private val MAX = 16
-}
+// (size, theme, label) tuples across a refresh cycle. Mirrors [bitmapCache],
+// including the synchronized wrapper — see the note there.
+private val conditionsStripCache: MutableMap<ConditionsStripCacheKey, Bitmap> = java.util.Collections.synchronizedMap(
+    object : LinkedHashMap<ConditionsStripCacheKey, Bitmap>(16, 0.75f, true) {
+        override fun removeEldestEntry(eldest: Map.Entry<ConditionsStripCacheKey, Bitmap>): Boolean = size > MAX
+        private val MAX = 16
+    },
+)
 
 // Geometry of the conditions strip, expressed as fractions of the render
 // height so the layout scales cleanly with the widget cell.
@@ -1271,11 +1274,20 @@ private const val INFO_BOTTOM_PAD = 60
  * a couple of size variants, so a small bound covers the realistic working
  * set without holding onto stale bitmaps after a colour change. Customising
  * a colour invalidates only that garment's entry (different cache key).
+ *
+ * Synchronized because the renderers run on several threads at once — the
+ * main thread (Today screen, MQTT publish), WorkManager workers (the
+ * notification's large icon), and Glance widget composition — and an
+ * access-ordered LinkedHashMap structurally mutates its linked list on every
+ * get(), so even concurrent reads corrupt it. Worst case under the lock is a
+ * duplicate render when two threads miss the same key, which is harmless.
  */
-private val bitmapCache = object : LinkedHashMap<BitmapCacheKey, Bitmap>(16, 0.75f, true) {
-    override fun removeEldestEntry(eldest: Map.Entry<BitmapCacheKey, Bitmap>): Boolean = size > MAX
-    private val MAX = 32
-}
+private val bitmapCache: MutableMap<BitmapCacheKey, Bitmap> = java.util.Collections.synchronizedMap(
+    object : LinkedHashMap<BitmapCacheKey, Bitmap>(16, 0.75f, true) {
+        override fun removeEldestEntry(eldest: Map.Entry<BitmapCacheKey, Bitmap>): Boolean = size > MAX
+        private val MAX = 32
+    },
+)
 
 /**
  * Builds the original-ARGB → new-ARGB substitution map for one garment.

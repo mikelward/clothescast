@@ -60,7 +60,14 @@ fun blendConsensusHourly(
     // calendar day before looking up consensus candidates.
     val byHour = mutableMapOf<java.time.LocalDateTime, MutableList<PerModelHour>>()
     for (entries in models.values) {
-        for (entry in entries) {
+        // On the DST fall-back day Open-Meteo's local-time array repeats a
+        // wall-clock hour, so one model can carry two physical entries at the
+        // same LocalDateTime. Collapse those to one averaged entry per model
+        // first — otherwise that model votes twice in the hour's cross-model
+        // mean (and a lone model's duplicated pair would even clear the
+        // ≥2-candidates bar by itself). Mirrors the per-model pre-pass
+        // [consensusPerModelAverage] documents for the same day.
+        for (entry in collapseDuplicateHours(entries)) {
             byHour.getOrPut(entry.time) { mutableListOf() }.add(entry)
         }
     }
@@ -155,6 +162,40 @@ fun blendConsensusHourly(
     // Stable sort keeps a DST fall-back day's duplicated wall-clock hour as
     // two adjacent entries in their original order.
     return (replaced + synthesized).sortedBy { it.time }
+}
+
+/**
+ * One entry per wall-clock timestamp for a single model's series. The DST
+ * fall-back day's repeated hour is averaged into a single entry: numeric
+ * fields skip nulls (a null pair stays null rather than becoming a synthetic
+ * zero), the condition takes the more severe of the pair — the same tiebreak
+ * posture as [consensusCondition]. On the 364 other days this is an identity
+ * pass-through.
+ */
+private fun collapseDuplicateHours(entries: List<PerModelHour>): List<PerModelHour> {
+    if (entries.distinctBy { it.time }.size == entries.size) return entries
+    return entries.groupBy { it.time }.map { (_, dupes) ->
+        if (dupes.size == 1) dupes.first() else dupes.averagedIntoOne()
+    }
+}
+
+private fun List<PerModelHour>.averagedIntoOne(): PerModelHour {
+    fun avgOrNull(select: (PerModelHour) -> Double?): Double? =
+        mapNotNull(select).takeIf { it.isNotEmpty() }?.average()
+    return PerModelHour(
+        time = first().time,
+        apparentTemperatureC = map { it.apparentTemperatureC }.average(),
+        temperatureC = map { it.temperatureC }.average(),
+        precipitationProbabilityPct = avgOrNull { it.precipitationProbabilityPct },
+        precipitationMm = avgOrNull { it.precipitationMm },
+        windSpeedKmh = avgOrNull { it.windSpeedKmh },
+        relativeHumidityPct = avgOrNull { it.relativeHumidityPct },
+        cloudCoverPct = avgOrNull { it.cloudCoverPct },
+        shortwaveRadiationWm2 = avgOrNull { it.shortwaveRadiationWm2 },
+        sunshineDurationSec = avgOrNull { it.sunshineDurationSec },
+        uvIndex = avgOrNull { it.uvIndex },
+        condition = mapNotNull { it.condition }.maxByOrNull { it.severityRank() },
+    )
 }
 
 /**

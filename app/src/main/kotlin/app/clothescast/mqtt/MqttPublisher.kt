@@ -858,11 +858,17 @@ class MqttPublisher(
             )
         }
 
+        // ASCII [a-z0-9] only — not isLetterOrDigit, which is Unicode-aware.
+        // The suffix lands in Home Assistant discovery topic segments and
+        // default_entity_id, both of which HA validates as slugs; a base
+        // topic like `wetter/küche` would otherwise pass `ü` through and HA
+        // would reject every discovery config (publishes "succeed", no
+        // entities ever appear).
         private fun discoveryIdSuffix(baseTopic: String): String =
             baseTopic.trim().trim('/')
                 .ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
                 .lowercase()
-                .map { if (it.isLetterOrDigit()) it else '_' }
+                .map { if (it in 'a'..'z' || it in '0'..'9') it else '_' }
                 .joinToString("")
                 .replace(Regex("_+"), "_")
                 .trim('_')

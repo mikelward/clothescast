@@ -743,6 +743,23 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `Home Assistant discovery ids fold non-ASCII letters to underscores`() {
+        // HA validates discovery topic segments and default_entity_id as
+        // slugs ([a-z0-9_]); a Unicode-aware sanitizer would pass `ü`
+        // through and HA would reject every discovery config while the
+        // forecast publishes themselves kept succeeding.
+        val entries = MqttPublisher.homeAssistantDiscoveryEntries("wetter/küche")
+
+        entries.map { it.configTopic } shouldContainAll listOf(
+            "homeassistant/sensor/clothescast_wetter_k_che_day/config",
+        )
+        val day = Json.parseToJsonElement(
+            entries.first { it.configTopic == "homeassistant/sensor/clothescast_wetter_k_che_day/config" }.payload,
+        ).jsonObject
+        day["default_entity_id"]!!.jsonPrimitive.content shouldBe "sensor.clothescast_wetter_k_che_day"
+    }
+
+    @Test
     fun `Home Assistant discovery failure does not block forecast publish outcome`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(

@@ -607,6 +607,35 @@ class InsightCacheTest {
     }
 
     @Test
+    fun `deliveredForToday returns null on an overnight mismatch`() = runTest {
+        // A pre-dawn silent refresh leaves an ongoing-overnight snapshot in
+        // THIS_PERIOD: period=TONIGHT, overnight=true, dated the real current
+        // day. The same evening's tonight alarm (overnight=false — the coming
+        // night) must not dedup against it, or it would redeliver the night
+        // that ended this morning instead of fetching the coming one.
+        subject.store(
+            InsightCache.Slot.THIS_PERIOD,
+            sample.copy(period = ForecastPeriod.TONIGHT, overnight = true),
+        )
+
+        subject.deliveredForToday(today, ForecastPeriod.TONIGHT, basePrefs, overnight = false) shouldBe null
+    }
+
+    @Test
+    fun `deliveredForToday matches an overnight snapshot for an overnight run`() = runTest {
+        // The mirror case: a post-midnight tonight alarm (a night-owl
+        // schedule) runs in the same ongoing-overnight window the cached
+        // snapshot was captured in — that's a legitimate same-night dedup.
+        subject.store(
+            InsightCache.Slot.THIS_PERIOD,
+            sample.copy(period = ForecastPeriod.TONIGHT, overnight = true),
+        )
+
+        val result = subject.deliveredForToday(today, ForecastPeriod.TONIGHT, basePrefs, overnight = true)
+        result?.insight?.period shouldBe ForecastPeriod.TONIGHT
+    }
+
+    @Test
     fun `deliveredForToday ignores the NEXT_PERIOD slot`() = runTest {
         // The morning alarm shouldn't dedup against yesterday-evening's
         // pre-cached tomorrow-daytime snapshot in NEXT_PERIOD; otherwise it

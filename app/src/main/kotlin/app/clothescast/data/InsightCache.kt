@@ -176,6 +176,16 @@ class InsightCache(
         today: LocalDate,
         period: ForecastPeriod,
         prefs: UserPreferences,
+        // The caller's window flavor for TONIGHT: true in the post-midnight
+        // tail (the ongoing overnight), false for the coming night. A date +
+        // period match alone can't tell the two apart — both anchor
+        // bundle.today.date on the real current day — and they describe
+        // different nights: a pre-dawn silent refresh leaves an
+        // overnight=true snapshot in THIS_PERIOD, and without this check the
+        // same evening's tonight alarm would dedup against it and redeliver
+        // the night that ended this morning instead of fetching the coming
+        // one.
+        overnight: Boolean = false,
         // Forwarded to [DeriveInsight] so cache-hit deliveries (debug-tap
         // redelivery later in the day, alarm re-fires) emit the same
         // `delta:` diagnostic line a fresh fetch would. The 300-line
@@ -185,7 +195,12 @@ class InsightCache(
         diagLog: (String) -> Unit = {},
     ): DailyInsightResult? {
         val snapshot = thisPeriod.first() ?: return null
-        if (snapshot.bundle.today.date != today || snapshot.period != period) return null
+        if (snapshot.bundle.today.date != today ||
+            snapshot.period != period ||
+            snapshot.overnight != overnight
+        ) {
+            return null
+        }
         return deriveInsight(snapshot, prefs, diagLog = diagLog)
     }
 

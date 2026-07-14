@@ -36,6 +36,7 @@ import kotlinx.coroutines.delay
  * by scanning a QR code.
  *
  * States:
+ *  - **Starting**: server bind in flight (first frames / after retry); plain progress.
  *  - **Waiting**: shows QR code + "scan with your phone" instructions.
  *  - **Received**: shows a brief success message, then calls [onSuccess] after a short delay.
  *  - **Timeout**: the 5-minute window expired; offers retry or cancel.
@@ -58,6 +59,7 @@ fun PairingScreen(
             contentAlignment = Alignment.Center,
         ) {
             when (val s = state) {
+                PairingState.Starting -> CircularProgressIndicator()
                 is PairingState.Waiting -> WaitingContent(
                     state = s,
                     onCancel = onCancel,

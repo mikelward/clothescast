@@ -129,7 +129,16 @@ class PairingServer(
         // Revoke the token gate first, so no submission arriving after this
         // point can reach [onKeyReceived] — regardless of how long the
         // engine's asynchronous wind-down below takes (or whether it fails).
-        active = false
+        // The revocation takes the same monitor the POST handler holds while
+        // re-checking [active] and invoking the callback: without it, a
+        // submission that passed its re-check could still be running
+        // [onKeyReceived] as stop() returns, and the caller would tear down
+        // pairing state a beat before a key it never expected gets stored.
+        // Under the lock, an in-flight accepted callback finishes before
+        // stop() returns, and any later submission sees active == false.
+        synchronized(this) {
+            active = false
+        }
         val srv = server
         server = null
         // Engine shutdown blocks the calling thread for up to its timeout,

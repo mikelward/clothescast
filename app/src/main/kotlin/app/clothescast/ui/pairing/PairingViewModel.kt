@@ -30,6 +30,15 @@ private const val PAIRING_TIMEOUT_MS = 5 * 60 * 1_000L
 private const val QR_SIZE_PX = 512
 
 sealed interface PairingState {
+    /**
+     * The LAN-address lookup and server bind are still in flight — the
+     * screen's first frames, and again briefly after a retry. Rendered as
+     * plain progress; without this state the screen initialized to [Error]
+     * and flashed "couldn't start" (with a live Retry button that could
+     * spawn a competing second start) for the duration of every bind.
+     */
+    data object Starting : PairingState
+
     /** Server is running and waiting for the phone to POST the key. */
     data class Waiting(val qrBitmap: Bitmap, val url: String) : PairingState
 
@@ -62,7 +71,7 @@ class PairingViewModel(
     private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<PairingState>(PairingState.Error)
+    private val _state = MutableStateFlow<PairingState>(PairingState.Starting)
     val state: StateFlow<PairingState> = _state.asStateFlow()
 
     private var server: PairingServer? = null
@@ -79,6 +88,10 @@ class PairingViewModel(
     }
 
     private fun startPairing() {
+        // Retry arrives from the Timeout / Error screens — flip back to
+        // progress so the stale terminal UI (and its Retry button) doesn't
+        // linger while the new server binds.
+        _state.value = PairingState.Starting
         // Tracked so [stopServer] can cancel a start still suspended in
         // srv.start(): at that point [server] is unassigned, so without the
         // job cancel a retry would race the pending launch — the old

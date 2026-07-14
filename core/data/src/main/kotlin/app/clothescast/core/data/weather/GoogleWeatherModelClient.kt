@@ -206,9 +206,11 @@ class GoogleWeatherModelClient(
                 url {
                     protocol = URLProtocol.HTTPS
                     host = GOOGLE_WEATHER_HOST
-                    // Pass already-encoded segments so the `:lookup` colon
-                    // survives — encoding it (via plain `path(...)`) to %3A
-                    // would make Google 404 the request.
+                    // `hours:lookup` must keep its literal colon. Plain
+                    // `path(...)` would too — Ktor's segment encoder
+                    // preserves ':' (GeminiTtsClient relies on that for
+                    // `<model>:generateContent`) — so pre-encoded segments
+                    // here are explicitness, not a workaround.
                     encodedPathSegments = listOf("v1", "forecast", "hours:lookup")
                 }
                 // Send the key as a header, NOT a `key=` query param: on an HTTP

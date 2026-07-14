@@ -5,7 +5,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
 import androidx.work.Constraints
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker.Result
 import androidx.work.NetworkType
@@ -24,7 +23,6 @@ import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.repository.ForecastBundle
 import app.clothescast.data.InsightCache
-import app.clothescast.ui.today.WorkInfoLite
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.longs.shouldBeGreaterThan
@@ -265,51 +263,6 @@ class FetchAndNotifyWorkerTest {
         }
     }
 
-    // --- staleNoLocationFailure (cross-queue recovery predicate) --------
-
-    @Test
-    fun `staleNoLocationFailure is false for an empty history`() {
-        staleNoLocationFailure(emptyList()) shouldBe false
-    }
-
-    @Test
-    fun `staleNoLocationFailure is true when the latest terminal is a no-location failure`() {
-        staleNoLocationFailure(
-            listOf(lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_NO_LOCATION)),
-        ) shouldBe true
-    }
-
-    @Test
-    fun `staleNoLocationFailure ignores the failure while a run is active`() {
-        // A pending / running recovery on the queue means the failure isn't
-        // stale — it's about to be superseded — so don't kick another.
-        staleNoLocationFailure(
-            listOf(
-                lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_NO_LOCATION),
-                lite(WorkInfo.State.ENQUEUED),
-            ),
-        ) shouldBe false
-    }
-
-    @Test
-    fun `staleNoLocationFailure is false when a newer success supersedes the failure`() {
-        staleNoLocationFailure(
-            listOf(
-                lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_NO_LOCATION),
-                lite(WorkInfo.State.SUCCEEDED, completedAt = 200),
-            ),
-        ) shouldBe false
-    }
-
-    @Test
-    fun `staleNoLocationFailure is false for a failure with a different reason`() {
-        // A network / HTTP failure isn't cleared by saving a location, so it's
-        // not ours to supersede from the cache-only path.
-        staleNoLocationFailure(
-            listOf(lite(WorkInfo.State.FAILED, completedAt = 100, reason = FetchAndNotifyWorker.REASON_UNHANDLED)),
-        ) shouldBe false
-    }
-
     @Test
     fun `tonight-disabled success result carries a completed_at stamp`() {
         runBlocking {
@@ -491,19 +444,6 @@ class FetchAndNotifyWorkerTest {
         // overnight flag), so the cache matches on today's date.
         target(ForecastPeriod.TODAY, LocalTime.of(2, 0)) shouldBe date
         target(ForecastPeriod.TONIGHT, LocalTime.of(2, 0)) shouldBe date
-    }
-
-    // Minimal WorkInfoLite for the staleNoLocationFailure pure-function tests.
-    private fun lite(
-        state: WorkInfo.State,
-        completedAt: Long = 0L,
-        reason: String? = null,
-    ): WorkInfoLite {
-        val data = Data.Builder()
-            .putLong(FetchAndNotifyWorker.KEY_COMPLETED_AT, completedAt)
-            .apply { if (reason != null) putString(FetchAndNotifyWorker.KEY_REASON, reason) }
-            .build()
-        return WorkInfoLite(state = state, runAttemptCount = 1, outputData = data)
     }
 
     private fun workInfosFor(name: String): List<WorkInfo> =

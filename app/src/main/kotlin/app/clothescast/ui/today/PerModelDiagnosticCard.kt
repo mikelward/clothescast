@@ -277,9 +277,10 @@ private fun PerModelDiagnosticChart(
         }
     }
 
-    // The line provider matches lines to series by index: overlay lines
-    // first (keyed by [overlayModels] order), then the main consensus line
-    // on top. Pass the theme primary as [mainLineColor] so the consensus
+    // The line provider matches lines to series by index: the main
+    // consensus line first (series index 0 — matching the emission order in
+    // the transaction above), then the overlay lines in [overlayModels]
+    // order. Pass the theme primary as [mainLineColor] so the consensus
     // line matches the temp / precip cards' "main line is theme primary"
     // convention.
     val lineProvider = rememberPinnedLineProvider(overlayModels, mainLineColor)

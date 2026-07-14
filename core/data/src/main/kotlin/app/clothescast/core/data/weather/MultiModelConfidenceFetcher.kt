@@ -531,10 +531,13 @@ internal class MultiModelConfidenceFetcher(
         // Open-Meteo's status for an invalid/withdrawn `models=` entry.
         private const val HTTP_BAD_REQUEST = 400
 
-        // Hard cap on prune-and-retry rounds. Each round drops at least one
-        // model, so the loop already terminates on its own; this is a
-        // belt-and-suspenders bound against a pathological model list (and
-        // keeps a worst case of a handful of requests, not an unbounded storm).
+        // Backstop bound on the fetch loop. `attempts` counts every request
+        // (transient retries included, so those spend from the same budget),
+        // and the prune path gives up once a request lands beyond this count
+        // — worst case one more request than the constant, still a handful.
+        // Each prune round also drops at least one model, so the loop
+        // terminates on its own; this is belt-and-suspenders against a
+        // pathological model list, not the primary bound.
         private const val MAX_FETCH_ATTEMPTS = 6
 
         // Transient-network retry budget. A socket timeout on this best-effort

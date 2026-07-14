@@ -33,8 +33,10 @@ import java.time.ZoneId
  * Rather than confidently render stale data, a widget whose snapshot has elapsed
  * shows its empty state, and we kick a silent refresh on the way out so it
  * self-heals: the worker's cache write fires `updateAll()`, which re-renders the
- * widget off the fresh snapshot. The refresh is enqueued unique+KEEP, so the
- * widgets sharing this loader coalesce onto one in-flight run.
+ * widget off the fresh snapshot. The refresh lands on the unique silent-refresh
+ * queue with REPLACE (see [FetchAndNotifyWorker.enqueueSilentRefresh]), so a
+ * burst of widget repaints collapses to a single trailing run rather than
+ * stacking requests.
  */
 internal suspend fun loadCurrentInsight(context: Context): Pair<Insight, UserPreferences>? {
     val app = context.applicationContext as ClothesCastApplication
@@ -64,7 +66,7 @@ internal suspend fun loadCurrentInsight(context: Context): Pair<Insight, UserPre
             DiagLog.i(
                 TAG,
                 "Widget: cached ${insight.period} insight for ${insight.forDate} isn't the current " +
-                    "window, but a silent refresh can't reach it (post-midnight overnight window) — " +
+                    "window, but a dayOffset=0 refresh couldn't reach that window either — " +
                     "keeping the last-known render rather than churning",
             )
         WidgetCacheAction.REFRESH -> {
@@ -93,13 +95,13 @@ internal enum class WidgetCacheAction {
     REFRESH,
 
     /**
-     * Stale, but a `dayOffset = 0` silent refresh can't reach the current window
-     * — render the last-known snapshot and *don't* kick one. The only such case
-     * is the ongoing overnight window in the post-midnight tail: it's dated
-     * yesterday and would need a `dayOffset = -1` the worker doesn't support, so
-     * a refresh would write the *upcoming* night instead. Keeping the last-known
-     * render until the morning cutoff makes the daytime window reachable again
-     * beats both blanking and churning toward a future-night snapshot.
+     * Stale, but a `dayOffset = 0` silent refresh (which targets the window
+     * dated *today*) couldn't replace it — render the last-known snapshot and
+     * *don't* kick one. Defensive backstop: since the overnight window became
+     * today-anchored ("Show Overnight and Today before dawn"), the current
+     * window's date always equals the device date, so this normally can't
+     * fire; if it somehow does, keeping the last render beats churning toward
+     * a window the refresh can't produce.
      */
     KEEP,
 }
@@ -124,16 +126,16 @@ internal enum class WidgetCacheAction {
  *    can disagree with what a refresh just wrote. Accepting any snapshot younger
  *    than [FetchAndNotifyWorker.SILENT_REFRESH_MIN_AGE] ([RENDER]) guarantees a
  *    freshly written one ends the staleness instead of feeding refresh→reject→…
- *  - **Unreachable window ([KEEP]).** A `dayOffset = 0` refresh can only produce
- *    the window dated *today*; the ongoing overnight window post-midnight is
- *    dated yesterday, so a refresh can't reach it and would write the upcoming
- *    night. We render the last-known snapshot without refreshing until the
- *    morning cutoff.
+ *  - **Unreachable window ([KEEP]).** Defensive backstop: a `dayOffset = 0`
+ *    refresh targets the window dated *today*, so if the current window's date
+ *    ever trailed the device date the refresh couldn't reach it. Not a live
+ *    case since the overnight window became today-anchored (see the note above
+ *    the branch); if it recurs, keeping the last-known render beats churning.
  *
  * In the common case — device location, so forecast zone == device zone — forDate
- * and the device date never diverge, the age gate is moot, and the only [KEEP]
- * is the genuine post-midnight overnight window. The forecast zone still governs
- * only where the chart's "now" line falls, not which cast is current.
+ * and the device date never diverge and the age gate is moot. The forecast zone
+ * still governs only where the chart's "now" line falls, not which cast is
+ * current.
  */
 internal fun widgetCacheAction(
     insight: Insight,

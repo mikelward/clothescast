@@ -56,6 +56,28 @@ class ThemeForTodayTest {
     }
 
     @Test
+    fun `user-on override outside the enabled countries suppresses calendar fallback`() {
+        // An Australian living in the US force-ONs Christmas... any holiday
+        // outside their enabled countries. hasCatalogMatch's country gate
+        // can't see the override, but the ON-overridden primary fires via
+        // resolveAll — the synced calendar's event for the same holiday must
+        // not join as a second contributor ("Happy Christmas and Christmas
+        // Day"). The curated theme alone carries the day.
+        val theme = subject.resolve(
+            date = christmas,
+            overrides = mapOf(HolidayId.CHRISTMAS_DAY to HolidayOverride.ON),
+            enabledCountries = emptySet(),
+            events = listOf(publicHoliday("Christmas Day")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = true,
+        )
+        theme.shouldNotBeNull()
+        theme.id shouldBe HolidayId.CHRISTMAS_DAY
+        // Single contributor → standalone banner, no composed segments.
+        theme.bannerSegments.shouldBeNull()
+    }
+
+    @Test
     fun `country-bucket-off lets calendar fallback fire`() {
         // The user disabled the Global bucket (so curated Christmas doesn't
         // fire via its bucket) but didn't explicitly opt out of Christmas —

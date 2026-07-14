@@ -88,11 +88,12 @@ class HolidayResolver(
      * catalog has no opinion *they* could act on, and the calendar
      * fallback fires correctly.
      *
-     * Per-holiday overrides aren't checked here: an ON override falls
-     * out of [resolve] before this is called, so we only reach the
-     * fallback when resolve returned null. An OFF override on a holiday
-     * whose country *is* enabled still suppresses the fallback — the
-     * user's explicit opt-out beats a calendar event with the same date.
+     * Per-holiday overrides aren't checked here: [ThemeForToday] only
+     * consults this when [resolveAll] produced no primary, so an ON
+     * override (which always fires) never reaches this fallback. An OFF
+     * override on a holiday whose country *is* enabled still suppresses
+     * the fallback — the user's explicit opt-out beats a calendar event
+     * with the same date.
      *
      * Funny-bucket entries never count as a match: a joke observance
      * (Talk Like a Pirate Day, Towel Day) can share a date with a real

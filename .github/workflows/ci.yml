@@ -361,6 +361,102 @@ jobs:
               });
             }
 
+      - name: Post snapshot image diffs as a PR comment
+        # The GitHub mobile app shows "Binary files not rendered" for any
+        # binary diff, so PNG changes in the Files tab — including the
+        # snapshot-regen bot's commits — are invisible from a phone. This
+        # step upserts a single marker-tagged PR comment embedding every
+        # added / changed / removed snapshot inline, with image URLs pinned
+        # to commit SHAs (before → the PR merge-base, after → the branch
+        # head incl. any regen commit just pushed above). Markdown-embedded
+        # images render fine in the mobile app even though file diffs don't.
+        #
+        # Upsert (PATCH the existing marker comment) rather than re-post so
+        # repeated pushes don't pile up comments; when a later push reverts
+        # every snapshot change, the stale comment is rewritten to say so
+        # instead of being left describing a diff that no longer exists.
+        # Automates the hand-posted comments AGENTS.md used to prescribe,
+        # which historically suffered typo'd / stale-SHA image URLs.
+        #
+        # Same-repo PRs only: forks don't get token write access to post
+        # comments (the ui-preview-snapshots artifact below is the fallback
+        # there). Diff is taken against the merge-base so snapshots
+        # committed earlier on the branch (e.g. recorded locally) show up
+        # too, not just this run's regen.
+        if: >-
+          success() &&
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          marker='<!-- ui-snapshot-diffs -->'
+          base_sha=$(git merge-base HEAD "origin/${GITHUB_BASE_REF}")
+          head_sha=$(git rev-parse HEAD)
+
+          # --no-renames keeps statuses to a single-path A/M/D shape (a
+          # rename would otherwise emit R100 with two tab-separated paths).
+          mapfile -t entries < <(git diff --name-status --no-renames \
+            "$base_sha" HEAD -- app/snapshots/ | grep -E '^[AMD]' || true)
+
+          existing=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
+            --jq "[.[] | select((.user.type == \"Bot\") and ((.body // \"\") | contains(\"$marker\")))][0].id // empty")
+
+          if [ ${#entries[@]} -eq 0 ]; then
+            if [ -n "$existing" ]; then
+              # A previous push changed snapshots and a later one reverted
+              # them — rewrite the comment so it doesn't lie.
+              revert_body="$marker"$'\n'"**UI snapshot diffs:** all snapshot changes reverted — no differences vs merge-base as of \`${head_sha:0:7}\`."
+              gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" \
+                -f body="$revert_body" > /dev/null
+              echo "No snapshot changes; updated stale diff comment ${existing}."
+            else
+              echo "No added/changed/removed snapshots vs merge-base; skipping comment."
+            fi
+            exit 0
+          fi
+
+          raw="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}"
+          body="$marker"$'\n'"## UI snapshot diffs"$'\n\n'
+          body+="Auto-posted by CI. After images pinned to \`${head_sha:0:7}\`, before images to the merge-base \`${base_sha:0:7}\`."$'\n'
+          count=0
+          for entry in "${entries[@]}"; do
+            status="${entry%%$'\t'*}"
+            path="${entry#*$'\t'}"
+            name=$(basename "$path")
+            count=$((count+1))
+            # GitHub caps comment bodies at 65536 chars; 20 entries of
+            # URL-heavy markdown stays comfortably under it.
+            if [ "$count" -gt 20 ]; then
+              body+=$'\n'"_…truncated: more than 20 snapshot changes; see the \`ui-preview-snapshots\` artifact or browse \`app/snapshots/\` at \`${head_sha:0:7}\`._"
+              break
+            fi
+            case "$status" in
+              A)
+                body+=$'\n'"**Added — \`${name}\`**"$'\n\n'"<img src=\"${raw}/${head_sha}/${path}\" width=\"320\">"$'\n'
+                ;;
+              D)
+                body+=$'\n'"**Removed — \`${name}\`** (was)"$'\n\n'"<img src=\"${raw}/${base_sha}/${path}\" width=\"320\">"$'\n'
+                ;;
+              *)
+                body+=$'\n'"**Changed — \`${name}\`**"$'\n\n'"| Before | After |"$'\n'"| --- | --- |"$'\n'"| <img src=\"${raw}/${base_sha}/${path}\" width=\"320\"> | <img src=\"${raw}/${head_sha}/${path}\" width=\"320\"> |"$'\n'
+                ;;
+            esac
+          done
+
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" \
+              -f body="$body" > /dev/null
+            echo "Updated snapshot-diff comment ${existing}."
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+              -f body="$body" > /dev/null
+            echo "Posted new snapshot-diff comment."
+          fi
+
       - name: Upload UI preview snapshots (fallback for fork PRs)
         # Same PNGs as the in-repo commit above, kept as a workflow artifact
         # so reviewers on a fork PR (where the commit-back step is skipped

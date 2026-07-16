@@ -216,20 +216,22 @@ new rule the first time something bites you, not the third.
   pushed SHA so a stale review of a superseded commit isn't conflated with
   the current state. The user uses this to know when the automated pass
   is done vs. still pending.
-- **Post a PR comment with image diffs inline whenever snapshots change.**
+- **CI posts snapshot image diffs as a PR comment — don't hand-post.**
   The GitHub mobile app shows "Binary files not rendered" for any binary
   diff (added or modified), so PNG changes in the Files tab — including
   the bot's `ci: regenerate UI snapshots` commits — are invisible from
-  the user's phone, and long-press doesn't expose an "Open in Browser"
-  escape hatch on those links. After each regen commit (or any push that
-  touches `app/snapshots/`), post one PR comment embedding each affected
-  image as `![label](https://github.com/<owner>/<repo>/raw/<sha>/<path>.png)`.
-  For modified files include both the previous and new versions labelled
-  by SHA so the user can flip between them; for added files just the new
-  one. Markdown-embedded images render fine in the mobile app even though
-  file diffs don't. One comment per regen is enough — don't re-post if a
-  later regen reverts the same bytes (the existing thread already shows
-  both states).
+  the user's phone. The "Post snapshot image diffs as a PR comment" step
+  in `ci.yml` handles this: on every same-repo PR run it diffs
+  `app/snapshots/` against the merge-base and upserts a single
+  `<!-- ui-snapshot-diffs -->`-marked comment embedding each affected
+  image, SHA-pinned, with before/after side by side for modified files
+  (markdown-embedded images render fine in the mobile app even though
+  file diffs don't). Hand-posted comments are retired — they historically
+  suffered typo'd / stale-SHA image URLs. Only fork PRs (where CI can't
+  comment) still warrant a manual comment, in the same format:
+  `![label](https://github.com/<owner>/<repo>/raw/<sha>/<path>.png)`,
+  before + after labelled by SHA for modified files, just the new image
+  for added ones.
 - **Report Android versionCode after every merge to `main`.** When a PR
   merges, fetch `main` and run `git rev-list --count origin/main` to get
   the versionCode (`app/build.gradle.kts` derives it from this count).

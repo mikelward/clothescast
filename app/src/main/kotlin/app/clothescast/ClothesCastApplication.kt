@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import app.clothescast.alarm.DailyAlarmScheduler
+import app.clothescast.alarm.reconcileWidgetRefreshChain
 import app.clothescast.calendar.CalendarContractEventReader
 import app.clothescast.cast.CastInsightController
 import app.clothescast.cast.CastRouteDiscovery
@@ -63,6 +64,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.lang.ref.WeakReference
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -477,6 +479,30 @@ class ClothesCastApplication : Application() {
                 }
         }
         applicationScope.launch {
+            // Re-arm the widget-only refresh chain when a schedule boundary
+            // time changes. WidgetInputs deliberately excludes the schedule (a
+            // schedule edit doesn't repaint the launcher), so the repaint
+            // observer above never sees it — but the chain's armed alarm would
+            // otherwise sit on the *old* boundary until its next fire, and
+            // with delivery disabled a widget could miss the newly configured
+            // boundary entirely. Same process-scoped pattern as above:
+            // schedule edits only happen while the app is foregrounded.
+            settingsRepository.preferences
+                .distinctUntilChangedBy { it.schedule.time to it.tonightSchedule.time }
+                .drop(1)
+                .collect { prefs ->
+                    try {
+                        reconcileWidgetRefreshChain(this@ClothesCastApplication, prefs)
+                    } catch (c: CancellationException) {
+                        throw c
+                    } catch (t: Throwable) {
+                        // Non-fatal: the chain re-arms itself from fresh prefs
+                        // on its next fire, render, or app start anyway.
+                        DiagLog.w(TAG, "Widget refresh chain re-arm after schedule change failed", t)
+                    }
+                }
+        }
+        applicationScope.launch {
             try {
                 val prefs = settingsRepository.preferences.first()
                 // Reconcile Locale.setDefault (process-scoped, lost on cold
@@ -494,6 +520,10 @@ class ClothesCastApplication : Application() {
                 } else {
                     dailyAlarmScheduler.cancel(ForecastPeriod.TONIGHT)
                 }
+                // The widget-only refresh chain rides the same schedule times
+                // but is gated on widgets being placed, not on the delivery
+                // toggles — see WidgetRefreshScheduler.
+                reconcileWidgetRefreshChain(this@ClothesCastApplication, prefs)
             } catch (t: Throwable) {
                 DiagLog.e(TAG, "Initial alarm scheduling failed", t)
             }

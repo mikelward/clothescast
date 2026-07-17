@@ -1,5 +1,8 @@
 package app.clothescast.widget
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -50,6 +53,22 @@ data class WidgetInputs(
     val outfitCarriedColors: Map<OutfitSuggestion.Carried, Long>,
     val outfitOuterColors: Map<OutfitSuggestion.Outer, Long>,
 )
+
+/**
+ * True when at least one ClothesCast widget (any of the four providers) is
+ * currently placed on a launcher. Gates the widget-only refresh alarm chain
+ * (see [app.clothescast.alarm.WidgetRefreshScheduler]): armed while this is
+ * true, cancelled once the last widget is removed.
+ */
+internal fun hasPlacedClothesCastWidgets(context: Context): Boolean {
+    val manager = AppWidgetManager.getInstance(context) ?: return false
+    return listOf(
+        OutfitWidgetReceiver::class.java,
+        FeelsLikeWidgetReceiver::class.java,
+        SevenDayFeelsLikeWidgetReceiver::class.java,
+        ConditionsWidgetReceiver::class.java,
+    ).any { manager.getAppWidgetIds(ComponentName(context, it)).isNotEmpty() }
+}
 
 /** Projects the widget-relevant fields out of the full preferences. */
 fun UserPreferences.toWidgetInputs(): WidgetInputs = WidgetInputs(

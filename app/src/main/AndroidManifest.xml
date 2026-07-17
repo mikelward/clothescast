@@ -135,6 +135,18 @@
             </intent-filter>
         </receiver>
 
+        <!-- Widget-only refresh chain: while any ClothesCast widget is placed,
+             fires at the schedule boundary times regardless of the delivery
+             toggles and enqueues a silent cache refresh so placed widgets keep
+             tracking the current window. See WidgetRefreshReceiver. -->
+        <receiver
+            android:name=".alarm.WidgetRefreshReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="app.clothescast.alarm.WIDGET_REFRESH" />
+            </intent-filter>
+        </receiver>
+
         <!-- Owns the "Preparing your ClothesCast" / "Delivering your ClothesCast"
              foreground-service notification across an alarm-triggered delivery.
              Started from AlarmReceiver via startForegroundService inside the

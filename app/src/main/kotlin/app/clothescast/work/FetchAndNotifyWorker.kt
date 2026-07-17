@@ -1810,6 +1810,10 @@ class FetchAndNotifyWorker(
     private suspend fun promoteToPlaybackServiceIfNeeded(prefs: UserPreferences) {
         val alarmTriggered = inputData.getLong(KEY_ALARM_FIRED_AT_MS, 0L) != 0L
         if (!alarmTriggered) return
+        // Widget-chain silent refreshes carry an alarm timestamp (for the
+        // fetch jitter) but never speak — promoting would post a surprise
+        // "Preparing" notification for a run whose whole contract is silence.
+        if (inputData.getBoolean(KEY_SILENT_REFRESH, false)) return
         // ScheduledDeliveryService is the primary FGS owner for alarm-driven
         // runs. While it's holding id 1005, we skip our own setForeground —
         // a second call would clobber its notification and race the type
@@ -2427,8 +2431,15 @@ class FetchAndNotifyWorker(
          * whichever window a previously cached snapshot happens to label
          * itself as. This corrects the slot when an alarm was missed and the
          * cache crossed a period boundary while stale.
+         *
+         * [alarmFiredAtMs] is non-zero only for the widget-refresh alarm chain
+         * ([app.clothescast.alarm.WidgetRefreshReceiver]): those fires land at
+         * the same wall-clock minute across every device sharing a schedule
+         * time, so they opt into the same anti-thundering-herd fetch jitter
+         * the delivery alarms use (see [fresh]). Event-paced kicks (app open,
+         * widget repaint) leave it 0 and fetch immediately.
          */
-        fun enqueueSilentRefresh(context: Context) {
+        fun enqueueSilentRefresh(context: Context, alarmFiredAtMs: Long = 0L) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -2439,6 +2450,7 @@ class FetchAndNotifyWorker(
                 .setInputData(
                     workDataOf(
                         KEY_SILENT_REFRESH to true,
+                        KEY_ALARM_FIRED_AT_MS to alarmFiredAtMs,
                     )
                 )
                 .build()

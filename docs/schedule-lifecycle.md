@@ -240,6 +240,24 @@ on any of the other owner-gate fallbacks above.
 - **Silent refresh** (app-open opportunistic, manual Refresh).
   `KEY_SILENT_REFRESH=true` means no notification / TTS / MQTT / cast at all.
   No FGS needed; the Worker runs at normal priority.
+- **Widget-only refresh chain** (`WidgetRefreshScheduler` /
+  `WidgetRefreshReceiver`). While any ClothesCast widget is placed, a
+  self-re-arming inexact alarm (`setAndAllowWhileIdle`, request code
+  `0xADA3`) fires at both schedule boundary times every day — ignoring the
+  enable toggles *and* the schedules' day-of-week sets — and enqueues a
+  silent refresh so the widgets keep tracking the current window. The
+  toggles gate scheduled *delivery*, not refresh: without this chain,
+  disabling both slots cancels every delivery alarm and a placed widget
+  starves (stuck on "No forecast yet" until an app open). A fire whose
+  boundary the delivery alarm already covers (slot enabled and today in its
+  day set) skips the enqueue instead of double-fetching. The chain is armed
+  from every widget render (which is what starts it when the first widget
+  is placed), reconciled on app start, by `ScheduleRefreshReceiver`, and by
+  `ClothesCastApplication`'s schedule-time observer when a boundary time is
+  edited, and ends itself when a fire finds no widgets left. These runs carry
+  `KEY_ALARM_FIRED_AT_MS` purely for the anti-thundering-herd fetch jitter;
+  `promoteToPlaybackServiceIfNeeded` explicitly skips silent runs so they
+  never surface an FGS notification.
 - **Location-cache refresh** (device-location toggle on). Network-only side
   effect, no delivery pipeline.
 

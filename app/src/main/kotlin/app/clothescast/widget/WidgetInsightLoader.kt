@@ -2,6 +2,7 @@ package app.clothescast.widget
 
 import android.content.Context
 import app.clothescast.ClothesCastApplication
+import app.clothescast.alarm.reconcileWidgetRefreshChain
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.UserPreferences
@@ -43,6 +44,14 @@ internal suspend fun loadCurrentInsight(context: Context): Pair<Insight, UserPre
     val prefs = runCatching { app.settingsRepository.preferences.first() }
         .onFailure { DiagLog.w(TAG, "Widget: reading preferences failed", it) }
         .getOrNull() ?: return null
+    // A render is the one signal that a widget is actually placed, so each one
+    // (re)arms the widget-only refresh chain for the next schedule boundary.
+    // Idempotent — boundary times are absolute, so repeated arms collapse onto
+    // the same trigger. This is what keeps a placed widget refreshing when
+    // scheduled delivery is disabled (the delivery alarms are then cancelled
+    // and nothing else fetches in the background); see WidgetRefreshReceiver.
+    runCatching { reconcileWidgetRefreshChain(context, prefs) }
+        .onFailure { DiagLog.w(TAG, "Widget: arming the refresh chain failed", it) }
     val snapshot = runCatching { app.insightCache.thisPeriod.first() }
         .onFailure { DiagLog.w(TAG, "Widget: reading cached snapshot failed", it) }
         .getOrNull()

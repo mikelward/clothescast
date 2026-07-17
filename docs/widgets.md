@@ -21,7 +21,8 @@ after each cache write / relevant settings change (no per-widget polling):
 
 There's no per-widget polling (`updatePeriodMillis=0`), so the cache only moves
 when the fetch worker writes it: on a scheduled morning/tonight alarm, on
-app-open, or on a manual refresh. With scheduled delivery off, a user who hasn't
+app-open, on a manual refresh, or on a widget-only refresh alarm (below). With
+scheduled delivery off and nothing else driving a fetch, a user who hasn't
 opened the app since yesterday would otherwise see *yesterday's* forecast
 plotted as today's — the per-period feels-like chart plots hour-of-day points
 for the snapshot's own date, so a day-old snapshot draws a previous day's curve
@@ -50,6 +51,27 @@ runs), in the device's wall clock:
   refresh would write the *upcoming* night instead. Keeping the last render until
   the morning cutoff makes the daytime window reachable beats both blanking and
   churning toward a future-night snapshot.
+
+### Widget-only refresh chain
+
+The `REFRESH` self-heal above only runs when something *renders* the widget —
+and with both delivery slots disabled every delivery alarm is cancelled, so
+nothing repaints the launcher and a widget that went empty stayed empty until
+the user opened the app (the "No forecast yet in the morning" report). The
+enable toggles gate scheduled *delivery*, not refresh, so
+`WidgetRefreshScheduler` keeps a separate self-re-arming inexact alarm going
+while any ClothesCast widget is placed: it fires at both schedule boundary
+times every day (ignoring the toggles and the schedules' day-of-week sets —
+the widget's window flips at those times regardless), and
+`WidgetRefreshReceiver` enqueues a silent refresh whose cache write repaints
+the widgets. Fires that coincide with an armed delivery alarm defer to it
+instead of double-fetching. The chain is armed from every widget render via
+`reconcileWidgetRefreshChain` (placement's first render starts it), re-armed on
+app start, by `ScheduleRefreshReceiver` after boot / update / clock changes,
+and by `ClothesCastApplication`'s schedule-time observer when either boundary
+time is edited, and ends itself when a fire finds no widgets left. See
+`docs/schedule-lifecycle.md` for how these silent runs differ from delivery
+runs.
 
 A leading age check is the loop-breaker: the worker stamps `forDate` from the
 *forecast location's* zone but picks the period from the *device* clock, so for

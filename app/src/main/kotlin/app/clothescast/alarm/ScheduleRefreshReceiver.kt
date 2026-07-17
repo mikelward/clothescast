@@ -47,6 +47,10 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
                 } else {
                     scheduler.cancel(ForecastPeriod.TONIGHT)
                 }
+                // Boot / update / clock changes wipe the widget-only refresh
+                // chain too; re-arm it while any widget is placed so widgets
+                // keep refreshing even with both delivery slots disabled.
+                reconcileWidgetRefreshChain(context.applicationContext, prefs)
             } catch (t: Throwable) {
                 DiagLog.e(TAG, "Re-arm failed", t)
             } finally {

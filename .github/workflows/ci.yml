@@ -882,11 +882,20 @@ jobs:
         # Ordered before the release-AAB steps so a bundleRelease failure on
         # main doesn't skip FAD distribution under the `success()` gate — debug
         # testers get the build either way; only the Play AAB artifact is lost.
+        #
+        # Also requires the stable debug keystore (DEBUG_KEYSTORE_FILE is
+        # only set when the decode step above validated one): an APK signed
+        # with the runner's throwaway debug key can't install as an update
+        # over a previous FAD build (signature mismatch forces an
+        # uninstall), so distributing without it does more harm than
+        # skipping. Flagged by Codex on Simmo's port of this pipeline
+        # (mikelward/simmo#45).
         if: |
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main' &&
-          env.FIREBASE_AVAILABLE == 'true'
+          env.FIREBASE_AVAILABLE == 'true' &&
+          env.DEBUG_KEYSTORE_FILE != ''
         # Pinned to a specific commit SHA (rather than the floating @v1 tag) so
         # a compromised upstream release can't silently swap in malicious code
         # on our next CI run. Bump deliberately. SHA below is wzieba/Firebase-

@@ -163,10 +163,11 @@ new rule the first time something bites you, not the third.
   from reading like end-user copy (and the subject filter now skips
   `docs:` directly, same as `ci:` / `test:` / `internal:`). Exception: a PRIVACY.md-only change ships as a
   bullet (it's treated as non-docs), so leave that one unprefixed.
-- **Play caps `whatsnew-en-US` at 500 bytes.** When the bullet list
-  exceeds that, CI truncates and appends `…`. Avoid lining up a long
-  stack of small commits if any one of them tells the user-facing story
-  on its own — squash the supporting work in.
+- **Play caps `whatsnew-en-US` at 500 characters.** When the bullet list
+  exceeds that, CI drops whole trailing bullets (oldest first stay) and
+  appends `…`. Avoid lining up a long stack of small commits if any one
+  of them tells the user-facing story on its own — squash the supporting
+  work in.
 
 ## GitHub
 

@@ -646,17 +646,23 @@ jobs:
         # would silently omit the unreleased commits from the failed run.
         # The Actions API gives us "last *released* tip" instead — walking
         # main's recent workflow runs newest-first and picking the first
-        # one whose `android-build` JOB concluded with success. Gating on
+        # one whose `android-build` job succeeded AND actually published
+        # (its FAD or Play upload *step* concluded success). Gating on
         # the job rather than the workflow run matters because
         # `unit-tests` and `android-build` run in parallel without
         # `needs:` and the publish steps live only in `android-build`: a
         # run where `unit-tests` fails but `android-build` succeeds DID
         # publish, so its head SHA is the right base — querying the
         # workflow's overall conclusion would skip it and double-bullet
-        # its commits in the next fully-green run's notes. The current
-        # run is filtered out (no job conclusion yet); we also skip any
-        # prior runs of the same head SHA (manual re-runs). When no
-        # prior released build is reachable (fresh repo, fork, history
+        # its commits in the next fully-green run's notes. Gating on the
+        # publish *steps* on top of that matters because the job also
+        # concludes green when every publish step skips (publication
+        # secrets missing, or RELEASE_NOTES_SKIP on a housekeeping-only
+        # push) — counting such a run as released would drop its range's
+        # commits from the next real release. The current run is
+        # filtered out (no job conclusion yet); we also skip any prior
+        # runs of the same head SHA (manual re-runs). When no prior
+        # released build is reachable (fresh repo, fork, history
         # rewrite), the range collapses to the head commit alone.
         #
         # Per-commit filter: a commit's subject is skipped if it would read
@@ -671,24 +677,30 @@ jobs:
         # is treated as non-docs so that privacy-policy updates still surface
         # to users.
         #
-        # Fallback chain when the range yields no bullets (every commit in
-        # it was filtered out — e.g. a `.github/workflows/**`-only push,
-        # which still triggers main CI per the workflow's `paths:` block):
-        #   1. Walk back through up to 20 ancestors of the head commit
-        #      looking for a non-filtered subject; emit that as a single
-        #      bullet. Matches the pre-multi-commit behaviour so unusual
-        #      stretches of filtered commits still surface *something*
-        #      user-readable.
-        #   2. If even that turns up nothing, emit the head subject as a
-        #      single bullet, filtered or not — better a slightly noisy
-        #      changelog than an empty one.
+        # When the range yields no bullets (every commit in it was filtered
+        # out — e.g. a `.github/workflows/**`-only push, which still
+        # triggers main CI per the workflow's `paths:` block), the step
+        # sets RELEASE_NOTES_SKIP=true and the FAD + Play upload steps
+        # below skip: nothing user-visible shipped, so publishing would
+        # buzz testers' phones and burn a Play release for notes recycled
+        # from an already-released commit. (This replaces the previous
+        # always-publish ancestor-walk fallback, which re-published old
+        # subjects exactly in that case — ported from Type Launcher's
+        # deploy job. The ancestor walk survives only for the no-base
+        # case, where the range was never really examined — see the
+        # backstop below.) A manual workflow_dispatch is the exception:
+        # it's an explicit "publish the current tip anyway" request, so
+        # it falls back to a generic "Internal test build" note instead
+        # of skipping. The release-AAB build and artifact upload still
+        # run either way.
         #
-        # Play's `whatsnew-en-US` is capped at 500 bytes; if the bullet list
-        # would exceed that, we truncate at byte 497 (via `iconv -c` to
-        # avoid leaving a partial UTF-8 sequence) and append `…` so the
-        # user can tell something was cut. The 50-commit `--max-count` on
-        # `git rev-list` is a safety net for unusually long ranges; in
-        # practice the 500-byte cap bites first.
+        # Play's `whatsnew-en-US` is capped at 500 Unicode characters per
+        # language; if the bullet list would exceed that, whole trailing
+        # bullets are dropped (oldest-first preserved at the head) and a
+        # `\n…` marker appended so the user can tell the list was cut —
+        # see the truncation block below. A 50-subject cap inside the
+        # filter loop is the safety net for unusually long ranges; in
+        # practice the 500-char cap bites first.
         #
         # Outputs:
         #   - $RUNNER_TEMP/whatsnew/whatsnew-en-US  (consumed by Play upload)
@@ -716,17 +728,14 @@ jobs:
 
           # Walk the most recent main runs of this workflow (newest first)
           # and pick the head SHA of the first one whose `android-build`
-          # job *specifically* concluded with success. We gate on the job,
-          # not the workflow run, because `unit-tests` and `android-build`
-          # run in parallel without `needs:` and the publish steps live
-          # only in `android-build`: a run where `unit-tests` fails but
-          # `android-build` succeeds still publishes, so its head SHA is
-          # the correct base for "since the last released build."
-          # Filtering on workflow `status=success` instead would skip
-          # such runs and double-bullet their commits in the next
-          # fully-green run's changelog. The job name below must match
-          # this job's `name:` value verbatim — rename here in lockstep
-          # if you ever rename the job.
+          # job concluded with success AND whose FAD or Play upload step
+          # concluded success — a green job alone isn't proof anything
+          # published (see the step comment). The job and step names
+          # below must match this workflow's `name:` values verbatim —
+          # rename in lockstep. Known trade: a run where FAD published
+          # but a later step failed the job doesn't count, so FAD
+          # testers may see a repeated bullet — better than Play's
+          # permanent "What's new" record omitting one.
           prev_sha=""
           while IFS=$'\t' read -r run_id run_head; do
             [ -z "$run_id" ] && continue
@@ -734,18 +743,29 @@ jobs:
             # yet anyway) and any prior runs of the same head SHA — those
             # are manual re-runs of this commit.
             [ "$run_head" = "$head_sha" ] && continue
-            job_conclusion=$(gh api \
+            published=$(gh api \
               "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/jobs" \
-              --jq '.jobs[] | select(.name == "Android debug build") | .conclusion' \
+              --jq '[.jobs[]
+                     | select(.name == "Android debug build")
+                     | select(.conclusion == "success")
+                     | .steps[]
+                     | select(.name == "Distribute via Firebase App Distribution"
+                              or .name == "Upload AAB to Play Store internal track")
+                     | .conclusion]
+                    | any(. == "success")' \
               2>/dev/null || true)
-            if [ "$job_conclusion" = "success" ]; then
+            if [ "$published" = "true" ]; then
               prev_sha="$run_head"
               break
             fi
           done < <(gh api \
-            "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?branch=main&per_page=20" \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?branch=main&per_page=100" \
             --jq '.workflow_runs[]? | [.id, .head_sha] | @tsv' \
             2>/dev/null || true)
+          # per_page=100 (the API max) keeps this a single call while
+          # covering a 100-run red streak; --paginate would fetch the
+          # workflow's entire run history on every main build. Deeper
+          # than that, the no-base backstop below still applies.
 
           base_sha=""
           if [ -n "$prev_sha" ] && git cat-file -e "$prev_sha" 2>/dev/null; then
@@ -753,7 +773,12 @@ jobs:
           fi
 
           if [ -n "$base_sha" ]; then
-            mapfile -t shas < <(git rev-list --reverse --max-count=50 \
+            # Deliberately uncapped: `git rev-list --max-count` limits
+            # commits BEFORE `--reverse` applies, so a pre-walk cap would
+            # keep the newest N and silently drop the oldest — the exact
+            # commits the oldest-first notes must preserve. The safety cap
+            # lives on qualifying subjects in the filter loop below.
+            mapfile -t shas < <(git rev-list --reverse \
               "$base_sha..$head_sha")
             if [ "${#shas[@]}" -eq 0 ]; then
               shas=("$head_sha")
@@ -784,58 +809,126 @@ jobs:
             [ "$non_doc_count" -eq 0 ]
           }
 
-          bullets=""
+          subjects=()
           for sha in "${shas[@]}"; do
             [ -z "$sha" ] && continue
+            # Safety net for unusually long ranges (release outage),
+            # applied AFTER oldest-first ordering so the head of the list
+            # is never dropped; in practice the 500-char Play cap
+            # truncates far sooner.
+            if [ "${#subjects[@]}" -ge 50 ]; then
+              echo "Reached 50 qualifying subjects; ignoring the rest of the range."
+              break
+            fi
             if is_noise "$sha"; then
               continue
             fi
-            subject=$(git log -1 --pretty=%s "$sha")
-            if [ -z "$bullets" ]; then
-              bullets="• $subject"
-            else
-              bullets="$bullets"$'\n'"• $subject"
-            fi
+            subjects+=("$(git log -1 --pretty=%s "$sha")")
           done
 
-          # Range was all-filtered — walk back through ancestors of the
-          # head commit for up to 20 hops to find the most recent
-          # non-filtered subject.
-          if [ -z "$bullets" ]; then
+          # With no usable release base (fresh repo, history rewrite, or a
+          # transient Actions API failure) the "range" was only the head
+          # commit, so an all-filtered result doesn't prove nothing is
+          # unreleased — e.g. a feature commit sitting under a
+          # `ci: regenerate UI snapshots` head. Walk up to 20 ancestors
+          # for the most recent non-filtered subject as a backstop before
+          # deciding to skip; a real range that was all-filtered skips
+          # without the walk.
+          if [ "${#subjects[@]}" -eq 0 ] && [ -z "$base_sha" ]; then
             walk_sha="$head_sha"
             for _ in $(seq 1 20); do
-              if ! git cat-file -e "$walk_sha" 2>/dev/null; then
-                break
-              fi
+              git cat-file -e "$walk_sha" 2>/dev/null || break
               if ! is_noise "$walk_sha"; then
-                bullets="• $(git log -1 --pretty=%s "$walk_sha")"
+                subjects+=("$(git log -1 --pretty=%s "$walk_sha")")
                 break
               fi
-              if ! walk_sha=$(git rev-parse "$walk_sha^" 2>/dev/null); then
-                break
-              fi
+              walk_sha=$(git rev-parse "$walk_sha^" 2>/dev/null) || break
             done
           fi
 
-          # Absolute last resort: even the ancestor walk found nothing
-          # (shallow history, or 20+ consecutive filtered commits). Emit
-          # the filtered head subject rather than nothing.
-          if [ -z "$bullets" ]; then
-            bullets="• $(git log -1 --pretty=%s "$head_sha")"
+          # Range was all-filtered: skip publishing (see the step comment)
+          # unless this is a manual dispatch, which publishes the tip with
+          # a generic note.
+          if [ "${#subjects[@]}" -eq 0 ]; then
+            if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+              echo "No release-worthy commits, but this is a manual workflow_dispatch — publishing the current tip anyway with a generic note."
+              subjects+=("Internal test build")
+            else
+              echo "No release-worthy commits in this push (all prefixed or docs / dotfile housekeeping); skipping FAD distribution and Play upload."
+              echo "RELEASE_NOTES_SKIP=true" >> "$GITHUB_ENV"
+              exit 0
+            fi
           fi
 
-          # `…` is 3 bytes in UTF-8; cap content at 497 so total ≤ 500.
-          # `iconv -c` drops any partial multi-byte sequence at the cut
-          # point, so the truncated bullets remain valid UTF-8.
-          if [ "$(printf '%s' "$bullets" | wc -c)" -gt 500 ]; then
-            bullets="$(printf '%s' "$bullets" | head -c 497 | iconv -f UTF-8 -t UTF-8 -c)…"
+          # Play's documented per-language cap is 500 Unicode *characters*,
+          # not bytes — the previous byte-based cut over-trimmed multibyte
+          # text and could slice mid-word. Measure in characters (`wc -m`
+          # under a UTF-8 locale, so "• " and "…" score as Play sees them)
+          # and drop whole trailing bullets on overflow, appending a "\n…"
+          # marker so the reader can tell the list was cut. Oldest-first is
+          # preserved at the head. Ported from Type Launcher's deploy job.
+          MAX=500
+          TRUNC_MARK=$'\n…'
+          export LC_ALL=C.UTF-8
+
+          format_notes() {
+            local first=1 s
+            for s in "$@"; do
+              if [ "$first" -eq 1 ]; then
+                printf '%s' "• $s"
+                first=0
+              else
+                printf '\n• %s' "$s"
+              fi
+            done
+          }
+
+          char_len() {
+            printf '%s' "$1" | wc -m
+          }
+
+          # Two-phase: greedy-add subjects until the formatted output would
+          # exceed MAX, then, if anything was dropped, append the marker —
+          # dropping further bullets if the marker itself overflows. A
+          # single subject too long to fit at all is hard-truncated.
+          kept=()
+          truncated=false
+          for s in "${subjects[@]}"; do
+            candidate=$(format_notes "${kept[@]}" "$s")
+            if [ "$(char_len "$candidate")" -gt "$MAX" ]; then
+              truncated=true
+              break
+            fi
+            kept+=("$s")
+          done
+
+          if [ "${#kept[@]}" -eq 0 ]; then
+            bullets=$(printf '%s' "• ${subjects[0]}" | cut -c 1-499)
+            bullets="${bullets}…"
+          else
+            bullets=$(format_notes "${kept[@]}")
+            if [ "$truncated" = true ]; then
+              while [ "$(char_len "${bullets}${TRUNC_MARK}")" -gt "$MAX" ] \
+                && [ "${#kept[@]}" -gt 0 ]; do
+                unset 'kept[${#kept[@]}-1]'
+                bullets=$(format_notes "${kept[@]}")
+              done
+              if [ "${#kept[@]}" -eq 0 ]; then
+                bullets=$(printf '%s' "• ${subjects[0]}" | cut -c 1-498)
+              fi
+              bullets="${bullets}${TRUNC_MARK}"
+            fi
           fi
 
           printf '%s' "$bullets" > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
+          # Random heredoc terminator so a crafted commit subject containing
+          # the literal terminator on a line of its own can't inject
+          # arbitrary entries into $GITHUB_ENV.
+          delim="RELEASE_NOTES_EOF_$(openssl rand -hex 16)"
           {
-            printf 'RELEASE_NOTES<<EOF_RELEASE_NOTES\n'
+            printf 'RELEASE_NOTES<<%s\n' "$delim"
             printf '%s\n' "$bullets"
-            printf 'EOF_RELEASE_NOTES\n'
+            printf '%s\n' "$delim"
           } >> "$GITHUB_ENV"
           echo "Release notes:"
           printf '%s\n' "$bullets"
@@ -895,7 +988,8 @@ jobs:
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main' &&
           env.FIREBASE_AVAILABLE == 'true' &&
-          env.DEBUG_KEYSTORE_FILE != ''
+          env.DEBUG_KEYSTORE_FILE != '' &&
+          env.RELEASE_NOTES_SKIP != 'true'
         # Pinned to a specific commit SHA (rather than the floating @v1 tag) so
         # a compromised upstream release can't silently swap in malicious code
         # on our next CI run. Bump deliberately. SHA below is wzieba/Firebase-
@@ -1010,7 +1104,8 @@ jobs:
           success() &&
           (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
           github.ref == 'refs/heads/main' &&
-          env.PLAY_AVAILABLE == 'true'
+          env.PLAY_AVAILABLE == 'true' &&
+          env.RELEASE_NOTES_SKIP != 'true'
         uses: r0adkll/upload-google-play@a80b0bcdcfdfcc2d026f2bc73f726760b2cbc967 # post-v1.1.5: fixes DEP0040/DEP0169 Node.js deprecation warnings
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}

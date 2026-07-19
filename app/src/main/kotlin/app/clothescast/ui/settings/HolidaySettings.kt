@@ -852,6 +852,10 @@ private fun resolveHolidayString(name: String): String? {
  * missing and finally to the raw code so the row is always readable.
  */
 @android.annotation.SuppressLint("DiscouragedApi")
+// Locale.of (the non-deprecated replacement for the two-arg Locale constructor)
+// needs API 34; minSdk is 31 with no core-library desugaring, so the deprecated
+// constructor stays and the deprecation is suppressed.
+@Suppress("DEPRECATION")
 private fun resolveCountryDisplayName(
     context: android.content.Context,
     uiLocale: Locale,

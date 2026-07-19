@@ -182,6 +182,7 @@ class LocationResolver(
                     }
                 }
                 @Deprecated("Required override; never called on API 33+ but keep for older devices.")
+                @Suppress("OVERRIDE_DEPRECATION")
                 override fun onStatusChanged(p: String?, status: Int, extras: android.os.Bundle?) {}
                 override fun onProviderEnabled(p: String) {}
             }

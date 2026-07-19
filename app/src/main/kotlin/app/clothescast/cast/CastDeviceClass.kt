@@ -48,6 +48,12 @@ internal fun classifyRoute(route: MediaRouter.RouteInfo): CastDeviceClass {
  * [CastDevice] is attached — covers Cast speaker groups
  * ([MediaRouter.RouteInfo.DEVICE_TYPE_GROUP]) and bare speakers.
  */
+// DEVICE_TYPE_SPEAKER is deprecated in favor of the split
+// builtin/remote-speaker constants, but a route can still report the old
+// value, so it's kept alongside DEVICE_TYPE_REMOTE_SPEAKER to preserve the
+// audio-only classification. The deprecation is suppressed rather than the
+// constant dropped.
+@Suppress("DEPRECATION")
 private val AUDIO_ONLY_DEVICE_TYPES = setOf(
     MediaRouter.RouteInfo.DEVICE_TYPE_SPEAKER,
     MediaRouter.RouteInfo.DEVICE_TYPE_REMOTE_SPEAKER,

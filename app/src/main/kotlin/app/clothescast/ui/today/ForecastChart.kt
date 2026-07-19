@@ -35,7 +35,7 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.compose.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.compose.cartesian.data.lineModel
 import com.patrykandpatrick.vico.compose.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.compose.common.data.ExtraStore
 import kotlin.math.ceil
@@ -180,7 +180,7 @@ fun ForecastChart(
     // even when [overlays] hasn't changed.
     LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays, showModelSpread, indexByTime) {
         producer.runTransaction {
-            lineSeries {
+            lineModel {
                 // Main blended line first so it occupies series index 0 in
                 // both single and per-model views — keeps Vico's identity-
                 // by-index animation stable when the spread toggles, so the
@@ -374,7 +374,7 @@ internal fun rememberOnSurfaceAxisLabel() =
 // main line (e.g. the wind diagnostic chart, where there's no single-model
 // blended series to pair the overlays with) — in that case only the per-model
 // lines are returned and they start at index 0. LineProvider.series matches
-// lines to series by index, so this ordering must mirror the lineSeries
+// lines to series by index, so this ordering must mirror the lineModel
 // builder in the caller.
 @Composable
 internal fun rememberPinnedLineProvider(

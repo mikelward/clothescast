@@ -25,7 +25,7 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.compose.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.compose.cartesian.data.lineModel
 import com.patrykandpatrick.vico.compose.common.data.ExtraStore
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -79,7 +79,7 @@ fun PrecipitationAmountChart(
     val producer = remember { CartesianChartModelProducer() }
     LaunchedEffect(hourly, overlays, showModelSpread, indexByTime) {
         producer.runTransaction {
-            lineSeries {
+            lineModel {
                 series(mainLine)
                 visibleModels.forEach { modelId ->
                     overlays.getValue(modelId).let { entries ->

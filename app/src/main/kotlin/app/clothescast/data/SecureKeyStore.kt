@@ -12,6 +12,7 @@ import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.diag.DiagLog
 import com.google.crypto.tink.Aead
 import com.google.crypto.tink.KeyTemplates
+import com.google.crypto.tink.RegistryConfiguration
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import kotlinx.coroutines.flow.Flow
@@ -267,7 +268,7 @@ class SecureKeyStore(
                 .withMasterKeyUri(MASTER_KEY_URI)
                 .build()
                 .keysetHandle
-                .getPrimitive(Aead::class.java)
+                .getPrimitive(RegistryConfiguration.get(), Aead::class.java)
             return SecureKeyStore(aead, context.secureKeyDataStore)
         }
     }

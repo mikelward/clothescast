@@ -31,7 +31,7 @@ import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.compose.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.compose.cartesian.data.lineModel
 import com.patrykandpatrick.vico.compose.common.data.ExtraStore
 import java.time.LocalDate
 import kotlin.math.ceil
@@ -198,7 +198,7 @@ private fun PerModelDiagnosticChart(
     val producer = remember { CartesianChartModelProducer() }
     LaunchedEffect(seriesByModel, overlayModels, mainLine) {
         producer.runTransaction {
-            lineSeries {
+            lineModel {
                 // Main consensus line first so it stays at series index 0
                 // whether or not the overlay is on — see [ForecastChart] for
                 // the rationale (Vico animates by index, so pinning the main

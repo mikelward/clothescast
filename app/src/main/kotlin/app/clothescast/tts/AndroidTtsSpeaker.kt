@@ -84,6 +84,7 @@ class AndroidTtsSpeaker(
                     "Required override; modern TTS engines call onError(id, errorCode) instead.",
                     ReplaceWith("onError(id, TextToSpeech.ERROR)"),
                 )
+                @Suppress("OVERRIDE_DEPRECATION")
                 override fun onError(id: String?) {
                     onError(id, TextToSpeech.ERROR)
                 }

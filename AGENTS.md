@@ -280,6 +280,19 @@ new rule the first time something bites you, not the third.
   unterminated through to EOF. Compiler reports "Unclosed comment" at the
   end of the file, far from the actual cause. Avoid literal `/*` in doc
   text: write `dir/` or `<path>.png` instead of `dir/*.png`.
+- **Kotlin's `lowercase()` / `uppercase()` are already locale-invariant —
+  don't "fix" them to `Locale.ROOT`.** Unlike Java's `String.toLowerCase()`,
+  the no-argument Kotlin stdlib overloads fold with the invariant locale, so
+  they are *not* subject to the Turkish dotless-ı trap. `code.lowercase()`
+  on an ISO country code is correct as written; rewriting it to
+  `code.lowercase(Locale.ROOT)` is a pure no-op. The locale-sensitive form is
+  the explicit `lowercase(locale)` overload — that one is only for
+  user-visible text (see `InsightFormatter.decapitalize`). Some sites do pass
+  `Locale.ROOT` explicitly; that's documentation, not a behavior difference.
+  This has been mistakenly "fixed" before — verify with a test under
+  `Locale.setDefault(Locale.forLanguageTag("tr-TR"))` before touching any of
+  it. (The default locale *does* matter for `String.format` / `"%d".format(x)`
+  without a `Locale` argument — that one is a real trap.)
 - **Compose `@Preview`s in tests.** Snapshot tests live in `app/src/test`
   (Roborazzi/Robolectric). Preview wrappers live in `app/src/main/.../*Previews.kt`
   with `internal` visibility so they're reachable from tests in the same

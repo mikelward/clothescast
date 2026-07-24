@@ -75,6 +75,48 @@ object BugReport {
     private const val MAX_LOG_LINES = 100
 
     /**
+     * The ceiling a whole shared report stays under.
+     *
+     * The line cap above keeps the caption friendly for messenger targets; this
+     * is the hard failure it doesn't cover. Strings parcel as UTF-16, so N
+     * characters cost 2N bytes on the wire, and the payload crosses Binder twice
+     * — into the clipboard, then again in the chooser's `ACTION_SEND` extra. The
+     * per-process Binder buffer is ~1 MB **shared** across every in-flight
+     * transaction, so an unbounded report (a long clothes-rule list, a fat crash
+     * trace) could throw `TransactionTooLargeException` at both ends — and since
+     * both are best-effort, the tap would then do nothing whatsoever: no chooser,
+     * nothing on the clipboard. The three section budgets below add up to 60,000;
+     * the slack covers headers and the one over-budget line each bounded section
+     * may keep.
+     */
+    internal const val MAX_SHARE_PAYLOAD_CHARS = 64_000
+
+    /**
+     * Ceiling for the structured section (build, device, settings, ClothesCasts),
+     * bounded separately from the log so a long clothes-rule list can't crowd the
+     * log out. It degrades most gracefully — a settings dump reads fine
+     * truncated, a truncated log tail loses events.
+     */
+    private const val MAX_STRUCTURED_CHARS = 24_000
+
+    /** Ceiling for the previous run's crash section. */
+    private const val MAX_CRASH_PAYLOAD_CHARS = 16_000
+
+    /**
+     * Of that, the slice reserved for the crash itself (timestamp, exception,
+     * stack) before the recent-log half of the file gets the rest. A capped
+     * 12-frame trace with a cause chain fits comfortably; anything larger is a
+     * pathological trace worth clipping.
+     */
+    private const val MAX_CRASH_STACK_CHARS = 6_000
+
+    /** Cap for an exception message quoted into the collection-failure fallback. */
+    private const val MAX_FAILURE_MESSAGE_CHARS = 300
+
+    /** Ceiling for the recent-log section, on top of the [MAX_LOG_LINES] cap. */
+    private const val MAX_LOG_PAYLOAD_CHARS = 20_000
+
+    /**
      * Captures the screen, builds the text payload, copies the text to the
      * clipboard, and fires the share-sheet chooser. When [includeScreenshot] is
      * true (the default) the current window is grabbed and attached as a PNG so
@@ -121,10 +163,10 @@ object BugReport {
             coRunCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
         } else null
         val crash = DiagLog.readPersistedCrash()
-        val recent = DiagLog.snapshot().takeLast(MAX_LOG_LINES)
+        val recent = DiagLog.snapshot()
         val now = TIMESTAMP_FORMAT.format(Instant.now())
 
-        return buildString {
+        val head = buildString {
             appendLine("ClothesCast bug report")
             appendLine("Captured: $now")
             appendLine()
@@ -157,17 +199,84 @@ object BugReport {
             val wearPreamble = prefs?.wearPreamble ?: PreambleVisibility.ALWAYS
             appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
             appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
-            if (!crash.isNullOrBlank()) {
+        }
+        return assemble(head, crash, recent)
+    }
+
+    /**
+     * Joins the three sections with each one bounded on its own, so no single
+     * section can crowd the others out or push the whole report past what the
+     * share can carry.
+     *
+     * Prefix-truncating the assembled report would drop the log — appended last —
+     * exactly when a long settings dump or a fat crash trace is what pushed it
+     * over, losing the diagnostic the report exists for. Visible for tests.
+     */
+    internal fun assemble(head: String, crash: String?, recent: List<String>): String {
+        val boundedHead = if (head.length > MAX_STRUCTURED_CHARS) {
+            head.take(MAX_STRUCTURED_CHARS) + "\n…(details truncated to keep the report shareable)\n"
+        } else {
+            head
+        }
+        val crashSection = if (crash.isNullOrBlank()) {
+            ""
+        } else {
+            buildString {
                 appendLine("--- Last crash (from previous run) ---")
-                appendLine(crash.trim())
+                appendLine(boundCrash(crash.trim()))
                 appendLine()
             }
-            appendLine("--- Recent log (newest last, ${recent.size} of max $MAX_LOG_LINES) ---")
-            if (recent.isEmpty()) {
-                appendLine("(no captured log lines)")
-            } else {
-                recent.forEach { appendLine(it) }
-            }
+        }
+        return boundedHead + crashSection + renderRecentLog(recent)
+    }
+
+    /**
+     * Bounds `last-crash.txt` while keeping **both** halves that matter.
+     *
+     * The file is written head-first — timestamp, exception, stack — and then
+     * appends the recent log around the crash ([DiagLog.writeCrashLog]). So
+     * neither end can be dropped wholesale: a head-only cut loses the events
+     * leading up to the crash, and a tail-only cut loses the crash itself, which
+     * is the thing a post-crash report exists to carry. The stack half gets a
+     * reserved slice off the front; whatever it doesn't use goes to the newest
+     * log lines. Visible for tests.
+     */
+    internal fun boundCrash(crash: String): String {
+        val marker = "--- recent log ---"
+        val split = crash.indexOf(marker)
+        if (split < 0) {
+            // Not the shape we wrote (an older build, or a partial file): keep
+            // the newest lines, which is the safer default for a log-like blob.
+            return boundedLogTail(crash.split("\n"), MAX_CRASH_PAYLOAD_CHARS).joinToString("\n")
+        }
+        val stack = crash.take(split + marker.length)
+        val log = crash.substring(split + marker.length).removePrefix("\n")
+        val boundedStack = if (stack.length > MAX_CRASH_STACK_CHARS) {
+            stack.take(MAX_CRASH_STACK_CHARS) + "\n…(stack truncated)\n$marker"
+        } else {
+            stack
+        }
+        val remaining = MAX_CRASH_PAYLOAD_CHARS - boundedStack.length
+        if (remaining <= 0) return boundedStack
+        return boundedStack + "\n" + boundedLogTail(log.split("\n"), remaining).joinToString("\n")
+    }
+
+    /**
+     * The "Recent log" section — the newest [MAX_LOG_LINES] lines, further
+     * bounded by [MAX_LOG_PAYLOAD_CHARS] so a handful of fat entries can't blow
+     * the budget on line count alone. Shared with the collection-failure
+     * fallback, which needs it most.
+     */
+    private fun renderRecentLog(recent: List<String>): String = buildString {
+        val byLine = recent.takeLast(MAX_LOG_LINES)
+        val kept = boundedLogTail(byLine, MAX_LOG_PAYLOAD_CHARS)
+        val dropped = recent.size - kept.size
+        appendLine("--- Recent log (newest last, ${kept.size} of ${recent.size} shown, max $MAX_LOG_LINES) ---")
+        if (recent.isEmpty()) {
+            appendLine("(no captured log lines)")
+        } else {
+            if (dropped > 0) appendLine("($dropped older line(s) omitted to keep the report shareable)")
+            kept.forEach { appendLine(it) }
         }
     }
 
@@ -408,6 +517,11 @@ object BugReport {
     }
 
     private suspend fun captureAndPersistScreenshot(activity: Activity): Uri? {
+        // The share can outlive the screen that started it (it runs on the
+        // application scope). A destroyed window has nothing worth capturing and
+        // PixelCopy against its stale token fails anyway — go straight to a
+        // text-only report instead of spending a 10-30 MB buffer finding out.
+        if (activity.isFinishing || activity.isDestroyed) return null
         val bitmap = coRunCatching { captureWindow(activity) }.getOrNull() ?: return null
         // Compressing a full-window PNG and pruning previous files would block the
         // main thread long enough to jank the share-sheet open, so persist on
@@ -541,7 +655,18 @@ object BugReport {
         if (screenshotUri != null) {
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        return runCatching { activity.startActivity(chooser); true }
+        // The share runs on the application scope, so it can outlive the screen
+        // that started it. Starting an activity from a torn-down one targets a
+        // dead token, so launch from the application context with NEW_TASK
+        // instead — the chooser still opens, which is the whole point of not
+        // tying the share to the screen.
+        val launchContext: Context = if (activity.isFinishing || activity.isDestroyed) {
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            activity.applicationContext
+        } else {
+            activity
+        }
+        return runCatching { launchContext.startActivity(chooser); true }
             .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
             .getOrDefault(false)
     }
@@ -575,22 +700,35 @@ private const val SCREENSHOT_KEEP_PREVIOUS = 2
 
 /**
  * The newest lines of [lines] (oldest-first) whose combined length fits
- * [budgetChars], returned oldest-first; at least the single newest line is kept
- * even if it alone exceeds the budget. Keeps the freshest context — a crash
+ * [budgetChars], returned oldest-first. Keeps the freshest context — a crash
  * entry and the events around it sit at the *end* of a log, so a head-first
  * truncation would drop exactly what the reader needs.
+ *
+ * A single newest line that alone exceeds the budget is kept **clamped to it**
+ * rather than whole: returning nothing would drop the freshest context
+ * entirely, but returning it whole would blow the very ceiling this exists to
+ * enforce. `last-crash.txt` is the case that can reach that size — it is
+ * written in one go and `cacheDir` survives app upgrades, so a file from an
+ * older build is read back into the report unchanged.
  */
 internal fun boundedLogTail(lines: List<String>, budgetChars: Int): List<String> {
     val kept = ArrayDeque<String>()
     var used = 0
     for (line in lines.asReversed()) {
         val cost = line.length + 1 // + the newline appendLine adds
-        if (used + cost > budgetChars && kept.isNotEmpty()) break
+        if (used + cost > budgetChars) {
+            if (kept.isNotEmpty()) break
+            kept.addFirst(line.take((budgetChars - LOG_TRUNCATION_MARKER.length).coerceAtLeast(0)) + LOG_TRUNCATION_MARKER)
+            break
+        }
         kept.addFirst(line)
         used += cost
     }
     return kept
 }
+
+/** Marks a log line cut short so a reader can tell it was clamped, not written that way. */
+private const val LOG_TRUNCATION_MARKER = "…(truncated)"
 
 /** Walks the [ContextWrapper] chain to find the host [Activity], or returns null. */
 fun Context.findActivity(): Activity? {

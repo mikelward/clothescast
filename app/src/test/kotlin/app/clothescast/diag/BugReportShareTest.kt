@@ -11,6 +11,7 @@ import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowToast
 
@@ -115,6 +116,26 @@ class BugReportShareTest {
         )
 
         retained shouldBe false
+        ShadowToast.getLatestToast() shouldBe null
+    }
+
+    @Test
+    fun `a share that outlives its screen still opens the chooser`(): Unit = runBlocking {
+        // The share runs on the application scope, so the Activity that started
+        // it can be gone by the time the chooser launches. Starting from a
+        // torn-down Activity targets a dead token, so it falls back to the
+        // application context — the report still reaches the sheet.
+        activity.finish()
+
+        BugReport.share(
+            activity,
+            includeScreenshot = false,
+            mainDispatcher = Dispatchers.Unconfined,
+            payloadCollect = { _, _ -> "report" },
+            clipboardWrite = { _, _ -> false },
+        )
+
+        shadowOf(activity.application).nextStartedActivity.shouldNotBeNull()
         ShadowToast.getLatestToast() shouldBe null
     }
 

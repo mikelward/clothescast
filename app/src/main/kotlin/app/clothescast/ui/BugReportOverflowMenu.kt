@@ -85,9 +85,16 @@ internal fun BugReportOverflowMenu(
                 val act = activity
                 val repo = app?.settingsRepository
                 if (act != null && repo != null) {
+                    // Split by what each branch owns. The consent read stays on
+                    // the composition, because its only outcome is composition
+                    // state — a dialog that a torn-down screen can't show
+                    // anyway. The share hops to the application scope, because
+                    // it must outlive the screen: the menu closes on tap and the
+                    // sheet takes the foreground while the hand-off is still
+                    // suspended.
                     coroutineScope.launch {
                         if (repo.bugReportConsentAcknowledged.first()) {
-                            BugReport.share(act)
+                            app.applicationScope.launch { BugReport.share(act) }
                         } else {
                             consentVisible = true
                         }
@@ -115,7 +122,13 @@ internal fun BugReportOverflowMenu(
                 consentVisible = false
                 val act = activity
                 if (act != null) {
-                    coroutineScope.launch {
+                    // Application scope for the whole sequence, for the same
+                    // reason as above — and here it matters twice: the dialog is
+                    // dismissed on this tap, so a composition-scoped coroutine
+                    // could be cancelled during the "don't show again" write and
+                    // never launch the share the user just confirmed.
+                    val scope = app?.applicationScope ?: coroutineScope
+                    scope.launch {
                         if (dontShowAgain) {
                             app?.settingsRepository?.setBugReportConsentAcknowledged(true)
                         }

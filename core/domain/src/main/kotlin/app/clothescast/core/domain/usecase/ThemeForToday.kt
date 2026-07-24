@@ -104,13 +104,17 @@ class ThemeForToday(
         val segments = contributors.map { theme ->
             when {
                 theme.displayTitleOverride != null ->
-                    BannerSegment(literalText = theme.displayTitleOverride)
+                    BannerSegment(literalText = theme.displayTitleOverride, holidayId = theme.id)
                 theme.isFunny ->
-                    BannerSegment(textKey = theme.bannerJoinKey ?: theme.bannerTextKey)
+                    BannerSegment(
+                        textKey = theme.bannerJoinKey ?: theme.bannerTextKey,
+                        holidayId = theme.id,
+                    )
                 else ->
                     BannerSegment(
                         textKey = theme.bannerTextKey,
                         textKeyByCountry = theme.bannerTextKeyByCountry,
+                        holidayId = theme.id,
                     )
             }
         }

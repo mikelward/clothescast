@@ -3,7 +3,9 @@ package app.clothescast.tts
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.clothescast.core.domain.model.BandClause
+import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesClause
+import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.FestiveThemes
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HolidayCatalog
@@ -13,10 +15,13 @@ import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.core.domain.usecase.ThemeForToday
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotContain
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.LocalDate
+import java.time.Month
 import java.util.Locale
 
 @RunWith(AndroidJUnit4::class)
@@ -129,6 +134,96 @@ class InsightTtsUtteranceTest {
     }
 
     @Test
+    fun `two birthdays on one day still speak a single generic greeting`() {
+        // The composed banner reads "Alice's birthday and Bob's birthday", but
+        // both segments are calendar titles that can't be spoken — the greeting
+        // used to collapse to nothing, so a day with two birthdays was quieter
+        // than a day with one.
+        val utterance = insightTtsUtterance(
+            context = context,
+            summary = sampleSummary,
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.SYSTEM,
+            fallbackLocale = Locale.US,
+            holidayTheme = composedTheme(
+                LocalDate.of(2026, Month.MAY, 18),
+                birthday("Alice's birthday"),
+                birthday("Bob's birthday"),
+            ),
+        )
+
+        utterance.text shouldBe "Happy birthday! Today, it will be 8° to 15°. Wear a jumper and jacket."
+        utterance.text shouldNotContain "Alice"
+        utterance.text shouldNotContain "Bob"
+    }
+
+    @Test
+    fun `a birthday sharing a catalog holiday is greeted alongside it`() {
+        val utterance = insightTtsUtterance(
+            context = context,
+            summary = sampleSummary,
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.SYSTEM,
+            fallbackLocale = Locale.US,
+            holidayTheme = composedTheme(
+                LocalDate.of(2026, Month.DECEMBER, 25),
+                birthday("Alice's birthday"),
+            ),
+        )
+
+        utterance.text shouldBe
+            "Merry Christmas and Happy birthday! Today, it will be 8° to 15°. Wear a jumper and jacket."
+        utterance.text shouldNotContain "Alice"
+    }
+
+    @Test
+    fun `a greeting that brings its own punctuation starts a new sentence`() {
+        // "¡Feliz Cinco de Mayo!" closes its own sentence, so joining the
+        // birthday on with "and" would read as one broken sentence. Trimming
+        // the "!" isn't the answer either — it would orphan the opening "¡".
+        val utterance = insightTtsUtterance(
+            context = context,
+            summary = sampleSummary,
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.SYSTEM,
+            fallbackLocale = Locale.US,
+            holidayTheme = composedTheme(
+                LocalDate.of(2026, Month.MAY, 5),
+                birthday("Alice's birthday"),
+            ),
+        )
+
+        utterance.text shouldBe
+            "¡Feliz Cinco de Mayo! Happy birthday! Today, it will be 8° to 15°. Wear a jumper and jacket."
+    }
+
+    @Test
+    fun `a calendar public holiday sharing a birthday keeps its title off-device`() {
+        val utterance = insightTtsUtterance(
+            context = context,
+            summary = sampleSummary,
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.SYSTEM,
+            fallbackLocale = Locale.US,
+            holidayTheme = composedTheme(
+                LocalDate.of(2026, Month.MAY, 18),
+                CalendarEvent(
+                    title = "Diwali",
+                    start = LocalDate.of(2026, Month.MAY, 18).atStartOfDay(),
+                    end = LocalDate.of(2026, Month.MAY, 18).atStartOfDay(),
+                    allDay = true,
+                    kind = EventKind.PUBLIC_HOLIDAY,
+                ),
+                birthday("Alice's birthday"),
+            ),
+        )
+
+        utterance.text shouldBe "Happy birthday! Today, it will be 8° to 15°. Wear a jumper and jacket."
+        utterance.text shouldNotContain "Diwali"
+        utterance.text shouldNotContain "Alice"
+    }
+
+    @Test
     fun `nothing-to-say insight stays silent rather than speaking a placeholder`() {
         // RangeFormat.NONE drops the band; with no other clause the spoken
         // briefing is empty (the display card shows "Today, it will be the same
@@ -169,6 +264,25 @@ class InsightTtsUtteranceTest {
     private companion object {
         val christmas = HolidayCatalog.all.first { it.second.id == HolidayId.CHRISTMAS_DAY }.second
         val remembranceDay = HolidayCatalog.all.first { it.second.id == HolidayId.REMEMBRANCE_DAY }.second
+
+        fun birthday(title: String) = CalendarEvent(
+            title = title,
+            start = LocalDate.of(2026, Month.MAY, 18).atStartOfDay(),
+            end = LocalDate.of(2026, Month.MAY, 18).atStartOfDay(),
+            allDay = true,
+            kind = EventKind.BIRTHDAY,
+        )
+
+        /** The multi-celebration theme `ThemeForToday` composes for [date]. */
+        fun composedTheme(date: LocalDate, vararg events: CalendarEvent) =
+            ThemeForToday().resolve(
+                date = date,
+                overrides = emptyMap(),
+                enabledCountries = HolidayCatalog.allCountries,
+                events = events.toList(),
+                themeFromCalendarHolidays = true,
+                themeFromCalendarBirthdays = true,
+            )
 
         val sampleSummary = InsightSummary(
             period = ForecastPeriod.TODAY,

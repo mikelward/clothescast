@@ -459,6 +459,17 @@ data class BannerSegment(
     val textKey: String? = null,
     val textKeyByCountry: Map<String, String> = emptyMap(),
     val literalText: String? = null,
+    /**
+     * Which celebration contributed this piece. The banner doesn't need it —
+     * it renders [literalText] / [textKey] directly — but the spoken greeting
+     * does: a [literalText] segment is a calendar-sourced title that must
+     * never cross the device boundary, so speech has to decide *per kind*
+     * whether a safe generic stand-in exists (it does for a birthday, it
+     * doesn't for a calendar public holiday). Without this, a composed theme
+     * that is nothing but birthdays speaks no greeting at all, while a lone
+     * birthday speaks "Happy birthday!".
+     */
+    val holidayId: HolidayId? = null,
 )
 
 /**

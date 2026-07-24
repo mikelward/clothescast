@@ -462,6 +462,30 @@ class ThemeForTodayTest {
     }
 
     @Test
+    fun `composed banner segments carry the contributing holiday id`() {
+        // The spoken greeting needs to tell a birthday's literal segment (which
+        // has a safe generic stand-in) from a calendar public holiday's (which
+        // doesn't), so every segment names its contributor.
+        val theme = subject.resolve(
+            date = christmas,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(birthday("Alice's birthday"), birthday("Bob's birthday")),
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = true,
+        )
+        theme.shouldNotBeNull()
+        val segments = theme.bannerSegments.shouldNotBeNull()
+        segments.map { it.holidayId } shouldBe listOf(
+            HolidayId.CHRISTMAS_DAY,
+            HolidayId.BIRTHDAY,
+            HolidayId.BIRTHDAY,
+        )
+        // The literal calendar titles still ride on the segments for the banner.
+        segments.map { it.literalText } shouldBe listOf(null, "Alice's birthday", "Bob's birthday")
+    }
+
+    @Test
     fun `NORMAL kind events are ignored`() {
         val normalEvent = CalendarEvent(
             title = "Standup",

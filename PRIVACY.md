@@ -129,11 +129,20 @@ The source code is at <https://github.com/mikelward/clothescast>.
 - **Why:** To theme today's outfit on holidays your curated catalog
   doesn't cover (Diwali, Eid, Lunar New Year, etc.) and on detected
   birthdays — a celebratory palette + a banner naming the day.
-- **Where it goes:** Nowhere off-device. Detected event titles
-  (including contact names on birthday events) are shown only in the
-  themed banner on your screen — they are **never** read aloud through
-  online TTS, **never** sent to Gemini, and **never** written to
-  Firebase Analytics or Crashlytics.
+- **Where it goes:** Detected event titles — including contact names on
+  birthday events — stay on your device. They are shown only in the themed
+  banner on your screen: **never** read aloud through online TTS, **never**
+  sent to Gemini, and **never** written to Firebase Analytics or
+  Crashlytics.
+
+  One narrow exception, and only if you use the online (Gemini) voice: on a
+  day with a detected birthday, the spoken forecast opens with a generic
+  "Happy birthday" — a fixed phrase from the app's own translations, with
+  no name, no title, and no time. So the request carries the fact that
+  *some* birthday falls today; it carries nothing about whose, or what the
+  event was called. Detected public holidays from your calendar get no
+  greeting at all — those titles are never spoken. On the device voice
+  nothing leaves the phone either way.
 - **Permission:** Both toggles require `READ_CALENDAR`, prompted by
   the toggle itself. Revoking permission later from system Settings
   doesn't auto-flip the toggle off; the reader simply returns no events
@@ -443,9 +452,11 @@ What's **not** sent — these are hard limits, not "best-effort":
 
 - **No calendar event data.** Not titles, not times, not locations, not
   attendees, not whether you have any events at all. The calendar-sourced
-  holiday/birthday classifications described above stay on-device — the
-  themed banner is rendered locally and never read aloud through online
-  TTS, never sent to Gemini, and never written to Firebase.
+  holiday/birthday titles described above stay on-device — the themed
+  banner is rendered locally, never read aloud through online TTS, never
+  sent to Gemini, and never written to Firebase. (The generic "Happy
+  birthday" greeting noted in that section does reach Gemini on the online
+  voice; it never reaches Firebase.)
 - **No user names**, account identifiers, email addresses, or contact
   info. This explicitly includes contact names that may appear on
   birthday-themed banners on the Today screen.

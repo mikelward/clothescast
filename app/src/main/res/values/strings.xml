@@ -1206,6 +1206,10 @@
     <string name="bug_report_consent_dont_show_again">Don\'t show this again</string>
     <string name="bug_report_consent_continue">Continue</string>
     <string name="bug_report_consent_cancel">Cancel</string>
+    <!-- Shown when a share reached neither a share target nor the clipboard, so
+         the tap would otherwise look like it did nothing at all. -->
+    <!-- TODO: translate -->
+    <string name="bug_report_share_failed" tools:ignore="MissingTranslation">Couldn\'t share the bug report</string>
 
     <!--
     Insight prose templates rendered by InsightFormatter. Each clause is its own

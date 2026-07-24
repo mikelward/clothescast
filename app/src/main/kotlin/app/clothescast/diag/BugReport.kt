@@ -15,10 +15,12 @@ import android.os.Looper
 import android.view.PixelCopy
 import android.view.View
 import android.view.Window
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.graphics.createBitmap
 import app.clothescast.BuildConfig
 import app.clothescast.ClothesCastApplication
+import app.clothescast.R
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
@@ -124,13 +126,116 @@ object BugReport {
      * capture fails) the report shares text-only. The text payload is capped to
      * [MAX_LOG_LINES] log lines so the `EXTRA_TEXT` caption stays under the
      * length limits image-share targets impose.
+     *
+     * Returns whether the report was *retained* somewhere the user can still get
+     * it — i.e. the clipboard copy landed. `ACTION_SEND` gives no delivery or
+     * selection callback, so a launched chooser is no proof the report was sent
+     * (the user can back out of the sheet); the clipboard copy is the durable
+     * fallback that survives that. The post-crash banner gates its
+     * acknowledgement on this, so a share that reached nobody leaves the banner
+     * up for a retry instead of quietly dismissing it.
+     *
+     * [mainDispatcher], [payloadCollect], [screenshotCapture], [clipboardWrite],
+     * and [chooserLaunch] are injectable test seams (production uses the
+     * defaults): each delivery route can fail on its own, and both the return
+     * value and the failure notice are behavior a test must be able to drive
+     * every way, without a real window, `ClipboardManager`, or share target.
      */
-    suspend fun share(activity: Activity, includeScreenshot: Boolean = true) {
-        val app = activity.application as ClothesCastApplication
-        val text = buildPayload(activity, app)
-        val screenshotUri: Uri? = if (includeScreenshot) captureAndPersistScreenshot(activity) else null
-        copyToClipboard(activity, text)
-        startShare(activity, text, screenshotUri)
+    suspend fun share(
+        activity: Activity,
+        includeScreenshot: Boolean = true,
+        mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+        payloadCollect: suspend (Context, ClothesCastApplication) -> String = ::buildPayload,
+        screenshotCapture: suspend (Activity) -> Uri? = ::captureAndPersistScreenshot,
+        clipboardWrite: (Context, String) -> Boolean = ::copyToClipboard,
+        chooserLaunch: (Activity, String, Uri?) -> Boolean = ::startShare,
+    ): Boolean {
+        val app = activity.application as? ClothesCastApplication
+        val text = try {
+            // Off the main thread: the payload reads preferences, the insight
+            // cache, and the crash file from disk, and share() is launched from a
+            // UI tap — blocking there janks the frame the share sheet animates in
+            // over.
+            withContext(Dispatchers.IO) {
+                if (app == null) error("no ClothesCastApplication") else payloadCollect(activity, app)
+            }
+        } catch (c: CancellationException) {
+            throw c
+        } catch (t: Throwable) {
+            // A report is most useful after something has already gone wrong.
+            // Never turn a failure while inspecting that state into another
+            // crash: this runs from a tap, where an escaping throwable takes the
+            // app down. Retain a small shareable diagnostic instead.
+            DiagLog.w("BugReport", "payload collection failed", t)
+            buildFallbackPayload(t)
+        }
+        // The capture draws the live window via PixelCopy and the clipboard /
+        // chooser hand-off touches the Activity, so all three are pinned to the
+        // main thread — the payload build above hopped to IO and its continuation
+        // must not leave this on a worker thread.
+        return withContext(mainDispatcher) {
+            val screenshotUri: Uri? = if (includeScreenshot) screenshotCapture(activity) else null
+            // Guarded: both are injectable seams, and share() runs in a caller's
+            // coroutine scope where an escaping throwable would take the app down
+            // with it — the one thing a bug-report path must never do.
+            // Each logs what it caught: these guards also cover the work *around*
+            // the inner logged ones (building the chooser intent, resolving the
+            // clipboard service), so without this the user could see only the
+            // generic toast while the log said nothing about why.
+            val copied = runCatching { clipboardWrite(activity, text) }
+                .onFailure { DiagLog.w("BugReport", "clipboard hand-off threw", it) }
+                .getOrDefault(false)
+            val launched = runCatching { chooserLaunch(activity, text, screenshotUri) }
+                .onFailure { DiagLog.w("BugReport", "chooser hand-off threw", it) }
+                .getOrDefault(false)
+            // Neither route landed: the tap would otherwise do nothing visible at
+            // all — no chooser, nothing on the clipboard — and the user would
+            // retry into the same silence. Say so instead.
+            if (!copied && !launched) notifyShareFailed(activity)
+            copied
+        }
+    }
+
+    /**
+     * The report to fall back on when collecting the real one threw. Deliberately
+     * tiny and dependency-free — it reads nothing off disk, because a disk read
+     * is what most plausibly just failed — but it still carries the in-memory log
+     * tail, which is the diagnostic the report exists for. Without it the
+     * fallback would be four lines that say nothing about what went wrong, on the
+     * one path that only runs when something already has.
+     */
+    private fun buildFallbackPayload(failure: Throwable): String = buildString {
+        appendLine("ClothesCast bug report")
+        appendLine("Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+        appendLine("Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
+        // The message is clipped: an exception can carry a whole response body
+        // or a serialized value, and an unbounded fallback would blow the very
+        // ceiling this path exists to stay under — on the one path that runs
+        // when the normal report couldn't even be built.
+        val why = failure.message?.take(MAX_FAILURE_MESSAGE_CHARS)
+        appendLine("Report collection failed: ${failure.javaClass.name}" + (why?.let { ": $it" } ?: ""))
+        // If reading the log fails too — plausible, since the same storage
+        // problem could be behind both — say so in the report. Falling through
+        // to the empty-log sentinel would tell the reader "nothing was logged"
+        // when the truth is "the log couldn't be read," and lose the second
+        // failure entirely.
+        val recent = runCatching { DiagLog.snapshot() }
+            .onFailure {
+                DiagLog.w("BugReport", "log snapshot failed while building the fallback report", it)
+                appendLine("Recent log unavailable: ${it.javaClass.name}")
+            }
+            .getOrDefault(emptyList())
+        append(renderRecentLog(recent))
+    }
+
+    /** Tells the user a share reached neither the chooser nor the clipboard. */
+    private fun notifyShareFailed(context: Context) {
+        // Logged, not swallowed: this is the last user-visible fallback after
+        // both delivery routes already failed, so if it throws too the tap does
+        // nothing at all — and the log is then the only place that can say why.
+        runCatching {
+            Toast.makeText(context, R.string.bug_report_share_failed, Toast.LENGTH_LONG).show()
+        }.onFailure { DiagLog.w("BugReport", "share-failed notice could not be shown", it) }
     }
 
     private suspend fun buildPayload(context: Context, app: ClothesCastApplication): String {

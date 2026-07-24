@@ -139,6 +139,21 @@ I put on before I leave?" instead of a full weather-office report.
 - **On-device sensitive state:** Gemini and MQTT passwords are encrypted at rest;
   diagnostic logs and crash payloads can contain rendered insight prose and stay
   local unless the user shares a report or telemetry sends its trimmed payload.
+- **Bug reports are built and shared only on an explicit tap**, via the system
+  share sheet, with the text copied to the clipboard as a fallback; nothing is
+  transmitted automatically. The payload is size-bounded per section — settings,
+  the previous run's crash, the recent log — so no one section can crowd the
+  others out and the whole report still fits a Binder transaction with room to
+  spare (it crosses once into the clipboard and again in the share intent, and an
+  over-large payload fails *both* silently). If collecting the full report fails,
+  a minimal one still ships carrying the in-memory log, rather than the tap
+  crashing the app. **Both delivery routes failing is told to the user**, since a
+  tap that reaches neither the sheet nor the clipboard otherwise looks like it did
+  nothing. A share is **not tied to the screen it was started from** — it runs to
+  completion on the process-lifetime scope, so opening the sheet (or navigating
+  away) can't cancel it mid-collect. The post-crash banner dismisses itself only
+  once a report the user can still get at has been retained; a share that reached
+  nobody leaves the banner up for a retry.
 - **Runtime permissions:** coarse / background location, notifications,
   calendar, and exact-alarm-related platform capabilities must have explicit UX
   and fallbacks.

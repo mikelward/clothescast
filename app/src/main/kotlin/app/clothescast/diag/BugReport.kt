@@ -627,7 +627,13 @@ object BugReport {
         // PixelCopy against its stale token fails anyway — go straight to a
         // text-only report instead of spending a 10-30 MB buffer finding out.
         if (activity.isFinishing || activity.isDestroyed) return null
-        val bitmap = coRunCatching { captureWindow(activity) }.getOrNull() ?: return null
+        // Logged, not silently dropped: a throw before PixelCopy's own guard —
+        // allocating the bitmap, reading the decor view — would otherwise turn
+        // into a text-only report with nothing in the log to say why the
+        // screenshot is missing. coRunCatching, so cancellation still propagates.
+        val bitmap = coRunCatching { captureWindow(activity) }
+            .onFailure { DiagLog.w("BugReport", "window capture failed", it) }
+            .getOrNull() ?: return null
         // Compressing a full-window PNG and pruning previous files would block the
         // main thread long enough to jank the share-sheet open, so persist on
         // Dispatchers.IO.

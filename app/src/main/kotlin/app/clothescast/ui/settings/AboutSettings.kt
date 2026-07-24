@@ -76,7 +76,11 @@ private fun AboutCard() {
 
     val launchBugReport: () -> Unit = launchBugReport@{
         val act = activity ?: return@launchBugReport
-        coroutineScope.launch { BugReport.share(act) }
+        // On the application scope: the share sheet taking the foreground (or the
+        // user navigating away while the payload is still being built) tears this
+        // screen down, and a composition-scoped share would be cancelled partway
+        // through — the report would silently never arrive.
+        app.applicationScope.launch { BugReport.share(act) }
     }
 
     SectionCard(title = stringResource(R.string.settings_about_title)) {

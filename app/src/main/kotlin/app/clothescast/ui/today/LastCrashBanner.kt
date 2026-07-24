@@ -86,11 +86,20 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
 
     val shareCrashReport: () -> Unit = shareCrashReport@{
         val act = activity ?: return@shareCrashReport
-        coroutineScope.launch {
+        // On the application scope, not the composition's: the banner hides the
+        // moment the crash is acknowledged and the share sheet takes the
+        // foreground, either of which tears this composable down — and a
+        // composition-scoped share would be cancelled partway through, so the
+        // report the user asked for silently never arrived.
+        app.applicationScope.launch {
             // No screenshot: the crash is from a previous run, so the screen
             // visible now would be misleading attached to that report.
-            BugReport.share(act, includeScreenshot = false)
-            DiagLog.acknowledgePersistedCrash()
+            val retained = BugReport.share(act, includeScreenshot = false)
+            // Acknowledge only a report the user can still get at (the clipboard
+            // copy landed). If neither route landed, the banner stays up for a
+            // retry rather than quietly dismissing itself over a share that
+            // reached nobody.
+            if (retained) DiagLog.acknowledgePersistedCrash()
         }
     }
 

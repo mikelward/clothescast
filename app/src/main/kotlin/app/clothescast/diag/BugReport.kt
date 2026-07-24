@@ -34,8 +34,12 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.time.Duration
@@ -405,20 +409,60 @@ object BugReport {
 
     private suspend fun captureAndPersistScreenshot(activity: Activity): Uri? {
         val bitmap = coRunCatching { captureWindow(activity) }.getOrNull() ?: return null
-        return runCatching {
-            val dir = File(activity.cacheDir, "bug-reports").apply { mkdirs() }
-            // Wipe older screenshots — keep only the freshest one to avoid cache bloat.
-            dir.listFiles()?.forEach { it.delete() }
-            val file = File(dir, "screenshot-${System.currentTimeMillis()}.png")
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+        // Compressing a full-window PNG and pruning previous files would block the
+        // main thread long enough to jank the share-sheet open, so persist on
+        // Dispatchers.IO.
+        return try {
+            withContext(Dispatchers.IO) {
+                coRunCatching {
+                    val dir = File(activity.cacheDir, SCREENSHOT_DIR_NAME).apply { mkdirs() }
+                    // Prune old captures but keep the most recent couple: a
+                    // FileProvider URI from an earlier share may still be held by
+                    // its target (an unsent email draft, a messaging app that
+                    // reads attachments lazily), and deleting every file here
+                    // retroactively broke that grant — the attachment failed with
+                    // FileNotFoundException when the target finally read it.
+                    prunePersistedScreenshots(dir, keepNewest = SCREENSHOT_KEEP_PREVIOUS)
+                    val file = File(dir, "screenshot-${System.currentTimeMillis()}.png")
+                    FileOutputStream(file).use { out ->
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                    }
+                    FileProvider.getUriForFile(
+                        activity,
+                        activity.packageName + FILE_PROVIDER_AUTHORITY_SUFFIX,
+                        file,
+                    )
+                }.onFailure { DiagLog.w("BugReport", "screenshot persist failed", it) }.getOrNull()
             }
-            FileProvider.getUriForFile(
-                activity,
-                activity.packageName + FILE_PROVIDER_AUTHORITY_SUFFIX,
-                file,
-            )
-        }.onFailure { DiagLog.w("BugReport", "screenshot persist failed", it) }.getOrNull()
+        } finally {
+            // Only the PNG on disk outlives this call; free the full-window
+            // ARGB_8888 buffer (10-30 MB on current phones) now instead of
+            // waiting for GC. Safe even on cancellation: withContext waits for
+            // its block, so the compress has finished with the bitmap by the time
+            // we get here.
+            bitmap.recycle()
+        }
+    }
+
+    /**
+     * Deletes all but the [keepNewest] most recent `screenshot-*.png` captures in
+     * [dir], newest judged by the millis embedded in the filename (falling back
+     * to `lastModified` for a name that doesn't parse). Called before each new
+     * capture is written, so the directory holds at most [keepNewest] + 1 files —
+     * bounded growth without invalidating the URI a previous share target may
+     * still hold. Visible for tests.
+     */
+    internal fun prunePersistedScreenshots(dir: File, keepNewest: Int) {
+        val captures = dir.listFiles { file ->
+            file.isFile && file.name.startsWith("screenshot-") && file.name.endsWith(".png")
+        } ?: return
+        captures
+            .sortedByDescending { file ->
+                file.name.removePrefix("screenshot-").removeSuffix(".png").toLongOrNull()
+                    ?: file.lastModified()
+            }
+            .drop(keepNewest)
+            .forEach { it.delete() }
     }
 
     private suspend fun captureWindow(activity: Activity): Bitmap? {
@@ -426,23 +470,44 @@ object BugReport {
         val view: View = window.decorView
         if (view.width <= 0 || view.height <= 0) return null
         val bitmap = createBitmap(view.width, view.height)
-        return suspendCancellableCoroutine { cont ->
-            val location = IntArray(2)
-            view.getLocationInWindow(location)
-            val rect = Rect(
-                location[0],
-                location[1],
-                location[0] + view.width,
-                location[1] + view.height,
-            )
-            try {
-                requestPixelCopy(window, rect, bitmap) { ok ->
-                    cont.resume(if (ok) bitmap else null)
+        val location = IntArray(2)
+        view.getLocationInWindow(location)
+        val rect = Rect(
+            location[0],
+            location[1],
+            location[0] + view.width,
+            location[1] + view.height,
+        )
+        return awaitPixelCopyInto(bitmap) { onResult -> requestPixelCopy(window, rect, bitmap, onResult) }
+    }
+
+    /**
+     * Suspends until [request] reports whether the copy into [bitmap] landed,
+     * returning the bitmap on success and null on failure. The bitmap is a
+     * full-window ARGB_8888 buffer (10-30 MB on current phones), so every path
+     * that does not hand it to the caller recycles it: a failed copy, a
+     * synchronous throw from [request], and a caller cancelled before the result
+     * arrived. In the cancelled case the recycle happens in the (now ignored)
+     * result callback rather than eagerly at cancellation time, because PixelCopy
+     * may still be writing into the buffer until then. Visible for tests.
+     */
+    internal suspend fun awaitPixelCopyInto(
+        bitmap: Bitmap,
+        request: (onResult: (Boolean) -> Unit) -> Unit,
+    ): Bitmap? = suspendCancellableCoroutine { cont ->
+        try {
+            request { ok ->
+                if (ok) {
+                    cont.resume(bitmap) { _, _, _ -> bitmap.recycle() }
+                } else {
+                    bitmap.recycle()
+                    cont.resume(null)
                 }
-            } catch (t: Throwable) {
-                DiagLog.w("BugReport", "PixelCopy.request threw", t)
-                cont.resume(null)
             }
+        } catch (t: Throwable) {
+            DiagLog.w("BugReport", "PixelCopy.request threw", t)
+            bitmap.recycle()
+            cont.resume(null)
         }
     }
 
@@ -458,7 +523,8 @@ object BugReport {
         }, handler)
     }
 
-    private fun startShare(activity: Activity, text: String, screenshotUri: Uri?) {
+    /** Returns whether the chooser actually launched. */
+    private fun startShare(activity: Activity, text: String, screenshotUri: Uri?): Boolean {
         val send = Intent(Intent.ACTION_SEND).apply {
             putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
             putExtra(Intent.EXTRA_TEXT, text)
@@ -475,16 +541,55 @@ object BugReport {
         if (screenshotUri != null) {
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        runCatching { activity.startActivity(chooser) }
+        return runCatching { activity.startActivity(chooser); true }
             .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
+            .getOrDefault(false)
     }
 
-    private fun copyToClipboard(context: Context, text: String) {
+    /**
+     * Returns whether the report actually landed on the clipboard — the durable
+     * retained delivery [share] reports back to its caller.
+     */
+    private fun copyToClipboard(context: Context, text: String): Boolean =
         runCatching {
-            val cm = context.getSystemService(ClipboardManager::class.java) ?: return
-            cm.setPrimaryClip(ClipData.newPlainText("ClothesCast bug report", text))
+            val cm = context.getSystemService(ClipboardManager::class.java)
+            if (cm == null) {
+                false
+            } else {
+                cm.setPrimaryClip(ClipData.newPlainText("ClothesCast bug report", text))
+                true
+            }
         }.onFailure { DiagLog.w("BugReport", "clipboard copy failed", it) }
+            .getOrDefault(false)
+}
+
+/** Cache subdirectory holding the captures attached to bug reports. */
+private const val SCREENSHOT_DIR_NAME = "bug-reports"
+
+/**
+ * How many previous captures survive a new one. Two covers the realistic window
+ * (the share the user just sent plus one before it) at ~a few MB of cache;
+ * anything older has no live URI grant worth preserving.
+ */
+private const val SCREENSHOT_KEEP_PREVIOUS = 2
+
+/**
+ * The newest lines of [lines] (oldest-first) whose combined length fits
+ * [budgetChars], returned oldest-first; at least the single newest line is kept
+ * even if it alone exceeds the budget. Keeps the freshest context — a crash
+ * entry and the events around it sit at the *end* of a log, so a head-first
+ * truncation would drop exactly what the reader needs.
+ */
+internal fun boundedLogTail(lines: List<String>, budgetChars: Int): List<String> {
+    val kept = ArrayDeque<String>()
+    var used = 0
+    for (line in lines.asReversed()) {
+        val cost = line.length + 1 // + the newline appendLine adds
+        if (used + cost > budgetChars && kept.isNotEmpty()) break
+        kept.addFirst(line)
+        used += cost
     }
+    return kept
 }
 
 /** Walks the [ContextWrapper] chain to find the host [Activity], or returns null. */

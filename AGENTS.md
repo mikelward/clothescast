@@ -95,6 +95,61 @@ new rule the first time something bites you, not the third.
 - `:core:domain:test` alone is the minimum signal for any pure-Kotlin
   domain change, regardless of which path you take.
 
+## Testing expectations
+
+- **Fix any preexisting test failures as the *first* commit of the series.**
+  If the tree is already red when you start a task, don't stack your work on
+  top of a broken baseline. Land the fix first, on its own commit, so the
+  reason each test goes red is attributable to a single change. If the
+  failure is genuinely unrelated and out of scope, say so in the first
+  response and confirm before skipping past it — don't silently report a
+  task "done" with the tree still red.
+- **Don't paper over racy / flaky tests** with `Thread.sleep`, a retry loop,
+  or a bumped timeout. If a test depends on ordering (coroutine dispatch,
+  recomposition, a Robolectric frame), make the ordering explicit — a test
+  dispatcher you advance, `runTest`, an idling resource, a gate you release
+  from the test. A test that passes "most of the time" is broken; rewrite it
+  or fix the underlying cause.
+- **Don't disable a failing check** (a test, lint, a Roborazzi comparison)
+  to make it pass — fix the underlying issue.
+- **Call out cost and reliability up front** when recommending new
+  infrastructure or a new external call (another Open-Meteo request, a new
+  Gemini model or endpoint, a third-party API, added Firebase usage).
+  Include a rough dollar figure — free-tier vs. paid thresholds and $/month
+  at expected traffic — and note reliability implications: new failure
+  modes, rate limits, added latency, extra points of failure, and what the
+  user sees if the dependency is down. BYOK costs land on the *user's* key,
+  which makes the estimate more important here, not less. If the impact is
+  effectively zero, say so explicitly rather than omitting the note.
+
+## Spacing, padding, and margins
+
+- **Stick to a 4dp grid.** Every padding / margin / spacing value should be a
+  multiple of 4dp (`4`, `8`, `12`, `16`, `24`, `32`, ...). If you reach for
+  `5`, `7`, `10`, `14`, pick the nearest grid value instead, or surface the
+  off-grid value with a one-line explanation of why it's necessary.
+- **Reuse the values already in use.** Before introducing a new dp value,
+  check the surrounding composable and its peers. Gratuitous variation
+  between `14.dp`, `16.dp`, `18.dp` on visually similar elements is exactly
+  what this targets.
+- **Symmetry by default; asymmetry only with a reason.** Any asymmetric
+  padding gets a one-sentence justification in the PR. No silent asymmetry.
+- **Verify visually, not just by reading dp values.** After a spacing change,
+  look at the snapshot diff CI posts on the PR and confirm the result is
+  visually even — arithmetic that's correct but renders uneven (intrinsic
+  content padding, ripple insets, baseline alignment) is still wrong.
+- **Flag off-grid spacing you notice even outside the diff** — file, line,
+  what's off, proposed fix — without silently fixing it in the same commit.
+
+## Concise copy
+
+- Keep user-facing text short. A label, action, or title should carry only
+  the words the user needs — drop framing verbs and prefixes the surrounding
+  UI already implies. Prefer the shortest phrasing that stays unambiguous;
+  when a longer form is genuinely needed for clarity, say why in the PR.
+  Applies to strings, dialog and button text, and screen titles. (Same
+  instinct as the ≤80-char commit-subject rule — say it in fewer words.)
+
 ## Commits and PRs
 
 - **Linear history.** Never merge — rebase. The repo's PRs land as a linear
@@ -223,14 +278,39 @@ new rule the first time something bites you, not the third.
   links as plain text, so a single link can hide the rest of the stack
   (and may surface an already-merged PR while obscuring the live one).
   Worth the extra two lines.
-- **Report when Copilot finishes reviewing a fresh push.** Copilot's
+- **Codex is the automated reviewer on this repo** — not Copilot. Its
+  reviews are triggered automatically; you don't request them.
+- **Address Codex comments automatically — don't wait to be asked.** When a
+  Codex review lands, treat each comment like a real review note: read it,
+  decide whether it's a real issue or a false positive, and if it's real,
+  fix it in the same PR. Fold the fix into the commit it belongs to
+  (rebase / `--fixup`) rather than tacking on an "address review" commit,
+  per the *clean up unmerged commits* rule under "Commits and PRs". Group
+  several small fixes into one commit when they share a topic.
+- **`resolve_review_thread` works — pass the thread ID, not a comment ID.**
+  `mcp__github__pull_request_read` / `get_review_comments` returns each
+  thread's node ID (`PRRT_*`) on `review_threads[].id`. Pass that straight
+  to `mcp__github__resolve_review_thread` as `threadId`. A comment's node
+  ID (`PRRC_*`) fails with `Could not resolve to PullRequestReviewThread
+  node` — they're different objects. So reply *then* resolve; there's no
+  "replied-but-unresolved, please resolve in the UI" caveat to report.
+- **Report when Codex finishes reviewing a fresh push.** Codex's
   review runs asynchronously after each push; once its review event lands
   for the latest commit, surface a one-liner naming the SHA and comment
-  count — e.g. `Copilot reviewed 87d9f02 — 0 comments` or `Copilot
+  count — e.g. `Codex reviewed 87d9f02 — 0 comments` or `Codex
   reviewed 87d9f02 — 3 comments, addressing now`. Tie it to the *latest*
   pushed SHA so a stale review of a superseded commit isn't conflated with
   the current state. The user uses this to know when the automated pass
   is done vs. still pending.
+- **Skip echo events silently.** `mcp__github__add_reply_to_pull_request_comment`
+  / `add_issue_comment` post under whichever GitHub identity backs the MCP
+  auth (typically the repo owner's), so a moment after you post a reply the
+  same body comes back as a webhook event authored by that identity. That's
+  the echo of your own reply, not user feedback — treat it as a duplicate
+  and continue the in-progress task without a chat-side acknowledgement.
+  The test is "did *I* just post this body?", not "who is the author?" — a
+  real review comment from the same identity still gets the usual
+  reply-or-resolve handling.
 - **CI posts snapshot image diffs as a PR comment — don't hand-post.**
   The GitHub mobile app shows "Binary files not rendered" for any binary
   diff (added or modified), so PNG changes in the Files tab — including
@@ -260,7 +340,7 @@ new rule the first time something bites you, not the third.
   main` once at the start of any session that will report versionCodes — the
   user has been bitten by an under-by-15 count.
 - **Keep watching merged PRs for late review comments.** Reviewers and
-  bots routinely comment *after* merge (Copilot review, human follow-up).
+  bots routinely comment *after* merge (Codex review, human follow-up).
   Stay subscribed to the PR's activity after the merge and handle each
   new comment per the "say something or resolve" rule above — reply,
   resolve, or open a follow-up PR with the fix. Stop watching once every
@@ -353,8 +433,12 @@ new rule the first time something bites you, not the third.
   `catch (e: Exception) { /* ignore */ }` hides real failures in the field
   and burns hours when something eventually breaks. Every catch block needs
   to do three things: **log** the exception with enough context for a reader
-  to identify the failed call and its inputs (route through the usual
-  logger, not `println` or `Log.e` with a bare message); **clean up** what
+  to identify the failed call — the operation, the failure mode — but
+  **sanitized context only** (route through the usual logger, not `println`
+  or `Log.e` with a bare message). Never log calendar titles, locations, GPS
+  coordinates, insight prose, or a BYOK key; the *Privacy* section applies to
+  logs too, so redact or summarize ("geocode failed: 404", not the address).
+  **Clean up** what
   the `try` block acquired — closeables, network handles, partial writes,
   in-progress UI state — so a failure doesn't leak resources or leave the
   app half-mutated (`use { … }` / `finally` blocks for closeables);

@@ -257,20 +257,39 @@ new rule the first time something bites you, not the third.
 
 ## CI
 
-- Two jobs: `JVM unit tests` (~2m) runs `:core:*:test` + `:app:testDebugUnitTest`;
-  `Android debug build` (~3.5m) runs `:app:assembleDebug`. Both upload
-  artifacts; Roborazzi PNG snapshots upload as `ui-preview-snapshots` from
-  the JVM-tests job.
+- Two jobs: `JVM unit tests` runs `:core:*:test` + `:app:testDebugUnitTest`;
+  `Android debug build` runs `:app:assembleDebug`. Both upload artifacts;
+  Roborazzi PNG snapshots upload as `ui-preview-snapshots` from the
+  JVM-tests job.
+- **Job timings, measured 2026-07-24** — whole-job wall clock, with the
+  dominant step in parentheses:
+  - `JVM unit tests` — ~4m45s on a PR, ~5m on `main` (`Run unit tests`
+    step ~4m).
+  - `Android debug build` — ~4m20s on a PR (`Assemble debug APK` step
+    ~3m20s), ~9m30s on `main`.
+
+  **Re-date this list when you refresh it.** The previous figures (~2m /
+  ~3.5m) carried no date, had drifted well out of true, and cost an agent
+  a wrong "significant regression" call against a run that was in fact
+  slightly *faster* than baseline.
+- **Compare like with like: PR against PR, `main` against `main`.** The
+  `main` Android job is roughly double the PR one because `Bundle release
+  AAB` (~4m30s), Firebase App Distribution, and the Play upload only run
+  there — all three report `skipped` on a PR. Comparing a PR job against a
+  `main` number, or against a *step* time rather than the job total,
+  manufactures a regression that doesn't exist.
 - After pushing, **wait for CI** before claiming a change works on Android.
   The webhook subscription delivers events; don't poll.
 - **Report significant CI timing regressions.** After CI finishes on a push,
-  compare the new timings against recent runs of the same job. Only call
-  out *significant* slowdowns (rule of thumb: >25% or >30s on a job under
-  ~5min) — don't narrate routine wobble. When you do report one, name the
-  likely cause: a new heavy dependency (Robolectric cold start, a
-  build-tools download), a slow new test, cache invalidation. Spotting a
-  real regression early lets the user decide whether to invest in
-  mitigation before more tests pile on.
+  compare the new timings against recent runs of the same job *on the same
+  kind of ref* (see above). Only call out *significant* slowdowns (rule of
+  thumb: >25% or >30s on a job under ~5min) — don't narrate routine wobble,
+  and check the numbers against a real recent run rather than the figures
+  above, which are a sanity check and not a live baseline. When you do
+  report one, name the likely cause: a new heavy dependency (Robolectric
+  cold start, a build-tools download), a slow new test, cache invalidation.
+  Spotting a real regression early lets the user decide whether to invest
+  in mitigation before more tests pile on.
 
 ## Kotlin / Compose gotchas
 

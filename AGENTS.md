@@ -99,6 +99,9 @@ new rule the first time something bites you, not the third.
 
 - **Linear history.** Never merge — rebase. The repo's PRs land as a linear
   chain on `main`. A merge commit in a PR is a sign something went wrong.
+- **Use `git worktree` when it's available.** Give each branch its own
+  worktree instead of switching branches in place, so work in progress on one
+  branch isn't disturbed by work on another.
 - **Clean up unmerged commits before pushing for review.** Anything still
   on a feature branch (not yet merged to `main`) is scratch space — amend,
   squash, reorder, split, drop, rebase onto a different base as needed.
@@ -180,6 +183,10 @@ new rule the first time something bites you, not the third.
 
 - Use the `mcp__github__*` MCP tools for *all* GitHub operations. The `gh`
   CLI is **not** available in this sandbox.
+- **"Drive to merge"** is shorthand for the whole loop: open the PR, send it
+  for Codex review, address every review comment — fix it if you agree, reply
+  on the thread saying why if you don't — and merge once CI is green and Codex
+  has left its thumbs up.
 - Open PRs as **ready for review** (non-draft) immediately — don't wait for
   CI to go green or for an eyeball pass before marking them ready.
 - **Keep PR title and body in sync with the branch on every push.** A PR's

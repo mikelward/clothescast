@@ -10,6 +10,13 @@ new rule the first time something bites you, not the third.
   turn — ask the most important one, wait for the answer, then ask the
   next if you still need it. A wall of bundled questions is harder to
   answer than a short back-and-forth.
+- **Ask in chat, never with `AskUserQuestion`.** That's Claude Code's
+  multiple-choice question prompt, and it's broken in the Claude mobile
+  app — a question asked through it may be unanswerable. Plain chat also
+  keeps the question, its context, and the answer in one readable thread.
+- **After asking, stop and wait for the answer.** Don't proceed on an
+  assumed answer, pick a "recommended" option yourself, or keep working on
+  the part the question affects.
 - **Don't interrupt.** Never fire off a question while the user is still
   typing. Let them finish; a half-typed message isn't an invitation to
   jump in.

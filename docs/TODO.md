@@ -22,6 +22,28 @@ Code TODOs in source files are linked from here when they exist.
 - [ ] **`.github/workflows/release.yml`** — tag-triggered, runs Maestro on
       Firebase Test Lab + cuts a GitHub Release with a release-signed APK.
 
+## Paid tier (exploration)
+
+Nothing built; the tier shape isn't settled. Design notes — how a Play
+subscription would reach the Gemini proxy, why Smart Home can't be
+enforced the same way, costs, and the open questions — are in
+[ROADMAP.md](ROADMAP.md).
+
+- [ ] **Decide what the subscription sells.** Working recommendation is
+      Gemini quota only — it's the one thing with a real marginal cost
+      and the one thing genuinely enforceable. Blocks everything else.
+- [ ] **Confirm Smart Home stays free.** Its `audio` and `video` topics
+      already require a Gemini synthesis (`DeliveryGates.kt` — Gemini is
+      the only producer of routable PCM), so they're metered by the
+      proxy already; a separate entitlement would be redundant and its
+      grandfathering has no durable implementation. See ROADMAP.md.
+- [ ] **PRIVACY.md section for billing** before any of it ships: the
+      purchase token would be new off-device data stored against the
+      anonymous uid, plus a hash of that uid sent to Google as
+      `obfuscatedAccountId`. Deliberately *not* stored: the Play order
+      ID — nothing consumes it, so it's exposure for no benefit. See
+      ROADMAP.md.
+
 ## Voice / TTS
 
 - [x] Gemini TTS as opt-in voice engine (PR #27)

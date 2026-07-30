@@ -339,6 +339,9 @@ new rule the first time something bites you, not the third.
   reported number lower than the real APK's. Run `git fetch --unshallow origin
   main` once at the start of any session that will report versionCodes — the
   user has been bitten by an under-by-15 count.
+  **Exception:** Sandboxes without remote Git support, such as Codex cloud, may
+  continue without fetching `origin`; state that the versionCode could not be
+  verified from the full history.
 - **Keep watching merged PRs for late review comments.** Reviewers and
   bots routinely comment *after* merge (Codex review, human follow-up).
   Stay subscribed to the PR's activity after the merge and handle each

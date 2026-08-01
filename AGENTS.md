@@ -183,9 +183,47 @@ new rule the first time something bites you, not the third.
   `main`, rebase the upper one onto `main` — its diff cleanly shrinks to
   just the feature work.
 - **Force-pushes are routine on feature branches** (per the rule above) and
-  don't need confirmation. Do still confirm before anything destructive on
-  shared / merged branches: force-pushing `main`, dropping commits already
-  on `main`, rewriting another author's branch.
+  don't need confirmation, but use `git push --force-with-lease`, never a bare
+  `--force` — the lease is what stops you clobbering an upstream push you
+  hadn't seen (CI's own `ci: regenerate UI snapshots` commit, most often here).
+  Do still confirm before anything destructive on shared / merged branches:
+  force-pushing `main`, dropping commits already on `main`, rewriting another
+  author's branch. Reusing a merged branch name is in that set too — see the
+  post-merge rule above.
+- **Merge cue (`merged` / `I merged` / `landed` / merge webhook) runs
+  hygiene *before* engaging with the rest of the message:** `git fetch
+  origin main`, cut a fresh `<agent>/<short-topic>` branch off
+  `origin/main`, announce the switch. Where the sandbox has no remote, the
+  cue can't be honored as written — a fresh branch needs a base that
+  contains the merge, and an offline checkout can't fetch one; say so and
+  ask for a synced checkout rather than branching off a stale `main`. The
+  cue is about the branch that merged: when a lower PR in a stack merges
+  while an upper one is still open, rebase the upper branch with `git
+  rebase --onto origin/main <lower-branch>` — onto `origin/main`, not
+  local `main`, which the fetch does not advance, and naming the lower
+  branch as the upstream boundary so a squash merge doesn't replay the
+  lower commits too. Carry on there — don't abandon it for a new topic
+  branch.
+- **After a merge, take a fresh `<agent>/<short-topic>`** — don't reset the
+  merged name onto the new base. Its remote ref still points at the pre-merge
+  tip, so `origin/<branch>..HEAD` keeps spanning the merged commits and
+  unpushed-work checks report your own merged history back at you. When a
+  sandbox pins the branch name so a fresh one isn't available, say so and ask
+  before resetting it. No short check reliably separates "already merged" from
+  "not yet merged" here: a rebase merge rewrites the commits, a squash merge
+  collapses them, `main` moves on underneath so a tip-to-tip diff reports
+  upstream drift as branch work, the remote ref can hold a commit the local
+  one doesn't, and no tree comparison sees the uncommitted work a `--hard`
+  reset would erase. Confirming costs one question in a rare situation;
+  guessing costs someone their work. Don't reach for `--force-with-lease` as
+  the safety net either — fetching updates the remote-tracking ref the lease
+  compares against, so a commit you have already fetched passes the lease
+  unnoticed.
+- **The agent authors; whoever merges takes over the committer line.** A squash
+  or rebase merge rewrites the committer to the person who pressed the button —
+  the repo owner normally, the agent itself when it merges under *drive*. That's
+  expected either way — never re-author or amend already-merged commits to "fix"
+  authorship or signing.
 
 ## Commit messages
 
@@ -235,8 +273,9 @@ new rule the first time something bites you, not the third.
   Prefix it even though the path filter already drops it from the
   changelog — the prefix makes the intent explicit and keeps the subject
   from reading like end-user copy (and the subject filter now skips
-  `docs:` directly, same as `ci:` / `test:` / `internal:`). Exception: a PRIVACY.md-only change ships as a
-  bullet (it's treated as non-docs), so leave that one unprefixed.
+  `docs:` directly, same as `ci:` / `test:` / `internal:`). Exception: a
+  PRIVACY.md-only change ships as a bullet (it's treated as non-docs), so
+  leave that one unprefixed.
 - **Play caps `whatsnew-en-US` at 500 characters.** When the bullet list
   exceeds that, CI drops whole trailing bullets (oldest first stay) and
   appends `…`. Avoid lining up a long stack of small commits if any one
@@ -308,8 +347,9 @@ new rule the first time something bites you, not the third.
   every comment, merge once CI is green and Codex has left its thumbs up —
   then pick the next actionable `docs/TODO.md` item and go around again.
   Actionable means ready to build: skip anything explicitly deferred or
-  waiting on a product decision rather than guessing the decision. Driving ends when the work
-  runs out or the user says stop, not when one PR merges.
+  waiting on a product decision rather than guessing the decision. Driving
+  ends when the work runs out or the user says stop, not when one PR
+  merges.
 - **A red baseline is the next task.** Before pulling anything from
   `docs/TODO.md`, run the suite (`./gradlew :core:domain:test
   :core:data:test :app:testDebugUnitTest`) *and* `./gradlew
@@ -329,24 +369,26 @@ new rule the first time something bites you, not the third.
 - **"Autopilot" is drive without blocking on the user.** Wherever drive
   would stop and ask, autopilot takes its best guess and keeps going,
   preferring the option that is cheapest to undo or change later. Record
-  each guess in `docs/TODO.md` under a `Decisions needing review`
-  heading — what was decided, what the alternative was, and why it's
-  reversible — creating the heading if it isn't there, so nothing guessed
-  silently becomes permanent. While autopilot is in effect it outranks
-  "after asking, stop and wait for the answer"; that rule governs
-  everywhere else. The carve-out is for destructive or irreversible
-  actions *outside* the loop — rewriting shared history, deleting work,
-  anything reaching a system beyond this repo — which still wait for a
-  real answer. The loop's own steps don't count: committing, pushing,
+  each guess in `docs/TODO.md` under a `Decisions needing review` heading
+  — what was decided, what the alternative was, and why it's reversible —
+  creating the heading if it isn't there, so nothing guessed silently
+  becomes permanent. While autopilot is in effect it outranks "after
+  asking, stop and wait for the answer"; that rule governs everywhere
+  else. The carve-out is for destructive or irreversible actions *outside*
+  the loop — rewriting shared history, deleting work, anything reaching a
+  system beyond this repo — which still wait for a real answer. Resetting
+  a pinned merged branch waits too, even though it is inside the loop: the
+  post-merge rule asks precisely because no check can tell what the reset
+  would destroy, and autopilot guessing there is the loss that rule exists
+  to prevent. The loop's own steps don't count: committing, pushing,
   opening a PR, subscribing to it, reading its CI and review state, arming
   the next scheduled check, and merging a green PR are authorized here, so
   autopilot must not stall on them — the carve-out is aimed at destructive
-  writes to systems outside the repo, not at the loop's own GitHub reads and
-  follow-ups. Privacy uncertainty is never inside the loop
-  either: if you can't tell whether something is user data — a location, a
-  calendar title, a key, an identifier — it waits for a real answer, since
-  a push can't be un-published and a `docs/TODO.md` note doesn't retract
-  it.
+  writes to systems outside the repo, not at the loop's own GitHub reads
+  and follow-ups. Privacy uncertainty is never inside the loop either: if
+  you can't tell whether something is user data — a location, a calendar
+  title, a key, an identifier — it waits for a real answer, since a push
+  can't be un-published and a `docs/TODO.md` note doesn't retract it.
 
 ## GitHub
 
@@ -657,29 +699,30 @@ new rule the first time something bites you, not the third.
   outside.
 - **One number drives every rain surface — the blended-consensus chance of
   rain.** The prose's "chance of rain", the umbrella / rain-jacket clothes
-  defaults, and the conditions-strip droplet all key off the single blended
-  probability of precipitation that already lives on
+  defaults, and the conditions-strip droplet all key off the single
+  blended probability of precipitation that already lives on
   `DailyForecast.precipitationProbabilityMaxPct` / the blended
   `HourlyForecast.precipitationProbabilityPct` (the cross-model consensus
   blend — see `ConsensusBlend.kt`). Two bars: **≥ 10%** → prose "chance of
   rain" + umbrella default + strip droplet; **≥ 50%** → prose confident
   "rain" + rain-jacket default. There is no longer a per-model /
-  weather-code / trace-amount rain path: rain is never surfaced from a lone
-  model's drizzle code, and the umbrella default is a plain
-  `PrecipitationProbabilityAbove(10.0)` (rain jacket `PrecipitationProbabilityAbove(50.0)`),
-  not an OR of probability and a code floor. The morning insight's evening
-  extras still has two emission paths off this number: when a clothes rule
-  fires for the evening window the clause names the item and folds in the
-  rain ("Tonight, rain, bring a jacket."); when no rule fires but the
-  blended chance clears 10% in the tonight window and the user has an
-  evening event with a location, the clause emits as a bare rain warning
-  ("Tonight, rain." / the hedged chance-of-rain wording for the POSSIBLE
-  tier). The prose deliberately doesn't pin a peak hour ("rain at 9pm") —
-  the peak time still rides the clause data for the chart and cast card. A
-  post-midnight peak appends "overnight"; an evening peak adds no timing
-  word. Snow never fires the rain-gear defaults: the rule engine's snow gate
-  (`EvaluateClothesRules`, via `isFrozenPrecipitation`) suppresses rain gear
-  on snow days even when snow clears the probability bar.
+  weather-code / trace-amount rain path: rain is never surfaced from a
+  lone model's drizzle code, and the umbrella default is a plain
+  `PrecipitationProbabilityAbove(10.0)` (rain jacket
+  `PrecipitationProbabilityAbove(50.0)`), not an OR of probability and a
+  code floor. The morning insight's evening extras still has two emission
+  paths off this number: when a clothes rule fires for the evening window
+  the clause names the item and folds in the rain ("Tonight, rain, bring a
+  jacket."); when no rule fires but the blended chance clears 10% in the
+  tonight window and the user has an evening event with a location, the
+  clause emits as a bare rain warning ("Tonight, rain." / the hedged
+  chance-of-rain wording for the POSSIBLE tier). The prose deliberately
+  doesn't pin a peak hour ("rain at 9pm") — the peak time still rides the
+  clause data for the chart and cast card. A post-midnight peak appends
+  "overnight"; an evening peak adds no timing word. Snow never fires the
+  rain-gear defaults: the rule engine's snow gate (`EvaluateClothesRules`,
+  via `isFrozenPrecipitation`) suppresses rain gear on snow days even when
+  snow clears the probability bar.
 - The `:app` module owns Android concerns; LLM choice (which Gemini model
   to call) is `:app`'s problem. The `:core:domain` module is pure Kotlin
   and must stay that way — it's where the clothes / insight logic lives

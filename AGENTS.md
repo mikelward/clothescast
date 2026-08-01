@@ -24,6 +24,15 @@ new rule the first time something bites you, not the third.
   most important point and stop. If there's more, say the first point and
   ask whether they're ready for the next one rather than emptying
   everything at once.
+- **End the turn by restating any pending decision.** If you're waiting on
+  an answer — a question you asked, or a guess autopilot recorded for
+  review — the last line of the reply is that question, written out in
+  about a sentence. A back-reference ("as asked above") isn't actionable
+  when the question is pages back or was never actually put into words;
+  restate it every turn until it's answered. Nothing pending, no line. This
+  governs replies the user reads: a scheduled check that finds nothing new
+  re-arms silently and produces no reply at all, so there is nothing to
+  restate.
 
 ## Working in this repo
 

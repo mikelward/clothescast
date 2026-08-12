@@ -170,7 +170,10 @@ jobs:
           script: |
             const marker = '<!-- ci-jvm-tests -->';
             try {
-              const { data: comments } = await github.rest.issues.listComments({
+              // paginate, not per_page: 100 — past 100 comments on a PR the
+              // marker falls off page one and stale failure comments survive
+              // every later run.
+              const comments = await github.paginate(github.rest.issues.listComments, {
                 ...context.repo,
                 issue_number: context.issue.number,
                 per_page: 100,
@@ -389,14 +392,15 @@ jobs:
             // "not found" doesn't lose the comment, it posts a *duplicate* —
             // and every later run duplicates again. Let a lookup failure skip
             // the comment entirely; one run's status line is cheaper than a
-            // pile of them.
+            // pile of them. `paginate` for the same reason: past 100 comments
+            // the marker falls off page one and reads as a genuine no-match.
             let comments;
             try {
-              ({ data: comments } = await github.rest.issues.listComments({
+              comments = await github.paginate(github.rest.issues.listComments, {
                 ...context.repo,
                 issue_number: context.issue.number,
                 per_page: 100,
-              }));
+              });
             } catch (e) {
               core.warning(`Could not list PR comments (${e.message}); skipping the snapshot-freshness comment rather than risking a duplicate.`);
               return;
@@ -473,13 +477,18 @@ jobs:
           # id doesn't lose the comment — it posts a *duplicate*, and every
           # later run duplicates again. So on any lookup failure, skip the
           # comment entirely rather than guessing: skipping costs one run's
-          # diff, guessing wrong leaves a pile.
-          if ! existing=$(gh api \
+          # diff, guessing wrong leaves a pile. `--paginate` for the same
+          # reason — past 100 comments the marker falls off page one and
+          # reads as a genuine no-match. With --paginate the jq filter runs
+          # per page, so emit ids as lines and take the first rather than
+          # indexing into one page's array.
+          if ! ids=$(gh api --paginate \
             "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments?per_page=100" \
-            --jq "[.[] | select((.user.type == \"Bot\") and ((.body // \"\") | contains(\"$marker\")))][0].id // empty"); then
+            --jq ".[] | select((.user.type == \"Bot\") and ((.body // \"\") | contains(\"$marker\"))) | .id"); then
             echo "::warning::Could not list PR comments; skipping the snapshot-diff comment rather than risking a duplicate. The snapshots are committed to the branch and in the ui-preview-snapshots artifact."
             exit 0
           fi
+          existing="${ids%%$'\n'*}"
 
           if [ ${#entries[@]} -eq 0 ]; then
             if [ -n "$existing" ]; then
@@ -1206,7 +1215,7 @@ jobs:
       - name: Clear prior CI comments for this job
         # Same rationale as the JVM job — drops stale failure comments on a
         # clean re-run so the PR doesn't accumulate. Same continue-on-error
-        # reasoning too.
+        # and pagination reasoning too.
         continue-on-error: true
         if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         uses: actions/github-script@v8
@@ -1214,7 +1223,7 @@ jobs:
           script: |
             const marker = '<!-- ci-android-build -->';
             try {
-              const { data: comments } = await github.rest.issues.listComments({
+              const comments = await github.paginate(github.rest.issues.listComments, {
                 ...context.repo,
                 issue_number: context.issue.number,
                 per_page: 100,

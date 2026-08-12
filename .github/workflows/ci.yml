@@ -183,26 +183,52 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const path = '/tmp/jvm-tests.log';
-            let body = '_(no log captured)_';
+            const marker = '<!-- ci-jvm-tests -->';
+            // GitHub rejects comment bodies over 65536 characters, and 300
+            // lines of `--info` output can clear that on its own. An
+            // over-long body doesn't truncate, it 422s — losing the whole
+            // comment, which AGENTS.md reads as "the failure happened before
+            // the tests ran" and points the next reader at the wrong stage.
+            // So budget the body: keep the matched error lines, give the log
+            // tail whatever is left, and say the artifact has the rest.
+            const LIMIT = 60000;
+            const trimmed = '\n\n_Trimmed — the full log is in the `test-reports` artifact._';
+            let body = `${marker} JVM unit tests failed before gradle started.`;
             try {
-              const log = fs.readFileSync(path, 'utf8');
-              const lines = log.split('\n');
+              const lines = fs.readFileSync('/tmp/jvm-tests.log', 'utf8').split('\n');
               const errorLines = lines.filter(l =>
                 /^(e:|w:| {2}error:|FAILURE:|\* What went wrong:|Caused by:|Compilation error)/.test(l)
-              ).slice(0, 80);
-              const tail = lines.slice(-300).join('\n');
-              body = '<!-- ci-jvm-tests --> JVM unit tests failed.\n\n' +
-                '### Likely error lines\n```\n' + (errorLines.join('\n') || '(none matched)') + '\n```\n' +
-                '### Last 300 lines\n```\n' + tail + '\n```';
+              ).slice(0, 80).join('\n') || '(none matched)';
+              const head = `${marker} JVM unit tests failed.\n\n` +
+                '### Likely error lines\n```\n' + errorLines + '\n```\n' +
+                '### Last 300 lines\n```\n';
+              // Keep the *end* of the tail: the last frames of a stack trace
+              // beat its first, and gradle's "What went wrong" comes late.
+              let tail = lines.slice(-300).join('\n');
+              const budget = LIMIT - head.length - '\n```'.length - trimmed.length;
+              const overflowed = tail.length > budget;
+              if (overflowed) tail = tail.slice(-Math.max(budget, 0));
+              body = head + tail + '\n```' + (overflowed ? trimmed : '');
+              // Backstop for the case the head alone overflows (80 very long
+              // error lines). Slicing from the front keeps the marker, which
+              // the clear-prior-comments step needs to find this later.
+              const suffix = '\n```' + trimmed;
+              if (body.length > LIMIT) body = body.slice(0, LIMIT - suffix.length) + suffix;
             } catch (e) {
-              body = 'JVM unit tests failed before gradle started: ' + e.message;
+              body = `${marker} JVM unit tests failed before gradle started: ${e.message}`;
             }
-            await github.rest.issues.createComment({
-              ...context.repo,
-              issue_number: context.issue.number,
-              body,
-            });
+            try {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            } catch (e) {
+              // Warn rather than rethrow: the job is already red from the real
+              // failure, and replacing that annotation with an API error helps
+              // nobody. A warning still says why no comment appeared.
+              core.warning(`Could not post the failing-test comment (${e.message}); the log is in the job output above and in the test-reports artifact.`);
+            }
 
       - name: Upload test reports
         if: always()
@@ -1143,25 +1169,39 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            let body = '_(no log captured)_';
+            const marker = '<!-- ci-android-build -->';
+            // Same budgeting as the JVM job's comment — see the rationale
+            // there. An over-long body 422s and loses the whole comment.
+            const LIMIT = 60000;
+            const trimmed = '\n\n_Trimmed — the full log is in the `android-build-log` artifact._';
+            let body = `${marker} Android debug build failed before gradle started.`;
             try {
-              const log = fs.readFileSync('/tmp/android-build.log', 'utf8');
-              const lines = log.split('\n');
+              const lines = fs.readFileSync('/tmp/android-build.log', 'utf8').split('\n');
               const errorLines = lines.filter(l =>
                 /^(e:|w:| {2}error:|FAILURE:|\* What went wrong:|Caused by:|Compilation error)/.test(l)
-              ).slice(0, 80);
-              const tail = lines.slice(-300).join('\n');
-              body = '<!-- ci-android-build --> Android debug build failed.\n\n' +
-                '### Likely error lines\n```\n' + (errorLines.join('\n') || '(none matched)') + '\n```\n' +
-                '### Last 300 lines\n```\n' + tail + '\n```';
+              ).slice(0, 80).join('\n') || '(none matched)';
+              const head = `${marker} Android debug build failed.\n\n` +
+                '### Likely error lines\n```\n' + errorLines + '\n```\n' +
+                '### Last 300 lines\n```\n';
+              let tail = lines.slice(-300).join('\n');
+              const budget = LIMIT - head.length - '\n```'.length - trimmed.length;
+              const overflowed = tail.length > budget;
+              if (overflowed) tail = tail.slice(-Math.max(budget, 0));
+              body = head + tail + '\n```' + (overflowed ? trimmed : '');
+              const suffix = '\n```' + trimmed;
+              if (body.length > LIMIT) body = body.slice(0, LIMIT - suffix.length) + suffix;
             } catch (e) {
-              body = 'Android debug build failed before gradle started: ' + e.message;
+              body = `${marker} Android debug build failed before gradle started: ${e.message}`;
             }
-            await github.rest.issues.createComment({
-              ...context.repo,
-              issue_number: context.issue.number,
-              body,
-            });
+            try {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            } catch (e) {
+              core.warning(`Could not post the failing-build comment (${e.message}); the log is in the job output above and in the android-build-log artifact.`);
+            }
 
       - name: Upload build log
         if: always()

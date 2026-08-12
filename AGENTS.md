@@ -190,8 +190,8 @@ future task; the incident narrative belongs in the commit message.
   (feature) targets the lower PR's branch. When the lower PR merges to
   `main`, rebase the upper one onto `main` — its diff cleanly shrinks to
   just the feature work.
-- **Force-pushes are routine on feature branches** (per the rule above)
-  and don't need confirmation, but use `git push --force-with-lease`,
+- **Force-pushes are routine on your own feature branches** (per the rule
+  above) and don't need confirmation, but use `git push --force-with-lease`,
   never a bare `--force` — the lease is what stops you clobbering an
   upstream push you hadn't seen (CI's own `ci: regenerate UI snapshots`
   commit, most often here). The only protected ref is `main`: never
@@ -233,11 +233,13 @@ future task; the incident narrative belongs in the commit message.
   above is expected and needs no comment: no PR note, no chat caveat, no
   explanation of the mechanism, no offer to "fix" it. Raising it every
   session is the noise this bullet exists to stop.
-- **Only `main` is protected.** Every other branch is scratch space:
-  create, reset, force-push, and delete any non-`main` branch freely —
-  no permission, no announcement, including a branch name whose work has
-  already merged and commits a reviewer has already commented on. `main`
-  itself is never force-pushed or rewritten.
+- **Branches under your own agent prefix are yours.** Create, reset,
+  force-push, and delete the `<agent>/…` branches *this session* created
+  — freely, including a name whose work has already merged and commits a
+  reviewer has commented on. The prefix alone isn't ownership: another
+  session can share it, so leave a same-prefix branch you didn't create
+  alone, and another tool's prefix is never yours. `main` is never
+  force-pushed or rewritten.
 - **Every commit subject ships verbatim to the Play Store changelog.** CI
   collects the subject line of *every* commit landed since the previous
   successful main CI run, formats them as `• `-prefixed bullets (oldest →

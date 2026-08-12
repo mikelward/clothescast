@@ -2,7 +2,9 @@
 
 Rules and gotchas for AI coding agents (Claude Code, Codex, etc.) working in
 this repo. Keep this file short and concrete — one-liners over essays. Add a
-new rule the first time something bites you, not the third.
+new rule the first time something bites you, not the third. Every rule here
+loads into every agent's context each session, so verbosity taxes every
+future task; the incident narrative belongs in the commit message.
 
 ## Talking to the user
 
@@ -24,6 +26,12 @@ new rule the first time something bites you, not the third.
   most important point and stop. If there's more, say the first point and
   ask whether they're ready for the next one rather than emptying
   everything at once.
+- **Don't report your own caught mistakes.** A wrong turn you noticed
+  and fixed before it reached the user is not news — no "one thing worth
+  flagging", no post-mortem of your own reasoning, no inside baseball
+  about the loop. Say what the work is and what's outstanding. A mistake
+  that reached their repo, cost them something, or changes what they
+  should do is different: say that plainly.
 - **End the turn by restating any pending decision.** If you're waiting on
   an answer — a question you asked, or a guess autopilot recorded for
   review — the last line of the reply is that question, written out in
@@ -182,14 +190,12 @@ new rule the first time something bites you, not the third.
   (feature) targets the lower PR's branch. When the lower PR merges to
   `main`, rebase the upper one onto `main` — its diff cleanly shrinks to
   just the feature work.
-- **Force-pushes are routine on feature branches** (per the rule above) and
-  don't need confirmation, but use `git push --force-with-lease`, never a bare
-  `--force` — the lease is what stops you clobbering an upstream push you
-  hadn't seen (CI's own `ci: regenerate UI snapshots` commit, most often here).
-  Do still confirm before anything destructive on shared / merged branches:
-  force-pushing `main`, dropping commits already on `main`, rewriting another
-  author's branch. Reusing a merged branch name is in that set too — see the
-  post-merge rule above.
+- **Force-pushes are routine on feature branches** (per the rule above)
+  and don't need confirmation, but use `git push --force-with-lease`,
+  never a bare `--force` — the lease is what stops you clobbering an
+  upstream push you hadn't seen (CI's own `ci: regenerate UI snapshots`
+  commit, most often here). The only protected ref is `main`: never
+  force-push it, and never drop commits already on it.
 - **Merge cue (`merged` / `I merged` / `landed` / merge webhook) runs
   hygiene *before* engaging with the rest of the message:** `git fetch
   origin main`, cut a fresh `<agent>/<short-topic>` branch off
@@ -204,29 +210,34 @@ new rule the first time something bites you, not the third.
   branch as the upstream boundary so a squash merge doesn't replay the
   lower commits too. Carry on there — don't abandon it for a new topic
   branch.
-- **After a merge, take a fresh `<agent>/<short-topic>`** — don't reset the
-  merged name onto the new base. Its remote ref still points at the pre-merge
-  tip, so `origin/<branch>..HEAD` keeps spanning the merged commits and
-  unpushed-work checks report your own merged history back at you. When a
-  sandbox pins the branch name so a fresh one isn't available, say so and ask
-  before resetting it. No short check reliably separates "already merged" from
-  "not yet merged" here: a rebase merge rewrites the commits, a squash merge
-  collapses them, `main` moves on underneath so a tip-to-tip diff reports
-  upstream drift as branch work, the remote ref can hold a commit the local
-  one doesn't, and no tree comparison sees the uncommitted work a `--hard`
-  reset would erase. Confirming costs one question in a rare situation;
-  guessing costs someone their work. Don't reach for `--force-with-lease` as
-  the safety net either — fetching updates the remote-tracking ref the lease
-  compares against, so a commit you have already fetched passes the lease
-  unnoticed.
+- **After a merge, take a fresh `<agent>/<short-topic>`** — don't reset
+  the merged name onto the new base. Its remote ref still points at the
+  pre-merge tip, so `origin/<branch>..HEAD` keeps spanning the merged
+  commits and unpushed-work checks report your own merged history back
+  at you. When a sandbox pins the branch name so a fresh one isn't
+  available, reset it. No short check reliably separates "already
+  merged" from "not yet merged" here: a rebase merge rewrites the
+  commits, a squash merge collapses them, `main` moves on underneath so
+  a tip-to-tip diff reports upstream drift as branch work, the remote
+  ref can hold a commit the local one doesn't, and no tree comparison
+  sees the uncommitted work a `--hard` reset would erase. Don't reach
+  for `--force-with-lease` as the safety net either — fetching updates
+  the remote-tracking ref the lease compares against, so a commit you
+  have already fetched passes the lease unnoticed.
 - **The agent authors; whoever merges takes over the committer line.** A squash
   or rebase merge rewrites the committer to the person who pressed the button —
   the repo owner normally, the agent itself when it merges under *drive*. That's
   expected either way — never re-author or amend already-merged commits to "fix"
   authorship or signing.
-
-## Commit messages
-
+- **Never raise the authorship or committer question.** The rewrite
+  above is expected and needs no comment: no PR note, no chat caveat, no
+  explanation of the mechanism, no offer to "fix" it. Raising it every
+  session is the noise this bullet exists to stop.
+- **Only `main` is protected.** Every other branch is scratch space:
+  create, reset, force-push, and delete any non-`main` branch freely —
+  no permission, no announcement, including a branch name whose work has
+  already merged and commits a reviewer has already commented on. `main`
+  itself is never force-pushed or rewritten.
 - **Every commit subject ships verbatim to the Play Store changelog.** CI
   collects the subject line of *every* commit landed since the previous
   successful main CI run, formats them as `• `-prefixed bullets (oldest →
@@ -298,37 +309,84 @@ new rule the first time something bites you, not the third.
   review comments and CI results as they land, and the scheduled check is
   what catches the ones the webhook drops. A PR that is only subscribed
   looks watched and silently isn't.
-- **Poll your own open PRs every 5 minutes** — the ones you opened or were
-  explicitly asked to watch — for new review comments, CI status,
-  approvals, and the Codex thumbs up. Webhooks drop events, so a PR nobody
-  is polling stalls silently. Never end a turn by going idle with one of
-  yours still open: arm the next check with whatever the client offers
-  (`send_later`, a scheduled task / cron, `/loop`), and arm it *without
-  asking*. Scheduling your own follow-up is routine hygiene, not a
-  decision that needs approval. Someone else's open PR is not your polling
-  job — adopt one only when asked. Once a PR is green, reviewed, and has
-  nothing left but the merge, drop to half-hourly — that's a queue waiting
-  on a human, not work in flight. Merged or closed unmerged is terminal:
-  wait for one more check to see CI and Codex report on the final head,
-  but don't block on a report that may never land — an early manual
-  merge, a docs-only push a path filter never runs CI on, a down review
-  service — settle for whatever's known by then and move on. Either way,
-  run one last reply-or-resolve pass, then cancel the watch in full:
-  `unsubscribe_pr_activity` *and* the pending scheduled trigger, not just
-  one of the two. Open a follow-up PR (with its own watch) for anything a
-  merged PR still needs.
-- **What the polling costs.** Twelve wake-ups an hour per PR, each a model
-  turn plus a few GitHub API calls — roughly a dollar an hour on a large
-  context. The scheduler is the single point of failure: one missed
-  re-arm ends the watch silently, with no error anywhere. If you can't arm
-  the next check, say so in the reply rather than leaving a PR that looks
+- **Poll your own open PRs — fast while waiting on something the webhook
+  won't deliver, slow otherwise.** The activity subscription carries the
+  normal case: review comments and CI failures land in near real time.
+  What it does *not* reliably deliver is the Codex 👍 — its "no
+  suggestions" outcome is a reaction, not a comment — or CI going green.
+  Those two are the merge gate, so a PR waiting on either gets a
+  ~5-minute check; once nothing is left but a human, drop to ~30
+  minutes. Never go idle with one of yours still open and no check armed
+  — and the way to guarantee that is the bullet below, not a note-to-
+  self saved for the end of the turn. Someone else's open PR is not your
+  polling job — adopt one only when asked. Merged or closed unmerged is
+  terminal: wait for one more check to see CI and Codex report on the
+  final head, but don't block on a report that may never land — an early
+  manual merge, a docs-only push a path filter never runs CI on, a down
+  review service — settle for whatever's known by then and move on.
+  Either way, run one last reply-or-resolve pass, then cancel the watch
+  in full: `unsubscribe_pr_activity` *and* the pending scheduled
+  trigger, not just one of the two. Open a follow-up PR (with its own
+  watch) for anything a merged PR still needs.
+- **Arm the next check first, at the top of the turn — not on the way
+  out.** A turn that ends early takes a trailing re-arm with it (a
+  webhook or a user message landing mid-turn stops the turn where it
+  stands) and the chain dies with nothing saying so. Arming first is
+  also what makes a mid-turn arrival harmless: the next check is already
+  live, so a turn that stops there still leaves the watch running. But
+  re-arm means *ensure one is pending*, not reschedule — leave a
+  correctly-timed pending check alone, because pushing its deadline
+  forward every turn is how a busy PR never gets polled at all. Only
+  when it's missing, already fired, or mis-timed: update it in place, or
+  arm the replacement before deleting the old (overlap beats a gap).
+  Then diagnose, fix, and reply. Arm it *without asking*. Terminal state
+  is the one exemption, and it exempts the *next* check, not the pending
+  one: once the PR is merged or closed, let the pending check run as the
+  final one and cancel the watch after it, rather than re-arming.
+- **What the polling costs.** Twelve wake-ups an hour per PR at the fast
+  cadence, two at the slow one — each a model turn plus a few GitHub API
+  calls, so roughly a dollar an hour while a PR is waiting on its merge
+  gate. The scheduler is the single point of failure: one missed re-arm
+  ends the watch silently, with no error anywhere. If you can't arm the
+  next check, say so in the reply rather than leaving a PR that looks
   watched and isn't.
 - **One pending check per PR, not one per wake-up.** A webhook event can
   start a turn while a scheduled check is still pending; arming another
   there leaves two chains, each re-arming itself, and the cost doubles
-  every time it happens. Before arming, reuse or cancel the pending one
-  (`update_trigger`, or `delete_trigger` then re-arm) so exactly one check
-  is outstanding.
+  every time it happens. Reconcile the pending one instead —
+  `update_trigger` in place, or arm the replacement and then delete the
+  old — so you never end up with two self-rearming chains or with zero
+  checks pending — a brief overlap while replacing is fine, a gap is
+  not.
+- **In a Claude sandbox, the scheduler tools need allowlisting in user
+  settings — and before the session starts.** Working across several
+  repos means a repo's own `.claude/settings.json` is never read, so the
+  allowlist belongs in `$HOME/.claude/settings.json`, under full MCP
+  identifiers (`mcp__Claude_Code_Remote__send_later`,
+  `…__create_trigger`, `…__list_triggers`, `…__update_trigger`,
+  `…__delete_trigger`, plus the lowercase-server `mcp__claude-code-
+  remote__*` variants — bare names match nothing). The sandbox is
+  ephemeral so it must be written again each session, but settings load
+  at startup: writing it from inside a running session does not stop
+  that session's prompts, so it belongs in the environment's setup
+  script.
+- **A fired check doesn't necessarily retire itself.** A `send_later`
+  one-shot has come back re-armed +24 h, turning a five-minute check
+  into a daily wake-up while the session still looked watched. Reconcile
+  it when it fires — update it into the next check, or replace it the
+  same way — so exactly one stays outstanding.
+- **Verify the fire time you got is the one you asked for.** A requested
+  5 minutes came back as 100. Re-arm when they disagree, or say the
+  watch isn't armed — the woken turn can't see the drift, only that a
+  check arrived.
+- **`list_triggers` spans the whole account.** The docs never say so, and
+  it reads as session-scoped — that's the trap. Filter on
+  `persistent_session_id`, and match the trigger to *this* PR as well
+  (one session can watch several), or the delete kills another live watch.
+- **Don't bake a SHA into the check prompt — say "the current head".** The
+  prompt predates the work it describes; one fired naming a commit four
+  behind head. Same for CI status and review counts: name what to re-read,
+  not what it contained.
 - **"Drive" means run the loop automatically**: pick the next task,
   implement it, open the PR, wait for the automatic Codex review, address
   every comment, merge once CI is green and Codex has left its thumbs up —
@@ -356,26 +414,24 @@ new rule the first time something bites you, not the third.
 - **"Autopilot" is drive without blocking on the user.** Wherever drive
   would stop and ask, autopilot takes its best guess and keeps going,
   preferring the option that is cheapest to undo or change later. Record
-  each guess in `docs/TODO.md` under a `Decisions needing review` heading
-  — what was decided, what the alternative was, and why it's reversible —
-  creating the heading if it isn't there, so nothing guessed silently
-  becomes permanent. While autopilot is in effect it outranks "after
-  asking, stop and wait for the answer"; that rule governs everywhere
-  else. The carve-out is for destructive or irreversible actions *outside*
-  the loop — rewriting shared history, deleting work, anything reaching a
-  system beyond this repo — which still wait for a real answer. Resetting
-  a pinned merged branch waits too, even though it is inside the loop: the
-  post-merge rule asks precisely because no check can tell what the reset
-  would destroy, and autopilot guessing there is the loss that rule exists
-  to prevent. The loop's own steps don't count: committing, pushing,
-  opening a PR, subscribing to it, reading its CI and review state, arming
-  the next scheduled check, and merging a green PR are authorized here, so
-  autopilot must not stall on them — the carve-out is aimed at destructive
-  writes to systems outside the repo, not at the loop's own GitHub reads
-  and follow-ups. Privacy uncertainty is never inside the loop either: if
-  you can't tell whether something is user data — a location, a calendar
-  title, a key, an identifier — it waits for a real answer, since a push
-  can't be un-published and a `docs/TODO.md` note doesn't retract it.
+  each guess in `docs/TODO.md` under a `Decisions needing review`
+  heading — what was decided, what the alternative was, and why it's
+  reversible — creating the heading if it isn't there, so nothing
+  guessed silently becomes permanent. While autopilot is in effect it
+  outranks "after asking, stop and wait for the answer"; that rule
+  governs everywhere else. The carve-out is for destructive or
+  irreversible actions *outside* the loop — rewriting shared history,
+  deleting work, anything reaching a system beyond this repo — which
+  still wait for a real answer. The loop's own steps don't count:
+  committing, pushing, opening a PR, subscribing to it, reading its CI
+  and review state, arming the next scheduled check, and merging a green
+  PR are authorized here, so autopilot must not stall on them — the
+  carve-out is aimed at destructive writes to systems outside the repo,
+  not at the loop's own GitHub reads and follow-ups. Privacy uncertainty
+  is never inside the loop either: if you can't tell whether something
+  is user data — a location, a calendar title, a key, an identifier — it
+  waits for a real answer, since a push can't be un-published and a
+  `docs/TODO.md` note doesn't retract it.
 
 ## GitHub
 

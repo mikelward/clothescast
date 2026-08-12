@@ -278,6 +278,16 @@ Open work:
       `:core:data`. No coverage measurement wired up.
 - [ ] **`docs/acceptance.md`** — manual checklist (TTS audio, real 7am fire,
       lock-screen visibility, OEM background-killer).
+- [ ] **Stop searching for the sticky PR comments altogether.** The four
+      comment steps in `ci.yml` now paginate the comment list to find their
+      marker, which is correct but O(comments) API calls per run on a long
+      PR, and still a search where an exact lookup would do. Stashing each
+      comment's id somewhere stable (a workflow-run output, a branch note,
+      the check-run summary) would make the upsert a direct PATCH. Not
+      urgent — the paginated form is correct at any comment count, this is
+      only about cost and simplicity. `mikelward/typelauncher` and
+      `mikelward/simmo` still carry the underlying pagination gap as an open
+      item, since paginating their `curl`-based lookups is real work.
 
 ## Deferred to v2 (out of scope for v1)
 

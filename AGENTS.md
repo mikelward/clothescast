@@ -342,15 +342,9 @@ future task; the incident narrative belongs in the commit message.
   mis-timed, either `update_trigger` it in place or arm the replacement
   before deleting the old, because an overlap beats a gap. Then diagnose,
   fix, and reply.
-- **Permissions load at session start, so a rule here can't fix them.** The
-  unattended loop needs the scheduler entries (the MCP ones and
-  `ScheduleWakeup`), the GitHub MCP reads and writes, and `git push`. A
-  session rooted above the repo loads no repo-local settings, so those
-  belong in `$HOME/.claude/settings.json`, written by the environment's
-  setup script under both server-name spellings. The cost, which the repo
-  owner has taken: any repo the account opens can push, comment and merge
-  unprompted. Writing that file mid-session does nothing for that session;
-  if calls prompt, say so once and carry on.
+- **If a scheduler or GitHub call prompts, say so once and carry on.**
+  Permissions load at session start, so writing a settings file mid-session
+  can't fix the session you're in.
 - **A fired check doesn't necessarily retire itself.** A `send_later`
   one-shot has come back re-armed +24 h, turning a five-minute check
   into a daily wake-up while the session still looked watched. Reconcile

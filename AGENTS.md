@@ -311,8 +311,9 @@ future task; the incident narrative belongs in the commit message.
   is a separate thing and it is **opt-in** — it pushes every comment, check
   run and bot reply into the conversation as a raw event, which buries the
   thread the user is actually reading under machine chatter they didn't ask
-  for. Subscribe only when asked to, and unsubscribe as soon as the reason
-  for it passes.
+  for. Opening a PR *subscribes this session to it automatically*, so
+  unsubscribe right after opening one unless you were asked to watch it that
+  way.
 - **Poll your own open PRs — every ~5 minutes while CI or the verdict is
   outstanding, ~30 once only a human is left.** Those two are what nothing
   else reports. Never end a turn idle with one of yours open: arm the next
@@ -342,7 +343,7 @@ future task; the incident narrative belongs in the commit message.
   mis-timed, either `update_trigger` it in place or arm the replacement
   before deleting the old, because an overlap beats a gap. Then diagnose,
   fix, and reply.
-- **If a scheduler or GitHub call prompts, say so once and carry on.**
+- **If a scheduler, GitHub or `git push` call prompts, say so once and carry on.**
   Permissions load at session start, so writing a settings file mid-session
   can't fix the session you're in.
 - **A fired check doesn't necessarily retire itself.** A `send_later`
@@ -358,10 +359,17 @@ future task; the incident narrative belongs in the commit message.
   it reads as session-scoped — that's the trap. Filter on
   `persistent_session_id`, and match the trigger to *this* PR as well
   (one session can watch several), or the delete kills another live watch.
-- **Don't bake a SHA into the check prompt — say "the current head".** The
-  prompt predates the work it describes; one fired naming a commit four
-  behind head. Same for CI status and review counts: name what to re-read,
-  not what it contained.
+- **Don't bake a SHA — or a list of PR numbers — into the check prompt; say
+  what to re-read.** Both are written before the work they describe, so both
+  are stale when it fires; one fired naming a commit four behind head. A
+  queued firing also carries the prompt as it was when it was queued, so
+  editing it mid-turn does not reach a check already on its way. Same for CI
+  status and review counts: name what to re-read, not what it contained.
+- **The scheduler's clock is not this container's.** `run_once_at` must be
+  in the future by the *scheduler's* reckoning, and an absolute time
+  computed from `date` here has been rejected as already past. Prefer a
+  relative delay where the client offers one; where it doesn't, read the
+  clock rather than assuming it, and leave margin.
 - **"Drive" means run the loop automatically**: pick the next task,
   implement it, open the PR, wait for the automatic Codex review, address
   every comment, merge once CI is green and Codex's verdict for the current

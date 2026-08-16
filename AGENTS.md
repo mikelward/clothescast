@@ -305,66 +305,33 @@ future task; the incident narrative belongs in the commit message.
   PR, so a client-level rule reading "open a PR only when the user
   explicitly asks" is already satisfied — the ask is here, and it doesn't
   need repeating per branch.
-- **Stay subscribed to PR activity on your own PRs — events are the
-  watch.** Keep (or create) the `subscribe_pr_activity` subscription for
-  every PR you open, so CI failures, reviews, and comments wake the session
-  and get acted on the moment they land, without the operator having to
-  relay them. Subscribed events render as raw payloads in the operator's
-  conversation and nothing session-side can filter them; that cost is
-  accepted — reaction latency outranks a quiet chat. Arm auto-merge at PR
-  open too, so a clean verdict merges without a turn. Unsubscribe only when
-  the PR merges or closes.
-- **Keep one scheduled fallback check per open PR alongside the
-  subscription — ~5 minutes while CI or the Codex verdict is outstanding,
-  ~30 once only a human is left.** Events are the primary signal; the check
-  covers what webhooks drop — CI success, merges, and Codex's clean
-  verdict, which is a reaction and emits no event at all. Never end a turn idle with one of yours open: arm the next
-  check with whatever the client offers (`send_later`, a scheduled task /
-  cron, `/loop`), and arm it *without asking* — that is hygiene, not a
-  decision. Someone else's PR is not your polling job unless you're asked.
-  Merged or closed is terminal: take one more check for CI and Codex on the
-  final head, but settle for what's known if a report may never land, then
-  run a last reply-or-resolve pass and cancel the watch in full — the
-  pending trigger, *and* `unsubscribe_pr_activity` if you ever subscribed.
-  Open a follow-up PR, with its own watch, for anything a merged one still
-  needs.
-- **What the polling costs.** Twelve wake-ups an hour per PR at the fast
-  cadence, two at the slow one — each a model turn plus a few GitHub API
-  calls, so roughly a dollar an hour while a PR is waiting on its merge
-  gate. The scheduler is the single point of failure: one missed re-arm
-  ends the watch silently, with no error anywhere. If you can't arm the
-  next check, say so in the reply rather than leaving a PR that looks
-  watched and isn't.
-- **One pending check per PR, settled at the top of the turn.** Two chains
-  each re-arming themselves double the cost every time a webhook starts a
-  turn while one is already pending; parking the re-arm at the *end* of the
-  turn loses it when the turn is interrupted, which once left a PR unwatched
-  for two hours. So settle it first, and settle it to exactly one: leave a
-  correctly-timed check alone — pushing its deadline forward every turn is
-  how a busy PR never gets polled — and when it's missing, already fired, or
-  mis-timed, either `update_trigger` it in place or arm the replacement
-  before deleting the old, because an overlap beats a gap. Then diagnose,
-  fix, and reply.
+- **Watch your own PRs by subscription, plus one scheduled check.** Have a
+  subscription — Claude Code makes one when you open a PR; where a client
+  doesn't, call `subscribe_pr_activity`. It delivers reviews, comments and CI
+  failures. It cannot deliver CI *success*, a push, the merge, Codex's clean
+  verdict (a reaction), or Codex never answering at all — so keep exactly one
+  check armed for as long as the PR is open (each event and each check costs
+  a model turn). Under drive, arm auto-merge at PR open too — but only where
+  the ruleset makes the Codex verdict a required check, since where CI is the
+  only requirement it merges before Codex has answered.
+  - Settle the fired trigger first thing in the turn, not last. It may have
+    silently re-armed rather than retired, so update it rather than adding a
+    second chain.
+  - Check the fire time you got against the one you asked for — a 4-minute
+    request has come back as 64. Re-time it, or say the watch isn't armed.
+  - A few minutes out while CI or the current head's Codex verdict is
+    outstanding; longer once only a human is left; short again after a push.
+  - Name the PR, and say what to re-read rather than what you read. A SHA or
+    a list of which PRs are open goes stale before it fires; one PR number
+    does not, and the trigger has to be matchable to it.
+  - Merged or closed, take one last reply-or-resolve pass — a review can
+    land after the merge — then cancel it and unsubscribe. `list_triggers`
+    spans the account, so match this session and this PR before updating
+    or deleting one; an update reschedules whatever it matches as surely
+    as a delete cancels it.
 - **If a scheduler or GitHub call prompts, say so once and carry on.**
   Permissions load at session start, so writing a settings file mid-session
   can't fix the session you're in.
-- **A fired check doesn't necessarily retire itself.** A `send_later`
-  one-shot has come back re-armed +24 h, turning a five-minute check
-  into a daily wake-up while the session still looked watched. Reconcile
-  it when it fires — update it into the next check, or replace it the
-  same way — so exactly one stays outstanding.
-- **Verify the fire time you got is the one you asked for.** A requested
-  5 minutes came back as 100. Re-arm when they disagree, or say the
-  watch isn't armed — the woken turn can't see the drift, only that a
-  check arrived.
-- **`list_triggers` spans the whole account.** The docs never say so, and
-  it reads as session-scoped — that's the trap. Filter on
-  `persistent_session_id`, and match the trigger to *this* PR as well
-  (one session can watch several), or the delete kills another live watch.
-- **Don't bake a SHA into the check prompt — say "the current head".** The
-  prompt predates the work it describes; one fired naming a commit four
-  behind head. Same for CI status and review counts: name what to re-read,
-  not what it contained.
 - **"Drive" means run the loop automatically**: pick the next task,
   implement it, open the PR, wait for the automatic Codex review, address
   every comment, merge once CI is green and Codex's verdict for the current
@@ -540,8 +507,6 @@ future task; the incident narrative belongs in the commit message.
   **Exception:** Sandboxes without remote Git support, such as Codex cloud, may
   continue without fetching `origin`; state that the versionCode could not be
   verified from the full history.
-- **Canceling the watch**: see the polling bullet under "Autonomy".
-
 ## CI
 
 - Two jobs: `JVM unit tests` runs `:core:*:test` + `:app:testDebugUnitTest`;
@@ -566,9 +531,8 @@ future task; the incident narrative belongs in the commit message.
   `main` number, or against a *step* time rather than the job total,
   manufactures a regression that doesn't exist.
 - After pushing, **wait for CI** before claiming a change works on Android.
-  Don't busy-poll inside the turn — the webhook subscription delivers events.
-  The scheduled PR check under "Autonomy" is the exception, and the reason it
-  exists: those events get dropped often enough to stall a PR silently.
+  Don't busy-poll inside the turn — a failure arrives on the subscription, and
+  success is what the scheduled check is for.
 - **Report significant CI timing regressions.** After CI finishes on a push,
   compare the new timings against recent runs of the same job *on the same
   kind of ref* (see above). Only call out *significant* slowdowns (rule of

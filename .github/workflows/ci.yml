@@ -29,18 +29,29 @@ on:
       - '!.*'
       - '!.*/**'
       - '.github/workflows/**'
+  # No paths filter on pull_request, deliberately: the main ruleset requires
+  # the `gate` check, and a required check that never reports blocks the PR
+  # forever — which is exactly what a path-filtered-out workflow produces.
+  # Housekeeping-only PRs (now including markdown-only ones, which used to
+  # run full CI) skip the heavy jobs via `classify` instead, and `gate`
+  # verifies the skip was justified (scripts/docs-lane.sh has the rationale).
   pull_request:
-    paths:
-      - '**'
-      - '!.*'
-      - '!.*/**'
-      - '.github/workflows/**'
-  # Manual rescue trigger so the release-AAB / Firebase / Play-upload steps
-  # can be re-fired when the natural `push` event didn't produce a usable
-  # build (e.g. a transient gradle / Play API failure on the original
-  # push-to-main run). Run from Actions tab → CI → "Run workflow",
-  # target `main`.
+  # Two dispatch callers. (1) Release rescue: re-fire the release-AAB /
+  # Firebase / Play-upload steps from the Actions tab against main when the
+  # natural push run failed transiently — no pr input. (2) The
+  # snapshot-regen step: its GITHUB_TOKEN push starts no workflow run, so it
+  # dispatches CI onto the head it just pushed, naming its PR — or the
+  # required `gate` check would exist only on the regenerated commit's
+  # parent. A dispatch that names a PR is bound to it (head SHA verified,
+  # sole open PR verified, merge-ref build in android-build); one that
+  # doesn't is allowed only on main. scripts/docs-lane.sh enforces that.
   workflow_dispatch:
+    inputs:
+      pr:
+        description: >-
+          Pull request number this run reports for (the snapshot-regen
+          dispatch sets it; leave empty only for a release rescue on main).
+        required: false
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -52,15 +63,51 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  # Decides whether the heavy jobs may skip: true only when every changed
+  # file in the PR is housekeeping (see scripts/docs-lane.sh for the rule).
+  # Pushes to main and PR-less rescue dispatches are always classified as
+  # code, so they run everything; a dispatch that names a PR classifies that
+  # PR's real diff, exactly as the PR run would.
+  classify:
+    name: Classify the diff
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      docs_only: ${{ steps.run.outputs.docs_only }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Self-test the lane rules
+        # A broken rule fails here, the heavy jobs skip on the failed
+        # dependency, and the gate goes red — fail closed, never green.
+        run: bash scripts/docs-lane.test.sh
+      - name: Classify
+        id: run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number || inputs.pr }}
+        run: scripts/docs-lane.sh classify >> "$GITHUB_OUTPUT"
+
   unit-tests:
     name: JVM unit tests
     runs-on: ubuntu-latest
+    needs: classify
+    if: needs.classify.outputs.docs_only != 'true'
     permissions:
       # contents: write so the snapshot-commit step can push regenerated PNGs
       # back to the PR branch. GITHUB_TOKEN-authored commits do not trigger new
       # workflow runs (GitHub safety mechanism), so there's no infinite loop.
       contents: write
       pull-requests: write
+      # So the snapshot-commit step can dispatch CI onto the head it just
+      # pushed — without a run there, the required `gate` never reports on
+      # the regenerated commit. The regen path only runs on same-repo PRs,
+      # whose author already has push access, so this widens nothing.
+      actions: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -292,6 +339,13 @@ jobs:
           # As an env var, the value is exposed to the shell as data and
           # safely quoted at the use site.
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          # The `gh workflow run` dispatch below authenticates through
+          # GH_TOKEN; without it the fresh runner's gh is unauthenticated
+          # (the job's `actions: write` grants the token scope, not the CLI
+          # its credential), the dispatch fails after the push has already
+          # moved the PR head, and the required gate never reports for the
+          # refreshed commit.
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -343,6 +397,13 @@ jobs:
           fi
           git commit -m "ci: regenerate UI snapshots"
           git push origin "HEAD:$HEAD_REF"
+          # The push above starts no workflow run — GITHUB_TOKEN pushes never
+          # do — so dispatch CI onto the new head or the required `gate`
+          # blocks the PR forever, silently. Fail loudly if it doesn't take.
+          if ! gh workflow run ci.yml --ref "$HEAD_REF" -f pr="${{ github.event.pull_request.number }}"; then
+            echo "::error::Pushed regenerated snapshots but could not start CI on them (is workflow_dispatch with the pr input on main yet?). Dispatch CI on the branch by hand from the Actions tab."
+            exit 1
+          fi
           echo "SNAPSHOTS_REGENERATED=true" >> "$GITHUB_ENV"
           echo "SNAPSHOT_COMMIT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
@@ -569,6 +630,7 @@ jobs:
   android-build:
     name: Android debug build
     runs-on: ubuntu-latest
+    needs: classify
     permissions:
       contents: read
       pull-requests: write
@@ -586,12 +648,22 @@ jobs:
     # individual secret-loading steps to main (see the "Probe publish
     # secrets" / debug-keystore-decode / Firebase / Play steps below,
     # each of which `if:`-gates secret access to push/dispatch on main).
-    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    # A PR-named dispatch (the snapshot-regen relaunch) is admitted off main:
+    # docs-lane.sh binds it to the PR's own head, and the secret-loading
+    # steps below stay individually gated to push/dispatch on main, so no
+    # secret is in scope on a branch either way.
+    if: |
+      needs.classify.outputs.docs_only != 'true' &&
+      (github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main' || inputs.pr != '')
     steps:
       - uses: actions/checkout@v5
         with:
           # See unit-tests job above — versionCode comes from rev-list --count.
           fetch-depth: 0
+          # A dispatch that names a PR builds that PR's merge ref, not the
+          # bare branch — otherwise a dispatch could green the gate without
+          # compiling the PR-merged tree.
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.pr != '' && format('refs/pull/{0}/merge', inputs.pr) || '' }}
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -1287,3 +1359,31 @@ jobs:
           name: android-build-log
           path: /tmp/android-build.log
           retention-days: 14
+
+  # The one check the main ruleset requires. Always runs, always reports —
+  # green only when every heavy job succeeded, or when they were skipped and
+  # the skip is INDEPENDENTLY verified as justified: the diff re-derived as
+  # housekeeping-only and every commit subject carrying a housekeeping
+  # prefix. Any other combination is an explicit red, never a silent pass.
+  gate:
+    name: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [classify, unit-tests, android-build]
+    if: always()
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Verdict
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number || inputs.pr }}
+          CLASSIFY: ${{ needs.classify.result }}
+          RESULTS: >-
+            unit=${{ needs.unit-tests.result }}
+            android=${{ needs.android-build.result }}
+        run: scripts/docs-lane.sh gate

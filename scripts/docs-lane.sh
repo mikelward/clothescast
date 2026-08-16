@@ -128,7 +128,10 @@ docs_only() {
       local prhead prs
       prhead=$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR}" --jq '.head.sha') || return 2
       prs=$(open_prs_heading "$prhead") || return 2
-      if [ "$(printf '%s' "$prs" | grep -c .)" -ne 1 ]; then return 1; fi
+      # The sole open PR must be THIS one, not merely a count of one: the
+      # originating PR can close while its run is in flight, leaving a
+      # stacked twin as the single open PR the gate would then vouch for.
+      if [ "$(printf '%s' "$prs" | grep -c .)" -ne 1 ] || [ "$(printf '%s' "$prs" | head -n1)" != "$PR" ]; then return 1; fi
       ;;
     # A dispatched run may stand in for a PR run, but only by naming the PR,
     # so classification still judges the PR's real diff rather than waving

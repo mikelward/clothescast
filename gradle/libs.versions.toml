@@ -18,10 +18,10 @@ kotlin = "2.4.10"
 # Telemetry silences Firebase when SDK_INT < MIN_SDK_VERSION.
 minSdk = "31"
 ksp = "2.2.21-2.0.5"
-coreKtx = "1.18.0"
-lifecycle = "2.10.0"
+coreKtx = "1.19.0"
+lifecycle = "2.11.0"
 activityCompose = "1.13.0"
-composeBom = "2026.05.01"
+composeBom = "2026.06.01"
 # Navigation Compose — type-safe routes (@Serializable destinations) require
 # 2.8.0+. 2.9.x is the current stable line (2.10.0 is still alpha); it depends
 # on lifecycle 2.9.x but composes fine against the 2.10.0 we pin above.
@@ -30,15 +30,15 @@ navigation = "2.9.8"
 # Display "Home screen layout" reorder UI). 3.1.0 needs Compose foundation
 # 1.7.0+, well under the BoM above. Lives on Maven Central.
 reorderable = "3.1.0"
-junit5 = "6.1.0"
+junit5 = "6.1.3"
 mockk = "1.14.11"
-kotest = "6.1.11"
+kotest = "6.2.4"
 turbine = "1.2.1"
 coroutines = "1.11.0"
-ktor = "3.5.0"
+ktor = "3.5.2"
 zxing = "3.5.4"
 serialization = "1.11.0"
-tink = "1.21.0"
+tink = "1.23.0"
 datastore = "1.2.1"
 work = "2.11.2"
 # Glance powers the home-screen App Widget. Held at 1.1.1: 1.2.x exists only as
@@ -54,7 +54,7 @@ glance = "1.1.1"
 # becoming Companion members so their old top-level imports drop. The one real
 # code change was the custom scrub Decoration in ChartScrubber.kt: its
 # CartesianDrawingContext.layerBounds is now a Compose Rect, not an android RectF.
-vico = "3.2.1"
+vico = "3.3.0"
 # Roborazzi renders @Preview composables to PNG via Robolectric — no emulator
 # needed, runs in :app's JVM unit tests job. The CI step uploads the PNGs as a
 # workflow artifact for human review on every PR (no diff gate, by intent).
@@ -70,15 +70,15 @@ playAppUpdate = "2.1.0"
 # in app/build.gradle.kts based on app/google-services.json's presence so CI
 # (which doesn't carry the file) still compiles. See PRIVACY.md for the data
 # boundary contract these SDKs operate under.
-firebaseBom = "34.14.0"
-gmsGoogleServices = "4.4.4"
+firebaseBom = "34.17.0"
+gmsGoogleServices = "4.5.0"
 firebaseCrashlyticsPlugin = "3.0.7"
 # HiveMQ MQTT Client — used by the optional Smart Home bridge to publish the
 # rendered insight prose to a user-hosted MQTT broker (Mosquitto add-on inside
 # Home Assistant, typically). Pure-Java + Netty; no JNI. The publisher uses the
 # blocking client wrapped in withContext(Dispatchers.IO), so no Reactor /
 # CompletableFuture await plumbing is needed in :app.
-hivemqMqttClient = "1.3.14"
+hivemqMqttClient = "1.3.17"
 # Google Cast — pulls in androidx.mediarouter for the route discovery /
 # session APIs and `play-services-cast` for RemoteMediaClient. Cast SDK
 # itself doesn't need google-services.json; framework init is gated at

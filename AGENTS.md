@@ -322,6 +322,17 @@ future task; the incident narrative belongs in the commit message.
     request has come back as 64. Re-time it, or say the watch isn't armed.
   - A few minutes out while CI or the current head's Codex verdict is
     outstanding; longer once only a human is left; short again after a push.
+  - A PR reading `dirty` — always — or `behind` where the ruleset requires
+    branches up to date, needs a rebase onto its base and a lease-guarded
+    force-push. Nothing reports a base advance, so only this check catches
+    it. Fetch both refs by explicit refspec, unshallow a shallow clone, and
+    rebase onto the fetched `origin/<base>` — not always `main`, never the
+    local branch a fetch leaves behind. Confirm before you rebase that your
+    branch has every commit the remote head has, and before you push that
+    the head has not moved since the tip you noted before fetching: the push
+    flags do not reliably refuse a rewind, a commit you never fetched, or
+    one you fetched and did not rebase onto, and overwriting any of them
+    loses someone's work. If either fails, or you can't tell, stop and ask.
   - Name the PR, and say what to re-read rather than what you read. A SHA or
     a list of which PRs are open goes stale before it fires; one PR number
     does not, and the trigger has to be matchable to it.
@@ -421,7 +432,8 @@ future task; the incident narrative belongs in the commit message.
   the reasoning is exactly what the user wants surfaced, and "Linux-only CI,
   doesn't apply" is more useful on the PR than buried in chat history.
   Acknowledgement noise ("good catch, will do") is fine and preferred over
-  silence; the discipline is "say something or resolve," not "say nothing."
+  silence, but it is not an answer and does not resolve anything; the
+  discipline is "answer, then resolve," not "say nothing."
 - **Always link every open PR in the stack.** Any time you push, summarise
   CI, or invite the user to review, list every currently-open PR on the
   feature by URL — one per line — not just the topmost one. The Claude Code

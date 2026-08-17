@@ -325,8 +325,12 @@ future task; the incident narrative belongs in the commit message.
   - Name the PR, and say what to re-read rather than what you read. A SHA or
     a list of which PRs are open goes stale before it fires; one PR number
     does not, and the trigger has to be matchable to it.
-  - Merged or closed, take one last reply-or-resolve pass — a review can
-    land after the merge — then cancel it and unsubscribe. `list_triggers`
+  - Merged or closed, take one last reply-and-resolve pass — a review can
+    land after the merge. Nothing is holding the PR now, so on a merged one
+    anything real goes to a follow-up PR, named on the thread, before you
+    resolve it; leaving it open records the work nowhere. A closed-unmerged
+    PR is a stop — the work was abandoned, so answer, resolve, and open
+    nothing. Then cancel the check and unsubscribe. `list_triggers`
     spans the account, so match this session and this PR before updating
     or deleting one; an update reschedules whatever it matches as surely
     as a delete cancels it.
@@ -409,8 +413,9 @@ future task; the incident narrative belongs in the commit message.
   full rule lives under "Commits and PRs" — the short version is "what
   a reviewer sees on this push should be the story you want them to
   read, not your scratch work."
-- **Never leave a review comment thread silently dismissed.** Either reply on
-  the thread *or* resolve it — the user wants every thread to end in one of
+- **Never leave a review comment thread silently dismissed.** Answer on the thread — a
+  disagreement is an answer, so say why — then resolve it once the fix is on the
+  head or the point is rebutted; anything still to do stays open — the user wants every thread to end in one of
   those two states, not "left open and ignored." When you think a comment is
   a false positive, say *why* on the thread (one or two sentences is fine):
   the reasoning is exactly what the user wants surfaced, and "Linux-only CI,
@@ -476,7 +481,7 @@ future task; the incident narrative belongs in the commit message.
   and continue the in-progress task without a chat-side acknowledgement.
   The test is "did *I* just post this body?", not "who is the author?" — a
   real review comment from the same identity still gets the usual
-  reply-or-resolve handling.
+  reply-and-resolve handling.
 - **CI posts snapshot image diffs as a PR comment — don't hand-post.**
   The GitHub mobile app shows "Binary files not rendered" for any binary
   diff (added or modified), so PNG changes in the Files tab — including

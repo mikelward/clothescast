@@ -128,7 +128,7 @@ jobs:
 
       - name: Set up Android SDK
         # AGP must be loadable for Gradle to configure :app, even when only
-        # running :core:* tasks. Pre-installing platform 36 + build-tools 36.0.0
+        # running :core:* tasks. Pre-installing platform 37 + build-tools 36.0.0
         # avoids on-demand downloads at configure time.
         # Pinned to a specific commit SHA (rather than the floating @v4 tag)
         # so a compromised upstream release can't silently swap in malicious
@@ -136,7 +136,7 @@ jobs:
         # actions below. SHA is android-actions/setup-android v4.0.1.
         uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
         with:
-          packages: 'platforms;android-36 build-tools;36.0.0 platform-tools'
+          packages: 'platforms;android-37.0 build-tools;36.0.0 platform-tools'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -675,7 +675,7 @@ jobs:
         # SHA-pinned — see rationale on the unit-tests job's copy of this step.
         uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
         with:
-          packages: 'platforms;android-36 build-tools;36.0.0 platform-tools'
+          packages: 'platforms;android-37.0 build-tools;36.0.0 platform-tools'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5

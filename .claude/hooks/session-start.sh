@@ -30,7 +30,7 @@ ANDROID_SDK_ROOT="$ANDROID_HOME"
 CMDLINE_TOOLS_DIR="$ANDROID_HOME/cmdline-tools/latest"
 # Pinned to the version CI installs via android-actions/setup-android@v3.
 # Bump in lockstep with `app/build.gradle.kts` (compileSdk) and ci.yml.
-PLATFORM="platforms;android-36"
+PLATFORM="platforms;android-37.0"
 BUILD_TOOLS="build-tools;36.0.0"
 PLATFORM_TOOLS="platform-tools"
 # Released August 2024; the last build before Google started shipping JDK 21
@@ -51,7 +51,7 @@ persist_env() {
 
 # Fast path: SDK already installed (warm sandbox or re-run). Just re-export.
 if [ -x "$CMDLINE_TOOLS_DIR/bin/sdkmanager" ] \
-  && [ -d "$ANDROID_HOME/platforms/android-36" ] \
+  && [ -d "$ANDROID_HOME/platforms/android-37.0" ] \
   && [ -d "$ANDROID_HOME/build-tools/36.0.0" ]; then
   echo "Android SDK already installed at $ANDROID_HOME — skipping install."
   persist_env

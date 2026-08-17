@@ -189,7 +189,7 @@ android {
     // app — the applicationId is the install identity; do not change it again
     // without a planned migration story.
     namespace = "app.clothescast"
-    compileSdk = 36
+    compileSdk = 37
     // Pin to the build-tools the CI / sandbox setup installs. AGP 8.10's default
     // is 35.0.0, so without this AGP would fetch 35.0.0 on demand even though
     // we pre-install 36.0.0 — defeating the point of pinning the SDK packages in

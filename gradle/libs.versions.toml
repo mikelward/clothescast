@@ -1,13 +1,13 @@
 [versions]
 # AGP 9.x pairs with the Gradle 9.x wrapper (kept in lockstep in
-# gradle-wrapper.properties — currently 9.4.1; AGP 9 requires Gradle 9 and
-# JDK 17+, we build on 21). AGP 9 ships Kotlin support built-in, so the
+# gradle-wrapper.properties — currently 9.7.0; AGP 9.3 requires Gradle 9.5.0+
+# and JDK 17+, we build on 21). AGP 9 ships Kotlin support built-in, so the
 # standalone kotlin-android plugin is gone — Kotlin compiler options live in a
 # top-level `kotlin { compilerOptions { } }` block in app/build.gradle.kts.
 # Roborazzi must be >= 1.57 here: earlier releases use AGP's removed
 # `TestedExtension` and fail to apply on AGP 9.
-agp = "9.2.1"
-kotlin = "2.2.21"
+agp = "9.3.1"
+kotlin = "2.4.10"
 # Android API floor. Single source of truth: `app/build.gradle.kts` reads this
 # for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime
 # can defend against APKs landing on devices below the floor. The OS package

@@ -289,6 +289,11 @@ Open work:
       `mikelward/simmo` still carry the underlying pagination gap as an open
       item, since paginating their `curl`-based lookups is real work.
 
+## Dependency updates
+
+- [ ] **Adopt `mikelward/gradle-update`** — the weekly Gradle catalog updater.
+      Consumers get wired up one repo at a time; this batch was done by hand.
+
 ## Deferred to v2 (out of scope for v1)
 
 - iOS port (needs a Mac + KMP-promotion of the core modules).

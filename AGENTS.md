@@ -22,6 +22,10 @@ future task; the incident narrative belongs in the commit message.
 - **Don't interrupt.** Never fire off a question while the user is still
   typing. Let them finish; a half-typed message isn't an invitation to
   jump in.
+- **Respond to a mid-turn message immediately.** When the user sends a message while you're
+  still working — surfaced as a "sent while you were working" interjection — address it in
+  your very next output, before starting or continuing any further tool call, even if it's
+  only one sentence. Don't let it queue up behind an in-flight chain of tool calls.
 - **Keep replies short — don't dump a full page.** Lead with the single
   most important point and stop. If there's more, say the first point and
   ask whether they're ready for the next one rather than emptying

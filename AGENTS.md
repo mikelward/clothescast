@@ -351,13 +351,13 @@ future task; the incident narrative belongs in the commit message.
 - **"Drive" means run the loop automatically**: pick the next task,
   implement it, open the PR, wait for the automatic Codex review, address
   every comment, merge once CI is green and Codex's verdict for the current
-  head is in — then pick the next actionable `docs/TODO.md` item and go
+  head is in — then pick the next actionable `TODO.md` item and go
   around again. Actionable means ready to build: skip anything explicitly
   deferred or waiting on a product decision rather than guessing the
   decision. Driving ends when the work runs out or the user says stop, not
   when one PR merges.
 - **A red baseline is the next task.** Before pulling anything from
-  `docs/TODO.md`, run the suite (`./gradlew :core:domain:test
+  `TODO.md`, run the suite (`./gradlew :core:domain:test
   :core:data:test :app:testDebugUnitTest`) *and* `./gradlew
   :app:assembleDebug`, and get both green — a baseline can be red only in
   Android packaging, resource merging, or the manifest merge, which the
@@ -375,7 +375,7 @@ future task; the incident narrative belongs in the commit message.
 - **"Autopilot" is drive without blocking on the user.** Wherever drive
   would stop and ask, autopilot takes its best guess and keeps going,
   preferring the option that is cheapest to undo or change later. Record
-  each guess in `docs/TODO.md` under a `Decisions needing review`
+  each guess in `TODO.md` under a `Decisions needing review`
   heading — what was decided, what the alternative was, and why it's
   reversible — creating the heading if it isn't there, so nothing
   guessed silently becomes permanent. While autopilot is in effect it
@@ -392,7 +392,7 @@ future task; the incident narrative belongs in the commit message.
   is never inside the loop either: if you can't tell whether something
   is user data — a location, a calendar title, a key, an identifier — it
   waits for a real answer, since a push can't be un-published and a
-  `docs/TODO.md` note doesn't retract it.
+  `TODO.md` note doesn't retract it.
 
 ## GitHub
 

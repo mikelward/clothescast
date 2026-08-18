@@ -18,7 +18,7 @@ Code TODOs in source files are linked from here when they exist.
 - [x] **Firebase App Distribution setup.** Push to `main` triggers a debug
       APK build signed with the stable keystore, uploaded to FAD with the
       commit message as release notes. Setup steps in
-      [docs/firebase-app-distribution.md](firebase-app-distribution.md).
+      [docs/firebase-app-distribution.md](docs/firebase-app-distribution.md).
 - [ ] **`.github/workflows/release.yml`** — tag-triggered, runs Maestro on
       Firebase Test Lab + cuts a GitHub Release with a release-signed APK.
 
@@ -27,7 +27,7 @@ Code TODOs in source files are linked from here when they exist.
 Nothing built; the tier shape isn't settled. Design notes — how a Play
 subscription would reach the Gemini proxy, why Smart Home can't be
 enforced the same way, costs, and the open questions — are in
-[ROADMAP.md](ROADMAP.md).
+[ROADMAP.md](docs/ROADMAP.md).
 
 - [ ] **Decide what the subscription sells.** Working recommendation is
       Gemini quota only — it's the one thing with a real marginal cost
@@ -111,7 +111,7 @@ enforced the same way, costs, and the open questions — are in
       across today's hours. Multi-day extension still possible.
 - [ ] **Forecast accuracy ideas** — end-of-day accuracy survey, user-flagged
       incorrect forecasts, background multi-provider comparison. Sketched in
-      [docs/MODELS.md](MODELS.md) (ideas 2-4). Idea 1 (confidence badge)
+      [docs/MODELS.md](docs/MODELS.md) (ideas 2-4). Idea 1 (confidence badge)
       shipped — see below.
 - [x] **Multi-model confidence badge** (MODELS.md idea #1) — Today shows
       a chip indicating how much ECMWF / GFS / ICON disagree about today's
@@ -130,7 +130,7 @@ Opt-in MQTT bridge that publishes the rendered insight prose to a
 user-hosted broker (typically the Mosquitto add-on inside HA) so
 automations can speak the forecast on a sensor trigger — wardrobe
 door, bathroom humidity, fixed time of day, etc. Setup guide at
-[docs/smart-home.md](smart-home.md); the data-handling note is in
+[docs/smart-home.md](docs/smart-home.md); the data-handling note is in
 PRIVACY.md.
 
 Done:
@@ -314,3 +314,32 @@ Open work:
   on #893.
 - Google Home / alarm-clock-app integration.
 - Play Store submission. Sideload + FAD only for v1.
+
+## Review and merge gates
+
+- [ ] Add the shared consumer check (`codex-review-check.yml` from
+      mikelward/codex-review) if it applies to this repository's
+      codex-review setup — see its `docs/CONSUMER.md`. `codex-review.yml`
+      already publishes the `codex` status here, and it must remain the
+      only workflow holding `statuses: write`; the consumer check holds
+      only `contents: read` and verifies the workflow pin, it publishes
+      nothing. Cost: one short `ubuntu-latest` job per push, seconds of
+      the Actions allowance — effectively zero. Reliability: if GitHub or
+      the shared repo is unreachable the check fails closed on that PR
+      and a re-run clears it; nothing else is blocked.
+- [ ] Verify the settings half of the fleet's bar: a ruleset on the
+      default branch requiring the CI gate, the `codex` status,
+      conversation resolution and up-to-date branches, the auto-merge
+      setting enabled, and "Allow GitHub Actions to create and approve
+      pull requests" on — without that last one the weekly batch pushes
+      its branch and then fails to open the PR (simmo's first run did
+      exactly this).
+- [ ] Put the `functions/` npm tree (TypeScript Cloud Functions — the
+      tree holding all seven current Dependabot alerts, one critical) on
+      the weekly npm batch. The checker's cwd-relative manifest fix and
+      the `working-directory: functions` workflow are in review as
+      npm-update#7 and #1131; this item closes when that lands. Cost:
+      two short `ubuntu-latest` jobs once a week, minutes well inside
+      the Actions allowance — effectively zero. Reliability: a failed
+      run (runner, npm registry, or checker outage) skips that week's
+      batch and the next Saturday retries; no other work is blocked.

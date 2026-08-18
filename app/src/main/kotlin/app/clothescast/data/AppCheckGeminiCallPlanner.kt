@@ -43,7 +43,7 @@ import kotlinx.coroutines.tasks.await
  * propagate as the SDK's own exceptions — surfaced as the existing
  * diagnostic Toast via [app.clothescast.ui.settings.VoiceSettings]'s
  * catch-all. We don't map them to a dedicated app-side type until the
- * trial-exhausted (429) mapping lands; see `docs/TODO.md` "Enforce
+ * trial-exhausted (429) mapping lands; see `TODO.md` "Enforce
  * shared-key TTS trial limit".
  */
 class AppCheckGeminiCallPlanner(

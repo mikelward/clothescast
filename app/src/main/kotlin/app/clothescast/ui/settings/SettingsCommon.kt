@@ -120,7 +120,7 @@ internal fun SettingsNavRow(
 // action they're here to do (not the AI Studio home screen). "get a key" reads
 // as natural in-sentence English; if/when this string is translated, the
 // per-locale linked phrase needs a per-locale constant alongside (see the
-// docs/TODO.md entry).
+// TODO.md entry).
 private const val AISTUDIO_LINK_LABEL = "get a key"
 private const val AISTUDIO_URL = "https://aistudio.google.com/app/apikey"
 

@@ -22,11 +22,11 @@ on:
   workflow_dispatch:
 permissions: {}
 concurrency:
-  group: dependency-update
+  group: gradle-update
   cancel-in-progress: false
 jobs:
   update:
-    uses: mikelward/gradle-update/.github/workflows/dependency-update.yml@main
+    uses: mikelward/gradle-update/.github/workflows/gradle-update.yml@main
     permissions:
       contents: write
       pull-requests: write

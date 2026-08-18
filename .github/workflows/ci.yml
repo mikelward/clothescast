@@ -627,6 +627,60 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  # The npm-update workflow's publish job trusts
+  # scripts/check-npm-update.mjs to re-validate each weekly batch, so
+  # that script's suite runs here — the only gate between a change to those
+  # rules and the next Saturday run. No install step, because there is
+  # nothing to install: the checker, the vitest shim, and their tests are
+  # dependency-free on purpose. Skips on docs-only diffs under the same rule
+  # as the other jobs, so the gate's all-success-or-all-skipped check holds.
+  checker-tests:
+    name: Dependency checker tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: classify
+    if: needs.classify.outputs.docs_only != 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: functions/package.json
+      - name: Test
+        run: node --test scripts/*.test.js
+
+  # npm-update.yml's own checks (`npm ci`, `npm run build`) run on the
+  # update job's untrusted runner, before the PR exists — evidence the
+  # publish job trusts but this workflow never re-proves. This job is that
+  # proof: it's the only required check that actually installs and builds
+  # `functions/` for the head commit gate protects, so a batch that somehow
+  # slipped past those checks, or a branch edited after the checks ran,
+  # cannot merge on a stale verdict.
+  functions-build:
+    name: Functions install and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: classify
+    if: needs.classify.outputs.docs_only != 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: functions/package.json
+      - name: Install
+        working-directory: functions
+        run: npm ci
+      - name: Build
+        working-directory: functions
+        run: npm run build
+
   android-build:
     name: Android debug build
     runs-on: ubuntu-latest
@@ -1369,7 +1423,7 @@ jobs:
     name: gate
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [classify, unit-tests, android-build]
+    needs: [classify, unit-tests, android-build, checker-tests, functions-build]
     if: always()
     permissions:
       contents: read
@@ -1386,4 +1440,6 @@ jobs:
           RESULTS: >-
             unit=${{ needs.unit-tests.result }}
             android=${{ needs.android-build.result }}
+            checker=${{ needs.checker-tests.result }}
+            functions=${{ needs.functions-build.result }}
         run: scripts/docs-lane.sh gate

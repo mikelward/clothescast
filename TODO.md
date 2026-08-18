@@ -336,10 +336,31 @@ Open work:
       exactly this).
 - [ ] Put the `functions/` npm tree (TypeScript Cloud Functions — the
       tree holding all seven current Dependabot alerts, one critical) on
-      the weekly npm batch. The checker's cwd-relative manifest fix and
-      the `working-directory: functions` workflow are in review as
-      npm-update#7 and #1131; this item closes when that lands. Cost:
-      two short `ubuntu-latest` jobs once a week, minutes well inside
-      the Actions allowance — effectively zero. Reliability: a failed
-      run (runner, npm registry, or checker outage) skips that week's
-      batch and the next Saturday retries; no other work is blocked.
+      the weekly npm batch. The checker's cwd-relative manifest fix
+      (npm-update#7) is merged; `.github/workflows/npm-update.yml` with
+      the `working-directory: functions` wiring is in review as #1131;
+      this item closes when that lands. Cost: two short `ubuntu-latest`
+      jobs once a week, minutes well inside the Actions allowance —
+      effectively zero. Reliability: a failed run (runner, npm registry,
+      or checker outage) skips that week's batch and the next Saturday
+      retries; no other work is blocked.
+- [ ] `npm-update.yml`'s check-outcome report (the `passed`/`results` job
+      outputs the update job writes) is trusted evidence, not proof: a
+      lifecycle script in a newly selected dependency runs before those
+      outputs are written and could in principle locate the runner's real
+      `$GITHUB_OUTPUT` path (past the per-check subshell's `/dev/null`
+      override, which closes the casual channel but not a determined
+      same-machine search) and append a forged line. The interpolation
+      path this could have exploited into actual code execution is
+      closed (every such value crosses through `env:`, never spliced
+      into script text — see #1131's review). What's left is narrower:
+      a forged `passed=true` could make the PR's title and verdict text
+      claim a clean batch when the underlying checks failed. Concretely
+      bounded — this workflow never arms auto-merge, so every batch
+      lands as an open PR a human decides on regardless of what the text
+      says — but the report itself isn't authenticated. Closing it fully
+      needs either running the check suite on a machine the update job's
+      own dependency code never touches (defeats the point of keeping
+      the write-token job clean) or a stronger channel than a job output
+      (signing, or a second independent verification job) — bigger scope
+      than this PR, flagged for whoever wants to take it further.

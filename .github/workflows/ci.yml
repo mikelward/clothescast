@@ -357,8 +357,24 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Gradle has already run PR-controlled build code in this job (the
+          # Roborazzi test pass), with the working tree and .git writable. So
+          # *every* git call below runs with config that cannot execute what
+          # the build could have planted — not just the ones that touch the
+          # token:
+          #   - core.hooksPath at an empty directory kills pre-commit and
+          #     pre-push hooks, and overrides a hooksPath written into
+          #     .git/config, which --no-verify alone would not;
+          #   - core.fsmonitor takes a *pathname* git executes, and `git
+          #     status`/`git diff` alone is enough to run it;
+          #   - an empty credential.helper stops a planted helper being
+          #     handed the credential git asks it to store after a push.
+          # Ported from snoozemo's android-ci.yml, which found the same
+          # pattern necessary for its own screenshot-commit step.
+          mkdir -p "$RUNNER_TEMP/no-hooks"
+          safe_git=(git -c "core.hooksPath=$RUNNER_TEMP/no-hooks" -c core.fsmonitor=false -c credential.helper=)
+          "${safe_git[@]}" config user.name 'github-actions[bot]'
+          "${safe_git[@]}" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if [ -d app/snapshots ]; then
             # Remove PNGs for deleted or renamed @Test methods (orphaned snapshots).
             # Auto-discover every Kotlin test source — snapshot tests write to
@@ -396,16 +412,16 @@ jobs:
               fi
             done
             # Stage new files, modifications, AND deletions.
-            git add -A app/snapshots
+            "${safe_git[@]}" add -A app/snapshots
           fi
-          if git diff --cached --quiet; then
+          if "${safe_git[@]}" diff --cached --quiet; then
             echo "No snapshot changes."
             echo "SNAPSHOTS_REGENERATED=false" >> "$GITHUB_ENV"
-            echo "SNAPSHOT_COMMIT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+            echo "SNAPSHOT_COMMIT_SHA=$("${safe_git[@]}" rev-parse HEAD)" >> "$GITHUB_ENV"
             exit 0
           fi
-          git commit -m "ci: regenerate UI snapshots"
-          git push origin "HEAD:$HEAD_REF"
+          "${safe_git[@]}" commit --no-verify -m "ci: regenerate UI snapshots"
+          "${safe_git[@]}" push origin "HEAD:$HEAD_REF"
           # The push above starts no workflow run — GITHUB_TOKEN pushes never
           # do — so dispatch CI onto the new head or the required `gate`
           # blocks the PR forever, silently. Fail loudly if it doesn't take.
@@ -414,7 +430,7 @@ jobs:
             exit 1
           fi
           echo "SNAPSHOTS_REGENERATED=true" >> "$GITHUB_ENV"
-          echo "SNAPSHOT_COMMIT_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "SNAPSHOT_COMMIT_SHA=$("${safe_git[@]}" rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Comment snapshot freshness on PR
         # Sticky comment (single per-PR, updated in place via the marker) so
@@ -533,13 +549,19 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
+          # Same hardening as the commit step above, for the same reason:
+          # this runs after PR-controlled build code, and `git diff`/`git
+          # merge-base` will execute a core.fsmonitor pathname if one was
+          # planted.
+          mkdir -p "$RUNNER_TEMP/no-hooks"
+          safe_git=(git -c "core.hooksPath=$RUNNER_TEMP/no-hooks" -c core.fsmonitor=false -c credential.helper=)
           marker='<!-- ui-snapshot-diffs -->'
-          base_sha=$(git merge-base HEAD "origin/${GITHUB_BASE_REF}")
-          head_sha=$(git rev-parse HEAD)
+          base_sha=$("${safe_git[@]}" merge-base HEAD "origin/${GITHUB_BASE_REF}")
+          head_sha=$("${safe_git[@]}" rev-parse HEAD)
 
           # --no-renames keeps statuses to a single-path A/M/D shape (a
           # rename would otherwise emit R100 with two tab-separated paths).
-          mapfile -t entries < <(git diff --name-status --no-renames \
+          mapfile -t entries < <("${safe_git[@]}" diff --name-status --no-renames \
             "$base_sha" HEAD -- app/snapshots/ | grep -E '^[AMD]' || true)
 
           # The lookup can't fail open the way the PATCH/POST below can. Its

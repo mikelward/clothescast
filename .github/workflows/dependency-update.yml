@@ -1,0 +1,37 @@
+name: Dependency update
+
+# One batched Gradle dependency PR per week, produced by the shared
+# mikelward/gradle-update workflow: every gradle/libs.versions.toml entry
+# moves to the newest stable release within its current major, the checks
+# below validate the batch, and a passing batch lands by auto-merge. All
+# policy lives in the shared workflow; this caller owns only the schedule
+# and the permission grant, which the called workflow downscopes per job —
+# the job that runs Gradle only ever sees contents: read.
+#
+# The @main reference is deliberate, not an unpinned third-party action:
+# gradle-update is this owner's repo, its main only moves through its own
+# gated pull requests (CI + automated review, no direct pushes), and the
+# whole point of the shared workflow is that a fix there reaches every
+# consumer's next run with no per-repo bump PRs — the drift those bumps
+# reintroduce is what the shared repo exists to kill. A SHA pin here would
+# also pin less than it appears to: the workflow checks its engine out at
+# main by design, so the moving piece would move regardless.
+on:
+  schedule:
+    - cron: '17 6 * * 6'   # Saturdays, off the congested top of the hour
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: dependency-update
+  cancel-in-progress: false
+jobs:
+  update:
+    uses: mikelward/gradle-update/.github/workflows/dependency-update.yml@main
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    with:
+      # This repo's CI file is ci.yml, not the shared default android-ci.yml;
+      # it already carries workflow_dispatch with the pr input on main.
+      ci-workflow: ci.yml

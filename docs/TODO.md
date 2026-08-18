@@ -291,8 +291,10 @@ Open work:
 
 ## Dependency updates
 
-- [ ] **Adopt `mikelward/gradle-update`** — the weekly Gradle catalog updater.
-      Consumers get wired up one repo at a time; this batch was done by hand.
+- [x] **Adopt `mikelward/gradle-update`** — the weekly Gradle catalog updater.
+      Wired via the caller workflow in `.github/workflows/dependency-update.yml`,
+      with `ci-workflow: ci.yml` since this repo's CI file is not the shared
+      default name.
 
 ## Deferred to v2 (out of scope for v1)
 

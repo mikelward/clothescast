@@ -92,3 +92,24 @@ the call without recording it) so a backend hiccup doesn't deny
 service. The trade-off is that a sustained outage lets a single
 uid exceed the daily cap — acceptable given how expensive
 Gemini TTS is relative to a Firestore read.
+
+## Dependency pins
+
+`package.json` carries an `overrides` block that holds a few transitive
+dependencies inside their current majors. Without it, the weekly npm-update
+batch (`.github/workflows/npm-update.yml`) trips its own no-majors rule on
+the first run and can never open a PR: `firebase-functions` declares
+`express ^4 || ^5` so an unconstrained resolve jumps to express 5, and the
+`@types/*` packages reference `@types/node` as `*`.
+
+Each override is a deferred migration, not a permanent fact. Drop one when
+you are ready to take the crossing deliberately:
+
+- `express` / `@types/express` `^4` — express 5 is supported by
+  `firebase-functions` v7; migrating is a code review of the handler
+  surface, not a version bump.
+- `@types/node` `^22` — matches `engines.node`. Move both together when the
+  Functions runtime moves.
+- `fast-xml-parser` `~5.8.0` — newer 5.x minors moved their `entities`
+  dependency across a major; held rather than forcing the sub-dependency
+  against its declared range. Revisit on the next `firebase-admin` bump.

@@ -7,6 +7,7 @@
 !.gitignore
 !.github/
 !.claude/
+!.npmrc
 
 # ...but keep ignoring machine-local bits inside the allowlisted dot-dirs.
 .claude/settings.local.json

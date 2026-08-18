@@ -17,11 +17,11 @@ kotlin = "2.4.10"
 # resulting Crashlytics noise is from a configuration we never built for, so
 # Telemetry silences Firebase when SDK_INT < MIN_SDK_VERSION.
 minSdk = "31"
-ksp = "2.2.21-2.0.5"
+ksp = "2.3.11"
 coreKtx = "1.19.0"
 lifecycle = "2.11.0"
 activityCompose = "1.13.0"
-composeBom = "2026.06.01"
+composeBom = "2026.08.00"
 # Navigation Compose — type-safe routes (@Serializable destinations) require
 # 2.8.0+. 2.9.x is the current stable line (2.10.0 is still alpha); it depends
 # on lifecycle 2.9.x but composes fine against the 2.10.0 we pin above.
@@ -58,7 +58,7 @@ vico = "3.3.0"
 # Roborazzi renders @Preview composables to PNG via Robolectric — no emulator
 # needed, runs in :app's JVM unit tests job. The CI step uploads the PNGs as a
 # workflow artifact for human review on every PR (no diff gate, by intent).
-roborazzi = "1.63.0"
+roborazzi = "1.71.0"
 robolectric = "4.16.1"
 junit4 = "4.13.2"
 # Play in-app updates: AppUpdateManager + the FLEXIBLE flow (background download

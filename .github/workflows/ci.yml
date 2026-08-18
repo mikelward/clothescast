@@ -122,9 +122,12 @@ jobs:
           # so every build would collide on versionCode 1.
           fetch-depth: 0
           # Check out the PR's actual head ref (not the merge commit's detached
-          # HEAD) so the snapshot-commit step below can `git push` back to it.
-          # Falls back to the default ref outside PRs (push-to-main runs).
+          # HEAD), for reference by the snapshot-commit step below. That step
+          # pushes through its own fresh, isolated clone (see its comments) —
+          # never through this checkout's credential — so there is nothing
+          # here for persist-credentials to protect.
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
+          persist-credentials: false
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5
@@ -724,6 +727,7 @@ jobs:
           # bare branch — otherwise a dispatch could green the gate without
           # compiling the PR-merged tree.
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.pr != '' && format('refs/pull/{0}/merge', inputs.pr) || '' }}
+          persist-credentials: false
 
       - name: Set up JDK 21
         uses: actions/setup-java@v5

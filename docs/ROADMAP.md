@@ -2,7 +2,7 @@
 
 Forward-looking design notes for changes big enough to need a decision
 before they're worth building. Near-term task tracking lives in
-[TODO.md](TODO.md); shipped behavior is described in
+[TODO.md](../TODO.md); shipped behavior is described in
 [SPEC.md](../SPEC.md). Nothing on this page is committed work.
 
 ## Paid tier

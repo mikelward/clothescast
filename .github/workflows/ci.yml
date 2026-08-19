@@ -371,6 +371,13 @@ jobs:
           #     handed the credential git asks it to store after a push.
           # Ported from snoozemo's android-ci.yml, which found the same
           # pattern necessary for its own screenshot-commit step.
+          # rm -rf first, not just mkdir -p: the build code that already ran
+          # in this job had a writable filesystem, so mkdir -p alone would
+          # silently preserve a pre-push hook planted at this predictable
+          # path ahead of time. Removing it first guarantees the directory
+          # core.hooksPath points at starts empty regardless of what a
+          # build step left there.
+          rm -rf "$RUNNER_TEMP/no-hooks"
           mkdir -p "$RUNNER_TEMP/no-hooks"
           safe_git=(git -c "core.hooksPath=$RUNNER_TEMP/no-hooks" -c core.fsmonitor=false -c credential.helper=)
           "${safe_git[@]}" config user.name 'github-actions[bot]'
@@ -553,6 +560,13 @@ jobs:
           # this runs after PR-controlled build code, and `git diff`/`git
           # merge-base` will execute a core.fsmonitor pathname if one was
           # planted.
+          # rm -rf first, not just mkdir -p: the build code that already ran
+          # in this job had a writable filesystem, so mkdir -p alone would
+          # silently preserve a pre-push hook planted at this predictable
+          # path ahead of time. Removing it first guarantees the directory
+          # core.hooksPath points at starts empty regardless of what a
+          # build step left there.
+          rm -rf "$RUNNER_TEMP/no-hooks"
           mkdir -p "$RUNNER_TEMP/no-hooks"
           safe_git=(git -c "core.hooksPath=$RUNNER_TEMP/no-hooks" -c core.fsmonitor=false -c credential.helper=)
           marker='<!-- ui-snapshot-diffs -->'

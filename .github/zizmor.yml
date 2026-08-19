@@ -48,13 +48,19 @@ rules:
       # full reasoning.
       - codex-review-check.yml
   adhoc-packages:
-    # npm-update.yml is a byte-pinned template from mikelward/npm-update
-    # (see AGENTS.md) — consumers cannot edit it, so an inline
-    # `# zizmor: ignore[...]` comment there isn't an option. The line-scoped
-    # form (file:line) targets only this specific, known finding: an
-    # `npm install -g` call installing npm itself outside a lockfile,
-    # already noted as low-severity ad-hoc-install noise upstream. Any
-    # OTHER adhoc-packages finding, in this file or any other, still
+    # An inline `# zizmor: ignore[adhoc-packages]` comment on npm-update.yml's
+    # own `npm install -g …` line does NOT suppress this finding — verified
+    # against zizmor 1.29.0 directly: the audit reports the finding against a
+    # tree-sitter subfeature span inside the `run: |` block, and the ignore
+    # comment's own line-index resolution doesn't line up with that span once
+    # the block is multi-line, so neither a same-line trailing comment nor a
+    # preceding-line comment is picked up (reproduced on a minimal multi-line
+    # `run:` fixture; a single-line `run:` DOES honor the inline form). That
+    # makes the line-scoped config form below the only mechanism that works
+    # here, independent of whether the file itself is editable. It targets
+    # only this specific, known finding — installing npm itself outside a
+    # lockfile, already noted as low-severity ad-hoc-install noise upstream.
+    # Any OTHER adhoc-packages finding, in this file or any other, still
     # surfaces normally.
     ignore:
       - npm-update.yml:119

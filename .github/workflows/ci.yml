@@ -104,16 +104,10 @@ jobs:
     needs: classify
     if: needs.classify.outputs.docs_only != 'true'
     permissions:
-      # contents: write so the snapshot-commit step can push regenerated PNGs
-      # back to the PR branch. GITHUB_TOKEN-authored commits do not trigger new
-      # workflow runs (GitHub safety mechanism), so there's no infinite loop.
-      contents: write
+      # pull-requests: write for the JVM-test-failure comment steps below.
+      # Nothing here pushes or dispatches any more — the commit-snapshots job
+      # (a separate job, calling mikelward/ci-commit-artifact) owns that now.
       pull-requests: write
-      # So the snapshot-commit step can dispatch CI onto the head it just
-      # pushed — without a run there, the required `gate` never reports on
-      # the regenerated commit. The regen path only runs on same-repo PRs,
-      # whose author already has push access, so this widens nothing.
-      actions: write
     steps:
       - uses: actions/checkout@v5
         with:
@@ -121,11 +115,6 @@ jobs:
           # `git rev-list --count HEAD`. Shallow clones return 1 every time,
           # so every build would collide on versionCode 1.
           fetch-depth: 0
-          # Check out the PR's actual head ref (not the merge commit's detached
-          # HEAD), for reference by the snapshot-commit step below. That step
-          # pushes through its own fresh, isolated clone (see its comments) —
-          # never through this checkout's credential — so there is nothing
-          # here for persist-credentials to protect.
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           persist-credentials: false
 
@@ -310,276 +299,159 @@ jobs:
             /tmp/jvm-tests.log
           retention-days: 14
 
-      - name: Commit regenerated UI snapshots back to PR branch
-        # Roborazzi renders every @Preview to PNG under app/snapshots/
-        # (a tracked path). When a UI change shifts pixels, this step commits
-        # the new PNGs back to the PR branch so the diff shows up natively in
-        # GitHub's "Files changed" image view — no artifact download needed.
+      - name: Prune orphaned UI snapshots
+        # Remove PNGs for deleted or renamed @Test methods (orphaned
+        # snapshots), before the upload below — this is pure filesystem
+        # logic on already-rendered output, not git or credential work, so
+        # it belongs in this (untrusted) job rather than the clean
+        # commit-snapshots job downstream.
         #
-        # Same-repo PRs only: forks don't have token write access to the head
-        # repo, so the conditional skips them (the artifact upload below is
-        # the fallback there). The step is also skipped on push-to-main, where
-        # there's no PR branch to update.
-        #
-        # Loop safety: GITHUB_TOKEN-authored commits don't trigger new workflow
-        # runs, and the `git diff --quiet` check no-ops when nothing changed,
-        # so reruns and identical re-records don't create empty churn commits.
-        # That's why the commit message below intentionally does NOT carry
-        # `[skip ci]`: GITHUB_TOKEN already prevents the PR-branch loop, and
-        # adding `[skip ci]` would only cause harm — when the snapshot-regen
-        # commit ends up as the head of a rebase-merge to `main`, GitHub
-        # natively skips the push-to-main run on `[skip ci]`, and the
-        # release-AAB / Firebase / Play-upload steps never fire for that SHA.
-        #
-        # Records SNAPSHOT_COMMIT_SHA / SNAPSHOTS_REGENERATED into the env so
-        # the freshness-comment step downstream can report what happened.
-        id: snapshot_commit
-        if: >-
-          success() &&
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        env:
-          # Pass the PR branch name through an env var rather than expanding
-          # `${{ github.event.pull_request.head.ref }}` directly into the
-          # shell script: git's check-ref-format allows characters like `'`,
-          # `$`, `;`, `|`, `&` and backticks in branch names, so a same-repo
-          # collaborator could create a branch named e.g. `feat';evil;'` and
-          # have it injected as shell code via the `git push` line below.
-          # As an env var, the value is exposed to the shell as data and
-          # safely quoted at the use site.
-          HEAD_REF: ${{ github.event.pull_request.head.ref }}
-          # The `gh workflow run` dispatch below authenticates through
-          # GH_TOKEN; without it the fresh runner's gh is unauthenticated
-          # (the job's `actions: write` grants the token scope, not the CLI
-          # its credential), the dispatch fails after the push has already
-          # moved the PR head, and the required gate never reports for the
-          # refreshed commit.
-          GH_TOKEN: ${{ github.token }}
-          # What app/snapshots below was actually rendered from. cancel-in-progress
-          # is asynchronous, so a collaborator's push mid-run doesn't stop this
-          # job before it clones — it just moves the branch tip out from under
-          # it, checked below.
-          EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        # Auto-discover every Kotlin test source — snapshot tests write to
+        # "$outputDir/<methodName>.png", so a PNG whose basename matches no
+        # @Test method anywhere in app/src/test is genuinely orphaned. The
+        # previous version hard-coded a snapshot_sources list and silently
+        # deleted PNGs whose test file wasn't on it (db7aaf8 → 25cfc6d:
+        # SettingsClothesFullSnapshot.kt's snapshot survived the test pass
+        # only to be wiped here on the way to commit). Scanning every test
+        # file zero-configures any future snapshot file.
+        # Slurped perl match handles both `@Test fun foo()` and
+        # multi-line `@Test\n@Config(...)\nfun foo()` styles — a single-line
+        # `(?<=@Test fun )` regex misses the latter and would prune the PNG
+        # as orphaned even though the test still runs.
+        # Scan every test source root, including variant-specific
+        # ones like `src/testDebug/` (added 2026-05 for the App Check
+        # debug-token snapshot). Missing a source root here silently
+        # marks every PNG only that root's tests record as orphaned
+        # and deletes it on the next CI regen — the bug behind PR
+        # #905's first regen wiping
+        # `settings_voice_app_check_debug_token.png`. Roots are
+        # enumerated with find -name rather than a shell glob: an
+        # unmatched glob (`app/src/test[A-Z]*` with no variant roots
+        # present) passes through literally, find exits non-zero, and
+        # `set -euo pipefail` would kill the step.
+        if: always()
         run: |
           set -euo pipefail
-          # Gradle has already run PR-controlled build code in this job (the
-          # Roborazzi test pass), with the working tree, this repo's local
-          # .git/config, AND $HOME (so the global config too) all writable.
-          # A `git -c key=value` denylist against that is chasing a moving
-          # target: hooksPath, fsmonitor, and credential.helper were the
-          # first three found, then commit.gpgSign + gpg.program (a planted
-          # signing program runs at commit time regardless of --no-verify,
-          # which only skips hooks) and url.<attacker>.insteadOf (rewrites
-          # ANY matching URL git resolves, including one spelled out
-          # literally on the command line) — each is a genuinely different
-          # mechanism, and there is no single override that closes the
-          # class of "arbitrary git config the build could have written."
-          #
-          # So the commit and push below happen in a FRESH clone instead,
-          # not the working tree Gradle already touched. GIT_CONFIG_GLOBAL
-          # and GIT_CONFIG_SYSTEM point at /dev/null so neither the (also
-          # writable) $HOME/.gitconfig nor any system-level config is read
-          # at all, and the clone's own local config is whatever `git
-          # clone` itself just generated — nothing the build ever had a
-          # chance to write to.
-          #
-          # Files aren't the only config source, though: git ALSO layers in
-          # config from GIT_CONFIG_COUNT plus indexed GIT_CONFIG_KEY_n /
-          # GIT_CONFIG_VALUE_n environment variables, and those survive
-          # nulling the global/system FILES untouched. The build can plant
-          # them by appending to $GITHUB_ENV — any step in this job can
-          # write there, and the runner applies accumulated entries to
-          # every later step's environment before that step's script even
-          # starts, so they're already set by the time this line runs.
-          # Unset the whole indexed set before touching git at all: this is
-          # the complete env-based config mechanism (there is no partial
-          # form of it to leave alone), not one more name to add to a list.
-          #
-          # GIT_CONFIG_COUNT's own VALUE never enters an arithmetic context —
-          # bash's $(( )) re-expands an operand that still looks like a
-          # variable/array reference after substitution, so a value like
-          # "x[$(evil)]" runs `evil` as a command from inside $(( )) itself.
-          # A regex guard just moves the same decision one line earlier for
-          # no benefit: the loop below needs no decision at all, since git's
-          # own env-config mechanism never sanely uses more than a handful of
-          # indices. Unsetting a fixed, generous range costs nothing and
-          # never touches the untrusted value as a number.
-          if [ -n "${GIT_CONFIG_COUNT:-}" ]; then
-            for i in $(seq 0 999); do
-              unset "GIT_CONFIG_KEY_$i" "GIT_CONFIG_VALUE_$i"
-            done
-            unset GIT_CONFIG_COUNT
-          fi
-          export GIT_CONFIG_GLOBAL=/dev/null
-          export GIT_CONFIG_SYSTEM=/dev/null
-          clone="$RUNNER_TEMP/snapshot-commit-clone"
-          rm -rf "$clone"
-          git clone --depth 1 --branch "$HEAD_REF" \
-            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$clone"
-          # app/snapshots below is whatever this job's own checkout — pinned to
-          # EXPECTED_HEAD_SHA at trigger time — rendered. If the branch has
-          # since moved, those PNGs (and any orphan deletions) were built
-          # against code this run never actually tested; committing them onto
-          # the new tip would be silently wrong, not merely stale. The run that
-          # pushed the new commit re-triggers CI and regenerates for real.
-          actual_head_sha=$(git -C "$clone" rev-parse HEAD)
-          if [ "$actual_head_sha" != "$EXPECTED_HEAD_SHA" ]; then
-            echo "::warning::$HEAD_REF advanced to $actual_head_sha since this run started at $EXPECTED_HEAD_SHA — skipping snapshot commit; the run triggered by that push will regenerate against it."
-            echo "SNAPSHOTS_REGENERATED=false" >> "$GITHUB_ENV"
-            echo "SNAPSHOT_COMMIT_SHA=$actual_head_sha" >> "$GITHUB_ENV"
+          if [ ! -d app/snapshots ]; then
             exit 0
           fi
-          if [ -d app/snapshots ]; then
-            # Remove PNGs for deleted or renamed @Test methods (orphaned snapshots).
-            # Auto-discover every Kotlin test source — snapshot tests write to
-            # "$outputDir/<methodName>.png", so a PNG whose basename matches no
-            # @Test method anywhere in app/src/test is genuinely orphaned. The
-            # previous version hard-coded a snapshot_sources list and silently
-            # deleted PNGs whose test file wasn't on it (db7aaf8 → 25cfc6d:
-            # SettingsClothesFullSnapshot.kt's snapshot survived the test pass
-            # only to be wiped here on the way to commit). Scanning every test
-            # file zero-configures any future snapshot file.
-            # Slurped perl match handles both `@Test fun foo()` and
-            # multi-line `@Test\n@Config(...)\nfun foo()` styles — a single-line
-            # `(?<=@Test fun )` regex misses the latter and would prune the PNG
-            # as orphaned even though the test still runs.
-            # Scan every test source root, including variant-specific
-            # ones like `src/testDebug/` (added 2026-05 for the App Check
-            # debug-token snapshot). Missing a source root here silently
-            # marks every PNG only that root's tests record as orphaned
-            # and deletes it on the next CI regen — the bug behind PR
-            # #905's first regen wiping
-            # `settings_voice_app_check_debug_token.png`. Roots are
-            # enumerated with find -name rather than a shell glob: an
-            # unmatched glob (`app/src/test[A-Z]*` with no variant roots
-            # present) passes through literally, find exits non-zero, and
-            # `set -euo pipefail` would kill the step.
-            expected=$(find app/src -maxdepth 1 -type d \( -name 'test' -o -name 'test[A-Z]*' \) -print0 \
-              | xargs -0 -r -I{} find {} -name '*.kt' -print0 \
-              | xargs -0 -r perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }')
-            for png in app/snapshots/*.png; do
-              [ -f "$png" ] || continue
-              name=$(basename "$png" .png)
-              if ! echo "$expected" | grep -qxF "$name"; then
-                rm "$png"
-                echo "Removed orphaned snapshot: $name.png"
-              fi
-            done
-          fi
-          # Mirror the working tree's app/snapshots into the clean clone and
-          # stage there — the clone's config is what makes add/commit/push
-          # trustworthy, not anything about this rsync-by-hand copy, which
-          # touches no git state.
-          rm -rf "$clone/app/snapshots"
-          if [ -d app/snapshots ]; then
-            cp -a app/snapshots "$clone/app/snapshots"
-          fi
-          git -C "$clone" config user.name 'github-actions[bot]'
-          git -C "$clone" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git -C "$clone" add -A app/snapshots
-          if git -C "$clone" diff --cached --quiet; then
-            echo "No snapshot changes."
-            echo "SNAPSHOTS_REGENERATED=false" >> "$GITHUB_ENV"
-            echo "SNAPSHOT_COMMIT_SHA=$(git -C "$clone" rev-parse HEAD)" >> "$GITHUB_ENV"
-            exit 0
-          fi
-          # --no-verify skips hooks; --no-gpg-sign skips commit signing —
-          # neither would find anything planted here regardless, since this
-          # clone's config was never in reach of the build, but both are
-          # free to keep as belt and braces.
-          git -C "$clone" commit --no-verify --no-gpg-sign -m "ci: regenerate UI snapshots"
-          # By remote NAME ("origin") is fine here, unlike in the working
-          # tree: this clone's remote.origin.url is exactly the literal
-          # URL passed to `git clone` above, in a repo config nothing but
-          # git itself has ever written to.
-          git -C "$clone" push origin "HEAD:$HEAD_REF"
-          # The push above starts no workflow run — GITHUB_TOKEN pushes never
-          # do — so dispatch CI onto the new head or the required `gate`
-          # blocks the PR forever, silently. Fail loudly if it doesn't take.
-          if ! gh workflow run ci.yml --ref "$HEAD_REF" -f pr="${{ github.event.pull_request.number }}"; then
-            echo "::error::Pushed regenerated snapshots but could not start CI on them (is workflow_dispatch with the pr input on main yet?). Dispatch CI on the branch by hand from the Actions tab."
-            exit 1
-          fi
-          echo "SNAPSHOTS_REGENERATED=true" >> "$GITHUB_ENV"
-          echo "SNAPSHOT_COMMIT_SHA=$(git -C "$clone" rev-parse HEAD)" >> "$GITHUB_ENV"
+          expected=$(find app/src -maxdepth 1 -type d \( -name 'test' -o -name 'test[A-Z]*' \) -print0 \
+            | xargs -0 -r -I{} find {} -name '*.kt' -print0 \
+            | xargs -0 -r perl -0777 -ne 'while (/\@Test\b(?:\s|\@\w+(?:\([^)]*\))?)*?\bfun\s+(\w+)/g) { print "$1\n" }')
+          for png in app/snapshots/*.png; do
+            [ -f "$png" ] || continue
+            name=$(basename "$png" .png)
+            if ! echo "$expected" | grep -qxF "$name"; then
+              rm "$png"
+              echo "Removed orphaned snapshot: $name.png"
+            fi
+          done
 
-      - name: Comment snapshot freshness on PR
-        # Sticky comment (single per-PR, updated in place via the marker) so
-        # reviewers always know whether the PNGs in the PR's "Files changed"
-        # tab are current. Three signals:
-        #   - whether *this* run regenerated PNGs (vs reused unchanged ones)
-        #   - the head SHA the snapshots were rendered against
-        #   - the count of PNGs (catches the silent case where a renamed
-        #     @Test method writes to a new file and old PNGs go stale)
+      - name: Upload rendered UI snapshots
+        # Every PNG Roborazzi rendered this run (post-pruning), handed off
+        # two ways: (1) a workflow artifact so reviewers on a fork PR — where
+        # the commit-snapshots job below has no token write access — can
+        # still download and eyeball them, and (2) input to commit-snapshots,
+        # which never runs Gradle or any dependency code and downloads this
+        # artifact instead of trusting a working tree that PR-controlled
+        # build code already touched.
         #
-        # continue-on-error: the snapshots are committed to the branch and in
-        # the ui-preview-snapshots artifact either way, so a GitHub API hiccup
-        # must not turn a passing test job red over a status comment. The
-        # catch below raises a ::warning::, so a missing comment always has a
-        # reason in the log rather than being swallowed by continue-on-error.
-        continue-on-error: true
-        if: >-
-          success() &&
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/github-script@v8
+        # No if-no-files-found: ignore — commit-snapshots requires the
+        # artifact to exist (see its own docs) and fails loudly if it
+        # doesn't, so a genuinely empty app/snapshots/ (which 265 established
+        # snapshot tests make implausible) surfaces as a warning here rather
+        # than a silently-missing artifact there.
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          script: |
-            const fs = require('fs');
-            const path = 'app/snapshots';
-            let count = 0;
-            try {
-              count = fs.readdirSync(path).filter(f => f.endsWith('.png')).length;
-            } catch (e) {
-              // Directory missing — first PR before any snapshot has been
-              // recorded. Report 0 so the user sees the situation clearly.
-            }
-            const headSha = (process.env.SNAPSHOT_COMMIT_SHA || context.sha).slice(0, 7);
-            const regenerated = process.env.SNAPSHOTS_REGENERATED === 'true';
-            const status = regenerated
-              ? `🔄 Regenerated ${count} UI snapshot${count === 1 ? '' : 's'} this run.`
-              : `✅ ${count} UI snapshot${count === 1 ? '' : 's'} up-to-date — no pixel changes from this push.`;
-            const body = `<!-- ui-snapshots-status -->
-            **UI snapshots:** ${status}
+          name: ui-preview-snapshots
+          path: app/snapshots/
+          retention-days: 14
 
-            Head: \`${headSha}\` · Browse: [\`app/snapshots/\`](https://github.com/${context.repo.owner}/${context.repo.repo}/tree/${context.payload.pull_request.head.ref}/app/snapshots)`;
-            const marker = '<!-- ui-snapshots-status -->';
-            // The lookup can't fail open the way the update/create below can:
-            // its result picks update-vs-create, so an error swallowed into
-            // "not found" doesn't lose the comment, it posts a *duplicate* —
-            // and every later run duplicates again. Let a lookup failure skip
-            // the comment entirely; one run's status line is cheaper than a
-            // pile of them. `paginate` for the same reason: past 100 comments
-            // the marker falls off page one and reads as a genuine no-match.
-            let comments;
-            try {
-              comments = await github.paginate(github.rest.issues.listComments, {
-                ...context.repo,
-                issue_number: context.issue.number,
-                per_page: 100,
-              });
-            } catch (e) {
-              core.warning(`Could not list PR comments (${e.message}); skipping the snapshot-freshness comment rather than risking a duplicate.`);
-              return;
-            }
-            const existing = comments.find(c => c.user.type === 'Bot' && c.body && c.body.includes(marker));
-            try {
-              if (existing) {
-                await github.rest.issues.updateComment({
-                  ...context.repo,
-                  comment_id: existing.id,
-                  body,
-                });
-              } else {
-                await github.rest.issues.createComment({
-                  ...context.repo,
-                  issue_number: context.issue.number,
-                  body,
-                });
-              }
-            } catch (e) {
-              core.warning(`Could not post the snapshot-freshness comment (${e.message}); the snapshots are committed to the branch and in the ui-preview-snapshots artifact.`);
-            }
+  # Everything below pushes to the repo or posts as the bot, so it runs in
+  # its own job(s) rather than as more steps in unit-tests. unit-tests
+  # already runs Gradle against PR-controlled dependency and build code by
+  # the time its last step finishes — its whole filesystem and process
+  # environment (config files, $HOME, arbitrary env vars a lifecycle script
+  # could still be sitting on top of) are exactly what that code touched. A
+  # checkout, commit, and push done directly on THAT ground has no way to
+  # tell legitimate git behavior from a planted one — not just config-file
+  # and config-env injection (core.hooksPath, GIT_CONFIG_*), but a
+  # template-dir hook too (GIT_TEMPLATE_DIR + a planted post-checkout, which
+  # git honors on every clone/init and neither of those closes), and
+  # GIT_CONFIG_COUNT's own value entering bash arithmetic unvalidated — an
+  # open-ended class of "PR-controlled code can reach this" mechanisms, not
+  # a fixed list to keep patching. mikelward/ci-commit-artifact exists
+  # precisely for this: its own job never executes anything from the pull
+  # request, so an ordinary checkout/commit/push there is trustworthy by
+  # construction, no isolated clone or config-nulling required.
+  #
+  # Pinned to the branch, not @main, until mikelward/ci-commit-artifact#1
+  # merges — matching how mikelward/gedmap#140 pilots mikelward/npm-update
+  # the same way.
+  commit-snapshots:
+    name: Commit regenerated UI snapshots
+    needs: unit-tests
+    # Same-repo PRs only: forks don't have token write access to the head
+    # repo (the ui-preview-snapshots artifact from unit-tests is the fallback
+    # there). Skipped on push-to-main, where there's no PR branch to update,
+    # and whenever unit-tests itself didn't pass — nothing here is worth
+    # committing against a failing run.
+    if: >-
+      needs.unit-tests.result == 'success' &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    uses: mikelward/ci-commit-artifact/.github/workflows/commit-artifact.yml@claude/commit-artifact-workflow
+    with:
+      artifact-name: ui-preview-snapshots
+      dest-path: app/snapshots
+      commit-message: "ci: regenerate UI snapshots"
+      branch-ref: ${{ github.event.pull_request.head.ref }}
+      expected-head-sha: ${{ github.event.pull_request.head.sha }}
+      pr-number: ${{ github.event.pull_request.number }}
+      # A GITHUB_TOKEN-authored push starts no workflow run on its own — or
+      # the required `gate` never reports on the regenerated commit.
+      dispatch-workflow: ci.yml
+      comment-marker: "<!-- ui-snapshots-status -->"
+      artifact-noun: "UI snapshot"
+
+  # Clothescast-specific PR comment (embedded before/after images) — nothing
+  # this generic belongs in the hub. Runs in its own clean job for the same
+  # reason commit-snapshots does: this checkout reflects whatever
+  # commit-snapshots just pushed (checking out the branch NAME always gets
+  # the current tip), so no clone tricks or isolated fetches are needed
+  # either — nothing untrusted has run in this job's process at all.
+  snapshot-diff-comment:
+    name: Post UI snapshot image diffs
+    needs: [unit-tests, commit-snapshots]
+    if: >-
+      needs.unit-tests.result == 'success' &&
+      needs.commit-snapshots.result == 'success' &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Full history — needed for merge-base against the base branch,
+          # and cheap on a job this light (no Gradle run).
+          fetch-depth: 0
+          # Pinned to the exact commit commit-snapshots validated/pushed —
+          # never the mutable branch name. If the branch advanced between
+          # that job finishing and this checkout starting, resolving the
+          # branch name would fetch the newer, untested tip and this job
+          # would post a diff comment describing changes this run never
+          # rendered, with nothing to say so if the replacement run then
+          # fails or is cancelled.
+          ref: ${{ needs.commit-snapshots.outputs.commit-sha }}
+          persist-credentials: false
 
       - name: Post snapshot image diffs as a PR comment
         # The GitHub mobile app shows "Binary files not rendered" for any
@@ -588,81 +460,34 @@ jobs:
         # step upserts a single marker-tagged PR comment embedding every
         # added / changed / removed snapshot inline, with image URLs pinned
         # to commit SHAs (before → the PR merge-base, after → the branch
-        # head incl. any regen commit just pushed above). Markdown-embedded
-        # images render fine in the mobile app even though file diffs don't.
+        # head incl. any regen commit commit-snapshots just pushed).
+        # Markdown-embedded images render fine in the mobile app even though
+        # file diffs don't.
         #
         # Upsert (PATCH the existing marker comment) rather than re-post so
         # repeated pushes don't pile up comments; when a later push reverts
         # every snapshot change, the stale comment is rewritten to say so
         # instead of being left describing a diff that no longer exists.
-        # Automates the hand-posted comments AGENTS.md used to prescribe,
-        # which historically suffered typo'd / stale-SHA image URLs.
-        #
-        # Same-repo PRs only: forks don't get token write access to post
-        # comments (the ui-preview-snapshots artifact below is the fallback
-        # there). Diff is taken against the merge-base so snapshots
-        # committed earlier on the branch (e.g. recorded locally) show up
-        # too, not just this run's regen.
         #
         # continue-on-error: a transient GitHub API failure must not turn a
-        # passing test job red over a convenience comment — the PNGs are
-        # already committed to the branch and in the ui-preview-snapshots
-        # artifact. Every API call below still checks its own status and
-        # raises a ::warning::, so "no diff comment appeared" always has a
-        # reason in the job log rather than being swallowed here.
+        # passing job red over a convenience comment — the PNGs are already
+        # committed to the branch and in the ui-preview-snapshots artifact.
+        # Every API call below still checks its own status and raises a
+        # ::warning::, so "no diff comment appeared" always has a reason in
+        # the job log rather than being swallowed here.
         continue-on-error: true
-        if: >-
-          success() &&
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.head.repo.full_name == github.repository
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
-          # Same hardening as the commit step above, for the same reason:
-          # this runs after PR-controlled build code, and `git diff`/`git
-          # merge-base` will execute a core.fsmonitor pathname if one was
-          # planted.
-          # rm -rf first, not just mkdir -p: the build code that already ran
-          # in this job had a writable filesystem, so mkdir -p alone would
-          # silently preserve a pre-push hook planted at this predictable
-          # path ahead of time. Removing it first guarantees the directory
-          # core.hooksPath points at starts empty regardless of what a
-          # build step left there.
-          rm -rf "$RUNNER_TEMP/no-hooks"
-          mkdir -p "$RUNNER_TEMP/no-hooks"
-          safe_git=(git -c "core.hooksPath=$RUNNER_TEMP/no-hooks" -c core.fsmonitor=false -c credential.helper=)
           marker='<!-- ui-snapshot-diffs -->'
-          base_sha=$("${safe_git[@]}" merge-base HEAD "origin/${GITHUB_BASE_REF}")
-
-          # The commit step above only ever advances the clean clone it made
-          # (see its own comment) — this checkout's HEAD is one commit
-          # behind whenever snapshots were actually regenerated, so diffing
-          # against it here would omit the new images or claim everything
-          # reverted. Diff from that clone instead: fetch the merge-base
-          # commit into it first (its shallow, single-branch clone from the
-          # earlier step never fetched anything but $HEAD_REF), then read
-          # both head_sha and the diff from there. Same env-based and
-          # file-based config isolation as the commit step, for the same
-          # reason: this fetch also talks to the remote with GH_TOKEN in
-          # scope. GIT_CONFIG_COUNT's own value never enters arithmetic — see
-          # the commit step's identical block above for why.
-          if [ -n "${GIT_CONFIG_COUNT:-}" ]; then
-            for i in $(seq 0 999); do
-              unset "GIT_CONFIG_KEY_$i" "GIT_CONFIG_VALUE_$i"
-            done
-            unset GIT_CONFIG_COUNT
-          fi
-          export GIT_CONFIG_GLOBAL=/dev/null
-          export GIT_CONFIG_SYSTEM=/dev/null
-          clone="$RUNNER_TEMP/snapshot-commit-clone"
-          "${safe_git[@]}" -C "$clone" fetch --depth 1 origin "$base_sha"
-          head_sha=$("${safe_git[@]}" -C "$clone" rev-parse HEAD)
+          base_sha=$(git merge-base HEAD "origin/${GITHUB_BASE_REF}")
+          head_sha=$(git rev-parse HEAD)
 
           # --no-renames keeps statuses to a single-path A/M/D shape (a
           # rename would otherwise emit R100 with two tab-separated paths).
-          mapfile -t entries < <("${safe_git[@]}" -C "$clone" diff --name-status --no-renames \
+          mapfile -t entries < <(git diff --name-status --no-renames \
             "$base_sha" HEAD -- app/snapshots/ | grep -E '^[AMD]' || true)
 
           # The lookup can't fail open the way the PATCH/POST below can. Its
@@ -747,17 +572,6 @@ jobs:
             fi
           fi
 
-      - name: Upload UI preview snapshots (fallback for fork PRs)
-        # Same PNGs as the in-repo commit above, kept as a workflow artifact
-        # so reviewers on a fork PR (where the commit-back step is skipped
-        # for lack of token write access) can still download and eyeball them.
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: ui-preview-snapshots
-          path: app/snapshots/
-          if-no-files-found: ignore
-          retention-days: 14
 
   # The npm-update workflow's publish job trusts
   # scripts/check-npm-update.mjs to re-validate each weekly batch, so
@@ -1556,7 +1370,7 @@ jobs:
     name: gate
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [classify, unit-tests, android-build, checker-tests, functions-build]
+    needs: [classify, unit-tests, android-build, checker-tests, functions-build, commit-snapshots]
     if: always()
     permissions:
       contents: read
@@ -1570,9 +1384,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.pull_request.number || inputs.pr }}
           CLASSIFY: ${{ needs.classify.result }}
+          # commit-snapshots is conditionally skipped for reasons that are
+          # never a problem (fork PRs, push-to-main, unit-tests already
+          # failed) — docs-lane.sh's all-success-or-all-skipped check has no
+          # way to tell that apart from a skip that SHOULD block, the way it
+          # can for the other jobs here (which are either always required or
+          # always skipped together on a docs-only diff). So only its
+          # genuine FAILURE (it ran and the commit/push/dispatch broke)
+          # becomes a RESULTS pair; any other outcome is invisible to gate,
+          # matching the old behavior where this was a plain step inside
+          # unit-tests and only ITS failure (not the step being skipped)
+          # could fail the job gate actually watches.
           RESULTS: >-
             unit=${{ needs.unit-tests.result }}
             android=${{ needs.android-build.result }}
             checker=${{ needs.checker-tests.result }}
             functions=${{ needs.functions-build.result }}
+            ${{ needs.commit-snapshots.result == 'failure' && 'commit-snapshots=failure' || '' }}
         run: scripts/docs-lane.sh gate

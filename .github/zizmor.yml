@@ -16,6 +16,10 @@ rules:
         # mutable ref, and each exemption should be a decision somebody made.
         "mikelward/codex-review": ref-pin
         "mikelward/gradle-update/.github/workflows/gradle-update.yml": ref-pin
+        # Piloted against its own branch until mikelward/ci-commit-artifact#1
+        # merges, per that repo's own "pilot before merge" convention —
+        # switches to @main once it has.
+        "mikelward/ci-commit-artifact/.github/workflows/commit-artifact.yml": ref-pin
         # Official actions may pin to a tag, as every workflow here does.
         # Hash-pinning them instead is a deliberate open question, tracked
         # the same way mikelward/codex-review tracks it for itself.

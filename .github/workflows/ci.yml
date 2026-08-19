@@ -376,9 +376,35 @@ jobs:
           # writable) $HOME/.gitconfig nor any system-level config is read
           # at all, and the clone's own local config is whatever `git
           # clone` itself just generated — nothing the build ever had a
-          # chance to write to. That closes every config-based mechanism at
-          # once, named or not yet named, rather than only the ones found
-          # so far.
+          # chance to write to.
+          #
+          # Files aren't the only config source, though: git ALSO layers in
+          # config from GIT_CONFIG_COUNT plus indexed GIT_CONFIG_KEY_n /
+          # GIT_CONFIG_VALUE_n environment variables, and those survive
+          # nulling the global/system FILES untouched. The build can plant
+          # them by appending to $GITHUB_ENV — any step in this job can
+          # write there, and the runner applies accumulated entries to
+          # every later step's environment before that step's script even
+          # starts, so they're already set by the time this line runs.
+          # Unset the whole indexed set before touching git at all: this is
+          # the complete env-based config mechanism (there is no partial
+          # form of it to leave alone), not one more name to add to a list.
+          #
+          # GIT_CONFIG_COUNT's own VALUE never enters an arithmetic context —
+          # bash's $(( )) re-expands an operand that still looks like a
+          # variable/array reference after substitution, so a value like
+          # "x[$(evil)]" runs `evil` as a command from inside $(( )) itself.
+          # A regex guard just moves the same decision one line earlier for
+          # no benefit: the loop below needs no decision at all, since git's
+          # own env-config mechanism never sanely uses more than a handful of
+          # indices. Unsetting a fixed, generous range costs nothing and
+          # never touches the untrusted value as a number.
+          if [ -n "${GIT_CONFIG_COUNT:-}" ]; then
+            for i in $(seq 0 999); do
+              unset "GIT_CONFIG_KEY_$i" "GIT_CONFIG_VALUE_$i"
+            done
+            unset GIT_CONFIG_COUNT
+          fi
           export GIT_CONFIG_GLOBAL=/dev/null
           export GIT_CONFIG_SYSTEM=/dev/null
           clone="$RUNNER_TEMP/snapshot-commit-clone"
@@ -591,11 +617,34 @@ jobs:
           safe_git=(git -c "core.hooksPath=$RUNNER_TEMP/no-hooks" -c core.fsmonitor=false -c credential.helper=)
           marker='<!-- ui-snapshot-diffs -->'
           base_sha=$("${safe_git[@]}" merge-base HEAD "origin/${GITHUB_BASE_REF}")
-          head_sha=$("${safe_git[@]}" rev-parse HEAD)
+
+          # The commit step above only ever advances the clean clone it made
+          # (see its own comment) — this checkout's HEAD is one commit
+          # behind whenever snapshots were actually regenerated, so diffing
+          # against it here would omit the new images or claim everything
+          # reverted. Diff from that clone instead: fetch the merge-base
+          # commit into it first (its shallow, single-branch clone from the
+          # earlier step never fetched anything but $HEAD_REF), then read
+          # both head_sha and the diff from there. Same env-based and
+          # file-based config isolation as the commit step, for the same
+          # reason: this fetch also talks to the remote with GH_TOKEN in
+          # scope. GIT_CONFIG_COUNT's own value never enters arithmetic — see
+          # the commit step's identical block above for why.
+          if [ -n "${GIT_CONFIG_COUNT:-}" ]; then
+            for i in $(seq 0 999); do
+              unset "GIT_CONFIG_KEY_$i" "GIT_CONFIG_VALUE_$i"
+            done
+            unset GIT_CONFIG_COUNT
+          fi
+          export GIT_CONFIG_GLOBAL=/dev/null
+          export GIT_CONFIG_SYSTEM=/dev/null
+          clone="$RUNNER_TEMP/snapshot-commit-clone"
+          "${safe_git[@]}" -C "$clone" fetch --depth 1 origin "$base_sha"
+          head_sha=$("${safe_git[@]}" -C "$clone" rev-parse HEAD)
 
           # --no-renames keeps statuses to a single-path A/M/D shape (a
           # rename would otherwise emit R100 with two tab-separated paths).
-          mapfile -t entries < <("${safe_git[@]}" diff --name-status --no-renames \
+          mapfile -t entries < <("${safe_git[@]}" -C "$clone" diff --name-status --no-renames \
             "$base_sha" HEAD -- app/snapshots/ | grep -E '^[AMD]' || true)
 
           # The lookup can't fail open the way the PATCH/POST below can. Its

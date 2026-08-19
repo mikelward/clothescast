@@ -1,4 +1,4 @@
-name: Dependency update
+name: gradle-update
 
 # One batched Gradle dependency PR per week, produced by the shared
 # mikelward/gradle-update workflow: every gradle/libs.versions.toml entry

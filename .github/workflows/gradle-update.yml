@@ -31,7 +31,16 @@ jobs:
       contents: write
       pull-requests: write
       actions: write
+    secrets:
+      # See docs/GITHUB_APP.md in mikelward/gradle-update: opens the PR as a
+      # real collaborator, so CI starts on it normally — no first-time-
+      # contributor approval to click through.
+      app-id: ${{ secrets.GRADLE_UPDATE_APP_ID }}
+      app-private-key: ${{ secrets.GRADLE_UPDATE_APP_PRIVATE_KEY }}
     with:
-      # This repo's CI file is ci.yml, not the shared default android-ci.yml;
-      # it already carries workflow_dispatch with the pr input on main.
+      # Belt-and-suspenders fallback: covers a rerun that adopts a PR from
+      # before the App secrets above existed, and the (unexpected) case of
+      # the App token being unset. This repo's CI file is ci.yml, not the
+      # shared default android-ci.yml; it already carries workflow_dispatch
+      # with the pr input on main.
       ci-workflow: ci.yml

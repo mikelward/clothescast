@@ -47,3 +47,14 @@ rules:
       # from it. See check-consumer.yml in mikelward/codex-review for the
       # full reasoning.
       - codex-review-check.yml
+  adhoc-packages:
+    # npm-update.yml is a byte-pinned template from mikelward/npm-update
+    # (see AGENTS.md) — consumers cannot edit it, so an inline
+    # `# zizmor: ignore[...]` comment there isn't an option. The line-scoped
+    # form (file:line) targets only this specific, known finding: an
+    # `npm install -g` call installing npm itself outside a lockfile,
+    # already noted as low-severity ad-hoc-install noise upstream. Any
+    # OTHER adhoc-packages finding, in this file or any other, still
+    # surfaces normally.
+    ignore:
+      - npm-update.yml:119

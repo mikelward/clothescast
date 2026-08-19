@@ -355,6 +355,11 @@ jobs:
           # moved the PR head, and the required gate never reports for the
           # refreshed commit.
           GH_TOKEN: ${{ github.token }}
+          # What app/snapshots below was actually rendered from. cancel-in-progress
+          # is asynchronous, so a collaborator's push mid-run doesn't stop this
+          # job before it clones — it just moves the branch tip out from under
+          # it, checked below.
+          EXPECTED_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
           # Gradle has already run PR-controlled build code in this job (the
@@ -411,6 +416,19 @@ jobs:
           rm -rf "$clone"
           git clone --depth 1 --branch "$HEAD_REF" \
             "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$clone"
+          # app/snapshots below is whatever this job's own checkout — pinned to
+          # EXPECTED_HEAD_SHA at trigger time — rendered. If the branch has
+          # since moved, those PNGs (and any orphan deletions) were built
+          # against code this run never actually tested; committing them onto
+          # the new tip would be silently wrong, not merely stale. The run that
+          # pushed the new commit re-triggers CI and regenerates for real.
+          actual_head_sha=$(git -C "$clone" rev-parse HEAD)
+          if [ "$actual_head_sha" != "$EXPECTED_HEAD_SHA" ]; then
+            echo "::warning::$HEAD_REF advanced to $actual_head_sha since this run started at $EXPECTED_HEAD_SHA — skipping snapshot commit; the run triggered by that push will regenerate against it."
+            echo "SNAPSHOTS_REGENERATED=false" >> "$GITHUB_ENV"
+            echo "SNAPSHOT_COMMIT_SHA=$actual_head_sha" >> "$GITHUB_ENV"
+            exit 0
+          fi
           if [ -d app/snapshots ]; then
             # Remove PNGs for deleted or renamed @Test methods (orphaned snapshots).
             # Auto-discover every Kotlin test source — snapshot tests write to

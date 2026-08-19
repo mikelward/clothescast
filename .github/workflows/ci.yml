@@ -358,41 +358,33 @@ jobs:
         run: |
           set -euo pipefail
           # Gradle has already run PR-controlled build code in this job (the
-          # Roborazzi test pass), with the working tree and .git writable. So
-          # *every* git call below runs with config that cannot execute what
-          # the build could have planted — not just the ones that touch the
-          # token:
-          #   - core.hooksPath at an empty directory kills pre-commit and
-          #     pre-push hooks, and overrides a hooksPath written into
-          #     .git/config, which --no-verify alone would not;
-          #   - core.fsmonitor takes a *pathname* git executes, and `git
-          #     status`/`git diff` alone is enough to run it;
-          #   - an empty credential.helper stops a planted helper being
-          #     handed the credential git asks it to store after a push.
-          # None of those three touch the PUSH's own transport, though: the
-          # build could instead rewrite remote.origin.url to an ssh:// URL
-          # and plant core.sshCommand in .git/config, and pushing by remote
-          # NAME ("origin") would resolve through that config and execute
-          # the planted command with this step's GH_TOKEN in its
-          # environment — whether or not the push itself ever succeeds. The
-          # push below goes to an explicit https:// URL instead (with the
-          # token embedded, same as the publish job pattern this fleet
-          # already uses elsewhere), so remote.origin.url is never
-          # consulted and there is no SSH transport for core.sshCommand to
-          # hook into.
-          # Ported from snoozemo's android-ci.yml, which found the same
-          # pattern necessary for its own screenshot-commit step.
-          # rm -rf first, not just mkdir -p: the build code that already ran
-          # in this job had a writable filesystem, so mkdir -p alone would
-          # silently preserve a pre-push hook planted at this predictable
-          # path ahead of time. Removing it first guarantees the directory
-          # core.hooksPath points at starts empty regardless of what a
-          # build step left there.
-          rm -rf "$RUNNER_TEMP/no-hooks"
-          mkdir -p "$RUNNER_TEMP/no-hooks"
-          safe_git=(git -c "core.hooksPath=$RUNNER_TEMP/no-hooks" -c core.fsmonitor=false -c credential.helper=)
-          "${safe_git[@]}" config user.name 'github-actions[bot]'
-          "${safe_git[@]}" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # Roborazzi test pass), with the working tree, this repo's local
+          # .git/config, AND $HOME (so the global config too) all writable.
+          # A `git -c key=value` denylist against that is chasing a moving
+          # target: hooksPath, fsmonitor, and credential.helper were the
+          # first three found, then commit.gpgSign + gpg.program (a planted
+          # signing program runs at commit time regardless of --no-verify,
+          # which only skips hooks) and url.<attacker>.insteadOf (rewrites
+          # ANY matching URL git resolves, including one spelled out
+          # literally on the command line) — each is a genuinely different
+          # mechanism, and there is no single override that closes the
+          # class of "arbitrary git config the build could have written."
+          #
+          # So the commit and push below happen in a FRESH clone instead,
+          # not the working tree Gradle already touched. GIT_CONFIG_GLOBAL
+          # and GIT_CONFIG_SYSTEM point at /dev/null so neither the (also
+          # writable) $HOME/.gitconfig nor any system-level config is read
+          # at all, and the clone's own local config is whatever `git
+          # clone` itself just generated — nothing the build ever had a
+          # chance to write to. That closes every config-based mechanism at
+          # once, named or not yet named, rather than only the ones found
+          # so far.
+          export GIT_CONFIG_GLOBAL=/dev/null
+          export GIT_CONFIG_SYSTEM=/dev/null
+          clone="$RUNNER_TEMP/snapshot-commit-clone"
+          rm -rf "$clone"
+          git clone --depth 1 --branch "$HEAD_REF" \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$clone"
           if [ -d app/snapshots ]; then
             # Remove PNGs for deleted or renamed @Test methods (orphaned snapshots).
             # Auto-discover every Kotlin test source — snapshot tests write to
@@ -429,17 +421,34 @@ jobs:
                 echo "Removed orphaned snapshot: $name.png"
               fi
             done
-            # Stage new files, modifications, AND deletions.
-            "${safe_git[@]}" add -A app/snapshots
           fi
-          if "${safe_git[@]}" diff --cached --quiet; then
+          # Mirror the working tree's app/snapshots into the clean clone and
+          # stage there — the clone's config is what makes add/commit/push
+          # trustworthy, not anything about this rsync-by-hand copy, which
+          # touches no git state.
+          rm -rf "$clone/app/snapshots"
+          if [ -d app/snapshots ]; then
+            cp -a app/snapshots "$clone/app/snapshots"
+          fi
+          git -C "$clone" config user.name 'github-actions[bot]'
+          git -C "$clone" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$clone" add -A app/snapshots
+          if git -C "$clone" diff --cached --quiet; then
             echo "No snapshot changes."
             echo "SNAPSHOTS_REGENERATED=false" >> "$GITHUB_ENV"
-            echo "SNAPSHOT_COMMIT_SHA=$("${safe_git[@]}" rev-parse HEAD)" >> "$GITHUB_ENV"
+            echo "SNAPSHOT_COMMIT_SHA=$(git -C "$clone" rev-parse HEAD)" >> "$GITHUB_ENV"
             exit 0
           fi
-          "${safe_git[@]}" commit --no-verify -m "ci: regenerate UI snapshots"
-          "${safe_git[@]}" push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:$HEAD_REF"
+          # --no-verify skips hooks; --no-gpg-sign skips commit signing —
+          # neither would find anything planted here regardless, since this
+          # clone's config was never in reach of the build, but both are
+          # free to keep as belt and braces.
+          git -C "$clone" commit --no-verify --no-gpg-sign -m "ci: regenerate UI snapshots"
+          # By remote NAME ("origin") is fine here, unlike in the working
+          # tree: this clone's remote.origin.url is exactly the literal
+          # URL passed to `git clone` above, in a repo config nothing but
+          # git itself has ever written to.
+          git -C "$clone" push origin "HEAD:$HEAD_REF"
           # The push above starts no workflow run — GITHUB_TOKEN pushes never
           # do — so dispatch CI onto the new head or the required `gate`
           # blocks the PR forever, silently. Fail loudly if it doesn't take.
@@ -448,7 +457,7 @@ jobs:
             exit 1
           fi
           echo "SNAPSHOTS_REGENERATED=true" >> "$GITHUB_ENV"
-          echo "SNAPSHOT_COMMIT_SHA=$("${safe_git[@]}" rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "SNAPSHOT_COMMIT_SHA=$(git -C "$clone" rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Comment snapshot freshness on PR
         # Sticky comment (single per-PR, updated in place via the marker) so

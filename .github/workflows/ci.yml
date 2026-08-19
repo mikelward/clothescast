@@ -62,6 +62,12 @@ concurrency:
   # cost was the skipped publish itself.)
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
+# Explicitly empty, not omitted: every job below declares its own downscoped
+# block, so this grants nothing itself — it exists so a future job that
+# forgets its own block gets no ambient token instead of silently inheriting
+# the repository's default GITHUB_TOKEN permission.
+permissions: {}
+
 jobs:
   # Decides whether the heavy jobs may skip: true only when every changed
   # file in the PR is housekeeping (see scripts/docs-lane.sh for the rule).

@@ -369,6 +369,17 @@ jobs:
           #     status`/`git diff` alone is enough to run it;
           #   - an empty credential.helper stops a planted helper being
           #     handed the credential git asks it to store after a push.
+          # None of those three touch the PUSH's own transport, though: the
+          # build could instead rewrite remote.origin.url to an ssh:// URL
+          # and plant core.sshCommand in .git/config, and pushing by remote
+          # NAME ("origin") would resolve through that config and execute
+          # the planted command with this step's GH_TOKEN in its
+          # environment — whether or not the push itself ever succeeds. The
+          # push below goes to an explicit https:// URL instead (with the
+          # token embedded, same as the publish job pattern this fleet
+          # already uses elsewhere), so remote.origin.url is never
+          # consulted and there is no SSH transport for core.sshCommand to
+          # hook into.
           # Ported from snoozemo's android-ci.yml, which found the same
           # pattern necessary for its own screenshot-commit step.
           # rm -rf first, not just mkdir -p: the build code that already ran
@@ -428,7 +439,7 @@ jobs:
             exit 0
           fi
           "${safe_git[@]}" commit --no-verify -m "ci: regenerate UI snapshots"
-          "${safe_git[@]}" push origin "HEAD:$HEAD_REF"
+          "${safe_git[@]}" push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:$HEAD_REF"
           # The push above starts no workflow run — GITHUB_TOKEN pushes never
           # do — so dispatch CI onto the new head or the required `gate`
           # blocks the PR forever, silently. Fail loudly if it doesn't take.

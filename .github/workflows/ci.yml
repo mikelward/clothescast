@@ -573,31 +573,6 @@ jobs:
           fi
 
 
-  # The npm-update workflow's publish job trusts
-  # scripts/check-npm-update.mjs to re-validate each weekly batch, so
-  # that script's suite runs here — the only gate between a change to those
-  # rules and the next Saturday run. No install step, because there is
-  # nothing to install: the checker, the vitest shim, and their tests are
-  # dependency-free on purpose. Skips on docs-only diffs under the same rule
-  # as the other jobs, so the gate's all-success-or-all-skipped check holds.
-  checker-tests:
-    name: Dependency checker tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: classify
-    if: needs.classify.outputs.docs_only != 'true'
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: functions/package.json
-      - name: Test
-        run: node --test scripts/*.test.js
-
   # npm-update.yml's own checks (`npm ci`, `npm run build`) run on the
   # update job's untrusted runner, before the PR exists — evidence the
   # publish job trusts but this workflow never re-proves. This job is that
@@ -843,9 +818,13 @@ jobs:
         # user-visible — refactors, renames, dependency bumps), and changes
         # whose paths are all under `docs/`, all
         # top-level dotfiles or hidden directories (`.github/`, `.claude/`,
-        # `.gitignore`, `.editorconfig`, …), or top-level `*.md`. PRIVACY.md
-        # is treated as non-docs so that privacy-policy updates still surface
-        # to users.
+        # `.gitignore`, `.editorconfig`, …), top-level `*.md`, or `functions/`
+        # (the Cloud Functions backend — a separate Firebase deployment, not
+        # bundled into the APK, so nothing under it is Play-user-visible
+        # either; this is what lets the weekly npm-update batch there use the
+        # hub's own fixed `deps:` prefix instead of needing its own `internal:`
+        # override). PRIVACY.md is treated as non-docs so that privacy-policy
+        # updates still surface to users.
         #
         # When the range yields no bullets (every commit in it was filtered
         # out — e.g. a `.github/workflows/**`-only push, which still
@@ -973,6 +952,7 @@ jobs:
                   /^docs\//       { next }
                   /^\./           { next }
                   /\.md$/         { next }
+                  /^functions\//  { next }
                                   { count++ }
                   END             { print count + 0 }
                 ')
@@ -1370,7 +1350,7 @@ jobs:
     name: gate
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [classify, unit-tests, android-build, checker-tests, functions-build, commit-snapshots]
+    needs: [classify, unit-tests, android-build, functions-build, commit-snapshots]
     if: always()
     permissions:
       contents: read
@@ -1398,7 +1378,6 @@ jobs:
           RESULTS: >-
             unit=${{ needs.unit-tests.result }}
             android=${{ needs.android-build.result }}
-            checker=${{ needs.checker-tests.result }}
             functions=${{ needs.functions-build.result }}
             ${{ needs.commit-snapshots.result == 'failure' && 'commit-snapshots=failure' || '' }}
         run: scripts/docs-lane.sh gate

@@ -21,6 +21,11 @@ rules:
         # reference above does not cover it.
         "mikelward/codex-review/.github/workflows/check-consumer.yml": ref-pin
         "mikelward/gradle-update/.github/workflows/gradle-update.yml": ref-pin
+        # Same reasoning as gradle-update above: this repo tracks the
+        # reusable workflow deliberately, there is no release step on its
+        # side, and a pin would be a thing to bump here on every merge
+        # there.
+        "mikelward/npm-update/.github/workflows/npm-update.yml": ref-pin
         # Piloted against its own branch until mikelward/ci-commit-artifact#1
         # merges, per that repo's own "pilot before merge" convention —
         # switches to @main once it has.
@@ -47,20 +52,3 @@ rules:
       # from it. See check-consumer.yml in mikelward/codex-review for the
       # full reasoning.
       - codex-review-check.yml
-  adhoc-packages:
-    # An inline `# zizmor: ignore[adhoc-packages]` comment on npm-update.yml's
-    # own `npm install -g …` line does NOT suppress this finding — verified
-    # against zizmor 1.29.0 directly: the audit reports the finding against a
-    # tree-sitter subfeature span inside the `run: |` block, and the ignore
-    # comment's own line-index resolution doesn't line up with that span once
-    # the block is multi-line, so neither a same-line trailing comment nor a
-    # preceding-line comment is picked up (reproduced on a minimal multi-line
-    # `run:` fixture; a single-line `run:` DOES honor the inline form). That
-    # makes the line-scoped config form below the only mechanism that works
-    # here, independent of whether the file itself is editable. It targets
-    # only this specific, known finding — installing npm itself outside a
-    # lockfile, already noted as low-severity ad-hoc-install noise upstream.
-    # Any OTHER adhoc-packages finding, in this file or any other, still
-    # surfaces normally.
-    ignore:
-      - npm-update.yml:119

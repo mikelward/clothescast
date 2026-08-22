@@ -1287,4 +1287,46 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_page_smart_home">Mga setting ng Smart Home</string>
     <string name="settings_page_privacy">Mga setting ng pagkapribado</string>
     <string name="settings_page_developer">Mga setting ng developer</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Pumunta sa kasalukuyang panahon</string>
+    <string name="today_outfit_label_overnight">Magdamag</string>
+    <string name="today_chart_hide_model_forecasts">Itago ang mga forecast ng modelo</string>
+    <string name="today_chart_reset_now_hide_models">Ipakita ngayon at itago ang mga forecast ng modelo</string>
+    <string name="today_chart_divergence_high">Nagkakaiba ang mga forecast ng pinakamataas na feels-like ng Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Nagkakaiba ang mga forecast ng pinakamababang feels-like ng Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Susunod na 7 araw</string>
+    <string name="today_forward_to_following_week">Tingnan ang susunod na 7 araw</string>
+    <string name="insight_lead_overnight">Sa gabi</string>
+    <string name="notification_channel_playback_name">Naka-iskedyul na paghahatid ng ClothesCast</string>
+    <string name="notification_channel_playback_description">Ipinapakita habang inihahanda at inihahatid ng ClothesCast ang naka-iskedyul mong forecast. Kinakailangan ng Android upang matapos ang run sa background.</string>
+    <string name="notification_channel_scheduled_insight_name">Naka-iskedyul na ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Ang mga naka-iskedyul mong buod ng panahon — umaga at gabi — kapag handa na.</string>
+    <string name="notification_delivering_title">Inihahatid ang iyong ClothesCast</string>
+    <string name="notification_playback_title">Inihahanda ang iyong ClothesCast</string>
+    <string name="settings_calendars_title">Mga Kalendaryo</string>
+    <string name="settings_calendars_description">Piliin kung alin sa mga kalendaryo ng iyong device ang babasahin ng ClothesCast. Bilang default, sinusunod nito ang visibility ng bawat kalendaryo sa iyong calendar app; i-on o i-off ang alinman dito.</string>
+    <string name="settings_calendars_none">Walang nahanap na kalendaryo sa device na ito.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Speaker</string>
+    <string name="settings_format_accessories_label">Mga Accessory</string>
+    <string name="settings_format_accessories_always">Palagi</string>
+    <string name="settings_format_accessories_never">Hindi Kailanman</string>
+    <string name="settings_holidays_calendar_source">Kalendaryo: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Ang AI model ng ECMWF — mahusay hanggang 15 araw, kaya ito ang bumubuhat sa mga chart ng ikalawang linggo. Maaaring hindi ipakita ng ilang detalyadong chart ang linya para dito.</string>
+    <string name="settings_forecasters_google_subtitle">AI weather forecast ng Google. Gumagamit ng Google API key.</string>
+    <string name="settings_forecasters_google_key_header">Google API Key</string>
+    <string name="settings_forecasters_google_key_placeholder">I-paste ang iyong Google API key</string>
+    <string name="settings_forecasters_google_key_save">I-save ang Google key</string>
+    <string name="settings_forecasters_google_key_replace">Palitan ang Google key</string>
+    <string name="settings_forecasters_google_key_clear">I-clear ang naka-store na Google key</string>
+    <string name="settings_forecasters_google_key_set">May naka-configure na Google API key.</string>
+    <string name="settings_forecasters_google_key_unset">Magdagdag ng Google API key para i-on ang forecaster ng Google. I-paste ang parehong key ng iyong Gemini voice kung naka-enable ang Weather API sa Google Cloud project nito, o gumamit ng ibang key.</string>
+    <string name="settings_forecasters_google_probe_checking">Sinusuri ang forecast ng Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Nakakonekta. Nag-aambag ang Google sa iyong forecast.</string>
+    <string name="settings_forecasters_google_probe_failed">Hindi na-reach ang forecast ng Google. Aalisin ito hanggang sa maayos ito.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Hindi na-reach ang forecast ng Google (HTTP %1$d). Aalisin ito hanggang sa maayos ito.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Tinanggihan ng Google ang iyong key. Sa Google Cloud, i-enable ang Weather API at billing para sa project ng key, at tiyaking hindi restricted ang key sa paraang inaalis ito. Hanggang doon, aalisin ang Google sa iyong forecast.</string>
+    <string name="settings_forecasters_google_probe_retry">Suriin ulit</string>
 </resources>

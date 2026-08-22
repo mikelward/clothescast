@@ -33,6 +33,13 @@ enum class CastDeviceClass { DISPLAY, AUDIO_ONLY, UNKNOWN }
  * speaker, which plays only its audio track — exactly what it would do
  * with the audio-only path anyway.
  */
+// TODO: RestrictedApi — RouteInfo.isGroup is annotated @RestrictTo(LIBRARY),
+// so androidx.mediarouter considers it internal even though it's a public
+// getter we're calling from outside the library. Suppressed rather than
+// reworked blind: the group/speaker/video-out classification this feeds
+// (see classifyDevice below) took several iterations to get right, so it
+// isn't touched here without verifying the alternative behaves the same.
+@Suppress("RestrictedApi")
 internal fun classifyRoute(route: MediaRouter.RouteInfo): CastDeviceClass {
     val device = route.extras?.let { CastDevice.getFromBundle(it) }
     return classifyDevice(

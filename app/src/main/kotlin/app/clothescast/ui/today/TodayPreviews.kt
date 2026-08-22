@@ -2646,6 +2646,14 @@ internal fun SevenDayPageWithForwardChevronPreview() {
 // axis. The per-model sample thins realistically — ECMWF to day 13, GFS to day
 // 11, no ICON — so the diagnostic lines stop mid-window and the last day is
 // bare, the ragged second-week look the relaxed coverage gate now allows.
+// TODO: NonObservableLocale — Locale.getDefault() below reads the system
+// locale without going through Compose's observable LocalConfiguration/
+// LocalLocale, so it won't recompose on a runtime locale change. Suppressed
+// rather than reworked blind: this is a Roborazzi/IDE preview only, rendered
+// once per snapshot with no live locale switching to miss, and any real
+// locale-handling code elsewhere in the app took several iterations to get
+// right — not touching that surface here without verifying behavior first.
+@Suppress("NonObservableLocale")
 @Preview(name = "Following-week chart deck", widthDp = 360)
 @Composable
 internal fun FollowingWeekChartDeckPreview() {

@@ -1204,4 +1204,46 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_page_smart_home">የስማርት ቤት ቅንብሮች</string>
     <string name="settings_page_privacy">የግለነት ቅንብሮች</string>
     <string name="settings_page_developer">የገንቢ ቅንብሮች</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">የአሁኑ ወቅት ይሂዱ</string>
+    <string name="today_outfit_label_overnight">ሌሊት</string>
+    <string name="today_chart_hide_model_forecasts">የሞዴል ትንበያዎችን ደብቅ</string>
+    <string name="today_chart_reset_now_hide_models">አሁን አሳይ እና የሞዴል ትንበያዎችን ደብቅ</string>
+    <string name="today_chart_divergence_high">ከፍተኛ የሚሰማ ሙቀት ትንበያዎች በΔ%1$.1f%2$s ይለያያሉ (%3$s)</string>
+    <string name="today_chart_divergence_low">ዝቅተኛ የሚሰማ ሙቀት ትንበያዎች በΔ%1$.1f%2$s ይለያያሉ (%3$s)</string>
+    <string name="today_title_following_week">ቀጣይ 7 ቀናት</string>
+    <string name="today_forward_to_following_week">ቀጣይ 7 ቀናትን ይመልከቱ</string>
+    <string name="insight_lead_overnight">በሌሊት</string>
+    <string name="notification_channel_playback_name">የተያዘለት የClothesCast ማድረሻ</string>
+    <string name="notification_channel_playback_description">ClothesCast የተያዘለትን ትንበያዎን በሚያዘጋጅበት እና በሚያደርስበት ጊዜ ይታያል። ሩጫው በጀርባ ውስጥ እንዲጠናቀቅ በAndroid ይፈለጋል።</string>
+    <string name="notification_channel_scheduled_insight_name">የተያዘለት ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">የተያዘላቸው የአየር ሁኔታ ማጠቃለያዎችዎ — ጠዋት እና ማታ — ዝግጁ ሲሆኑ።</string>
+    <string name="notification_delivering_title">ClothesCastዎን በማድረስ ላይ</string>
+    <string name="notification_playback_title">ClothesCastዎን በማዘጋጀት ላይ</string>
+    <string name="settings_calendars_title">የቀን መቁጠሪያዎች</string>
+    <string name="settings_calendars_description">ClothesCast የትኞቹን የመሣሪያዎ የቀን መቁጠሪያዎች እንደሚያነብ ይምረጡ። በነባሪነት እያንዳንዱ የቀን መቁጠሪያ በእርስዎ የቀን መቁጠሪያ መተግበሪያ ውስጥ ያለውን ታይነት ይከተላል፤ ማንኛውንም እዚህ ላይ ያብሩ ወይም ያጥፉ።</string>
+    <string name="settings_calendars_none">በዚህ መሣሪያ ላይ ምንም የቀን መቁጠሪያ አልተገኘም።</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">ድምጽ ማጉያ</string>
+    <string name="settings_format_accessories_label">መለዋወጫዎች</string>
+    <string name="settings_format_accessories_always">ሁልጊዜ</string>
+    <string name="settings_format_accessories_never">በጭራሽ</string>
+    <string name="settings_holidays_calendar_source">የቀን መቁጠሪያ፦ %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">የECMWF የAI ሞዴል — እስከ 15 ቀናት ድረስ ውጤታማ ስለሆነ የሁለተኛውን ሳምንት ቻርቶች ይይዛል። አንዳንድ ዝርዝር ቻርቶች ለእሱ መስመር ላያሳዩ ይችላሉ።</string>
+    <string name="settings_forecasters_google_subtitle">የGoogle AI የአየር ሁኔታ ትንበያ። የGoogle API ቁልፍ ይጠቀማል።</string>
+    <string name="settings_forecasters_google_key_header">የGoogle API ቁልፍ</string>
+    <string name="settings_forecasters_google_key_placeholder">የGoogle API ቁልፍዎን ይለጥፉ</string>
+    <string name="settings_forecasters_google_key_save">የGoogle ቁልፍ አስቀምጥ</string>
+    <string name="settings_forecasters_google_key_replace">የGoogle ቁልፍ ተካ</string>
+    <string name="settings_forecasters_google_key_clear">የተቀመጠውን የGoogle ቁልፍ አጽዳ</string>
+    <string name="settings_forecasters_google_key_set">የGoogle API ቁልፍ ተዋቅሯል።</string>
+    <string name="settings_forecasters_google_key_unset">የGoogle ትንበያ አድራጊን ለማብራት የGoogle API ቁልፍ ያክሉ። የGeminiዎ ድምጽ የGoogle Cloud ፕሮጀክት የWeather API ካስቻለ ተመሳሳዩን ቁልፍ ይለጥፉ፣ አለበለዚያ የተለየ ቁልፍ ይጠቀሙ።</string>
+    <string name="settings_forecasters_google_probe_checking">የGoogle ትንበያ በመፈተሽ ላይ…</string>
+    <string name="settings_forecasters_google_probe_ok">ተገናኝቷል። Google ለትንበያዎ አስተዋፅዖ እያደረገ ነው።</string>
+    <string name="settings_forecasters_google_probe_failed">የGoogle ትንበያ ላይ መድረስ አልተቻለም። ይህ እስኪስተካከል ድረስ ይተዋል።</string>
+    <string name="settings_forecasters_google_probe_failed_http">የGoogle ትንበያ ላይ መድረስ አልተቻለም (HTTP %1$d)። ይህ እስኪስተካከል ድረስ ይተዋል።</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google ቁልፍዎን ውድቅ አድርጓል። በGoogle Cloud ውስጥ ለቁልፉ ፕሮጀክት Weather API እና ክፍያን ያንቁ፣ እንዲሁም ቁልፉ ይህንን የሚያገልል መገደብ እንደሌለበት ያረጋግጡ። እስከዚያ ድረስ Google ከትንበያዎ ውጭ ይሆናል።</string>
+    <string name="settings_forecasters_google_probe_retry">እንደገና ይፈትሹ</string>
 </resources>

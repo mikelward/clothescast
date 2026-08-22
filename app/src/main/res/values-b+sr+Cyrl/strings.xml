@@ -1214,4 +1214,46 @@ surfaces.
     <string name="settings_page_smart_home">Подешавања паметног дома</string>
     <string name="settings_page_privacy">Подешавања приватности</string>
     <string name="settings_page_developer">Подешавања програмера</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Иди на тренутни период</string>
+    <string name="today_outfit_label_overnight">Преко ноћи</string>
+    <string name="today_chart_hide_model_forecasts">Сакриј прогнозе модела</string>
+    <string name="today_chart_reset_now_hide_models">Прикажи сада и сакриј прогнозе модела</string>
+    <string name="today_chart_divergence_high">Прогнозе највише осећане температуре разликују се за Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Прогнозе најниже осећане температуре разликују се за Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Следећих 7 дана</string>
+    <string name="today_forward_to_following_week">Погледај следећих 7 дана</string>
+    <string name="insight_lead_overnight">Током ноћи</string>
+    <string name="notification_channel_playback_name">Заказана испорука ClothesCast-a</string>
+    <string name="notification_channel_playback_description">Приказује се док ClothesCast припрема и испоручује вашу заказану прогнозу. То захтева Android како би се извршавање могло завршити у позадини.</string>
+    <string name="notification_channel_scheduled_insight_name">Заказани ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Ваши заказани сажеци времена — ујутру и увече — чим буду спремни.</string>
+    <string name="notification_delivering_title">Испоручује се ваш ClothesCast</string>
+    <string name="notification_playback_title">Припрема се ваш ClothesCast</string>
+    <string name="settings_calendars_title">Календари</string>
+    <string name="settings_calendars_description">Изаберите које календаре вашег уређаја ClothesCast чита. Подразумевано прати видљивост сваког календара у вашој апликацији за календар; овде укључите или искључите било који.</string>
+    <string name="settings_calendars_none">На овом уређају нису пронађени календари.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Звучник</string>
+    <string name="settings_format_accessories_label">Додаци</string>
+    <string name="settings_format_accessories_always">Увек</string>
+    <string name="settings_format_accessories_never">Никад</string>
+    <string name="settings_holidays_calendar_source">Календар: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">АИ модел ECMWF-а — поуздан до 15 дана унапред, зато носи графиконе друге недеље. Неки детаљни графикони можда не приказују линију за њега.</string>
+    <string name="settings_forecasters_google_subtitle">Google АИ прогноза времена. Користи Google API кључ.</string>
+    <string name="settings_forecasters_google_key_header">Google API кључ</string>
+    <string name="settings_forecasters_google_key_placeholder">Налепите свој Google API кључ</string>
+    <string name="settings_forecasters_google_key_save">Сачувај Google кључ</string>
+    <string name="settings_forecasters_google_key_replace">Замени Google кључ</string>
+    <string name="settings_forecasters_google_key_clear">Обриши сачувани Google кључ</string>
+    <string name="settings_forecasters_google_key_set">Подешен је Google API кључ.</string>
+    <string name="settings_forecasters_google_key_unset">Додајте Google API кључ да бисте укључили Google прогностичара. Налепите исти кључ као за ваш Gemini глас ако његов Google Cloud пројекат има омогућен Weather API, или употребите други кључ.</string>
+    <string name="settings_forecasters_google_probe_checking">Проверава се Google прогноза…</string>
+    <string name="settings_forecasters_google_probe_ok">Повезано. Google доприноси вашој прогнози.</string>
+    <string name="settings_forecasters_google_probe_failed">Није успело добијање Google прогнозе. Биће изостављена док се ово не реши.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Није успело добијање Google прогнозе (HTTP %1$d). Биће изостављена док се ово не реши.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google је одбио ваш кључ. У Google Cloud-у омогућите Weather API и наплату за пројекат кључа и уверите се да кључ није ограничен тако да га искључује. До тада Google остаје изостављен из ваше прогнозе.</string>
+    <string name="settings_forecasters_google_probe_retry">Провери поново</string>
 </resources>

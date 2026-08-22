@@ -1178,4 +1178,46 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_page_smart_home">Viedmājas iestatījumi</string>
     <string name="settings_page_privacy">Privātuma iestatījumi</string>
     <string name="settings_page_developer">Izstrādātāja iestatījumi</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Doties uz pašreizējo periodu</string>
+    <string name="today_outfit_label_overnight">Naktī</string>
+    <string name="today_chart_hide_model_forecasts">Slēpt modeļu prognozes</string>
+    <string name="today_chart_reset_now_hide_models">Rādīt tagad un slēpt modeļu prognozes</string>
+    <string name="today_chart_divergence_high">Augstākās izjustās temperatūras prognozes atšķiras par Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Zemākās izjustās temperatūras prognozes atšķiras par Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Nākamās 7 dienas</string>
+    <string name="today_forward_to_following_week">Skatīt nākamās 7 dienas</string>
+    <string name="insight_lead_overnight">Nakts laikā</string>
+    <string name="notification_channel_playback_name">Ieplānotā ClothesCast piegāde</string>
+    <string name="notification_channel_playback_description">Tiek rādīts, kamēr ClothesCast sagatavo un piegādā jūsu ieplānoto prognozi. To pieprasa Android, lai izpilde varētu pabeigties fonā.</string>
+    <string name="notification_channel_scheduled_insight_name">Ieplānotais ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Jūsu ieplānotie laikapstākļu kopsavilkumi — no rīta un vakarā — tiklīdz tie ir gatavi.</string>
+    <string name="notification_delivering_title">Piegādā jūsu ClothesCast</string>
+    <string name="notification_playback_title">Sagatavo jūsu ClothesCast</string>
+    <string name="settings_calendars_title">Kalendāri</string>
+    <string name="settings_calendars_description">Izvēlieties, kurus savas ierīces kalendārus ClothesCast lasa. Pēc noklusējuma tiek ievērota katra kalendāra redzamība jūsu kalendāra lietotnē; šeit varat jebkuru ieslēgt vai izslēgt.</string>
+    <string name="settings_calendars_none">Šajā ierīcē kalendāri netika atrasti.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Skaļrunis</string>
+    <string name="settings_format_accessories_label">Piederumi</string>
+    <string name="settings_format_accessories_always">Vienmēr</string>
+    <string name="settings_format_accessories_never">Nekad</string>
+    <string name="settings_holidays_calendar_source">Kalendārs: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF MI modelis — precīzs līdz 15 dienām, tāpēc tas nes otrās nedēļas diagrammas. Dažās detalizētās diagrammās tam var nebūt redzama līnija.</string>
+    <string name="settings_forecasters_google_subtitle">Google MI laikapstākļu prognoze. Izmanto Google API atslēgu.</string>
+    <string name="settings_forecasters_google_key_header">Google API atslēga</string>
+    <string name="settings_forecasters_google_key_placeholder">Ielīmējiet savu Google API atslēgu</string>
+    <string name="settings_forecasters_google_key_save">Saglabāt Google atslēgu</string>
+    <string name="settings_forecasters_google_key_replace">Aizstāt Google atslēgu</string>
+    <string name="settings_forecasters_google_key_clear">Notīrīt saglabāto Google atslēgu</string>
+    <string name="settings_forecasters_google_key_set">Ir konfigurēta Google API atslēga.</string>
+    <string name="settings_forecasters_google_key_unset">Pievienojiet Google API atslēgu, lai ieslēgtu Google prognozētāju. Ielīmējiet to pašu atslēgu, ko izmantojat savai Gemini balsij, ja tās Google Cloud projektā ir iespējota Weather API, vai izmantojiet citu atslēgu.</string>
+    <string name="settings_forecasters_google_probe_checking">Pārbauda Google prognozi…</string>
+    <string name="settings_forecasters_google_probe_ok">Izveidots savienojums. Google veicina jūsu prognozi.</string>
+    <string name="settings_forecasters_google_probe_failed">Neizdevās sasniegt Google prognozi. Tā tiks izlaista, līdz šī problēma tiks novērsta.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Neizdevās sasniegt Google prognozi (HTTP %1$d). Tā tiks izlaista, līdz šī problēma tiks novērsta.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google noraidīja jūsu atslēgu. Google Cloud iespējojiet Weather API un norēķinus atslēgas projektam un pārliecinieties, ka atslēga nav ierobežota tā, lai to izslēgtu. Līdz tam Google netiek iekļauts jūsu prognozē.</string>
+    <string name="settings_forecasters_google_probe_retry">Pārbaudīt vēlreiz</string>
 </resources>

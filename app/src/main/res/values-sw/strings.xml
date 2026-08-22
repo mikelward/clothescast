@@ -1205,4 +1205,46 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_page_smart_home">Mipangilio ya nyumba ya kisasa</string>
     <string name="settings_page_privacy">Mipangilio ya faragha</string>
     <string name="settings_page_developer">Mipangilio ya msanidi programu</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Nenda kipindi cha sasa</string>
+    <string name="today_outfit_label_overnight">Usiku kucha</string>
+    <string name="today_chart_hide_model_forecasts">Ficha utabiri wa miundo</string>
+    <string name="today_chart_reset_now_hide_models">Onyesha sasa na ficha utabiri wa miundo</string>
+    <string name="today_chart_divergence_high">Utabiri wa hali ya juu inayohisiwa hutofautiana kwa Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Utabiri wa hali ya chini inayohisiwa hutofautiana kwa Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Siku 7 zijazo</string>
+    <string name="today_forward_to_following_week">Ona siku 7 zijazo</string>
+    <string name="insight_lead_overnight">Wakati wa usiku</string>
+    <string name="notification_channel_playback_name">Uwasilishaji uliopangwa wa ClothesCast</string>
+    <string name="notification_channel_playback_description">Huonyeshwa wakati ClothesCast inaandaa na kuwasilisha utabiri wako uliopangwa. Inahitajika na Android ili uendeshaji uweze kukamilika chinichini.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast Iliyopangwa</string>
+    <string name="notification_channel_scheduled_insight_description">Muhtasari wako wa hali ya hewa uliopangwa — asubuhi na jioni — utakapokuwa tayari.</string>
+    <string name="notification_delivering_title">Inawasilisha ClothesCast yako</string>
+    <string name="notification_playback_title">Inaandaa ClothesCast yako</string>
+    <string name="settings_calendars_title">Kalenda</string>
+    <string name="settings_calendars_description">Chagua kalenda zipi za kifaa chako ClothesCast inasoma. Kwa chaguo-msingi, inafuata mwonekano wa kila kalenda katika programu yako ya kalenda; washa au zima yoyote hapa.</string>
+    <string name="settings_calendars_none">Hakuna kalenda zilizopatikana kwenye kifaa hiki.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Spika</string>
+    <string name="settings_format_accessories_label">Vifaa vya Ziada</string>
+    <string name="settings_format_accessories_always">Kila wakati</string>
+    <string name="settings_format_accessories_never">Kamwe</string>
+    <string name="settings_holidays_calendar_source">Kalenda: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Muundo wa AI wa ECMWF — una uwezo hadi siku 15, hivyo unabeba chati za wiki ya pili. Baadhi ya chati za kina huenda zisionyeshe mstari kwa ajili yake.</string>
+    <string name="settings_forecasters_google_subtitle">Utabiri wa hali ya hewa wa AI wa Google. Hutumia ufunguo wa Google API.</string>
+    <string name="settings_forecasters_google_key_header">Ufunguo wa Google API</string>
+    <string name="settings_forecasters_google_key_placeholder">Bandika ufunguo wako wa Google API</string>
+    <string name="settings_forecasters_google_key_save">Hifadhi ufunguo wa Google</string>
+    <string name="settings_forecasters_google_key_replace">Badilisha ufunguo wa Google</string>
+    <string name="settings_forecasters_google_key_clear">Futa ufunguo wa Google uliohifadhiwa</string>
+    <string name="settings_forecasters_google_key_set">Ufunguo wa Google API umewekwa.</string>
+    <string name="settings_forecasters_google_key_unset">Ongeza ufunguo wa Google API ili kuwasha mtabiri wa Google. Bandika ufunguo uleule wa sauti yako ya Gemini iwapo mradi wake wa Google Cloud una Weather API iliyowashwa, au tumia ufunguo tofauti.</string>
+    <string name="settings_forecasters_google_probe_checking">Inakagua utabiri wa Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Imeunganishwa. Google inachangia utabiri wako.</string>
+    <string name="settings_forecasters_google_probe_failed">Imeshindwa kufikia utabiri wa Google. Utaachwa nje hadi hili litakapotatuliwa.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Imeshindwa kufikia utabiri wa Google (HTTP %1$d). Utaachwa nje hadi hili litakapotatuliwa.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google imekataa ufunguo wako. Katika Google Cloud, washa Weather API na malipo kwa ajili ya mradi wa ufunguo huo, na hakikisha ufunguo haujazuiliwa kwa njia inayoutenga. Hadi wakati huo, Google ataachwa nje ya utabiri wako.</string>
+    <string name="settings_forecasters_google_probe_retry">Kagua tena</string>
 </resources>

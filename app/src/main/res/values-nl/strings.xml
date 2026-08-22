@@ -1284,4 +1284,46 @@ the displayed label localizes.
     <string name="settings_page_smart_home">Slim thuis-instellingen</string>
     <string name="settings_page_privacy">Privacy-instellingen</string>
     <string name="settings_page_developer">Ontwikkelaarsinstellingen</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Naar de huidige periode</string>
+    <string name="today_outfit_label_overnight">\'s Nachts</string>
+    <string name="today_chart_hide_model_forecasts">Modelvoorspellingen verbergen</string>
+    <string name="today_chart_reset_now_hide_models">Nu tonen en modelvoorspellingen verbergen</string>
+    <string name="today_chart_divergence_high">Voorspellingen voor het maximale gevoel verschillen met Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Voorspellingen voor het minimale gevoel verschillen met Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Volgende 7 dagen</string>
+    <string name="today_forward_to_following_week">Bekijk de volgende 7 dagen</string>
+    <string name="insight_lead_overnight">\'s Nachts</string>
+    <string name="notification_channel_playback_name">Geplande ClothesCast-levering</string>
+    <string name="notification_channel_playback_description">Wordt getoond terwijl ClothesCast je geplande voorspelling voorbereidt en levert. Vereist door Android zodat het proces op de achtergrond kan worden afgerond.</string>
+    <string name="notification_channel_scheduled_insight_name">Geplande ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Je geplande weeroverzichten — \'s ochtends en \'s avonds — zodra ze klaar zijn.</string>
+    <string name="notification_delivering_title">Je ClothesCast wordt geleverd</string>
+    <string name="notification_playback_title">Je ClothesCast wordt voorbereid</string>
+    <string name="settings_calendars_title">Agenda\'s</string>
+    <string name="settings_calendars_description">Kies welke agenda\'s van je apparaat ClothesCast leest. Standaard volgt het de zichtbaarheid van elke agenda in je agenda-app; zet ze hier afzonderlijk aan of uit.</string>
+    <string name="settings_calendars_none">Geen agenda\'s gevonden op dit apparaat.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Luidspreker</string>
+    <string name="settings_format_accessories_label">Accessoires</string>
+    <string name="settings_format_accessories_always">Altijd</string>
+    <string name="settings_format_accessories_never">Nooit</string>
+    <string name="settings_holidays_calendar_source">Agenda: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Het AI-model van ECMWF — betrouwbaar tot 15 dagen vooruit, waardoor het de grafieken van de tweede week draagt. Sommige detailgrafieken tonen mogelijk geen lijn ervoor.</string>
+    <string name="settings_forecasters_google_subtitle">Google\'s AI-weersvoorspelling. Gebruikt een Google API-sleutel.</string>
+    <string name="settings_forecasters_google_key_header">Google API-sleutel</string>
+    <string name="settings_forecasters_google_key_placeholder">Plak je Google API-sleutel</string>
+    <string name="settings_forecasters_google_key_save">Google-sleutel opslaan</string>
+    <string name="settings_forecasters_google_key_replace">Google-sleutel vervangen</string>
+    <string name="settings_forecasters_google_key_clear">Opgeslagen Google-sleutel wissen</string>
+    <string name="settings_forecasters_google_key_set">Er is een Google API-sleutel geconfigureerd.</string>
+    <string name="settings_forecasters_google_key_unset">Voeg een Google API-sleutel toe om de Google-voorspeller in te schakelen. Plak dezelfde sleutel als je Gemini-stem als het Google Cloud-project daarvan de Weather API heeft ingeschakeld, of gebruik een andere sleutel.</string>
+    <string name="settings_forecasters_google_probe_checking">Google-voorspelling wordt gecontroleerd…</string>
+    <string name="settings_forecasters_google_probe_ok">Verbonden. Google draagt bij aan je voorspelling.</string>
+    <string name="settings_forecasters_google_probe_failed">Google-voorspelling kon niet worden bereikt. Deze wordt buiten beschouwing gelaten totdat dit is opgelost.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Google-voorspelling kon niet worden bereikt (HTTP %1$d). Deze wordt buiten beschouwing gelaten totdat dit is opgelost.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google heeft je sleutel geweigerd. Schakel in Google Cloud de Weather API en facturering in voor het project van de sleutel, en zorg dat de sleutel niet beperkt is zodat deze wordt uitgesloten. Tot dan blijft Google buiten je voorspelling.</string>
+    <string name="settings_forecasters_google_probe_retry">Opnieuw controleren</string>
 </resources>

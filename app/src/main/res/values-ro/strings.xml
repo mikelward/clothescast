@@ -1214,4 +1214,46 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_page_smart_home">Setări de Smart Home</string>
     <string name="settings_page_privacy">Setări de confidențialitate</string>
     <string name="settings_page_developer">Setări de dezvoltator</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Mergi la perioada curentă</string>
+    <string name="today_outfit_label_overnight">Noaptea</string>
+    <string name="today_chart_hide_model_forecasts">Ascunde prognozele modelelor</string>
+    <string name="today_chart_reset_now_hide_models">Afișează acum și ascunde prognozele modelelor</string>
+    <string name="today_chart_divergence_high">Prognozele pentru temperatura resimțită maximă diferă cu Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Prognozele pentru temperatura resimțită minimă diferă cu Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Următoarele 7 zile</string>
+    <string name="today_forward_to_following_week">Vezi următoarele 7 zile</string>
+    <string name="insight_lead_overnight">În timpul nopții</string>
+    <string name="notification_channel_playback_name">Livrare programată ClothesCast</string>
+    <string name="notification_channel_playback_description">Afișată în timp ce ClothesCast pregătește și livrează prognoza programată. Necesară de Android pentru ca rularea să se poată finaliza în fundal.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast programat</string>
+    <string name="notification_channel_scheduled_insight_description">Rezumatele meteo programate — dimineața și seara — de îndată ce sunt gata.</string>
+    <string name="notification_delivering_title">Se livrează ClothesCast-ul tău</string>
+    <string name="notification_playback_title">Se pregătește ClothesCast-ul tău</string>
+    <string name="settings_calendars_title">Calendare</string>
+    <string name="settings_calendars_description">Alege ce calendare de pe dispozitivul tău citește ClothesCast. Implicit, urmează vizibilitatea fiecărui calendar din aplicația ta de calendar; activează sau dezactivează oricare de aici.</string>
+    <string name="settings_calendars_none">Nu s-a găsit niciun calendar pe acest dispozitiv.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Difuzor</string>
+    <string name="settings_format_accessories_label">Accesorii</string>
+    <string name="settings_format_accessories_always">Întotdeauna</string>
+    <string name="settings_format_accessories_never">Niciodată</string>
+    <string name="settings_holidays_calendar_source">Calendar: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Modelul AI al ECMWF — precis până la 15 zile, așa că el susține graficele pentru a doua săptămână. Unele grafice detaliate pot să nu afișeze o linie pentru el.</string>
+    <string name="settings_forecasters_google_subtitle">Prognoza meteo AI a Google. Folosește o cheie API Google.</string>
+    <string name="settings_forecasters_google_key_header">Cheie API Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Inserează cheia ta API Google</string>
+    <string name="settings_forecasters_google_key_save">Salvează cheia Google</string>
+    <string name="settings_forecasters_google_key_replace">Înlocuiește cheia Google</string>
+    <string name="settings_forecasters_google_key_clear">Șterge cheia Google salvată</string>
+    <string name="settings_forecasters_google_key_set">Este configurată o cheie API Google.</string>
+    <string name="settings_forecasters_google_key_unset">Adaugă o cheie API Google pentru a activa prognosticatorul Google. Inserează aceeași cheie ca vocea ta Gemini dacă proiectul Google Cloud al acesteia are Weather API activat, sau folosește o cheie diferită.</string>
+    <string name="settings_forecasters_google_probe_checking">Se verifică prognoza Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Conectat. Google contribuie la prognoza ta.</string>
+    <string name="settings_forecasters_google_probe_failed">Prognoza Google nu a putut fi accesată. Va fi exclusă până la rezolvarea acestei probleme.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Prognoza Google nu a putut fi accesată (HTTP %1$d). Va fi exclusă până la rezolvarea acestei probleme.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google a respins cheia ta. În Google Cloud, activează Weather API și facturarea pentru proiectul cheii și asigură-te că cheia nu este restricționată să o excludă. Până atunci, Google este exclus din prognoza ta.</string>
+    <string name="settings_forecasters_google_probe_retry">Verifică din nou</string>
 </resources>

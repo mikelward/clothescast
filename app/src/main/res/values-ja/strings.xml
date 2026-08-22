@@ -1384,4 +1384,46 @@ the displayed label localizes.
     <string name="settings_page_smart_home">スマートホーム設定</string>
     <string name="settings_page_privacy">プライバシー設定</string>
     <string name="settings_page_developer">開発者設定</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">現在の期間に戻る</string>
+    <string name="today_outfit_label_overnight">夜間</string>
+    <string name="today_chart_hide_model_forecasts">モデル予報を非表示</string>
+    <string name="today_chart_reset_now_hide_models">今すぐ表示してモデル予報を非表示</string>
+    <string name="today_chart_divergence_high">体感最高気温の予報がΔ%1$.1f%2$s異なります（%3$s）</string>
+    <string name="today_chart_divergence_low">体感最低気温の予報がΔ%1$.1f%2$s異なります（%3$s）</string>
+    <string name="today_title_following_week">次の7日間</string>
+    <string name="today_forward_to_following_week">次の7日間を見る</string>
+    <string name="insight_lead_overnight">夜間は</string>
+    <string name="notification_channel_playback_name">予定されたClothesCastの配信</string>
+    <string name="notification_channel_playback_description">ClothesCastが予定された予報を準備・配信している間に表示されます。バックグラウンドで処理を完了するためにAndroidが要求します。</string>
+    <string name="notification_channel_scheduled_insight_name">予定されたClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">予定された天気の概要（朝と夕方）が準備でき次第お届けします。</string>
+    <string name="notification_delivering_title">ClothesCastを配信中</string>
+    <string name="notification_playback_title">ClothesCastを準備中</string>
+    <string name="settings_calendars_title">カレンダー</string>
+    <string name="settings_calendars_description">ClothesCastが読み取るデバイスのカレンダーを選択します。デフォルトでは各カレンダーがカレンダーアプリでの表示設定に従いますが、ここで個別にオン・オフを切り替えられます。</string>
+    <string name="settings_calendars_none">このデバイスにカレンダーが見つかりません。</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">スピーカー</string>
+    <string name="settings_format_accessories_label">小物</string>
+    <string name="settings_format_accessories_always">常に</string>
+    <string name="settings_format_accessories_never">しない</string>
+    <string name="settings_holidays_calendar_source">カレンダー: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWFのAIモデル — 15日先まで精度が高く、2週目のチャートを担っています。一部の詳細チャートではこのモデルの線が表示されないことがあります。</string>
+    <string name="settings_forecasters_google_subtitle">GoogleのAI天気予報。Google APIキーを使用します。</string>
+    <string name="settings_forecasters_google_key_header">Google APIキー</string>
+    <string name="settings_forecasters_google_key_placeholder">Google APIキーを貼り付けてください</string>
+    <string name="settings_forecasters_google_key_save">Googleキーを保存</string>
+    <string name="settings_forecasters_google_key_replace">Googleキーを置き換える</string>
+    <string name="settings_forecasters_google_key_clear">保存されたGoogleキーを消去</string>
+    <string name="settings_forecasters_google_key_set">Google APIキーが設定されています。</string>
+    <string name="settings_forecasters_google_key_unset">Google予報を有効にするにはGoogle APIキーを追加してください。Geminiボイスに使用しているGoogle CloudプロジェクトでWeather APIが有効な場合は同じキーを貼り付けるか、別のキーを使用してください。</string>
+    <string name="settings_forecasters_google_probe_checking">Googleの予報を確認中…</string>
+    <string name="settings_forecasters_google_probe_ok">接続しました。Googleがあなたの予報に貢献しています。</string>
+    <string name="settings_forecasters_google_probe_failed">Googleの予報に接続できませんでした。解決するまで除外されます。</string>
+    <string name="settings_forecasters_google_probe_failed_http">Googleの予報に接続できませんでした（HTTP %1$d）。解決するまで除外されます。</string>
+    <string name="settings_forecasters_google_probe_forbidden">Googleがあなたのキーを拒否しました。Google Cloudでキーのプロジェクトに対してWeather APIと課金を有効にし、キーがそれを除外するように制限されていないことを確認してください。それまではGoogleは予報から除外されます。</string>
+    <string name="settings_forecasters_google_probe_retry">再確認</string>
 </resources>

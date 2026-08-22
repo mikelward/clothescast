@@ -1226,4 +1226,46 @@ What is NOT overridden, by design:
     <string name="settings_page_smart_home">Išmaniųjų namų nustatymai</string>
     <string name="settings_page_privacy">Privatumo nustatymai</string>
     <string name="settings_page_developer">Kūrėjo nustatymai</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Eiti į dabartinį laikotarpį</string>
+    <string name="today_outfit_label_overnight">Naktį</string>
+    <string name="today_chart_hide_model_forecasts">Slėpti modelių prognozes</string>
+    <string name="today_chart_reset_now_hide_models">Rodyti dabar ir slėpti modelių prognozes</string>
+    <string name="today_chart_divergence_high">Aukščiausios juntamos temperatūros prognozės skiriasi Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Žemiausios juntamos temperatūros prognozės skiriasi Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Kitos 7 dienos</string>
+    <string name="today_forward_to_following_week">Peržiūrėti kitas 7 dienas</string>
+    <string name="insight_lead_overnight">Nakties metu</string>
+    <string name="notification_channel_playback_name">Suplanuotas „ClothesCast“ pristatymas</string>
+    <string name="notification_channel_playback_description">Rodoma, kol „ClothesCast“ ruošia ir pristato jūsų suplanuotą prognozę. To reikalauja „Android“, kad veiksmas galėtų būti baigtas fone.</string>
+    <string name="notification_channel_scheduled_insight_name">Suplanuotas „ClothesCast“</string>
+    <string name="notification_channel_scheduled_insight_description">Jūsų suplanuotos orų santraukos — rytą ir vakarą — kai tik jos bus paruoštos.</string>
+    <string name="notification_delivering_title">Pristatomas jūsų „ClothesCast“</string>
+    <string name="notification_playback_title">Ruošiamas jūsų „ClothesCast“</string>
+    <string name="settings_calendars_title">Kalendoriai</string>
+    <string name="settings_calendars_description">Pasirinkite, kuriuos savo įrenginio kalendorius skaito „ClothesCast“. Numatytuoju atveju laikomasi kiekvieno kalendoriaus matomumo jūsų kalendoriaus programoje; čia galite bet kurį įjungti arba išjungti.</string>
+    <string name="settings_calendars_none">Šiame įrenginyje kalendorių nerasta.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Garsiakalbis</string>
+    <string name="settings_format_accessories_label">Aksesuarai</string>
+    <string name="settings_format_accessories_always">Visada</string>
+    <string name="settings_format_accessories_never">Niekada</string>
+    <string name="settings_holidays_calendar_source">Kalendorius: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">„ECMWF“ DI modelis — patikimas iki 15 dienų, todėl juo remiasi antros savaitės diagramos. Kai kuriose išsamiose diagramose linija jam gali nebūti rodoma.</string>
+    <string name="settings_forecasters_google_subtitle">„Google“ DI orų prognozė. Naudoja „Google“ API raktą.</string>
+    <string name="settings_forecasters_google_key_header">„Google“ API raktas</string>
+    <string name="settings_forecasters_google_key_placeholder">Įklijuokite savo „Google“ API raktą</string>
+    <string name="settings_forecasters_google_key_save">Išsaugoti „Google“ raktą</string>
+    <string name="settings_forecasters_google_key_replace">Pakeisti „Google“ raktą</string>
+    <string name="settings_forecasters_google_key_clear">Išvalyti išsaugotą „Google“ raktą</string>
+    <string name="settings_forecasters_google_key_set">Sukonfigūruotas „Google“ API raktas.</string>
+    <string name="settings_forecasters_google_key_unset">Pridėkite „Google“ API raktą, kad įjungtumėte „Google“ prognozuotoją. Įklijuokite tą patį raktą, kaip ir jūsų „Gemini“ balsui, jei jo „Google Cloud“ projekte įjungta „Weather API“, arba naudokite kitą raktą.</string>
+    <string name="settings_forecasters_google_probe_checking">Tikrinama „Google“ prognozė…</string>
+    <string name="settings_forecasters_google_probe_ok">Prisijungta. „Google“ prisideda prie jūsų prognozės.</string>
+    <string name="settings_forecasters_google_probe_failed">Nepavyko pasiekti „Google“ prognozės. Ji bus praleidžiama, kol tai bus išspręsta.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Nepavyko pasiekti „Google“ prognozės (HTTP %1$d). Ji bus praleidžiama, kol tai bus išspręsta.</string>
+    <string name="settings_forecasters_google_probe_forbidden">„Google“ atmetė jūsų raktą. „Google Cloud“ įjunkite „Weather API“ ir atsiskaitymą rakto projektui bei įsitikinkite, kad raktas nėra apribotas taip, kad jį pašalintų. Iki tol „Google“ liks jūsų prognozoje neįtrauktas.</string>
+    <string name="settings_forecasters_google_probe_retry">Patikrinti dar kartą</string>
 </resources>

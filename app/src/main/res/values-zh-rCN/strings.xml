@@ -1383,4 +1383,46 @@ label localizes.
     <string name="settings_page_smart_home">智能家居设置</string>
     <string name="settings_page_privacy">隐私设置</string>
     <string name="settings_page_developer">开发者设置</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">转到当前时段</string>
+    <string name="today_outfit_label_overnight">夜间</string>
+    <string name="today_chart_hide_model_forecasts">隐藏模型预报</string>
+    <string name="today_chart_reset_now_hide_models">立即显示并隐藏模型预报</string>
+    <string name="today_chart_divergence_high">各预报机构对体感最高温度的预测相差 Δ%1$.1f%2$s（%3$s）</string>
+    <string name="today_chart_divergence_low">各预报机构对体感最低温度的预测相差 Δ%1$.1f%2$s（%3$s）</string>
+    <string name="today_title_following_week">接下来的 7 天</string>
+    <string name="today_forward_to_following_week">查看接下来的 7 天</string>
+    <string name="insight_lead_overnight">夜间</string>
+    <string name="notification_channel_playback_name">计划的 ClothesCast 送达</string>
+    <string name="notification_channel_playback_description">在 ClothesCast 准备并送达您的计划预报时显示。Android 要求显示此通知，以便任务能在后台完成。</string>
+    <string name="notification_channel_scheduled_insight_name">计划的 ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">您计划的天气摘要——早晨和晚上——准备就绪后即刻送达。</string>
+    <string name="notification_delivering_title">正在送达您的 ClothesCast</string>
+    <string name="notification_playback_title">正在准备您的 ClothesCast</string>
+    <string name="settings_calendars_title">日历</string>
+    <string name="settings_calendars_description">选择 ClothesCast 读取设备上的哪些日历。默认情况下，它遵循您日历应用中每个日历的可见性设置；您也可以在此处单独开关。</string>
+    <string name="settings_calendars_none">未在此设备上找到任何日历。</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">扬声器</string>
+    <string name="settings_format_accessories_label">配饰</string>
+    <string name="settings_format_accessories_always">始终</string>
+    <string name="settings_format_accessories_never">从不</string>
+    <string name="settings_holidays_calendar_source">日历：%1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF 的 AI 模型——预报能力可达 15 天，因此承担第二周的图表。部分详细图表可能不会显示它的曲线。</string>
+    <string name="settings_forecasters_google_subtitle">Google 的 AI 天气预报。使用 Google API 密钥。</string>
+    <string name="settings_forecasters_google_key_header">Google API 密钥</string>
+    <string name="settings_forecasters_google_key_placeholder">粘贴您的 Google API 密钥</string>
+    <string name="settings_forecasters_google_key_save">保存 Google 密钥</string>
+    <string name="settings_forecasters_google_key_replace">替换 Google 密钥</string>
+    <string name="settings_forecasters_google_key_clear">清除已存储的 Google 密钥</string>
+    <string name="settings_forecasters_google_key_set">已配置 Google API 密钥。</string>
+    <string name="settings_forecasters_google_key_unset">添加 Google API 密钥以开启 Google 预报器。如果您 Gemini 语音所在的 Google Cloud 项目已启用 Weather API，可粘贴同一密钥，或使用其他密钥。</string>
+    <string name="settings_forecasters_google_probe_checking">正在检查 Google 的预报…</string>
+    <string name="settings_forecasters_google_probe_ok">已连接。Google 正在为您的预报做出贡献。</string>
+    <string name="settings_forecasters_google_probe_failed">无法访问 Google 的预报。在此问题解决前将不予采用。</string>
+    <string name="settings_forecasters_google_probe_failed_http">无法访问 Google 的预报（HTTP %1$d）。在此问题解决前将不予采用。</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google 拒绝了您的密钥。请在 Google Cloud 中为该密钥所属项目启用 Weather API 和结算功能，并确保该密钥没有被限制排除该 API。在此之前，Google 将不会计入您的预报。</string>
+    <string name="settings_forecasters_google_probe_retry">重新检查</string>
 </resources>

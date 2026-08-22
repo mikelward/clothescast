@@ -1242,4 +1242,46 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_page_smart_home">Tetapan rumah pintar</string>
     <string name="settings_page_privacy">Tetapan privasi</string>
     <string name="settings_page_developer">Tetapan pembangun</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Pergi ke tempoh semasa</string>
+    <string name="today_outfit_label_overnight">Semalaman</string>
+    <string name="today_chart_hide_model_forecasts">Sembunyikan ramalan model</string>
+    <string name="today_chart_reset_now_hide_models">Tunjukkan sekarang dan sembunyikan ramalan model</string>
+    <string name="today_chart_divergence_high">Ramalan suhu rasa tertinggi berbeza sebanyak Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Ramalan suhu rasa terendah berbeza sebanyak Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">7 hari berikutnya</string>
+    <string name="today_forward_to_following_week">Lihat 7 hari berikutnya</string>
+    <string name="insight_lead_overnight">Sepanjang malam</string>
+    <string name="notification_channel_playback_name">Penghantaran ClothesCast berjadual</string>
+    <string name="notification_channel_playback_description">Dipaparkan semasa ClothesCast menyediakan dan menghantar ramalan berjadual anda. Diperlukan oleh Android supaya larian boleh selesai di latar belakang.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast Berjadual</string>
+    <string name="notification_channel_scheduled_insight_description">Ringkasan cuaca berjadual anda — pagi dan petang — apabila sudah sedia.</string>
+    <string name="notification_delivering_title">Menghantar ClothesCast anda</string>
+    <string name="notification_playback_title">Menyediakan ClothesCast anda</string>
+    <string name="settings_calendars_title">Kalendar</string>
+    <string name="settings_calendars_description">Pilih kalendar peranti anda yang dibaca oleh ClothesCast. Secara lalai, ia mengikut keterlihatan setiap kalendar dalam apl kalendar anda; hidupkan atau matikan mana-mana di sini.</string>
+    <string name="settings_calendars_none">Tiada kalendar ditemui pada peranti ini.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Pembesar Suara</string>
+    <string name="settings_format_accessories_label">Aksesori</string>
+    <string name="settings_format_accessories_always">Sentiasa</string>
+    <string name="settings_format_accessories_never">Tidak Sekali-kali</string>
+    <string name="settings_holidays_calendar_source">Kalendar: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Model AI ECMWF — tepat sehingga 15 hari, jadi ia menyokong carta minggu kedua. Sesetengah carta terperinci mungkin tidak menunjukkan garisan untuknya.</string>
+    <string name="settings_forecasters_google_subtitle">Ramalan cuaca AI Google. Menggunakan kunci API Google.</string>
+    <string name="settings_forecasters_google_key_header">Kunci API Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Tampal kunci API Google anda</string>
+    <string name="settings_forecasters_google_key_save">Simpan kunci Google</string>
+    <string name="settings_forecasters_google_key_replace">Ganti kunci Google</string>
+    <string name="settings_forecasters_google_key_clear">Kosongkan kunci Google yang disimpan</string>
+    <string name="settings_forecasters_google_key_set">Kunci API Google telah dikonfigurasikan.</string>
+    <string name="settings_forecasters_google_key_unset">Tambahkan kunci API Google untuk menghidupkan peramal Google. Tampal kunci yang sama seperti suara Gemini anda jika projek Google Cloud suara itu telah mendayakan Weather API, atau gunakan kunci yang berbeza.</string>
+    <string name="settings_forecasters_google_probe_checking">Menyemak ramalan Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Disambungkan. Google menyumbang kepada ramalan anda.</string>
+    <string name="settings_forecasters_google_probe_failed">Tidak dapat mencapai ramalan Google. Ia akan ditinggalkan sehingga ini diselesaikan.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Tidak dapat mencapai ramalan Google (HTTP %1$d). Ia akan ditinggalkan sehingga ini diselesaikan.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google menolak kunci anda. Dalam Google Cloud, dayakan Weather API dan pengebilan untuk projek kunci tersebut, dan pastikan kunci itu tidak dihadkan sehingga mengecualikannya. Sehingga itu, Google ditinggalkan daripada ramalan anda.</string>
+    <string name="settings_forecasters_google_probe_retry">Semak semula</string>
 </resources>

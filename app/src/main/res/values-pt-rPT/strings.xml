@@ -1365,4 +1365,46 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_page_smart_home">Definições de Smart Home</string>
     <string name="settings_page_privacy">Definições de privacidade</string>
     <string name="settings_page_developer">Definições de programador</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Ir para o período atual</string>
+    <string name="today_outfit_label_overnight">Durante a noite</string>
+    <string name="today_chart_hide_model_forecasts">Ocultar previsões dos modelos</string>
+    <string name="today_chart_reset_now_hide_models">Mostrar agora e ocultar previsões dos modelos</string>
+    <string name="today_chart_divergence_high">As previsões da sensação térmica máxima divergem em Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">As previsões da sensação térmica mínima divergem em Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Próximos 7 dias</string>
+    <string name="today_forward_to_following_week">Ver os próximos 7 dias</string>
+    <string name="insight_lead_overnight">Durante a noite</string>
+    <string name="notification_channel_playback_name">Entrega agendada do ClothesCast</string>
+    <string name="notification_channel_playback_description">Apresentada enquanto o ClothesCast prepara e entrega a tua previsão agendada. Exigida pelo Android para que a execução possa terminar em segundo plano.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast agendado</string>
+    <string name="notification_channel_scheduled_insight_description">Os teus resumos meteorológicos agendados — de manhã e à noite — assim que estiverem prontos.</string>
+    <string name="notification_delivering_title">A entregar o teu ClothesCast</string>
+    <string name="notification_playback_title">A preparar o teu ClothesCast</string>
+    <string name="settings_calendars_title">Calendários</string>
+    <string name="settings_calendars_description">Escolhe quais calendários do teu dispositivo o ClothesCast lê. Por predefinição, segue a visibilidade de cada calendário na tua app de calendário; ativa ou desativa qualquer um aqui.</string>
+    <string name="settings_calendars_none">Não foi encontrado nenhum calendário neste dispositivo.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Altifalante</string>
+    <string name="settings_format_accessories_label">Acessórios</string>
+    <string name="settings_format_accessories_always">Sempre</string>
+    <string name="settings_format_accessories_never">Nunca</string>
+    <string name="settings_holidays_calendar_source">Calendário: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">O modelo de IA do ECMWF — fiável até 15 dias, pelo que sustenta os gráficos da segunda semana. Alguns gráficos detalhados podem não mostrar uma linha para ele.</string>
+    <string name="settings_forecasters_google_subtitle">Previsão meteorológica de IA do Google. Usa uma chave de API do Google.</string>
+    <string name="settings_forecasters_google_key_header">Chave de API do Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Cola a tua chave de API do Google</string>
+    <string name="settings_forecasters_google_key_save">Guardar chave do Google</string>
+    <string name="settings_forecasters_google_key_replace">Substituir chave do Google</string>
+    <string name="settings_forecasters_google_key_clear">Apagar chave do Google guardada</string>
+    <string name="settings_forecasters_google_key_set">Está configurada uma chave de API do Google.</string>
+    <string name="settings_forecasters_google_key_unset">Adiciona uma chave de API do Google para ativar o previsor do Google. Cola a mesma chave da tua voz Gemini se o respetivo projeto do Google Cloud tiver a Weather API ativada, ou usa uma chave diferente.</string>
+    <string name="settings_forecasters_google_probe_checking">A verificar a previsão do Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Ligado. O Google está a contribuir para a tua previsão.</string>
+    <string name="settings_forecasters_google_probe_failed">Não foi possível aceder à previsão do Google. Será deixada de fora até isto ser resolvido.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Não foi possível aceder à previsão do Google (HTTP %1$d). Será deixada de fora até isto ser resolvido.</string>
+    <string name="settings_forecasters_google_probe_forbidden">O Google rejeitou a tua chave. No Google Cloud, ativa a Weather API e a faturação do projeto da chave, e certifica-te de que a chave não está restringida de forma a excluí-la. Até lá, o Google fica fora da tua previsão.</string>
+    <string name="settings_forecasters_google_probe_retry">Verificar novamente</string>
 </resources>

@@ -1177,4 +1177,46 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_page_smart_home">Configuració de Smart Home</string>
     <string name="settings_page_privacy">Configuració de privadesa</string>
     <string name="settings_page_developer">Configuració de desenvolupador</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Ves al període actual</string>
+    <string name="today_outfit_label_overnight">Nit</string>
+    <string name="today_chart_hide_model_forecasts">Amaga les prediccions dels models</string>
+    <string name="today_chart_reset_now_hide_models">Mostra ara i amaga les prediccions dels models</string>
+    <string name="today_chart_divergence_high">Les prediccions de la sensació tèrmica màxima difereixen en Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Les prediccions de la sensació tèrmica mínima difereixen en Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Els 7 dies següents</string>
+    <string name="today_forward_to_following_week">Mostra els 7 dies següents</string>
+    <string name="insight_lead_overnight">Durant la nit</string>
+    <string name="notification_channel_playback_name">Lliurament programat de ClothesCast</string>
+    <string name="notification_channel_playback_description">Es mostra mentre ClothesCast prepara i lliura la teva predicció programada. Requerit per Android perquè l\'execució pugui finalitzar en segon pla.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast programat</string>
+    <string name="notification_channel_scheduled_insight_description">Els teus resums meteorològics programats — al matí i al vespre — quan estiguin llestos.</string>
+    <string name="notification_delivering_title">S\'està lliurant el teu ClothesCast</string>
+    <string name="notification_playback_title">S\'està preparant el teu ClothesCast</string>
+    <string name="settings_calendars_title">Calendaris</string>
+    <string name="settings_calendars_description">Tria quins calendaris del teu dispositiu llegeix ClothesCast. Per defecte, segueix la visibilitat de cada calendari a la teva app de calendari; activa o desactiva qualsevol des d\'aquí.</string>
+    <string name="settings_calendars_none">No s\'ha trobat cap calendari en aquest dispositiu.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Altaveu</string>
+    <string name="settings_format_accessories_label">Accessoris</string>
+    <string name="settings_format_accessories_always">Sempre</string>
+    <string name="settings_format_accessories_never">Mai</string>
+    <string name="settings_holidays_calendar_source">Calendari: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">El model d\'IA d\'ECMWF — fiable fins a 15 dies, per la qual cosa sosté els gràfics de la segona setmana. Alguns gràfics detallats poden no mostrar-hi una línia.</string>
+    <string name="settings_forecasters_google_subtitle">Predicció meteorològica d\'IA de Google. Utilitza una clau d\'API de Google.</string>
+    <string name="settings_forecasters_google_key_header">Clau d\'API de Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Enganxa la teva clau d\'API de Google</string>
+    <string name="settings_forecasters_google_key_save">Desa la clau de Google</string>
+    <string name="settings_forecasters_google_key_replace">Substitueix la clau de Google</string>
+    <string name="settings_forecasters_google_key_clear">Esborra la clau de Google desada</string>
+    <string name="settings_forecasters_google_key_set">S\'ha configurat una clau d\'API de Google.</string>
+    <string name="settings_forecasters_google_key_unset">Afegeix una clau d\'API de Google per activar el predictor de Google. Enganxa la mateixa clau que la teva veu Gemini si el seu projecte de Google Cloud té l\'API de Weather activada, o utilitza\'n una de diferent.</string>
+    <string name="settings_forecasters_google_probe_checking">S\'està comprovant la predicció de Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Connectat. Google contribueix a la teva predicció.</string>
+    <string name="settings_forecasters_google_probe_failed">No s\'ha pogut accedir a la predicció de Google. Es deixarà fora fins que això se solucioni.</string>
+    <string name="settings_forecasters_google_probe_failed_http">No s\'ha pogut accedir a la predicció de Google (HTTP %1$d). Es deixarà fora fins que això se solucioni.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google ha rebutjat la teva clau. A Google Cloud, activa l\'API de Weather i la facturació per al projecte de la clau, i assegura\'t que la clau no estigui restringida de manera que l\'exclogui. Fins llavors, Google queda fora de la teva predicció.</string>
+    <string name="settings_forecasters_google_probe_retry">Torna a comprovar</string>
 </resources>

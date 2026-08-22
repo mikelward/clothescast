@@ -1229,4 +1229,46 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_page_smart_home">Okosotthon-beállítások</string>
     <string name="settings_page_privacy">Adatvédelmi beállítások</string>
     <string name="settings_page_developer">Fejlesztői beállítások</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Ugrás a jelenlegi időszakhoz</string>
+    <string name="today_outfit_label_overnight">Éjszaka</string>
+    <string name="today_chart_hide_model_forecasts">Modell-előrejelzések elrejtése</string>
+    <string name="today_chart_reset_now_hide_models">Megjelenítés most, és modell-előrejelzések elrejtése</string>
+    <string name="today_chart_divergence_high">A legmagasabb hőérzetre vonatkozó előrejelzések Δ%1$.1f%2$s eltéréssel térnek el (%3$s)</string>
+    <string name="today_chart_divergence_low">A legalacsonyabb hőérzetre vonatkozó előrejelzések Δ%1$.1f%2$s eltéréssel térnek el (%3$s)</string>
+    <string name="today_title_following_week">Következő 7 nap</string>
+    <string name="today_forward_to_following_week">A következő 7 nap megtekintése</string>
+    <string name="insight_lead_overnight">Éjszaka folyamán</string>
+    <string name="notification_channel_playback_name">Ütemezett ClothesCast-kézbesítés</string>
+    <string name="notification_channel_playback_description">Akkor jelenik meg, amikor a ClothesCast előkészíti és kézbesíti az ütemezett előrejelzést. Az Android megköveteli, hogy a futás a háttérben fejeződhessen be.</string>
+    <string name="notification_channel_scheduled_insight_name">Ütemezett ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Az ütemezett időjárás-összefoglalóid — reggel és este —, amint elkészülnek.</string>
+    <string name="notification_delivering_title">A ClothesCast kézbesítése folyamatban</string>
+    <string name="notification_playback_title">A ClothesCast előkészítése folyamatban</string>
+    <string name="settings_calendars_title">Naptárak</string>
+    <string name="settings_calendars_description">Válaszd ki, mely eszközkalendárokat olvassa a ClothesCast. Alapértelmezés szerint az egyes naptárak láthatóságát követi a naptáralkalmazásodban; itt bármelyiket be- vagy kikapcsolhatod.</string>
+    <string name="settings_calendars_none">Ezen az eszközön nem található naptár.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Hangszóró</string>
+    <string name="settings_format_accessories_label">Kiegészítők</string>
+    <string name="settings_format_accessories_always">Mindig</string>
+    <string name="settings_format_accessories_never">Soha</string>
+    <string name="settings_holidays_calendar_source">Naptár: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Az ECMWF mesterségesintelligencia-modellje — 15 napig megbízható, ezért ő hordozza a második hét diagramjait. Egyes részletes diagramok esetleg nem jelenítenek meg vonalat hozzá.</string>
+    <string name="settings_forecasters_google_subtitle">A Google mesterséges intelligenciás időjárás-előrejelzése. Google API-kulcsot használ.</string>
+    <string name="settings_forecasters_google_key_header">Google API-kulcs</string>
+    <string name="settings_forecasters_google_key_placeholder">Illeszd be a Google API-kulcsodat</string>
+    <string name="settings_forecasters_google_key_save">Google-kulcs mentése</string>
+    <string name="settings_forecasters_google_key_replace">Google-kulcs cseréje</string>
+    <string name="settings_forecasters_google_key_clear">Tárolt Google-kulcs törlése</string>
+    <string name="settings_forecasters_google_key_set">Be van állítva egy Google API-kulcs.</string>
+    <string name="settings_forecasters_google_key_unset">Adj hozzá egy Google API-kulcsot a Google előrejelző bekapcsolásához. Illeszd be ugyanazt a kulcsot, mint amit a Gemini hangodhoz használsz, ha annak Google Cloud-projektjében engedélyezve van a Weather API, vagy használj másik kulcsot.</string>
+    <string name="settings_forecasters_google_probe_checking">A Google előrejelzésének ellenőrzése…</string>
+    <string name="settings_forecasters_google_probe_ok">Kapcsolódva. A Google hozzájárul az előrejelzésedhez.</string>
+    <string name="settings_forecasters_google_probe_failed">A Google előrejelzését nem sikerült elérni. Kimarad, amíg ez nem oldódik meg.</string>
+    <string name="settings_forecasters_google_probe_failed_http">A Google előrejelzését nem sikerült elérni (HTTP %1$d). Kimarad, amíg ez nem oldódik meg.</string>
+    <string name="settings_forecasters_google_probe_forbidden">A Google elutasította a kulcsodat. A Google Cloudban engedélyezd a Weather API-t és a számlázást a kulcs projektjéhez, és győződj meg róla, hogy a kulcs nincs úgy korlátozva, hogy kizárja azt. Addig a Google kimarad az előrejelzésedből.</string>
+    <string name="settings_forecasters_google_probe_retry">Ellenőrzés újra</string>
 </resources>

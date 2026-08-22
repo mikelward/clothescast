@@ -1180,4 +1180,46 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_page_smart_home">Nutikodu seaded</string>
     <string name="settings_page_privacy">Privaatsuse seaded</string>
     <string name="settings_page_developer">Arendaja seaded</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Mine praegusesse perioodi</string>
+    <string name="today_outfit_label_overnight">Öösel</string>
+    <string name="today_chart_hide_model_forecasts">Peida mudeliennustused</string>
+    <string name="today_chart_reset_now_hide_models">Kuva praegu ja peida mudeliennustused</string>
+    <string name="today_chart_divergence_high">Kõrgeima tunnetusliku temperatuuri prognoosid erinevad Δ%1$.1f%2$s võrra (%3$s)</string>
+    <string name="today_chart_divergence_low">Madalaima tunnetusliku temperatuuri prognoosid erinevad Δ%1$.1f%2$s võrra (%3$s)</string>
+    <string name="today_title_following_week">Järgmised 7 päeva</string>
+    <string name="today_forward_to_following_week">Vaata järgmisi 7 päeva</string>
+    <string name="insight_lead_overnight">Öö jooksul</string>
+    <string name="notification_channel_playback_name">Ajastatud ClothesCasti edastamine</string>
+    <string name="notification_channel_playback_description">Kuvatakse, kui ClothesCast valmistab ette ja edastab sinu ajastatud prognoosi. Android nõuab seda, et töö saaks taustal lõpetada.</string>
+    <string name="notification_channel_scheduled_insight_name">Ajastatud ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Sinu ajastatud ilmakokkuvõtted — hommikul ja õhtul — kohe kui need on valmis.</string>
+    <string name="notification_delivering_title">Sinu ClothesCasti edastamine</string>
+    <string name="notification_playback_title">Sinu ClothesCasti ettevalmistamine</string>
+    <string name="settings_calendars_title">Kalendrid</string>
+    <string name="settings_calendars_description">Vali, milliseid oma seadme kalendreid ClothesCast loeb. Vaikimisi järgib see iga kalendri nähtavust sinu kalendrirakenduses; lülita siin ükskõik millist sisse või välja.</string>
+    <string name="settings_calendars_none">Sellest seadmest ei leitud ühtegi kalendrit.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Kõlar</string>
+    <string name="settings_format_accessories_label">Aksessuaarid</string>
+    <string name="settings_format_accessories_always">Alati</string>
+    <string name="settings_format_accessories_never">Mitte kunagi</string>
+    <string name="settings_holidays_calendar_source">Kalender: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF-i tehisintellektimudel — täpne kuni 15 päeva ette, seetõttu kannab see teise nädala diagramme. Mõned üksikasjalikud diagrammid ei pruugi selle jaoks joont kuvada.</string>
+    <string name="settings_forecasters_google_subtitle">Google\'i tehisintellekti ilmaprognoos. Kasutab Google\'i API-võtit.</string>
+    <string name="settings_forecasters_google_key_header">Google\'i API-võti</string>
+    <string name="settings_forecasters_google_key_placeholder">Kleebi oma Google\'i API-võti</string>
+    <string name="settings_forecasters_google_key_save">Salvesta Google\'i võti</string>
+    <string name="settings_forecasters_google_key_replace">Asenda Google\'i võti</string>
+    <string name="settings_forecasters_google_key_clear">Kustuta salvestatud Google\'i võti</string>
+    <string name="settings_forecasters_google_key_set">Google\'i API-võti on seadistatud.</string>
+    <string name="settings_forecasters_google_key_unset">Lisa Google\'i API-võti, et lülitada sisse Google\'i prognoosikoostaja. Kleebi sama võti, mida kasutad Gemini hääle jaoks, kui selle Google Cloud\'i projektis on Weather API lubatud, või kasuta teistsugust võtit.</string>
+    <string name="settings_forecasters_google_probe_checking">Google\'i prognoosi kontrollimine…</string>
+    <string name="settings_forecasters_google_probe_ok">Ühendatud. Google panustab sinu prognoosi.</string>
+    <string name="settings_forecasters_google_probe_failed">Google\'i prognoosi ei õnnestunud kätte saada. See jäetakse kõrvale, kuni probleem laheneb.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Google\'i prognoosi ei õnnestunud kätte saada (HTTP %1$d). See jäetakse kõrvale, kuni probleem laheneb.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google lükkas su võtme tagasi. Luba Google Cloud\'is Weather API ja arveldus võtme projekti jaoks ning veendu, et võti pole piiratud viisil, mis selle välistab. Kuni selleni jääb Google su prognoosist välja.</string>
+    <string name="settings_forecasters_google_probe_retry">Kontrolli uuesti</string>
 </resources>

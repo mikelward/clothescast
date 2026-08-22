@@ -1,9 +1,17 @@
-# Advisory scan of the workflows with zizmor (https://docs.zizmor.sh).
+# Scan of the workflows with zizmor (https://docs.zizmor.sh).
 #
-# Advisory MEANS advisory: nothing requires this check, on purpose. Running
-# it fetches zizmor from PyPI, and a registry outage must not stall the merge
-# gate. A red run here is a finding to read, not a gate — ported from
-# mikelward/codex-review, which runs the same scan on itself.
+# Required, not advisory -- reversing the posture this was ported with, by
+# the owner's decision: `zizmor` joins `lanes` and `codex` in the fleet's
+# standard required set (the ruleset half is still pending: until the
+# ruleset itself lists `zizmor`, a red scan does not yet hold merges),
+# piloted in mikelward/lanes and mikelward/ci-commit-artifact and rolled
+# out here. That is why there is no `paths:` filter: a workflow filtered
+# out by paths creates NO check run at all (unlike a skipped job, which
+# reports "skipped" and satisfies a ruleset), so a required `zizmor` plus
+# a path filter would leave any pull request not touching `.github/**`
+# waiting forever on a check nothing reports. The scan is a free
+# sub-minute job, so it simply runs on every pull request and every push
+# to main.
 #
 # The version is pinned because a new zizmor release adds audits, so an
 # unpinned run could turn red with no change in this repository. Bump it
@@ -13,16 +21,23 @@
 # Cost and reliability: PyPI is free, keyless, and unmetered, so this is
 # $0/month at any run volume. A cold pipx install-and-scan typically finishes
 # in well under a minute; the 5-minute timeout is headroom for a slow PyPI
-# resolve, not the expected case. The only new failure mode is a PyPI outage,
-# and it fails only this advisory job -- it cannot block a merge, since
-# nothing requires this check.
+# resolve, not the expected case. The accepted cost: fetching zizmor from
+# PyPI is the one network step (--offline covers the scan itself), and
+# once the check is required, a PyPI outage fails it and holds merges
+# until a re-run succeeds.
+#
+# `pull_request` lists its types explicitly because the default set lacks
+# `edited`: a retarget regenerates the merge ref against the new base while
+# the head -- and the green `zizmor` check already attached to it -- stays
+# put, so without `edited` the old target's scan would satisfy the new one
+# unexamined. Title and body edits re-run the scan too; redundant but
+# cheap, the same trade ci.yml makes for the lane jobs.
 name: zizmor
 on:
   push:
     branches: [main]
-    paths: ['.github/**']
   pull_request:
-    paths: ['.github/**']
+    types: [opened, synchronize, reopened, edited]
 permissions:
   contents: read
 jobs:

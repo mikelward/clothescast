@@ -258,6 +258,23 @@ Open work:
       decided" telemetry; revisit once the settings + refresh streams
       have answered the bigger questions.
 
+## Review and merge gates
+
+- [ ] **Add `zizmor` to the ruleset's required set** once it has reported on
+      a pull request here (`repo-rules mikelward/clothescast` — the
+      `mikelward/scripts` tool). **Preconditions first** (Codex flagged
+      both): the check needs a run on every head the ruleset can see, and
+      two flows push heads with `GITHUB_TOKEN`, whose events start no
+      workflows — (1) the snapshot job's `ci: regenerate UI snapshots`
+      push to same-repo PR branches (ci.yml's helper dispatches only
+      ci.yml today), and (2) any future token-authored automation PR. Give
+      zizmor.yml a `workflow_dispatch` trigger and dispatch it wherever
+      ci.yml is dispatched (the snapshot helper here; npm-update's
+      reusable workflow in that repository) before flipping the ruleset.
+- [ ] **Finish the gate → lanes check rename** once `lanes` has reported on
+      a `pull_request` run: flip the ruleset to require `lanes` instead of
+      `gate`, then delete the now-redundant `gate` job in a follow-up PR.
+
 ## Testing & quality
 
 - [x] **Robolectric tests** for the alarm + notification path. First

@@ -21,6 +21,10 @@ rules:
         # reference above does not cover it.
         "mikelward/codex-review/.github/workflows/check-consumer.yml": ref-pin
         "mikelward/gradle-update/.github/workflows/gradle-update.yml": ref-pin
+        # `@main` is likewise the release for the lane-classification
+        # engine ci.yml's classify/gate/lanes jobs invoke -- same
+        # repo-tracked-deliberately reasoning as codex-review above.
+        "mikelward/lanes": ref-pin
         # Same reasoning as gradle-update above: this repo tracks the
         # reusable workflow deliberately, there is no release step on its
         # side, and a pin would be a thing to bump here on every merge

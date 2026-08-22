@@ -277,22 +277,21 @@ future task; the incident narrative belongs in the commit message.
   guides, repo tooling, project meta — takes `internal:` (e.g. `internal:
   document the internal: changelog prefix`) and CI skips it the same way
   it skips `ci:` / `test:`. Note the path-based filter already drops
-  `*.md` (at any depth), `docs/`, and dotfile-only commits regardless of
-  prefix (PRIVACY.md is the exception — it's treated as non-docs so
-  privacy-policy updates still surface), so a pure-`AGENTS.md` change is
-  dropped either way — but still prefix it so the subject's intent is
-  explicit and never reads like a shippable bullet. Reach for `internal:`
-  especially when an internal-only change touches paths that *would*
-  otherwise ship a bullet.
+  `*.md` (at any depth, PRIVACY.md included — see the `docs:` bullet
+  below), `docs/`, and dotfile-only commits regardless of prefix, so a
+  pure-`AGENTS.md` change is dropped either way — but still prefix it so
+  the subject's intent is explicit and never reads like a shippable
+  bullet. Reach for `internal:` especially when an internal-only change
+  touches paths that *would* otherwise ship a bullet.
 - **Docs-only commits use a `docs:` subject prefix.** A commit touching
-  only `docs/`, `*.md` files (READMEs, setup guides — any depth), or
-  dotfiles takes `docs:` (e.g. `docs: fix stale Firebase Console nav`).
-  Prefix it even though the path filter already drops it from the
-  changelog — the prefix makes the intent explicit and keeps the subject
-  from reading like end-user copy (and the subject filter now skips
-  `docs:` directly, same as `ci:` / `test:` / `internal:`). Exception: a
-  PRIVACY.md-only change ships as a bullet (it's treated as non-docs), so
-  leave that one unprefixed.
+  only `docs/`, `*.md` files (READMEs, setup guides, PRIVACY.md — any
+  depth), or dotfiles takes `docs:` (e.g. `docs: fix stale Firebase
+  Console nav`). Prefix it even though the path filter already drops it
+  from the changelog — the prefix makes the intent explicit and keeps the
+  subject from reading like end-user copy (and the subject filter now
+  skips `docs:` directly, same as `ci:` / `test:` / `internal:`).
+  **PRIVACY.md is ordinary docs, not an exception** (see
+  `.github/lanes.conf` and `TODO.md`).
 - **Play caps `whatsnew-en-US` at 500 characters.** When the bullet list
   exceeds that, CI drops whole trailing bullets (oldest first stay) and
   appends `…`. Avoid lining up a long stack of small commits if any one

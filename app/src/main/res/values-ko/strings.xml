@@ -1388,4 +1388,46 @@ displayed label localizes.
     <string name="settings_page_smart_home">스마트 홈 설정</string>
     <string name="settings_page_privacy">개인정보 설정</string>
     <string name="settings_page_developer">개발자 설정</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">현재 기간으로 이동</string>
+    <string name="today_outfit_label_overnight">밤사이</string>
+    <string name="today_chart_hide_model_forecasts">모델 예보 숨기기</string>
+    <string name="today_chart_reset_now_hide_models">지금 표시하고 모델 예보 숨기기</string>
+    <string name="today_chart_divergence_high">체감 최고 기온 예보가 Δ%1$.1f%2$s 차이가 있습니다 (%3$s)</string>
+    <string name="today_chart_divergence_low">체감 최저 기온 예보가 Δ%1$.1f%2$s 차이가 있습니다 (%3$s)</string>
+    <string name="today_title_following_week">다음 7일</string>
+    <string name="today_forward_to_following_week">다음 7일 보기</string>
+    <string name="insight_lead_overnight">밤사이</string>
+    <string name="notification_channel_playback_name">예약된 ClothesCast 전달</string>
+    <string name="notification_channel_playback_description">ClothesCast가 예약된 예보를 준비하고 전달하는 동안 표시됩니다. 백그라운드에서 실행을 완료하려면 Android에서 요구합니다.</string>
+    <string name="notification_channel_scheduled_insight_name">예약된 ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">예약된 날씨 요약(아침과 저녁)이 준비되는 대로 전달됩니다.</string>
+    <string name="notification_delivering_title">ClothesCast 전달 중</string>
+    <string name="notification_playback_title">ClothesCast 준비 중</string>
+    <string name="settings_calendars_title">캘린더</string>
+    <string name="settings_calendars_description">ClothesCast가 읽을 기기의 캘린더를 선택하세요. 기본적으로 캘린더 앱에서의 각 캘린더 표시 여부를 따르며, 여기서 개별적으로 켜거나 끌 수 있습니다.</string>
+    <string name="settings_calendars_none">이 기기에서 캘린더를 찾을 수 없습니다.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">스피커</string>
+    <string name="settings_format_accessories_label">액세서리</string>
+    <string name="settings_format_accessories_always">항상</string>
+    <string name="settings_format_accessories_never">안 함</string>
+    <string name="settings_holidays_calendar_source">캘린더: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF의 AI 모델 — 15일까지 정확도가 높아 둘째 주 차트를 담당합니다. 일부 상세 차트에서는 이 모델의 선이 표시되지 않을 수 있습니다.</string>
+    <string name="settings_forecasters_google_subtitle">Google의 AI 날씨 예보. Google API 키를 사용합니다.</string>
+    <string name="settings_forecasters_google_key_header">Google API 키</string>
+    <string name="settings_forecasters_google_key_placeholder">Google API 키를 붙여넣으세요</string>
+    <string name="settings_forecasters_google_key_save">Google 키 저장</string>
+    <string name="settings_forecasters_google_key_replace">Google 키 교체</string>
+    <string name="settings_forecasters_google_key_clear">저장된 Google 키 지우기</string>
+    <string name="settings_forecasters_google_key_set">Google API 키가 설정되어 있습니다.</string>
+    <string name="settings_forecasters_google_key_unset">Google 예보기를 켜려면 Google API 키를 추가하세요. Gemini 음성의 Google Cloud 프로젝트에서 Weather API가 사용 설정되어 있다면 같은 키를 붙여넣거나 다른 키를 사용하세요.</string>
+    <string name="settings_forecasters_google_probe_checking">Google의 예보를 확인하는 중…</string>
+    <string name="settings_forecasters_google_probe_ok">연결됨. Google이 예보에 기여하고 있습니다.</string>
+    <string name="settings_forecasters_google_probe_failed">Google 예보에 연결할 수 없습니다. 해결될 때까지 제외됩니다.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Google 예보에 연결할 수 없습니다(HTTP %1$d). 해결될 때까지 제외됩니다.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google가 키를 거부했습니다. Google Cloud에서 키의 프로젝트에 대해 Weather API와 결제를 사용 설정하고, 키가 이를 제외하도록 제한되어 있지 않은지 확인하세요. 그때까지 Google은 예보에서 제외됩니다.</string>
+    <string name="settings_forecasters_google_probe_retry">다시 확인</string>
 </resources>

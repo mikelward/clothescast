@@ -1092,4 +1092,46 @@
     <string name="holiday_banner_whit_monday">Gëzuar të Hënën e Rrëshajëve</string>
     <string name="holiday_name_corpus_christi">Corpus Christi</string>
     <string name="holiday_banner_corpus_christi">Gëzuar Festën e Trupit të Krishtit</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Shko te periudha aktuale</string>
+    <string name="today_outfit_label_overnight">Gjatë natës</string>
+    <string name="today_chart_hide_model_forecasts">Fshih parashikimet e modeleve</string>
+    <string name="today_chart_reset_now_hide_models">Shfaq tani dhe fshih parashikimet e modeleve</string>
+    <string name="today_chart_divergence_high">Parashikimet për temperaturën më të lartë të ndjerë ndryshojnë me Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Parashikimet për temperaturën më të ulët të ndjerë ndryshojnë me Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">7 ditët e ardhshme</string>
+    <string name="today_forward_to_following_week">Shiko 7 ditët e ardhshme</string>
+    <string name="insight_lead_overnight">Gjatë natës</string>
+    <string name="notification_channel_playback_name">Dërgesa e planifikuar e ClothesCast</string>
+    <string name="notification_channel_playback_description">Shfaqet ndërsa ClothesCast përgatit dhe dërgon parashikimin tuaj të planifikuar. Kërkohet nga Android që ekzekutimi të mund të përfundojë në sfond.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast i planifikuar</string>
+    <string name="notification_channel_scheduled_insight_description">Përmbledhjet tuaja të planifikuara të motit — mëngjes dhe mbrëmje — sapo të jenë gati.</string>
+    <string name="notification_delivering_title">Po dërgohet ClothesCast-i juaj</string>
+    <string name="notification_playback_title">Po përgatitet ClothesCast-i juaj</string>
+    <string name="settings_calendars_title">Kalendarët</string>
+    <string name="settings_calendars_description">Zgjidhni cilat nga kalendarët e pajisjes suaj lexon ClothesCast. Si parazgjedhje, ndjek dukshmërinë e çdo kalendari në aplikacionin tuaj të kalendarit; aktivizoni ose çaktivizoni çdo njërin këtu.</string>
+    <string name="settings_calendars_none">Nuk u gjet asnjë kalendar në këtë pajisje.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Altoparlanti</string>
+    <string name="settings_format_accessories_label">Aksesorët</string>
+    <string name="settings_format_accessories_always">Gjithmonë</string>
+    <string name="settings_format_accessories_never">Kurrë</string>
+    <string name="settings_holidays_calendar_source">Kalendari: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Modeli AI i ECMWF — i saktë deri në 15 ditë, ndaj mban grafikët e javës së dytë. Disa grafikë të detajuar mund të mos shfaqin një vijë për të.</string>
+    <string name="settings_forecasters_google_subtitle">Parashikimi i motit me AI i Google. Përdor një çelës API të Google.</string>
+    <string name="settings_forecasters_google_key_header">Çelësi API i Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Ngjit çelësin tënd API të Google</string>
+    <string name="settings_forecasters_google_key_save">Ruaj çelësin e Google</string>
+    <string name="settings_forecasters_google_key_replace">Zëvendëso çelësin e Google</string>
+    <string name="settings_forecasters_google_key_clear">Pastro çelësin e ruajtur të Google</string>
+    <string name="settings_forecasters_google_key_set">Është konfiguruar një çelës API i Google.</string>
+    <string name="settings_forecasters_google_key_unset">Shto një çelës API të Google për të aktivizuar parashikuesin e Google. Ngjit të njëjtin çelës si zëri yt Gemini nëse projekti i tij Google Cloud ka Weather API të aktivizuar, ose përdor një çelës tjetër.</string>
+    <string name="settings_forecasters_google_probe_checking">Po kontrollohet parashikimi i Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Lidhur. Google po kontribuon në parashikimin tuaj.</string>
+    <string name="settings_forecasters_google_probe_failed">Nuk u arrit parashikimi i Google. Do të përjashtohet derisa kjo të zgjidhet.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Nuk u arrit parashikimi i Google (HTTP %1$d). Do të përjashtohet derisa kjo të zgjidhet.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google refuzoi çelësin tuaj. Në Google Cloud, aktivizoni Weather API dhe faturimin për projektin e çelësit, dhe sigurohuni që çelësi të mos jetë i kufizuar në mënyrë që ta përjashtojë atë. Deri atëherë, Google mbetet jashtë parashikimit tuaj.</string>
+    <string name="settings_forecasters_google_probe_retry">Kontrollo përsëri</string>
 </resources>

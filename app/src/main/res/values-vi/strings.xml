@@ -1297,4 +1297,46 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_page_smart_home">Cài đặt Smart Home</string>
     <string name="settings_page_privacy">Cài đặt quyền riêng tư</string>
     <string name="settings_page_developer">Cài đặt nhà phát triển</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Đến giai đoạn hiện tại</string>
+    <string name="today_outfit_label_overnight">Qua đêm</string>
+    <string name="today_chart_hide_model_forecasts">Ẩn dự báo mô hình</string>
+    <string name="today_chart_reset_now_hide_models">Hiển thị ngay và ẩn dự báo mô hình</string>
+    <string name="today_chart_divergence_high">Các dự báo về cảm nhận nhiệt cao nhất chênh lệch Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Các dự báo về cảm nhận nhiệt thấp nhất chênh lệch Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">7 ngày tiếp theo</string>
+    <string name="today_forward_to_following_week">Xem 7 ngày tiếp theo</string>
+    <string name="insight_lead_overnight">Trong đêm</string>
+    <string name="notification_channel_playback_name">Việc gửi ClothesCast theo lịch</string>
+    <string name="notification_channel_playback_description">Hiển thị trong khi ClothesCast chuẩn bị và gửi dự báo theo lịch của bạn. Android yêu cầu điều này để quá trình có thể hoàn tất trong nền.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast theo lịch</string>
+    <string name="notification_channel_scheduled_insight_description">Các bản tóm tắt thời tiết theo lịch của bạn — sáng và tối — khi chúng đã sẵn sàng.</string>
+    <string name="notification_delivering_title">Đang gửi ClothesCast của bạn</string>
+    <string name="notification_playback_title">Đang chuẩn bị ClothesCast của bạn</string>
+    <string name="settings_calendars_title">Lịch</string>
+    <string name="settings_calendars_description">Chọn lịch nào trên thiết bị của bạn mà ClothesCast sẽ đọc. Theo mặc định, ứng dụng sẽ tuân theo chế độ hiển thị của từng lịch trong ứng dụng lịch của bạn; bạn có thể bật hoặc tắt bất kỳ lịch nào tại đây.</string>
+    <string name="settings_calendars_none">Không tìm thấy lịch nào trên thiết bị này.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Loa</string>
+    <string name="settings_format_accessories_label">Phụ kiện</string>
+    <string name="settings_format_accessories_always">Luôn luôn</string>
+    <string name="settings_format_accessories_never">Không bao giờ</string>
+    <string name="settings_holidays_calendar_source">Lịch: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Mô hình AI của ECMWF — chính xác trong 15 ngày, nên đảm nhận các biểu đồ tuần thứ hai. Một số biểu đồ chi tiết có thể không hiển thị đường của mô hình này.</string>
+    <string name="settings_forecasters_google_subtitle">Dự báo thời tiết AI của Google. Sử dụng khóa API Google.</string>
+    <string name="settings_forecasters_google_key_header">Khóa API Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Dán khóa API Google của bạn</string>
+    <string name="settings_forecasters_google_key_save">Lưu khóa Google</string>
+    <string name="settings_forecasters_google_key_replace">Thay thế khóa Google</string>
+    <string name="settings_forecasters_google_key_clear">Xóa khóa Google đã lưu</string>
+    <string name="settings_forecasters_google_key_set">Đã định cấu hình khóa API Google.</string>
+    <string name="settings_forecasters_google_key_unset">Thêm khóa API Google để bật công cụ dự báo Google. Dán cùng khóa với giọng nói Gemini của bạn nếu dự án Google Cloud của giọng nói đó đã bật Weather API, hoặc dùng khóa khác.</string>
+    <string name="settings_forecasters_google_probe_checking">Đang kiểm tra dự báo của Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Đã kết nối. Google đang góp phần vào dự báo của bạn.</string>
+    <string name="settings_forecasters_google_probe_failed">Không thể truy cập dự báo của Google. Nó sẽ bị bỏ qua cho đến khi vấn đề này được khắc phục.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Không thể truy cập dự báo của Google (HTTP %1$d). Nó sẽ bị bỏ qua cho đến khi vấn đề này được khắc phục.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google đã từ chối khóa của bạn. Trong Google Cloud, hãy bật Weather API và tính năng thanh toán cho dự án của khóa đó, đồng thời đảm bảo khóa không bị giới hạn để loại trừ API này. Cho đến lúc đó, Google sẽ bị loại khỏi dự báo của bạn.</string>
+    <string name="settings_forecasters_google_probe_retry">Kiểm tra lại</string>
 </resources>

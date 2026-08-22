@@ -287,6 +287,25 @@ Open work:
       disclosure should. Needs a real distinction between "the policy text
       changed" and "what the policy describes changed," which the current
       mechanism can't make on its own.
+- [ ] **Two lint findings are suppressed with a `TODO`/`@Suppress` rather
+      than fixed**, because both sit on locale/Cast-routing surfaces that
+      took several iterations to get right and shouldn't be reworked blind
+      in a dependency-bump-adjacent PR:
+      - `RestrictedApi` on `CastDeviceClass.kt`'s `classifyRoute` —
+        `MediaRouter.RouteInfo.isGroup` is `@RestrictTo(LIBRARY)` inside
+        `androidx.mediarouter`, so lint flags calling it from app code even
+        though it's a public getter with no in-library alternative for this
+        classification. Worth revisiting if a future `mediarouter` release
+        either lifts the restriction or exposes an intended replacement.
+      - `NonObservableLocale` on `TodayPreviews.kt`'s
+        `FollowingWeekChartDeckPreview` — reads `Locale.getDefault()`
+        directly instead of through Compose's observable
+        `LocalConfiguration`/`LocalLocale`. Low-risk as-is (a Roborazzi/IDE
+        preview rendered once, no live locale switching to miss), but the
+        proper fix is switching to the observable API, which should happen
+        alongside a real audit of how the app's other locale-sensitive
+        formatting handles runtime locale changes — not as a one-line
+        swap here.
 - [ ] **Add `zizmor` to the ruleset's required set** once it has reported on
       a pull request here (`repo-rules mikelward/clothescast` — the
       `mikelward/scripts` tool). **Preconditions first** (Codex flagged

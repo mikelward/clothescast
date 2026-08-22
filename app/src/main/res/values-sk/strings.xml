@@ -1260,4 +1260,46 @@ What is NOT overridden, by design:
     <string name="settings_page_smart_home">Nastavenia inteligentnej domácnosti</string>
     <string name="settings_page_privacy">Nastavenia súkromia</string>
     <string name="settings_page_developer">Nastavenia vývojára</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Prejsť na aktuálne obdobie</string>
+    <string name="today_outfit_label_overnight">Noc</string>
+    <string name="today_chart_hide_model_forecasts">Skryť predpovede modelov</string>
+    <string name="today_chart_reset_now_hide_models">Zobraziť teraz a skryť predpovede modelov</string>
+    <string name="today_chart_divergence_high">Predpovede najvyššej pocitovej teploty sa líšia o Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Predpovede najnižšej pocitovej teploty sa líšia o Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Nasledujúcich 7 dní</string>
+    <string name="today_forward_to_following_week">Zobraziť nasledujúcich 7 dní</string>
+    <string name="insight_lead_overnight">Počas noci</string>
+    <string name="notification_channel_playback_name">Naplánované doručenie ClothesCast</string>
+    <string name="notification_channel_playback_description">Zobrazuje sa, keď ClothesCast pripravuje a doručuje vašu naplánovanú predpoveď. Vyžaduje to systém Android, aby mohol beh dokončiť na pozadí.</string>
+    <string name="notification_channel_scheduled_insight_name">Naplánovaný ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Vaše naplánované súhrny počasia — ráno a večer — hneď ako budú pripravené.</string>
+    <string name="notification_delivering_title">Doručovanie vášho ClothesCast</string>
+    <string name="notification_playback_title">Príprava vášho ClothesCast</string>
+    <string name="settings_calendars_title">Kalendáre</string>
+    <string name="settings_calendars_description">Vyberte, ktoré kalendáre vášho zariadenia ClothesCast číta. V predvolenom nastavení sa riadi viditeľnosťou jednotlivých kalendárov v aplikácii Kalendár; tu ich môžete jednotlivo zapnúť alebo vypnúť.</string>
+    <string name="settings_calendars_none">Na tomto zariadení sa nenašli žiadne kalendáre.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Reproduktor</string>
+    <string name="settings_format_accessories_label">Doplnky</string>
+    <string name="settings_format_accessories_always">Vždy</string>
+    <string name="settings_format_accessories_never">Nikdy</string>
+    <string name="settings_holidays_calendar_source">Kalendár: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">AI model spoločnosti ECMWF — spoľahlivý až na 15 dní, preto nesie grafy druhého týždňa. Niektoré podrobné grafy preň nemusia zobrazovať čiaru.</string>
+    <string name="settings_forecasters_google_subtitle">Predpoveď počasia AI od Google. Používa kľúč API Google.</string>
+    <string name="settings_forecasters_google_key_header">Kľúč API Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Vložte svoj kľúč API Google</string>
+    <string name="settings_forecasters_google_key_save">Uložiť kľúč Google</string>
+    <string name="settings_forecasters_google_key_replace">Nahradiť kľúč Google</string>
+    <string name="settings_forecasters_google_key_clear">Vymazať uložený kľúč Google</string>
+    <string name="settings_forecasters_google_key_set">Je nakonfigurovaný kľúč API Google.</string>
+    <string name="settings_forecasters_google_key_unset">Pridajte kľúč API Google a zapnite tak predpovedný model Google. Vložte rovnaký kľúč ako váš hlas Gemini, ak má jeho projekt Google Cloud povolené Weather API, alebo použite iný kľúč.</string>
+    <string name="settings_forecasters_google_probe_checking">Kontroluje sa predpoveď Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Pripojené. Google prispieva k vašej predpovedi.</string>
+    <string name="settings_forecasters_google_probe_failed">Predpoveď Google sa nepodarilo získať. Bude vynechaná, kým sa to nevyrieši.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Predpoveď Google sa nepodarilo získať (HTTP %1$d). Bude vynechaná, kým sa to nevyrieši.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google odmietol váš kľúč. V službe Google Cloud povoľte Weather API a fakturáciu pre projekt kľúča a uistite sa, že kľúč nie je obmedzený tak, aby ho vylučoval. Dovtedy bude Google z vašej predpovede vynechaný.</string>
+    <string name="settings_forecasters_google_probe_retry">Skontrolovať znova</string>
 </resources>

@@ -1236,4 +1236,46 @@ they work correctly in both the single-band and range templates.
     <string name="settings_page_smart_home">إعدادات المنزل الذكي</string>
     <string name="settings_page_privacy">إعدادات الخصوصية</string>
     <string name="settings_page_developer">إعدادات المطور</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">الانتقال إلى الفترة الحالية</string>
+    <string name="today_outfit_label_overnight">طوال الليل</string>
+    <string name="today_chart_hide_model_forecasts">إخفاء تنبؤات النماذج</string>
+    <string name="today_chart_reset_now_hide_models">عرض الآن وإخفاء تنبؤات النماذج</string>
+    <string name="today_chart_divergence_high">تختلف تنبؤات أعلى درجة حرارة محسوسة بمقدار Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">تختلف تنبؤات أدنى درجة حرارة محسوسة بمقدار Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">الأيام السبعة التالية</string>
+    <string name="today_forward_to_following_week">عرض الأيام السبعة التالية</string>
+    <string name="insight_lead_overnight">خلال الليل</string>
+    <string name="notification_channel_playback_name">تسليم ClothesCast المجدول</string>
+    <string name="notification_channel_playback_description">يظهر أثناء إعداد ClothesCast وتسليم توقعاتك المجدولة. مطلوب من قِبل Android حتى تتمكن العملية من الانتهاء في الخلفية.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast المجدول</string>
+    <string name="notification_channel_scheduled_insight_description">ملخصات الطقس المجدولة الخاصة بك — صباحًا ومساءً — عند جاهزيتها.</string>
+    <string name="notification_delivering_title">جارٍ تسليم ClothesCast الخاص بك</string>
+    <string name="notification_playback_title">جارٍ إعداد ClothesCast الخاص بك</string>
+    <string name="settings_calendars_title">التقويمات</string>
+    <string name="settings_calendars_description">اختر أي تقويمات جهازك يقرأها ClothesCast. بشكل افتراضي، يتبع رؤية كل تقويم في تطبيق التقويم الخاص بك؛ يمكنك تفعيل أو إلغاء تفعيل أي منها هنا.</string>
+    <string name="settings_calendars_none">لم يتم العثور على تقويمات في هذا الجهاز.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">مكبر الصوت</string>
+    <string name="settings_format_accessories_label">الإكسسوارات</string>
+    <string name="settings_format_accessories_always">دائمًا</string>
+    <string name="settings_format_accessories_never">أبدًا</string>
+    <string name="settings_holidays_calendar_source">التقويم: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">نموذج الذكاء الاصطناعي من ECMWF — دقيق حتى 15 يومًا، لذا يتولى رسوم الأسبوع الثاني البيانية. قد لا تُظهر بعض الرسوم التفصيلية خطًا له.</string>
+    <string name="settings_forecasters_google_subtitle">توقعات الطقس بالذكاء الاصطناعي من Google. يستخدم مفتاح Google API.</string>
+    <string name="settings_forecasters_google_key_header">مفتاح Google API</string>
+    <string name="settings_forecasters_google_key_placeholder">الصق مفتاح Google API الخاص بك</string>
+    <string name="settings_forecasters_google_key_save">حفظ مفتاح Google</string>
+    <string name="settings_forecasters_google_key_replace">استبدال مفتاح Google</string>
+    <string name="settings_forecasters_google_key_clear">مسح مفتاح Google المخزَّن</string>
+    <string name="settings_forecasters_google_key_set">تم تكوين مفتاح Google API.</string>
+    <string name="settings_forecasters_google_key_unset">أضف مفتاح Google API لتفعيل مُنبئ Google. الصق نفس مفتاح صوت Gemini الخاص بك إذا كان مشروع Google Cloud الخاص به يحتوي على Weather API مُفعَّل، أو استخدم مفتاحًا مختلفًا.</string>
+    <string name="settings_forecasters_google_probe_checking">جارٍ التحقق من توقعات Google…</string>
+    <string name="settings_forecasters_google_probe_ok">تم الاتصال. يساهم Google في توقعاتك.</string>
+    <string name="settings_forecasters_google_probe_failed">تعذّر الوصول إلى توقعات Google. سيتم استبعادها إلى أن يُحل هذا.</string>
+    <string name="settings_forecasters_google_probe_failed_http">تعذّر الوصول إلى توقعات Google (HTTP %1$d). سيتم استبعادها إلى أن يُحل هذا.</string>
+    <string name="settings_forecasters_google_probe_forbidden">رفض Google مفتاحك. في Google Cloud، فعِّل Weather API والفوترة لمشروع المفتاح، وتأكد من أن المفتاح غير مقيَّد بحيث يستبعده. حتى ذلك الحين، سيبقى Google مستبعدًا من توقعاتك.</string>
+    <string name="settings_forecasters_google_probe_retry">التحقق مرة أخرى</string>
 </resources>

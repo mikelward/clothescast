@@ -1236,4 +1236,46 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_page_smart_home">การตั้งค่า Smart Home</string>
     <string name="settings_page_privacy">การตั้งค่าความเป็นส่วนตัว</string>
     <string name="settings_page_developer">การตั้งค่านักพัฒนา</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">ไปที่ช่วงเวลาปัจจุบัน</string>
+    <string name="today_outfit_label_overnight">ช่วงกลางคืน</string>
+    <string name="today_chart_hide_model_forecasts">ซ่อนการพยากรณ์แบบจำลอง</string>
+    <string name="today_chart_reset_now_hide_models">แสดงตอนนี้และซ่อนการพยากรณ์แบบจำลอง</string>
+    <string name="today_chart_divergence_high">การพยากรณ์อุณหภูมิที่รู้สึกได้สูงสุดต่างกัน Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">การพยากรณ์อุณหภูมิที่รู้สึกได้ต่ำสุดต่างกัน Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">7 วันถัดไป</string>
+    <string name="today_forward_to_following_week">ดู 7 วันถัดไป</string>
+    <string name="insight_lead_overnight">ในช่วงกลางคืน</string>
+    <string name="notification_channel_playback_name">การส่ง ClothesCast ตามกำหนดเวลา</string>
+    <string name="notification_channel_playback_description">แสดงขณะที่ ClothesCast กำลังเตรียมและส่งการพยากรณ์ตามกำหนดเวลาของคุณ Android กำหนดให้ต้องแสดง เพื่อให้การทำงานเสร็จสิ้นในเบื้องหลังได้</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast ตามกำหนดเวลา</string>
+    <string name="notification_channel_scheduled_insight_description">สรุปสภาพอากาศตามกำหนดเวลาของคุณ — เช้าและเย็น — เมื่อพร้อม</string>
+    <string name="notification_delivering_title">กำลังส่ง ClothesCast ของคุณ</string>
+    <string name="notification_playback_title">กำลังเตรียม ClothesCast ของคุณ</string>
+    <string name="settings_calendars_title">ปฏิทิน</string>
+    <string name="settings_calendars_description">เลือกว่า ClothesCast จะอ่านปฏิทินใดในอุปกรณ์ของคุณ ตามค่าเริ่มต้นจะเป็นไปตามการมองเห็นของแต่ละปฏิทินในแอปปฏิทินของคุณ สามารถเปิดหรือปิดแต่ละรายการได้ที่นี่</string>
+    <string name="settings_calendars_none">ไม่พบปฏิทินในอุปกรณ์นี้</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">ลำโพง</string>
+    <string name="settings_format_accessories_label">เครื่องประดับ</string>
+    <string name="settings_format_accessories_always">เสมอ</string>
+    <string name="settings_format_accessories_never">ไม่เลย</string>
+    <string name="settings_holidays_calendar_source">ปฏิทิน: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">โมเดล AI ของ ECMWF — แม่นยำได้ถึง 15 วัน จึงเป็นตัวรับผิดชอบกราฟของสัปดาห์ที่สอง กราฟรายละเอียดบางรายการอาจไม่แสดงเส้นของโมเดลนี้</string>
+    <string name="settings_forecasters_google_subtitle">การพยากรณ์อากาศ AI ของ Google ใช้คีย์ Google API</string>
+    <string name="settings_forecasters_google_key_header">คีย์ Google API</string>
+    <string name="settings_forecasters_google_key_placeholder">วางคีย์ Google API ของคุณ</string>
+    <string name="settings_forecasters_google_key_save">บันทึกคีย์ Google</string>
+    <string name="settings_forecasters_google_key_replace">แทนที่คีย์ Google</string>
+    <string name="settings_forecasters_google_key_clear">ล้างคีย์ Google ที่บันทึกไว้</string>
+    <string name="settings_forecasters_google_key_set">มีการกำหนดค่าคีย์ Google API แล้ว</string>
+    <string name="settings_forecasters_google_key_unset">เพิ่มคีย์ Google API เพื่อเปิดใช้งานตัวพยากรณ์ของ Google วางคีย์เดียวกับที่ใช้กับเสียง Gemini ของคุณหากโปรเจ็กต์ Google Cloud ของเสียงนั้นเปิดใช้งาน Weather API ไว้ หรือใช้คีย์อื่น</string>
+    <string name="settings_forecasters_google_probe_checking">กำลังตรวจสอบการพยากรณ์ของ Google…</string>
+    <string name="settings_forecasters_google_probe_ok">เชื่อมต่อแล้ว Google กำลังช่วยเสริมการพยากรณ์ของคุณ</string>
+    <string name="settings_forecasters_google_probe_failed">ไม่สามารถเข้าถึงการพยากรณ์ของ Google ได้ จะถูกงดใช้จนกว่าปัญหาจะได้รับการแก้ไข</string>
+    <string name="settings_forecasters_google_probe_failed_http">ไม่สามารถเข้าถึงการพยากรณ์ของ Google ได้ (HTTP %1$d) จะถูกงดใช้จนกว่าปัญหาจะได้รับการแก้ไข</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google ปฏิเสธคีย์ของคุณ ใน Google Cloud ให้เปิดใช้งาน Weather API และการเรียกเก็บเงินสำหรับโปรเจ็กต์ของคีย์นั้น และตรวจสอบว่าคีย์ไม่ได้ถูกจำกัดจนกีดกัน API นี้ออกไป จนกว่าจะแก้ไข Google จะไม่ถูกนับรวมในการพยากรณ์ของคุณ</string>
+    <string name="settings_forecasters_google_probe_retry">ตรวจสอบอีกครั้ง</string>
 </resources>

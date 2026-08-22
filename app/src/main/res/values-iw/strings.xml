@@ -1231,4 +1231,46 @@ standard in Israeli digital communication.
     <string name="settings_page_smart_home">הגדרות בית חכם</string>
     <string name="settings_page_privacy">הגדרות פרטיות</string>
     <string name="settings_page_developer">הגדרות מפתח</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">מעבר לתקופה הנוכחית</string>
+    <string name="today_outfit_label_overnight">לילה</string>
+    <string name="today_chart_hide_model_forecasts">הסתר תחזיות מודלים</string>
+    <string name="today_chart_reset_now_hide_models">הצג עכשיו והסתר תחזיות מודלים</string>
+    <string name="today_chart_divergence_high">התחזיות לתחושת החום המרבית נבדלות ב-Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">התחזיות לתחושת החום המזערית נבדלות ב-Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">7 הימים הבאים</string>
+    <string name="today_forward_to_following_week">הצג את 7 הימים הבאים</string>
+    <string name="insight_lead_overnight">במהלך הלילה</string>
+    <string name="notification_channel_playback_name">מסירת ClothesCast מתוזמנת</string>
+    <string name="notification_channel_playback_description">מוצג בזמן ש-ClothesCast מכין ומספק את התחזית המתוזמנת שלך. נדרש על ידי Android כדי שהריצה תוכל להסתיים ברקע.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast מתוזמן</string>
+    <string name="notification_channel_scheduled_insight_description">סיכומי מזג האוויר המתוזמנים שלך — בוקר וערב — כשהם מוכנים.</string>
+    <string name="notification_delivering_title">מספק את ClothesCast שלך</string>
+    <string name="notification_playback_title">מכין את ClothesCast שלך</string>
+    <string name="settings_calendars_title">יומנים</string>
+    <string name="settings_calendars_description">בחר אילו יומנים במכשיר שלך ClothesCast קורא. כברירת מחדל, הוא עוקב אחר הנראות של כל יומן באפליקציית היומן שלך; הפעל או כבה כל אחד כאן.</string>
+    <string name="settings_calendars_none">לא נמצאו יומנים במכשיר זה.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">רמקול</string>
+    <string name="settings_format_accessories_label">אביזרים</string>
+    <string name="settings_format_accessories_always">תמיד</string>
+    <string name="settings_format_accessories_never">אף פעם</string>
+    <string name="settings_holidays_calendar_source">יומן: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">מודל הבינה המלאכותית של ECMWF — אמין עד 15 ימים קדימה, ולכן הוא נושא את התרשימים של השבוע השני. חלק מהתרשימים המפורטים עשויים שלא להציג עבורו קו.</string>
+    <string name="settings_forecasters_google_subtitle">תחזית מזג האוויר של Google מבוססת בינה מלאכותית. משתמשת במפתח Google API.</string>
+    <string name="settings_forecasters_google_key_header">מפתח Google API</string>
+    <string name="settings_forecasters_google_key_placeholder">הדבק את מפתח Google API שלך</string>
+    <string name="settings_forecasters_google_key_save">שמור מפתח Google</string>
+    <string name="settings_forecasters_google_key_replace">החלף מפתח Google</string>
+    <string name="settings_forecasters_google_key_clear">נקה את מפתח Google השמור</string>
+    <string name="settings_forecasters_google_key_set">מפתח Google API הוגדר.</string>
+    <string name="settings_forecasters_google_key_unset">הוסף מפתח Google API כדי להפעיל את מנבא Google. הדבק את אותו מפתח כמו קול Gemini שלך אם בפרויקט Google Cloud שלו מופעל Weather API, או השתמש במפתח אחר.</string>
+    <string name="settings_forecasters_google_probe_checking">בודק את התחזית של Google…</string>
+    <string name="settings_forecasters_google_probe_ok">מחובר. Google תורם לתחזית שלך.</string>
+    <string name="settings_forecasters_google_probe_failed">לא ניתן היה להגיע לתחזית של Google. היא תושמט עד שהבעיה תיפתר.</string>
+    <string name="settings_forecasters_google_probe_failed_http">לא ניתן היה להגיע לתחזית של Google (HTTP %1$d). היא תושמט עד שהבעיה תיפתר.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google דחה את המפתח שלך. ב-Google Cloud, הפעל את Weather API ואת החיוב עבור הפרויקט של המפתח, וודא שהמפתח אינו מוגבל באופן שמחריג אותו. עד אז, Google יישאר מחוץ לתחזית שלך.</string>
+    <string name="settings_forecasters_google_probe_retry">בדוק שוב</string>
 </resources>

@@ -1349,4 +1349,46 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_page_smart_home">Impostazioni Smart Home</string>
     <string name="settings_page_privacy">Impostazioni privacy</string>
     <string name="settings_page_developer">Impostazioni sviluppatore</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Vai al periodo attuale</string>
+    <string name="today_outfit_label_overnight">Notte</string>
+    <string name="today_chart_hide_model_forecasts">Nascondi previsioni dei modelli</string>
+    <string name="today_chart_reset_now_hide_models">Mostra ora e nascondi previsioni dei modelli</string>
+    <string name="today_chart_divergence_high">Le previsioni sulla percepita massima differiscono di Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Le previsioni sulla percepita minima differiscono di Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Prossimi 7 giorni</string>
+    <string name="today_forward_to_following_week">Vedi i prossimi 7 giorni</string>
+    <string name="insight_lead_overnight">Durante la notte</string>
+    <string name="notification_channel_playback_name">Consegna programmata di ClothesCast</string>
+    <string name="notification_channel_playback_description">Mostrata mentre ClothesCast prepara e consegna la tua previsione programmata. Richiesta da Android affinché l\'esecuzione possa terminare in background.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast programmato</string>
+    <string name="notification_channel_scheduled_insight_description">I tuoi riepiloghi meteo programmati — al mattino e alla sera — non appena sono pronti.</string>
+    <string name="notification_delivering_title">Consegna del tuo ClothesCast in corso</string>
+    <string name="notification_playback_title">Preparazione del tuo ClothesCast in corso</string>
+    <string name="settings_calendars_title">Calendari</string>
+    <string name="settings_calendars_description">Scegli quali calendari del tuo dispositivo legge ClothesCast. Per impostazione predefinita segue la visibilità di ciascun calendario nella tua app calendario; attivali o disattivali qui.</string>
+    <string name="settings_calendars_none">Nessun calendario trovato su questo dispositivo.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Altoparlante</string>
+    <string name="settings_format_accessories_label">Accessori</string>
+    <string name="settings_format_accessories_always">Sempre</string>
+    <string name="settings_format_accessories_never">Mai</string>
+    <string name="settings_holidays_calendar_source">Calendario: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Il modello IA di ECMWF — affidabile fino a 15 giorni, quindi è quello che sostiene i grafici della seconda settimana. Alcuni grafici di dettaglio potrebbero non mostrare una linea per esso.</string>
+    <string name="settings_forecasters_google_subtitle">Previsione meteo IA di Google. Usa una chiave API di Google.</string>
+    <string name="settings_forecasters_google_key_header">Chiave API di Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Incolla la tua chiave API di Google</string>
+    <string name="settings_forecasters_google_key_save">Salva chiave Google</string>
+    <string name="settings_forecasters_google_key_replace">Sostituisci chiave Google</string>
+    <string name="settings_forecasters_google_key_clear">Cancella la chiave Google salvata</string>
+    <string name="settings_forecasters_google_key_set">È configurata una chiave API di Google.</string>
+    <string name="settings_forecasters_google_key_unset">Aggiungi una chiave API di Google per attivare il previsore Google. Incolla la stessa chiave della tua voce Gemini se il suo progetto Google Cloud ha la Weather API abilitata, oppure usa una chiave diversa.</string>
+    <string name="settings_forecasters_google_probe_checking">Controllo della previsione Google in corso…</string>
+    <string name="settings_forecasters_google_probe_ok">Connesso. Google sta contribuendo alla tua previsione.</string>
+    <string name="settings_forecasters_google_probe_failed">Impossibile raggiungere la previsione Google. Verrà esclusa finché il problema non si risolve.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Impossibile raggiungere la previsione Google (HTTP %1$d). Verrà esclusa finché il problema non si risolve.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google ha rifiutato la tua chiave. In Google Cloud, abilita la Weather API e la fatturazione per il progetto della chiave, e assicurati che la chiave non sia limitata in modo da escluderla. Fino ad allora, Google resta escluso dalla tua previsione.</string>
+    <string name="settings_forecasters_google_probe_retry">Controlla di nuovo</string>
 </resources>

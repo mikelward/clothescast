@@ -1266,4 +1266,46 @@ Not overridden by design:
     <string name="settings_page_smart_home">स्मार्ट होम सेटिंग</string>
     <string name="settings_page_privacy">गोपनीयता सेटिंग</string>
     <string name="settings_page_developer">डेवलपर सेटिंग</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">मौजूदा अवधि पर जाएं</string>
+    <string name="today_outfit_label_overnight">रात भर</string>
+    <string name="today_chart_hide_model_forecasts">मॉडल पूर्वानुमान छिपाएं</string>
+    <string name="today_chart_reset_now_hide_models">अभी दिखाएं और मॉडल पूर्वानुमान छिपाएं</string>
+    <string name="today_chart_divergence_high">अधिकतम महसूस होने वाले तापमान के पूर्वानुमान Δ%1$.1f%2$s से भिन्न हैं (%3$s)</string>
+    <string name="today_chart_divergence_low">न्यूनतम महसूस होने वाले तापमान के पूर्वानुमान Δ%1$.1f%2$s से भिन्न हैं (%3$s)</string>
+    <string name="today_title_following_week">अगले 7 दिन</string>
+    <string name="today_forward_to_following_week">अगले 7 दिन देखें</string>
+    <string name="insight_lead_overnight">रात भर में</string>
+    <string name="notification_channel_playback_name">शेड्यूल किया गया ClothesCast डिलीवरी</string>
+    <string name="notification_channel_playback_description">यह तब दिखाई देता है जब ClothesCast आपका शेड्यूल किया गया पूर्वानुमान तैयार करके भेजता है। बैकग्राउंड में चलने के लिए Android द्वारा आवश्यक है।</string>
+    <string name="notification_channel_scheduled_insight_name">शेड्यूल किया गया ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">आपके शेड्यूल किए गए मौसम सारांश — सुबह और शाम — तैयार होते ही।</string>
+    <string name="notification_delivering_title">आपका ClothesCast डिलीवर हो रहा है</string>
+    <string name="notification_playback_title">आपका ClothesCast तैयार हो रहा है</string>
+    <string name="settings_calendars_title">कैलेंडर</string>
+    <string name="settings_calendars_description">चुनें कि ClothesCast आपके डिवाइस के किन कैलेंडर को पढ़े। डिफ़ॉल्ट रूप से यह आपके कैलेंडर ऐप में प्रत्येक कैलेंडर की दृश्यता का पालन करता है; यहां किसी को भी चालू या बंद करें।</string>
+    <string name="settings_calendars_none">इस डिवाइस पर कोई कैलेंडर नहीं मिला।</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">स्पीकर</string>
+    <string name="settings_format_accessories_label">एक्सेसरीज़</string>
+    <string name="settings_format_accessories_always">हमेशा</string>
+    <string name="settings_format_accessories_never">कभी नहीं</string>
+    <string name="settings_holidays_calendar_source">कैलेंडर: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF का AI मॉडल — 15 दिनों तक सटीक, इसलिए यह दूसरे सप्ताह के चार्ट संभालता है। कुछ विस्तृत चार्ट में इसके लिए रेखा नहीं दिख सकती।</string>
+    <string name="settings_forecasters_google_subtitle">Google का AI मौसम पूर्वानुमान। Google API कुंजी का उपयोग करता है।</string>
+    <string name="settings_forecasters_google_key_header">Google API कुंजी</string>
+    <string name="settings_forecasters_google_key_placeholder">अपनी Google API कुंजी पेस्ट करें</string>
+    <string name="settings_forecasters_google_key_save">Google कुंजी सहेजें</string>
+    <string name="settings_forecasters_google_key_replace">Google कुंजी बदलें</string>
+    <string name="settings_forecasters_google_key_clear">सहेजी गई Google कुंजी हटाएं</string>
+    <string name="settings_forecasters_google_key_set">एक Google API कुंजी कॉन्फ़िगर की गई है।</string>
+    <string name="settings_forecasters_google_key_unset">Google पूर्वानुमानकर्ता को चालू करने के लिए एक Google API कुंजी जोड़ें। यदि आपकी Gemini आवाज़ के Google Cloud प्रोजेक्ट में Weather API सक्षम है तो वही कुंजी पेस्ट करें, या कोई भिन्न कुंजी उपयोग करें।</string>
+    <string name="settings_forecasters_google_probe_checking">Google का पूर्वानुमान जांचा जा रहा है…</string>
+    <string name="settings_forecasters_google_probe_ok">कनेक्ट हो गया। Google आपके पूर्वानुमान में योगदान दे रहा है।</string>
+    <string name="settings_forecasters_google_probe_failed">Google के पूर्वानुमान तक नहीं पहुंचा जा सका। जब तक यह ठीक नहीं होता, इसे बाहर रखा जाएगा।</string>
+    <string name="settings_forecasters_google_probe_failed_http">Google के पूर्वानुमान तक नहीं पहुंचा जा सका (HTTP %1$d)। जब तक यह ठीक नहीं होता, इसे बाहर रखा जाएगा।</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google ने आपकी कुंजी अस्वीकार कर दी। Google Cloud में, कुंजी के प्रोजेक्ट के लिए Weather API और बिलिंग सक्षम करें, और सुनिश्चित करें कि कुंजी इसे बाहर करने के लिए प्रतिबंधित नहीं है। तब तक, Google आपके पूर्वानुमान से बाहर रहेगा।</string>
+    <string name="settings_forecasters_google_probe_retry">फिर से जांचें</string>
 </resources>

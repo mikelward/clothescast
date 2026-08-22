@@ -1243,4 +1243,46 @@ displayed label localizes.
     <string name="settings_page_smart_home">Älykotiasetukset</string>
     <string name="settings_page_privacy">Tietosuoja-asetukset</string>
     <string name="settings_page_developer">Kehittäjäasetukset</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Siirry nykyiseen ajanjaksoon</string>
+    <string name="today_outfit_label_overnight">Yöllä</string>
+    <string name="today_chart_hide_model_forecasts">Piilota mallien ennusteet</string>
+    <string name="today_chart_reset_now_hide_models">Näytä nyt ja piilota mallien ennusteet</string>
+    <string name="today_chart_divergence_high">Ennusteet ylimmästä tuntuu kuin -lämpötilasta eroavat Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Ennusteet alimmasta tuntuu kuin -lämpötilasta eroavat Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Seuraavat 7 päivää</string>
+    <string name="today_forward_to_following_week">Näytä seuraavat 7 päivää</string>
+    <string name="insight_lead_overnight">Yön aikana</string>
+    <string name="notification_channel_playback_name">Ajastettu ClothesCastin toimitus</string>
+    <string name="notification_channel_playback_description">Näytetään, kun ClothesCast valmistelee ja toimittaa ajastetun ennusteesi. Android vaatii tämän, jotta ajo voi valmistua taustalla.</string>
+    <string name="notification_channel_scheduled_insight_name">Ajastettu ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Ajastetut säätiivistelmäsi — aamuisin ja iltaisin — heti kun ne ovat valmiit.</string>
+    <string name="notification_delivering_title">Toimitetaan ClothesCastiasi</string>
+    <string name="notification_playback_title">Valmistellaan ClothesCastiasi</string>
+    <string name="settings_calendars_title">Kalenterit</string>
+    <string name="settings_calendars_description">Valitse, mitä laitteesi kalentereita ClothesCast lukee. Oletuksena se noudattaa kunkin kalenterin näkyvyyttä kalenterisovelluksessasi; ota tästä käyttöön tai pois.</string>
+    <string name="settings_calendars_none">Tästä laitteesta ei löytynyt kalentereita.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Kaiutin</string>
+    <string name="settings_format_accessories_label">Asusteet</string>
+    <string name="settings_format_accessories_always">Aina</string>
+    <string name="settings_format_accessories_never">Ei koskaan</string>
+    <string name="settings_holidays_calendar_source">Kalenteri: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF:n tekoälymalli — luotettava aina 15 päivään asti, joten se kantaa toisen viikon kaaviot. Jotkin yksityiskohtaiset kaaviot eivät ehkä näytä viivaa sille.</string>
+    <string name="settings_forecasters_google_subtitle">Googlen tekoälyn sääennuste. Käyttää Google-API-avainta.</string>
+    <string name="settings_forecasters_google_key_header">Googlen API-avain</string>
+    <string name="settings_forecasters_google_key_placeholder">Liitä Googlen API-avaimesi</string>
+    <string name="settings_forecasters_google_key_save">Tallenna Google-avain</string>
+    <string name="settings_forecasters_google_key_replace">Korvaa Google-avain</string>
+    <string name="settings_forecasters_google_key_clear">Tyhjennä tallennettu Google-avain</string>
+    <string name="settings_forecasters_google_key_set">Google-API-avain on määritetty.</string>
+    <string name="settings_forecasters_google_key_unset">Lisää Google-API-avain ottaaksesi Googlen ennustajan käyttöön. Liitä sama avain kuin Gemini-äänelläsi, jos sen Google Cloud -projektissa on Weather API käytössä, tai käytä eri avainta.</string>
+    <string name="settings_forecasters_google_probe_checking">Tarkistetaan Googlen ennustetta…</string>
+    <string name="settings_forecasters_google_probe_ok">Yhdistetty. Google osallistuu ennusteeseesi.</string>
+    <string name="settings_forecasters_google_probe_failed">Googlen ennustetta ei tavoitettu. Se jätetään pois, kunnes tämä korjaantuu.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Googlen ennustetta ei tavoitettu (HTTP %1$d). Se jätetään pois, kunnes tämä korjaantuu.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google hylkäsi avaimesi. Ota Google Cloudissa käyttöön Weather API ja laskutus avaimen projektille, ja varmista, ettei avainta ole rajoitettu sulkemaan sitä pois. Siihen asti Google jätetään pois ennusteestasi.</string>
+    <string name="settings_forecasters_google_probe_retry">Tarkista uudelleen</string>
 </resources>

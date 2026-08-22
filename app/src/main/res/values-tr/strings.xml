@@ -1236,4 +1236,46 @@ displayed label localizes.
     <string name="settings_page_smart_home">Akıllı Ev ayarları</string>
     <string name="settings_page_privacy">Gizlilik ayarları</string>
     <string name="settings_page_developer">Geliştirici ayarları</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Geçerli döneme git</string>
+    <string name="today_outfit_label_overnight">Gece</string>
+    <string name="today_chart_hide_model_forecasts">Model tahminlerini gizle</string>
+    <string name="today_chart_reset_now_hide_models">Şimdi göster ve model tahminlerini gizle</string>
+    <string name="today_chart_divergence_high">En yüksek hissedilen sıcaklık tahminleri Δ%1$.1f%2$s farkla ayrılıyor (%3$s)</string>
+    <string name="today_chart_divergence_low">En düşük hissedilen sıcaklık tahminleri Δ%1$.1f%2$s farkla ayrılıyor (%3$s)</string>
+    <string name="today_title_following_week">Sonraki 7 gün</string>
+    <string name="today_forward_to_following_week">Sonraki 7 günü gör</string>
+    <string name="insight_lead_overnight">Gece boyunca</string>
+    <string name="notification_channel_playback_name">Zamanlanmış ClothesCast teslimatı</string>
+    <string name="notification_channel_playback_description">ClothesCast, zamanlanmış tahmininizi hazırlayıp teslim ederken gösterilir. Çalışmanın arka planda tamamlanabilmesi için Android tarafından gereklidir.</string>
+    <string name="notification_channel_scheduled_insight_name">Zamanlanmış ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Zamanlanmış hava durumu özetleriniz — sabah ve akşam — hazır olduklarında.</string>
+    <string name="notification_delivering_title">ClothesCast\'iniz teslim ediliyor</string>
+    <string name="notification_playback_title">ClothesCast\'iniz hazırlanıyor</string>
+    <string name="settings_calendars_title">Takvimler</string>
+    <string name="settings_calendars_description">ClothesCast\'in cihazınızdaki hangi takvimleri okuyacağını seçin. Varsayılan olarak her takvimin takvim uygulamanızdaki görünürlüğünü izler; buradan istediğinizi açıp kapatabilirsiniz.</string>
+    <string name="settings_calendars_none">Bu cihazda takvim bulunamadı.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Hoparlör</string>
+    <string name="settings_format_accessories_label">Aksesuarlar</string>
+    <string name="settings_format_accessories_always">Her zaman</string>
+    <string name="settings_format_accessories_never">Asla</string>
+    <string name="settings_holidays_calendar_source">Takvim: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF\'nin YZ modeli — 15 güne kadar isabetli, bu yüzden ikinci hafta grafiklerini taşır. Bazı ayrıntılı grafiklerde bunun için bir çizgi görünmeyebilir.</string>
+    <string name="settings_forecasters_google_subtitle">Google\'ın YZ hava tahmini. Google API anahtarı kullanır.</string>
+    <string name="settings_forecasters_google_key_header">Google API anahtarı</string>
+    <string name="settings_forecasters_google_key_placeholder">Google API anahtarınızı yapıştırın</string>
+    <string name="settings_forecasters_google_key_save">Google anahtarını kaydet</string>
+    <string name="settings_forecasters_google_key_replace">Google anahtarını değiştir</string>
+    <string name="settings_forecasters_google_key_clear">Saklanan Google anahtarını temizle</string>
+    <string name="settings_forecasters_google_key_set">Bir Google API anahtarı yapılandırıldı.</string>
+    <string name="settings_forecasters_google_key_unset">Google tahmincisini açmak için bir Google API anahtarı ekleyin. Gemini sesinizin Google Cloud projesinde Weather API etkinse aynı anahtarı yapıştırın veya farklı bir anahtar kullanın.</string>
+    <string name="settings_forecasters_google_probe_checking">Google tahmini kontrol ediliyor…</string>
+    <string name="settings_forecasters_google_probe_ok">Bağlandı. Google, tahmininize katkıda bulunuyor.</string>
+    <string name="settings_forecasters_google_probe_failed">Google tahminine ulaşılamadı. Bu düzelene kadar dışarıda bırakılacak.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Google tahminine ulaşılamadı (HTTP %1$d). Bu düzelene kadar dışarıda bırakılacak.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google anahtarınızı reddetti. Google Cloud\'da anahtarın projesi için Weather API ve faturalandırmayı etkinleştirin ve anahtarın bunu dışlayacak şekilde kısıtlanmadığından emin olun. O zamana kadar Google tahmininizin dışında kalır.</string>
+    <string name="settings_forecasters_google_probe_retry">Tekrar kontrol et</string>
 </resources>

@@ -1308,4 +1308,46 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_page_smart_home">স্মার্ট হোম সেটিংস</string>
     <string name="settings_page_privacy">গোপনীয়তা সেটিংস</string>
     <string name="settings_page_developer">ডেভেলপার সেটিংস</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">বর্তমান সময়কালে যান</string>
+    <string name="today_outfit_label_overnight">সারারাত</string>
+    <string name="today_chart_hide_model_forecasts">মডেল পূর্বাভাস লুকান</string>
+    <string name="today_chart_reset_now_hide_models">এখন দেখান এবং মডেল পূর্বাভাস লুকান</string>
+    <string name="today_chart_divergence_high">সর্বোচ্চ অনুভূত তাপমাত্রার পূর্বাভাসে Δ%1$.1f%2$s পার্থক্য রয়েছে (%3$s)</string>
+    <string name="today_chart_divergence_low">সর্বনিম্ন অনুভূত তাপমাত্রার পূর্বাভাসে Δ%1$.1f%2$s পার্থক্য রয়েছে (%3$s)</string>
+    <string name="today_title_following_week">পরবর্তী ৭ দিন</string>
+    <string name="today_forward_to_following_week">পরবর্তী ৭ দিন দেখুন</string>
+    <string name="insight_lead_overnight">রাতের বেলা</string>
+    <string name="notification_channel_playback_name">নির্ধারিত ClothesCast ডেলিভারি</string>
+    <string name="notification_channel_playback_description">ClothesCast আপনার নির্ধারিত পূর্বাভাস প্রস্তুত ও সরবরাহ করার সময় দেখানো হয়। ব্যাকগ্রাউন্ডে রান শেষ করতে Android-এর প্রয়োজন।</string>
+    <string name="notification_channel_scheduled_insight_name">নির্ধারিত ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">আপনার নির্ধারিত আবহাওয়ার সারাংশ — সকাল ও সন্ধ্যা — প্রস্তুত হলে।</string>
+    <string name="notification_delivering_title">আপনার ClothesCast পাঠানো হচ্ছে</string>
+    <string name="notification_playback_title">আপনার ClothesCast প্রস্তুত করা হচ্ছে</string>
+    <string name="settings_calendars_title">ক্যালেন্ডার</string>
+    <string name="settings_calendars_description">আপনার ডিভাইসের কোন ক্যালেন্ডারগুলো ClothesCast পড়বে তা বেছে নিন। ডিফল্টভাবে এটি আপনার ক্যালেন্ডার অ্যাপে প্রতিটি ক্যালেন্ডারের দৃশ্যমানতা অনুসরণ করে; এখানে যেকোনোটি চালু বা বন্ধ করুন।</string>
+    <string name="settings_calendars_none">এই ডিভাইসে কোনো ক্যালেন্ডার পাওয়া যায়নি।</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">স্পিকার</string>
+    <string name="settings_format_accessories_label">আনুষঙ্গিক জিনিস</string>
+    <string name="settings_format_accessories_always">সর্বদা</string>
+    <string name="settings_format_accessories_never">কখনো না</string>
+    <string name="settings_holidays_calendar_source">ক্যালেন্ডার: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF-এর AI মডেল — ১৫ দিন পর্যন্ত নির্ভুল, তাই এটি দ্বিতীয় সপ্তাহের চার্ট বহন করে। কিছু বিস্তারিত চার্টে এটির জন্য কোনো রেখা নাও দেখাতে পারে।</string>
+    <string name="settings_forecasters_google_subtitle">Google-এর AI আবহাওয়ার পূর্বাভাস। একটি Google API কী ব্যবহার করে।</string>
+    <string name="settings_forecasters_google_key_header">Google API কী</string>
+    <string name="settings_forecasters_google_key_placeholder">আপনার Google API কী পেস্ট করুন</string>
+    <string name="settings_forecasters_google_key_save">Google কী সংরক্ষণ করুন</string>
+    <string name="settings_forecasters_google_key_replace">Google কী প্রতিস্থাপন করুন</string>
+    <string name="settings_forecasters_google_key_clear">সংরক্ষিত Google কী মুছুন</string>
+    <string name="settings_forecasters_google_key_set">একটি Google API কী কনফিগার করা আছে।</string>
+    <string name="settings_forecasters_google_key_unset">Google পূর্বাভাসকারী চালু করতে একটি Google API কী যোগ করুন। আপনার Gemini ভয়েসের Google Cloud প্রজেক্টে Weather API সক্ষম থাকলে একই কী পেস্ট করুন, অথবা ভিন্ন একটি কী ব্যবহার করুন।</string>
+    <string name="settings_forecasters_google_probe_checking">Google-এর পূর্বাভাস পরীক্ষা করা হচ্ছে…</string>
+    <string name="settings_forecasters_google_probe_ok">সংযুক্ত হয়েছে। Google আপনার পূর্বাভাসে অবদান রাখছে।</string>
+    <string name="settings_forecasters_google_probe_failed">Google-এর পূর্বাভাসে পৌঁছানো যায়নি। এটি ঠিক না হওয়া পর্যন্ত বাদ রাখা হবে।</string>
+    <string name="settings_forecasters_google_probe_failed_http">Google-এর পূর্বাভাসে পৌঁছানো যায়নি (HTTP %1$d)। এটি ঠিক না হওয়া পর্যন্ত বাদ রাখা হবে।</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google আপনার কী প্রত্যাখ্যান করেছে। Google Cloud-এ, কী-এর প্রজেক্টের জন্য Weather API এবং বিলিং সক্ষম করুন এবং নিশ্চিত করুন কী-টি এটিকে বাদ দেওয়ার মতো সীমাবদ্ধ নয়। ততক্ষণ পর্যন্ত, Google আপনার পূর্বাভাস থেকে বাদ থাকবে।</string>
+    <string name="settings_forecasters_google_probe_retry">আবার পরীক্ষা করুন</string>
 </resources>

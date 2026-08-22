@@ -1284,4 +1284,46 @@ is unchanged; only the displayed label localizes.
     <string name="settings_page_smart_home">Ustawienia inteligentnego domu</string>
     <string name="settings_page_privacy">Ustawienia prywatności</string>
     <string name="settings_page_developer">Ustawienia dewelopera</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Przejdź do bieżącego okresu</string>
+    <string name="today_outfit_label_overnight">Noc</string>
+    <string name="today_chart_hide_model_forecasts">Ukryj prognozy modeli</string>
+    <string name="today_chart_reset_now_hide_models">Pokaż teraz i ukryj prognozy modeli</string>
+    <string name="today_chart_divergence_high">Prognozy najwyższej temperatury odczuwalnej różnią się o Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Prognozy najniższej temperatury odczuwalnej różnią się o Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Następne 7 dni</string>
+    <string name="today_forward_to_following_week">Zobacz następne 7 dni</string>
+    <string name="insight_lead_overnight">W nocy</string>
+    <string name="notification_channel_playback_name">Zaplanowane dostarczenie ClothesCast</string>
+    <string name="notification_channel_playback_description">Wyświetlane, gdy ClothesCast przygotowuje i dostarcza zaplanowaną prognozę. Wymagane przez system Android, aby proces mógł zakończyć się w tle.</string>
+    <string name="notification_channel_scheduled_insight_name">Zaplanowany ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Twoje zaplanowane podsumowania pogody — rano i wieczorem — gdy będą gotowe.</string>
+    <string name="notification_delivering_title">Dostarczanie Twojego ClothesCast</string>
+    <string name="notification_playback_title">Przygotowywanie Twojego ClothesCast</string>
+    <string name="settings_calendars_title">Kalendarze</string>
+    <string name="settings_calendars_description">Wybierz, które kalendarze urządzenia odczytuje ClothesCast. Domyślnie stosuje się do widoczności każdego kalendarza w Twojej aplikacji kalendarza; włącz lub wyłącz dowolny tutaj.</string>
+    <string name="settings_calendars_none">Nie znaleziono kalendarzy na tym urządzeniu.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Głośnik</string>
+    <string name="settings_format_accessories_label">Akcesoria</string>
+    <string name="settings_format_accessories_always">Zawsze</string>
+    <string name="settings_format_accessories_never">Nigdy</string>
+    <string name="settings_holidays_calendar_source">Kalendarz: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">Model AI ECMWF — trafny na okres do 15 dni, dlatego to on obsługuje wykresy drugiego tygodnia. Niektóre szczegółowe wykresy mogą nie pokazywać dla niego linii.</string>
+    <string name="settings_forecasters_google_subtitle">Prognoza pogody AI od Google. Korzysta z klucza API Google.</string>
+    <string name="settings_forecasters_google_key_header">Klucz API Google</string>
+    <string name="settings_forecasters_google_key_placeholder">Wklej swój klucz API Google</string>
+    <string name="settings_forecasters_google_key_save">Zapisz klucz Google</string>
+    <string name="settings_forecasters_google_key_replace">Zastąp klucz Google</string>
+    <string name="settings_forecasters_google_key_clear">Wyczyść zapisany klucz Google</string>
+    <string name="settings_forecasters_google_key_set">Skonfigurowano klucz API Google.</string>
+    <string name="settings_forecasters_google_key_unset">Dodaj klucz API Google, aby włączyć prognostę Google. Wklej ten sam klucz co Twój głos Gemini, jeśli jego projekt Google Cloud ma włączone Weather API, lub użyj innego klucza.</string>
+    <string name="settings_forecasters_google_probe_checking">Sprawdzanie prognozy Google…</string>
+    <string name="settings_forecasters_google_probe_ok">Połączono. Google przyczynia się do Twojej prognozy.</string>
+    <string name="settings_forecasters_google_probe_failed">Nie udało się połączyć z prognozą Google. Zostanie pominięta, dopóki problem się nie rozwiąże.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Nie udało się połączyć z prognozą Google (HTTP %1$d). Zostanie pominięta, dopóki problem się nie rozwiąże.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google odrzucił Twój klucz. W Google Cloud włącz Weather API i płatności dla projektu klucza oraz upewnij się, że klucz nie jest ograniczony w sposób, który go wyklucza. Do tego czasu Google zostanie pominięty w Twojej prognozie.</string>
+    <string name="settings_forecasters_google_probe_retry">Sprawdź ponownie</string>
 </resources>

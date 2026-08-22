@@ -1265,4 +1265,46 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_page_smart_home">Smarthem-inställningar</string>
     <string name="settings_page_privacy">Integritetsinställningar</string>
     <string name="settings_page_developer">Utvecklarinställningar</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">Till aktuell period</string>
+    <string name="today_outfit_label_overnight">Natt</string>
+    <string name="today_chart_hide_model_forecasts">Dölj modellprognoser</string>
+    <string name="today_chart_reset_now_hide_models">Visa nu och dölj modellprognoser</string>
+    <string name="today_chart_divergence_high">Prognoserna för högsta känns som skiljer sig med Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_chart_divergence_low">Prognoserna för lägsta känns som skiljer sig med Δ%1$.1f%2$s (%3$s)</string>
+    <string name="today_title_following_week">Kommande 7 dagar</string>
+    <string name="today_forward_to_following_week">Visa kommande 7 dagar</string>
+    <string name="insight_lead_overnight">Under natten</string>
+    <string name="notification_channel_playback_name">Schemalagd ClothesCast-leverans</string>
+    <string name="notification_channel_playback_description">Visas medan ClothesCast förbereder och levererar din schemalagda prognos. Krävs av Android så att körningen kan slutföras i bakgrunden.</string>
+    <string name="notification_channel_scheduled_insight_name">Schemalagd ClothesCast</string>
+    <string name="notification_channel_scheduled_insight_description">Dina schemalagda väderöversikter — morgon och kväll — så fort de är klara.</string>
+    <string name="notification_delivering_title">Levererar din ClothesCast</string>
+    <string name="notification_playback_title">Förbereder din ClothesCast</string>
+    <string name="settings_calendars_title">Kalendrar</string>
+    <string name="settings_calendars_description">Välj vilka av enhetens kalendrar ClothesCast läser. Som standard följer den varje kalenders synlighet i din kalenderapp; slå på eller av valfri här.</string>
+    <string name="settings_calendars_none">Inga kalendrar hittades på den här enheten.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">Högtalare</string>
+    <string name="settings_format_accessories_label">Accessoarer</string>
+    <string name="settings_format_accessories_always">Alltid</string>
+    <string name="settings_format_accessories_never">Aldrig</string>
+    <string name="settings_holidays_calendar_source">Kalender: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">ECMWF:s AI-modell — träffsäker upp till 15 dagar, så den bär diagrammen för den andra veckan. Vissa detaljdiagram kanske inte visar en linje för den.</string>
+    <string name="settings_forecasters_google_subtitle">Googles AI-väderprognos. Använder en Google API-nyckel.</string>
+    <string name="settings_forecasters_google_key_header">Google API-nyckel</string>
+    <string name="settings_forecasters_google_key_placeholder">Klistra in din Google API-nyckel</string>
+    <string name="settings_forecasters_google_key_save">Spara Google-nyckel</string>
+    <string name="settings_forecasters_google_key_replace">Ersätt Google-nyckel</string>
+    <string name="settings_forecasters_google_key_clear">Rensa sparad Google-nyckel</string>
+    <string name="settings_forecasters_google_key_set">En Google API-nyckel är konfigurerad.</string>
+    <string name="settings_forecasters_google_key_unset">Lägg till en Google API-nyckel för att aktivera Google-prognosmakaren. Klistra in samma nyckel som din Gemini-röst om dess Google Cloud-projekt har Weather API aktiverat, eller använd en annan nyckel.</string>
+    <string name="settings_forecasters_google_probe_checking">Kontrollerar Googles prognos…</string>
+    <string name="settings_forecasters_google_probe_ok">Ansluten. Google bidrar till din prognos.</string>
+    <string name="settings_forecasters_google_probe_failed">Kunde inte nå Googles prognos. Den utelämnas tills detta åtgärdas.</string>
+    <string name="settings_forecasters_google_probe_failed_http">Kunde inte nå Googles prognos (HTTP %1$d). Den utelämnas tills detta åtgärdas.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google avvisade din nyckel. Aktivera Weather API och fakturering för nyckelns projekt i Google Cloud, och se till att nyckeln inte är begränsad så att den utesluts. Fram tills dess utelämnas Google från din prognos.</string>
+    <string name="settings_forecasters_google_probe_retry">Kontrollera igen</string>
 </resources>

@@ -1224,4 +1224,46 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_page_smart_home">تنظیمات خانه هوشمند</string>
     <string name="settings_page_privacy">تنظیمات حریم خصوصی</string>
     <string name="settings_page_developer">تنظیمات توسعه‌دهنده</string>
+
+    <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
+    <string name="today_go_home">رفتن به دوره فعلی</string>
+    <string name="today_outfit_label_overnight">یک‌شبه</string>
+    <string name="today_chart_hide_model_forecasts">پنهان کردن پیش‌بینی‌های مدل</string>
+    <string name="today_chart_reset_now_hide_models">اکنون نمایش بده و پیش‌بینی‌های مدل را پنهان کن</string>
+    <string name="today_chart_divergence_high">پیش‌بینی‌های بیشینه دمای احساسی Δ%1$.1f%2$s تفاوت دارند (%3$s)</string>
+    <string name="today_chart_divergence_low">پیش‌بینی‌های کمینه دمای احساسی Δ%1$.1f%2$s تفاوت دارند (%3$s)</string>
+    <string name="today_title_following_week">۷ روز آینده</string>
+    <string name="today_forward_to_following_week">مشاهده ۷ روز آینده</string>
+    <string name="insight_lead_overnight">در طول شب</string>
+    <string name="notification_channel_playback_name">تحویل زمان‌بندی‌شده ClothesCast</string>
+    <string name="notification_channel_playback_description">هنگامی که ClothesCast پیش‌بینی زمان‌بندی‌شده شما را آماده و تحویل می‌دهد نمایش داده می‌شود. توسط Android برای اتمام اجرا در پس‌زمینه لازم است.</string>
+    <string name="notification_channel_scheduled_insight_name">ClothesCast زمان‌بندی‌شده</string>
+    <string name="notification_channel_scheduled_insight_description">خلاصه‌های آب‌وهوای زمان‌بندی‌شده شما — صبح و عصر — به‌محض آماده شدن.</string>
+    <string name="notification_delivering_title">در حال تحویل ClothesCast شما</string>
+    <string name="notification_playback_title">در حال آماده‌سازی ClothesCast شما</string>
+    <string name="settings_calendars_title">تقویم‌ها</string>
+    <string name="settings_calendars_description">انتخاب کنید ClothesCast کدام تقویم‌های دستگاه شما را بخواند. به‌طور پیش‌فرض، از قابلیت مشاهده هر تقویم در برنامه تقویم شما پیروی می‌کند؛ در اینجا هر یک را روشن یا خاموش کنید.</string>
+    <string name="settings_calendars_none">هیچ تقویمی در این دستگاه یافت نشد.</string>
+    <string name="settings_smart_home_cast_picker_speaker_badge">بلندگو</string>
+    <string name="settings_format_accessories_label">لوازم جانبی</string>
+    <string name="settings_format_accessories_always">همیشه</string>
+    <string name="settings_format_accessories_never">هرگز</string>
+    <string name="settings_holidays_calendar_source">تقویم: %1$s</string>
+    <string name="settings_forecasters_aifs">AIFS</string>
+    <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_aifs_subtitle">مدل هوش مصنوعی ECMWF — تا ۱۵ روز آینده قابل اعتماد است، بنابراین نمودارهای هفته دوم را بر عهده دارد. برخی نمودارهای جزئی ممکن است خطی برای آن نشان ندهند.</string>
+    <string name="settings_forecasters_google_subtitle">پیش‌بینی هوش مصنوعی آب‌وهوای Google. از یک کلید Google API استفاده می‌کند.</string>
+    <string name="settings_forecasters_google_key_header">کلید Google API</string>
+    <string name="settings_forecasters_google_key_placeholder">کلید Google API خود را جای‌گذاری کنید</string>
+    <string name="settings_forecasters_google_key_save">ذخیره کلید Google</string>
+    <string name="settings_forecasters_google_key_replace">جایگزینی کلید Google</string>
+    <string name="settings_forecasters_google_key_clear">پاک کردن کلید ذخیره‌شده Google</string>
+    <string name="settings_forecasters_google_key_set">یک کلید Google API پیکربندی شده است.</string>
+    <string name="settings_forecasters_google_key_unset">برای روشن کردن پیش‌بین Google یک کلید Google API اضافه کنید. اگر پروژه Google Cloud صدای Gemini شما دارای Weather API فعال است، همان کلید را جای‌گذاری کنید، یا از کلید دیگری استفاده کنید.</string>
+    <string name="settings_forecasters_google_probe_checking">در حال بررسی پیش‌بینی Google…</string>
+    <string name="settings_forecasters_google_probe_ok">متصل شد. Google در پیش‌بینی شما مشارکت دارد.</string>
+    <string name="settings_forecasters_google_probe_failed">دسترسی به پیش‌بینی Google ممکن نشد. تا رفع این مشکل کنار گذاشته می‌شود.</string>
+    <string name="settings_forecasters_google_probe_failed_http">دسترسی به پیش‌بینی Google ممکن نشد (HTTP %1$d). تا رفع این مشکل کنار گذاشته می‌شود.</string>
+    <string name="settings_forecasters_google_probe_forbidden">Google کلید شما را رد کرد. در Google Cloud، Weather API و صورت‌حساب را برای پروژه کلید فعال کنید و مطمئن شوید کلید به‌گونه‌ای محدود نشده که آن را حذف کند. تا آن زمان، Google از پیش‌بینی شما کنار گذاشته می‌شود.</string>
+    <string name="settings_forecasters_google_probe_retry">بررسی دوباره</string>
 </resources>

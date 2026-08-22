@@ -33,9 +33,18 @@ on:
   # the `gate` check, and a required check that never reports blocks the PR
   # forever — which is exactly what a path-filtered-out workflow produces.
   # Housekeeping-only PRs (now including markdown-only ones, which used to
-  # run full CI) skip the heavy jobs via `classify` instead, and `gate`
-  # verifies the skip was justified (scripts/docs-lane.sh has the rationale).
+  # run full CI) skip the heavy jobs via `classify` instead, and `gate`/
+  # `lanes` verify the skip was justified (.github/lanes.conf has the rule;
+  # the engine is mikelward/lanes).
   pull_request:
+    # `edited` is load-bearing, not tidiness: a retarget changes what the
+    # diff is measured against while the head — and any `gate`/`lanes`
+    # check run already minted on it — stays exactly where it was, so a
+    # base change has to start a fresh run or the old verdict simply
+    # stands. Title and body edits re-run too, deliberately — GitHub
+    # counts a SKIPPED required check as satisfied, so skipping on a
+    # "harmless" edit would be worse than running it.
+    types: [opened, synchronize, reopened, edited]
   # Two dispatch callers. (1) Release rescue: re-fire the release-AAB /
   # Firebase / Play-upload steps from the Actions tab against main when the
   # natural push run failed transiently — no pr input. (2) The
@@ -44,7 +53,8 @@ on:
   # required `gate` check would exist only on the regenerated commit's
   # parent. A dispatch that names a PR is bound to it (head SHA verified,
   # sole open PR verified, merge-ref build in android-build); one that
-  # doesn't is allowed only on main. scripts/docs-lane.sh enforces that.
+  # doesn't is allowed only on main. .github/lanes.conf's
+  # dispatch-without-pr rule enforces that.
   workflow_dispatch:
     inputs:
       pr:
@@ -70,10 +80,11 @@ permissions: {}
 
 jobs:
   # Decides whether the heavy jobs may skip: true only when every changed
-  # file in the PR is housekeeping (see scripts/docs-lane.sh for the rule).
-  # Pushes to main and PR-less rescue dispatches are always classified as
-  # code, so they run everything; a dispatch that names a PR classifies that
-  # PR's real diff, exactly as the PR run would.
+  # file in the PR is housekeeping (see .github/lanes.conf for the rule;
+  # the engine is mikelward/lanes). Pushes to main and PR-less rescue
+  # dispatches are always classified as code, so they run everything; a
+  # dispatch that names a PR classifies that PR's real diff, exactly as
+  # the PR run would.
   classify:
     name: Classify the diff
     runs-on: ubuntu-latest
@@ -82,21 +93,17 @@ jobs:
       contents: read
       pull-requests: read
     outputs:
-      docs_only: ${{ steps.run.outputs.docs_only }}
+      docs_only: ${{ steps.lane.outputs.docs_only }}
+      base_sha: ${{ steps.lane.outputs.base_sha }}
     steps:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - name: Self-test the lane rules
-        # A broken rule fails here, the heavy jobs skip on the failed
-        # dependency, and the gate goes red — fail closed, never green.
-        run: bash scripts/docs-lane.test.sh
-      - name: Classify
-        id: run
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ github.event.pull_request.number || inputs.pr }}
-        run: scripts/docs-lane.sh classify >> "$GITHUB_OUTPUT"
+      - uses: mikelward/lanes@main
+        id: lane
+        with:
+          mode: classify
+          pr: ${{ github.event.pull_request.number || inputs.pr }}
 
   unit-tests:
     name: JVM unit tests
@@ -624,7 +631,7 @@ jobs:
     # secrets" / debug-keystore-decode / Firebase / Play steps below,
     # each of which `if:`-gates secret access to push/dispatch on main).
     # A PR-named dispatch (the snapshot-regen relaunch) is admitted off main:
-    # docs-lane.sh binds it to the PR's own head, and the secret-loading
+    # mikelward/lanes binds it to the PR's own head, and the secret-loading
     # steps below stay individually gated to push/dispatch on main, so no
     # secret is in scope on a branch either way.
     if: |
@@ -1346,6 +1353,23 @@ jobs:
   # the skip is INDEPENDENTLY verified as justified: the diff re-derived as
   # housekeeping-only and every commit subject carrying a housekeeping
   # prefix. Any other combination is an explicit red, never a silent pass.
+  #
+  # commit-snapshots is conditionally skipped for reasons that are never a
+  # problem (fork PRs, push-to-main, unit-tests already failed), and there
+  # is no way to tell that apart from a skip that SHOULD block the way there
+  # is for the other jobs here (which are either always required or always
+  # skipped together on a docs-only diff). So only its genuine FAILURE (it
+  # ran and the commit/push/dispatch broke) becomes a `results` pair; any
+  # other outcome is invisible to the gate, matching the old behavior where
+  # this was a plain step inside unit-tests and only ITS failure (not the
+  # step being skipped) could fail the job the gate actually watches.
+  #
+  # TEMPORARY, alongside `lanes` below: mikelward/lanes renamed its
+  # consumer-facing check from `gate` to `lanes`, and the ruleset here still
+  # requires `gate`. Per that repo's staged-rename procedure (README
+  # "Renaming an existing consumer's check"), this duplicate keeps `gate`
+  # reporting until the ruleset is flipped to require `lanes` instead — then
+  # this job is deleted.
   gate:
     name: gate
     runs-on: ubuntu-latest
@@ -1359,25 +1383,46 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
-      - name: Verdict
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ github.event.pull_request.number || inputs.pr }}
-          CLASSIFY: ${{ needs.classify.result }}
-          # commit-snapshots is conditionally skipped for reasons that are
-          # never a problem (fork PRs, push-to-main, unit-tests already
-          # failed) — docs-lane.sh's all-success-or-all-skipped check has no
-          # way to tell that apart from a skip that SHOULD block, the way it
-          # can for the other jobs here (which are either always required or
-          # always skipped together on a docs-only diff). So only its
-          # genuine FAILURE (it ran and the commit/push/dispatch broke)
-          # becomes a RESULTS pair; any other outcome is invisible to gate,
-          # matching the old behavior where this was a plain step inside
-          # unit-tests and only ITS failure (not the step being skipped)
-          # could fail the job gate actually watches.
-          RESULTS: >-
+      - uses: mikelward/lanes@main
+        with:
+          mode: gate
+          pr: ${{ github.event.pull_request.number || inputs.pr }}
+          classify-result: ${{ needs.classify.result }}
+          # Only read on a dispatched run, and harmless on a pull_request
+          # one, which takes the same commit from its own event payload.
+          base-sha: ${{ needs.classify.outputs.base_sha }}
+          results: >-
             unit=${{ needs.unit-tests.result }}
             android=${{ needs.android-build.result }}
             functions=${{ needs.functions-build.result }}
             ${{ needs.commit-snapshots.result == 'failure' && 'commit-snapshots=failure' || '' }}
-        run: scripts/docs-lane.sh gate
+
+  # The renamed check (see `gate`'s comment above) — this is what the
+  # ruleset should require once it has reported at least once. Identical to
+  # `gate`; see that job's comment for why both exist for now.
+  lanes:
+    name: lanes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [classify, unit-tests, android-build, functions-build, commit-snapshots]
+    if: always()
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: mikelward/lanes@main
+        with:
+          mode: gate
+          pr: ${{ github.event.pull_request.number || inputs.pr }}
+          classify-result: ${{ needs.classify.result }}
+          # Only read on a dispatched run, and harmless on a pull_request
+          # one, which takes the same commit from its own event payload.
+          base-sha: ${{ needs.classify.outputs.base_sha }}
+          results: >-
+            unit=${{ needs.unit-tests.result }}
+            android=${{ needs.android-build.result }}
+            functions=${{ needs.functions-build.result }}
+            ${{ needs.commit-snapshots.result == 'failure' && 'commit-snapshots=failure' || '' }}

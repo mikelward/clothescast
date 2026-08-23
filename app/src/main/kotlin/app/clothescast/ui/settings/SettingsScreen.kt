@@ -36,6 +36,7 @@ import app.clothescast.R
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.BugReportOverflowMenu
+import app.clothescast.ui.today.LastCrashBanner
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalNavigateToAbout
 import app.clothescast.ui.LocalTimeFormat
@@ -539,6 +540,16 @@ internal fun SettingsRoot(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // Above everything, for the same reason the warning card below is
+            // here at all: after a crash the user comes *to* Settings looking
+            // for what went wrong, and Today — the only screen that offered to
+            // send the report — is the screen they just left. The overflow menu
+            // already puts a manual bug report on every screen; this is the
+            // proactive half of the same affordance, and it had reached exactly
+            // one. Renders nothing when there is no unacknowledged crash, and
+            // shares its state with Today's instance (a process-wide flow), so
+            // acting on either settles both.
+            LastCrashBanner()
             // Surface a missing always-on grant from the settings root too so the
             // user sees the broken state without having to drill into Location.
             // Tapping the card deep-links into Location where the launcher and

@@ -10,6 +10,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,8 +79,17 @@ import java.util.Locale
 
 @Composable
 private fun SettingsFrame(content: @Composable () -> Unit) {
-    ClothesCastTheme(dynamicColor = false) {
-        Surface { content() }
+    // Inspection mode, exactly as Android Studio's @Preview pane does it and as
+    // Today's preview frame already did. It is what the banner wrappers' own
+    // LocalInspectionMode guards are for: a banner that collects lifecycle-aware
+    // flows has no main dispatcher to collect on inside a preview capture, and
+    // without this the settings root became uncapturable the moment one was
+    // mounted on it. The stateless *Card variants carry no guard, so the banner
+    // previews that render those directly are unaffected.
+    CompositionLocalProvider(LocalInspectionMode provides true) {
+        ClothesCastTheme(dynamicColor = false) {
+            Surface { content() }
+        }
     }
 }
 

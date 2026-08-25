@@ -137,8 +137,8 @@ jobs:
         # avoids on-demand downloads at configure time.
         # Pinned to a specific commit SHA (rather than the floating @v4 tag)
         # so a compromised upstream release can't silently swap in malicious
-        # code on our next CI run — same discipline as the FAD / Play upload
-        # actions below. SHA is android-actions/setup-android v4.0.1.
+        # code on our next CI run — same discipline as the Play upload
+        # action below. SHA is android-actions/setup-android v4.0.1.
         uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
         with:
           packages: 'platforms;android-37.0 build-tools;36.0.0 platform-tools'
@@ -904,8 +904,8 @@ jobs:
         # would silently omit the unreleased commits from the failed run.
         # The Actions API gives us "last *released* tip" instead — walking
         # main's recent workflow runs newest-first and picking the first
-        # one with a successful job whose FAD or Play upload *step*
-        # concluded success. Gating on the job rather than the workflow
+        # one with a successful job whose Play upload *step* concluded
+        # success. Gating on the job rather than the workflow
         # run matters because a run can publish and still conclude red
         # elsewhere (a flaky lane job, a failed comment step): querying
         # the workflow's overall conclusion would skip it and
@@ -984,7 +984,7 @@ jobs:
 
           # Walk the most recent main runs of this workflow (newest first)
           # and pick the head SHA of the first one with a successful job
-          # whose FAD or Play upload step concluded success — a green job
+          # whose Play upload step concluded success — a green job
           # alone isn't proof anything published (see the step comment).
           # The step name below must match this workflow's `name:` value
           # verbatim — rename in lockstep. Only a successful Play upload
@@ -994,9 +994,9 @@ jobs:
           # put its commits in front of a Play reader, and treating it as the
           # base would drop them from Play's record permanently. Getting this
           # wrong in the other direction only repeats a bullet, which is the
-          # trade this file has always preferred. Known trade: a run where FAD published
-          # but a later step failed the job doesn't count, so FAD
-          # testers may see a repeated bullet — better than Play's
+          # trade this file has always preferred. Known trade: a run where
+          # the Play upload succeeded but a later step failed the job doesn't
+          # count, so testers may see a repeated bullet — better than Play's
           # permanent "What's new" record omitting one.
           prev_sha=""
           while IFS=$'\t' read -r run_id run_head; do
@@ -1115,7 +1115,7 @@ jobs:
               echo "No release-worthy commits, but this is a manual workflow_dispatch — publishing the current tip anyway with a generic note."
               subjects+=("Internal test build")
             else
-              echo "No release-worthy commits in this push (all prefixed or docs / dotfile housekeeping); skipping FAD distribution and Play upload."
+              echo "No release-worthy commits in this push (all prefixed or docs / dotfile housekeeping); skipping the Play upload."
               echo "RELEASE_NOTES_SKIP=true" >> "$GITHUB_ENV"
               exit 0
             fi

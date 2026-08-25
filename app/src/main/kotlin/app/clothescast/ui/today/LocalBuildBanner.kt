@@ -40,8 +40,8 @@ import kotlinx.coroutines.launch
  * which build is installed and how fresh it is.
  *
  * Gated on the same `IS_LOCAL_BUILD` flag the launcher-icon badge uses
- * (see `app/build.gradle.kts`). FAD-distributed debug APKs and Play
- * release builds (both built on CI) get neither badge nor banner —
+ * (see `app/build.gradle.kts`). The CI debug APK and Play release
+ * builds (both built on CI) get neither badge nor banner —
  * `main · abc1234 · 6 days ago` would be noise to non-dev users.
  *
  * Dismissal is per-build (keyed on [BuildConfig.GIT_SHA]): once dismissed,

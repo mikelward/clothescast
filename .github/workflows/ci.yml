@@ -622,13 +622,6 @@ jobs:
     name: Android debug build
     runs-on: ubuntu-latest
     needs: classify
-    outputs:
-      # Whether the uploaded debug APK carries the stable debug-signing
-      # identity. `deploy` needs this to decide whether the APK is safe to
-      # hand to Firebase testers — an APK signed with the runner's throwaway
-      # key can't install over their existing build. Set only by the decode
-      # step below, which is main-gated, so PR runs leave it empty.
-      stable_signing: ${{ steps.debug-keystore.outputs.stable }}
     permissions:
       contents: read
       pull-requests: write
@@ -707,7 +700,6 @@ jobs:
           echo "google-services.json materialised (${bytes} bytes)."
 
       - name: Decode debug keystore from secret
-        id: debug-keystore
         # Stable signing identity across CI builds so the installed app upgrades
         # in place instead of failing "App not installed (signature mismatch)"
         # on every new APK. Gated to push / workflow_dispatch on main only:
@@ -716,10 +708,14 @@ jobs:
         # can't exfiltrate DEBUG_KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD
         # or read /tmp/debug.keystore. AGP falls back to its auto-generated
         # debug keystore on PR builds — the APK still builds and runs, just
-        # without the stable signing identity. FAD distribution is main-only
-        # anyway (it lives in the `deploy` job, which never runs on a PR), so
-        # PR-built APKs aren't pushed to testers and the lost
-        # in-place-upgrade property doesn't matter.
+        # without the stable signing identity, and AGP generates a fresh key
+        # on each hosted runner. So two artifacts from two PR runs cannot
+        # update each other: installing the second over the first fails with
+        # INSTALL_FAILED_UPDATE_INCOMPATIBLE, and uninstalling first loses
+        # that app's data. Only main-built artifacts share one identity and
+        # install over each other. That is a real cost, accepted because the
+        # alternative is exposing the keystore secrets to PR builds; anyone
+        # iterating on a branch this way should expect the uninstall.
         # Skipped quietly when DEBUG_KEYSTORE_BASE64 isn't set (fresh repo).
         #
         # On success this step propagates all four DEBUG_* values to
@@ -773,11 +769,6 @@ jobs:
             printf 'DEBUG_KEY_ALIAS<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_ALIAS"
             printf 'DEBUG_KEY_PASSWORD<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_PASSWORD"
           } >> "$GITHUB_ENV"
-          # Consumed by the `deploy` job's Firebase gate — see this job's
-          # `outputs:`. Only reached when all four secrets validated, so it
-          # means "the APK this job uploads is stably signed", not merely
-          # "the secret was present".
-          echo "stable=true" >> "$GITHUB_OUTPUT"
 
       - name: Assemble debug APK
         # No step-level `env:` referencing secrets here: on main, the four
@@ -792,9 +783,9 @@ jobs:
           ./gradlew :app:assembleDebug --stacktrace --info 2>&1 | tee /tmp/android-build.log
 
       - name: Upload debug APK
-        # `deploy` downloads this artifact rather than rebuilding the APK,
-        # so on main it is an input to the release, not just a convenience
-        # download. Keep it unconditional on job success.
+        # A convenience download for anyone who wants to install the build
+        # by hand; nothing downstream consumes it. (`deploy` did, while
+        # Firebase App Distribution existed.)
         if: success()
         uses: actions/upload-artifact@v7
         with:
@@ -973,24 +964,11 @@ jobs:
           fi
           echo "google-services.json materialised (${bytes} bytes)."
 
-      - name: Download the debug APK built by android-build
-        # Reuse rather than rebuild. `android-build` already assembled this
-        # APK and — on main — signed it with the stable debug keystore, the
-        # identity testers' installed builds upgrade over. Re-running
-        # `assembleDebug` here would burn ~3 minutes and, without decoding
-        # the keystore a second time, produce an APK signed with a *different*
-        # key that FAD testers could not install as an update.
-        uses: actions/download-artifact@v7
-        with:
-          name: app-debug-apk
-          path: ${{ runner.temp }}/debug-apk
-
-      - name: Prepare release notes for FAD and Play
-        # Single source of truth for "what changed in this build" copy. Both
-        # Firebase App Distribution (tester push-notification + release page)
-        # and Play Store internal track (whatsnew-en-US) ship this string to
-        # humans, so they MUST agree — and they MUST be a curated, end-user
-        # bullet list, not raw head-commit content.
+      - name: Prepare release notes for Play
+        # The "what changed in this build" copy that Play's internal track
+        # ships to testers as whatsnew-en-US. It goes in front of humans, so
+        # it MUST be a curated, end-user bullet list, not raw head-commit
+        # content.
         #
         # Lists every commit's subject as a `• `-prefixed bullet, oldest →
         # newest, for the range between the previous *released* main build
@@ -1040,10 +1018,9 @@ jobs:
         # When the range yields no bullets (every commit in it was filtered
         # out — e.g. a `.github/workflows/**`-only push, which still
         # triggers main CI per the workflow's `paths:` block), the step
-        # sets RELEASE_NOTES_SKIP=true and the FAD + Play upload steps
-        # below skip: nothing user-visible shipped, so publishing would
-        # buzz testers' phones and burn a Play release for notes recycled
-        # from an already-released commit. (This replaces the previous
+        # sets RELEASE_NOTES_SKIP=true and the Play upload below skips:
+        # nothing user-visible shipped, so publishing would burn a Play
+        # release on notes recycled from an already-released commit. (This replaces the previous
         # always-publish ancestor-walk fallback, which re-published old
         # subjects exactly in that case — ported from Type Launcher's
         # deploy job. The ancestor walk survives only for the no-base
@@ -1062,16 +1039,13 @@ jobs:
         # filter loop is the safety net for unusually long ranges; in
         # practice the 500-char cap bites first.
         #
-        # Outputs:
-        #   - $RUNNER_TEMP/whatsnew/whatsnew-en-US  (consumed by Play upload)
-        #   - $RELEASE_NOTES in $GITHUB_ENV         (multi-line via heredoc;
-        #     consumed by the FAD step's releaseNotes input, which composes
-        #     it with a `---` divider + `Build: N · SHA` trailer)
+        # Output: $RUNNER_TEMP/whatsnew/whatsnew-en-US, consumed by the Play
+        # upload. (This step used to also export $RELEASE_NOTES for the
+        # Firebase step's releaseNotes input; nothing reads it now.)
         #
-        # No secret gate: FAD and Play each have their own secret gates
-        # downstream, but the notes should be computed even when only one of
-        # the two is wired up. (The push/dispatch-on-main gate this step used
-        # to carry now lives on the job.)
+        # No secret gate: the Play upload has its own downstream, but the
+        # notes should be computed regardless. (The push/dispatch-on-main
+        # gate this step used to carry now lives on the job.)
         env:
           # `gh api` needs the token explicitly; everything else uses the
           # auto-provided $GITHUB_SHA / $GITHUB_REPOSITORY rather than
@@ -1086,8 +1060,15 @@ jobs:
           # and pick the head SHA of the first one with a successful job
           # whose FAD or Play upload step concluded success — a green job
           # alone isn't proof anything published (see the step comment).
-          # The step names below must match this workflow's `name:` values
-          # verbatim — rename in lockstep. Known trade: a run where FAD published
+          # The step name below must match this workflow's `name:` value
+          # verbatim — rename in lockstep. Only a successful Play upload
+          # counts. The retired Firebase step name is deliberately NOT
+          # accepted: these notes are Play's `whatsnew-en-US`, so a run that
+          # distributed through Firebase while the Play upload skipped never
+          # put its commits in front of a Play reader, and treating it as the
+          # base would drop them from Play's record permanently. Getting this
+          # wrong in the other direction only repeats a bullet, which is the
+          # trade this file has always preferred. Known trade: a run where FAD published
           # but a later step failed the job doesn't count, so FAD
           # testers may see a repeated bullet — better than Play's
           # permanent "What's new" record omitting one.
@@ -1103,8 +1084,7 @@ jobs:
               --jq '[.jobs[]
                      | select(.conclusion == "success")
                      | .steps[]
-                     | select(.name == "Distribute via Firebase App Distribution"
-                              or .name == "Upload AAB to Play Store internal track")
+                     | select(.name == "Upload AAB to Play Store internal track")
                      | .conclusion]
                     | any(. == "success")' \
               2>/dev/null || true)
@@ -1276,91 +1256,24 @@ jobs:
           fi
 
           printf '%s' "$bullets" > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
-          # Random heredoc terminator so a crafted commit subject containing
-          # the literal terminator on a line of its own can't inject
-          # arbitrary entries into $GITHUB_ENV.
-          delim="RELEASE_NOTES_EOF_$(openssl rand -hex 16)"
-          {
-            printf 'RELEASE_NOTES<<%s\n' "$delim"
-            printf '%s\n' "$bullets"
-            printf '%s\n' "$delim"
-          } >> "$GITHUB_ENV"
           echo "Release notes:"
           printf '%s\n' "$bullets"
 
       - name: Probe publish secrets
-        # Sets FIREBASE_AVAILABLE / PLAY_AVAILABLE boolean flags in
-        # $GITHUB_ENV so the downstream FAD and Play upload steps can use
-        # them in their `if:` conditions (which can't read `secrets.*`
-        # directly). This whole job is main-only, so unlike the pre-split
-        # arrangement there is no PR path to gate against here — the flags
-        # exist to keep a fresh repo or a fork, where the secrets simply
-        # aren't set, from failing CI on a publish it was never configured
-        # to do.
+        # Sets the PLAY_AVAILABLE boolean flag in $GITHUB_ENV so the Play
+        # upload step can use it in its `if:` condition (which can't read
+        # `secrets.*` directly). This whole job is main-only, so there is no
+        # PR path to gate against here — the flag exists to keep a fresh repo
+        # or a fork, where the secret simply isn't set, from failing CI on a
+        # publish it was never configured to do.
         env:
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
           PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
-          if [ -n "$FIREBASE_APP_ID" ] && [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
-            echo "FIREBASE_AVAILABLE=true" >> "$GITHUB_ENV"
-          else
-            echo "FIREBASE_AVAILABLE=false" >> "$GITHUB_ENV"
-          fi
           if [ -n "$PLAY_SERVICE_ACCOUNT_JSON" ]; then
             echo "PLAY_AVAILABLE=true" >> "$GITHUB_ENV"
           else
             echo "PLAY_AVAILABLE=false" >> "$GITHUB_ENV"
           fi
-
-      - name: Distribute via Firebase App Distribution
-        # Skipped when the Firebase secrets aren't set so the run still
-        # finishes on a fresh repo / fork — see "Probe publish secrets" above
-        # for how the FIREBASE_AVAILABLE flag is computed.
-        #
-        # Ordered before the release-AAB steps so a bundleRelease failure
-        # doesn't skip FAD distribution under the `success()` gate — debug
-        # testers get the build either way; only the Play AAB artifact is
-        # lost.
-        #
-        # Also requires the stable debug keystore: an APK signed with the
-        # runner's throwaway debug key can't install as an update over a
-        # previous FAD build (signature mismatch forces an uninstall), so
-        # distributing without it does more harm than skipping. The APK is
-        # built and signed in `android-build`, so the signal comes across as
-        # that job's `stable_signing` output rather than from a
-        # DEBUG_KEYSTORE_FILE this job never sets. Flagged by Codex on
-        # Simmo's port of this pipeline (mikelward/simmo#45).
-        if: |
-          success() &&
-          env.FIREBASE_AVAILABLE == 'true' &&
-          needs.android-build.outputs.stable_signing == 'true' &&
-          env.RELEASE_NOTES_SKIP != 'true'
-        # Pinned to a specific commit SHA (rather than the floating @v1 tag) so
-        # a compromised upstream release can't silently swap in malicious code
-        # on our next CI run. Bump deliberately. SHA below is wzieba/Firebase-
-        # Distribution-Github-Action v1.7.1.
-        uses: wzieba/Firebase-Distribution-Github-Action@bd494989dd4bec0343f78adee87fe66e48279ad6 # v1.7.1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-          # Tester group must exist in Firebase App Distribution console — see
-          # docs/firebase-app-distribution.md. "testers" is the convention; rename
-          # there + here together if you change it.
-          groups: testers
-          file: ${{ runner.temp }}/debug-apk/app-debug.apk
-          # Push notification on the tester's phone shows the first ~60 chars
-          # of these notes — must match what Play Store testers see, which is
-          # the curated subject computed in "Prepare release notes" above.
-          # Raw `head_commit.message` would be wrong twice over: on a `ci:
-          # regenerate UI snapshots` head commit testers would see the bot
-          # message, and on a normal feature commit they'd get the full body
-          # too (file paths, engineering reasoning), which CLAUDE.md reserves
-          # for reviewers, not end users.
-          releaseNotes: |
-            ${{ env.RELEASE_NOTES }}
-            ---
-            Build: ${{ github.run_number }} · ${{ github.sha }}
 
       - name: Decode upload keystore from secret
         # Mirrors `android-build`'s debug-keystore decode: base64-decode,

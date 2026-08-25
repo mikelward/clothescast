@@ -198,6 +198,15 @@ jobs:
           fi
           echo "google-services.json materialised (${bytes} bytes)."
 
+      - name: Check licenses export is up to date
+        # The open-source attribution list is committed to res/raw (AGP 9 can't
+        # auto-generate it into the app — see app/build.gradle.kts). Regenerate
+        # and fail on drift so a dependency bump can't ship a stale or inaccurate
+        # Licenses page while CI stays green.
+        run: |
+          ./gradlew :app:exportBundledLicenses --rerun
+          git diff --exit-code app/src/main/res/raw/aboutlibraries.json
+
       - name: Run unit tests
         id: gradle
         run: |

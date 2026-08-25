@@ -513,9 +513,9 @@ internal fun PrivacyPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 }
 
 @Composable
-internal fun AboutPage(onBack: () -> Unit) {
+internal fun AboutPage(onBack: () -> Unit, onOpenLicenses: () -> Unit) {
     SettingsScaffold(R.string.settings_root_about, onBack) { padding ->
-        AboutContent(padding = padding)
+        AboutContent(padding = padding, onOpenLicenses = onOpenLicenses)
     }
 }
 

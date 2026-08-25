@@ -42,7 +42,7 @@ import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun AboutContent(padding: PaddingValues) {
+internal fun AboutContent(padding: PaddingValues, onOpenLicenses: () -> Unit = {}) {
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
         scrollState = scrollState,
@@ -56,7 +56,7 @@ internal fun AboutContent(padding: PaddingValues) {
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            AboutCard()
+            AboutCard(onOpenLicenses = onOpenLicenses)
             if (BuildConfig.DEBUG) {
                 DebugCard()
             }
@@ -65,7 +65,7 @@ internal fun AboutContent(padding: PaddingValues) {
 }
 
 @Composable
-private fun AboutCard() {
+private fun AboutCard(onOpenLicenses: () -> Unit) {
     val context = LocalContext.current
     val activity = context.findActivity()
     val coroutineScope = rememberCoroutineScope()
@@ -130,6 +130,13 @@ private fun AboutCard() {
             onClick = { openUrl(context, PRIVACY_POLICY_URL) },
             modifier = Modifier.fillMaxWidth(),
         ) { Text(stringResource(R.string.settings_privacy_open_policy)) }
+        // Below the outbound links, above the bug report: the attribution list
+        // belongs with the legal reading matter, but the bug report is the one
+        // row here a user acts on, so it stays last.
+        TextButton(
+            onClick = onOpenLicenses,
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text(stringResource(R.string.settings_about_licenses)) }
         TextButton(
             onClick = {
                 if (bugReportConsentAcked) {

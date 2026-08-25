@@ -10,6 +10,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.roborazzi) apply false
+    // Exports the dependency graph as JSON for the Licenses page. Applied only
+    // in :app; declared here so the version is shared like every other plugin.
+    alias(libs.plugins.aboutlibraries) apply false
     // Firebase plugins. Loaded onto the classpath here but only applied in
     // :app, and there only when app/google-services.json is present — CI
     // builds without the JSON still assemble. See app/build.gradle.kts.

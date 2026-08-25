@@ -51,6 +51,8 @@ import app.clothescast.ui.settings.SettingsFormatPreview
 import app.clothescast.ui.settings.SettingsDeveloperPreview
 import app.clothescast.ui.settings.SettingsGarmentColorPickerPreview
 import app.clothescast.ui.settings.SettingsCalendarCelebrationsPreview
+import app.clothescast.ui.settings.SettingsLicenseDetailsPreview
+import app.clothescast.ui.settings.SettingsLicensesPreview
 import app.clothescast.ui.settings.SettingsLocationManualPreview
 import app.clothescast.ui.settings.SettingsLocationPreview
 import app.clothescast.ui.settings.SettingsPrivacyPreview
@@ -766,6 +768,8 @@ class PreviewSnapshots {
     @Config(qualifiers = "w360dp-h1600dp-xhdpi")
     fun settings_smart_home() = capture { SettingsSmartHomePreview() }
     @Test fun settings_garment_color_picker() = captureDialog { SettingsGarmentColorPickerPreview() }
+    @Test fun settings_licenses() = capture { SettingsLicensesPreview() }
+    @Test fun settings_license_details() = captureDialog { SettingsLicenseDetailsPreview() }
 
     // Meta-test: verifies that every `@Preview internal fun XxxPreview()` declared
     // in the app's `*Previews.kt` files has a corresponding `@Test` in this class.

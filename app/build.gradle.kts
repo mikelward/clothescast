@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.roborazzi)
+    alias(libs.plugins.aboutlibraries)
 }
 
 // Firebase plugins are only applied when the developer has dropped their
@@ -552,6 +553,65 @@ androidComponents {
     }
 }
 
+// ----------------------------------------------------------------------------
+// Open-source attribution -> committed res/raw/aboutlibraries.json
+// ----------------------------------------------------------------------------
+// AboutLibraries' Android auto-integration needs the legacy AppExtension that
+// AGP 9 removed, so the plugin can't generate res/raw for us at build time.
+// Instead we commit the export as a resource and regenerate it on demand with
+// `./gradlew :app:exportBundledLicenses`; CI reruns it and fails on drift. The
+// Licenses page reads the committed R.raw.aboutlibraries at runtime.
+aboutLibraries {
+    collect {
+        // Scope the collection to the release variant so test/debug-only
+        // artifacts (JUnit, Robolectric, Roborazzi, Compose tooling) never
+        // reach the export; includePlatform = false drops BOM/platform POMs
+        // (Compose, Firebase, JUnit) that ship no runtime artifact.
+        filterVariants.add("release")
+        includePlatform = false
+    }
+    export {
+        outputFile = file("src/main/res/raw/aboutlibraries.json")
+        prettyPrint = true
+        // Drop the full SPDX license text: it's resolved from a network-fetched
+        // SPDX list whose exact wording varies by environment, so committing it
+        // would make the regenerate-and-diff CI check non-deterministic. The
+        // page still shows each license's name, SPDX id, and URL.
+        excludeFields.add("License.content")
+    }
+}
+
+// The plugin walks the dependency *graph*, so its export still lists nodes that
+// resolve to no bundled artifact: Kotlin-Multiplatform metadata coordinates
+// (e.g. androidx.compose.ui:ui, which selects ...:ui-android) and the
+// org.jetbrains.compose redirect modules that alias to the androidx artifacts on
+// Android. Both would render as duplicate rows. This task regenerates the export
+// and then keeps only the coordinates that resolve to an actual artifact on the
+// release runtime classpath -- i.e. what's really bundled in the APK.
+@Suppress("UNCHECKED_CAST")
+tasks.register("exportBundledLicenses") {
+    description = "Exports open-source attributions filtered to the release APK's bundled artifacts."
+    group = "build"
+    dependsOn("exportLibraryDefinitions")
+    val licensesFile = file("src/main/res/raw/aboutlibraries.json")
+    val runtimeClasspath = configurations.named("releaseRuntimeClasspath")
+    doLast {
+        val bundled = runtimeClasspath.get().incoming
+            .artifactView { lenient(true) }.artifacts.artifacts
+            .mapNotNull { it.id.componentIdentifier as? org.gradle.api.artifacts.component.ModuleComponentIdentifier }
+            .map { "${it.moduleIdentifier.group}:${it.moduleIdentifier.name}" }
+            .toSet()
+        val root = groovy.json.JsonSlurper().parse(licensesFile) as MutableMap<String, Any?>
+        val libraries = root["libraries"] as List<Map<String, Any?>>
+        val kept = libraries.filter { (it["uniqueId"] as String) in bundled }
+        root["libraries"] = kept
+        // Prune any license no longer referenced by a kept library.
+        val used = kept.flatMap { (it["licenses"] as? List<String>).orEmpty() }.toSet()
+        (root["licenses"] as? MutableMap<String, Any?>)?.keys?.retainAll(used)
+        licensesFile.writeText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(root)) + "\n")
+    }
+}
+
 dependencies {
     // Force Guava off the vulnerable 31.1-android that firebase-analytics pulls
     // transitively (via play-services-measurement, which still pins it even in
@@ -668,6 +728,11 @@ dependencies {
     // `.await()` on the App Check token / anonymous sign-in / ID token Tasks.
     // Production (not test-only) because the planner runs in the main coroutine flow.
     implementation(libs.kotlinx.coroutines.play.services)
+
+    // Reads the committed res/raw/aboutlibraries.json for the Licenses page.
+    // Only `rememberLibraries` and the `Libs`/`Library` model are used -- the
+    // artifact's own list UI is not.
+    implementation(libs.aboutlibraries.compose.m3)
 
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter.api)

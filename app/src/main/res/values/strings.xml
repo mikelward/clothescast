@@ -1192,6 +1192,19 @@
     <string name="settings_about_share_bug_report">Share bug report</string>
     <string name="settings_about_version_copied">Version copied to clipboard</string>
 
+    <!-- Open-source attribution, reached from the About page. The row reads
+         "Licenses" because the About page it sits on already sets the context;
+         the page it opens spells out which licenses these are. -->
+    <!-- TODO: translate -->
+    <string name="settings_about_licenses" tools:ignore="MissingTranslation">Licenses</string>
+    <!-- TODO: translate -->
+    <string name="settings_licenses_title" tools:ignore="MissingTranslation">Open source licenses</string>
+    <!-- Version of one bundled component, shown in the dialog a component row
+         opens. Separate from settings_about_version above, which carries the
+         app\'s own version name and code. -->
+    <!-- TODO: translate -->
+    <string name="settings_licenses_version" tools:ignore="MissingTranslation">Version %1$s</string>
+
     <!-- Consent dialog shown before any "share bug report" action (Today
          overflow, About page, or the post-crash banner). Brief by design:
          the user is mid-tap, not reading a policy. Calls out the personal

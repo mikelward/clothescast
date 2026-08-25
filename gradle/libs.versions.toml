@@ -91,6 +91,12 @@ playServicesCast = "22.3.1"
 # (moderate: FileBackedOutputStream temp-dir disclosure, fixed in 32.0.0). See
 # the dependency constraint in app/build.gradle.kts.
 guava = "33.6.0-android"
+# AboutLibraries — the open-source attribution list behind Settings → About →
+# Licenses. The Gradle plugin walks the dependency graph and exports it as JSON;
+# the `-compose-m3` artifact is only the runtime JSON reader (`rememberLibraries`),
+# not its stock list UI, which we don't use. See app/build.gradle.kts for why the
+# export is committed to res/raw instead of generated at build time.
+aboutlibraries = "12.2.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -174,6 +180,7 @@ hivemq-mqtt-client = { group = "com.hivemq", name = "hivemq-mqtt-client", versio
 
 play-services-cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "playServicesCast" }
 guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+aboutlibraries-compose-m3 = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -185,3 +192,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 gms-google-services = { id = "com.google.gms.google-services", version.ref = "gmsGoogleServices" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }

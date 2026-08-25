@@ -54,7 +54,12 @@ I put on before I leave?" instead of a full weather-office report.
 - **Settings.** Structured cards cover Location, Schedule, Clothes, Format,
   Region, Display, Calendar, Voice, Smart Home, Privacy, Developer, and About.
   Settings are meant to be discoverable and reversible rather than hidden behind
-  one monolithic preferences list.
+  one monolithic preferences list. About also opens a **Licenses** page: every
+  third-party component the APK bundles, listed by name alone, one row each,
+  with that component's version and a link out to the full text of each license
+  behind a tap. Its list names what the APK actually bundles rather than what
+  the dependency graph mentions, and is kept current by the build rather than by
+  hand.
 - **Notifications.** Separate Today and Tonight notifications;
   tapping insight notifications returns to Today.
 - **Widgets.** Glance widgets expose outfit and feels-like chart summaries on the

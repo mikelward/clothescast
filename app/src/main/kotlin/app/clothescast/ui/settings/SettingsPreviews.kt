@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,6 +64,8 @@ import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.discovery.DiscoveredService
 import app.clothescast.discovery.ServiceType
 import app.clothescast.ui.theme.ClothesCastTheme
+import com.mikepenz.aboutlibraries.Libs
+import com.mikepenz.aboutlibraries.util.withJson
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.Locale
@@ -943,6 +947,37 @@ internal fun SettingsSmartHomePreview() {
             onSetMqttSkipPhoneSpeech = {},
             onSetUpSpeech = {},
         )
+    }
+}
+
+// The attribution list, built from the same committed
+// res/raw/aboutlibraries.json the page reads at runtime — so the snapshot moves
+// exactly when the bundled dependency set does, which is worth seeing on a PR.
+// Built synchronously here rather than through `rememberLibraries`, whose
+// background parse would leave the capture racing an empty first frame.
+@Preview(name = "Settings · Licenses", widthDp = 360)
+@Composable
+internal fun SettingsLicensesPreview() {
+    val context = LocalContext.current
+    val libraries = remember { Libs.Builder().withJson(context, R.raw.aboutlibraries).build() }
+    SettingsFrame {
+        LicensesContent(libraries = libraries, padding = PaddingValues(0.dp))
+    }
+}
+
+// The dialog a component row opens: version plus each license as a link out to
+// its full text. Pinned to one fixed library rather than "the first in the
+// list" so a dependency change can't silently re-point the snapshot.
+@Preview(name = "Settings · License details", widthDp = 360)
+@Composable
+internal fun SettingsLicenseDetailsPreview() {
+    val context = LocalContext.current
+    val library = remember {
+        Libs.Builder().withJson(context, R.raw.aboutlibraries).build()
+            .libraries.first { it.uniqueId == "androidx.activity:activity" }
+    }
+    SettingsFrame {
+        LibraryDetailsDialog(library = library, onOpenLicenseUrl = {}, onDismiss = {})
     }
 }
 

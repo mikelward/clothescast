@@ -43,6 +43,7 @@ import app.clothescast.ui.settings.DeveloperPage
 import app.clothescast.ui.settings.DisplayPage
 import app.clothescast.ui.settings.ForecastersPage
 import app.clothescast.ui.settings.FormatPage
+import app.clothescast.ui.settings.LicensesPage
 import app.clothescast.ui.settings.LocalSettingsDoneAction
 import app.clothescast.ui.settings.LocationPage
 import app.clothescast.ui.settings.PrivacyPage
@@ -94,6 +95,7 @@ private const val NAV_ANIM_MS = 200
 @Serializable internal object SmartHomeDest
 @Serializable internal object PrivacyDest
 @Serializable internal object AboutDest
+@Serializable internal object LicensesDest
 @Serializable internal object DeveloperDest
 
 @Composable
@@ -237,7 +239,15 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
             }
         }
         composable<PrivacyDest> { e -> SettingsSubPage(nav, e) { PrivacyPage(e.settingsViewModel(nav, app), onBack) } }
-        composable<AboutDest> { e -> SettingsSubPage(nav, e) { AboutPage(onBack) } }
+        composable<AboutDest> { e ->
+            SettingsSubPage(nav, e) {
+                AboutPage(onBack, onOpenLicenses = { nav.navigate(LicensesDest) })
+            }
+        }
+        // Not wrapped in SettingsSubPage: this page is only ever reached from
+        // About, so a "Done" bar would just duplicate the back arrow it sits
+        // under. The default LocalSettingsDoneAction (null) renders no bar.
+        composable<LicensesDest> { LicensesPage(onBack) }
         composable<DeveloperDest> { e -> SettingsSubPage(nav, e) { DeveloperPage(e.settingsViewModel(nav, app), onBack) } }
     }
 }

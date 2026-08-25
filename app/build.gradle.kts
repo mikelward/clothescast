@@ -77,8 +77,7 @@ fun String.asJavaStringLiteralBody(): String = this
     .replace("\t", "\\t")
 
 // versionCode: total commit count on the current branch. Monotonically increases,
-// reproducible (same commit -> same number), required by Firebase App Distribution
-// and the Play Store. CI must use `actions/checkout@v4` with `fetch-depth: 0` —
+// reproducible (same commit -> same number), required by the Play Store. CI must use `actions/checkout@v4` with `fetch-depth: 0` —
 // shallow clones make rev-list --count return 1 and break monotonicity across builds.
 val gitCommitCount: Int = git("rev-list", "--count", "HEAD").toInt()
 
@@ -120,10 +119,10 @@ println("clothescast: isCiBuild=$isCiBuild, launcherIcon=$launcherIconRes (versi
  *
  * CI builds intentionally leave this empty so the Firebase Debug provider
  * falls back to its own per-install random UUID. That keeps the
- * developer's token out of FAD-distributed debug APKs (any tester would
- * otherwise extract it from `BuildConfig` and inherit the developer's
- * App Check identity). FAD testers' devices keep using the original
- * "grep Logcat once per fresh install" workflow.
+ * developer's token out of the CI debug APK (anyone with it would
+ * otherwise extract the token from `BuildConfig` and inherit the
+ * developer's App Check identity). Whoever sideloads that APK uses the
+ * original "grep Logcat once per fresh install" workflow.
  *
  * The token has no power over release App Check (Play Integrity), and
  * Firestore rules deny all client access regardless of who's authed via
@@ -183,9 +182,9 @@ val buildTimestampMs: Long = System.currentTimeMillis()
 
 android {
     // Pinned to app.clothescast. Renamed from app.adaptweather as part of the
-    // product rename; existing FAD testers had to uninstall + reinstall,
-    // losing their encrypted API keys (Gemini), schedule,
-    // location, and clothes rules. Once a sideloaded build with applicationId
+    // product rename; the App Distribution testers of the day had to
+    // uninstall + reinstall, losing their encrypted API keys (Gemini),
+    // schedule, location, and clothes rules. Once a sideloaded build with applicationId
     // X is in the wild, switching to Y means installs of Y are a different
     // app — the applicationId is the install identity; do not change it again
     // without a planned migration story.
@@ -220,8 +219,8 @@ android {
         // Dev banner fields surfaced on the Today screen for local (non-CI)
         // builds. IS_LOCAL_BUILD piggybacks on the same `isCiBuild` flag the
         // launcher icon uses, so the badge and the banner agree on which
-        // APKs are "the developer's own machine" — FAD-distributed debug
-        // APKs and Play release builds (both built on CI) get neither.
+        // APKs are "the developer's own machine" — the CI debug APK and
+        // Play release builds (both built on CI) get neither.
         // Defined for all variants so the composable compiles regardless of
         // which buildType is active.
         buildConfigField("boolean", "IS_LOCAL_BUILD", (!isCiBuild).toString())

@@ -19,8 +19,9 @@ Code TODOs in source files are linked from here when they exist.
       debug APK to testers on every push to `main`. Retired once the Play
       internal track proved sufficient: same audience, one channel instead
       of two, and no second signing identity to keep alive. Its setup guide
-      went with it. The debug APK is still built on every push and is
-      downloadable as the `app-debug-apk` CI artifact.
+      went with it, and so did the `app-debug-apk` CI artifact that
+      outlived it — build a debug APK locally instead. CI still runs
+      `assembleDebug` as a compile check; it just keeps nothing.
 - [x] **Play Store internal track.** Push to `main` builds and signs the
       release AAB and uploads it. Now the only automated channel — see
       [docs/play-store-internal-testing.md](docs/play-store-internal-testing.md).

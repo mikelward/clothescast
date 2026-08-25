@@ -10,11 +10,11 @@ clicking anything in the Play Console.
   on the `internal` track with `status: completed` → testers in the internal
   list get the new version on next Play Store check (typically minutes to a
   few hours, depending on Play caching on each device).
-- This is the only automated distribution channel. Firebase App Distribution
-  used to ship the debug APK to the same testers in parallel; it was removed
-  once the internal track proved sufficient. The debug APK is still built on
-  every push and is downloadable as the `app-debug-apk` CI artifact for
-  anyone who wants to install it by hand.
+- This is the only distribution channel. Firebase App Distribution used to
+  ship the debug APK to the same testers in parallel; it was removed once the
+  internal track proved sufficient, and the `app-debug-apk` CI artifact that
+  outlived it has been removed too. Anyone who wants a build by hand builds
+  one locally — see `README.md`.
 
 ## Prerequisites
 
@@ -167,25 +167,21 @@ depending on Play's caching, where Firebase App Distribution used to take
 about thirty seconds.
 
 When that wait doesn't suit — iterating on a fix with someone, or testing a
-branch that will never reach `main` — take the debug APK straight from CI
-instead: any run that builds the app uploads it as the `app-debug-apk`
-artifact. (A docs-only diff doesn't — `classify` marks it `docs_only` and
-`android-build` is skipped, so there's no APK on those runs. Touch app code
-and it's there.) It carries a
-different package id (`app.clothescast.debug`) and a different signing key,
-so it installs alongside the Play build rather than over it. `README.md` has
-the steps.
+branch that will never reach `main` — build a debug APK locally:
+`./gradlew :app:installDebug`, or `assembleDebug` and transfer the APK by
+hand. `README.md` has the steps. It carries a different package id
+(`app.clothescast.debug`) and a different signing key, so it installs
+alongside the Play build rather than over it.
 
-Open a pull request for the branch first, even a draft. CI's `push` trigger
-is scoped to `main`, so a branch that is only pushed produces no Actions run
-and no artifact — the `pull_request` trigger is what builds a branch.
-
-One catch: **no CI debug APK installs over another**, including two from
-`main`. Every runner signs with a keystore AGP generates for that run, so a
-second artifact fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE` and
-uninstalling first wipes that install's settings. Expect an uninstall each
-time. (A stored debug keystore used to give `main` builds one shared
-identity; it existed for Firebase App Distribution and went with it.)
+CI used to upload the same thing as the `app-debug-apk` artifact. That was
+removed: it needed a PR before a branch would build at all, and — since the
+stored debug keystore went with Firebase App Distribution — every runner
+signed with a key it generated for that run, so no two artifacts installed
+over each other. A second one failed with
+`INSTALL_FAILED_UPDATE_INCOMPATIBLE`, and uninstalling first wiped that
+install's settings. A local build has neither problem: `~/.android/debug.keystore`
+is stable, so successive builds upgrade in place. None of the sibling repos
+(typelauncher, simmo, snoozemo) ship a debug-APK artifact either.
 
 The Play upload itself no-ops when `PLAY_SERVICE_ACCOUNT_JSON` is unset, but
 that alone doesn't make a `main` run pass on a repo without the release

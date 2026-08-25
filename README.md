@@ -21,8 +21,8 @@ telemetry, runtime permission UX, boot/timezone/locale alarm re-arm, and debug
 / manual actions for testing without waiting until the scheduled time.
 
 Distribution: every push to `main` ships a signed AAB to the Play Store
-internal track for testers, and a debug APK is also available from the CI
-artifact (see below) for sideload installs.
+internal track for testers. For anything faster, build and install a debug
+APK locally (see below).
 
 ## Tech stack
 
@@ -66,19 +66,20 @@ Two options, in roughly increasing order of friction:
 - **Play Store internal track** (testers): added in the Play Console, you
   get the latest `main` build automatically. Every push to `main` ships a
   signed AAB to this track.
-- **Sideload from CI artifact** (anyone with repo read access): for any
-  branch with an open pull request, not just `main` — CI's `push` trigger
-  is scoped to `main`, so a branch needs a PR (a draft is fine) before it
-  builds. Each CI run signs with its own generated key, so no two artifacts
-  install over each other — expect to uninstall between them.
-  1. Push your work and open a pull request (a draft is fine). CI builds a
-     debug APK on every commit of a PR that touches app code (see
-     `.github/workflows/ci.yml`) — a docs-only diff skips the Android build,
-     so there's no artifact on those runs.
-  2. From the GitHub Actions run, download the `app-debug-apk` artifact.
-  3. Unzip it; transfer `app-debug.apk` to the phone (Drive, USB, etc.).
-  4. Tap to install. Android will prompt about installing from unknown
-     sources — accept once for your file manager / browser.
+- **Build it yourself** (anyone with a checkout): works for any branch,
+  committed or not, with no PR and no waiting on CI.
+  1. `./gradlew :app:installDebug` with a device attached over ADB, or
+     `./gradlew :app:assembleDebug` and transfer
+     `app/build/outputs/apk/debug/app-debug.apk` to the phone by hand
+     (Drive, USB, etc.).
+  2. If installing by hand, tap to install — Android will prompt about
+     installing from unknown sources; accept once for your file manager
+     / browser.
+
+  Your machine's `~/.android/debug.keystore` is stable, so successive
+  builds upgrade in place and keep their app data. The debug build also
+  carries its own package id (`app.clothescast.debug`), so it installs
+  alongside a Play build rather than over it.
 
 ## First-run setup
 

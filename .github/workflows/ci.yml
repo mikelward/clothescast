@@ -708,17 +708,6 @@ jobs:
           set -o pipefail
           ./gradlew :app:assembleDebug --stacktrace --info 2>&1 | tee /tmp/android-build.log
 
-      - name: Upload debug APK
-        # A convenience download for anyone who wants to install the build
-        # by hand; nothing downstream consumes it. (`deploy` did, while
-        # Firebase App Distribution existed.)
-        if: success()
-        uses: actions/upload-artifact@v7
-        with:
-          name: app-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
-          retention-days: 14
-
       - name: Clear prior CI comments for this job
         # Same rationale as the JVM job — drops stale failure comments on a
         # clean re-run so the PR doesn't accumulate. Same continue-on-error

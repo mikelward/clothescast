@@ -25,7 +25,7 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
  * the build script), we don't write anything. The SDK falls back to
  * generating its own per-install random UUID and logging it to
  * Logcat, same as the pre-PR baseline. That keeps the developer's
- * token out of FAD-distributed debug APKs.
+ * token out of the debug APKs CI uploads as artifacts.
  *
  * Risk note: the SharedPreferences pref-file name and key are a
  * Firebase implementation detail and could change without notice. If

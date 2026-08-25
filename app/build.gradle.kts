@@ -278,51 +278,16 @@ android {
     // this android{} block, which wires them into the AGP resource pipeline.
 
     signingConfigs {
-        // Stable debug-keystore signing. When the env vars below are present
-        // (decoded from GitHub Secrets in the workflow), every CI build is
-        // signed with the same identity — so the user's installed APK upgrades
-        // in place rather than failing with "App not installed (signature
-        // mismatch)" on each new build, which would otherwise force a wipe of
-        // their encrypted Gemini key + saved settings.
+        // No debug override: `assembleDebug` uses AGP's auto-generated
+        // ~/.android/debug.keystore everywhere, CI included. A stored debug
+        // keystore existed only so Firebase App Distribution testers could
+        // upgrade in place; with that channel gone, the CI debug APK is a
+        // sideload artifact whose consumers uninstall between builds anyway
+        // (a hosted runner mints a fresh key per run, so branch builds never
+        // shared an identity to begin with).
         //
-        // Locally, the env vars are absent, so AGP's auto-generated
-        // ~/.android/debug.keystore is used (the conventional dev path —
-        // unchanged behaviour for anyone running `./gradlew assembleDebug`
-        // from their own machine).
-        getByName("debug") {
-            // All four vars must be present for the override; if only some are
-            // set we'd otherwise silently install blank credentials and let
-            // signing fail with a confusing message at the end of the build.
-            // Treat partial configuration as user error, fail fast.
-            val keystorePath = System.getenv("DEBUG_KEYSTORE_FILE")?.takeIf { it.isNotBlank() }
-            val storePass = System.getenv("DEBUG_KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
-            val alias = System.getenv("DEBUG_KEY_ALIAS")?.takeIf { it.isNotBlank() }
-            val keyPass = System.getenv("DEBUG_KEY_PASSWORD")?.takeIf { it.isNotBlank() }
-
-            val anySet = keystorePath != null || storePass != null || alias != null || keyPass != null
-            val allSet = keystorePath != null && storePass != null && alias != null && keyPass != null
-
-            if (anySet && !allSet) {
-                error(
-                    "Partial debug-keystore configuration. Set all of DEBUG_KEYSTORE_FILE, " +
-                        "DEBUG_KEYSTORE_PASSWORD, DEBUG_KEY_ALIAS, DEBUG_KEY_PASSWORD — or none, " +
-                        "to fall back to AGP's default debug keystore.",
-                )
-            }
-
-            if (allSet) {
-                val keystore = file(keystorePath!!)
-                check(keystore.exists()) {
-                    "DEBUG_KEYSTORE_FILE is set but does not exist: ${keystore.path}"
-                }
-                storeFile = keystore
-                storePassword = storePass
-                keyAlias = alias
-                keyPassword = keyPass
-            }
-        }
-        // Upload key for Play App Signing. Same env-var-or-fail pattern as the
-        // debug block above: in CI the four UPLOAD_* env vars are populated from
+        // Upload key for Play App Signing, the only signing config this
+        // project configures: in CI the four UPLOAD_* env vars are populated from
         // GitHub Secrets and bundleRelease produces a Play-uploadable AAB; locally
         // the env vars are absent, the signing config has no storeFile, and AGP
         // fails loudly on bundleRelease/assembleRelease — which is the right

@@ -168,7 +168,10 @@ about thirty seconds.
 
 When that wait doesn't suit — iterating on a fix with someone, or testing a
 branch that will never reach `main` — take the debug APK straight from CI
-instead: every run uploads it as the `app-debug-apk` artifact. It carries a
+instead: any run that builds the app uploads it as the `app-debug-apk`
+artifact. (A docs-only diff doesn't — `classify` marks it `docs_only` and
+`android-build` is skipped, so there's no APK on those runs. Touch app code
+and it's there.) It carries a
 different package id (`app.clothescast.debug`) and a different signing key,
 so it installs alongside the Play build rather than over it. `README.md` has
 the steps.
@@ -177,13 +180,12 @@ Open a pull request for the branch first, even a draft. CI's `push` trigger
 is scoped to `main`, so a branch that is only pushed produces no Actions run
 and no artifact — the `pull_request` trigger is what builds a branch.
 
-One catch when iterating on a branch: only `main` builds are signed with the
-stable debug keystore. PR and branch builds fall back to a key AGP generates
-fresh on each runner, so a second artifact **will not install over the
-first** — it fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, and
-uninstalling first wipes that install's settings. Expect an uninstall
-between branch builds, or take the artifact from a `main` run where the
-stable identity applies.
+One catch: **no CI debug APK installs over another**, including two from
+`main`. Every runner signs with a keystore AGP generates for that run, so a
+second artifact fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE` and
+uninstalling first wipes that install's settings. Expect an uninstall each
+time. (A stored debug keystore used to give `main` builds one shared
+identity; it existed for Firebase App Distribution and went with it.)
 
 The Play upload itself no-ops when `PLAY_SERVICE_ACCOUNT_JSON` is unset, but
 that alone doesn't make a `main` run pass on a repo without the release

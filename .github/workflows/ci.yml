@@ -160,8 +160,8 @@ jobs:
         # isn't set (fork PR / fresh repo).
         #
         # Auto-detects whether the secret holds raw JSON or base64. This
-        # repo's other binary secrets (DEBUG_KEYSTORE_BASE64,
-        # UPLOAD_KEYSTORE_BASE64) must be base64 because they're binary;
+        # repo's other binary secret (UPLOAD_KEYSTORE_BASE64) must be
+        # base64 because it's binary;
         # google-services.json is text, so pasting it raw works too and is
         # one fewer step at setup time. Either shape is accepted.
         env:
@@ -632,8 +632,8 @@ jobs:
     # `on:` block, and pull_request secrets are blocked by GitHub for fork
     # PRs — but *same-repo* PRs still receive secrets unless we gate
     # individual secret-loading steps to main. Since the release moved to
-    # `deploy`, the only such step left here is the debug-keystore decode,
-    # which `if:`-gates itself to push/dispatch on main.
+    # `deploy` and the debug-keystore decode was retired, no step in this
+    # job loads a signing secret at all — only `google-services.json`.
     # A PR-named dispatch (the snapshot-regen relaunch) is admitted off main:
     # mikelward/lanes binds it to the PR's own head, and the secret-loading
     # steps below stay individually gated to push/dispatch on main, so no
@@ -699,84 +699,10 @@ jobs:
           fi
           echo "google-services.json materialised (${bytes} bytes)."
 
-      - name: Decode debug keystore from secret
-        # Stable signing identity across CI builds so the installed app upgrades
-        # in place instead of failing "App not installed (signature mismatch)"
-        # on every new APK. Gated to push / workflow_dispatch on main only:
-        # PR `assembleDebug` runs (incl. same-repo PRs) deliberately don't
-        # decode this keystore so a malicious Gradle modification in a PR
-        # can't exfiltrate DEBUG_KEYSTORE_PASSWORD / KEY_ALIAS / KEY_PASSWORD
-        # or read /tmp/debug.keystore. AGP falls back to its auto-generated
-        # debug keystore on PR builds — the APK still builds and runs, just
-        # without the stable signing identity, and AGP generates a fresh key
-        # on each hosted runner. So two artifacts from two PR runs cannot
-        # update each other: installing the second over the first fails with
-        # INSTALL_FAILED_UPDATE_INCOMPATIBLE, and uninstalling first loses
-        # that app's data. Only main-built artifacts share one identity and
-        # install over each other. That is a real cost, accepted because the
-        # alternative is exposing the keystore secrets to PR builds; anyone
-        # iterating on a branch this way should expect the uninstall.
-        # Skipped quietly when DEBUG_KEYSTORE_BASE64 isn't set (fresh repo).
-        #
-        # On success this step propagates all four DEBUG_* values to
-        # $GITHUB_ENV so the Assemble step below picks them up without
-        # re-referencing secrets — i.e. secrets enter this job's process
-        # environment only in this step (main-gated), nowhere else.
-        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
-        env:
-          DEBUG_KEYSTORE_BASE64: ${{ secrets.DEBUG_KEYSTORE_BASE64 }}
-          DEBUG_KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
-          DEBUG_KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
-          DEBUG_KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
-        run: |
-          if [ -z "$DEBUG_KEYSTORE_BASE64" ]; then
-            echo "No DEBUG_KEYSTORE_BASE64 secret available; build will use AGP-default debug keystore."
-            exit 0
-          fi
-          # If one stable-keystore secret is set, all four must be set. Otherwise
-          # gradle later errors with "Partial debug-keystore configuration", but
-          # the decode step itself would also throw a confusing keytool message
-          # in the meantime. Catch it here with an explicit list of what's
-          # missing so the failure is unambiguous.
-          missing=""
-          [ -z "$DEBUG_KEYSTORE_PASSWORD" ] && missing="$missing DEBUG_KEYSTORE_PASSWORD"
-          [ -z "$DEBUG_KEY_ALIAS" ]         && missing="$missing DEBUG_KEY_ALIAS"
-          [ -z "$DEBUG_KEY_PASSWORD" ]      && missing="$missing DEBUG_KEY_PASSWORD"
-          if [ -n "$missing" ]; then
-            echo "::error::DEBUG_KEYSTORE_BASE64 is set but the following companion secrets are missing or empty:$missing"
-            exit 1
-          fi
-          # printf rather than echo: portable across shells and doesn't append
-          # a trailing newline that some base64 implementations choke on.
-          printf '%s' "$DEBUG_KEYSTORE_BASE64" | base64 --decode > /tmp/debug.keystore
-          # Validate the decoded file is actually a usable PKCS12/JKS keystore
-          # with the configured password, rather than just non-empty bytes.
-          # Catches "wrong base64", "wrong password", "uploaded a JPEG by
-          # mistake" — at the early-fail step, not at signing-step time.
-          if ! keytool -list -keystore /tmp/debug.keystore -storepass "$DEBUG_KEYSTORE_PASSWORD" >/dev/null 2>&1; then
-            echo "::error::Decoded keystore at /tmp/debug.keystore is not a valid keystore or DEBUG_KEYSTORE_PASSWORD is wrong."
-            exit 1
-          fi
-          # Propagate to $GITHUB_ENV so the Assemble step picks them up
-          # without itself referencing `${{ secrets.* }}`. Values are still
-          # masked in logs (`add-mask` was applied when GitHub injected them
-          # as `env:` here). Heredoc form is robust if a value ever contains
-          # newlines; KEY_ALIAS realistically won't, but uniform style is
-          # cheaper than knowing-the-edge-cases.
-          {
-            echo "DEBUG_KEYSTORE_FILE=/tmp/debug.keystore"
-            printf 'DEBUG_KEYSTORE_PASSWORD<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEYSTORE_PASSWORD"
-            printf 'DEBUG_KEY_ALIAS<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_ALIAS"
-            printf 'DEBUG_KEY_PASSWORD<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_PASSWORD"
-          } >> "$GITHUB_ENV"
-
       - name: Assemble debug APK
-        # No step-level `env:` referencing secrets here: on main, the four
-        # DEBUG_* env vars arrive via $GITHUB_ENV from the decode step
-        # above; on PRs (where the decode step is skipped) they're absent
-        # and AGP's signingConfigs block in app/build.gradle.kts falls back
-        # to the auto-generated debug keystore. This keeps PR builds from
-        # ever seeing the secret values in their gradle process.
+        # No secrets reach this step. Debug builds are signed with AGP's
+        # auto-generated keystore on every runner — see the signingConfigs
+        # note in app/build.gradle.kts.
         id: gradle
         run: |
           set -o pipefail
@@ -1310,16 +1236,9 @@ jobs:
         # with the upload key; Play App Signing re-signs with the real signing
         # key on download.
         #
-        # No DEBUG_* env vars here, deliberately. Gradle evaluates *all*
-        # signingConfigs at configure time, so app/build.gradle.kts's debug
-        # block runs even though `bundleRelease` only uses the release config
-        # — and its guard errors on a *partial* DEBUG_* set. This job never
-        # decodes the debug keystore (the debug APK is built and signed in
-        # `android-build`, then downloaded above), so passing the three
-        # DEBUG_* passwords without DEBUG_KEYSTORE_FILE is exactly the
-        # partial state that guard rejects. Passing none leaves the debug
-        # config on AGP's auto-generated keystore, which `bundleRelease`
-        # never touches, and keeps three more secrets out of this job.
+        # No DEBUG_* env vars here: the debug signingConfig no longer reads
+        # any, so `bundleRelease` configures cleanly with only the UPLOAD_*
+        # set.
         env:
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
           UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}

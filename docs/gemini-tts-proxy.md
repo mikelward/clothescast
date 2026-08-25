@@ -54,11 +54,16 @@ Android:
 - **Package name**: `app.clothescast.debug` for debug builds,
   `app.clothescast` for release. Add both — they're separate apps
   from Firebase's perspective.
-- **SHA-1**: required for Play Integrity. From the upload keystore:
+- **SHA-1**: required for Play Integrity, which is the *release* App Check
+  provider. From the upload keystore:
   `keytool -list -v -keystore <upload.jks> -alias <alias>` → grab the
-  `SHA1:` line. For debug builds, do the same against
-  `~/.android/debug.keystore`, or against the stable debug keystore
-  behind the `DEBUG_KEYSTORE_BASE64` CI secret if you use one.
+  `SHA1:` line. A CI debug APK is signed with a keystore AGP generates on
+  the runner, so its SHA-1 is not stable and not worth registering — but
+  that costs nothing, because debug builds don't use Play Integrity at
+  all. They install `DebugAppCheckProviderFactory`, and on a CI build
+  (`APP_CHECK_DEBUG_TOKEN` blank) the SDK generates a per-install UUID and
+  logs it to Logcat. Register that as a debug token the usual way and App
+  Check works on a CI-built debug APK.
 
 Download `google-services.json` from the project settings and drop
 it at `app/google-services.json`. It's gitignored — per-developer,
@@ -312,19 +317,17 @@ the cap actually tamper-resistant.
 - **Rotating the Gemini key**: `firebase functions:secrets:set
   GEMINI_API_KEY` again, then redeploy. The function picks up the
   new value on cold start.
-- **CI builds**: GitHub Actions builds don't carry
-  `google-services.json` and don't set `GEMINI_PROXY_URL`, so the
-  shared path is disabled on those APKs. That's intentional — CI is
-  just the build pipeline, not a tester install. **No CI debug artifact
-  has the shared path enabled**, for either of two reasons:
+- **CI builds**: **no CI debug artifact has the shared path enabled.**
+  That's intentional — CI is the build pipeline, not a tester install.
+  Two independent reasons, and the first settles it on its own:
 
   - `GEMINI_PROXY_URL` is passed only to the `deploy` job's
     `Bundle release AAB` step. `assembleDebug` never receives it, so
     `BuildConfig.GEMINI_PROXY_URL` is blank in every `app-debug-apk`
     and the planner falls back to BYOK. Only the Play release build
-    gets the proxy URL.
-  - `google-services.json` is decoded from a repository secret, which
-    fork PRs never receive and a repo without `GOOGLE_SERVICES_JSON`
-    set never has. Same-repository builds with the secret configured
-    do get the file — but per the point above, that alone isn't enough
-    to enable the shared path.
+    gets the proxy URL — true of every CI debug build, however it is
+    configured.
+  - `google-services.json` is decoded from a repository secret, so a
+    fork PR never has it and neither does a repo with
+    `GOOGLE_SERVICES_JSON` unset. A configured same-repository build
+    *does* get the file; per the point above that still isn't enough.

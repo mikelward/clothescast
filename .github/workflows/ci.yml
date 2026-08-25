@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 on:
   # Don't trigger on pushes to feature branches — pull_request covers those.

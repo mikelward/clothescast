@@ -317,16 +317,17 @@ the cap actually tamper-resistant.
 - **Rotating the Gemini key**: `firebase functions:secrets:set
   GEMINI_API_KEY` again, then redeploy. The function picks up the
   new value on cold start.
-- **CI builds**: **no CI debug artifact has the shared path enabled.**
+- **CI builds**: **no CI debug build has the shared path enabled.**
   That's intentional — CI is the build pipeline, not a tester install.
   Two independent reasons, and the first settles it on its own:
 
   - `GEMINI_PROXY_URL` is passed only to the `deploy` job's
     `Bundle release AAB` step. `assembleDebug` never receives it, so
-    `BuildConfig.GEMINI_PROXY_URL` is blank in every `app-debug-apk`
+    `BuildConfig.GEMINI_PROXY_URL` is blank in every CI debug build
     and the planner falls back to BYOK. Only the Play release build
     gets the proxy URL — true of every CI debug build, however it is
-    configured.
+    configured. (CI no longer keeps its debug APK at all; the step is
+    a compile check.)
   - `google-services.json` is decoded from a repository secret, so a
     fork PR never has it and neither does a repo with
     `GOOGLE_SERVICES_JSON` unset. A configured same-repository build

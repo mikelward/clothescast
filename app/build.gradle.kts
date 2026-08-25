@@ -119,9 +119,9 @@ println("clothescast: isCiBuild=$isCiBuild, launcherIcon=$launcherIconRes (versi
  *
  * CI builds intentionally leave this empty so the Firebase Debug provider
  * falls back to its own per-install random UUID. That keeps the
- * developer's token out of the CI debug APK (anyone with it would
+ * developer's token out of any APK built on CI (anyone with it would
  * otherwise extract the token from `BuildConfig` and inherit the
- * developer's App Check identity). Whoever sideloads that APK uses the
+ * developer's App Check identity). Anyone running such a build uses the
  * original "grep Logcat once per fresh install" workflow.
  *
  * The token has no power over release App Check (Play Integrity), and
@@ -280,10 +280,11 @@ android {
         // No debug override: `assembleDebug` uses AGP's auto-generated
         // ~/.android/debug.keystore everywhere, CI included. A stored debug
         // keystore existed only so Firebase App Distribution testers could
-        // upgrade in place; with that channel gone, the CI debug APK is a
-        // sideload artifact whose consumers uninstall between builds anyway
-        // (a hosted runner mints a fresh key per run, so branch builds never
-        // shared an identity to begin with).
+        // upgrade in place; with that channel gone, nothing distributes a
+        // CI-built debug APK at all — `assembleDebug` runs on CI purely as a
+        // compile check and the output is discarded. Local debug builds use
+        // the developer's own ~/.android/debug.keystore, which is stable, so
+        // they upgrade in place.
         //
         // Upload key for Play App Signing, the only signing config this
         // project configures: in CI the four UPLOAD_* env vars are populated from

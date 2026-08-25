@@ -11,7 +11,7 @@
         "firebase-debug.*.log",
         "*.local"
       ],
-      "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+      "predeploy": ["cd \"$RESOURCE_DIR\" && npm run build"]
     }
   ],
   "firestore": {

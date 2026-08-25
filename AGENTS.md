@@ -531,27 +531,41 @@ future task; the incident narrative belongs in the commit message.
   verified from the full history.
 ## CI
 
-- Two jobs: `JVM unit tests` runs `:core:*:test` + `:app:testDebugUnitTest`;
-  `Android debug build` runs `:app:assembleDebug`. Both upload artifacts;
-  Roborazzi PNG snapshots upload as `ui-preview-snapshots` from the
-  JVM-tests job.
-- **Job timings, measured 2026-07-24** — whole-job wall clock, with the
-  dominant step in parentheses:
-  - `JVM unit tests` — ~4m45s on a PR, ~5m on `main` (`Run unit tests`
-    step ~4m).
-  - `Android debug build` — ~4m20s on a PR (`Assemble debug APK` step
-    ~3m20s), ~9m30s on `main`.
+- Three heavy jobs: `JVM unit tests` runs `:core:*:test` +
+  `:app:testDebugUnitTest`; `Android debug build` runs `:app:assembleDebug`;
+  `Distribute and release` builds and ships the release. All upload
+  artifacts; Roborazzi PNG snapshots upload as `ui-preview-snapshots` from
+  the JVM-tests job.
+- **`Distribute and release` is `main`-only and gated on the other two.** It
+  needs `JVM unit tests` *and* `Android debug build` green, runs under the
+  `production` environment, and never runs on a PR — so it reports `skipped`
+  on every PR run. It reuses the `app-debug-apk` artifact for Firebase
+  rather than rebuilding it, and only it runs `:app:bundleRelease`, the
+  Firebase distribution, and the Play upload.
+- **Job timings** — whole-job wall clock, with the dominant step in
+  parentheses. PR figures measured 2026-08-25; the `main` figures for the
+  two jobs the deploy split reshaped are **projected from the pre-split
+  run's step times, not measured** — replace them with real numbers after
+  the first `main` run on the new shape.
+  - `JVM unit tests` — ~4m45s on a PR, ~5m30s on `main` (`Run unit tests`
+    step ~4m). Unaffected by the split.
+  - `Android debug build` — ~4m20s on a PR; *projected* ~4m30s on `main`.
+    It was ~10m on `main` before the split; the release work that made up
+    the difference now lives in its own job.
+  - `Distribute and release` — *projected* ~6m30s on `main` (`Bundle
+    release AAB` step ~4m30s), `skipped` on a PR.
 
-  **Re-date this list when you refresh it.** The previous figures (~2m /
-  ~3.5m) carried no date, had drifted well out of true, and cost an agent
-  a wrong "significant regression" call against a run that was in fact
-  slightly *faster* than baseline.
-- **Compare like with like: PR against PR, `main` against `main`.** The
-  `main` Android job is roughly double the PR one because `Bundle release
-  AAB` (~4m30s), Firebase App Distribution, and the Play upload only run
-  there — all three report `skipped` on a PR. Comparing a PR job against a
-  `main` number, or against a *step* time rather than the job total,
-  manufactures a regression that doesn't exist.
+  **Re-date this list when you refresh it.** Figures carrying no date have
+  drifted well out of true before, and cost an agent a wrong "significant
+  regression" call against a run that was in fact slightly *faster* than
+  baseline.
+- **Compare like with like: PR against PR, `main` against `main`.** With the
+  release split out, `Android debug build` should now cost about the same on
+  both — a `main` number roughly double the PR one is the *old* shape and
+  means something regressed. `Distribute and release` has no PR counterpart
+  at all, so it only ever compares against other `main` runs. Comparing a PR
+  job against a `main` number, or against a *step* time rather than the job
+  total, manufactures a regression that doesn't exist.
 - After pushing, **wait for CI** before claiming a change works on Android.
   Don't busy-poll inside the turn — a failure arrives on the subscription, and
   success is what the scheduled check is for.

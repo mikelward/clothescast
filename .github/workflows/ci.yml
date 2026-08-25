@@ -613,23 +613,25 @@ jobs:
     name: Android debug build
     runs-on: ubuntu-latest
     needs: classify
+    outputs:
+      # Whether the uploaded debug APK carries the stable debug-signing
+      # identity. `deploy` needs this to decide whether the APK is safe to
+      # hand to Firebase testers — an APK signed with the runner's throwaway
+      # key can't install over their existing build. Set only by the decode
+      # step below, which is main-gated, so PR runs leave it empty.
+      stable_signing: ${{ steps.debug-keystore.outputs.stable }}
     permissions:
       contents: read
       pull-requests: write
-      # Needed by the "Prepare release notes" step's Actions-API fallback,
-      # which queries the most recent successful main CI run when
-      # `github.event.before` isn't usable (workflow_dispatch, first push
-      # to a fresh branch).
-      actions: read
     # workflow_dispatch can be invoked against any ref by any user with
     # `actions: write`; a manual dispatch against a feature branch that
     # ships a malicious `ci.yml` modification would otherwise have job
     # secrets in scope. push events are already filtered to main by the
     # `on:` block, and pull_request secrets are blocked by GitHub for fork
     # PRs — but *same-repo* PRs still receive secrets unless we gate
-    # individual secret-loading steps to main (see the "Probe publish
-    # secrets" / debug-keystore-decode / Firebase / Play steps below,
-    # each of which `if:`-gates secret access to push/dispatch on main).
+    # individual secret-loading steps to main. Since the release moved to
+    # `deploy`, the only such step left here is the debug-keystore decode,
+    # which `if:`-gates itself to push/dispatch on main.
     # A PR-named dispatch (the snapshot-regen relaunch) is admitted off main:
     # mikelward/lanes binds it to the PR's own head, and the secret-loading
     # steps below stay individually gated to push/dispatch on main, so no
@@ -696,6 +698,7 @@ jobs:
           echo "google-services.json materialised (${bytes} bytes)."
 
       - name: Decode debug keystore from secret
+        id: debug-keystore
         # Stable signing identity across CI builds so the installed app upgrades
         # in place instead of failing "App not installed (signature mismatch)"
         # on every new APK. Gated to push / workflow_dispatch on main only:
@@ -705,8 +708,9 @@ jobs:
         # or read /tmp/debug.keystore. AGP falls back to its auto-generated
         # debug keystore on PR builds — the APK still builds and runs, just
         # without the stable signing identity. FAD distribution is main-only
-        # anyway (see Firebase step below), so PR-built APKs aren't pushed
-        # to testers and the lost in-place-upgrade property doesn't matter.
+        # anyway (it lives in the `deploy` job, which never runs on a PR), so
+        # PR-built APKs aren't pushed to testers and the lost
+        # in-place-upgrade property doesn't matter.
         # Skipped quietly when DEBUG_KEYSTORE_BASE64 isn't set (fresh repo).
         #
         # On success this step propagates all four DEBUG_* values to
@@ -760,6 +764,11 @@ jobs:
             printf 'DEBUG_KEY_ALIAS<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_ALIAS"
             printf 'DEBUG_KEY_PASSWORD<<__EOF__\n%s\n__EOF__\n' "$DEBUG_KEY_PASSWORD"
           } >> "$GITHUB_ENV"
+          # Consumed by the `deploy` job's Firebase gate — see this job's
+          # `outputs:`. Only reached when all four secrets validated, so it
+          # means "the APK this job uploads is stably signed", not merely
+          # "the secret was present".
+          echo "stable=true" >> "$GITHUB_OUTPUT"
 
       - name: Assemble debug APK
         # No step-level `env:` referencing secrets here: on main, the four
@@ -774,14 +783,198 @@ jobs:
           ./gradlew :app:assembleDebug --stacktrace --info 2>&1 | tee /tmp/android-build.log
 
       - name: Upload debug APK
-        # Up here, before the release-AAB steps, so a bundleRelease failure
-        # doesn't gate this artifact behind a now-failed `success()`.
+        # `deploy` downloads this artifact rather than rebuilding the APK,
+        # so on main it is an input to the release, not just a convenience
+        # download. Keep it unconditional on job success.
         if: success()
         uses: actions/upload-artifact@v7
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
+
+      - name: Clear prior CI comments for this job
+        # Same rationale as the JVM job — drops stale failure comments on a
+        # clean re-run so the PR doesn't accumulate. Same continue-on-error
+        # and pagination reasoning too.
+        continue-on-error: true
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const marker = '<!-- ci-android-build -->';
+            try {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                ...context.repo,
+                issue_number: context.issue.number,
+                per_page: 100,
+              });
+              for (const c of comments) {
+                if (c.user.type === 'Bot' && c.body && c.body.includes(marker)) {
+                  await github.rest.issues.deleteComment({
+                    ...context.repo,
+                    comment_id: c.id,
+                  });
+                }
+              }
+            } catch (e) {
+              core.warning(`Could not clear prior Android-build comments (${e.message}); an earlier failure comment may still be on the PR.`);
+            }
+
+      - name: Post tail of gradle log on failure
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- ci-android-build -->';
+            // Same budgeting as the JVM job's comment — see the rationale
+            // there. An over-long body 422s and loses the whole comment.
+            const LIMIT = 60000;
+            const trimmed = '\n\n_Trimmed — the full log is in the `android-build-log` artifact._';
+            let body = `${marker} Android debug build failed before gradle started.`;
+            try {
+              const lines = fs.readFileSync('/tmp/android-build.log', 'utf8').split('\n');
+              const errorLines = lines.filter(l =>
+                /^(e:|w:| {2}error:|FAILURE:|\* What went wrong:|Caused by:|Compilation error)/.test(l)
+              ).slice(0, 80).join('\n') || '(none matched)';
+              const head = `${marker} Android debug build failed.\n\n` +
+                '### Likely error lines\n```\n' + errorLines + '\n```\n' +
+                '### Last 300 lines\n```\n';
+              let tail = lines.slice(-300).join('\n');
+              const budget = LIMIT - head.length - '\n```'.length - trimmed.length;
+              const overflowed = tail.length > budget;
+              if (overflowed) tail = tail.slice(-Math.max(budget, 0));
+              body = head + tail + '\n```' + (overflowed ? trimmed : '');
+              const suffix = '\n```' + trimmed;
+              if (body.length > LIMIT) body = body.slice(0, LIMIT - suffix.length) + suffix;
+            } catch (e) {
+              body = `${marker} Android debug build failed before gradle started: ${e.message}`;
+            }
+            try {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            } catch (e) {
+              core.warning(`Could not post the failing-build comment (${e.message}); the log is in the job output above and in the android-build-log artifact.`);
+            }
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-build-log
+          path: /tmp/android-build.log
+          retention-days: 14
+
+  deploy:
+    name: Distribute and release
+    # Everything that leaves this repo: the Firebase tester build, the signed
+    # release AAB, and the Play internal-track upload. Split out of
+    # `android-build` so the release is gated on the tests actually passing,
+    # so the publish secrets are scoped to a job that never runs on a PR, and
+    # so a red box in the Actions UI says "the release failed" rather than
+    # "the debug build failed". Gated three ways:
+    #   1. `if:` — push to main or a manual workflow_dispatch that explicitly
+    #      targets main. The dispatch UI defaults its ref selector to main,
+    #      but a maintainer can pick another branch, so this re-checks
+    #      `github.ref` rather than trusting that default. Never on PRs.
+    #   2. `environment: production` — the publish secrets (FIREBASE_*,
+    #      UPLOAD_KEYSTORE_*, PLAY_SERVICE_ACCOUNT_JSON) belong in the
+    #      `production` environment, where GitHub enforces the boundary:
+    #      Settings → Environments → production, deployment branches
+    #      restricted to `main`, optionally a required reviewer. An `if:`
+    #      alone is only as good as the workflow file, which a branch can
+    #      edit; an environment protection rule a branch cannot. Naming an
+    #      environment that doesn't exist yet creates it unprotected on
+    #      first run, so the rules still have to be set by hand — until
+    #      then this line buys the deployment record, not the gate.
+    #   3. `needs:` — unit-tests AND android-build must both be green.
+    #      Previously the publish steps lived inside `android-build`, whose
+    #      only `needs:` was `classify`, so a failing JVM unit test or
+    #      Roborazzi comparison on main did not stop the Play release.
+    if: |
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: [unit-tests, android-build]
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      # Used by "Prepare release notes" to walk recent main runs of this
+      # workflow and find the last one that actually published.
+      actions: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Release notes walk `git rev-list` over the range since the last
+          # published build, and versionCode comes from `rev-list --count`.
+          fetch-depth: 0
+          # No step here pushes, and nothing PR-controlled is checked out
+          # (this job only runs on push/dispatch against main) — but the
+          # token has no reason to sit in .git/config regardless.
+          persist-credentials: false
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        # SHA-pinned — see rationale on the unit-tests job's copy of this step.
+        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+        with:
+          packages: 'platforms;android-37.0 build-tools;36.0.0 platform-tools'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Decode google-services.json from secret
+        # See unit-tests job for the rationale and the raw-vs-base64
+        # auto-detect. Decoding both here and there keeps the Firebase
+        # plugin state consistent across jobs.
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON" ]; then
+            echo "No GOOGLE_SERVICES_JSON secret available; APK will be built without Firebase config."
+            exit 0
+          fi
+          trimmed="$(printf '%s' "$GOOGLE_SERVICES_JSON" | tr -d '[:space:]')"
+          first_char="$(printf '%s' "$trimmed" | head -c 1)"
+          if [ "$first_char" = "{" ]; then
+            echo "Detected raw JSON in secret; writing through without base64 decode."
+            printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          else
+            if ! printf '%s' "$trimmed" | base64 --decode > app/google-services.json 2>/dev/null; then
+              echo "::error::Failed to base64-decode GOOGLE_SERVICES_JSON. Re-create the secret with the OUTPUT of \`base64 -w0 app/google-services.json\` (Linux) or \`base64 -i app/google-services.json | tr -d '\\n'\` (macOS). Or paste the JSON file contents directly — auto-detect handles either shape."
+              exit 1
+            fi
+          fi
+          bytes="$(wc -c < app/google-services.json | tr -d ' ')"
+          if ! grep -q '"project_info"' app/google-services.json || \
+             ! grep -q '"client"'       app/google-services.json; then
+            echo "::error::app/google-services.json (${bytes} bytes) is missing project_info / client keys — secret value isn't a valid Firebase config JSON or paste was truncated."
+            exit 1
+          fi
+          echo "google-services.json materialised (${bytes} bytes)."
+
+      - name: Download the debug APK built by android-build
+        # Reuse rather than rebuild. `android-build` already assembled this
+        # APK and — on main — signed it with the stable debug keystore, the
+        # identity testers' installed builds upgrade over. Re-running
+        # `assembleDebug` here would burn ~3 minutes and, without decoding
+        # the keystore a second time, produce an APK signed with a *different*
+        # key that FAD testers could not install as an update.
+        uses: actions/download-artifact@v7
+        with:
+          name: app-debug-apk
+          path: ${{ runner.temp }}/debug-apk
 
       - name: Prepare release notes for FAD and Play
         # Single source of truth for "what changed in this build" copy. Both
@@ -798,20 +991,22 @@ jobs:
         # would silently omit the unreleased commits from the failed run.
         # The Actions API gives us "last *released* tip" instead — walking
         # main's recent workflow runs newest-first and picking the first
-        # one whose `android-build` job succeeded AND actually published
-        # (its FAD or Play upload *step* concluded success). Gating on
-        # the job rather than the workflow run matters because
-        # `unit-tests` and `android-build` run in parallel without
-        # `needs:` and the publish steps live only in `android-build`: a
-        # run where `unit-tests` fails but `android-build` succeeds DID
-        # publish, so its head SHA is the right base — querying the
-        # workflow's overall conclusion would skip it and double-bullet
-        # its commits in the next fully-green run's notes. Gating on the
-        # publish *steps* on top of that matters because the job also
-        # concludes green when every publish step skips (publication
-        # secrets missing, or RELEASE_NOTES_SKIP on a housekeeping-only
-        # push) — counting such a run as released would drop its range's
-        # commits from the next real release. The current run is
+        # one with a successful job whose FAD or Play upload *step*
+        # concluded success. Gating on the job rather than the workflow
+        # run matters because a run can publish and still conclude red
+        # elsewhere (a flaky lane job, a failed comment step): querying
+        # the workflow's overall conclusion would skip it and
+        # double-bullet its commits in the next fully-green run's notes.
+        # Gating on the publish *steps* on top of that matters because
+        # the job also concludes green when every publish step skips
+        # (publication secrets missing, or RELEASE_NOTES_SKIP on a
+        # housekeeping-only push) — counting such a run as released would
+        # drop its range's commits from the next real release. The
+        # selector deliberately does NOT name the job: these steps lived
+        # in `android-build` before the deploy split, and runs recorded
+        # then must keep counting as released. The step names are unique
+        # to publishing, so matching on them alone is both sufficient and
+        # rename-proof. The current run is
         # filtered out (no job conclusion yet); we also skip any prior
         # runs of the same head SHA (manual re-runs). When no prior
         # released build is reachable (fresh repo, fork, history
@@ -864,14 +1059,10 @@ jobs:
         #     consumed by the FAD step's releaseNotes input, which composes
         #     it with a `---` divider + `Build: N · SHA` trailer)
         #
-        # Gated on push/dispatch to main only — feature-branch CI runs don't
-        # distribute, so the prep work would be wasted there. No secret gate:
-        # FAD and Play each have their own secret gates downstream, but the
-        # notes should be computed even when only one of the two is wired up.
-        if: |
-          success() &&
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-          github.ref == 'refs/heads/main'
+        # No secret gate: FAD and Play each have their own secret gates
+        # downstream, but the notes should be computed even when only one of
+        # the two is wired up. (The push/dispatch-on-main gate this step used
+        # to carry now lives on the job.)
         env:
           # `gh api` needs the token explicitly; everything else uses the
           # auto-provided $GITHUB_SHA / $GITHUB_REPOSITORY rather than
@@ -883,12 +1074,11 @@ jobs:
           head_sha="$GITHUB_SHA"
 
           # Walk the most recent main runs of this workflow (newest first)
-          # and pick the head SHA of the first one whose `android-build`
-          # job concluded with success AND whose FAD or Play upload step
-          # concluded success — a green job alone isn't proof anything
-          # published (see the step comment). The job and step names
-          # below must match this workflow's `name:` values verbatim —
-          # rename in lockstep. Known trade: a run where FAD published
+          # and pick the head SHA of the first one with a successful job
+          # whose FAD or Play upload step concluded success — a green job
+          # alone isn't proof anything published (see the step comment).
+          # The step names below must match this workflow's `name:` values
+          # verbatim — rename in lockstep. Known trade: a run where FAD published
           # but a later step failed the job doesn't count, so FAD
           # testers may see a repeated bullet — better than Play's
           # permanent "What's new" record omitting one.
@@ -902,7 +1092,6 @@ jobs:
             published=$(gh api \
               "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/jobs" \
               --jq '[.jobs[]
-                     | select(.name == "Android debug build")
                      | select(.conclusion == "success")
                      | .steps[]
                      | select(.name == "Distribute via Firebase App Distribution"
@@ -1094,15 +1283,11 @@ jobs:
         # Sets FIREBASE_AVAILABLE / PLAY_AVAILABLE boolean flags in
         # $GITHUB_ENV so the downstream FAD and Play upload steps can use
         # them in their `if:` conditions (which can't read `secrets.*`
-        # directly). Gated to push / workflow_dispatch on main: this is the
-        # ONLY step in this job where FIREBASE_* / PLAY_* secrets are ever
-        # expanded into env vars. On PR runs (incl. same-repo) the flags
-        # remain unset, the FAD and Play steps short-circuit on the flag
-        # check, and their `with:` blocks (which also reference these
-        # secrets) are never evaluated — so a malicious Gradle change in
-        # a PR has no path to read these secret values from the runner's
-        # process environment.
-        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        # directly). This whole job is main-only, so unlike the pre-split
+        # arrangement there is no PR path to gate against here — the flags
+        # exist to keep a fresh repo or a fork, where the secrets simply
+        # aren't set, from failing CI on a publish it was never configured
+        # to do.
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
@@ -1120,32 +1305,27 @@ jobs:
           fi
 
       - name: Distribute via Firebase App Distribution
-        # On push to main (or manual workflow_dispatch on main) only —
-        # feature-branch CI runs would otherwise spam testers with WIP builds.
-        # workflow_dispatch is the rescue path when the natural push event
-        # was suppressed by `[skip ci]` on the head commit. Skipped when
-        # the Firebase secrets aren't set so the build still finishes on a
-        # fresh repo / fork — see "Probe publish secrets" above for how the
-        # FIREBASE_AVAILABLE flag is computed (only on main, so the secret
-        # values never enter the runner env on PRs).
+        # Skipped when the Firebase secrets aren't set so the run still
+        # finishes on a fresh repo / fork — see "Probe publish secrets" above
+        # for how the FIREBASE_AVAILABLE flag is computed.
         #
-        # Ordered before the release-AAB steps so a bundleRelease failure on
-        # main doesn't skip FAD distribution under the `success()` gate — debug
-        # testers get the build either way; only the Play AAB artifact is lost.
+        # Ordered before the release-AAB steps so a bundleRelease failure
+        # doesn't skip FAD distribution under the `success()` gate — debug
+        # testers get the build either way; only the Play AAB artifact is
+        # lost.
         #
-        # Also requires the stable debug keystore (DEBUG_KEYSTORE_FILE is
-        # only set when the decode step above validated one): an APK signed
-        # with the runner's throwaway debug key can't install as an update
-        # over a previous FAD build (signature mismatch forces an
-        # uninstall), so distributing without it does more harm than
-        # skipping. Flagged by Codex on Simmo's port of this pipeline
-        # (mikelward/simmo#45).
+        # Also requires the stable debug keystore: an APK signed with the
+        # runner's throwaway debug key can't install as an update over a
+        # previous FAD build (signature mismatch forces an uninstall), so
+        # distributing without it does more harm than skipping. The APK is
+        # built and signed in `android-build`, so the signal comes across as
+        # that job's `stable_signing` output rather than from a
+        # DEBUG_KEYSTORE_FILE this job never sets. Flagged by Codex on
+        # Simmo's port of this pipeline (mikelward/simmo#45).
         if: |
           success() &&
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-          github.ref == 'refs/heads/main' &&
           env.FIREBASE_AVAILABLE == 'true' &&
-          env.DEBUG_KEYSTORE_FILE != '' &&
+          needs.android-build.outputs.stable_signing == 'true' &&
           env.RELEASE_NOTES_SKIP != 'true'
         # Pinned to a specific commit SHA (rather than the floating @v1 tag) so
         # a compromised upstream release can't silently swap in malicious code
@@ -1159,7 +1339,7 @@ jobs:
           # docs/firebase-app-distribution.md. "testers" is the convention; rename
           # there + here together if you change it.
           groups: testers
-          file: app/build/outputs/apk/debug/app-debug.apk
+          file: ${{ runner.temp }}/debug-apk/app-debug.apk
           # Push notification on the tester's phone shows the first ~60 chars
           # of these notes — must match what Play Store testers see, which is
           # the curated subject computed in "Prepare release notes" above.
@@ -1174,14 +1354,10 @@ jobs:
             Build: ${{ github.run_number }} · ${{ github.sha }}
 
       - name: Decode upload keystore from secret
-        # Push-to-main (or manual workflow_dispatch on main) only. PR builds
-        # (incl. forks) skip — forks don't have the secret, and even non-fork
-        # PRs don't need to burn ~3min signing a release AAB on every commit.
-        # Mirrors the debug-keystore decode step above: base64-decode,
+        # Mirrors `android-build`'s debug-keystore decode: base64-decode,
         # validate with `keytool -list` so wrong-base64 / wrong-password
         # fails here rather than at signing time, then export the path to
         # GITHUB_ENV for bundleRelease to pick up.
-        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
         env:
           UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
@@ -1208,22 +1384,21 @@ jobs:
           echo "UPLOAD_KEYSTORE_FILE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
 
       - name: Bundle release AAB
-        # Push-to-main (or manual workflow_dispatch on main) only — see
-        # "Decode upload keystore" rationale. Produces
-        # app/build/outputs/bundle/release/app-release.aab signed with the upload
-        # key; Play App Signing re-signs with the real signing key on download.
+        # Produces app/build/outputs/bundle/release/app-release.aab signed
+        # with the upload key; Play App Signing re-signs with the real signing
+        # key on download.
         #
-        # Both DEBUG_* and UPLOAD_* env vars are passed: Gradle evaluates *all*
-        # signingConfigs at configure time, so even though `bundleRelease` only
-        # uses the release config, the debug block at app/build.gradle.kts also
-        # runs and its partial-config guard would fail the build if DEBUG_*
-        # were only partially populated. DEBUG_KEYSTORE_FILE comes via
-        # $GITHUB_ENV from the earlier decode step.
-        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        # No DEBUG_* env vars here, deliberately. Gradle evaluates *all*
+        # signingConfigs at configure time, so app/build.gradle.kts's debug
+        # block runs even though `bundleRelease` only uses the release config
+        # — and its guard errors on a *partial* DEBUG_* set. This job never
+        # decodes the debug keystore (the debug APK is built and signed in
+        # `android-build`, then downloaded above), so passing the three
+        # DEBUG_* passwords without DEBUG_KEYSTORE_FILE is exactly the
+        # partial state that guard rejects. Passing none leaves the debug
+        # config on AGP's auto-generated keystore, which `bundleRelease`
+        # never touches, and keeps three more secrets out of this job.
         env:
-          DEBUG_KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
-          DEBUG_KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
-          DEBUG_KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
           UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
@@ -1236,13 +1411,13 @@ jobs:
           GEMINI_PROXY_URL: ${{ secrets.GEMINI_PROXY_URL }}
         run: |
           set -o pipefail
-          ./gradlew :app:bundleRelease --stacktrace --info 2>&1 | tee -a /tmp/android-build.log
+          ./gradlew :app:bundleRelease --stacktrace --info 2>&1 | tee /tmp/release-build.log
 
       - name: Upload release AAB
         # Browser-downloadable artifact for manual upload to Play Console — kept
         # even after the auto-upload step below so the AAB is recoverable if the
         # Play upload fails (or for ad-hoc browser uploads to other tracks).
-        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && success()
+        if: success()
         uses: actions/upload-artifact@v7
         with:
           name: app-release-aab
@@ -1250,17 +1425,14 @@ jobs:
           retention-days: 14
 
       - name: Upload AAB to Play Store internal track
-        # Push-to-main (or manual workflow_dispatch on main) only; skipped
-        # when PLAY_SERVICE_ACCOUNT_JSON isn't set (PLAY_AVAILABLE comes from
-        # the "Probe publish secrets" step) so a fresh repo / fork still
-        # completes CI. Ordered AFTER the release-AAB artifact upload so a
+        # Skipped when PLAY_SERVICE_ACCOUNT_JSON isn't set (PLAY_AVAILABLE
+        # comes from the "Probe publish secrets" step) so a fresh repo / fork
+        # still completes CI. Ordered AFTER the release-AAB artifact upload so a
         # Play API failure (e.g. listing not yet approved, versionCode
         # collision) doesn't gate the artifact behind `success()`. Pinned to
         # a specific commit SHA — bump deliberately.
         if: |
           success() &&
-          (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-          github.ref == 'refs/heads/main' &&
           env.PLAY_AVAILABLE == 'true' &&
           env.RELEASE_NOTES_SKIP != 'true'
         uses: r0adkll/upload-google-play@a80b0bcdcfdfcc2d026f2bc73f726760b2cbc967 # post-v1.1.5: fixes DEP0040/DEP0169 Node.js deprecation warnings
@@ -1272,80 +1444,17 @@ jobs:
           status: completed
           whatsNewDirectory: ${{ runner.temp }}/whatsnew
 
-      - name: Clear prior CI comments for this job
-        # Same rationale as the JVM job — drops stale failure comments on a
-        # clean re-run so the PR doesn't accumulate. Same continue-on-error
-        # and pagination reasoning too.
-        continue-on-error: true
-        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const marker = '<!-- ci-android-build -->';
-            try {
-              const comments = await github.paginate(github.rest.issues.listComments, {
-                ...context.repo,
-                issue_number: context.issue.number,
-                per_page: 100,
-              });
-              for (const c of comments) {
-                if (c.user.type === 'Bot' && c.body && c.body.includes(marker)) {
-                  await github.rest.issues.deleteComment({
-                    ...context.repo,
-                    comment_id: c.id,
-                  });
-                }
-              }
-            } catch (e) {
-              core.warning(`Could not clear prior Android-build comments (${e.message}); an earlier failure comment may still be on the PR.`);
-            }
-
-      - name: Post tail of gradle log on failure
-        if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            const marker = '<!-- ci-android-build -->';
-            // Same budgeting as the JVM job's comment — see the rationale
-            // there. An over-long body 422s and loses the whole comment.
-            const LIMIT = 60000;
-            const trimmed = '\n\n_Trimmed — the full log is in the `android-build-log` artifact._';
-            let body = `${marker} Android debug build failed before gradle started.`;
-            try {
-              const lines = fs.readFileSync('/tmp/android-build.log', 'utf8').split('\n');
-              const errorLines = lines.filter(l =>
-                /^(e:|w:| {2}error:|FAILURE:|\* What went wrong:|Caused by:|Compilation error)/.test(l)
-              ).slice(0, 80).join('\n') || '(none matched)';
-              const head = `${marker} Android debug build failed.\n\n` +
-                '### Likely error lines\n```\n' + errorLines + '\n```\n' +
-                '### Last 300 lines\n```\n';
-              let tail = lines.slice(-300).join('\n');
-              const budget = LIMIT - head.length - '\n```'.length - trimmed.length;
-              const overflowed = tail.length > budget;
-              if (overflowed) tail = tail.slice(-Math.max(budget, 0));
-              body = head + tail + '\n```' + (overflowed ? trimmed : '');
-              const suffix = '\n```' + trimmed;
-              if (body.length > LIMIT) body = body.slice(0, LIMIT - suffix.length) + suffix;
-            } catch (e) {
-              body = `${marker} Android debug build failed before gradle started: ${e.message}`;
-            }
-            try {
-              await github.rest.issues.createComment({
-                ...context.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-            } catch (e) {
-              core.warning(`Could not post the failing-build comment (${e.message}); the log is in the job output above and in the android-build-log artifact.`);
-            }
-
-      - name: Upload build log
+      - name: Upload release build log
+        # `android-build`'s log uploader covers only that job's
+        # assembleDebug. Without this, a bundleRelease failure on main
+        # leaves nothing to read but the Actions console, and main runs
+        # get no failing-tests PR comment either.
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: android-build-log
-          path: /tmp/android-build.log
+          name: release-build-log
+          path: /tmp/release-build.log
+          if-no-files-found: ignore
           retention-days: 14
 
   # The one check the main ruleset requires. Always runs, always reports —

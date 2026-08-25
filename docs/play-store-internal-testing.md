@@ -10,10 +10,11 @@ clicking anything in the Play Console.
   on the `internal` track with `status: completed` → testers in the internal
   list get the new version on next Play Store check (typically minutes to a
   few hours, depending on Play caching on each device).
-- Independent of Firebase App Distribution, which keeps shipping the **debug**
-  APK to the same testers via push notification — different signing key,
-  different package id (`app.clothescast.debug`), so the two coexist on the
-  same device.
+- This is the only automated distribution channel. Firebase App Distribution
+  used to ship the debug APK to the same testers in parallel; it was removed
+  once the internal track proved sufficient. The debug APK is still built on
+  every push and is downloadable as the `app-debug-apk` CI artifact for
+  anyone who wants to install it by hand.
 
 ## Prerequisites
 
@@ -158,18 +159,37 @@ change.
   `changesNotSentForReview: true` on the action (then push the green
   "Send for review" button manually in Play Console once).
 
-## Relationship with Firebase App Distribution
+## Getting a build another way
 
-Both auto-publish on push to `main` and they're complementary, not redundant:
+The internal track is the only channel CI publishes to. The trade it makes is
+latency: a build reaches a device minutes to hours after CI goes green,
+depending on Play's caching, where Firebase App Distribution used to take
+about thirty seconds.
 
-| | Firebase App Distribution | Play Store internal track |
-|---|---|---|
-| What ships | debug APK (`app.clothescast.debug`) | release AAB (`app.clothescast`) |
-| Signing | debug keystore | upload key → Play App Signing |
-| Install path | App Tester app, push notification | Play Store, internal-testing opt-in URL |
-| Audience | engineers iterating on builds | shape-of-prod testing, store-flow QA |
-| Latency | ~30s after CI green | minutes to hours (Play cache) |
+When that wait doesn't suit — iterating on a fix with someone, or testing a
+branch that will never reach `main` — take the debug APK straight from CI
+instead: every run uploads it as the `app-debug-apk` artifact. It carries a
+different package id (`app.clothescast.debug`) and a different signing key,
+so it installs alongside the Play build rather than over it. `README.md` has
+the steps.
 
-If you only want one of them on a given push, the other can be disabled by
-removing the relevant secret — both steps no-op cleanly when their secret is
-unset.
+Open a pull request for the branch first, even a draft. CI's `push` trigger
+is scoped to `main`, so a branch that is only pushed produces no Actions run
+and no artifact — the `pull_request` trigger is what builds a branch.
+
+One catch when iterating on a branch: only `main` builds are signed with the
+stable debug keystore. PR and branch builds fall back to a key AGP generates
+fresh on each runner, so a second artifact **will not install over the
+first** — it fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, and
+uninstalling first wipes that install's settings. Expect an uninstall
+between branch builds, or take the artifact from a `main` run where the
+stable identity applies.
+
+The Play upload itself no-ops when `PLAY_SERVICE_ACCOUNT_JSON` is unset, but
+that alone doesn't make a `main` run pass on a repo without the release
+secrets: `Decode upload keystore from secret` runs first and fails the job
+outright when `UPLOAD_KEYSTORE_BASE64` is missing. That's deliberate — a push
+to `main` that cannot produce a signed AAB should say so rather than go
+quietly green — so a fresh clone needs the upload-signing secrets configured
+before its `main` runs go green. PRs are unaffected either way; `deploy`
+never runs on one.

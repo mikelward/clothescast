@@ -15,10 +15,15 @@ Code TODOs in source files are linked from here when they exist.
 
 ## Distribution
 
-- [x] **Firebase App Distribution setup.** Push to `main` triggers a debug
-      APK build signed with the stable keystore, uploaded to FAD with the
-      commit message as release notes. Setup steps in
-      [docs/firebase-app-distribution.md](docs/firebase-app-distribution.md).
+- [x] **Firebase App Distribution — set up, then removed.** It shipped the
+      debug APK to testers on every push to `main`. Retired once the Play
+      internal track proved sufficient: same audience, one channel instead
+      of two, and no second signing identity to keep alive. Its setup guide
+      went with it. The debug APK is still built on every push and is
+      downloadable as the `app-debug-apk` CI artifact.
+- [x] **Play Store internal track.** Push to `main` builds and signs the
+      release AAB and uploads it. Now the only automated channel — see
+      [docs/play-store-internal-testing.md](docs/play-store-internal-testing.md).
 - [ ] **`.github/workflows/release.yml`** — tag-triggered, runs Maestro on
       Firebase Test Lab + cuts a GitHub Release with a release-signed APK.
 
@@ -376,7 +381,8 @@ Open work:
   on Authentication in the Firebase project. Surfaced by Codex review
   on #893.
 - Google Home / alarm-clock-app integration.
-- Play Store submission. Sideload + FAD only for v1.
+- Play Store submission. Sideload only for v1 (this predates both the
+  internal track and Firebase App Distribution).
 
 ## Review and merge gates
 

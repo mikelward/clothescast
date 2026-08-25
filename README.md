@@ -61,18 +61,19 @@ artifact (see below) for sideload installs.
 
 ## Installing on a phone
 
-Three options, in roughly increasing order of friction:
+Two options, in roughly increasing order of friction:
 
 - **Play Store internal track** (testers): added in the Play Console, you
   get the latest `main` build automatically. Every push to `main` ships a
   signed AAB to this track.
-- **Firebase App Distribution** (testers): added to the `testers` group in
-  the FAD console, you get the debug APK from every push to `main` with a
-  one-tap install link.
 - **Sideload from CI artifact** (anyone with repo read access): for any
-  branch or PR, not just `main`.
-  1. Push your work or open a PR. CI builds a debug APK on every commit
-     (see `.github/workflows/ci.yml`).
+  branch with an open pull request, not just `main` — CI's `push` trigger
+  is scoped to `main`, so a branch needs a PR (a draft is fine) before it
+  builds. Note that only `main` builds are signed with a stable key —
+  successive branch builds won't install over each other, so expect to
+  uninstall between them.
+  1. Push your work and open a pull request (a draft is fine). CI builds a
+     debug APK on every commit of a PR (see `.github/workflows/ci.yml`).
   2. From the GitHub Actions run, download the `app-debug-apk` artifact.
   3. Unzip it; transfer `app-debug.apk` to the phone (Drive, USB, etc.).
   4. Tap to install. Android will prompt about installing from unknown

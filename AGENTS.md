@@ -539,9 +539,8 @@ future task; the incident narrative belongs in the commit message.
 - **`Distribute and release` is `main`-only and gated on the other two.** It
   needs `JVM unit tests` *and* `Android debug build` green, runs under the
   `production` environment, and never runs on a PR — so it reports `skipped`
-  on every PR run. It reuses the `app-debug-apk` artifact for Firebase
-  rather than rebuilding it, and only it runs `:app:bundleRelease`, the
-  Firebase distribution, and the Play upload.
+  on every PR run. It is the only job that runs `:app:bundleRelease` and
+  the Play upload.
 - **Job timings** — whole-job wall clock, with the dominant step in
   parentheses. PR figures measured 2026-08-25; the `main` figures for the
   two jobs the deploy split reshaped are **projected from the pre-split
@@ -552,8 +551,10 @@ future task; the incident narrative belongs in the commit message.
   - `Android debug build` — ~4m20s on a PR; *projected* ~4m30s on `main`.
     It was ~10m on `main` before the split; the release work that made up
     the difference now lives in its own job.
-  - `Distribute and release` — *projected* ~6m30s on `main` (`Bundle
-    release AAB` step ~4m30s), `skipped` on a PR.
+  - `Distribute and release` — *projected* ~5m30s on `main` (`Bundle
+    release AAB` step ~4m30s), `skipped` on a PR. Removing Firebase App
+    Distribution took its ~20s container pull and ~11s upload out of this
+    job, along with the debug-APK artifact download.
 
   **Re-date this list when you refresh it.** Figures carrying no date have
   drifted well out of true before, and cost an agent a wrong "significant

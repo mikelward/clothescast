@@ -30,16 +30,15 @@ request".
 
 ## Setup checklist (~30 minutes, one-time)
 
-You can share the same Firebase project as Firebase App Distribution
-(see `docs/firebase-app-distribution.md`) or use a separate one — the
-function only needs Firestore + App Check + Cloud Functions, none of
-which conflict with FAD.
+The function only needs Firestore + App Check + Cloud Functions, so it
+can share a Firebase project with Crashlytics and Analytics or sit in
+one of its own.
 
 ### 1. Pick (or create) the Firebase project
 
 [console.firebase.google.com](https://console.firebase.google.com).
-If you already use one for FAD or Crashlytics, reuse it. Otherwise
-**Add project** — name is cosmetic.
+If you already use one for Crashlytics or Analytics, reuse it.
+Otherwise **Add project** — name is cosmetic.
 
 You'll need the **Blaze (pay-as-you-go) plan** to deploy Cloud
 Functions and Firestore. Real-world cost on a tiny user base is
@@ -48,9 +47,9 @@ covered by Google's free tier at low volume).
 
 ### 2. Add the Android app to Firebase
 
-If FAD is already set up against this project, the Android app is
-already registered — skip this step. Otherwise, in the project's
-**Project settings** → **Your apps** → Android:
+If the app is already registered against this project, skip this step.
+Otherwise, in the project's **Project settings** → **Your apps** →
+Android:
 
 - **Package name**: `app.clothescast.debug` for debug builds,
   `app.clothescast` for release. Add both — they're separate apps
@@ -58,8 +57,8 @@ already registered — skip this step. Otherwise, in the project's
 - **SHA-1**: required for Play Integrity. From the upload keystore:
   `keytool -list -v -keystore <upload.jks> -alias <alias>` → grab the
   `SHA1:` line. For debug builds, do the same against
-  `~/.android/debug.keystore` (or your stable debug keystore from
-  `docs/firebase-app-distribution.md`).
+  `~/.android/debug.keystore`, or against the stable debug keystore
+  behind the `DEBUG_KEYSTORE_BASE64` CI secret if you use one.
 
 Download `google-services.json` from the project settings and drop
 it at `app/google-services.json`. It's gitignored — per-developer,
@@ -316,7 +315,16 @@ the cap actually tamper-resistant.
 - **CI builds**: GitHub Actions builds don't carry
   `google-services.json` and don't set `GEMINI_PROXY_URL`, so the
   shared path is disabled on those APKs. That's intentional — CI is
-  just the build pipeline, not a tester install. FAD-distributed
-  debug APKs *do* get `google-services.json` (it's decoded from a
-  GitHub Secret in the workflow), and they pick up
-  `GEMINI_PROXY_URL` from the same env var setup.
+  just the build pipeline, not a tester install. **No CI debug artifact
+  has the shared path enabled**, for either of two reasons:
+
+  - `GEMINI_PROXY_URL` is passed only to the `deploy` job's
+    `Bundle release AAB` step. `assembleDebug` never receives it, so
+    `BuildConfig.GEMINI_PROXY_URL` is blank in every `app-debug-apk`
+    and the planner falls back to BYOK. Only the Play release build
+    gets the proxy URL.
+  - `google-services.json` is decoded from a repository secret, which
+    fork PRs never receive and a repo without `GOOGLE_SERVICES_JSON`
+    set never has. Same-repository builds with the secret configured
+    do get the file — but per the point above, that alone isn't enough
+    to enable the shared path.

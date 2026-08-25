@@ -130,6 +130,14 @@ firebase login
 firebase use --add                    # pick the project from step 1
 ```
 
+Install the CLI through npm, **not** as the standalone binary. The
+standalone build (firepit) prepends its own `node` and `npm` shims to
+`PATH` and points npm's `script-shell` at a third shim, none of which
+carry a shebang line — so the `predeploy` hook dies with
+`/bin/sh: --: invalid option` before `tsc` ever runs. `firebase
+--version` reports the same number either way; check for
+`~/.cache/firebase/runtime` to tell them apart.
+
 `firebase use --add` writes a `.firebaserc` entry — that file *is*
 committed (it just pins the project ID), so other developers cloning
 the repo can `firebase use <alias>` if you've set one up.

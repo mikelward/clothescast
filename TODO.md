@@ -266,33 +266,21 @@ Open work:
 
 ## Review and merge gates
 
-- [ ] **Reconcile the docs-lane classifier with the release-notes-skip
-      classifier for `PRIVACY.md`, and reconsider forcing it onto the code
-      lane at all.** `PRIVACY.md` is carved out of the `docs/` housekeeping
-      rule in `classify`'s lane check (see `.github/lanes.conf`), which
-      means a PRIVACY.md-only change always runs the full build/test/lint
-      pipeline, even a pure wording fix that changes nothing about the app —
-      but PRIVACY.md isn't actually code, so that's a heavier CI cost than
-      the change needs; being release-worthy and needing heavy CI are two
-      separate questions the lane rule currently conflates. Separately, the
-      deploy job's "Prepare release notes" step has two *independent* skip
-      conditions — a non-user-facing subject prefix (`ci:`/`test:`/
-      `internal:`/`docs:`) skips a commit regardless of what it touched, and
-      a housekeeping-path check (which PRIVACY.md is carved out of as
-      "non-docs") skips a commit whose diff is all `docs/`/dotfiles/`.md`.
-      A commit like `docs: clarify data retention wording` touching only
-      `PRIVACY.md` would still be dropped by the prefix check, even though
-      the lane rule's whole point is that PRIVACY.md is never "just docs" —
-      and `docs:` is precisely the prefix this repo's own convention says
-      to use for a documentation-only change, PRIVACY.md exception aside.
-      The two classifiers can silently diverge on this one case.
-- [ ] **Require a `PRIVACY.md` update in the same commit as the practice
-      change it documents**, and stop treating every PRIVACY.md touch as
-      automatically release-worthy — a pure wording/typo fix with no actual
-      change in practice shouldn't force a release the way a genuine new
-      disclosure should. Needs a real distinction between "the policy text
-      changed" and "what the policy describes changed," which the current
-      mechanism can't make on its own.
+- [ ] **Consider an in-app cue (a Settings banner, most likely) that
+      detects when the hosted privacy policy changed since the user last
+      saw it.** PRIVACY.md is now ordinary docs for both CI purposes (see
+      AGENTS.md "Commits and PRs"), which means a policy wording change no
+      longer ships as a Play "What's new" bullet — and that bullet never
+      bought real visibility anyway, since it's a store-listing field a
+      user installing an *update* never sees at update time. Installed
+      users therefore have no visibility at all into a policy change
+      unless something in the app itself surfaces it. Checked PRIVACY.md's
+      commit frequency across this app and its siblings before writing
+      this down: bursty during a feature's initial buildout, then roughly
+      monthly or less once the app stabilizes — so a change-detection
+      banner isn't worth building speculatively now. Worth a second look
+      if this app (or a sibling) reaches a stage where policy changes
+      carry real stakes.
 - [ ] **Two lint findings are suppressed with a `TODO`/`@Suppress` rather
       than fixed**, because both sit on locale/Cast-routing surfaces that
       took several iterations to get right and shouldn't be reworked blind

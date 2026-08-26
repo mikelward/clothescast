@@ -922,13 +922,14 @@ jobs:
         # user-visible — refactors, renames, dependency bumps), and changes
         # whose paths are all under `docs/`, all
         # top-level dotfiles or hidden directories (`.github/`, `.claude/`,
-        # `.gitignore`, `.editorconfig`, …), top-level `*.md`, or `functions/`
-        # (the Cloud Functions backend — a separate Firebase deployment, not
-        # bundled into the APK, so nothing under it is Play-user-visible
-        # either; this is what lets the weekly npm-update batch there use the
-        # hub's own fixed `deps:` prefix instead of needing its own `internal:`
-        # override). PRIVACY.md is treated as non-docs so that privacy-policy
-        # updates still surface to users.
+        # `.gitignore`, `.editorconfig`, …), top-level `*.md` (PRIVACY.md
+        # included — see the "Commits and PRs" `docs:` bullet in AGENTS.md
+        # for why it's no longer carved out), or `functions/` (the Cloud
+        # Functions backend — a separate Firebase deployment, not bundled
+        # into the APK, so nothing under it is Play-user-visible either;
+        # this is what lets the weekly npm-update batch there use the hub's
+        # own fixed `deps:` prefix instead of needing its own `internal:`
+        # override).
         #
         # When the range yields no bullets (every commit in it was filtered
         # out — e.g. a `.github/workflows/**`-only push, which still
@@ -1048,7 +1049,6 @@ jobs:
             non_doc_count=$(git show --no-renames --name-only --pretty=format: "$sha" \
               | sed '/^$/d' \
               | awk '
-                  /^PRIVACY\.md$/ { count++; next }
                   /^docs\//       { next }
                   /^\./           { next }
                   /\.md$/         { next }

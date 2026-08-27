@@ -544,19 +544,20 @@ future task; the incident narrative belongs in the commit message.
   `production` environment, and never runs on a PR — so it reports `skipped`
   on every PR run. It is the only job that runs `:app:bundleRelease` and
   the Play upload.
-- **Job timings** — whole-job wall clock, dominant step in parentheses. Measured
-  2026-08-27 unless marked *projected*. `main` figures from run 33075346037,
-  which predates the release-check skip, so anything about the skipped path is a
-  projection until a post-merge `main` run measures it.
-  - `JVM unit tests` — ~4m15s on a PR, 5m31s on `main` (`Run unit tests` 4m09s).
+- **Job timings** — whole-job wall clock, dominant step in parentheses. All
+  measured 2026-08-27: PR figures from run 33081542566, `main` from run
+  33086228356 (the first `main` run with the release-check skip).
+  - `JVM unit tests` — ~4m15s on a PR, 5m23s on `main` (`Run unit tests` 3m59s).
   - `Android release check` — 5m00s on a PR (`assembleRelease`; 5m54s on a
-    colder run). On `main` its gradle step is skipped and only setup runs:
-    ***projected* ~40s, not yet measured** — replace this with the first
-    post-merge `main` figure.
-  - `Distribute and release` — 6m22s on `main` (`Bundle release AAB` 5m28s),
+    colder run); **59s on `main`**, where the gradle step is skipped and only
+    setup runs.
+  - `Distribute and release` — 6m45s on `main` (`Bundle release AAB` 5m38s),
     `skipped` on a PR.
-  - Whole `main` run: 13m24s measured before the skip, when this job also built
-    debug and ran R8 a second time. The post-skip total is *projected* only.
+  - Whole `main` run: **12m29s**, down from 13m24s before the skip.
+    The saving is only ~55s, not the ~2m the duplicated R8 work would suggest,
+    because `deploy` needs `unit-tests` as well: removing the release job just
+    exposes the next gate. `JVM unit tests` at 5m23s is now the critical path
+    into `deploy`, so further main-run savings have to come from there.
 
   **Re-date this list when you refresh it.** Figures carrying no date have
   drifted well out of true before, and cost an agent a wrong "significant

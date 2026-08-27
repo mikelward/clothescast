@@ -71,7 +71,7 @@ future task; the incident narrative belongs in the commit message.
   When that's true, run the same commands CI runs:
   ```
   ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest
-  ./gradlew :app:assembleDebug
+  ./gradlew :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease :app:lintVitalRelease
   ```
   Snapshot diffs, Compose previews, Roborazzi, everything.
 - **Verify before assuming either way.** Sandbox config drifts; new forks
@@ -363,11 +363,11 @@ future task; the incident narrative belongs in the commit message.
 - **A red baseline is the next task.** Before pulling anything from
   `TODO.md`, run the suite (`./gradlew :core:domain:test
   :core:data:test :app:testDebugUnitTest`) *and* `./gradlew
-  :app:assembleDebug`, and get both green — a baseline can be red only in
-  Android packaging, resource merging, or the manifest merge, which the
-  test task never touches. Where the SDK isn't available, use the inner
-  build for `:core:*` and take CI's Android job as the signal for `:app`
-  rather than skipping it. A preexisting
+  :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease
+  :app:lintVitalRelease`, and get all of it green — the same tasks CI runs, none
+  redundant. Not `assembleRelease`: it needs the upload keystore. Where the SDK
+  isn't available, use the inner build for `:core:*` and take CI's Android job as the
+  signal for `:app` rather than skipping it. A preexisting
   failure is work to do, not a thing to classify as "unrelated" and step
   around — deciding it's out of scope is exactly the call that goes wrong,
   and the cost is every later PR merged onto an unverified tree. Fix it
@@ -532,36 +532,37 @@ future task; the incident narrative belongs in the commit message.
 ## CI
 
 - Three heavy jobs: `JVM unit tests` runs `:core:*:test` +
-  `:app:testDebugUnitTest`; `Android debug build` runs `:app:assembleDebug`;
+  `:app:testDebugUnitTest`; `Android build (debug + release)` runs
+  `:app:assembleDebug :app:convertShrunkResourcesToBinaryRelease
+  :app:lintVitalRelease`;
   `Distribute and release` builds and ships the release. All upload
   artifacts; Roborazzi PNG snapshots upload as `ui-preview-snapshots` from
   the JVM-tests job.
 - **`Distribute and release` is `main`-only and gated on the other two.** It
-  needs `JVM unit tests` *and* `Android debug build` green, runs under the
+  needs `JVM unit tests` *and* `Android build (debug + release)` green, runs under the
   `production` environment, and never runs on a PR — so it reports `skipped`
   on every PR run. It is the only job that runs `:app:bundleRelease` and
   the Play upload.
 - **Job timings** — whole-job wall clock, with the dominant step in
-  parentheses. PR figures measured 2026-08-25; the `main` figures for the
-  two jobs the deploy split reshaped are **projected from the pre-split
-  run's step times, not measured** — replace them with real numbers after
-  the first `main` run on the new shape.
-  - `JVM unit tests` — ~4m45s on a PR, ~5m30s on `main` (`Run unit tests`
-    step ~4m). Unaffected by the split.
-  - `Android debug build` — ~4m20s on a PR; *projected* ~4m30s on `main`.
-    It was ~10m on `main` before the split; the release work that made up
-    the difference now lives in its own job.
+  parentheses. PR figures for the first two measured 2026-08-27; the `main`
+  figures are **projected from the pre-deploy-split run's step times, not
+  measured** — replace them with real numbers after a `main` run.
+  - `JVM unit tests` — ~4m15s on a PR, ~5m30s on `main` (`Run unit tests`
+    step ~4m).
+  - `Android build (debug + release)` — ~7m on a PR; *projected* ~7m on
+    `main`. Up from ~4m20s when this job ran `:app:assembleDebug` alone: it now
+    also runs release R8, whose optimizer and obfuscator the debug build never
+    ran. That increase is the expected new baseline, not a regression — measure
+    against the new figure, not the old one.
   - `Distribute and release` — *projected* ~5m30s on `main` (`Bundle
-    release AAB` step ~4m30s), `skipped` on a PR. Removing Firebase App
-    Distribution took its ~20s container pull and ~11s upload out of this
-    job, along with the debug-APK artifact download.
+    release AAB` step ~4m30s), `skipped` on a PR.
 
   **Re-date this list when you refresh it.** Figures carrying no date have
   drifted well out of true before, and cost an agent a wrong "significant
   regression" call against a run that was in fact slightly *faster* than
   baseline.
 - **Compare like with like: PR against PR, `main` against `main`.** With the
-  release split out, `Android debug build` should now cost about the same on
+  release split out, `Android build (debug + release)` should cost about the same on
   both — a `main` number roughly double the PR one is the *old* shape and
   means something regressed. `Distribute and release` has no PR counterpart
   at all, so it only ever compares against other `main` runs. Comparing a PR
@@ -780,7 +781,7 @@ future task; the incident narrative belongs in the commit message.
   ```
   export ANDROID_HOME=/opt/android-sdk
   ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest
-  ./gradlew :app:assembleDebug
+  ./gradlew :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease :app:lintVitalRelease
   ```
 - **Android Lint is available** for the `:app` module via AGP; run
   `./gradlew :app:lintDebug` when app-side validation needs lint coverage.

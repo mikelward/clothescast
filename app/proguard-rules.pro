@@ -40,9 +40,11 @@
 # because the MQTT bridge uses plain-TCP / TLS-via-JSSE, no websockets, no
 # proxies, no native epoll. R8 surfaces every cross-reference as a hard error;
 # these -dontwarn lines tell it those gaps are intentional. List taken from
-# app/build/outputs/mapping/<variant>/missing_rules.txt after a fresh
-# assembleDebug. If you bump the HiveMQ / Netty version and the list grows,
-# re-run that build and append any new -dontwarn lines here.
+# app/build/outputs/mapping/release/missing_rules.txt after a fresh
+# `./gradlew :app:minifyReleaseWithR8`. If you bump the HiveMQ / Netty version
+# and the list grows, re-run that and append any new -dontwarn lines here.
+# Release, not debug: only the release variant runs R8, so it is the only one
+# that writes missing_rules.txt.
 -dontwarn io.netty.channel.epoll.**
 -dontwarn io.netty.handler.codec.http.**
 -dontwarn io.netty.handler.codec.http.websocketx.**
@@ -64,7 +66,7 @@
 # referenced from a shaded jctools package-info) — but their references would
 # trip R8 without these warnings suppressed. List harvested from
 # missing_rules.txt; if a Netty version bump adds new optional integrations,
-# re-run assembleDebug and append any new ones here.
+# re-run `./gradlew :app:minifyReleaseWithR8` and append any new ones here.
 -dontwarn com.aayushatharva.brotli4j.**
 -dontwarn com.github.luben.zstd.**
 -dontwarn com.google.protobuf.**

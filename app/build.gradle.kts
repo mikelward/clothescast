@@ -278,20 +278,24 @@ android {
 
     signingConfigs {
         // No debug override: `assembleDebug` uses AGP's auto-generated
-        // ~/.android/debug.keystore everywhere, CI included. A stored debug
-        // keystore existed only so Firebase App Distribution testers could
-        // upgrade in place; with that channel gone, nothing distributes a
-        // CI-built debug APK at all — `assembleDebug` runs on CI purely as a
-        // compile check and the output is discarded. Local debug builds use
-        // the developer's own ~/.android/debug.keystore, which is stable, so
-        // they upgrade in place.
+        // ~/.android/debug.keystore. A stored debug keystore existed only so
+        // Firebase App Distribution testers could upgrade in place; with that
+        // channel gone, nothing distributes a debug APK at all. Local debug
+        // builds use the developer's own keystore, which is stable, so they
+        // upgrade in place.
         //
         // Upload key for Play App Signing, the only signing config this
-        // project configures: in CI the four UPLOAD_* env vars are populated from
-        // GitHub Secrets and bundleRelease produces a Play-uploadable AAB; locally
-        // the env vars are absent, the signing config has no storeFile, and AGP
-        // fails loudly on bundleRelease/assembleRelease — which is the right
-        // default (better than silently shipping a debug-signed release).
+        // project configures. In CI's deploy job the four UPLOAD_* env vars come
+        // from GitHub Secrets and bundleRelease produces a Play-uploadable AAB.
+        // Everywhere else they are absent, the config is left empty, and the
+        // release build type does not attach it (see the attachment below), so
+        // assembleRelease/bundleRelease succeed and emit an UNSIGNED artifact.
+        //
+        // That is deliberate, and it is not a way to ship something debug-signed:
+        // AGP does not fall back to the debug key, it just omits the signature
+        // block. An unsigned artifact cannot be installed or uploaded. The guard
+        // that matters lives in the deploy job, which refuses to start Gradle at
+        // all when the keystore secret is missing or fails a keytool check.
         create("release") {
             val keystorePath = System.getenv("UPLOAD_KEYSTORE_FILE")?.takeIf { it.isNotBlank() }
             val storePass = System.getenv("UPLOAD_KEYSTORE_PASSWORD")?.takeIf { it.isNotBlank() }
@@ -305,7 +309,8 @@ android {
                 error(
                     "Partial upload-keystore configuration. Set all of UPLOAD_KEYSTORE_FILE, " +
                         "UPLOAD_KEYSTORE_PASSWORD, UPLOAD_KEY_ALIAS, UPLOAD_KEY_PASSWORD — or none, " +
-                        "to leave the release signing config empty (bundleRelease will then fail).",
+                        "to build unsigned. With none set, assembleRelease and bundleRelease " +
+                        "succeed and emit an unsigned artifact, which Play will reject on upload.",
                 )
             }
 
@@ -348,7 +353,26 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("release")
+            // Attached only when the upload keystore is actually configured.
+            // An unset storeFile on an attached config makes every release
+            // task die at validateSigningRelease -- so attaching it
+            // unconditionally meant `assembleRelease` could not run in any
+            // lane without the secret, CI included, and forks could not build
+            // a release APK at all.
+            //
+            // Detaching does NOT fall back to the debug key. AGP emits
+            // `app-release-unsigned.apk` with no META-INF signature block at
+            // all -- verified with apksigner, which reports DOES NOT VERIFY.
+            // So the loud failure this used to give up nothing: an unsigned
+            // artifact cannot be installed or uploaded, it just fails later
+            // and at the point of use.
+            //
+            // Testing UPLOAD_KEYSTORE_FILE alone is enough: the all-or-none
+            // guard above has already errored if some of the four are set and
+            // others are not, so reaching here with it set means all four are.
+            if (System.getenv("UPLOAD_KEYSTORE_FILE")?.isNotBlank() == true) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

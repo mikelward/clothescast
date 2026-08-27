@@ -619,7 +619,7 @@ jobs:
         run: npm run build
 
   android-build:
-    name: Android build (debug + release)
+    name: Android release check
     runs-on: ubuntu-latest
     needs: classify
     permissions:
@@ -699,44 +699,39 @@ jobs:
           fi
           echo "google-services.json materialised (${bytes} bytes)."
 
-      - name: Build the debug APK and the shrunk release output
-        # Three tasks, because none of them covers the others.
+      - name: Check the release build
+        # assembleRelease, and only on a pull request.
         #
-        # convertShrunkResourcesToBinaryRelease is the release pipeline. It
-        # pulls in minifyReleaseWithR8 (compile, code shrink, optimize,
-        # obfuscate, dex) AND optimizeReleaseResources, which is the *resource*
-        # shrinker -- a separate task in AGP 9, and the one thing
-        # isShrinkResources = true actually exercises. Naming
-        # minifyReleaseWithR8 alone left the resource shrinker unrun by any PR
-        # task, so an invalid release resource or shrinker config would have
-        # surfaced first in the main-only bundleRelease, after merge.
+        # --dry-run confirms assembleRelease pulls in minifyReleaseWithR8,
+        # optimizeReleaseResources, convertShrunkResourcesToBinaryRelease and
+        # lintVitalRelease, then packages -- so it covers the whole release
+        # path short of signing. It runs without the upload keystore because
+        # app/build.gradle.kts attaches the signing config only when that
+        # keystore is configured; the output is app-release-unsigned.apk.
         #
-        # lintVitalRelease is release-only too and runs inside bundleRelease on
-        # main, so a lint-vital error had the same shape: red on main, green on
-        # every PR. 54s here.
+        # Skipped on main because `deploy` runs bundleRelease there, which
+        # --dry-run shows pulls in minifyReleaseWithR8 and lintVitalRelease
+        # itself. Running both meant R8 ran twice per push, ~2m of it on the
+        # critical path since deploy is gated on this job. The Gradle cache
+        # does not save it: gradle/actions/setup-gradle keys its cache per
+        # job, so deploy restores its own entry from the PREVIOUS run and
+        # never sees what this job just built.
         #
-        # Neither needs the upload keystore -- both stop short of
-        # validateSigningRelease, which is why this is not assembleRelease. (The
-        # release signing config is deliberately unconditional, so
-        # assembleRelease dies at "Keystore file not set" in any lane without
-        # the secret.) What is left uncovered is zip packaging and signing.
+        # The condition is `deploy`'s `if:` verbatim. If that changes, change
+        # this with it, or the release check silently stops running somewhere.
         #
-        # assembleDebug covers what release cannot: D8 dexing and APK packaging
-        # of a program no release build contains -- src/debug's sources and the
-        # debugImplementation dependencies (firebase-appcheck-debug,
-        # compose-ui-tooling, compose-ui-test-manifest). A duplicate-class or
-        # packaging conflict among those fails here and nowhere else.
-        # :app:testDebugUnitTest compiles them but stops short: --dry-run shows
-        # no dexBuilderDebug and no packageDebug. It is also the install route
-        # README documents, so a break is user-visible.
-        #
-        # One Gradle invocation so they share a daemon and a configuration
-        # phase; any failing fails the job, and the log carries all three.
+        # No assembleDebug. It uniquely covered D8 dexing and APK packaging of
+        # src/debug and the debugImplementation deps, which testDebugUnitTest
+        # compiles but never packages -- but nothing distributes a debug APK
+        # from CI and nobody builds one locally, so the only failure it caught
+        # would surface next time Android Studio's Run button is pressed.
         id: gradle
+        if: |
+          !(github.ref == 'refs/heads/main' &&
+            (github.event_name == 'push' || github.event_name == 'workflow_dispatch'))
         run: |
           set -o pipefail
-          ./gradlew :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease :app:lintVitalRelease \
-            --stacktrace --info 2>&1 | tee /tmp/android-build.log
+          ./gradlew :app:assembleRelease --stacktrace --info 2>&1 | tee /tmp/android-build.log
 
       - name: Clear prior CI comments for this job
         # Same rationale as the JVM job — drops stale failure comments on a
@@ -807,7 +802,10 @@ jobs:
             }
 
       - name: Upload build log
-        if: always()
+        # Not `always()`: the gradle step is skipped on main, so the log file
+        # does not exist there and upload-artifact would warn about a path
+        # nothing wrote.
+        if: always() && steps.gradle.outcome != 'skipped'
         uses: actions/upload-artifact@v7
         with:
           name: android-build-log
@@ -1305,10 +1303,11 @@ jobs:
           whatsNewDirectory: ${{ runner.temp }}/whatsnew
 
       - name: Upload release build log
-        # `android-build`'s log uploader covers only that job's
-        # debug + release R8 run. Without this, a bundleRelease failure on main
-        # leaves nothing to read but the Actions console, and main runs
-        # get no failing-tests PR comment either.
+        # `android-build`'s log uploader covers only that job's own
+        # assembleRelease, and on main it does not run at all -- the gradle step
+        # is skipped there, so nothing writes the log. Without this, a
+        # bundleRelease failure on main leaves nothing to read but the Actions
+        # console, and main runs get no failing-tests PR comment either.
         if: always()
         uses: actions/upload-artifact@v7
         with:

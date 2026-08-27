@@ -118,11 +118,13 @@ println("clothescast: isCiBuild=$isCiBuild, launcherIcon=$launcherIconRes (versi
  * `Clear data`, and reinstalls.
  *
  * CI builds intentionally leave this empty so the Firebase Debug provider
- * falls back to its own per-install random UUID. That keeps the
- * developer's token out of any APK built on CI (anyone with it would
- * otherwise extract the token from `BuildConfig` and inherit the
- * developer's App Check identity). Anyone running such a build uses the
- * original "grep Logcat once per fresh install" workflow.
+ * falls back to its own per-install random UUID. That keeps the developer's
+ * token out of anything CI produces — otherwise it would be readable in
+ * `BuildConfig` and anyone with it would inherit the developer's App Check
+ * identity. Still load-bearing even though CI no longer builds a debug APK:
+ * it compiles the debug variant for `testDebugUnitTest`, so the field is
+ * generated there either way. Anyone running such a build uses the original
+ * "grep Logcat once per fresh install" workflow.
  *
  * The token has no power over release App Check (Play Integrity), and
  * Firestore rules deny all client access regardless of who's authed via

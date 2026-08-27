@@ -619,7 +619,7 @@ jobs:
         run: npm run build
 
   android-build:
-    name: Android debug build
+    name: Android build (debug + release)
     runs-on: ubuntu-latest
     needs: classify
     permissions:
@@ -699,14 +699,44 @@ jobs:
           fi
           echo "google-services.json materialised (${bytes} bytes)."
 
-      - name: Assemble debug APK
-        # No secrets reach this step. Debug builds are signed with AGP's
-        # auto-generated keystore on every runner — see the signingConfigs
-        # note in app/build.gradle.kts.
+      - name: Build the debug APK and the shrunk release output
+        # Three tasks, because none of them covers the others.
+        #
+        # convertShrunkResourcesToBinaryRelease is the release pipeline. It
+        # pulls in minifyReleaseWithR8 (compile, code shrink, optimize,
+        # obfuscate, dex) AND optimizeReleaseResources, which is the *resource*
+        # shrinker -- a separate task in AGP 9, and the one thing
+        # isShrinkResources = true actually exercises. Naming
+        # minifyReleaseWithR8 alone left the resource shrinker unrun by any PR
+        # task, so an invalid release resource or shrinker config would have
+        # surfaced first in the main-only bundleRelease, after merge.
+        #
+        # lintVitalRelease is release-only too and runs inside bundleRelease on
+        # main, so a lint-vital error had the same shape: red on main, green on
+        # every PR. 54s here.
+        #
+        # Neither needs the upload keystore -- both stop short of
+        # validateSigningRelease, which is why this is not assembleRelease. (The
+        # release signing config is deliberately unconditional, so
+        # assembleRelease dies at "Keystore file not set" in any lane without
+        # the secret.) What is left uncovered is zip packaging and signing.
+        #
+        # assembleDebug covers what release cannot: D8 dexing and APK packaging
+        # of a program no release build contains -- src/debug's sources and the
+        # debugImplementation dependencies (firebase-appcheck-debug,
+        # compose-ui-tooling, compose-ui-test-manifest). A duplicate-class or
+        # packaging conflict among those fails here and nowhere else.
+        # :app:testDebugUnitTest compiles them but stops short: --dry-run shows
+        # no dexBuilderDebug and no packageDebug. It is also the install route
+        # README documents, so a break is user-visible.
+        #
+        # One Gradle invocation so they share a daemon and a configuration
+        # phase; any failing fails the job, and the log carries all three.
         id: gradle
         run: |
           set -o pipefail
-          ./gradlew :app:assembleDebug --stacktrace --info 2>&1 | tee /tmp/android-build.log
+          ./gradlew :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease :app:lintVitalRelease \
+            --stacktrace --info 2>&1 | tee /tmp/android-build.log
 
       - name: Clear prior CI comments for this job
         # Same rationale as the JVM job — drops stale failure comments on a
@@ -747,13 +777,13 @@ jobs:
             // there. An over-long body 422s and loses the whole comment.
             const LIMIT = 60000;
             const trimmed = '\n\n_Trimmed — the full log is in the `android-build-log` artifact._';
-            let body = `${marker} Android debug build failed before gradle started.`;
+            let body = `${marker} Android build failed before gradle started.`;
             try {
               const lines = fs.readFileSync('/tmp/android-build.log', 'utf8').split('\n');
               const errorLines = lines.filter(l =>
                 /^(e:|w:| {2}error:|FAILURE:|\* What went wrong:|Caused by:|Compilation error)/.test(l)
               ).slice(0, 80).join('\n') || '(none matched)';
-              const head = `${marker} Android debug build failed.\n\n` +
+              const head = `${marker} Android build failed.\n\n` +
                 '### Likely error lines\n```\n' + errorLines + '\n```\n' +
                 '### Last 300 lines\n```\n';
               let tail = lines.slice(-300).join('\n');
@@ -764,7 +794,7 @@ jobs:
               const suffix = '\n```' + trimmed;
               if (body.length > LIMIT) body = body.slice(0, LIMIT - suffix.length) + suffix;
             } catch (e) {
-              body = `${marker} Android debug build failed before gradle started: ${e.message}`;
+              body = `${marker} Android build failed before gradle started: ${e.message}`;
             }
             try {
               await github.rest.issues.createComment({
@@ -1276,7 +1306,7 @@ jobs:
 
       - name: Upload release build log
         # `android-build`'s log uploader covers only that job's
-        # assembleDebug. Without this, a bundleRelease failure on main
+        # debug + release R8 run. Without this, a bundleRelease failure on main
         # leaves nothing to read but the Actions console, and main runs
         # get no failing-tests PR comment either.
         if: always()

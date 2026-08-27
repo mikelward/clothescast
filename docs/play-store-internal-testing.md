@@ -75,6 +75,19 @@ green.
 
 ## App content declarations (manual, one-time)
 
+Play Console → **Monitor and improve → Policy and programs → App content**
+(verified 2026-08-27). "Policy" is no longer a top-level item — it is nested a
+level deeper, which is what makes this page hard to find from the menu. The
+direct URLs, which skip the hunt:
+
+    .../app/<app-id>/app-content/overview                 the App content hub
+    .../app/<app-id>/app-content/data-privacy-security    the Data safety form
+
+under `https://play.google.com/console/u/0/developers/<developer-id>`. Both ids
+are in the address bar of any Play Console page for the app. Note `app-content`
+alone does not resolve — it needs the `/overview` child.
+
+
 CI uploads the AAB, but Play still won't *release* a build until the **App
 content** declarations are complete. These are browser-only forms in the Play
 Console — there's no API for them and nothing in this repo can satisfy them.

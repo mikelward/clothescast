@@ -321,13 +321,12 @@ the cap actually tamper-resistant.
   That's intentional — CI is the build pipeline, not a tester install.
   Two independent reasons, and the first settles it on its own:
 
-  - `GEMINI_PROXY_URL` is passed only to the `deploy` job's
-    `Bundle release AAB` step. `assembleDebug` never receives it, so
-    `BuildConfig.GEMINI_PROXY_URL` is blank in every CI debug build
-    and the planner falls back to BYOK. Only the Play release build
-    gets the proxy URL — true of every CI debug build, however it is
-    configured. (CI no longer keeps its debug APK at all; the step is
-    a compile check.)
+  - **CI builds no debug APK at all**, so there is no CI debug build
+    for the shared path to be enabled in. Even if there were,
+    `GEMINI_PROXY_URL` is passed only to the `deploy` job's `Bundle
+    release AAB` step, so `BuildConfig.GEMINI_PROXY_URL` would be
+    blank and the planner would fall back to BYOK. Only the Play
+    release build gets the proxy URL.
   - `google-services.json` is decoded from a repository secret, so a
     fork PR never has it and neither does a repo with
     `GOOGLE_SERVICES_JSON` unset. A configured same-repository build

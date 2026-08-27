@@ -32,10 +32,10 @@ import org.robolectric.annotation.Config
  * Scope, stated honestly: this runs on **un-minified** bytecode, so it does
  * *not* catch R8 stripping a serializer in the release build — which is exactly
  * what crashed in #880. Catching that needs a launch smoke test on the
- * *minified* variant, and CI has no such test today (it runs the debug unit
- * tests + assembleDebug on PRs and a release bundle on main, none of which
- * launch the minified app), so that failure mode is currently **uncovered**
- * until such a test is added. What this test catches cheaply, at push time, is
+ * *minified* variant, and CI has no such test today: it runs the debug unit
+ * tests plus assembleRelease on PRs and a release bundle on main, so the
+ * minified variant is built but never launched. That failure mode is
+ * therefore still **uncovered** until such a test is added. What this test catches cheaply, at push time, is
  * a destination wired into the graph without `@Serializable`, or one the
  * framework can't navigate to. New destinations must be added below.
  */

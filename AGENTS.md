@@ -58,7 +58,7 @@ future task; the incident narrative belongs in the commit message.
   reachable. When they are, the full outer `./gradlew` workflow works
   in-sandbox — same commands as CI. See "Sandbox testing" below for how
   to verify and what to do if you find them blocked.
-- If for any reason `:app:assembleDebug` or `:app:testDebugUnitTest` won't
+- If for any reason the `:app` Gradle tasks won't
   run in your environment, **say so explicitly** and rely on CI as the
   validation surface. Do not claim "the build passes" when you only ran
   the core tests.
@@ -71,7 +71,7 @@ future task; the incident narrative belongs in the commit message.
   When that's true, run the same commands CI runs:
   ```
   ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest
-  ./gradlew :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease :app:lintVitalRelease
+  ./gradlew :app:assembleRelease
   ```
   Snapshot diffs, Compose previews, Roborazzi, everything.
 - **Verify before assuming either way.** Sandbox config drifts; new forks
@@ -363,9 +363,10 @@ future task; the incident narrative belongs in the commit message.
 - **A red baseline is the next task.** Before pulling anything from
   `TODO.md`, run the suite (`./gradlew :core:domain:test
   :core:data:test :app:testDebugUnitTest`) *and* `./gradlew
-  :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease
-  :app:lintVitalRelease`, and get all of it green — the same tasks CI runs, none
-  redundant. Not `assembleRelease`: it needs the upload keystore. Where the SDK
+  :app:assembleRelease`, and get both green — the same tasks CI runs.
+  `assembleRelease` works without the upload keystore and emits an unsigned
+  APK. CI runs no `assembleDebug`; add it locally if you are about to install a
+  debug build. Where the SDK
   isn't available, use the inner build for `:core:*` and take CI's Android job as the
   signal for `:app` rather than skipping it. A preexisting
   failure is work to do, not a thing to classify as "unrelated" and step
@@ -532,39 +533,39 @@ future task; the incident narrative belongs in the commit message.
 ## CI
 
 - Three heavy jobs: `JVM unit tests` runs `:core:*:test` +
-  `:app:testDebugUnitTest`; `Android build (debug + release)` runs
-  `:app:assembleDebug :app:convertShrunkResourcesToBinaryRelease
-  :app:lintVitalRelease`;
+  `:app:testDebugUnitTest`; `Android release check` runs `:app:assembleRelease`
+  on PRs and nothing on `main` (`deploy`'s `bundleRelease` is the release check
+  there);
   `Distribute and release` builds and ships the release. All upload
   artifacts; Roborazzi PNG snapshots upload as `ui-preview-snapshots` from
   the JVM-tests job.
 - **`Distribute and release` is `main`-only and gated on the other two.** It
-  needs `JVM unit tests` *and* `Android build (debug + release)` green, runs under the
+  needs `JVM unit tests` *and* `Android release check` green, runs under the
   `production` environment, and never runs on a PR — so it reports `skipped`
   on every PR run. It is the only job that runs `:app:bundleRelease` and
   the Play upload.
-- **Job timings** — whole-job wall clock, with the dominant step in
-  parentheses. PR figures for the first two measured 2026-08-27; the `main`
-  figures are **projected from the pre-deploy-split run's step times, not
-  measured** — replace them with real numbers after a `main` run.
-  - `JVM unit tests` — ~4m15s on a PR, ~5m30s on `main` (`Run unit tests`
-    step ~4m).
-  - `Android build (debug + release)` — ~7m on a PR; *projected* ~7m on
-    `main`. Up from ~4m20s when this job ran `:app:assembleDebug` alone: it now
-    also runs release R8, whose optimizer and obfuscator the debug build never
-    ran. That increase is the expected new baseline, not a regression — measure
-    against the new figure, not the old one.
-  - `Distribute and release` — *projected* ~5m30s on `main` (`Bundle
-    release AAB` step ~4m30s), `skipped` on a PR.
+- **Job timings** — whole-job wall clock, dominant step in parentheses. Measured
+  2026-08-27 unless marked *projected*. `main` figures from run 33075346037,
+  which predates the release-check skip, so anything about the skipped path is a
+  projection until a post-merge `main` run measures it.
+  - `JVM unit tests` — ~4m15s on a PR, 5m31s on `main` (`Run unit tests` 4m09s).
+  - `Android release check` — 5m00s on a PR (`assembleRelease`; 5m54s on a
+    colder run). On `main` its gradle step is skipped and only setup runs:
+    ***projected* ~40s, not yet measured** — replace this with the first
+    post-merge `main` figure.
+  - `Distribute and release` — 6m22s on `main` (`Bundle release AAB` 5m28s),
+    `skipped` on a PR.
+  - Whole `main` run: 13m24s measured before the skip, when this job also built
+    debug and ran R8 a second time. The post-skip total is *projected* only.
 
   **Re-date this list when you refresh it.** Figures carrying no date have
   drifted well out of true before, and cost an agent a wrong "significant
   regression" call against a run that was in fact slightly *faster* than
   baseline.
-- **Compare like with like: PR against PR, `main` against `main`.** With the
-  release split out, `Android build (debug + release)` should cost about the same on
-  both — a `main` number roughly double the PR one is the *old* shape and
-  means something regressed. `Distribute and release` has no PR counterpart
+- **Compare like with like: PR against PR, `main` against `main`.**
+  `Android release check` is deliberately asymmetric — minutes on a PR, seconds
+  on `main` — so a `main` figure in the minutes there means the skip stopped
+  working, not that something got slower. `Distribute and release` has no PR counterpart
   at all, so it only ever compares against other `main` runs. Comparing a PR
   job against a `main` number, or against a *step* time rather than the job
   total, manufactures a regression that doesn't exist.
@@ -781,7 +782,7 @@ future task; the incident narrative belongs in the commit message.
   ```
   export ANDROID_HOME=/opt/android-sdk
   ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest
-  ./gradlew :app:assembleDebug :app:convertShrunkResourcesToBinaryRelease :app:lintVitalRelease
+  ./gradlew :app:assembleRelease
   ```
 - **Android Lint is available** for the `:app` module via AGP; run
   `./gradlew :app:lintDebug` when app-side validation needs lint coverage.

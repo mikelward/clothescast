@@ -192,7 +192,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+          # Keyed on the event, not the ref. Under `pull_request` the two
+          # agree (github.ref is refs/pull/<n>/merge, so PR runs are
+          # read-only), but the ref form silently inverts the moment this
+          # workflow moves to `pull_request_target`: github.ref becomes
+          # refs/heads/main for every PR run, the comparison goes false, and
+          # PR-controlled Gradle code gets WRITE access to the default
+          # branch's cache scope — an entry a later main run holding real
+          # secrets would restore and execute. The event form is correct
+          # under both triggers, so the migration can't reopen this by
+          # omission.
+          cache-read-only: ${{ github.event_name != 'push' }}
 
       - name: Decode google-services.json from secret
         # The Firebase Gradle plugins (gms-google-services + crashlytics) are
@@ -734,7 +744,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+          # Keyed on the event, not the ref. Under `pull_request` the two
+          # agree (github.ref is refs/pull/<n>/merge, so PR runs are
+          # read-only), but the ref form silently inverts the moment this
+          # workflow moves to `pull_request_target`: github.ref becomes
+          # refs/heads/main for every PR run, the comparison goes false, and
+          # PR-controlled Gradle code gets WRITE access to the default
+          # branch's cache scope — an entry a later main run holding real
+          # secrets would restore and execute. The event form is correct
+          # under both triggers, so the migration can't reopen this by
+          # omission.
+          cache-read-only: ${{ github.event_name != 'push' }}
 
       - name: Decode google-services.json from secret
         # See unit-tests job for the rationale and the raw-vs-base64
@@ -963,7 +983,17 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
-          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+          # Keyed on the event, not the ref. Under `pull_request` the two
+          # agree (github.ref is refs/pull/<n>/merge, so PR runs are
+          # read-only), but the ref form silently inverts the moment this
+          # workflow moves to `pull_request_target`: github.ref becomes
+          # refs/heads/main for every PR run, the comparison goes false, and
+          # PR-controlled Gradle code gets WRITE access to the default
+          # branch's cache scope — an entry a later main run holding real
+          # secrets would restore and execute. The event form is correct
+          # under both triggers, so the migration can't reopen this by
+          # omission.
+          cache-read-only: ${{ github.event_name != 'push' }}
 
       - name: Decode google-services.json from secret
         # See unit-tests job for the rationale and the raw-vs-base64

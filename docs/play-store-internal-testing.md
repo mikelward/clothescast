@@ -83,8 +83,10 @@ direct URLs, which skip the hunt:
     .../app/<app-id>/app-content/overview                 the App content hub
     .../app/<app-id>/app-content/data-privacy-security    the Data safety form
 
-under `https://play.google.com/console/u/0/developers/<developer-id>`. Both ids
-are in the address bar of any Play Console page for the app. Note `app-content`
+under `https://play.google.com/console/u/<n>/developers/<developer-id>`. All three
+parts come from the address bar of any Play Console page for the app —
+including `/u/<n>/`, the Google account index, which is only `0` when the Play
+account is the first one signed into that browser. Note `app-content`
 alone does not resolve — it needs the `/overview` child.
 
 

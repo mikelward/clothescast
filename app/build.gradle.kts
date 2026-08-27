@@ -324,13 +324,13 @@ android {
 
     buildTypes {
         debug {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-                "proguard-debug.pro",
-            )
+            // No R8. A debuggable build type gets the shrinker and nothing else
+            // -- AGP disables every optimization and all obfuscation for one --
+            // so minifying here never previewed the release build, and what it
+            // did do was slow down the edit-install loop README documents and
+            // shrink a program release never sees (src/debug, the
+            // debugImplementation dependencies) against rules nothing else
+            // checks. Release R8 is verified directly in CI instead.
             applicationIdSuffix = ".debug"
             // Debug-only so the per-developer App Check token doesn't
             // end up readable in any release artefact. Empty on CI

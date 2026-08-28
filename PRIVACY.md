@@ -161,7 +161,20 @@ The source code is at <https://github.com/mikelward/clothescast>.
   (plus one rotated predecessor `cacheDir/diag.log.1`, capped at
   ~200 KB each). Lines may include the rendered insight prose
   ("Insight delivered for …") and device-resolved coordinates ("Using
-  device-resolved location at lat, lon"). If the app crashes, recent
+  device-resolved location at lat, lon"). At each launch the log also
+  records **why ClothesCast's previous runs ended** — Android's own
+  reason (a crash, an out-of-memory reclaim, an app update, the system
+  stopping it), the exit code or signal the process ended on, how
+  important Android considered the app at that moment, when it
+  happened, and the system's own
+  short description of it — together with
+  **when ClothesCast was installed and last updated**. That is the app's
+  account of itself rather than anything about you: an insight that never
+  arrived looks the same whether the fetch failed or the process was
+  killed before it ran, and without this there is nothing afterwards to
+  tell those apart. Android's description text is written by the system
+  and can name the component that stopped the app — for an update, the
+  installer. If the app crashes, recent
   lines plus the stack trace are also written to
   `cacheDir/last-crash.txt`. The local bug-report payload includes the
   most recent ~300 lines of the diag file plus your current settings

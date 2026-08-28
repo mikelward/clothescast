@@ -329,6 +329,34 @@ Open work:
 
 ## Testing & quality
 
+- [ ] **Align the four app repos' debug loggers.** `ProcessExitReasons.kt`
+      landed here as a deliberate copy of Type Launcher's — same file name,
+      function names, log-line format and field names — so the two logs read
+      identically and a future unification is a lift-and-share rather than a
+      reconciliation. But the loggers underneath them differ, and the
+      divergence is real:
+      - **Type Launcher** has a *default-safe type rule* (`LogValue`): every
+        log call is a literal format string plus arguments, and an argument
+        reaches the Crashlytics breadcrumb mirror only if its type cannot name
+        anything of the user's — `safe(...)` and `sensitive(...)` override per
+        value. `DiagLog` here has no equivalent: it takes a pre-built `String`,
+        so redaction is whatever the call site remembered to do.
+      - **`DiagLog` writes to disk only** — no breadcrumb mirror at all — so
+        the port needed no redaction wrappers and deliberately invented none.
+        That is why the exit `description` and the timestamps are logged in
+        full here but marked `sensitive(...)` in Type Launcher: there, they
+        would otherwise be uploaded silently; here nothing leaves the device
+        until the user shares a bug report.
+      - Snoozemo and Simmo have their own loggers and their own privacy
+        floors again.
+
+      Unifying them is a bigger piece of work than any one port and is
+      deliberately **not** in scope for the port PRs — this entry exists so
+      whoever picks it up starts from an inventory rather than rediscovering
+      the differences. The floor stays per-repo regardless: uniformity must
+      not loosen any repo's privacy rules.
+
+
 - [x] **Robolectric tests** for the alarm + notification path. First
       coverage landed for `DailyAlarmScheduler` (exact-alarm trigger time,
       TODAY/TONIGHT slot independence, cancel), `ScheduleRefreshReceiver`

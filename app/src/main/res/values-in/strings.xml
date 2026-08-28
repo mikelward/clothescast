@@ -227,8 +227,6 @@ to values/strings.xml (English).
     <string name="today_update_downloaded_action">Mulai ulang</string>
 
     <!-- Telemetry notice banner -->
-    <string name="today_telemetry_notice_title">Laporan crash dan penggunaan aktif</string>
-    <string name="today_telemetry_notice_body">ClothesCast mengirimkan laporan crash anonim dan analitik penggunaan untuk membantu memperbaiki bug. Tidak ada data kalender, lokasi, atau teks wawasan yang disertakan. Matikan kapan saja di Pengaturan.</string>
     <string name="today_telemetry_notice_open_settings">Pengaturan Privasi</string>
     <string name="today_telemetry_notice_dismiss">Tutup</string>
 

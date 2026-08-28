@@ -213,8 +213,148 @@ Open:
 
 ## Analytics & telemetry
 
-Product analytics ships in all builds. Default-on with a one-time
-non-blocking Today banner pointing at Settings → Privacy to turn it off;
+- [x] **Reporting is opt-in — nothing goes off device until the user turns it
+      on** (maintainer, 2026-08-28; the standard for all four sibling apps).
+      Both SDKs are started with collection disabled via manifest `meta-data`,
+      which is what makes it true on the first launch: `FirebaseInitProvider`
+      runs before `Application.onCreate`, so no code of ours can get there
+      first. A stored `true` from a consenting user overrides them at startup.
+      An install that predates the toggle carries no key and is read as *not*
+      consented, since it never was asked.
+
+      **This retired two findings rather than fixing them** (Codex, PR #1161).
+      Both were the same shape — a window in which a report is captured or
+      queued before the opt-out reaches the SDK — and both are answered by
+      there being nothing to capture until consent exists:
+
+      - `deleteUnsentReports()` cannot retract a report the SDK already
+        scheduled. Verified from the shipped bytecode rather than the docs:
+        `CrashlyticsController.deleteUnsentReports()` is
+        `reportActionProvided.trySetResult(false)` plus a wait, and
+        `trySetResult` no-ops once that source is completed — which
+        *automatic* collection does itself at startup. With collection
+        starting disabled the source is no longer pre-resolved, so the call
+        does what its name says.
+      - `setTelemetryEnabled(false)` commits its DataStore edit and returns
+        while the SDK-disable calls happen in the downstream collector, so a
+        crash in between was captured with collection still on and the
+        persisted flag never flipped. There is now no such state to start
+        from. (Moving the SDK call into `SettingsRepository` was considered
+        and rejected: it puts Firebase into a data layer that must keep
+        working on builds with no `google-services.json`, and it would not
+        have touched the first case anyway.)
+
+      The discard debt from that PR stays and is still needed: an opt-out
+      *after* a consented period still has reports to purge. What changed is
+      that the promise no longer has a "except what was already queued"
+      clause covering a period the user never agreed to.
+
+- [x] **Migrate installs that never chose, and discard what was captured before
+      consent** (maintainer, 2026-08-28: "if there's no preference, ask, don't
+      send (and maybe don't store) until they opt in"). Two findings, one shape
+      — something collected before the user agreed being released rather than
+      dropped (Codex, PR #1161):
+
+      - The manifest alone only covers fresh installs. `DataCollectionArbiter
+        .isAutomaticDataCollectionEnabled()` returns Crashlytics' own persisted
+        override whenever it is set and reaches the manifest default only when
+        it is not; every install from the default-on era has `true` there.
+        `migrateToOptInTelemetry()` runs once, before the collector, and owes a
+        discard where no choice was ever stored — so that launch stops both
+        SDKs, overwriting the stored `true`, and purges.
+      - The manifest disables *sending*, not capture, so a crash from before
+        the user was asked sits on disk as unsent. `setTelemetryEnabled` now
+        owes a discard on **any** crossing of the consent line, so the first
+        opt-in discharges before enabling. Re-affirming an existing opt-in owes
+        nothing, which is what stops it deleting consented reports.
+
+      What is still not closed: the window between `FirebaseInitProvider` and
+      `Application.onCreate` on the migrating launch. Narrowed and purged after
+      the fact, not prevented. Preventing it means getting ahead of the
+      provider — a startup-ordering change, not taken here. It is also not
+      strictly *one* launch: what durably turns the SDKs off is the collector's
+      `stop()`, so a process that dies before reaching it leaves the persisted
+      override on and the next launch opens the same window before closing it
+      (Codex, PR #1161). Bounded either way — the debt stays owed, so nothing
+      pre-consent is released — and `PRIVACY.md` says so rather than promising
+      a single launch.
+
+- [ ] **The residual enable-window race, and the deletion API it comes from.**
+      Declined on the PR rather than fixed, and it wants a maintainer decision
+      (Codex, PR #1161, fourth finding in the same area).
+
+      The claim: between `safeToEnable()` returning and the two collection
+      setters running, a rapid off-then-on could record a newer discard debt,
+      so the stale pass enables collection with that newer debt outstanding.
+      `clearTelemetryDiscardOwed` correctly declines to retire a token it did
+      not consume, and the next emission discharges — but for the length of one
+      DataStore edit, collection is on with a report from the opted-out gap
+      still on disk.
+
+      Why it was not fixed: there is no suspension point between the check and
+      the setters, so the window is a coroutine resumption, and reaching it
+      needs the user to toggle the switch twice inside a discharge. The
+      proposed fix — serializing preference writes with the enable sequence —
+      means a mutex spanning `SettingsRepository` and the telemetry collector,
+      and it collides with the ordering an *earlier* finding on this same PR
+      required: the clear must come after the enable, because
+      `deleteUnsentReports()` is fire-and-forget and the debt is the only thing
+      that makes a later launch retry the delete.
+
+      That collision is the real content. Every ordering leaves some window
+      while the deletion cannot be awaited; the orderings only choose which
+      window. The class closes properly with the manual Crashlytics reporting
+      flow — `setCrashlyticsCollectionEnabled(false)` permanently, and
+      `checkForUnsentReports()`'s `Task<Boolean>` awaited before either sending
+      or deleting — which is a real behavior change: a consenting user gets no
+      reporting until the next launch. That is the decision to make, and it is
+      the same one recorded on simmo.
+
+- [ ] **"Maybe don't store" is only half-done.** The maintainer's ask included
+      not *storing* pre-consent crashes, not merely not sending them. What
+      landed discards them at first opt-in; the library still writes them to
+      disk in the meantime, because collection-disabled does not uninstall its
+      uncaught-exception handler. Genuinely never storing them means not
+      initializing Crashlytics until consent exists — a startup change worth
+      costing out separately.
+
+- [ ] **Decide whether a re-enabled analytics identity should be reconfigured in
+      the same process.** Removed rather than fixed a sixth time (autopilot,
+      2026-08-29). `resetAnalyticsData()` wipes the identity's user properties,
+      and the snapshot collectors will not resend them in that process because
+      their values are unchanged and `distinctUntilChanged` drops them. So
+      events between an opt-in and the next launch go out unsegmented. It
+      self-heals: the next launch's collectors emit their initial values to the
+      new identity.
+
+      Three attempts to buy back those minutes produced five findings (Codex,
+      PR #1161): replaying unconditionally duplicated both configuration events
+      on every opted-in launch; keying it on the discard debt lost the replay
+      when a process death landed between clearing that debt and enabling; and
+      a dedicated durable flag reintroduced duplication across the
+      interrupted-enable window *and* cleared itself after a replay that had
+      thrown. Exactly-once here means coordinating a durable flag with three
+      independent startup collectors across arbitrary process deaths, which is
+      a distributed-systems problem accepted for dashboard accuracy.
+
+      Reversible, and cheap to revisit: nothing else depends on it, and the
+      cost of leaving it out is bounded to one app session's segmentation. If
+      it returns it should be designed — most likely by having the collectors
+      themselves re-emit on a collection-enabled transition, rather than
+      bolting a second emission path onto the consent path.
+
+- [ ] **Fan the two new banner strings out to the 47 locales.**
+      `today_telemetry_invite_title` / `_body` landed English-only with
+      `tools:ignore="MissingTranslation"`, per the English-first rule. They are
+      new keys rather than reworded ones on purpose: the old
+      `today_telemetry_notice_*` strings asserted reporting was already on, and
+      a locale still carrying that would tell its reader something false about
+      their privacy — an untranslated fallback is merely untranslated. The old
+      keys are deleted from every locale.
+
+Product analytics ships in all builds but collects nothing until the user
+turns it on — both SDKs start disabled from the manifest, and a one-time
+non-blocking Today banner invites them to Settings → Privacy;
 PRIVACY.md → "Analytics and crash reporting" has the contract. Backend
 is Firebase Analytics + Crashlytics, gated on `app/google-services.json`
 so CI builds no-op. The hard "do not transmit" list (calendar data,

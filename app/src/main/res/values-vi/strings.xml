@@ -232,8 +232,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_update_downloaded_action">Khởi động lại</string>
 
     <!-- Telemetry notice -->
-    <string name="today_telemetry_notice_title">Báo cáo sự cố và sử dụng đang bật</string>
-    <string name="today_telemetry_notice_body">ClothesCast gửi báo cáo sự cố ẩn danh và số liệu sử dụng để giúp khắc phục lỗi. Không có dữ liệu lịch, vị trí hay nội dung thông tin nào được gửi. Tắt bất kỳ lúc nào trong Cài đặt.</string>
     <string name="today_telemetry_notice_open_settings">Cài đặt Quyền riêng tư</string>
     <string name="today_telemetry_notice_dismiss">Đóng</string>
 

@@ -231,8 +231,6 @@ What is NOT overridden, by design:
     <string name="today_update_downloaded_action">Paleisti iš naujo</string>
 
     <!-- Telemetry notice banner. -->
-    <string name="today_telemetry_notice_title">Gedimų ir naudojimo ataskaitos įjungtos</string>
-    <string name="today_telemetry_notice_body">ClothesCast siunčia anonimines gedimų ataskaitas ir naudojimo analizę, kad padėtų taisyti klaidas. Kalendoriaus duomenys, vieta ar teksto turinys neįtraukiami. Galima išjungti bet kada nustatymuose.</string>
     <string name="today_telemetry_notice_open_settings">Privatumo nustatymai</string>
     <string name="today_telemetry_notice_dismiss">Atmesti</string>
 

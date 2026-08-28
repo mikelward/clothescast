@@ -26,12 +26,11 @@ import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.defaultsFor
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.Telemetry
 import app.clothescast.locale.AppLocale
 import app.clothescast.ui.nav.ClothesCastNavHost
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
-import com.google.firebase.FirebaseApp
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -158,14 +157,17 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleComposeStartupCrash(error: NoSuchFieldError) {
-        runCatching {
-            if (FirebaseApp.getApps(this).isNotEmpty()) {
-                FirebaseCrashlytics.getInstance().apply {
-                    setCustomKey("compose_startup_unsupported", true)
-                    recordException(error)
-                }
-            }
-        }
+        // Through Telemetry, not straight to Crashlytics: this runs before the
+        // stored telemetry choice has necessarily been applied, and a direct
+        // `recordException` here could queue an app-generated report during
+        // the migrating launch's window — the one thing PRIVACY.md says does
+        // not happen (Codex, PR #1161). Telemetry holds it until the choice is
+        // on both SDKs rather than dropping it, so a consenting user still
+        // gets the incidence data this exists for.
+        Telemetry.recordComposeStartupCrash(
+            (application as ClothesCastApplication).applicationScope,
+            error,
+        )
         val padding = (24 * resources.displayMetrics.density).toInt()
         setContentView(
             TextView(this).apply {

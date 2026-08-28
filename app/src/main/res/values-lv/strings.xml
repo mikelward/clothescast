@@ -211,8 +211,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_update_available_dismiss">Ne tagad</string>
     <string name="today_update_downloaded_body">Atjauninājums lejupielādēts. Restartē, lai pabeigtu instalēšanu.</string>
     <string name="today_update_downloaded_action">Restartēt</string>
-    <string name="today_telemetry_notice_title">Avāriju un lietošanas ziņojumi ir ieslēgti</string>
-    <string name="today_telemetry_notice_body">ClothesCast nosūta anonīmus avāriju ziņojumus un lietošanas analītiku, lai palīdzētu novērst kļūdas. Kalendāra dati, atrašanās vieta vai teksti netiek iekļauti. Izslēdz to jebkurā laikā iestatījumos.</string>
     <string name="today_telemetry_notice_open_settings">Privātuma iestatījumi</string>
     <string name="today_telemetry_notice_dismiss">Aizvērt</string>
 

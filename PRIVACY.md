@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-06-21_
+_Last updated: 2026-08-28_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -12,11 +12,23 @@ have over it.
   voice signs in **anonymously** — a random ID with no name, email, or
   password — purely to count your daily usage; no backend holds personal
   data about you.
-  The app may send anonymous crash reports and aggregate usage analytics
+  The app can send anonymous crash reports and aggregate usage analytics
   to a third-party reporting service so the developer can fix bugs and
-  decide which features to keep — see "Analytics and crash reporting"
-  below for what those payloads include and (more importantly) the hard
-  limits on what they don't.
+  decide which features to keep — but **only if you turn that on**.
+  Nothing is sent until you do, with one exception if you are updating
+  from a version where it was on: the reporting libraries start before
+  any of the app's own code, so a report they were already holding — or
+  an event they record themselves in that moment — can go before the app
+  turns them off. The app does that on its first
+  launch after the update, and they start off from then on — unless
+  that launch ends before the app gets that far, in which case the next
+  one tries again. A fresh install is never in this position.
+  If the app crashes while it is off, the
+  reporting library still writes that crash to your phone; it is never
+  sent, and it is discarded when you first turn the switch on. See
+  "Analytics and crash reporting" below for what those payloads include
+  once it is on and (more importantly) the hard limits on what they
+  don't.
 - Your **approximate location** is sent to
   [Open-Meteo](https://open-meteo.com) to fetch the weather forecast,
   and (on Play Services devices) to Google's geocoding service via
@@ -339,7 +351,7 @@ policies apply to anything they receive:
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, an anonymous app identifier (as a signed Firebase ID token; plus a Firebase Installation ID during the current rollout), a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence; the outfit-card image, TTS audio, and muxed MP4 on sibling topics; an update timestamp; and a calendar-derived `has_events` boolean (no event titles, times, or locations) — all as retained MQTT messages | Only if you opt in to the Smart Home bridge and configure a broker |
-| Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Possibly always, in all builds |
+| Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Only if you turn on crash and usage reporting in Settings → Privacy, plus the one upgrade exception described there |
 
 These providers act as service providers fulfilling a single request and
 returning the result. When the ClothesCast TTS proxy is in the path, it
@@ -380,12 +392,23 @@ terms.
 ## Analytics and crash reporting
 
 To spot bugs and decide which features are worth keeping, ClothesCast
-may send two kinds of payload to a third-party reporting service (e.g.
+can send two kinds of payload to a third-party reporting service (e.g.
 Firebase Crashlytics + Google Analytics for Firebase, or equivalent).
-This may be present in all builds and run for all users by default; the
-goal is to inform product decisions, not to identify you.
 
-What's sent:
+**This is off until you turn it on**, in Settings → Privacy. Both SDKs
+are started with collection disabled, before any of the app's own code
+runs, so on a fresh install nothing is sent and nothing is queued to be
+sent.
+
+Being exact about one thing, because "off" does not mean the same for
+both: analytics collects nothing at all, but the crash reporter still
+writes a crash to your phone even while it is off — turning collection
+off stops it *sending*, not catching. Such a report is never sent, and
+it is discarded the moment you first turn the switch on rather than
+being released. The goal, once you do turn it on, is to inform product
+decisions, not to identify you.
+
+What's sent, once it is on:
 
 - **Crash reports:** stack trace, app version, Android version, device
   model, and a non-resettable install identifier used to group duplicate
@@ -482,12 +505,34 @@ What's **not** sent — these are hard limits, not "best-effort":
 - **No API keys** or other credentials.
 - **No precise GPS** or advertising identifiers.
 
+**It is off until you turn it on, and you can turn it back off.**
+Settings → Privacy has the switch. Leave it alone and nothing is sent —
+with one exception, if you are updating from a version where reporting was
+on: the reporting libraries start before any of the app's own code, so a
+report they were already holding — or an event they record themselves in that
+moment — can still go before the app turns them off. The app does that on its first launch after the update, and they
+start off from then on — unless that launch ends before the app gets that
+far, in which case the next one tries again. A fresh install is never in
+this position. The Changelog entry for 2026-08-28 describes it in full.
+
+Turn it on and then off again and the app stops collecting, resets the
+analytics identifier so a later re-enable starts a new stream rather than
+resuming the old one, and asks the crash reporter to discard the reports
+it is still holding.
+
+Two things worth being exact about. If the app crashes while reporting is
+off, the reporting library still writes that crash to your phone — it is
+never sent, and it is discarded the moment you first turn the switch on,
+rather than being released. And within a period you *had* switched on,
+anything already queued can't be recalled, and a crash or event landing
+in the moment you flip the switch is handed over before the new setting
+reaches the library; either of those may still go.
+
 The reporting service receives only what's described above and is bound
 by its own privacy policy (linked from the third-party services table
 above once a specific provider is chosen). ClothesCast is open source,
 so you can audit exactly what's instrumented at
-<https://github.com/mikelward/clothescast> — or build a copy with the
-reporting calls stripped out, if you'd rather not participate.
+<https://github.com/mikelward/clothescast>.
 
 ## Children
 
@@ -511,6 +556,47 @@ Open an issue at <https://github.com/mikelward/clothescast/issues> or
 email the address listed on the Play Store listing.
 
 ## Changelog
+
+- **2026-08-28** — **Crash and usage reporting is now off until you turn it
+  on.** It used to be on by default, with a one-time banner telling you how to
+  switch it off. Both SDKs now start with collection disabled, before any of
+  the app's own code runs, so on a fresh install nothing is sent and nothing is
+  queued to be sent. An existing install that never made a choice is treated as
+  not having consented, so reporting stops there too until it is turned on. The
+  Today banner is now an invitation rather than a notice.
+
+  **Existing installs are migrated, not grandfathered.** An install that had
+  never made a choice is treated as not having agreed: on its first launch
+  after the update the app turns both reporting SDKs off and discards whatever
+  they were holding, rather than leaving them as they were. That step is
+  necessary rather than belt-and-braces — the crash reporter keeps its own
+  copy of the collection setting, and it outranks the app's new default.
+
+  One exception, and only if you had reporting on before: the reporting
+  libraries start before any of the app's own code, so for the moment between
+  them starting and the app turning them off, a report they were already
+  holding — or an event they record themselves in that moment — can still go.
+  Nothing the app itself records reaches that window: everything that produces
+  usage events waits until the stored choice has been applied to both
+  libraries. That moment is the first launch after the update, and
+  they start off from then on — but a launch that ends before the app reaches
+  that step leaves them on, so the next launch opens the same moment again and
+  turns them off there. There is no such window on a fresh install, where they
+  have never been on.
+
+  **A crash captured before you first turn it on is discarded, not sent.**
+  Discarding held reports is new in this release, in both directions:
+  previously the switch set the two collection flags and nothing else, so
+  turning reporting off left whatever was already captured on the phone.
+  Now turning it off discards what is still held, and turning it on for the
+  first time does too — because switching the reporter to "don't send" never
+  stopped it writing crashes to the phone.
+
+  Turning it off after a period with it on also **resets the analytics
+  identifier**; previously the switch set the collection flags and nothing
+  more, and those take effect only from the next launch. One limit remains and
+  applies only to a period you had switched on: a crash report or usage event
+  already queued during that period cannot be recalled.
 
 - **2026-06-21** — The **Smart Home / Home Assistant MQTT bridge** now
   publishes a `has_events` boolean (`true`/`false`) on each window's topic

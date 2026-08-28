@@ -3,6 +3,7 @@ package app.clothescast.data
 import android.content.Context
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
@@ -464,9 +465,143 @@ class SettingsRepository(
         dataStore.edit { it[CALENDAR_PERMISSION_RECHECK_TICK] = System.currentTimeMillis() }
     }
 
+    /**
+     * Stores the telemetry choice — and, for an opt-out, the deletion it owes,
+     * in the *same* edit.
+     *
+     * Separately would lose it: the collector conflates, so an off then a
+     * quick on can present only the final `true`, the disabled transition
+     * never runs, and nothing ever records that the off period's reports are
+     * still there (Codex, PR #1161).
+     */
     suspend fun setTelemetryEnabled(enabled: Boolean) {
-        dataStore.edit { it[TELEMETRY_ENABLED] = enabled }
+        dataStore.edit {
+            val wasConsented = it[TELEMETRY_ENABLED] == true
+            it[TELEMETRY_ENABLED] = enabled
+            // Any explicit choice retires the invitation, in the same edit.
+            // The banner is not the only way to answer — Settings → Privacy
+            // reaches the same setter — so acking only from the banner left
+            // Today still asking "Turn on / No thanks" of someone who had
+            // already decided. Doing it here rather than in a second write
+            // also means a process death between the two cannot leave the
+            // choice stored and the question still posed (Codex, PR #1161).
+            it[TELEMETRY_NOTICE_ACKED] = true
+            // Owed on every crossing of the consent line, in either direction.
+            //
+            // Turning *on* needs it as much as turning off: the manifest stops
+            // the reporter sending, not capturing, so a crash before the user
+            // was ever asked is already on disk as unsent. Without a discard
+            // here the first opt-in releases exactly that report — collected
+            // from someone who had not yet agreed (Codex, PR #1161).
+            //
+            // Re-affirming an existing opt-in owes nothing, which is what
+            // keeps this from deleting the reports the feature exists to
+            // collect.
+            if (!enabled || !wasConsented) it.oweTelemetryDiscard()
+        }
     }
+
+    /**
+     * Brings an install created before reporting was opt-in into line, once.
+     *
+     * The manifest cannot do this on its own. Crashlytics keeps its own
+     * persisted collection flag and
+     * `DataCollectionArbiter.isAutomaticDataCollectionEnabled()` returns it
+     * whenever it is set, reaching the manifest default only when it is not —
+     * and every install from the default-on era has `true` stored there,
+     * written by the startup path on each launch. So the first upgraded launch
+     * would come up collecting whatever the manifest says (Codex, PR #1161).
+     *
+     * Recording the debt is what fixes it: the collector's first pass then
+     * stops both SDKs — overwriting that stored `true` — and discards what was
+     * captured, rather than leaving it to be sent by someone who was never
+     * asked. The marker keeps it to one run, so a user who simply never
+     * answers doesn't pay for a purge on every launch.
+     */
+    suspend fun migrateToOptInTelemetry() {
+        dataStore.edit {
+            if (it[TELEMETRY_OPT_IN_MIGRATED] == true) return@edit
+            it[TELEMETRY_OPT_IN_MIGRATED] = true
+            // Only where no choice was ever made. Someone who had already
+            // opted out has been honored since, and someone who opted in gets
+            // to keep what they agreed to.
+            if (it[TELEMETRY_ENABLED] == null) {
+                it.oweTelemetryDiscard()
+                // And put the question to them. `TELEMETRY_NOTICE_ACKED` used
+                // to mean "saw the disclosure that reporting is on"; it now
+                // means "answered the invitation", and the old banner set it
+                // on a plain dismissal. Carrying it over would opt this user
+                // out and then never ask — silently, for the entire existing
+                // user base, which is the population this migration is for
+                // (Codex, PR #1161).
+                it[TELEMETRY_NOTICE_ACKED] = false
+            } else {
+                // An explicit legacy choice *is* an answer, even though the
+                // old `setTelemetryEnabled` did not record one. Marking it
+                // acknowledged keeps the new invitation away from someone who
+                // has already said yes or no.
+                it[TELEMETRY_NOTICE_ACKED] = true
+            }
+        }
+    }
+
+    /**
+     * Records a deletion as owed, on a fresh generation.
+     *
+     * The generation is what a later clear compares against, so it must move
+     * on *every* crossing — a second debt recorded while a purge is in flight
+     * has to be distinguishable from the one that purge is discharging, and
+     * the flag alone reads `true` for both.
+     */
+    private fun MutablePreferences.oweTelemetryDiscard() {
+        this[TELEMETRY_DISCARD_OWED] = true
+        this[TELEMETRY_DISCARD_TOKEN] = (this[TELEMETRY_DISCARD_TOKEN] ?: 0L) + 1L
+    }
+
+    /**
+     * Retires the deletion a purge has just carried out — but only the one it
+     * set out to, named by the [TelemetryChoice.discardToken] it read.
+     *
+     * The debt is recorded atomically with the choice by [setTelemetryEnabled];
+     * clearing it is the other half, and it has to be just as careful. A purge
+     * suspends (two SDK calls and this edit), and the user can cross the
+     * consent line twice while it runs: the off records a fresh debt, the on
+     * leaves the final choice enabled, and an unconditional clear then retires
+     * that newer debt as if this purge had covered it. A report captured in
+     * the opted-out gap would be released when the flags went back on (Codex,
+     * PR #1161). Comparing the generation inside the edit makes the check and
+     * the clear one atomic step, which is the only way it holds.
+     */
+    suspend fun clearTelemetryDiscardOwed(consumedToken: Long) {
+        dataStore.edit {
+            if ((it[TELEMETRY_DISCARD_TOKEN] ?: 0L) == consumedToken) {
+                it[TELEMETRY_DISCARD_OWED] = false
+            }
+        }
+    }
+
+    /**
+     * The telemetry choice and the deletion an opt-out owes, from **one**
+     * DataStore snapshot.
+     *
+     * Read separately they can disagree: an opt-out landing while the
+     * collector is mid-transition on an older `enabled = true` gives a stale
+     * choice beside the newer debt, and the transition then discharges the
+     * debt and re-enables both SDKs (Codex, PR #1161). One read makes that
+     * impossible.
+     */
+    val telemetryChoice: Flow<TelemetryChoice> =
+        dataStore.data.map {
+            TelemetryChoice(
+                // Absent means off. Reporting is opt-in: nothing reaches the
+                // reporting service until the user turns it on, which is what
+                // lets the opt-out promise be unconditional rather than
+                // "everything except what was already queued".
+                enabled = it[TELEMETRY_ENABLED] == true,
+                discardOwed = it[TELEMETRY_DISCARD_OWED] == true,
+                discardToken = it[TELEMETRY_DISCARD_TOKEN] ?: 0L,
+            )
+        }
 
     suspend fun setMqttBridgeEnabled(enabled: Boolean) {
         dataStore.edit { it[MQTT_BRIDGE_ENABLED] = enabled }
@@ -1069,9 +1204,10 @@ class SettingsRepository(
         val deltaFormat = this[INSIGHT_DELTA_FORMAT]
             ?.let { runCatching { DeltaFormat.valueOf(it) }.getOrNull() }
             ?: DeltaFormat.DEGREES
-        // Default on for installs that predate the toggle, matching the new-install
-        // default; the one-time Today banner is what surfaces the choice to the user.
-        val telemetryEnabled = this[TELEMETRY_ENABLED] != false
+        // Absent means off, for an install that predates the toggle as much as
+        // for a new one: reporting is opt-in, and an existing user who never
+        // made a choice never consented to one.
+        val telemetryEnabled = this[TELEMETRY_ENABLED] == true
         val telemetryNoticeAcked = this[TELEMETRY_NOTICE_ACKED] == true
         val colorPalette = this[COLOR_PALETTE]?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
             ?: ColorPalette.RAINBOW
@@ -1521,6 +1657,17 @@ class SettingsRepository(
         private val DISMISSED_LOCAL_BUILD_SHA = stringPreferencesKey("dismissed_local_build_sha")
         private val TELEMETRY_ENABLED = booleanPreferencesKey("telemetry_enabled")
         private val TELEMETRY_NOTICE_ACKED = booleanPreferencesKey("telemetry_notice_acked")
+        private val TELEMETRY_OPT_IN_MIGRATED = booleanPreferencesKey("telemetry_opt_in_migrated")
+        private val TELEMETRY_DISCARD_OWED = booleanPreferencesKey("telemetry_discard_owed")
+
+        /**
+         * Which debt [TELEMETRY_DISCARD_OWED] currently names — bumped by every
+         * crossing of the consent line, so a purge can retire the debt it
+         * consumed and leave a newer one standing. Absent on an install from
+         * before this existed, which reads as generation 0 and is exactly right:
+         * whatever debt it carries has never been bumped.
+         */
+        private val TELEMETRY_DISCARD_TOKEN = longPreferencesKey("telemetry_discard_token")
         // Versioned: the v1 dialog disclosed only the text report. Adding the
         // screenshot to the payload widened what leaves the device, so the key
         // is bumped to re-prompt anyone who had ticked "Don't show again" under

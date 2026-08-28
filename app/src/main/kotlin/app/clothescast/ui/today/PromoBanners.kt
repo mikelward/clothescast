@@ -27,10 +27,18 @@ internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, PLAY, GEMINI, SC
  * banner takes over as the place that explains why the visible forecast can't
  * refresh. The telemetry disclosure isn't gated this way — it shouldn't be
  * silently withheld from a first-run user.
+ *
+ * [telemetryInviteDismissedForSession] is the X on that invitation, which
+ * stores nothing and means "not now". It is applied here rather than only
+ * where the card renders: hidden at render time alone, `TELEMETRY` went on
+ * holding one of the [maxVisible] slots while showing nothing, so a
+ * lower-priority setup card stayed hidden for the rest of the session
+ * (Codex, PR #1161).
  */
 internal fun promoBannersToShow(
     locationActionRequired: Boolean,
     telemetryNoticeVisible: Boolean,
+    telemetryInviteDismissedForSession: Boolean = false,
     clothesPromoEligible: Boolean,
     schedulePromoEligible: Boolean,
     playPromoEligible: Boolean,
@@ -41,7 +49,9 @@ internal fun promoBannersToShow(
 ): Set<PromoBanner> {
     val eligible = buildList {
         if (locationActionRequired && hasForecast) add(PromoBanner.LOCATION)
-        if (telemetryNoticeVisible) add(PromoBanner.TELEMETRY)
+        if (telemetryNoticeVisible && !telemetryInviteDismissedForSession) {
+            add(PromoBanner.TELEMETRY)
+        }
         if (clothesPromoEligible && hasForecast) add(PromoBanner.CLOTHES)
         if (playPromoEligible && hasForecast) add(PromoBanner.PLAY)
         if (geminiPromoEligible && hasForecast) add(PromoBanner.GEMINI)

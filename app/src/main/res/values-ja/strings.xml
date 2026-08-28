@@ -613,8 +613,6 @@ the displayed label localizes.
     <!-- Low-confidence callout banner. -->
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
-    <string name="today_telemetry_notice_title">クラッシュ・利用状況レポートは有効です</string>
-    <string name="today_telemetry_notice_body">ClothesCast は不具合修正のため、匿名のクラッシュレポートと利用状況分析を送信します。カレンダーデータ、位置情報、要約テキストは含まれません。設定からいつでも無効にできます。</string>
     <string name="today_telemetry_notice_open_settings">プライバシー設定</string>
     <string name="today_telemetry_notice_dismiss">閉じる</string>
 

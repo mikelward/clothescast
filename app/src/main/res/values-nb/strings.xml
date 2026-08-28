@@ -439,8 +439,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <!-- Low-confidence callout. -->
 
     <!-- Telemetry notice. -->
-    <string name="today_telemetry_notice_title">Krasjrapporter og bruksrapporter er aktivert</string>
-    <string name="today_telemetry_notice_body">ClothesCast sender anonyme krasjrapporter og bruksanalyser for å rette feil. Ingen kalenderdata, stedsdata eller innholdstekster sendes. Kan deaktiveres når som helst i innstillingene.</string>
     <string name="today_telemetry_notice_open_settings">Personverninnstillinger</string>
     <string name="today_telemetry_notice_dismiss">Lukk</string>
 

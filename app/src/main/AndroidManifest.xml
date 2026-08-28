@@ -196,6 +196,20 @@
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
 
+        <!-- Reporting is opt-in, and these are what make that true on the
+             first launch. FirebaseInitProvider runs before Application.onCreate,
+             so by the time any code of ours could apply the stored choice both
+             SDKs are already up; without these they would be up *collecting*,
+             and a crash before the first frame would be captured and scheduled
+             from someone who has never been asked. A stored `true` from a user
+             who has opted in overrides them at startup. -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+
         <!-- Cast SDK loads CastOptionsProvider via reflection from this name.
              Receiver app id (Default Media Receiver) and discovery filters
              live in that class. -->

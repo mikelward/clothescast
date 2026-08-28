@@ -195,7 +195,7 @@ data class SettingsState(
      * once READ_CALENDAR is granted and never carried off device.
      */
     val availableCalendars: List<CalendarInfo>? = null,
-    val telemetryEnabled: Boolean = true,
+    val telemetryEnabled: Boolean = false,
     val apiKeyConfigured: Boolean = false,
     /**
      * True when a Google API key is stored (separate slot from the Gemini key).

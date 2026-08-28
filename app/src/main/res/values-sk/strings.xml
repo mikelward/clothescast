@@ -450,8 +450,6 @@ What is NOT overridden, by design:
     <string name="today_update_downloaded_action">Reštartovať</string>
 
     <!-- Telemetry notice. -->
-    <string name="today_telemetry_notice_title">Správy o pádoch a využití sú zapnuté</string>
-    <string name="today_telemetry_notice_body">ClothesCast odosiela anonymné správy o pádoch a analytiku využitia na opravu chýb. Žiadne kalendárne dáta, poloha ani text obsahu nie sú zahrnuté. Kedykoľvek to môžeš vypnúť v nastaveniach.</string>
     <string name="today_telemetry_notice_open_settings">Nastavenia súkromia</string>
     <string name="today_telemetry_notice_dismiss">Zavrieť</string>
 

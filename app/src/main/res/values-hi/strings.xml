@@ -506,8 +506,6 @@ Not overridden by design:
     <!-- Low-confidence callout banner. -->
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
-    <string name="today_telemetry_notice_title">क्रैश और उपयोग रिपोर्ट चालू हैं</string>
-    <string name="today_telemetry_notice_body">ClothesCast बग ठीक करने में मदद के लिए गुमनाम क्रैश रिपोर्ट और उपयोग विश्लेषण भेजता है। कैलेंडर डेटा, स्थान या इनसाइट टेक्स्ट शामिल नहीं है। सेटिंग में किसी भी समय बंद कर सकते हैं।</string>
     <string name="today_telemetry_notice_open_settings">गोपनीयता सेटिंग</string>
     <string name="today_telemetry_notice_dismiss">बंद करें</string>
 

@@ -512,8 +512,6 @@ surfaces.
     <string name="today_update_downloaded_action">Поново покрени</string>
 
     <!-- Telemetry notice banner. -->
-    <string name="today_telemetry_notice_title">Извештаји о грешкама и коришћењу су укључени</string>
-    <string name="today_telemetry_notice_body">ClothesCast шаље анонимне извештаје о грешкама и аналитику коришћења ради исправљања грешака. Подаци календара, локација или текст резимеа нису укључени. Искључи у било ком тренутку у подешавањима.</string>
     <string name="today_telemetry_notice_open_settings">Подешавања приватности</string>
     <string name="today_telemetry_notice_dismiss">Затвори</string>
 

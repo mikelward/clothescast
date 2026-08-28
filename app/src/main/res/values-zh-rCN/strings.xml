@@ -606,8 +606,6 @@ label localizes.
     <!-- Low-confidence callout banner. -->
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
-    <string name="today_telemetry_notice_title">崩溃及使用情况报告已开启</string>
-    <string name="today_telemetry_notice_body">ClothesCast 会发送匿名的崩溃报告和使用情况分析，帮助修复问题。不包含日历数据、位置或预报文本。可随时在「设置」中关闭。</string>
     <string name="today_telemetry_notice_open_settings">隐私设置</string>
     <string name="today_telemetry_notice_dismiss">忽略</string>
 

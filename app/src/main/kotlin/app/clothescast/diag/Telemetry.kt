@@ -8,8 +8,11 @@ import app.clothescast.data.SettingsRepository
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import java.io.IOException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -40,9 +43,27 @@ object Telemetry {
      * a Context. Stays null on builds without google-services.json (CI) or
      * on the OnePlus 8 Pro install-bypass path described in [start], which
      * is how all the logEvent helpers below stay silent on those builds.
+     *
+     * Published only once the stored telemetry choice has been applied to
+     * both SDKs, so a helper called before that no-ops rather than emitting
+     * an event from someone who may never have agreed.
      */
     @Volatile
     private var analyticsRef: FirebaseAnalytics? = null
+
+    /** As [analyticsRef], for the one non-fatal recorded outside this object. */
+    @Volatile
+    private var crashlyticsRef: FirebaseCrashlytics? = null
+
+    /**
+     * Completed once the stored telemetry choice has been applied to both SDKs.
+     * Everything that can produce telemetry waits on it — see [start].
+     *
+     * Never completed on a build without google-services.json, or on the
+     * install-bypass path in [start], so a waiting producer there simply never
+     * runs. That is the intended silence in both cases.
+     */
+    private val telemetryApplied = CompletableDeferred<Unit>()
 
     /**
      * Subscribes to [settings]'s telemetry preference and pushes each change
@@ -78,30 +99,323 @@ object Telemetry {
             crashlytics.setCrashlyticsCollectionEnabled(false)
             return
         }
-        analyticsRef = analytics
+        // Released only once the stored choice is on both SDKs. Everything
+        // below that can *generate* telemetry waits on it: the three snapshot
+        // collectors, and `analyticsRef`, which every logEvent helper reads.
+        //
+        // Without it the producers race the migration. On an upgraded install
+        // carrying Analytics' persisted `true`, the snapshot collectors emit
+        // their initial events the moment they attach, before the collector
+        // below has disabled anything — so a user who has never agreed sends
+        // freshly generated events, which is a different thing from the held
+        // report `PRIVACY.md` already discloses (Codex, PR #1161).
+        //
+        // A helper called out of band inside that window finds `analyticsRef`
+        // null and no-ops, exactly as on a build without google-services.json.
+        // Dropping those few is the right side of the trade: there is nowhere
+        // to hold an event that may turn out to be unconsented — except the
+        // startup non-fatal, which has one and waits instead. See
+        // [recordComposeStartupCrash].
         scope.launch {
-            settings.preferences
-                .map { it.telemetryEnabled }
+            // Before the collector, so its first pass already carries the
+            // debt: an install from the default-on era has `true` in
+            // Crashlytics' own storage, which outranks the manifest default,
+            // and only a discard makes that first upgraded launch safe.
+            try {
+                settings.migrateToOptInTelemetry()
+            } catch (e: IOException) {
+                // Fail closed. Without this the throw ends the coroutine
+                // before the collector below ever attaches, so on exactly the
+                // install this migration exists for — an upgrade carrying
+                // Crashlytics' persisted `true` — both SDKs would stay
+                // enabled for someone who has never agreed, with nothing said
+                // about it (Codex, PR #1161).
+                //
+                // Disabling here rather than only logging: the migration's
+                // whole job is to stop collection, and a failed *record* of
+                // that is not a reason to keep collecting. The debt goes
+                // unrecorded, so the discard is retried next launch; the
+                // stopping is not deferred.
+                analytics.setAnalyticsCollectionEnabled(false)
+                crashlytics.setCrashlyticsCollectionEnabled(false)
+                DiagLog.w(
+                    "Telemetry",
+                    "opt-in migration could not be persisted; collection disabled",
+                    e,
+                )
+            }
+            // One snapshot carries both, so the choice and the debt can never
+            // be read from different states. Collecting the debt as its own
+            // flow was the first attempt and looped — the transition writes it
+            // — while reading it separately let the two disagree; taken
+            // together, the clearing write settles after one further pass and
+            // the pair always describes the same moment (Codex, PR #1161).
+            settings.telemetryChoice
                 .distinctUntilChanged()
-                .collect { enabled ->
-                    analytics.setAnalyticsCollectionEnabled(enabled)
-                    crashlytics.setCrashlyticsCollectionEnabled(enabled)
+                .collect { choice ->
+                    // The collector must outlive one failed write. Every
+                    // durable step below is DataStore I/O, and letting an
+                    // IOException escape ends the *only* subscription to the
+                    // user's choice: the switch would then read on with both
+                    // SDKs stopped, and every later toggle would be ignored
+                    // for the rest of the process (Codex, PR #1161). The debt
+                    // is left uncleared on purpose, so the next launch
+                    // retries the discard rather than assuming it happened.
+                    try {
+                    applyTelemetryChoice(
+                        enabled = choice.enabled,
+                        discardOwed = choice.discardOwed,
+                        setAnalyticsCollectionEnabled = analytics::setAnalyticsCollectionEnabled,
+                        setCrashlyticsCollectionEnabled = crashlytics::setCrashlyticsCollectionEnabled,
+                        deleteUnsentReports = { crashlytics.deleteUnsentReports() },
+                        resetAnalyticsData = { analytics.resetAnalyticsData() },
+                        // Bound to the debt *this* pass read, so a crossing
+                        // made while the purge runs records a debt the clear
+                        // cannot retire.
+                        clearDiscardOwed = {
+                            settings.clearTelemetryDiscardOwed(choice.discardToken)
+                        },
+                        // Enabled, and the debt still standing is the one
+                        // this pass discharged rather than a newer one — the
+                        // generation is what tells them apart, and it has to,
+                        // because the clear now happens after the enable. See
+                        // the re-read in `applyTelemetryChoice`.
+                        safeToEnable = {
+                            settings.telemetryChoice.first().let {
+                                it.enabled && it.discardToken == choice.discardToken
+                            }
+                        },
+                    )
+                    } catch (e: IOException) {
+                        DiagLog.w("Telemetry", "applying the telemetry choice failed", e)
+                    }
+                    // Both idempotent, so this runs on every pass and matters
+                    // only on the first: the SDKs now carry the stored choice,
+                    // so producing telemetry is safe. A failed write above
+                    // still releases them — the catch left the flags where
+                    // `applyTelemetryChoice` put them, which is off on the
+                    // path that matters.
+                    analyticsRef = analytics
+                    crashlyticsRef = crashlytics
+                    telemetryApplied.complete(Unit)
                 }
         }
         scope.launch {
+            telemetryApplied.await()
             settings.analyticsSnapshot
                 .distinctUntilChanged()
                 .collect { snapshot -> snapshot.applyTo(analytics) }
         }
         scope.launch {
+            telemetryApplied.await()
             settings.settingsSnapshot
                 .distinctUntilChanged()
                 .collect { snapshot -> logSettingsSnapshot(snapshot) }
         }
         scope.launch {
+            telemetryApplied.await()
             settings.clothesRulesSnapshot
                 .distinctUntilChanged()
                 .collect { snapshot -> logClothesRulesSnapshot(snapshot) }
+        }
+    }
+
+    /**
+     * Applies the user's telemetry choice to both SDKs, discarding what they
+     * had already collected whenever an opt-out's deletion is outstanding.
+     *
+     * Turning collection off is not enough on its own: Crashlytics honors the
+     * flag from the *next* launch and leaves already-captured reports on disk,
+     * so a crash caught before the opt-out could still upload afterwards.
+     *
+     * The deletion is therefore a **debt**, recorded in the same DataStore
+     * edit as the opt-out itself (see `SettingsRepository.setTelemetryEnabled`)
+     * and cleared only once the delete has run. Writing it with the choice is
+     * what carries the promise across a rapid off→on, where the collector can
+     * conflate away the intermediate `false` and the disabled transition never
+     * runs at all.
+     *
+     * The debt carries a generation, and [clearDiscardOwed] retires only the
+     * one this pass read. A purge suspends, so the same rapid off→on can land
+     * *during* it: an unconditional clear would then retire the debt recorded
+     * in that gap as though this purge had covered it, and a report captured
+     * there would go out when the flags came back on (Codex, PR #1161).
+     *
+     * Both directions stop collection before discarding, and an enable
+     * discharges anything owed before turning collection back on.
+     *
+     * **What this cannot do.** `deleteUnsentReports()` reaches only reports
+     * Crashlytics is holding for a consent decision: it is
+     * `reportActionProvided.trySetResult(false)`, and with automatic
+     * collection on the SDK resolves that same source itself at startup, so
+     * the call then no-ops. A report already scheduled for automatic upload
+     * cannot be retracted from here — only the manual reporting flow (start
+     * disabled, then `checkForUnsentReports` / `sendUnsentReports` /
+     * `deleteUnsentReports`) can promise that. `TODO.md` tracks it, and
+     * `PRIVACY.md` is worded to what this actually delivers.
+     *
+     * `resetAnalyticsData` goes with each discharge so a later re-enable
+     * starts a fresh app-instance ID rather than resuming the stream the user
+     * turned off.
+     *
+     * Parameterized rather than reaching for the SDKs directly so the ordering
+     * is assertable without Firebase — see `TelemetryDisableTest`.
+     */
+    internal suspend fun applyTelemetryChoice(
+        enabled: Boolean,
+        discardOwed: Boolean,
+        setAnalyticsCollectionEnabled: (Boolean) -> Unit,
+        setCrashlyticsCollectionEnabled: (Boolean) -> Unit,
+        deleteUnsentReports: () -> Unit,
+        resetAnalyticsData: () -> Unit,
+        clearDiscardOwed: suspend () -> Unit,
+        safeToEnable: suspend () -> Boolean = { true },
+    ) {
+        // Stop first, always. Both SDKs persist their collection flag, so this
+        // is itself durable: a kill after it leaves the next launch's
+        // FirebaseInitProvider starting *disabled*, which is what keeps a
+        // still-undeleted report from uploading before this runs again
+        // (Codex, PR #1161). Writing the debt first and stopping second had it
+        // the wrong way round — the debt survived, and so did the enabled flag
+        // the provider reads before Application.onCreate. Both calls are
+        // idempotent, which is what makes them safe on every launch.
+        fun stop() {
+            setAnalyticsCollectionEnabled(false)
+            setCrashlyticsCollectionEnabled(false)
+        }
+        // Only where a consented period actually left something behind. The
+        // debt is exactly that signal, so it is also what keeps this off the
+        // startup path of every opted-out install: reporting is opt-in, so
+        // "disabled, nothing owed" is now the common case, and running the
+        // purge there would mean an analytics reset and a DataStore write on
+        // every launch for a user who has never turned reporting on.
+        // Deliberately does **not** clear the debt. On the enable path the
+        // clear has to come after the flags go on — see below — and on the
+        // disable path there is nothing after it, so the caller retires the
+        // debt at the right moment rather than this doing it eagerly.
+        suspend fun purge() {
+            deleteUnsentReports()
+            resetAnalyticsData()
+        }
+        suspend fun discharge() {
+            stop()
+            purge()
+        }
+        if (!enabled) {
+            stop()
+            if (discardOwed) {
+                purge()
+                // Nothing follows on this path, and the flags are already
+                // persisted off, so retiring it here is safe.
+                clearDiscardOwed()
+            }
+            return
+        }
+        if (discardOwed) {
+            discharge()
+            // Re-read the **whole** choice after the discharge, not only
+            // before it and not only the `enabled` half. `discharge()`
+            // suspends — a DataStore edit and two SDK calls — and the user can
+            // cross the consent line while it is in flight, in two ways that
+            // both end here:
+            //
+            //  - Opting out. A transition that set out to enable finds that
+            //    decision already superseded, and turning the flags on would
+            //    leave them enabled for an opted-out user — durably, since
+            //    both SDKs persist them (Codex, PR #1161).
+            //  - Off and back on. The final choice is still `enabled`, so
+            //    checking that alone passes, but a *newer* debt has been
+            //    recorded. Enabling here would turn collection on with a
+            //    report from the opted-out gap still held, free to upload
+            //    before the collector reaches the emission carrying that debt
+            //    (Codex, PR #1161).
+            //
+            // It compares the **generation**, not `discardOwed`: the debt this
+            // pass discharged is deliberately still set here, because the clear
+            // happens after the enable below. Only a token that has moved means
+            // someone crossed the line since.
+            //
+            // Returning leaves collection stopped and the debt standing, which
+            // is the safe pair: the pending emission discharges it and enables
+            // then.
+            if (!safeToEnable()) return
+        }
+        setAnalyticsCollectionEnabled(true)
+        setCrashlyticsCollectionEnabled(true)
+        // The debt is retired **after** the enable it guards, not inside
+        // `purge()`. Deletion is fire-and-forget — `deleteUnsentReports()`
+        // returns `void`, so there is nothing to await — and the two calls
+        // above overwrite the persisted disable that would otherwise cover a
+        // process death here. Clearing first meant a death between the enable
+        // and the clear left the next launch collecting with nothing owed,
+        // free to release the pre-consent report; held to the end, that death
+        // leaves the debt standing and the next launch discards before
+        // enabling. The cost is one extra purge, which is the cheap side
+        // (Codex, PR #1161 and the same finding on simmo PR #270).
+        //
+        // And it fails **closed**. Moving the clear after the enable created a
+        // path the old order did not have: a throw here used to happen before
+        // the flags went on, so a failure left them off; now it would leave
+        // them persisted *on* with the deletion still owed, and the collector
+        // will not retry because `distinctUntilChanged` drops the unchanged
+        // choice. The next launch's provider then starts collecting before the
+        // collector can discharge (Codex, PR #1161). Putting the flags back is
+        // what keeps the invariant: collection is persisted on only when
+        // nothing is owed.
+        if (discardOwed) {
+            try {
+                clearDiscardOwed()
+            } catch (e: IOException) {
+                stop()
+                throw e
+            }
+        }
+        // Nothing is replayed here, deliberately.
+        //
+        // `resetAnalyticsData()` wipes the identity's user properties, and the
+        // snapshot collectors will not resend them in this process because
+        // their values are unchanged and `distinctUntilChanged` drops them. So
+        // events emitted between an opt-in and the next app launch go out
+        // without configuration attached. That is the whole cost, and it is
+        // bounded: the next launch's collectors emit their initial values to
+        // the new identity, so it self-heals without anything durable.
+        //
+        // Buying back those few minutes was tried three ways and produced five
+        // findings (Codex, PR #1161): unconditional duplicated both events on
+        // every opted-in launch; keying it on the discard debt lost the replay
+        // when a process death landed between clearing that debt and enabling;
+        // and a dedicated durable flag then reintroduced duplication across the
+        // interrupted-enable window *and* cleared itself on a replay that had
+        // failed. Making it exactly-once means coordinating a durable flag with
+        // three independent startup collectors across arbitrary process deaths
+        // — a distributed-systems problem taken on for dashboard accuracy.
+        // `TODO.md` records it; if it comes back it should be designed rather
+        // than bolted to the consent path.
+    }
+
+    /**
+     * Records the Compose-startup failure on an OEM ROM missing
+     * `Configuration.fontWeightAdjustment` as a non-fatal, so its incidence is
+     * trackable. The only Crashlytics producer outside this object; it lives
+     * here so it goes through the same gate everything else does.
+     *
+     * **Waits** rather than dropping. It is raised from `MainActivity.onCreate`,
+     * which can beat the stored choice being applied on a migrating launch — and
+     * dropping it there would lose it for a consenting user in the common case,
+     * since that race is the normal one, not the exception. Held until the
+     * choice is on both SDKs, it is written for a consenting user and merely
+     * captured for anyone else, where the discard a first opt-in owes then
+     * clears it (Codex, PR #1161).
+     *
+     * Silent on a build without google-services.json, and on the install-bypass
+     * path in [start] — neither completes the gate.
+     */
+    fun recordComposeStartupCrash(scope: CoroutineScope, error: Throwable) {
+        scope.launch {
+            telemetryApplied.await()
+            val crashlytics = crashlyticsRef ?: return@launch
+            crashlytics.setCustomKey("compose_startup_unsupported", true)
+            crashlytics.recordException(error)
         }
     }
 

@@ -591,8 +591,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Low-confidence callout banner. -->
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
-    <string name="today_telemetry_notice_title">Report arresti anomali e utilizzo attivati</string>
-    <string name="today_telemetry_notice_body">ClothesCast invia report anonimi di arresti anomali e analisi di utilizzo per correggere i bug. Non vengono inclusi dati del calendario, posizione o testo dei riepilogi. Puoi disattivarlo in qualsiasi momento nelle Impostazioni.</string>
     <string name="today_telemetry_notice_open_settings">Impostazioni privacy</string>
     <string name="today_telemetry_notice_dismiss">Chiudi</string>
 

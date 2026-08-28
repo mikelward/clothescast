@@ -399,14 +399,24 @@
     <string name="today_update_downloaded_body">Update downloaded. Restart to finish installing.</string>
     <string name="today_update_downloaded_action">Restart</string>
 
-    <!-- Banner surfaced once on the Today screen so the user knows ClothesCast is
-         sending anonymous crash + usage data to Firebase by default. Tapping the
-         button deep-links to Settings → Privacy where they can flip the switch
-         off; tapping the X just dismisses the banner. Either path marks the
-         notice as acknowledged so it doesn't reappear. PRIVACY.md spells out
-         the hard limits on what may / may not be sent. -->
-    <string name="today_telemetry_notice_title">Crash and usage reports are on</string>
-    <string name="today_telemetry_notice_body">ClothesCast sends anonymous crash reports and usage analytics to help fix bugs. No calendar data, location, or insight text is included. Turn it off any time in Settings.</string>
+    <!-- Banner surfaced once on the Today screen inviting the user to turn crash
+         and usage reporting on. Reporting is off until they do. Tapping the
+         button deep-links to Settings → Privacy; tapping the X just dismisses
+         the banner. Either path marks it acknowledged so it doesn't reappear.
+         PRIVACY.md spells out the hard limits on what may / may not be sent.
+
+         New keys rather than reworded ones: the old strings said reporting was
+         already on, and a locale still carrying that would tell its reader
+         something false about their privacy. A missing translation falls back
+         to this English, which is merely untranslated. -->
+    <!-- TODO: translate -->
+    <string name="today_telemetry_invite_title" tools:ignore="MissingTranslation">Help fix bugs?</string>
+    <!-- TODO: translate -->
+    <string name="today_telemetry_invite_body" tools:ignore="MissingTranslation">ClothesCast can send anonymous crash reports and usage stats so bugs get found and fixed. It stays off until you turn it on. Calendar data, location, and insight text are never included.</string>
+    <!-- TODO: translate -->
+    <string name="today_telemetry_invite_accept" tools:ignore="MissingTranslation">Turn on</string>
+    <!-- TODO: translate -->
+    <string name="today_telemetry_invite_decline" tools:ignore="MissingTranslation">No thanks</string>
     <string name="today_telemetry_notice_open_settings">Privacy settings</string>
     <string name="today_telemetry_notice_dismiss">Dismiss</string>
 

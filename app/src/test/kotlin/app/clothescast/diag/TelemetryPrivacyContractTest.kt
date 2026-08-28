@@ -262,6 +262,131 @@ class TelemetryPrivacyContractTest {
         return (literals + constRefs).toSet()
     }
 
+    @Test
+    fun `the choice and its debt come from one snapshot`() {
+        // Two separate reads let them disagree: an opt-out landing while the
+        // collector is mid-transition on an older `enabled = true` gives a
+        // stale choice beside the newer debt, and the transition discharges
+        // the debt then re-enables both SDKs (Codex, PR #1161). A separately
+        // *collected* debt loops instead, since the transition writes it.
+        // One snapshot avoids both, and neither failure is visible in
+        // behavior until the exact interleaving happens.
+        val source = telemetrySource()
+
+        source.contains("settings.telemetryChoice") shouldBe true
+        source.contains("telemetryDiscardOwed.first()") shouldBe false
+        source.contains("combine(") shouldBe false
+    }
+
+    @Test
+    fun `every Firebase producer lives in Telemetry`() {
+        // A call site outside this object bypasses the applied-choice gate
+        // entirely. `MainActivity.handleComposeStartupCrash` did exactly that
+        // — a direct `recordException` on a path that runs before the stored
+        // choice has necessarily been applied, so it could queue an
+        // app-generated report during the migrating launch's window, the one
+        // thing PRIVACY.md says does not happen (Codex, PR #1161). It now goes
+        // through `Telemetry.recordComposeStartupCrash`, which waits.
+        val offenders = appMainKtFiles()
+            .filter { it.name != "Telemetry.kt" }
+            .flatMap { file ->
+                val text = stripBlockAndLineComments(file.readText())
+                Regex("""(recordException|setCustomKey|setUserProperty|logEvent)\(""")
+                    .findAll(text)
+                    .map { "${file.path}: ${it.groupValues[1]}" }
+            }
+            .toList()
+
+        offenders.shouldBeEmpty()
+    }
+
+    @Test
+    fun `nothing produces telemetry before the stored choice is applied`() {
+        // The producers race the collector otherwise. On an upgrade carrying
+        // Analytics' persisted `true`, the three snapshot collectors emit
+        // their initial events the moment they attach — before anything has
+        // been disabled — so a user who has never agreed sends freshly
+        // generated events, not merely the held report PRIVACY.md discloses
+        // (Codex, PR #1161). `analyticsRef` is the same hole for any helper
+        // called out of band, since every one of them reads it.
+        //
+        // Asserted against the source because the failure is a startup race:
+        // it needs a real Firebase SDK and an upgrade's persisted flag to
+        // reproduce, and it is invisible in every behavioral test here.
+        val source = stripBlockAndLineComments(telemetrySource())
+
+        // Each producer waits on the gate before it subscribes.
+        for (producer in listOf(
+            "settings.analyticsSnapshot",
+            "settings.settingsSnapshot",
+            "settings.clothesRulesSnapshot",
+        )) {
+            val launched = Regex(
+                """scope\.launch \{\s*([^\n]*)\n[^\n]*${Regex.escape(producer)}""",
+            ).find(source) ?: error("could not find the coroutine collecting $producer")
+            launched.groupValues[1].trim() shouldBe "telemetryApplied.await()"
+        }
+
+        // And the reference every logEvent helper reads is published from
+        // inside the choice collector, not before it.
+        val assignments = Regex("analyticsRef = ").findAll(source).count()
+        assignments shouldBe 1
+        val beforeAssignment = source.substringBefore("analyticsRef = analytics")
+        beforeAssignment.contains("applyTelemetryChoice(") shouldBe true
+    }
+
+    @Test
+    fun `opting out records the discard debt in the same edit`() {
+        // Written separately, the debt is lost exactly when it is needed: the
+        // collector conflates, so an off then a quick on can present only the
+        // final `true`, the disabled transition never runs, and nothing
+        // records that the off period's reports are still there (Codex,
+        // PR #1161). One edit is what makes the two inseparable.
+        val source = sourceFile("src/main/kotlin/app/clothescast/data/SettingsRepository.kt").readText()
+        val edit = Regex(
+            """suspend fun setTelemetryEnabled\(enabled: Boolean\) \{\s*dataStore\.edit \{([^}]*\}[^}]*)\}""",
+        ).find(source)?.groupValues?.get(1) ?: error("could not find setTelemetryEnabled's edit block")
+
+        edit.contains("TELEMETRY_ENABLED") shouldBe true
+        edit.contains("oweTelemetryDiscard") shouldBe true
+
+        // And the helper it calls is what actually records the debt — both the
+        // flag and the generation a later clear compares against, so a debt
+        // recorded during a purge cannot be retired by that purge's clear.
+        val owe = Regex(
+            """private fun MutablePreferences\.oweTelemetryDiscard\(\) \{([^}]*)\}""",
+        ).find(source)?.groupValues?.get(1) ?: error("could not find oweTelemetryDiscard")
+        owe.contains("TELEMETRY_DISCARD_OWED") shouldBe true
+        owe.contains("TELEMETRY_DISCARD_TOKEN") shouldBe true
+    }
+
+    @Test
+    fun `both SDKs start with collection disabled, from the manifest`() {
+        // The whole opt-in claim rests on this. FirebaseInitProvider runs
+        // before Application.onCreate, so no code of ours can get there first:
+        // without these two meta-data entries both SDKs come up *collecting*,
+        // and a crash before the first frame is captured and scheduled from
+        // someone who has never been asked. A stored `true` from a consenting
+        // user overrides them at startup, so they cost a consenting user
+        // nothing.
+        //
+        // Asserted against the manifest source because the failure is
+        // invisible in behavior — every other test here would still pass, and
+        // the only symptom would be reports arriving from users who never
+        // opted in, which is the thing that must never happen quietly.
+        val manifest = sourceFile("src/main/AndroidManifest.xml").readText()
+
+        for (flag in listOf(
+            "firebase_analytics_collection_enabled",
+            "firebase_crashlytics_collection_enabled",
+        )) {
+            val entry = Regex(
+                """<meta-data\s+android:name="$flag"\s+android:value="([^"]*)"\s*/>""",
+            ).find(manifest) ?: error("$flag is not declared in AndroidManifest.xml")
+            entry.groupValues[1] shouldBe "false"
+        }
+    }
+
     private fun telemetrySource(): String =
         sourceFile("src/main/kotlin/app/clothescast/diag/Telemetry.kt").readText()
 

@@ -55,6 +55,41 @@ class PromoBannersTest {
     }
 
     @Test
+    fun `a dismissed invitation frees its slot for the next promo`() {
+        // The X stores nothing, so `telemetryNoticeVisible` stays true — the
+        // question is asked again next launch. Applying the dismissal only
+        // where the card renders left TELEMETRY holding one of the two slots
+        // while showing nothing, and the clothes promo stayed hidden behind an
+        // empty row for the rest of the session (Codex, PR #1161).
+        promoBannersToShow(
+            locationActionRequired = true,
+            telemetryNoticeVisible = true,
+            telemetryInviteDismissedForSession = true,
+            clothesPromoEligible = true,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            hasForecast = true,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.LOCATION, PromoBanner.CLOTHES)
+    }
+
+    @Test
+    fun `an undismissed invitation keeps its slot`() {
+        promoBannersToShow(
+            locationActionRequired = true,
+            telemetryNoticeVisible = true,
+            telemetryInviteDismissedForSession = false,
+            clothesPromoEligible = true,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            hasForecast = true,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.LOCATION, PromoBanner.TELEMETRY)
+    }
+
+    @Test
     fun `location banner waits for a forecast before taking over from the empty state`() {
         // No forecast yet: the empty-state placeholder owns the location prompt,
         // so the banner stays hidden even though location is required.

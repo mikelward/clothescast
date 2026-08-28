@@ -1141,17 +1141,144 @@ class SettingsRepositoryTest {
     }
 
     @Test
-    fun `telemetryEnabled defaults to true and round-trips`() = runTest {
-        // Default-on so the long tail of installs report crashes without the
-        // user having to find the toggle. The Today banner exists to make
-        // this default visible; flipping the switch persists across launches.
-        subject.preferences.first().telemetryEnabled shouldBe true
-
-        subject.setTelemetryEnabled(false)
+    fun `telemetryEnabled defaults to off and round-trips`() = runTest {
+        // Reporting is opt-in: absent means off, so nothing is collected or
+        // queued before the user has been asked. That is what makes the
+        // opt-out promise unconditional — there is nothing from before the
+        // switch that could still be in flight. The Today banner is the
+        // invitation; flipping the switch persists across launches.
         subject.preferences.first().telemetryEnabled shouldBe false
 
         subject.setTelemetryEnabled(true)
         subject.preferences.first().telemetryEnabled shouldBe true
+
+        subject.setTelemetryEnabled(false)
+        subject.preferences.first().telemetryEnabled shouldBe false
+    }
+
+    @Test
+    fun `the first opt-in owes a discard, a re-affirmed one does not`() = runTest {
+        // The manifest stops the reporter sending, not capturing, so a crash
+        // from before the user was ever asked is already on disk as unsent.
+        // Without a debt here the first opt-in releases it (Codex, PR #1161).
+        subject.setTelemetryEnabled(true)
+        subject.telemetryChoice.first().discardOwed shouldBe true
+
+        subject.clearTelemetryDiscardOwed(subject.telemetryChoice.first().discardToken)
+
+        // Re-affirming owes nothing — otherwise every launch of a consenting
+        // user would delete the reports the feature exists to collect.
+        subject.setTelemetryEnabled(true)
+        subject.telemetryChoice.first().discardOwed shouldBe false
+    }
+
+    @Test
+    fun `a purge cannot retire a debt recorded while it ran`() = runTest {
+        // The purge suspends — two SDK calls and this edit — and the user can
+        // cross the consent line twice while it is in flight. The flag reads
+        // `true` for the debt the purge started on and for the one recorded in
+        // that gap, so an unconditional clear retires both, and a report
+        // captured while opted out goes out when the flags come back on
+        // (Codex, PR #1161). The generation is what tells them apart.
+        subject.setTelemetryEnabled(true)
+        val consumed = subject.telemetryChoice.first().discardToken
+
+        // Off and straight back on, as a purge holding `consumed` runs.
+        subject.setTelemetryEnabled(false)
+        subject.setTelemetryEnabled(true)
+
+        subject.clearTelemetryDiscardOwed(consumed)
+
+        // The newer debt stands, so the next pass discards before enabling.
+        subject.telemetryChoice.first().discardOwed shouldBe true
+
+        // And the clear still works for the debt it does name.
+        subject.clearTelemetryDiscardOwed(subject.telemetryChoice.first().discardToken)
+        subject.telemetryChoice.first().discardOwed shouldBe false
+    }
+
+    @Test
+    fun `any explicit choice retires the invitation, in the same edit`() = runTest {
+        // Settings → Privacy reaches the same setter as the banner, so acking
+        // only from the banner left Today still asking someone who had already
+        // decided; and two writes could be split by a process death (Codex,
+        // PR #1161).
+        subject.preferences.first().telemetryNoticeAcked shouldBe false
+
+        subject.setTelemetryEnabled(false)
+
+        // Declining counts as answering — the invitation is retired either way.
+        subject.preferences.first().telemetryNoticeAcked shouldBe true
+        subject.preferences.first().telemetryEnabled shouldBe false
+    }
+
+    @Test
+    fun `the opt-in migration owes a discard once, and only where no choice was made`() = runTest {
+        // An install from the default-on era has `true` in Crashlytics' own
+        // storage, which outranks the manifest default, so the first upgraded
+        // launch would come up collecting. The debt is what makes that launch
+        // stop both SDKs and discard rather than send (Codex, PR #1161).
+        subject.migrateToOptInTelemetry()
+        subject.telemetryChoice.first().discardOwed shouldBe true
+
+        subject.clearTelemetryDiscardOwed(subject.telemetryChoice.first().discardToken)
+
+        // Once only: a user who simply never answers must not pay for a purge
+        // on every launch.
+        subject.migrateToOptInTelemetry()
+        subject.telemetryChoice.first().discardOwed shouldBe false
+    }
+
+    @Test
+    fun `the migration puts the question to an install that never chose`() = runTest {
+        // The old banner set TELEMETRY_NOTICE_ACKED on a plain dismissal, when
+        // it meant "saw the disclosure that reporting is on". It now means
+        // "answered the invitation". Carrying the old value over would opt this
+        // user out and never ask — silently, across the whole existing user
+        // base, which is exactly who this migration is for (Codex, PR #1161).
+        subject.setTelemetryNoticeAcked(true)
+
+        subject.migrateToOptInTelemetry()
+
+        subject.preferences.first().telemetryNoticeAcked shouldBe false
+        subject.preferences.first().telemetryEnabled shouldBe false
+    }
+
+    @Test
+    fun `the migration treats an explicit legacy choice as already answered`() = runTest {
+        // The other half: someone who had gone to Settings and chosen has
+        // answered, even though the old setter recorded no acknowledgement.
+        // Asking them again would be nagging about a decision they made.
+        subject.setTelemetryEnabled(false)
+        subject.setTelemetryNoticeAcked(false)
+
+        subject.migrateToOptInTelemetry()
+
+        subject.preferences.first().telemetryNoticeAcked shouldBe true
+    }
+
+    @Test
+    fun `the migration leaves an existing choice alone`() = runTest {
+        // Someone who already opted in keeps what they agreed to; the debt
+        // would delete it.
+        subject.setTelemetryEnabled(true)
+        subject.clearTelemetryDiscardOwed(subject.telemetryChoice.first().discardToken)
+
+        subject.migrateToOptInTelemetry()
+
+        subject.telemetryChoice.first().enabled shouldBe true
+        subject.telemetryChoice.first().discardOwed shouldBe false
+    }
+
+    @Test
+    fun `an install that never chose is not treated as having consented`() = runTest {
+        // The upgrade case, and the one a default flip is easy to get wrong:
+        // an existing install carries no TELEMETRY_ENABLED key, which read the
+        // old way ("absent means on") would keep reporting for a user who was
+        // never asked. Both readers have to agree, since one drives the UI and
+        // the other drives the SDK flags.
+        subject.preferences.first().telemetryEnabled shouldBe false
+        subject.telemetryChoice.first().enabled shouldBe false
     }
 
     @Test

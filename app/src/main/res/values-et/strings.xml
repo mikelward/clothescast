@@ -125,8 +125,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_update_downloaded_body">Uuendus alla laaditud. Taaskäivita installimise lõpetamiseks.</string>
     <string name="today_update_downloaded_action">Taaskäivita</string>
 
-    <string name="today_telemetry_notice_title">Krahhi- ja kasutusaruanded on sees</string>
-    <string name="today_telemetry_notice_body">ClothesCast saadab anonüümseid krahhiaruandeid ja kasutusanalüütikat vigade parandamiseks. Kalendriandmeid, asukohta ega ülevaate teksti ei lisata. Lülita välja igal ajal seadetes.</string>
     <string name="today_telemetry_notice_open_settings">Privaatsuse seaded</string>
     <string name="today_telemetry_notice_dismiss">Sulge</string>
 

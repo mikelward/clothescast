@@ -426,8 +426,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Low-confidence callout. -->
 
     <!-- Telemetry notice. -->
-    <string name="today_telemetry_notice_title">Összeomlás- és használati jelentések be vannak kapcsolva</string>
-    <string name="today_telemetry_notice_body">A ClothesCast névtelen összeomlás-jelentéseket és használati analitikát küld a hibák javításához. Naptár-, helyszín- vagy tartalmi adatok nem kerülnek átvitelre. Bármikor letiltható a beállításokban.</string>
     <string name="today_telemetry_notice_open_settings">Adatvédelmi beállítások</string>
     <string name="today_telemetry_notice_dismiss">Bezárás</string>
 

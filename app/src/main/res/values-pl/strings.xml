@@ -559,8 +559,6 @@ is unchanged; only the displayed label localizes.
     <!-- Low-confidence callout banner. -->
 
     <!-- Telemetry notice. -->
-    <string name="today_telemetry_notice_title">Raporty awarii i użytkowania są włączone</string>
-    <string name="today_telemetry_notice_body">ClothesCast wysyła anonimowe raporty o awariach i analizy użytkowania w celu naprawiania błędów. Żadne dane kalendarza, lokalizacji ani treści tekstów nie są przesyłane. Możesz to wyłączyć w każdej chwili w ustawieniach.</string>
     <string name="today_telemetry_notice_open_settings">Ustawienia prywatności</string>
     <string name="today_telemetry_notice_dismiss">Zamknij</string>
 

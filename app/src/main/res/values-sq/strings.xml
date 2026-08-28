@@ -364,8 +364,6 @@
     <string name="today_update_downloading_dismiss">Anulo</string>
     <string name="today_update_downloaded_body">Përditësimi u shkarkua. Rinis për të përfunduar instalimin.</string>
     <string name="today_update_downloaded_action">Rinis</string>
-    <string name="today_telemetry_notice_title">Raportet e gabimeve dhe përdorimit janë aktive</string>
-    <string name="today_telemetry_notice_body">ClothesCast dërgon raporte anonime gabimesh dhe analiza përdorimi për të ndihmuar në rregullimin e gabimeve. Nuk përfshihen të dhëna kalendari, vendndodhje ose tekst i analizës. Çaktivizoje në çdo kohë te Cilësimet.</string>
     <string name="today_telemetry_notice_open_settings">Cilësimet e privatësisë</string>
     <string name="today_telemetry_notice_dismiss">Hiq</string>
     <string name="today_clothes_promo_title">Bëji veshjet tuat</string>

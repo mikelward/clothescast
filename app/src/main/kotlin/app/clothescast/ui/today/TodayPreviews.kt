@@ -1318,7 +1318,8 @@ internal fun TelemetryNoticeBannerPreview() {
     // test time.
     Frame {
         TelemetryNoticeBannerCard(
-            onOpenSettings = {},
+            onAccept = {},
+            onDecline = {},
             onDismiss = {},
         )
     }

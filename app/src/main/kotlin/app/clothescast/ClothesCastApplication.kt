@@ -59,6 +59,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +86,24 @@ import kotlinx.serialization.json.Json
 class ClothesCastApplication : Application() {
     val secureKeyStore: SecureKeyStore by lazy { SecureKeyStore.create(this) }
     val settingsRepository: SettingsRepository by lazy { SettingsRepository.create(this) }
+
+    /**
+     * "Not now" on the telemetry invitation, for this process only.
+     *
+     * Deliberately not persisted: a stored dismissal would retire the
+     * invitation for good, and under opt-in that means losing the one
+     * prominent place the question is put — the switch in Settings → Privacy
+     * is not somewhere a user goes looking unprompted. So the next launch asks
+     * again, and only an actual answer (either way) is written down.
+     *
+     * Lives here rather than in the banner because Today swaps one
+     * `BannerStack` call site for another the moment the first forecast
+     * arrives — and again per pager page — so anything remembered under a
+     * branch is destroyed when that branch goes. Dismissing before the first
+     * forecast used to bring the banner straight back in the same session
+     * (Codex, PR #1161). Outside composition it simply survives.
+     */
+    val telemetryInviteDismissedForSession = MutableStateFlow(false)
     val deriveInsight: DeriveInsight by lazy { DeriveInsight() }
     val insightCache: InsightCache by lazy { InsightCache.create(this, deriveInsight) }
     // Caches the extended (10-day) Google forecast so its ~10-page walk happens

@@ -500,8 +500,6 @@ displayed label localizes.
     <string name="today_humidity_subtitle">Suhteellinen kosteus (%) tunnissa</string>
 
 
-    <string name="today_telemetry_notice_title">Kaatumis- ja käyttöraportit ovat käytössä</string>
-    <string name="today_telemetry_notice_body">ClothesCast lähettää anonyymejä kaatumisraportteja ja käyttöanalytiikkaa virheiden korjaamiseksi. Kalenteritietoja, sijaintitietoja tai sisältötekstejä ei lähetetä. Voit poistaa sen käytöstä milloin tahansa asetuksissa.</string>
     <string name="today_telemetry_notice_open_settings">Tietosuoja-asetukset</string>
     <string name="today_telemetry_notice_dismiss">Sulje</string>
 

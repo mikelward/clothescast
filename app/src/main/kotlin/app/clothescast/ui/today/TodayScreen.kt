@@ -756,9 +756,14 @@ private fun BannerStack(
     // wait their turn.
     // The operational banners below (update / build / crash / work / holiday)
     // are unaffected and keep their existing positions.
+    // The session dismissal is fed into eligibility, not just into whether the
+    // card draws: hidden at render time alone, TELEMETRY kept one of the two
+    // promo slots while showing nothing, so a lower-priority setup card stayed
+    // hidden for the rest of the session (Codex, PR #1161).
     val shownPromos = promoBannersToShow(
         locationActionRequired = locationActionRequired,
         telemetryNoticeVisible = state.telemetryNoticeVisible,
+        telemetryInviteDismissedForSession = telemetryInviteDismissedForSession(),
         clothesPromoEligible = state.clothesPromoCardVisible,
         schedulePromoEligible = state.schedulePromoCardVisible,
         playPromoEligible = state.playPromoCardVisible,

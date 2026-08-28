@@ -231,8 +231,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_downloaded_action">รีสตาร์ท</string>
 
     <!-- Telemetry notice -->
-    <string name="today_telemetry_notice_title">รายงานข้อขัดข้องและการใช้งานเปิดอยู่</string>
-    <string name="today_telemetry_notice_body">ClothesCast ส่งรายงานข้อขัดข้องโดยไม่ระบุตัวตนและสถิติการใช้งานโดยรวมเพื่อช่วยแก้ไขข้อบกพร่อง ไม่รวมข้อมูลปฏิทิน ตำแหน่ง หรือข้อความข้อมูลเชิงลึก ปิดได้ทุกเมื่อในการตั้งค่า</string>
     <string name="today_telemetry_notice_open_settings">การตั้งค่าความเป็นส่วนตัว</string>
     <string name="today_telemetry_notice_dismiss">ปิด</string>
 

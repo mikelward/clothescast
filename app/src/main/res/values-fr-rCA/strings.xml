@@ -19,7 +19,6 @@ falls through to the base French translation.
          Quebec French uses "bogue(s)" throughout. -->
     <string name="bug_report_consent_title">Partager le rapport de bogue ?</string>
     <string name="today_crash_banner_body">Un rapport de plantage a été enregistré sur ton appareil. Le partager pour corriger le bogue ? Rien n\'est envoyé tant que tu n\'as pas choisi où.</string>
-    <string name="today_telemetry_notice_body">ClothesCast envoie des rapports de plantage anonymes et des analyses d\'utilisation pour corriger les bogues. Aucune donnée de calendrier, position ou texte de résumé n\'est incluse. Désactive-le à tout moment dans les Paramètres.</string>
     <string name="settings_privacy_telemetry_description">Envoie des rapports de plantage anonymes et des statistiques d\'utilisation agrégées pour aider le développeur à corriger les bogues et décider quelles fonctionnalités conserver.</string>
 
     <!-- Quebec French spells the imperial mile "Mille" (plur. "Milles");

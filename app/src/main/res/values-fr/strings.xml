@@ -605,8 +605,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Low-confidence callout banner. -->
 
     <!-- Telemetry notice (first-run banner on Today screen). -->
-    <string name="today_telemetry_notice_title">Rapports de plantage et d\'utilisation activés</string>
-    <string name="today_telemetry_notice_body">ClothesCast envoie des rapports de plantage anonymes et des analyses d\'utilisation pour corriger les bugs. Aucune donnée de calendrier, position ou texte de résumé n\'est incluse. Désactive-le à tout moment dans les Paramètres.</string>
     <string name="today_telemetry_notice_open_settings">Paramètres de confidentialité</string>
     <string name="today_telemetry_notice_dismiss">Ignorer</string>
 

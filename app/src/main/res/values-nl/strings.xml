@@ -561,8 +561,6 @@ the displayed label localizes.
     <!-- Low-confidence callout banner. -->
 
     <!-- Telemetry notice. -->
-    <string name="today_telemetry_notice_title">Crash- en gebruiksrapporten zijn ingeschakeld</string>
-    <string name="today_telemetry_notice_body">ClothesCast verstuurt anonieme crashrapporten en gebruiksanalyses om fouten op te lossen. Er worden geen agendagegevens, locatiegegevens of inhoudsteksten verzonden. Op elk moment uit te schakelen via de instellingen.</string>
     <string name="today_telemetry_notice_open_settings">Privacy-instellingen</string>
     <string name="today_telemetry_notice_dismiss">Sluiten</string>
 

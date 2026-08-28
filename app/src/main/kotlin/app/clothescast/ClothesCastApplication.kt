@@ -35,6 +35,7 @@ import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.logRecentProcessExits
 import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.discovery.HomeAssistantDiscovery
 import app.clothescast.discovery.NsdHomeAssistantDiscovery
@@ -424,6 +425,10 @@ class ClothesCastApplication : Application() {
             override fun onActivityDestroyed(activity: Activity) {}
         })
         DiagLog.install(this)
+        // Why the previous processes ended. Off the main thread because it is
+        // an ActivityManager IPC and onCreate is a startup path; after
+        // DiagLog.install so the lines land in the log this run writes.
+        applicationScope.launch(Dispatchers.IO) { logRecentProcessExits(this@ClothesCastApplication) }
         initAppCheck()
         // Bridge the user's Privacy toggle to Firebase. No-ops on builds
         // assembled without google-services.json (CI). Crashlytics's own

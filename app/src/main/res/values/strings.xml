@@ -410,11 +410,11 @@
          something false about their privacy. A missing translation falls back
          to this English, which is merely untranslated. -->
     <!-- TODO: translate -->
-    <string name="today_telemetry_invite_title" tools:ignore="MissingTranslation">Help fix bugs?</string>
+    <string name="today_telemetry_invite_title" tools:ignore="MissingTranslation">Help make ClothesCast better?</string>
     <!-- TODO: translate -->
-    <string name="today_telemetry_invite_body" tools:ignore="MissingTranslation">ClothesCast can send anonymous crash reports and usage stats so bugs get found and fixed.</string>
+    <string name="today_telemetry_invite_body" tools:ignore="MissingTranslation">Send crash reports and anonymous usage stats so bugs get found and fixed?</string>
     <!-- TODO: translate -->
-    <string name="today_telemetry_invite_accept" tools:ignore="MissingTranslation">Turn on</string>
+    <string name="today_telemetry_invite_accept" tools:ignore="MissingTranslation">Yes</string>
     <!-- TODO: translate -->
     <string name="today_telemetry_invite_decline" tools:ignore="MissingTranslation">No thanks</string>
     <string name="today_telemetry_notice_open_settings">Privacy settings</string>

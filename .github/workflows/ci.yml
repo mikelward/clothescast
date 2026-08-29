@@ -408,9 +408,13 @@ jobs:
   # request, so an ordinary checkout/commit/push there is trustworthy by
   # construction, no isolated clone or config-nulling required.
   #
-  # Pinned to the branch, not @main, until mikelward/ci-commit-artifact#1
-  # merges — matching how mikelward/gedmap#140 pilots mikelward/npm-update
-  # the same way.
+  # @main, like every other caller in the fleet. This was pinned to
+  # mikelward/ci-commit-artifact's PR branch while that repo's #1 was open,
+  # since this repo was its pilot; #1 merged on 2026-08-20, so the pin's own
+  # condition is met and the branch ref was only holding this consumer on a
+  # pre-merge snapshot of the hub. The point of a shared reusable workflow is
+  # that a fix there reaches every consumer's next run without a per-repo
+  # bump PR — which a branch pin defeats.
   commit-snapshots:
     name: Commit regenerated UI snapshots
     needs: unit-tests
@@ -427,7 +431,7 @@ jobs:
       contents: write
       pull-requests: write
       actions: write
-    uses: mikelward/ci-commit-artifact/.github/workflows/commit-artifact.yml@claude/commit-artifact-workflow
+    uses: mikelward/ci-commit-artifact/.github/workflows/commit-artifact.yml@main
     with:
       artifact-name: ui-preview-snapshots
       dest-path: app/snapshots

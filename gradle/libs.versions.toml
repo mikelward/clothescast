@@ -6,7 +6,7 @@
 # top-level `kotlin { compilerOptions { } }` block in app/build.gradle.kts.
 # Roborazzi must be >= 1.57 here: earlier releases use AGP's removed
 # `TestedExtension` and fail to apply on AGP 9.
-agp = "9.3.1"
+agp = "9.3.2"
 kotlin = "2.4.10"
 # Android API floor. Single source of truth: `app/build.gradle.kts` reads this
 # for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime
@@ -70,15 +70,15 @@ playAppUpdate = "2.1.0"
 # in app/build.gradle.kts based on app/google-services.json's presence so CI
 # (which doesn't carry the file) still compiles. See PRIVACY.md for the data
 # boundary contract these SDKs operate under.
-firebaseBom = "34.17.0"
+firebaseBom = "34.18.0"
 gmsGoogleServices = "4.5.0"
-firebaseCrashlyticsPlugin = "3.0.7"
+firebaseCrashlyticsPlugin = "3.0.8"
 # HiveMQ MQTT Client — used by the optional Smart Home bridge to publish the
 # rendered insight prose to a user-hosted MQTT broker (Mosquitto add-on inside
 # Home Assistant, typically). Pure-Java + Netty; no JNI. The publisher uses the
 # blocking client wrapped in withContext(Dispatchers.IO), so no Reactor /
 # CompletableFuture await plumbing is needed in :app.
-hivemqMqttClient = "1.3.17"
+hivemqMqttClient = "1.4.0"
 # Google Cast — pulls in androidx.mediarouter for the route discovery /
 # session APIs and `play-services-cast` for RemoteMediaClient. Cast SDK
 # itself doesn't need google-services.json; framework init is gated at
@@ -90,7 +90,7 @@ playServicesCast = "22.3.1"
 # latest release). We force it up to clear CVE-2023-2976 / GHSA-7g45-4rm6-3mm3
 # (moderate: FileBackedOutputStream temp-dir disclosure, fixed in 32.0.0). See
 # the dependency constraint in app/build.gradle.kts.
-guava = "33.6.0-android"
+guava = "33.7.1-android"
 # AboutLibraries — the open-source attribution list behind Settings → About →
 # Licenses. The Gradle plugin walks the dependency graph and exports it as JSON;
 # the `-compose-m3` artifact is only the runtime JSON reader (`rememberLibraries`),

@@ -243,8 +243,9 @@ private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boo
     if (bitmap == null) {
         DiagLog.w(
             TAG,
-            "Chart bitmap null for ${if (weekly) "7-day" else "period"} widget " +
-                "(${hourly.size} hourly pts) — render failed/blank/timeout; showing empty state",
+            "Chart bitmap null for %s widget (%s hourly pts) — render failed/blank/timeout; showing empty state",
+            if (weekly) "7-day" else "period",
+            hourly.size,
         )
     }
     return bitmap
@@ -267,7 +268,7 @@ private fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
     val options = runCatching {
         val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
         AppWidgetManager.getInstance(context).getAppWidgetOptions(appWidgetId)
-    }.onFailure { DiagLog.w(TAG, "Widget: reading cell size failed; using default aspect", it) }
+    }.onFailure { DiagLog.w(TAG, it, "Widget: reading cell size failed; using default aspect") }
         .getOrNull() ?: return fallback
 
     val portrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -330,7 +331,7 @@ internal suspend fun updateAllClothesCastWidgets(context: Context) {
     suspend fun guarded(label: String, update: suspend () -> Unit) {
         runCatching { update() }.onFailure {
             if (it is CancellationException) throw it
-            DiagLog.w(TAG, "$label widget update failed.", it)
+            DiagLog.w(TAG, it, "%s widget update failed.", label)
         }
     }
     guarded("Outfit") { OutfitWidget().updateAll(context) }

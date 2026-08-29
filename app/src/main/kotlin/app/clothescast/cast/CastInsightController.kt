@@ -167,8 +167,12 @@ class CastInsightController(
                 }
                 DiagLog.i(
                     TAG,
-                    "Cast test: hosting ${wav.size}B wav on http://$host:${server.port()}/<token>/insight.wav " +
-                        "for speaker route $routeId; sending load command.",
+                    "Cast test: hosting %sB wav on http://%s:%s/<token>/insight.wav for speaker " +
+                        "route %s; sending load command.",
+                    wav.size,
+                    host,
+                    server.port(),
+                    routeId,
                 )
                 MediaLoadRequestData.Builder()
                     .setMediaInfo(buildAudioMediaInfo(urls.url, title, subtitle))
@@ -188,8 +192,12 @@ class CastInsightController(
                 }
                 DiagLog.i(
                     TAG,
-                    "Cast test: hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
-                        "for route $routeId; sending load command.",
+                    "Cast test: hosting %sB mp4 on http://%s:%s/<token>/insight.mp4 for route %s; " +
+                        "sending load command.",
+                    mp4.size,
+                    host,
+                    server.port(),
+                    routeId,
                 )
                 MediaLoadRequestData.Builder()
                     .setMediaInfo(buildMediaInfo(urls.url, title, subtitle))
@@ -198,21 +206,22 @@ class CastInsightController(
         }
         val result = awaitLoad(client, request, loadTimeoutMs)
             ?: run {
-                DiagLog.w(TAG, "Cast test: receiver did not respond to load within ${loadTimeoutMs}ms.")
+                DiagLog.w(TAG, "Cast test: receiver did not respond to load within %sms.", loadTimeoutMs)
                 throw CastFailure.LoadResponseTimeout
             }
         if (!result.status.isSuccess) {
             val message = result.status.statusMessage?.takeIf { it.isNotBlank() }
                 ?: "Smart display rejected the media (code ${result.status.statusCode})."
-            DiagLog.w(TAG, "Cast test: load rejected by receiver: $message")
+            DiagLog.w(TAG, "Cast test: load rejected by receiver: %s", message)
             throw CastFailure.LoadRejected(message)
         }
-        DiagLog.i(TAG, "Cast test: load accepted; awaiting URL fetch (timeout=${fetchTimeoutMs}ms).")
+        DiagLog.i(TAG, "Cast test: load accepted; awaiting URL fetch (timeout=%sms).", fetchTimeoutMs)
         if (!server.awaitFetch(fetchTimeoutMs)) {
             DiagLog.w(
                 TAG,
-                "Cast test: receiver accepted load but never fetched the hosted URL within " +
-                    "${fetchTimeoutMs}ms — likely a LAN firewall between the display and the phone.",
+                "Cast test: receiver accepted load but never fetched the hosted URL within %sms — " +
+                    "likely a LAN firewall between the display and the phone.",
+                fetchTimeoutMs,
             )
             throw CastFailure.FetchNotConfirmed
         }
@@ -345,7 +354,12 @@ class CastInsightController(
             }
             val ready = when (resolved) {
                 RouteResolution.NotFound -> {
-                    DiagLog.w(TAG, "Cast route $routeId not discovered within ${discoveryTimeoutMs}ms; skipping cast.")
+                    DiagLog.w(
+                        TAG,
+                        "Cast route %s not discovered within %sms; skipping cast.",
+                        routeId,
+                        discoveryTimeoutMs,
+                    )
                     return CastWorkerOutcome.SkippedNoRoute
                 }
                 // Distinct from NotFound: the session *started* — the device
@@ -355,7 +369,7 @@ class CastInsightController(
                 // the network when the problem is the playback layer
                 // (matches castToSavedRoute's NoRemoteMediaClient failure).
                 RouteResolution.NoRemoteMediaClient -> {
-                    DiagLog.w(TAG, "Cast route $routeId session started but exposed no RemoteMediaClient.")
+                    DiagLog.w(TAG, "Cast route %s session started but exposed no RemoteMediaClient.", routeId)
                     return CastWorkerOutcome.Failed(
                         CastFailure.NoRemoteMediaClient.message ?: "Smart device did not accept playback",
                     )
@@ -380,7 +394,8 @@ class CastInsightController(
                     // only suppresses it on a Success with real audio).
                     DiagLog.i(
                         TAG,
-                        "Cast route $routeId is a speaker but no spoken audio is available; skipping cast.",
+                        "Cast route %s is a speaker but no spoken audio is available; skipping cast.",
+                        routeId,
                     )
                     return CastWorkerOutcome.SkippedNoAudio
                 }
@@ -388,8 +403,12 @@ class CastInsightController(
                     val urls = server.publish(host = host, media = wav, kind = CastMediaKind.WAV)
                     DiagLog.i(
                         TAG,
-                        "Cast hosting ${wav.size}B wav on http://$host:${server.port()}/<token>/insight.wav " +
-                            "for speaker route $routeId; sending load command.",
+                        "Cast hosting %sB wav on http://%s:%s/<token>/insight.wav for speaker " +
+                            "route %s; sending load command.",
+                        wav.size,
+                        host,
+                        server.port(),
+                        routeId,
                     )
                     MediaLoadRequestData.Builder()
                         .setMediaInfo(buildAudioMediaInfo(urls.url, title, subtitle))
@@ -402,7 +421,11 @@ class CastInsightController(
                     // unknown route) with nothing to show, so fail rather
                     // than load a blank video.
                     if (png == null) {
-                        DiagLog.w(TAG, "Cast route $routeId needs an outfit image but none was rendered; skipping cast.")
+                        DiagLog.w(
+                            TAG,
+                            "Cast route %s needs an outfit image but none was rendered; skipping cast.",
+                            routeId,
+                        )
                         return CastWorkerOutcome.Failed("Outfit render unavailable")
                     }
                     val paddedWav = padWavToMinimumDuration(wav)
@@ -410,8 +433,12 @@ class CastInsightController(
                     val urls = server.publish(host = host, media = mp4, kind = CastMediaKind.MP4)
                     DiagLog.i(
                         TAG,
-                        "Cast hosting ${mp4.size}B mp4 on http://$host:${server.port()}/<token>/insight.mp4 " +
-                            "for route $routeId; sending load command.",
+                        "Cast hosting %sB mp4 on http://%s:%s/<token>/insight.mp4 for route %s; " +
+                            "sending load command.",
+                        mp4.size,
+                        host,
+                        server.port(),
+                        routeId,
                     )
                     MediaLoadRequestData.Builder()
                         .setMediaInfo(buildMediaInfo(urls.url, title, subtitle))
@@ -427,16 +454,16 @@ class CastInsightController(
             // the user with no spoken forecast.
             val result = awaitLoad(client, request, loadTimeoutMs)
                 ?: run {
-                    DiagLog.w(TAG, "Cast receiver did not respond to load within ${loadTimeoutMs}ms.")
+                    DiagLog.w(TAG, "Cast receiver did not respond to load within %sms.", loadTimeoutMs)
                     return CastWorkerOutcome.Failed("Smart device did not respond to the load request")
                 }
             if (!result.status.isSuccess) {
                 val message = result.status.statusMessage?.takeIf { it.isNotBlank() }
                     ?: "Smart device rejected the media (code ${result.status.statusCode})"
-                DiagLog.w(TAG, "Cast load rejected by receiver: $message")
+                DiagLog.w(TAG, "Cast load rejected by receiver: %s", message)
                 return CastWorkerOutcome.Failed(message)
             }
-            DiagLog.i(TAG, "Cast load accepted by receiver; awaiting URL fetch (timeout=${fetchTimeoutMs}ms).")
+            DiagLog.i(TAG, "Cast load accepted by receiver; awaiting URL fetch (timeout=%sms).", fetchTimeoutMs)
             // Cast load commands route through Google's cloud relay, so a
             // receiver on the LAN can ACK the load even when it can't
             // reach the phone's media server (e.g. a firewall rule
@@ -450,8 +477,9 @@ class CastInsightController(
             if (!server.awaitFetch(fetchTimeoutMs)) {
                 DiagLog.w(
                     TAG,
-                    "Cast receiver accepted load but never fetched the hosted URL within " +
-                        "${fetchTimeoutMs}ms — likely a LAN firewall between the display and the phone.",
+                    "Cast receiver accepted load but never fetched the hosted URL within %sms — " +
+                        "likely a LAN firewall between the display and the phone.",
+                    fetchTimeoutMs,
                 )
                 return CastWorkerOutcome.PublishedButNotFetched(
                     "Smart device didn't fetch the media — check that it can reach the phone on the LAN.",
@@ -465,10 +493,10 @@ class CastInsightController(
             // MqttPublisher.preparePublish.
             throw ce
         } catch (failure: CastFailure) {
-            DiagLog.w(TAG, "Cast load failed: ${failure.message}", failure)
+            DiagLog.w(TAG, failure, "Cast load failed: %s", failure.message)
             CastWorkerOutcome.Failed(failure.message ?: "Cast failed")
         } catch (t: Throwable) {
-            DiagLog.w(TAG, "Cast load failed unexpectedly", t)
+            DiagLog.w(TAG, t, "Cast load failed unexpectedly")
             // An unexpected failure on the cast hot path (media-server bind,
             // LAN host/encode step) can surface a raw socket exception; lead
             // with a network hint when we recognise one so "couldn't cast" is
@@ -736,8 +764,8 @@ class CastInsightController(
             if (info.channels != 1) {
                 DiagLog.w(
                     TAG,
-                    "Skipping minimum-duration pad for ${info.channels}-channel WAV; " +
-                        "WavEncoder only writes mono headers.",
+                    "Skipping minimum-duration pad for %s-channel WAV; WavEncoder only writes mono headers.",
+                    info.channels,
                 )
                 return wav
             }

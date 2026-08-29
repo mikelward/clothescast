@@ -733,7 +733,7 @@ internal suspend fun runTtsPreview(
                 // TTS exceptions already name their provider in the message
                 // (e.g. "Gemini TTS HTTP 400: …"); don't double that up.
                 val message = t.message?.takeIf { it.isNotBlank() } ?: t.javaClass.simpleName
-                DiagLog.w("VoiceSettings", "TTS preview failed for $engine", t)
+                DiagLog.w("VoiceSettings", t, "TTS preview failed for %s", engine)
                 // Toast.show() posts internally, but Toast.makeText()'s constructor needs
                 // a Looper on the calling thread — Dispatchers.IO has none, so hop to Main.
                 withContext(Dispatchers.Main) {
@@ -747,7 +747,7 @@ internal suspend fun runTtsPreview(
                     } catch (_: CancellationException) {
                         // user moved on; fine
                     } catch (fallback: Throwable) {
-                        DiagLog.w("VoiceSettings", "Device TTS fallback also failed", fallback)
+                        DiagLog.w("VoiceSettings", fallback, "Device TTS fallback also failed")
                     }
                 }
             }

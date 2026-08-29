@@ -57,7 +57,7 @@ class WidgetRefreshReceiver : BroadcastReceiver() {
                 }
                 WidgetRefreshScheduler(appCtx).schedule(prefs.schedule, prefs.tonightSchedule)
             } catch (t: Throwable) {
-                DiagLog.e(TAG, "Widget-refresh fire failed", t)
+                DiagLog.e(TAG, t, "Widget-refresh fire failed")
                 // Widgets are (probably) still placed, so a one-off failure —
                 // typically the prefs read — shouldn't end the chain: refresh
                 // and re-arm on the default schedule times so the next fire
@@ -65,7 +65,7 @@ class WidgetRefreshReceiver : BroadcastReceiver() {
                 runCatching {
                     FetchAndNotifyWorker.enqueueSilentRefresh(appCtx, alarmFiredAtMs = System.currentTimeMillis())
                     WidgetRefreshScheduler(appCtx).schedule(Schedule.default(), Schedule.defaultTonight())
-                }.onFailure { DiagLog.e(TAG, "Widget-refresh fallback re-arm failed", it) }
+                }.onFailure { DiagLog.e(TAG, it, "Widget-refresh fallback re-arm failed") }
             }
         }
     }

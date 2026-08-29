@@ -471,7 +471,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
             } catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
-                DiagLog.w("GoogleWeather", "Google API key unavailable; probe reports no key", e)
+                DiagLog.w("GoogleWeather", e, "Google API key unavailable; probe reports no key")
                 ""
             }
             when {

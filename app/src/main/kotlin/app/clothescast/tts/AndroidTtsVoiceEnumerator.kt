@@ -71,7 +71,7 @@ class AndroidTtsVoiceEnumerator(private val context: Context) : TtsVoiceEnumerat
      */
     override suspend fun listVoices(locale: Locale): List<DeviceVoice> {
         val tts = runCatching { initAndroidTtsEngine(context) }.getOrElse {
-            DiagLog.w(TAG, "Couldn't init TTS for voice enumeration; returning empty list.", it)
+            DiagLog.w(TAG, it, "Couldn't init TTS for voice enumeration; returning empty list.")
             return emptyList()
         }
         return try {

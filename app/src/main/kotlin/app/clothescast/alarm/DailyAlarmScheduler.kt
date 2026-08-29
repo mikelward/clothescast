@@ -48,12 +48,12 @@ class DailyAlarmScheduler(
             // fall back to setAndAllowWhileIdle so the user still gets the notification,
             // just possibly drifted by a few minutes.
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt.toEpochMilli(), pendingIntent)
-            DiagLog.w(TAG, "Exact-alarm permission denied; using inexact alarm at $triggerAt for $period")
+            DiagLog.w(TAG, "Exact-alarm permission denied; using inexact alarm at %s for %s", triggerAt, period)
             return
         }
 
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt.toEpochMilli(), pendingIntent)
-        DiagLog.i(TAG, "Insight alarm armed for $triggerAt ($period)")
+        DiagLog.i(TAG, "Insight alarm armed for %s (%s)", triggerAt, period)
     }
 
     fun cancel(period: ForecastPeriod = ForecastPeriod.TODAY) {

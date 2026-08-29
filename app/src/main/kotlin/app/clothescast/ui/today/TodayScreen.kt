@@ -1014,9 +1014,10 @@ internal fun HomePageScaffold(
                 // call, so there's no CancellationException to preserve.
                 DiagLog.w(
                     "TodayScreen",
-                    "Conditions strip failed to build for region=${state.region}, " +
-                        "${hourly.size} hourly entries",
                     t,
+                    "Conditions strip failed to build for region=%s, %s hourly entries",
+                    state.region,
+                    hourly.size,
                 )
             }.getOrNull()
         }

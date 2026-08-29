@@ -103,7 +103,7 @@ class AppCheckGeminiCallPlanner(
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
-                    DiagLog.w(TAG, "Anonymous ID token unavailable; sending FID only", e)
+                    DiagLog.w(TAG, e, "Anonymous ID token unavailable; sending FID only")
                 }
                 it.headers.append("X-Gemini-Model", model)
             },
@@ -135,7 +135,7 @@ class AppCheckGeminiCallPlanner(
                 return existing.getIdToken(false).await().token
                     ?: error("Anonymous user returned no ID token")
             } catch (e: FirebaseAuthInvalidUserException) {
-                DiagLog.w(TAG, "Cached anonymous user invalid; re-signing in", e)
+                DiagLog.w(TAG, e, "Cached anonymous user invalid; re-signing in")
                 firebaseAuth.signOut()
             }
         }

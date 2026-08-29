@@ -9,6 +9,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Looper
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.safe
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import app.clothescast.core.domain.model.Location
@@ -57,7 +58,7 @@ class LocationResolver(
     suspend fun resolve(): Location? = coRunCatching {
         resolveInner(maxAgeMillis = this.maxAgeMillis, allowStaleFallback = true)
     }
-        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolve(); returning null.", it) }
+        .onFailure { DiagLog.w(TAG, it, "Unexpected %s from resolve(); returning null.", safe(it.javaClass.simpleName)) }
         .getOrNull()
 
     /**
@@ -78,7 +79,7 @@ class LocationResolver(
     suspend fun resolveFresh(maxAgeMillis: Long): Location? = coRunCatching {
         resolveInner(maxAgeMillis = maxAgeMillis, allowStaleFallback = false)
     }
-        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolveFresh(); returning null.", it) }
+        .onFailure { DiagLog.w(TAG, it, "Unexpected %s from resolveFresh(); returning null.", safe(it.javaClass.simpleName)) }
         .getOrNull()
 
     private suspend fun resolveInner(maxAgeMillis: Long, allowStaleFallback: Boolean): Location? {
@@ -107,11 +108,11 @@ class LocationResolver(
         val live = withTimeoutOrNull(timeoutMillis) { requestSingle(manager) }
         if (live != null) return live.toDomain()
         if (cached == null) {
-            DiagLog.w(TAG, "No live or cached location available within ${timeoutMillis}ms.")
+            DiagLog.w(TAG, "No live or cached location available within %sms.", timeoutMillis)
             return null
         }
         if (!allowStaleFallback) {
-            DiagLog.i(TAG, "Cached fix older than ${maxAgeMillis}ms; treating as unavailable.")
+            DiagLog.i(TAG, "Cached fix older than %sms; treating as unavailable.", maxAgeMillis)
             return null
         }
         return cached.toDomain()
@@ -140,10 +141,10 @@ class LocationResolver(
         }
         if (provider == null) null else manager.getLastKnownLocation(provider)
     } catch (t: SecurityException) {
-        DiagLog.w(TAG, "SecurityException reading last-known location (background grant?).", t)
+        DiagLog.w(TAG, t, "SecurityException reading last-known location (background grant?).")
         null
     } catch (t: Throwable) {
-        DiagLog.w(TAG, "Failed to read last-known location: ${t.javaClass.simpleName}", t)
+        DiagLog.w(TAG, t, "Failed to read last-known location: %s", safe(t.javaClass.simpleName))
         null
     }
 
@@ -159,7 +160,7 @@ class LocationResolver(
             val providerEnabled = try {
                 manager.isProviderEnabled(provider)
             } catch (t: Throwable) {
-                DiagLog.w(TAG, "isProviderEnabled threw ${t.javaClass.simpleName}; treating as disabled.", t)
+                DiagLog.w(TAG, t, "isProviderEnabled threw %s; treating as disabled.", safe(t.javaClass.simpleName))
                 false
             }
             if (!providerEnabled) {
@@ -190,10 +191,10 @@ class LocationResolver(
                 @Suppress("DEPRECATION")
                 manager.requestSingleUpdate(provider, listener, Looper.getMainLooper())
             } catch (t: SecurityException) {
-                DiagLog.w(TAG, "SecurityException requesting location update (background grant?).", t)
+                DiagLog.w(TAG, t, "SecurityException requesting location update (background grant?).")
                 cont.resume(null)
             } catch (t: Throwable) {
-                DiagLog.w(TAG, "Failed to request location update: ${t.javaClass.simpleName}", t)
+                DiagLog.w(TAG, t, "Failed to request location update: %s", safe(t.javaClass.simpleName))
                 cont.resume(null)
             }
             cont.invokeOnCancellation { safeRemoveUpdates(manager, listener) }
@@ -203,7 +204,7 @@ class LocationResolver(
         try {
             manager.removeUpdates(listener)
         } catch (t: Throwable) {
-            DiagLog.v(TAG, "removeUpdates threw ${t.javaClass.simpleName}; ignoring.", t)
+            DiagLog.v(TAG, t, "removeUpdates threw %s; ignoring.", safe(t.javaClass.simpleName))
         }
     }
 

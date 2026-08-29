@@ -130,7 +130,7 @@ class GoogleForecastCache(
             // Covers both a serialization failure and a DataStore write
             // failure; the caller already holds the series for this fetch,
             // and the next foreground walk re-stamps it.
-            DiagLog.w(TAG, "Google forecast cache write failed; not persisting", e)
+            DiagLog.w(TAG, e, "Google forecast cache write failed; not persisting")
         }
     }
 
@@ -181,7 +181,7 @@ class GoogleForecastCache(
     private fun decode(raw: String): Entry? = try {
         json.decodeFromString<Entry>(raw)
     } catch (e: Exception) {
-        DiagLog.w(TAG, "Google forecast cache decode failed", e)
+        DiagLog.w(TAG, e, "Google forecast cache decode failed")
         null
     }
 
@@ -190,7 +190,7 @@ class GoogleForecastCache(
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
-        DiagLog.w(TAG, "Google forecast cache read failed", e)
+        DiagLog.w(TAG, e, "Google forecast cache read failed")
         null
     }
 
@@ -200,7 +200,7 @@ class GoogleForecastCache(
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            DiagLog.w(TAG, "Google forecast cache clear failed", e)
+            DiagLog.w(TAG, e, "Google forecast cache clear failed")
         }
     }
 

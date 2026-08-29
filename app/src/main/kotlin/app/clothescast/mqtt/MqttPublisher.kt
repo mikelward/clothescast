@@ -3,6 +3,7 @@ package app.clothescast.mqtt
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.safe
 import app.clothescast.net.NetworkErrorKind
 import app.clothescast.net.classifyNetworkError
 import com.hivemq.client.mqtt.MqttClient
@@ -193,14 +194,24 @@ class MqttPublisher(
         val hasEventsBytes = (if (hasEvents) "true" else "false").toByteArray(Charsets.UTF_8)
         DiagLog.i(
             TAG,
-            "MQTT bridge enabled; publishing ${period.name.lowercase()} insight bundle to " +
-                "${prepared.scheme}://${prepared.host}:${prepared.port}/$proseTopic " +
-                "(image=${image != null}, audio=${audio != null}, video=${video != null}, hasEvents=$hasEvents, " +
-                "mirrored to /now as $nowImageTopic / $nowAudioTopic / $nowVideoTopic, " +
-                "then $nowTextTopic, then $nowTimestampTopic last as the commit marker, " +
-                "auth=${!prepared.config.username.isNullOrBlank()}, " +
-                "password=${if (prepared.config.password != null) "set" else "none"}, " +
-                "payload=${prose.length} chars).",
+            "MQTT bridge enabled; publishing %s insight bundle to %s://%s:%s/%s (image=%s, audio=%s, video=%s, hasEvents=%s, mirrored to /now as %s / %s / %s, then %s, then %s last as the commit marker, auth=%s, password=%s, payload=%s chars).",
+            safe(period.name.lowercase()),
+            prepared.scheme,
+            prepared.host,
+            prepared.port,
+            proseTopic,
+            image != null,
+            audio != null,
+            video != null,
+            hasEvents,
+            nowImageTopic,
+            nowAudioTopic,
+            nowVideoTopic,
+            nowTextTopic,
+            nowTimestampTopic,
+            !prepared.config.username.isNullOrBlank(),
+            if (prepared.config.password != null) "set" else "none",
+            prose.length,
         )
 
         // Every period topic is always written so the `<period>/*` bundle is
@@ -249,10 +260,11 @@ class MqttPublisher(
             if (periodTimestampOutcome !is MqttPublishOutcome.Success) {
                 DiagLog.w(
                     TAG,
-                    "Period commit marker $periodTimestampTopic failed for " +
-                        "${period.name.lowercase()} bundle ($periodTimestampOutcome); the " +
-                        "${topicSegment(period)}/* content advanced but its marker did not, so " +
-                        "consumers triggering on it will skip this bundle until the next publish.",
+                    "Period commit marker %s failed for %s bundle (%s); the %s/* content advanced but its marker did not, so consumers triggering on it will skip this bundle until the next publish.",
+                    periodTimestampTopic,
+                    safe(period.name.lowercase()),
+                    periodTimestampOutcome,
+                    topicSegment(period),
                 )
             }
             // One coalesced line for the whole `<period>/*` bundle instead of a
@@ -267,18 +279,27 @@ class MqttPublisher(
             )
             DiagLog.i(
                 TAG,
-                "Published ${period.name.lowercase()} bundle to " +
-                    "${prepared.scheme}://${prepared.host}:${prepared.port}/" +
-                    "${proseTopic.substringBeforeLast('/')}: " +
-                    "${periodKinds.joinToString(", ")} (${periodKinds.size} topics).",
+                "Published %s bundle to %s://%s:%s/%s: %s (%s topics).",
+                safe(period.name.lowercase()),
+                prepared.scheme,
+                prepared.host,
+                prepared.port,
+                proseTopic.substringBeforeLast('/'),
+                periodKinds.joinToString(", "),
+                periodKinds.size,
             )
         } else {
             DiagLog.i(
                 TAG,
-                "Holding back $periodTimestampTopic for ${period.name.lowercase()} bundle " +
-                    "(prose=$proseOutcome, image=$imageOutcome, audio=$audioOutcome, " +
-                    "video=$videoOutcome, has_events=$hasEventsOutcome); the ${topicSegment(period)}/* marker stays at the " +
-                    "previous bundle so a consumer doesn't act on a half-updated set.",
+                "Holding back %s for %s bundle (prose=%s, image=%s, audio=%s, video=%s, has_events=%s); the %s/* marker stays at the previous bundle so a consumer doesn't act on a half-updated set.",
+                periodTimestampTopic,
+                safe(period.name.lowercase()),
+                proseOutcome,
+                imageOutcome,
+                audioOutcome,
+                videoOutcome,
+                hasEventsOutcome,
+                topicSegment(period),
             )
         }
 
@@ -290,8 +311,9 @@ class MqttPublisher(
             // the upcoming window lands on its own segment.
             DiagLog.i(
                 TAG,
-                "Published ${period.name.lowercase()} (${topicSegment(period)}) bundle without /now mirror " +
-                    "(mirrorToNow=false); /now stays on the current period.",
+                "Published %s (%s) bundle without /now mirror (mirrorToNow=false); /now stays on the current period.",
+                safe(period.name.lowercase()),
+                topicSegment(period),
             )
         } else if (everyPeriodPublishSucceeded) {
             // The now surface is treated as an atomic three-topic bundle. Any
@@ -357,11 +379,10 @@ class MqttPublisher(
                         // already retried per its policy.)
                         DiagLog.w(
                             TAG,
-                            "Commit marker $nowTimestampTopic failed for " +
-                                "${period.name.lowercase()} bundle ($nowTimestampOutcome); " +
-                                "now/* content advanced but the trigger marker did not, so " +
-                                "timestamp-triggered consumers will skip this bundle until " +
-                                "the next successful publish.",
+                            "Commit marker %s failed for %s bundle (%s); now/* content advanced but the trigger marker did not, so timestamp-triggered consumers will skip this bundle until the next successful publish.",
+                            nowTimestampTopic,
+                            safe(period.name.lowercase()),
+                            nowTimestampOutcome,
                         )
                     }
                     // One coalesced line for the whole `/now` mirror instead of a
@@ -375,26 +396,33 @@ class MqttPublisher(
                     )
                     DiagLog.i(
                         TAG,
-                        "Mirrored ${period.name.lowercase()} bundle to " +
-                            "${nowTextTopic.substringBeforeLast('/')}: " +
-                            "${nowKinds.joinToString(", ")} (${nowKinds.size} topics).",
+                        "Mirrored %s bundle to %s: %s (%s topics).",
+                        safe(period.name.lowercase()),
+                        nowTextTopic.substringBeforeLast('/'),
+                        nowKinds.joinToString(", "),
+                        nowKinds.size,
                     )
                 } else {
                     DiagLog.i(
                         TAG,
-                        "Holding back $nowTimestampTopic for ${period.name.lowercase()} " +
-                            "bundle (now/text=$nowTextOutcome); the commit marker stays at the " +
-                            "previous bundle so a consumer doesn't act on a half-updated set.",
+                        "Holding back %s for %s bundle (now/text=%s); the commit marker stays at the previous bundle so a consumer doesn't act on a half-updated set.",
+                        nowTimestampTopic,
+                        safe(period.name.lowercase()),
+                        nowTextOutcome,
                     )
                 }
             } else {
                 DiagLog.i(
                     TAG,
-                    "Holding back $nowTextTopic and $nowTimestampTopic mirrors for " +
-                        "${period.name.lowercase()} bundle (now/image=$nowImageOutcome, " +
-                        "now/audio=$nowAudioOutcome, now/video=$nowVideoOutcome, " +
-                        "now/has_events=$nowHasEventsOutcome, videoSubmitted=${video != null}); " +
-                        "the now set stays at the previous bundle to keep it coherent.",
+                    "Holding back %s and %s mirrors for %s bundle (now/image=%s, now/audio=%s, now/video=%s, now/has_events=%s, videoSubmitted=%s); the now set stays at the previous bundle to keep it coherent.",
+                    nowTextTopic,
+                    nowTimestampTopic,
+                    safe(period.name.lowercase()),
+                    nowImageOutcome,
+                    nowAudioOutcome,
+                    nowVideoOutcome,
+                    nowHasEventsOutcome,
+                    video != null,
                 )
             }
         } else {
@@ -410,8 +438,9 @@ class MqttPublisher(
             ).joinToString("/")
             DiagLog.i(
                 TAG,
-                "Skipping /now mirror for ${period.name.lowercase()} bundle " +
-                    "($failed failed); previous retained /now bundle stays intact.",
+                "Skipping /now mirror for %s bundle (%s failed); previous retained /now bundle stays intact.",
+                safe(period.name.lowercase()),
+                failed,
             )
         }
         if (proseOutcome is MqttPublishOutcome.Success) {
@@ -434,7 +463,11 @@ class MqttPublisher(
         val topic = "$baseTrimmed/test"
         DiagLog.i(
             TAG,
-            "MQTT test publish to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
+            "MQTT test publish to %s://%s:%s/%s.",
+            prepared.scheme,
+            prepared.host,
+            prepared.port,
+            topic,
         )
         val outcome = executePublish(prepared, topic, "ClothesCast: connection test".toByteArray(Charsets.UTF_8))
         if (outcome is MqttPublishOutcome.Success) {
@@ -443,7 +476,11 @@ class MqttPublisher(
             // that the broker is reachable.
             DiagLog.i(
                 TAG,
-                "MQTT test publish succeeded to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic.",
+                "MQTT test publish succeeded to %s://%s:%s/%s.",
+                prepared.scheme,
+                prepared.host,
+                prepared.port,
+                topic,
             )
         }
         return outcome
@@ -464,7 +501,7 @@ class MqttPublisher(
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            DiagLog.w(TAG, "Failed to read settings for $context MQTT publish; skipping.", t)
+            DiagLog.w(TAG, t, "Failed to read settings for %s MQTT publish; skipping.", context)
             return null
         }
         // Bridge-off is the silent-no-op path for users who haven't opted in;
@@ -473,9 +510,8 @@ class MqttPublisher(
         val host = prefs.mqttHost?.takeIf { it.isNotBlank() } ?: run {
             DiagLog.w(
                 TAG,
-                "MQTT bridge is enabled but no broker host is configured; " +
-                    "$context message not published. " +
-                    "Set the host in Settings → Smart Home.",
+                "MQTT bridge is enabled but no broker host is configured; %s message not published. Set the host in Settings → Smart Home.",
+                context,
             )
             return null
         }
@@ -487,7 +523,7 @@ class MqttPublisher(
             } catch (ce: CancellationException) {
                 throw ce
             } catch (t: Throwable) {
-                DiagLog.w(TAG, "Failed to read MQTT password from keystore; attempting anonymous connect.", t)
+                DiagLog.w(TAG, t, "Failed to read MQTT password from keystore; attempting anonymous connect.")
                 null
             }
         }
@@ -531,9 +567,14 @@ class MqttPublisher(
             if (attempt > 0) {
                 DiagLog.i(
                     TAG,
-                    "Retrying MQTT publish (attempt ${attempt + 1}/$maxAttempts) to " +
-                        "${prepared.scheme}://${prepared.host}:${prepared.port}/$topic " +
-                        "after ${retryDelayMs}ms",
+                    "Retrying MQTT publish (attempt %s/%s) to %s://%s:%s/%s after %sms",
+                    attempt + 1,
+                    maxAttempts,
+                    prepared.scheme,
+                    prepared.host,
+                    prepared.port,
+                    topic,
+                    retryDelayMs,
                 )
                 delay(retryDelayMs)
             }
@@ -581,12 +622,28 @@ class MqttPublisher(
                 ?.let { "$it ($raw)" }
                 ?.let { it.take(250) }
                 ?: raw.take(250)
-            DiagLog.w(TAG, "MQTT publish failed to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic ($msg)")
+            DiagLog.w(
+                TAG,
+                "MQTT publish failed to %s://%s:%s/%s (%s)",
+                prepared.scheme,
+                prepared.host,
+                prepared.port,
+                topic,
+                msg,
+            )
             result = MqttPublishOutcome.Failure(msg)
         }
         result
     } ?: run {
-        DiagLog.w(TAG, "MQTT publish timed out after ${publishTimeoutMs}ms to ${prepared.scheme}://${prepared.host}:${prepared.port}/$topic")
+        DiagLog.w(
+            TAG,
+            "MQTT publish timed out after %sms to %s://%s:%s/%s",
+            publishTimeoutMs,
+            prepared.scheme,
+            prepared.host,
+            prepared.port,
+            topic,
+        )
         MqttPublishOutcome.Failure(
             "Couldn't reach the broker at ${prepared.host}:${prepared.port} within " +
                 "${publishTimeoutMs}ms — check it's online and that nothing's blocking the port.",
@@ -607,8 +664,9 @@ class MqttPublisher(
             } else {
                 DiagLog.w(
                     TAG,
-                    "Home Assistant discovery config ${entry.configTopic} failed ($outcome); " +
-                        "forecast topics remain published but HA may not auto-create this entity.",
+                    "Home Assistant discovery config %s failed (%s); forecast topics remain published but HA may not auto-create this entity.",
+                    entry.configTopic,
+                    outcome,
                 )
             }
         }
@@ -624,8 +682,9 @@ class MqttPublisher(
             } else {
                 DiagLog.w(
                     TAG,
-                    "Clearing stale discovery config $topic failed ($outcome); an orphaned " +
-                        "today/tonight entity may linger in Home Assistant.",
+                    "Clearing stale discovery config %s failed (%s); an orphaned today/tonight entity may linger in Home Assistant.",
+                    topic,
+                    outcome,
                 )
             }
         }
@@ -633,8 +692,11 @@ class MqttPublisher(
         // any, are logged above) so it doesn't add ~17 lines to the snapshot.
         DiagLog.i(
             TAG,
-            "Published Home Assistant discovery: $configsPublished/${entries.size} entity configs, " +
-                "cleared $staleConfigsCleared/${tombstones.size} stale today/tonight configs.",
+            "Published Home Assistant discovery: %s/%s entity configs, cleared %s/%s stale today/tonight configs.",
+            configsPublished,
+            entries.size,
+            staleConfigsCleared,
+            tombstones.size,
         )
     }
 

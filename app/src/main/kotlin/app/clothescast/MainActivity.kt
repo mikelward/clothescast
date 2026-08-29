@@ -209,7 +209,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             val snapshot = runCatching { app.insightCache.thisPeriod.first() }
                 .getOrElse {
-                    DiagLog.w(TAG, "App-open freshness check failed; skipping silent refresh.", it)
+                    DiagLog.w(TAG, it, "App-open freshness check failed; skipping silent refresh.")
                     return@launch
                 }
             if (!FetchAndNotifyWorker.shouldSilentlyRefresh(snapshot, Instant.now())) return@launch

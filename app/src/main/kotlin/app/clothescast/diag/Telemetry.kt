@@ -138,11 +138,7 @@ object Telemetry {
                 // stopping is not deferred.
                 analytics.setAnalyticsCollectionEnabled(false)
                 crashlytics.setCrashlyticsCollectionEnabled(false)
-                DiagLog.w(
-                    "Telemetry",
-                    "opt-in migration could not be persisted; collection disabled",
-                    e,
-                )
+                DiagLog.w("Telemetry", e, "opt-in migration could not be persisted; collection disabled")
             }
             // One snapshot carries both, so the choice and the debt can never
             // be read from different states. Collecting the debt as its own
@@ -187,7 +183,7 @@ object Telemetry {
                         },
                     )
                     } catch (e: IOException) {
-                        DiagLog.w("Telemetry", "applying the telemetry choice failed", e)
+                        DiagLog.w("Telemetry", e, "applying the telemetry choice failed")
                     }
                     // Both idempotent, so this runs on every pass and matters
                     // only on the first: the SDKs now carry the stored choice,

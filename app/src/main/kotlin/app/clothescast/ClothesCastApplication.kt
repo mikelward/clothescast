@@ -209,7 +209,7 @@ class ClothesCastApplication : Application() {
         try {
             CastContext.getSharedInstance(this)
         } catch (t: Throwable) {
-            DiagLog.w(TAG, "CastContext.getSharedInstance failed; Cast disabled", t)
+            DiagLog.w(TAG, t, "CastContext.getSharedInstance failed; Cast disabled")
             null
         }
     }
@@ -257,7 +257,7 @@ class ClothesCastApplication : Application() {
         GoogleWeatherModelClient(
             httpClient = httpClient,
             logger = ConfidenceFetchLogger { message, throwable ->
-                DiagLog.w("GoogleWeather", message, throwable)
+                DiagLog.w("GoogleWeather", throwable, "%s", message)
             },
             apiCallLogger = apiCallLogger,
         )
@@ -273,7 +273,7 @@ class ClothesCastApplication : Application() {
             delegate = OpenMeteoClient(
                 httpClient = httpClient,
                 confidenceLogger = ConfidenceFetchLogger { message, throwable ->
-                    DiagLog.w("ConfidenceFetcher", message, throwable)
+                    DiagLog.w("ConfidenceFetcher", throwable, "%s", message)
                 },
                 apiCallLogger = apiCallLogger,
                 // Read the user's Forecasters selection on every fetch so a
@@ -314,7 +314,7 @@ class ClothesCastApplication : Application() {
                         } catch (ce: CancellationException) {
                             throw ce
                         } catch (e: Exception) {
-                            DiagLog.w("GoogleWeather", "Google API key unavailable; skipping Google", e)
+                            DiagLog.w("GoogleWeather", e, "Google API key unavailable; skipping Google")
                             null to null
                         }
                         key?.takeIf { it.isNotBlank() }?.let { fetchGoogleSeries(location, it, fingerprint) }
@@ -489,7 +489,7 @@ class ClothesCastApplication : Application() {
             // so the cost on fresh installs / repeat runs is one DataStore
             // edit's worth of disk I/O.
             runCatching { settingsRepository.clearLegacyHomePreferences() }
-                .onFailure { DiagLog.w(TAG, "Legacy home-pref cleanup failed", it) }
+                .onFailure { DiagLog.w(TAG, it, "Legacy home-pref cleanup failed") }
         }
         applicationScope.launch {
             // Repaint placed home-screen widgets whenever a setting they render
@@ -514,7 +514,7 @@ class ClothesCastApplication : Application() {
                         // A repaint failure (e.g. Glance host transiently
                         // unavailable) shouldn't kill the observer; the next
                         // change — or the scheduled worker — repaints anyway.
-                        DiagLog.w(TAG, "Widget refresh after settings change failed", t)
+                        DiagLog.w(TAG, t, "Widget refresh after settings change failed")
                     }
                 }
         }
@@ -538,7 +538,7 @@ class ClothesCastApplication : Application() {
                     } catch (t: Throwable) {
                         // Non-fatal: the chain re-arms itself from fresh prefs
                         // on its next fire, render, or app start anyway.
-                        DiagLog.w(TAG, "Widget refresh chain re-arm after schedule change failed", t)
+                        DiagLog.w(TAG, t, "Widget refresh chain re-arm after schedule change failed")
                     }
                 }
         }
@@ -565,7 +565,7 @@ class ClothesCastApplication : Application() {
                 // toggles — see WidgetRefreshScheduler.
                 reconcileWidgetRefreshChain(this@ClothesCastApplication, prefs)
             } catch (t: Throwable) {
-                DiagLog.e(TAG, "Initial alarm scheduling failed", t)
+                DiagLog.e(TAG, t, "Initial alarm scheduling failed")
             }
         }
     }
@@ -596,7 +596,7 @@ class ClothesCastApplication : Application() {
             // unavailable on a GMS-less device). The planner's SHARED path
             // will then surface the SDK's own error at TTS request time,
             // which the Settings Test Voice catch-all already toasts.
-            DiagLog.w(TAG, "App Check init failed; shared TTS may not work", t)
+            DiagLog.w(TAG, t, "App Check init failed; shared TTS may not work")
         }
     }
 

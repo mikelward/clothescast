@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.first
  */
 class ScheduleRefreshReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        DiagLog.i(TAG, "ScheduleRefreshReceiver action=${intent.action}")
+        DiagLog.i(TAG, "ScheduleRefreshReceiver action=%s", intent.action)
 
         val pending = goAsync()
         ReceiverWork.launch(pending) {
@@ -46,7 +46,7 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
                 // keep refreshing even with both delivery slots disabled.
                 reconcileWidgetRefreshChain(context.applicationContext, prefs)
             } catch (t: Throwable) {
-                DiagLog.e(TAG, "Re-arm failed", t)
+                DiagLog.e(TAG, t, "Re-arm failed")
             }
         }
     }

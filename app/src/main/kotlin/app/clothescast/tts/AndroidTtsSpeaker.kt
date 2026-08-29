@@ -6,6 +6,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.safe
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Locale
 import java.util.UUID
@@ -64,9 +65,17 @@ class AndroidTtsSpeaker(
             runCatching { tts.voice = chosen }
                 .onSuccess {
                     val source = if (pinned != null) "pinned" else "auto"
-                    DiagLog.i(TAG, "TTS voice ($source): ${chosen.name} (quality=${chosen.quality}, locale=${chosen.locale})")
+                    DiagLog.i(
+                        TAG,
+                        "TTS voice (%s): %s (quality=%s, locale=%s)",
+                        // Either "pinned" or "auto" — a literal from two lines up.
+                        safe(source),
+                        chosen.name,
+                        chosen.quality,
+                        chosen.locale,
+                    )
                 }
-                .onFailure { DiagLog.w(TAG, "Setting TTS voice failed; using engine default.", it) }
+                .onFailure { DiagLog.w(TAG, it, "Setting TTS voice failed; using engine default.") }
         }
     }
 
@@ -104,7 +113,7 @@ class AndroidTtsSpeaker(
             }
             cont.invokeOnCancellation { runCatching { tts.stop() } }
         }
-        DiagLog.i(TAG, "Spoke utterance ${utteranceId.take(8)}…")
+        DiagLog.i(TAG, "Spoke utterance %s…", utteranceId.take(8))
     }
 
     companion object {

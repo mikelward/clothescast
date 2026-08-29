@@ -84,7 +84,10 @@ class TonightInsightNotifier(private val context: Context) {
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_TONIGHT_INSIGHT, notification)
         DiagLog.i(
             TAG,
-            "Posted tonight insight notification (id=$NOTIFICATION_ID_TONIGHT_INSIGHT, channel=$CHANNEL_SCHEDULED_INSIGHT, hasEvents=${insight.hasEvents}).",
+            "Posted tonight insight notification (id=%s, channel=%s, hasEvents=%s).",
+            NOTIFICATION_ID_TONIGHT_INSIGHT,
+            CHANNEL_SCHEDULED_INSIGHT,
+            insight.hasEvents,
         )
     }
 

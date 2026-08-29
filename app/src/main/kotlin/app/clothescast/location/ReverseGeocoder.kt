@@ -6,6 +6,7 @@ import android.location.Geocoder
 import android.os.Build
 import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.safe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -82,7 +83,7 @@ class ReverseGeocoder(
     suspend fun resolve(latitude: Double, longitude: Double): Result = coRunCatching {
         resolveInner(latitude, longitude)
     }
-        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolve; returning empty.", it) }
+        .onFailure { DiagLog.w(TAG, it, "Unexpected %s from resolve; returning empty.", safe(it.javaClass.simpleName)) }
         .getOrDefault(Result.EMPTY)
 
     /**
@@ -108,7 +109,12 @@ class ReverseGeocoder(
         val address = addresses.firstOrNull() ?: return@coRunCatching DiagnosticResult.EMPTY
         DiagnosticResult(addressLines = address.extractLines(), derived = address.toResult())
     }
-        .onFailure { DiagLog.w(TAG, "Unexpected ${it.javaClass.simpleName} from resolveDiagnostic; returning empty.", it) }
+        .onFailure { DiagLog.w(
+            TAG,
+            it,
+            "Unexpected %s from resolveDiagnostic; returning empty.",
+            safe(it.javaClass.simpleName),
+        ) }
         .getOrDefault(DiagnosticResult.EMPTY)
 
     private suspend fun resolveInner(latitude: Double, longitude: Double): Result {
@@ -130,9 +136,15 @@ class ReverseGeocoder(
             if (addresses != null) return addresses.firstOrNull()?.toResult() ?: Result.EMPTY
             val isLastAttempt = attempt == maxAttempts - 1
             if (isLastAttempt) {
-                DiagLog.w(TAG, "Reverse geocode timed out after ${timeoutMillis}ms (final of $maxAttempts).")
+                DiagLog.w(TAG, "Reverse geocode timed out after %sms (final of %s).", timeoutMillis, maxAttempts)
             } else {
-                DiagLog.w(TAG, "Reverse geocode timed out after ${timeoutMillis}ms; retrying (${attempt + 2}/$maxAttempts).")
+                DiagLog.w(
+                    TAG,
+                    "Reverse geocode timed out after %sms; retrying (%s/%s).",
+                    timeoutMillis,
+                    attempt + 2,
+                    maxAttempts,
+                )
                 delay(retryBackoffMillis)
             }
         }
@@ -163,14 +175,14 @@ class ReverseGeocoder(
             }
 
             override fun onError(errorMessage: String?) {
-                DiagLog.w(TAG, "Async getFromLocation onError: ${errorMessage ?: "<no message>"}")
+                DiagLog.w(TAG, "Async getFromLocation onError: %s", errorMessage ?: "<no message>")
                 if (cont.isActive) cont.resume(emptyList())
             }
         }
         try {
             geocoder.getFromLocation(lat, lon, 1, listener)
         } catch (t: Throwable) {
-            DiagLog.w(TAG, "Async getFromLocation threw ${t.javaClass.simpleName}; returning empty.", t)
+            DiagLog.w(TAG, t, "Async getFromLocation threw %s; returning empty.", safe(t.javaClass.simpleName))
             if (cont.isActive) cont.resume(emptyList())
         }
     }
@@ -181,10 +193,10 @@ class ReverseGeocoder(
             try {
                 geocoder.getFromLocation(lat, lon, 1).orEmpty()
             } catch (t: IOException) {
-                DiagLog.w(TAG, "Sync getFromLocation IO failure; returning empty.", t)
+                DiagLog.w(TAG, t, "Sync getFromLocation IO failure; returning empty.")
                 emptyList()
             } catch (t: IllegalArgumentException) {
-                DiagLog.w(TAG, "Sync getFromLocation rejected coordinates; returning empty.", t)
+                DiagLog.w(TAG, t, "Sync getFromLocation rejected coordinates; returning empty.")
                 emptyList()
             }
         }

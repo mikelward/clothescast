@@ -77,7 +77,7 @@ class AppUpdateChecker(private val context: Context) {
             return
         }
         val info = runCatching { manager.requestAppUpdateInfo() }
-            .onFailure { DiagLog.w(TAG, "requestAppUpdateInfo failed", it) }
+            .onFailure { DiagLog.w(TAG, it, "requestAppUpdateInfo failed") }
             .getOrNull()
         if (info == null) {
             _state.value = UpdateState.UpToDate

@@ -166,7 +166,7 @@ object BugReport {
             // Never turn a failure while inspecting that state into another
             // crash: this runs from a tap, where an escaping throwable takes the
             // app down. Retain a small shareable diagnostic instead.
-            DiagLog.w("BugReport", "payload collection failed", t)
+            DiagLog.w("BugReport", t, "payload collection failed")
             buildFallbackPayload(t)
         }
         // The capture draws the live window via PixelCopy and the clipboard /
@@ -183,10 +183,10 @@ object BugReport {
             // clipboard service), so without this the user could see only the
             // generic toast while the log said nothing about why.
             val copied = runCatching { clipboardWrite(activity, text) }
-                .onFailure { DiagLog.w("BugReport", "clipboard hand-off threw", it) }
+                .onFailure { DiagLog.w("BugReport", it, "clipboard hand-off threw") }
                 .getOrDefault(false)
             val launched = runCatching { chooserLaunch(activity, text, screenshotUri) }
-                .onFailure { DiagLog.w("BugReport", "chooser hand-off threw", it) }
+                .onFailure { DiagLog.w("BugReport", it, "chooser hand-off threw") }
                 .getOrDefault(false)
             // Neither route landed: the tap would otherwise do nothing visible at
             // all — no chooser, nothing on the clipboard — and the user would
@@ -221,7 +221,7 @@ object BugReport {
         // failure entirely.
         val recent = runCatching { DiagLog.snapshot() }
             .onFailure {
-                DiagLog.w("BugReport", "log snapshot failed while building the fallback report", it)
+                DiagLog.w("BugReport", it, "log snapshot failed while building the fallback report")
                 appendLine("Recent log unavailable: ${it.javaClass.name}")
             }
             .getOrDefault(emptyList())
@@ -235,7 +235,7 @@ object BugReport {
         // nothing at all — and the log is then the only place that can say why.
         runCatching {
             Toast.makeText(context, R.string.bug_report_share_failed, Toast.LENGTH_LONG).show()
-        }.onFailure { DiagLog.w("BugReport", "share-failed notice could not be shown", it) }
+        }.onFailure { DiagLog.w("BugReport", it, "share-failed notice could not be shown") }
     }
 
     private suspend fun buildPayload(context: Context, app: ClothesCastApplication): String {
@@ -632,7 +632,7 @@ object BugReport {
         // into a text-only report with nothing in the log to say why the
         // screenshot is missing. coRunCatching, so cancellation still propagates.
         val bitmap = coRunCatching { captureWindow(activity) }
-            .onFailure { DiagLog.w("BugReport", "window capture failed", it) }
+            .onFailure { DiagLog.w("BugReport", it, "window capture failed") }
             .getOrNull() ?: return null
         // Compressing a full-window PNG and pruning previous files would block the
         // main thread long enough to jank the share-sheet open, so persist on
@@ -657,7 +657,7 @@ object BugReport {
                         activity.packageName + FILE_PROVIDER_AUTHORITY_SUFFIX,
                         file,
                     )
-                }.onFailure { DiagLog.w("BugReport", "screenshot persist failed", it) }.getOrNull()
+                }.onFailure { DiagLog.w("BugReport", it, "screenshot persist failed") }.getOrNull()
             }
         } finally {
             // Only the PNG on disk outlives this call; free the full-window
@@ -730,7 +730,7 @@ object BugReport {
                 }
             }
         } catch (t: Throwable) {
-            DiagLog.w("BugReport", "PixelCopy.request threw", t)
+            DiagLog.w("BugReport", t, "PixelCopy.request threw")
             bitmap.recycle()
             cont.resume(null)
         }
@@ -778,7 +778,7 @@ object BugReport {
             activity
         }
         return runCatching { launchContext.startActivity(chooser); true }
-            .onFailure { DiagLog.w("BugReport", "share intent failed", it) }
+            .onFailure { DiagLog.w("BugReport", it, "share intent failed") }
             .getOrDefault(false)
     }
 
@@ -795,7 +795,7 @@ object BugReport {
                 cm.setPrimaryClip(ClipData.newPlainText("ClothesCast bug report", text))
                 true
             }
-        }.onFailure { DiagLog.w("BugReport", "clipboard copy failed", it) }
+        }.onFailure { DiagLog.w("BugReport", it, "clipboard copy failed") }
             .getOrDefault(false)
 }
 

@@ -42,7 +42,7 @@ import java.time.ZoneId
 internal suspend fun loadCurrentInsight(context: Context): Pair<Insight, UserPreferences>? {
     val app = context.applicationContext as ClothesCastApplication
     val prefs = runCatching { app.settingsRepository.preferences.first() }
-        .onFailure { DiagLog.w(TAG, "Widget: reading preferences failed", it) }
+        .onFailure { DiagLog.w(TAG, it, "Widget: reading preferences failed") }
         .getOrNull() ?: return null
     // A render is the one signal that a widget is actually placed, so each one
     // (re)arms the widget-only refresh chain for the next schedule boundary.
@@ -51,9 +51,9 @@ internal suspend fun loadCurrentInsight(context: Context): Pair<Insight, UserPre
     // scheduled delivery is disabled (the delivery alarms are then cancelled
     // and nothing else fetches in the background); see WidgetRefreshReceiver.
     runCatching { reconcileWidgetRefreshChain(context, prefs) }
-        .onFailure { DiagLog.w(TAG, "Widget: arming the refresh chain failed", it) }
+        .onFailure { DiagLog.w(TAG, it, "Widget: arming the refresh chain failed") }
     val snapshot = runCatching { app.insightCache.thisPeriod.first() }
-        .onFailure { DiagLog.w(TAG, "Widget: reading cached snapshot failed", it) }
+        .onFailure { DiagLog.w(TAG, it, "Widget: reading cached snapshot failed") }
         .getOrNull()
     if (snapshot == null) {
         // Nothing cached yet — a freshly placed widget on a fresh install, or a
@@ -67,22 +67,26 @@ internal suspend fun loadCurrentInsight(context: Context): Pair<Insight, UserPre
         return null
     }
     val insight = runCatching { app.deriveInsight(snapshot, prefs).insight }
-        .onFailure { DiagLog.w(TAG, "Widget: deriveInsight failed", it) }
+        .onFailure { DiagLog.w(TAG, it, "Widget: deriveInsight failed") }
         .getOrNull() ?: return null
     when (widgetCacheAction(insight, Instant.now(), prefs.schedule.time, prefs.tonightSchedule.time)) {
         WidgetCacheAction.RENDER -> Unit
         WidgetCacheAction.KEEP ->
             DiagLog.i(
                 TAG,
-                "Widget: cached ${insight.period} insight for ${insight.forDate} isn't the current " +
-                    "window, but a dayOffset=0 refresh couldn't reach that window either — " +
-                    "keeping the last-known render rather than churning",
+                "Widget: cached %s insight for %s isn't the current window, but a dayOffset=0 " +
+                    "refresh couldn't reach that window either — keeping the last-known render rather " +
+                    "than churning",
+                insight.period,
+                insight.forDate,
             )
         WidgetCacheAction.REFRESH -> {
             DiagLog.i(
                 TAG,
-                "Widget: cached ${insight.period} insight for ${insight.forDate} is no longer the " +
-                    "current window — showing empty state and kicking a silent refresh",
+                "Widget: cached %s insight for %s is no longer the current window — showing empty " +
+                    "state and kicking a silent refresh",
+                insight.period,
+                insight.forDate,
             )
             FetchAndNotifyWorker.enqueueSilentRefresh(context)
             return null

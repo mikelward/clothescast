@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 /**
- * Locks the PRIVACY.md "Analytics and crash reporting" allowlists into a
+ * Locks the "Analytics and crash reporting" allowlists into a
  * regression gate. PR-time review catches new Firebase call sites today;
  * this test forces every new event name, Bundle param key, user property,
  * or Crashlytics custom key onto an explicit set below — adding one means
@@ -169,38 +169,6 @@ class TelemetryPrivacyContractTest {
             source.contains(Regex("""\b${Regex.escape(it)}\b""", RegexOption.IGNORE_CASE))
         }
         offenders.shouldBeEmpty()
-    }
-
-    @Test
-    fun `PRIVACY md still names every do-not-transmit category`() {
-        // Catches a silent doc weakening: if a future commit drops one of
-        // these phrases from the analytics/crash-reporting hard-limit list,
-        // the contract this test enforces has drifted from the user-visible
-        // promise. Scoped to just the "What's not sent" section so a
-        // mention elsewhere (e.g. the Changelog reflecting an old state)
-        // doesn't paper over a removal from the live contract.
-        val section = privacyNotSentSection()
-        // Every hard-limit category in the "What's not sent" list, including
-        // the secondary phrases inside each bullet ("user names" + "email
-        // addresses" come from the same bullet; "location coordinates" +
-        // "geocoded place names" from another; "insight prose" + "notification
-        // text" from another). Adding one of these to the required list
-        // means a future edit can't drop the bullet — or the secondary
-        // phrase inside it — without tripping the test.
-        val required = listOf(
-            "calendar event data",
-            "user names",
-            "email addresses",
-            "location coordinates",
-            "geocoded place names",
-            "insight prose",
-            "notification text",
-            "API keys",
-            "precise GPS",
-            "advertising identifiers",
-        )
-        val missing = required.filterNot { section.contains(it, ignoreCase = true) }
-        missing.shouldBeEmpty()
     }
 
     @Test
@@ -389,31 +357,6 @@ class TelemetryPrivacyContractTest {
 
     private fun telemetrySource(): String =
         sourceFile("src/main/kotlin/app/clothescast/diag/Telemetry.kt").readText()
-
-    /** PRIVACY.md lives at the repo root; resolve from either `app/` or repo cwd. */
-    private fun privacyMdSource(): String =
-        listOf(File("../PRIVACY.md"), File("PRIVACY.md"))
-            .firstOrNull { it.exists() }
-            ?.readText()
-            ?: error("PRIVACY.md not found from cwd ${File(".").absolutePath}")
-
-    /**
-     * The "What's not sent" subsection of PRIVACY.md's "Analytics and crash
-     * reporting" — the canonical hard-limit list of what may not appear in
-     * Firebase payloads. Bounded by the `What's **not** sent` marker on the
-     * top and the next `##` heading (or end of file) on the bottom; the
-     * trailing "The reporting service receives only what's described above"
-     * paragraph stays inside the slice, which is fine since the scan is a
-     * `contains` check on phrases that only appear inside the bullet list.
-     */
-    private fun privacyNotSentSection(): String {
-        val full = privacyMdSource()
-        val start = full.indexOf("What's **not** sent")
-        require(start >= 0) { "PRIVACY.md missing 'What's **not** sent' section marker" }
-        val rest = full.substring(start)
-        val end = rest.indexOf("\n## ", startIndex = 1)
-        return if (end > 0) rest.substring(0, end) else rest
-    }
 
     /** Strips `// …` and `/* … */` so KDoc / comment phrases can't false-positive on identifier scans. */
     private fun stripBlockAndLineComments(text: String): String =

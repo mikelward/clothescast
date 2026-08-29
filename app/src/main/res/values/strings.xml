@@ -412,7 +412,7 @@
     <!-- TODO: translate -->
     <string name="today_telemetry_invite_title" tools:ignore="MissingTranslation">Help fix bugs?</string>
     <!-- TODO: translate -->
-    <string name="today_telemetry_invite_body" tools:ignore="MissingTranslation">ClothesCast can send anonymous crash reports and usage stats so bugs get found and fixed. It stays off until you turn it on. Calendar data, location, and insight text are never included.</string>
+    <string name="today_telemetry_invite_body" tools:ignore="MissingTranslation">ClothesCast can send anonymous crash reports and usage stats so bugs get found and fixed.</string>
     <!-- TODO: translate -->
     <string name="today_telemetry_invite_accept" tools:ignore="MissingTranslation">Turn on</string>
     <!-- TODO: translate -->

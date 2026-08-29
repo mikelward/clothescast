@@ -45,22 +45,28 @@ on:
     # counts a SKIPPED required check as satisfied, so skipping on a
     # "harmless" edit would be worse than running it.
     types: [opened, synchronize, reopened, edited]
-  # Two dispatch callers. (1) Release rescue: re-fire the release-AAB /
+  # One dispatch caller now. Release rescue: re-fire the release-AAB /
   # Firebase / Play-upload steps from the Actions tab against main when the
-  # natural push run failed transiently — no pr input. (2) The
-  # snapshot-regen step: its GITHUB_TOKEN push starts no workflow run, so it
-  # dispatches CI onto the head it just pushed, naming its PR — or the
-  # required `gate` check would exist only on the regenerated commit's
-  # parent. A dispatch that names a PR is bound to it (head SHA verified,
-  # sole open PR verified, merge-ref build in android-build); one that
-  # doesn't is allowed only on main. .github/lanes.conf's
-  # dispatch-without-pr rule enforces that.
+  # natural push run failed transiently — no pr input.
+  #
+  # `commit-snapshots` used to be the second, dispatching CI onto the head it
+  # had just pushed because a GITHUB_TOKEN push starts no workflow run. It
+  # pushes with a PAT instead, which retriggers the whole `pull_request`
+  # round naturally — and had to, because a dispatch reaches only this
+  # workflow while the required set is {zizmor, lanes, codex}, so `zizmor`
+  # never reported on a regenerated commit and #1166 sat unmergeable on it.
+  # Nothing sets `pr` any more; the input and the rules stay because a
+  # dispatch that names a PR is bound to it (head SHA verified, sole open PR
+  # verified, merge-ref build in android-build) while one that doesn't is
+  # allowed only on main, and .github/lanes.conf's dispatch-without-pr rule
+  # is what enforces that either way.
   workflow_dispatch:
     inputs:
       pr:
         description: >-
-          Pull request number this run reports for (the snapshot-regen
-          dispatch sets it; leave empty only for a release rescue on main).
+          Pull request number this run reports for. Nothing sets it today —
+          the snapshot regen no longer dispatches — so in practice this is
+          empty and the run is a release rescue on main.
         required: false
 
 concurrency:
@@ -429,11 +435,20 @@ jobs:
       branch-ref: ${{ github.event.pull_request.head.ref }}
       expected-head-sha: ${{ github.event.pull_request.head.sha }}
       pr-number: ${{ github.event.pull_request.number }}
-      # A GITHUB_TOKEN-authored push starts no workflow run on its own — or
-      # the required `gate` never reports on the regenerated commit.
-      dispatch-workflow: ci.yml
       comment-marker: "<!-- ui-snapshots-status -->"
       artifact-noun: "UI snapshot"
+    secrets:
+      # A GITHUB_TOKEN-authored push starts no workflow run on its own, so
+      # the regenerated commit would carry no checks. `dispatch-workflow:
+      # ci.yml` used to cover that, but a dispatch reaches exactly one
+      # workflow and this repo's required set is {zizmor, lanes, codex} —
+      # `zizmor` lives in its own file, never reported on a snapshot commit,
+      # and held PR #1166 unmergeable on a check that could never arrive. A
+      # fine-grained PAT pushes as an ordinary authenticated push, which
+      # fires the normal `pull_request` round over every workflow. Contents:
+      # read and write is all it needs: the hub uses this token for the push
+      # alone and `github.token` for the comment.
+      push-token: ${{ secrets.CI_COMMIT_ARTIFACT_TOKEN }}
 
   # Clothescast-specific PR comment (embedded before/after images) — nothing
   # this generic belongs in the hub. Runs in its own clean job for the same

@@ -452,17 +452,27 @@ Open work:
         alongside a real audit of how the app's other locale-sensitive
         formatting handles runtime locale changes — not as a one-line
         swap here.
-- [ ] **Add `zizmor` to the ruleset's required set** once it has reported on
-      a pull request here (`repo-rules mikelward/clothescast` — the
-      `mikelward/scripts` tool). **Preconditions first** (Codex flagged
-      both): the check needs a run on every head the ruleset can see, and
-      two flows push heads with `GITHUB_TOKEN`, whose events start no
-      workflows — (1) the snapshot job's `ci: regenerate UI snapshots`
-      push to same-repo PR branches (ci.yml's helper dispatches only
-      ci.yml today), and (2) any future token-authored automation PR. Give
-      zizmor.yml a `workflow_dispatch` trigger and dispatch it wherever
-      ci.yml is dispatched (the snapshot helper here; npm-update's
-      reusable workflow in that repository) before flipping the ruleset.
+- [x] **`zizmor` is in the ruleset's required set.** The flip happened
+      ahead of the preconditions recorded here, and precondition (1) then
+      bit exactly as written: the snapshot job's `ci: regenerate UI
+      snapshots` push is made with `GITHUB_TOKEN`, whose events start no
+      workflows, and ci.yml's helper dispatched only ci.yml — so `zizmor`
+      never reported on a regenerated head. PR #1166 sat unmergeable on it
+      ("2 of 3 required status checks are expected") until a PR body edit
+      fired `pull_request: edited`, which zizmor listens for.
+      - Fixed differently from the plan above, and better: the snapshot job
+        pushes with `push-token` (a PAT), so the head gets an ordinary
+        authenticated push and the whole `pull_request` round re-runs over
+        every workflow. Giving zizmor.yml a `workflow_dispatch` trigger and
+        dispatching it alongside ci.yml would have worked for zizmor alone
+        and left the next required check to rediscover this; it would also
+        have broken `mikelward/ci-commit-artifact`'s policy test, which
+        pins zizmor.yml's `on:` block byte-for-byte precisely to stop that.
+      - Precondition (2) — a future token-authored automation PR — is
+        unaffected by that fix and still stands. Any automation opening a
+        PR with `GITHUB_TOKEN` produces a head no workflow reports on, so
+        it needs the same PAT treatment before its PRs can satisfy the
+        ruleset.
 - [ ] **Finish the gate → lanes check rename** once `lanes` has reported on
       a `pull_request` run: flip the ruleset to require `lanes` instead of
       `gate`, then delete the now-redundant `gate` job in a follow-up PR.

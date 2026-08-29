@@ -2,10 +2,14 @@
 #
 # Required, not advisory -- reversing the posture this was ported with, by
 # the owner's decision: `zizmor` joins `lanes` and `codex` in the fleet's
-# standard required set (the ruleset half is still pending: until the
-# ruleset itself lists `zizmor`, a red scan does not yet hold merges),
-# piloted in mikelward/lanes and mikelward/ci-commit-artifact and rolled
-# out here. That is why there is no `paths:` filter: a workflow filtered
+# standard required set, piloted in mikelward/lanes and
+# mikelward/ci-commit-artifact and rolled out here. The ruleset half is
+# DONE in this repository: PR #1166 refused to merge with "2 of 3 required
+# status checks are expected" until `zizmor` reported on its head, which is
+# the ruleset naming it. (The note that once stood here calling that half
+# pending outlived the settings change.)
+#
+# That is why there is no `paths:` filter: a workflow filtered
 # out by paths creates NO check run at all (unlike a skipped job, which
 # reports "skipped" and satisfies a ruleset), so a required `zizmor` plus
 # a path filter would leave any pull request not touching `.github/**`

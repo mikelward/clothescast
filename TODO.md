@@ -486,3 +486,28 @@ Autopilot guesses from the CI-slowness pass. Each is cheap to undo.
       than a wait on in-process async work, and the class runs in 0.8s. It is
       the last `Thread.sleep` in `app/src/test`. Worth revisiting only if it
       ever flakes.
+- [ ] **The release build moved into its own `release-build` job rather than
+      being made cheaper inside `deploy`.** Measured first: R8 is ~150s of the
+      release build's ~183s, so sharing compile outputs between the jobs (a
+      cross-job Gradle build cache) would have bought almost nothing —
+      `gradle/actions/setup-gradle` keys its cache per job and there is no
+      input to change that, which is what the old comment in `ci.yml` said.
+      The rejected alternative was merging the bundle into `unit-tests`, which
+      would hand the test job the signing secrets. Reversible: move the three
+      steps back into `deploy` and delete the job.
+- [ ] **A signed AAB can now exist for a commit whose tests then fail.**
+      `release-build` no longer waits for `unit-tests`. Nothing publishes it —
+      `deploy` still needs the tests, and only `deploy` talks to Play — and it
+      gives a red main run something to inspect. Reversible by adding
+      `unit-tests` to `release-build`'s `needs:`, at the cost of putting the
+      whole build back on the critical path.
+- [ ] **Two jobs now enter `environment: production` per main run.** Safe as
+      things stand: every recent `deploy` started within ~3s of its `needs:`
+      completing, so the environment has no required reviewers today. If one is
+      ever added, a main run would ask for approval twice — at which point the
+      keystore secrets want moving to repository scope, or the jobs want
+      merging again.
+- [ ] Noticed in passing, not changed: `clothescast`'s `ci.yml` pins
+      `gradle/actions/setup-gradle@v5` by tag, while `typelauncher`, `simmo`
+      and `snoozemo` all pin it to SHA `4c125117…`. Every other action in this
+      file is SHA-pinned with a comment about why. Worth aligning.

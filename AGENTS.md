@@ -532,32 +532,34 @@ future task; the incident narrative belongs in the commit message.
   verified from the full history.
 ## CI
 
-- Three heavy jobs: `JVM unit tests` runs `:core:*:test` +
+- Four heavy jobs: `JVM unit tests` runs `:core:*:test` +
   `:app:testDebugUnitTest`; `Android release check` runs `:app:assembleRelease`
-  on PRs and nothing on `main` (`deploy`'s `bundleRelease` is the release check
-  there);
-  `Distribute and release` builds and ships the release. All upload
-  artifacts; Roborazzi PNG snapshots upload as `ui-preview-snapshots` from
-  the JVM-tests job.
-- **`Distribute and release` is `main`-only and gated on the other two.** It
-  needs `JVM unit tests` *and* `Android release check` green, runs under the
-  `production` environment, and never runs on a PR — so it reports `skipped`
-  on every PR run. It is the only job that runs `:app:bundleRelease` and
-  the Play upload.
-- **Job timings** — whole-job wall clock, dominant step in parentheses. All
-  measured 2026-08-27: PR figures from run 33081542566, `main` from run
-  33086228356 (the first `main` run with the release-check skip).
-  - `JVM unit tests` — ~4m15s on a PR, 5m23s on `main` (`Run unit tests` 3m59s).
-  - `Android release check` — 5m00s on a PR (`assembleRelease`; 5m54s on a
-    colder run); **59s on `main`**, where the gradle step is skipped and only
-    setup runs.
-  - `Distribute and release` — 6m45s on `main` (`Bundle release AAB` 5m38s),
-    `skipped` on a PR.
-  - Whole `main` run: **12m29s**, down from 13m24s before the skip.
-    The saving is only ~55s, not the ~2m the duplicated R8 work would suggest,
-    because `deploy` needs `unit-tests` as well: removing the release job just
-    exposes the next gate. `JVM unit tests` at 5m23s is now the critical path
-    into `deploy`, so further main-run savings have to come from there.
+  on PRs and nothing on `main`; `Build the release AAB` runs
+  `:app:bundleRelease` on `main` only; `Distribute and release` uploads that
+  AAB to Play. All upload artifacts; Roborazzi PNG snapshots upload as
+  `ui-preview-snapshots` from the JVM-tests job.
+- **The release build runs in parallel with the tests, and the publish waits
+  for both.** `Build the release AAB` needs only `classify`, so R8 overlaps the
+  test job instead of following it; `Distribute and release` needs
+  `unit-tests`, `android-build` and `release-build`, downloads the
+  `app-release-aab` artifact, and does no Gradle work at all. Before this split
+  the bundle was a step inside `deploy`, which meant its ~6 min started only
+  once the tests had finished — pure critical path for work that depends on
+  nothing the tests produce. R8 is ~150s of that build's ~183s (measured
+  locally 2026-08-29), so there is nothing to win by sharing compiles between
+  the jobs; taking the whole job off the critical path is the win.
+- **Job timings are stale as of 2026-08-29** — the figures below were measured
+  before the release build was split out of `deploy`, so the `main` shape they
+  describe no longer exists. Re-measure from a real `main` run and re-date this
+  list; do not write projections here.
+  - `JVM unit tests` — ~4m15s on a PR, 5m23s on `main` (`Run unit tests` 3m59s,
+    measured 2026-08-27; the alarm-test gate change of 2026-08-29 took the
+    unit-test task from 162s to 76s locally, so this is now high).
+  - `Android release check` — 5m00s on a PR (`assembleRelease`), seconds on
+    `main`, where the gradle step is skipped and only setup runs.
+  - `Distribute and release` — 6m45s on `main` when it still built the AAB
+    (`Bundle release AAB` 5m38s); it now only downloads and publishes.
+  - Whole `main` run: 12m29s on 2026-08-27, 14m59s on 2026-08-28.
 
   **Re-date this list when you refresh it.** Figures carrying no date have
   drifted well out of true before, and cost an agent a wrong "significant
@@ -566,8 +568,9 @@ future task; the incident narrative belongs in the commit message.
 - **Compare like with like: PR against PR, `main` against `main`.**
   `Android release check` is deliberately asymmetric — minutes on a PR, seconds
   on `main` — so a `main` figure in the minutes there means the skip stopped
-  working, not that something got slower. `Distribute and release` has no PR counterpart
-  at all, so it only ever compares against other `main` runs. Comparing a PR
+  working, not that something got slower. `Build the release AAB` and
+  `Distribute and release` have no PR counterpart at all, so they only ever
+  compare against other `main` runs. Comparing a PR
   job against a `main` number, or against a *step* time rather than the job
   total, manufactures a regression that doesn't exist.
 - After pushing, **wait for CI** before claiming a change works on Android.

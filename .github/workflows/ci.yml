@@ -812,48 +812,42 @@ jobs:
           path: /tmp/android-build.log
           retention-days: 14
 
-  deploy:
-    name: Distribute and release
-    # Everything that leaves this repo: the Firebase tester build, the signed
-    # release AAB, and the Play internal-track upload. Split out of
-    # `android-build` so the release is gated on the tests actually passing,
-    # so the publish secrets are scoped to a job that never runs on a PR, and
-    # so a red box in the Actions UI says "the release failed" rather than
-    # "the debug build failed". Gated three ways:
-    #   1. `if:` — push to main or a manual workflow_dispatch that explicitly
-    #      targets main. The dispatch UI defaults its ref selector to main,
-    #      but a maintainer can pick another branch, so this re-checks
-    #      `github.ref` rather than trusting that default. Never on PRs.
-    #   2. `environment: production` — the publish secrets (FIREBASE_*,
-    #      UPLOAD_KEYSTORE_*, PLAY_SERVICE_ACCOUNT_JSON) belong in the
-    #      `production` environment, where GitHub enforces the boundary:
-    #      Settings → Environments → production, deployment branches
-    #      restricted to `main`, optionally a required reviewer. An `if:`
-    #      alone is only as good as the workflow file, which a branch can
-    #      edit; an environment protection rule a branch cannot. Naming an
-    #      environment that doesn't exist yet creates it unprotected on
-    #      first run, so the rules still have to be set by hand — until
-    #      then this line buys the deployment record, not the gate.
-    #   3. `needs:` — unit-tests AND android-build must both be green.
-    #      Previously the publish steps lived inside `android-build`, whose
-    #      only `needs:` was `classify`, so a failing JVM unit test or
-    #      Roborazzi comparison on main did not stop the Play release.
+  release-build:
+    name: Build the release AAB
+    # The signed AAB, built in parallel with `unit-tests` rather than after it.
+    #
+    # This used to be a step inside `deploy`, which needs `unit-tests` — so on
+    # every push to main the release compile and R8 started only once the whole
+    # test job had finished, adding its full ~6 min to the critical path for
+    # work that depends on nothing the tests produce. Splitting the build from
+    # the publish lets it overlap the tests; `deploy` still needs both, so
+    # nothing reaches Play until the tests are green. It only ever builds here
+    # — the artifact is the single thing that crosses to `deploy`.
+    #
+    # Gated exactly as `deploy` is, and for the same reasons: main-only by
+    # `if:`, and `environment: production` because the upload keystore lives
+    # there. Both jobs entering that environment is deliberate — each one
+    # genuinely uses its secrets.
+    #
+    # Because this no longer waits for the tests, a signed AAB can exist for a
+    # commit whose tests then fail. That artifact is never published: `deploy`
+    # needs `unit-tests`, and only `deploy` talks to Play. What it buys is a
+    # recoverable build to look at when a main run goes red.
     if: |
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-    needs: [unit-tests, android-build]
+    needs: classify
     runs-on: ubuntu-latest
     environment: production
     permissions:
       contents: read
-      # Used by "Prepare release notes" to walk recent main runs of this
-      # workflow and find the last one that actually published.
-      actions: read
     steps:
       - uses: actions/checkout@v5
         with:
-          # Release notes walk `git rev-list` over the range since the last
-          # published build, and versionCode comes from `rev-list --count`.
+          # versionCode is `git rev-list --count HEAD` (app/build.gradle.kts).
+          # A shallow clone makes that 1, which breaks monotonicity and gets
+          # the upload rejected by Play — so the full history is required
+          # here, not an optimization.
           fetch-depth: 0
           # No step here pushes, and nothing PR-controlled is checked out
           # (this job only runs on push/dispatch against main) — but the
@@ -906,6 +900,141 @@ jobs:
             exit 1
           fi
           echo "google-services.json materialised (${bytes} bytes)."
+
+      - name: Decode upload keystore from secret
+        # Mirrors `android-build`'s debug-keystore decode: base64-decode,
+        # validate with `keytool -list` so wrong-base64 / wrong-password
+        # fails here rather than at signing time, then export the path to
+        # GITHUB_ENV for bundleRelease to pick up.
+        env:
+          UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
+          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [ -z "$UPLOAD_KEYSTORE_BASE64" ]; then
+            echo "::error::UPLOAD_KEYSTORE_BASE64 secret is not set; cannot build a Play-uploadable AAB."
+            exit 1
+          fi
+          missing=""
+          [ -z "$UPLOAD_KEYSTORE_PASSWORD" ] && missing="$missing UPLOAD_KEYSTORE_PASSWORD"
+          [ -z "$UPLOAD_KEY_ALIAS" ]         && missing="$missing UPLOAD_KEY_ALIAS"
+          [ -z "$UPLOAD_KEY_PASSWORD" ]      && missing="$missing UPLOAD_KEY_PASSWORD"
+          if [ -n "$missing" ]; then
+            echo "::error::UPLOAD_KEYSTORE_BASE64 is set but the following companion secrets are missing or empty:$missing"
+            exit 1
+          fi
+          printf '%s' "$UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload.jks"
+          if ! keytool -list -keystore "$RUNNER_TEMP/upload.jks" -storepass "$UPLOAD_KEYSTORE_PASSWORD" >/dev/null 2>&1; then
+            echo "::error::Decoded keystore at \$RUNNER_TEMP/upload.jks is not a valid keystore or UPLOAD_KEYSTORE_PASSWORD is wrong."
+            exit 1
+          fi
+          echo "UPLOAD_KEYSTORE_FILE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
+
+      - name: Bundle release AAB
+        # Produces app/build/outputs/bundle/release/app-release.aab signed
+        # with the upload key; Play App Signing re-signs with the real signing
+        # key on download.
+        #
+        # No DEBUG_* env vars here: the debug signingConfig no longer reads
+        # any, so `bundleRelease` configures cleanly with only the UPLOAD_*
+        # set.
+        env:
+          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          # Baked into BuildConfig.GEMINI_PROXY_URL — picked up by
+          # AppCheckGeminiCallPlanner so the Play APK can route Gemini TTS through
+          # the developer-paid Cloud Function proxy when no BYOK key is set.
+          # Blank when the secret is unset (forks, CI repos without the proxy
+          # deployed): planner falls back to BYOK-only, same as a debug build
+          # without geminiProxyUrl in local.properties.
+          GEMINI_PROXY_URL: ${{ secrets.GEMINI_PROXY_URL }}
+        run: |
+          set -o pipefail
+          ./gradlew :app:bundleRelease --stacktrace --info 2>&1 | tee /tmp/release-build.log
+
+      - name: Upload release AAB
+        # Browser-downloadable artifact for manual upload to Play Console — kept
+        # even after the auto-upload step below so the AAB is recoverable if the
+        # Play upload fails (or for ad-hoc browser uploads to other tracks).
+        if: success()
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-release-aab
+          path: app/build/outputs/bundle/release/app-release.aab
+          retention-days: 14
+
+      - name: Upload release build log
+        # The only readable record of this job. `android-build`'s log uploader
+        # covers its own assembleRelease, which is skipped on main, and a main
+        # run gets no failing-tests PR comment either — so without this a
+        # bundleRelease failure leaves nothing but the Actions console.
+        #
+        # `continue-on-error` because this is diagnostic and `deploy` needs this
+        # job: without it an artifact-service outage here would fail a job whose
+        # AAB built and uploaded fine, skip `deploy`, and veto the release over
+        # a log. It ran after the Play upload before the split, where it could
+        # not block publication; this restores that.
+        continue-on-error: true
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-build-log
+          path: /tmp/release-build.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+  deploy:
+    name: Distribute and release
+    # Everything that leaves this repo: the release notes and the Play
+    # internal-track upload of the AAB `release-build` produced. Split out of
+    # `android-build` so the release is gated on the tests actually passing,
+    # so the publish secrets are scoped to a job that never runs on a PR, and
+    # so a red box in the Actions UI says "the release failed" rather than
+    # "the debug build failed". Gated three ways:
+    #   1. `if:` — push to main or a manual workflow_dispatch that explicitly
+    #      targets main. The dispatch UI defaults its ref selector to main,
+    #      but a maintainer can pick another branch, so this re-checks
+    #      `github.ref` rather than trusting that default. Never on PRs.
+    #   2. `environment: production` — the publish secrets (FIREBASE_*,
+    #      UPLOAD_KEYSTORE_*, PLAY_SERVICE_ACCOUNT_JSON) belong in the
+    #      `production` environment, where GitHub enforces the boundary:
+    #      Settings → Environments → production, deployment branches
+    #      restricted to `main`, optionally a required reviewer. An `if:`
+    #      alone is only as good as the workflow file, which a branch can
+    #      edit; an environment protection rule a branch cannot. Naming an
+    #      environment that doesn't exist yet creates it unprotected on
+    #      first run, so the rules still have to be set by hand — until
+    #      then this line buys the deployment record, not the gate.
+    #   3. `needs:` — unit-tests AND android-build must both be green.
+    #      Previously the publish steps lived inside `android-build`, whose
+    #      only `needs:` was `classify`, so a failing JVM unit test or
+    #      Roborazzi comparison on main did not stop the Play release.
+    #      `release-build` joins them because this job publishes its
+    #      artifact; it builds in parallel with the tests, and this `needs:`
+    #      is what keeps an untested build from reaching Play.
+    if: |
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: [unit-tests, android-build, release-build]
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      # Used by "Prepare release notes" to walk recent main runs of this
+      # workflow and find the last one that actually published.
+      actions: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # The release notes walk `git rev-list` over the range since the
+          # last published build.
+          fetch-depth: 0
+          # No step here pushes, and nothing PR-controlled is checked out
+          # (this job only runs on push/dispatch against main) — but the
+          # token has no reason to sit in .git/config regardless.
+          persist-credentials: false
 
       - name: Prepare release notes for Play
         # The "what changed in this build" copy that Play's internal track
@@ -1218,77 +1347,23 @@ jobs:
             echo "PLAY_AVAILABLE=false" >> "$GITHUB_ENV"
           fi
 
-      - name: Decode upload keystore from secret
-        # Mirrors `android-build`'s debug-keystore decode: base64-decode,
-        # validate with `keytool -list` so wrong-base64 / wrong-password
-        # fails here rather than at signing time, then export the path to
-        # GITHUB_ENV for bundleRelease to pick up.
-        env:
-          UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
-          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
-          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
-          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
-        run: |
-          if [ -z "$UPLOAD_KEYSTORE_BASE64" ]; then
-            echo "::error::UPLOAD_KEYSTORE_BASE64 secret is not set; cannot build a Play-uploadable AAB."
-            exit 1
-          fi
-          missing=""
-          [ -z "$UPLOAD_KEYSTORE_PASSWORD" ] && missing="$missing UPLOAD_KEYSTORE_PASSWORD"
-          [ -z "$UPLOAD_KEY_ALIAS" ]         && missing="$missing UPLOAD_KEY_ALIAS"
-          [ -z "$UPLOAD_KEY_PASSWORD" ]      && missing="$missing UPLOAD_KEY_PASSWORD"
-          if [ -n "$missing" ]; then
-            echo "::error::UPLOAD_KEYSTORE_BASE64 is set but the following companion secrets are missing or empty:$missing"
-            exit 1
-          fi
-          printf '%s' "$UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload.jks"
-          if ! keytool -list -keystore "$RUNNER_TEMP/upload.jks" -storepass "$UPLOAD_KEYSTORE_PASSWORD" >/dev/null 2>&1; then
-            echo "::error::Decoded keystore at \$RUNNER_TEMP/upload.jks is not a valid keystore or UPLOAD_KEYSTORE_PASSWORD is wrong."
-            exit 1
-          fi
-          echo "UPLOAD_KEYSTORE_FILE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
-
-      - name: Bundle release AAB
-        # Produces app/build/outputs/bundle/release/app-release.aab signed
-        # with the upload key; Play App Signing re-signs with the real signing
-        # key on download.
-        #
-        # No DEBUG_* env vars here: the debug signingConfig no longer reads
-        # any, so `bundleRelease` configures cleanly with only the UPLOAD_*
-        # set.
-        env:
-          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
-          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
-          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
-          # Baked into BuildConfig.GEMINI_PROXY_URL — picked up by
-          # AppCheckGeminiCallPlanner so the Play APK can route Gemini TTS through
-          # the developer-paid Cloud Function proxy when no BYOK key is set.
-          # Blank when the secret is unset (forks, CI repos without the proxy
-          # deployed): planner falls back to BYOK-only, same as a debug build
-          # without geminiProxyUrl in local.properties.
-          GEMINI_PROXY_URL: ${{ secrets.GEMINI_PROXY_URL }}
-        run: |
-          set -o pipefail
-          ./gradlew :app:bundleRelease --stacktrace --info 2>&1 | tee /tmp/release-build.log
-
-      - name: Upload release AAB
-        # Browser-downloadable artifact for manual upload to Play Console — kept
-        # even after the auto-upload step below so the AAB is recoverable if the
-        # Play upload fails (or for ad-hoc browser uploads to other tracks).
-        if: success()
-        uses: actions/upload-artifact@v7
+      - name: Download the release AAB
+        # Built by `release-build`, in parallel with the tests rather than
+        # after them. Restored to the path Gradle would have written it to, so
+        # the Play upload step's `releaseFiles` is unchanged.
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: app-release-aab
-          path: app/build/outputs/bundle/release/app-release.aab
-          retention-days: 14
+          path: app/build/outputs/bundle/release
 
       - name: Upload AAB to Play Store internal track
         # Skipped when PLAY_SERVICE_ACCOUNT_JSON isn't set (PLAY_AVAILABLE
         # comes from the "Probe publish secrets" step) so a fresh repo / fork
-        # still completes CI. Ordered AFTER the release-AAB artifact upload so a
-        # Play API failure (e.g. listing not yet approved, versionCode
-        # collision) doesn't gate the artifact behind `success()`. Pinned to
-        # a specific commit SHA — bump deliberately.
+        # still completes CI. The downloadable AAB artifact is `release-build`'s
+        # and is already uploaded by the time this runs, so a Play API failure
+        # (listing not yet approved, versionCode collision) still leaves a
+        # recoverable build. Pinned to a specific commit SHA — bump
+        # deliberately.
         if: |
           success() &&
           env.PLAY_AVAILABLE == 'true' &&
@@ -1302,19 +1377,6 @@ jobs:
           status: completed
           whatsNewDirectory: ${{ runner.temp }}/whatsnew
 
-      - name: Upload release build log
-        # `android-build`'s log uploader covers only that job's own
-        # assembleRelease, and on main it does not run at all -- the gradle step
-        # is skipped there, so nothing writes the log. Without this, a
-        # bundleRelease failure on main leaves nothing to read but the Actions
-        # console, and main runs get no failing-tests PR comment either.
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: release-build-log
-          path: /tmp/release-build.log
-          if-no-files-found: ignore
-          retention-days: 14
 
   # The one check the main ruleset requires. Always runs, always reports —
   # green only when every heavy job succeeded, or when they were skipped and

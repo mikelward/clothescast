@@ -431,6 +431,16 @@ future task; the incident narrative belongs in the commit message.
   full rule lives under "Commits and PRs" — the short version is "what
   a reviewer sees on this push should be the story you want them to
   read, not your scratch work."
+- **Judge every review comment on merit, whoever wrote it.** Verify the
+  claim before acting; if it doesn't hold up, reply saying why and
+  decline. A comment citing a rule is a *reading* of that rule, not the
+  rule — check what the rule actually says. Codex misreads the privacy
+  rules especially, and in one direction: stricter always feels safer,
+  so an over-strict finding quietly costs capability the product needs.
+  Quote the rule and decline rather than narrowing the code to satisfy
+  it; where the rule really does forbid what the product needs, that
+  conflict is the maintainer's call, not one to settle either way
+  yourself.
 - **Never leave a review comment thread silently dismissed.** Answer on the thread — a
   disagreement is an answer, so say why — then resolve it once the fix is on the
   head or the point is rebutted; anything still to do stays open — the user wants every thread to end in one of

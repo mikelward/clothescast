@@ -578,6 +578,33 @@ Open work:
       the Actions allowance — effectively zero. Reliability: if GitHub or
       the shared repo is unreachable the check fails closed on that PR
       and a re-run clears it; nothing else is blocked.
+- [ ] **Gate the release AAB on whether anything will be published, not on
+      whether the diff is docs-only.** A markdown-only push to `main` still
+      runs `bundleRelease` (~6 min, R8) and then publishes nothing. The
+      obvious `docs_only` gate is a no-op: `classify` deliberately reports
+      every push as code, because `mikelward/lanes` classifies via a PR
+      number and has no push-range mode, so `docs_only` is never `true`
+      where `release-build` runs (Codex on #1171, verified against that
+      action's `action.yml`). The verdict that actually decides is
+      `RELEASE_NOTES_SKIP`, which `deploy`'s "Prepare release notes for
+      Play" step already computes and which also covers the `ci:` /
+      `docs:` / `internal:`-prefixed pushes a path test would miss —
+      so hoisting that step into its own job and having both
+      `release-build` and `deploy` consume it removes a duplicate rather
+      than adding one. A cheaper path-based gate is now viable too, since
+      #1171 removed the `PRIVACY.md` carve-out that made a second path
+      test a divergence hazard. Which of the three (hoist, path gate, or
+      leave it) is the maintainer's call — it is a release-pipeline
+      change, not a one-line condition.
+- [ ] **Fix the `main`-queue hazard in `ci.yml`'s `concurrency:` block.**
+      `cancel-in-progress: false` governs the *running* run, not the
+      queue, and GitHub holds at most one pending run per group — so
+      three pushes to `main` in quick succession evict the second while
+      it waits, and that commit reaches `deploy` never. Found while
+      porting this repo's group to snoozemo, which now uses a per-commit
+      group on `main` (`ci-${{ github.ref }}-${{ github.ref ==
+      'refs/heads/main' && github.sha || 'branch' }}`) so no `main` run
+      can evict another; mikelward/snoozemo#136 has the fix to port.
 - [ ] Verify the settings half of the fleet's bar: a ruleset on the
       default branch requiring the CI gate, the `codex` status,
       conversation resolution and up-to-date branches, the auto-merge

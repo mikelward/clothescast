@@ -412,15 +412,16 @@ future task; the incident narrative belongs in the commit message.
   in.
 - Open PRs as **ready for review** (non-draft) immediately — don't wait for
   CI to go green or for an eyeball pass before marking them ready.
-- **Keep PR title and body in sync with the branch on every push.** A PR's
-  title and description are read as the canonical summary of what's
-  landing; if the branch has grown, narrowed, or pivoted since the PR
-  opened, the original text lies. After every push (force-push, follow-up
-  commit, rebase-and-push) re-read the full branch diff vs. the base and
-  update the title and body via `mcp__github__update_pull_request` so
-  they describe the *current* state — not the state at PR creation.
-  Subject line stays Play-Store-ready (sentence case, end-user copy, ≤
-  ~80 chars, matches the rebase-merge subject); body covers scope,
+- **Keep PR title and body in sync with the branch, updated with the
+  push rather than after it.** A PR's title and description are read as
+  the canonical summary of what's landing; if the branch has grown,
+  narrowed, or pivoted since the PR opened, the original text lies. With
+  every push (force-push, follow-up commit, rebase-and-push), as part of
+  the same step, re-read the full branch diff vs. the base and update
+  the title and body via `mcp__github__update_pull_request` so they
+  describe the *current* state — not the state at PR creation. Subject
+  line stays Play-Store-ready (sentence case, end-user copy, ≤ ~80
+  chars, matches the rebase-merge subject); body covers scope,
   rationale, privacy-relevant changes, and test plan for everything now
   in the diff. If nothing material changed, no update is needed — but
   check, don't assume.

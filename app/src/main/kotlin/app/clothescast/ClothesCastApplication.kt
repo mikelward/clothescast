@@ -61,6 +61,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.lang.ref.WeakReference
@@ -344,6 +345,21 @@ class ClothesCastApplication : Application() {
     // Telemetry) and read by the nav layer for the onboarding-skip write.
     internal val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    /**
+     * The startup coroutine that reconciles the two alarm slots and the widget
+     * refresh chain against stored preferences.
+     *
+     * Exposed so a test can join it. Its side effects land on whatever the test
+     * has already arranged unless the test waits for it first, and waiting by
+     * polling for those side effects cannot tell "not finished yet" from
+     * "finished, and had nothing to do" — which is the ordinary case, since
+     * both delivery slots are off by default and the reconcile then only
+     * cancels. Null until [onCreate] has run.
+     */
+    @Volatile
+    internal var initialSchedulingJob: Job? = null
+        private set
+
     // Weak handle on the currently-resumed Activity, maintained by the
     // lifecycle callbacks registered in [onCreate]. Lets long-lived lambdas
     // (e.g. ViewModel factory closures, which outlive any one Activity across
@@ -507,7 +523,7 @@ class ClothesCastApplication : Application() {
                     }
                 }
         }
-        applicationScope.launch {
+        initialSchedulingJob = applicationScope.launch {
             try {
                 val prefs = settingsRepository.preferences.first()
                 // Reconcile Locale.setDefault (process-scoped, lost on cold

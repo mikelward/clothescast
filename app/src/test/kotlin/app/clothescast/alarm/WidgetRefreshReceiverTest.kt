@@ -61,22 +61,15 @@ class WidgetRefreshReceiverTest {
         // ClothesCastApplication.onCreate reconciles the delivery alarms and
         // the widget chain on a background coroutine; with default prefs (both
         // slots off) and no widgets bound yet, that pass *cancels* all three.
-        // Plant sentinels and wait for the pass to clear them so a late cancel
-        // can't wipe the alarm the receiver-under-test arms (same pattern as
+        // Join it so a late cancel can't wipe the alarm the receiver under test
+        // arms, then clear all three slots (same pattern as
         // ScheduleRefreshReceiverTest).
-        val sentinels = listOf(
+        awaitInitialScheduling()
+        listOf(
             DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TODAY),
             DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TONIGHT),
             WidgetRefreshScheduler.pendingIntent(context),
-        )
-        sentinels.forEach { alarmManager.setExact(AlarmManager.RTC, Long.MAX_VALUE, it) }
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline &&
-            shadowOf(alarmManager).scheduledAlarms.isNotEmpty()
-        ) {
-            Thread.sleep(25)
-        }
-        sentinels.forEach { alarmManager.cancel(it) }
+        ).forEach { alarmManager.cancel(it) }
 
         runBlocking {
             app.settingsRepository.setDailyEnabled(false)
@@ -97,9 +90,9 @@ class WidgetRefreshReceiverTest {
     fun `fire with no widgets placed ends the chain without refreshing`() {
         fire()
 
-        // No positive completion signal exists on this path — give the
-        // receiver's coroutine time to finish before asserting the negatives.
-        Thread.sleep(500)
+        // This path leaves no side effect to wait for, so the negatives below
+        // are only meaningful once the receiver's coroutine has actually run.
+        awaitBroadcasts()
         shadowOf(alarmManager).scheduledAlarms shouldBe emptyList()
         workManager.getWorkInfosForUniqueWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME_SILENT)
             .get(5, TimeUnit.SECONDS)
@@ -158,14 +151,10 @@ class WidgetRefreshReceiverTest {
     }
 
     private fun waitForWidgetRefreshAlarm() {
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline) {
-            val armed = shadowOf(alarmManager).scheduledAlarms.any {
-                shadowOf(it.operation).savedIntent.action == WidgetRefreshReceiver.ACTION_FIRE
-            }
-            if (armed) return
-            Thread.sleep(25)
+        awaitBroadcasts()
+        val armed = shadowOf(alarmManager).scheduledAlarms.any {
+            shadowOf(it.operation).savedIntent.action == WidgetRefreshReceiver.ACTION_FIRE
         }
-        error("Widget-refresh alarm was not re-armed within 5s")
+        if (!armed) error("Widget-refresh alarm was not re-armed")
     }
 }

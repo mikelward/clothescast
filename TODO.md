@@ -462,3 +462,27 @@ Open work:
       the write-token job clean) or a stronger channel than a job output
       (signing, or a second independent verification job) — bigger scope
       than this PR, flagged for whoever wants to take it further.
+
+## Decisions needing review
+
+Autopilot guesses from the CI-slowness pass. Each is cheap to undo.
+
+- [ ] **`ReceiverWork` shares one process-lifetime scope across broadcasts**,
+      replacing the per-broadcast `CoroutineScope(SupervisorJob() +
+      Dispatchers.Default)` each alarm receiver built and cancelled. A shared
+      scope is what gives a test something to join; the alternative was to
+      leave the scopes alone and give each receiver its own exposed `Job`,
+      which is three seams instead of one. `SupervisorJob` keeps the isolation
+      the per-receiver scopes had. Reversible: the receivers can go back to
+      building their own scope without touching the tests' shape.
+- [ ] **`AlarmReceiverRoutingTest.enqueuedWorker` now asserts the worker was
+      enqueued.** Its polling predecessor asserted nothing — it returned
+      whatever it had once the deadline passed, so a receiver that enqueued
+      nothing read as a pass. Adding the assertion is a widening of what the
+      test checks, made on the way past rather than as its own decision.
+      Reversible: drop the one `shouldBe` line.
+- [ ] **Left `CastMediaServerTest`'s `Thread.sleep(25L * (attempt + 1))`
+      alone** — it is a retry backoff against a real local HTTP server rather
+      than a wait on in-process async work, and the class runs in 0.8s. It is
+      the last `Thread.sleep` in `app/src/test`. Worth revisiting only if it
+      ever flakes.

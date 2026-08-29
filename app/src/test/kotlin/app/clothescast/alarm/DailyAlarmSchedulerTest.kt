@@ -46,18 +46,12 @@ class DailyAlarmSchedulerTest {
 
     @Before
     fun clearStrayAlarms() {
-        // ClothesCastApplication.onCreate schedules its own alarms on a
-        // background coroutine; they land in `shadowOf(am).scheduledAlarms` at
-        // an unpredictable point and break single-alarm assertions. Wait long
-        // enough for both default-prefs slots to land (only the very first @Before
-        // typically waits — later tests find the count already settled), then
-        // cancel both so the test-under-test starts from an empty list.
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline &&
-            shadowOf(alarmManager).scheduledAlarms.size < 2
-        ) {
-            Thread.sleep(25)
-        }
+        // ClothesCastApplication.onCreate reconciles both slots on a background
+        // coroutine; whatever it does lands in `shadowOf(am).scheduledAlarms` at
+        // an unpredictable point and breaks single-alarm assertions. Join it,
+        // then clear both slots so the test under test starts from an empty
+        // list.
+        awaitInitialScheduling()
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TODAY))
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TONIGHT))
     }

@@ -33,27 +33,14 @@ class ScheduleRefreshReceiverTest {
 
     @Before
     fun resetAlarms() {
-        // ClothesCastApplication.onCreate schedules these alarms on a background
-        // coroutine off the persisted prefs. Both slots are off by default now,
-        // so that pass *cancels* both — and a cancel that runs late would wipe
-        // the alarm the receiver-under-test just armed, zeroing the assertions
-        // below (the count goes 1 → 0). Plant a sentinel in each slot and wait
-        // for onCreate's pass to clear them: once they're gone, that coroutine
-        // has run to completion and won't race the test. If onCreate already
-        // ran, the sentinels simply survive the wait; either way we clear the
-        // slate before the test arms its own alarms.
-        val today = DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TODAY)
-        val tonight = DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TONIGHT)
-        alarmManager.setExact(AlarmManager.RTC, Long.MAX_VALUE, today)
-        alarmManager.setExact(AlarmManager.RTC, Long.MAX_VALUE, tonight)
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline &&
-            shadowOf(alarmManager).scheduledAlarms.isNotEmpty()
-        ) {
-            Thread.sleep(25)
-        }
-        alarmManager.cancel(today)
-        alarmManager.cancel(tonight)
+        // ClothesCastApplication.onCreate reconciles both slots on a background
+        // coroutine off the persisted prefs. Both are off by default, so that
+        // pass *cancels* both — and a cancel that ran late would wipe the alarm
+        // the receiver under test just armed, zeroing the assertions below.
+        // Join it, then clear both slots so the test arms onto an empty list.
+        awaitInitialScheduling()
+        alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TODAY))
+        alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TONIGHT))
     }
 
     @Test
@@ -65,11 +52,11 @@ class ScheduleRefreshReceiverTest {
 
         ScheduleRefreshReceiver().onReceive(context, Intent(Intent.ACTION_BOOT_COMPLETED))
 
-        waitForAlarms(2)
-        val actions = shadowOf(alarmManager).scheduledAlarms
-            .map { shadowOf(it.operation).savedIntent.action }
-            .toSet()
-        actions shouldBe setOf(AlarmReceiver.ACTION_FIRE, AlarmReceiver.ACTION_FIRE_TONIGHT)
+        awaitBroadcasts()
+        val alarms = shadowOf(alarmManager).scheduledAlarms
+        alarms shouldHaveSize 2
+        alarms.map { shadowOf(it.operation).savedIntent.action }.toSet() shouldBe
+            setOf(AlarmReceiver.ACTION_FIRE, AlarmReceiver.ACTION_FIRE_TONIGHT)
     }
 
     @Test
@@ -81,21 +68,9 @@ class ScheduleRefreshReceiverTest {
 
         ScheduleRefreshReceiver().onReceive(context, Intent(Intent.ACTION_TIMEZONE_CHANGED))
 
-        waitForAlarms(1)
+        awaitBroadcasts()
         val alarms = shadowOf(alarmManager).scheduledAlarms
         alarms shouldHaveSize 1
         shadowOf(alarms.single().operation).savedIntent.action shouldBe AlarmReceiver.ACTION_FIRE
-    }
-
-    // The receiver finishes asynchronously via `goAsync()` + a Dispatchers.Default
-    // coroutine. There's no Looper to idle — wait for the shadow alarm list to
-    // hit the expected count or time out. 5 s is generous; the schedule path is
-    // sub-100 ms on every run we've seen.
-    private fun waitForAlarms(expected: Int) {
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline) {
-            if (shadowOf(alarmManager).scheduledAlarms.size >= expected) return
-            Thread.sleep(25)
-        }
     }
 }

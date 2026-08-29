@@ -62,10 +62,10 @@ class AlarmReceiverRoutingTest {
 
     @Before
     fun resetState() {
-        // App startup arms default-prefs alarms on a background coroutine;
-        // wait for the queue to settle and then clear shadows so each test
-        // starts from a clean slate (matches AlarmReceiverErrorHandlingTest).
-        waitForAlarms(2)
+        // App startup reconciles both slots on a background coroutine; join it
+        // and then clear the shadows so each test starts from a clean slate
+        // (matches AlarmReceiverErrorHandlingTest).
+        awaitInitialScheduling()
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TODAY))
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TONIGHT))
         drainStartedServices()
@@ -116,7 +116,7 @@ class AlarmReceiverRoutingTest {
 
         fireDailyAlarm()
 
-        val started = waitForStartedService()
+        val started = startedService()
         started?.component?.className shouldBe ScheduledDeliveryService::class.java.name
         started?.getStringExtra(ScheduledDeliveryService.EXTRA_PERIOD) shouldBe ForecastPeriod.TODAY.name
         started?.getBooleanExtra(ScheduledDeliveryService.EXTRA_PLAYS_SPEECH, false) shouldBe true
@@ -125,7 +125,7 @@ class AlarmReceiverRoutingTest {
         // specific UUID.
         (started?.getStringExtra(ScheduledDeliveryService.EXTRA_WORK_ID)?.isNotBlank() ?: false) shouldBe true
 
-        waitForEnqueuedWorker(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
+        enqueuedWorker(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
     }
 
     @Test
@@ -141,7 +141,7 @@ class AlarmReceiverRoutingTest {
         // No Service start — the user opted out of every visible affordance.
         // But the worker still runs (cache + widget refresh contract for
         // SILENT delivery).
-        waitForEnqueuedWorker(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
+        enqueuedWorker(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
         shadowApp.peekNextStartedService() shouldBe null
     }
 
@@ -157,13 +157,13 @@ class AlarmReceiverRoutingTest {
 
         fireDailyAlarm()
 
-        val started = waitForStartedService()
+        val started = startedService()
         started?.component?.className shouldBe ScheduledDeliveryService::class.java.name
         started?.getBooleanExtra(ScheduledDeliveryService.EXTRA_DELIVERING_WANTS_FOREGROUND, false) shouldBe true
         // playsSpeech stays false — SILENT doesn't speak even when MQTT
         // publishes; the FGS type stays dataSync.
         started?.getBooleanExtra(ScheduledDeliveryService.EXTRA_PLAYS_SPEECH, false) shouldBe false
-        waitForEnqueuedWorker(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
+        enqueuedWorker(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
     }
 
     private fun fireDailyAlarm() {
@@ -173,39 +173,30 @@ class AlarmReceiverRoutingTest {
         )
     }
 
-    private fun waitForStartedService(): Intent? {
-        // The receiver finishes asynchronously via goAsync + Dispatchers.Default,
-        // so we poll the shadow application's started-service queue.
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline) {
-            val intent = shadowApp.peekNextStartedService()
-            if (intent != null) return shadowApp.nextStartedService
-            Thread.sleep(25)
-        }
-        return null
+    // The receiver finishes asynchronously via goAsync + a coroutine, so both
+    // reads below join that work first — see ReceiverWork.
+    private fun startedService(): Intent? {
+        awaitBroadcasts()
+        return shadowApp.nextStartedService
     }
 
-    private fun waitForEnqueuedWorker(workName: String): List<WorkInfo> {
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline) {
-            val infos = workManager.getWorkInfosForUniqueWork(workName).get(2, TimeUnit.SECONDS)
-            if (infos.any { !it.state.isFinished }) return infos
-            Thread.sleep(25)
-        }
-        return workManager.getWorkInfosForUniqueWork(workName).get(2, TimeUnit.SECONDS)
+    // Asserts the receiver enqueued [workName], which the polling version this
+    // replaces never did: it returned whatever it had once its deadline passed,
+    // so a receiver that enqueued nothing read as a pass.
+    //
+    // Safe to read straight after the join: WorkManager's task executor is a
+    // single thread here, and the receiver submitted the enqueue to it before
+    // this query, so FIFO ordering puts the insert first.
+    private fun enqueuedWorker(workName: String): List<WorkInfo> {
+        awaitBroadcasts()
+        val infos = workManager.getWorkInfosForUniqueWork(workName).get(5, TimeUnit.SECONDS)
+        infos.any { !it.state.isFinished } shouldBe true
+        return infos
     }
 
     private fun drainStartedServices() {
         while (shadowApp.peekNextStartedService() != null) {
             shadowApp.nextStartedService
-        }
-    }
-
-    private fun waitForAlarms(expected: Int) {
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline) {
-            if (shadowOf(alarmManager).scheduledAlarms.size >= expected) return
-            Thread.sleep(25)
         }
     }
 }

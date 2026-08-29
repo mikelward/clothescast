@@ -548,18 +548,31 @@ future task; the incident narrative belongs in the commit message.
   nothing the tests produce. R8 is ~150s of that build's ~183s (measured
   locally 2026-08-29), so there is nothing to win by sharing compiles between
   the jobs; taking the whole job off the critical path is the win.
-- **Job timings are stale as of 2026-08-29** — the figures below were measured
-  before the release build was split out of `deploy`, so the `main` shape they
-  describe no longer exists. Re-measure from a real `main` run and re-date this
-  list; do not write projections here.
-  - `JVM unit tests` — ~4m15s on a PR, 5m23s on `main` (`Run unit tests` 3m59s,
-    measured 2026-08-27; the alarm-test gate change of 2026-08-29 took the
-    unit-test task from 162s to 76s locally, so this is now high).
-  - `Android release check` — 5m00s on a PR (`assembleRelease`), seconds on
-    `main`, where the gradle step is skipped and only setup runs.
-  - `Distribute and release` — 6m45s on `main` when it still built the AAB
-    (`Bundle release AAB` 5m38s); it now only downloads and publishes.
-  - Whole `main` run: 12m29s on 2026-08-27, 14m59s on 2026-08-28.
+- **Job timings, measured 2026-08-29** from `main` run 33232048288 (the first
+  run with the release build split out of `deploy`) and PR run 33231688207.
+  Whole-job wall clock, dominant step in parentheses.
+  - `JVM unit tests` — 3m33s on `main` (`Run unit tests` 2m17s), 3m45s on a PR.
+    Was 5m23s on `main` with a 3m59s step on 2026-08-27; the alarm-test gate
+    change is the difference.
+  - `Build the release AAB` — 6m13s on `main` (`Bundle release AAB` 5m25s).
+    `main`-only, so it has no PR counterpart; it reports `skipped` on a PR.
+    This is now the critical path for a `main` run.
+  - `Android release check` — 48s on `main`, where the gradle step is skipped
+    and only setup runs. 7m07s on the PR run above (`assembleRelease`), against
+    5m00s recorded on 2026-08-27 — one cold-cache sample on a branch whose
+    previous run was cancelled mid-build, so treat it as a number to watch
+    rather than a confirmed regression.
+  - `Distribute and release` — 21s on `main`, but that is a **no-publish
+    sample**: release notes and the artifact download only. The Play upload
+    step was skipped, because every commit in that push carried a filtered
+    prefix and the release-notes step set `RELEASE_NOTES_SKIP=true`
+    (`PLAY_AVAILABLE` was `true`, so the path is configured, not missing).
+    Was 6m45s when this job still built the AAB. The publish itself is
+    unmeasured on the new shape — take that sample from the next
+    release-worthy push, and expect it to be legitimately longer than 21s
+    rather than reading it as a regression.
+  - Whole `main` run: **6m56s**, down from 14m59s on 2026-08-28 and 12m29s on
+    2026-08-27.
 
   **Re-date this list when you refresh it.** Figures carrying no date have
   drifted well out of true before, and cost an agent a wrong "significant

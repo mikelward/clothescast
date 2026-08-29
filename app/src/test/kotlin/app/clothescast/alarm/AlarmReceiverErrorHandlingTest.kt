@@ -82,11 +82,10 @@ class AlarmReceiverErrorHandlingTest {
     @Before
     fun installFailingRepository() {
         // ClothesCastApplication.onCreate reads preferences on a background
-        // coroutine to arm the morning + tonight alarms. Wait for that pass to
-        // settle (both default-prefs slots land) before swapping the repo —
-        // otherwise the real repo is still in use and the assertions race the
-        // startup work.
-        waitForAlarms(2)
+        // coroutine to reconcile the morning + tonight slots. Join it before
+        // swapping the repo — otherwise the real repo is still in use and the
+        // assertions race the startup work.
+        awaitInitialScheduling()
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TODAY))
         alarmManager.cancel(DailyAlarmScheduler.pendingIntent(context, ForecastPeriod.TONIGHT))
         // WorkManager's instance is a process-wide static that survives
@@ -119,11 +118,11 @@ class AlarmReceiverErrorHandlingTest {
         // when preferences.first() throws — i.e. the try block has just failed
         // and control is about to enter the catch.
         collectLatch.shouldHaveTickedDown()
-        val infos = waitForWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME, expected = 1)
+        val infos = workAfterBroadcast(FetchAndNotifyWorker.UNIQUE_WORK_NAME)
         infos shouldHaveAtLeastSize 1
         // The catch also keeps the self-perpetuating chain alive by re-arming
         // with the slot's default schedule.
-        waitForAlarms(1)
+        awaitBroadcasts()
         shadowOf(alarmManager).scheduledAlarms shouldHaveAtLeastSize 1
     }
 
@@ -135,15 +134,15 @@ class AlarmReceiverErrorHandlingTest {
         )
 
         collectLatch.shouldHaveTickedDown()
-        // The catch's last observable act is the fallback re-arm; once the
-        // alarm lands, the coroutine has walked past the (TODAY-only) worker
-        // fallback, so the queue's emptiness is a settled fact, not a race.
-        waitForAlarms(1)
+        // Joining the broadcast walks past the catch's fallback re-arm and its
+        // (TODAY-only) worker fallback both, so the queue's emptiness below is a
+        // settled fact rather than a race.
+        awaitBroadcasts()
         shadowOf(alarmManager).scheduledAlarms shouldHaveAtLeastSize 1
         // Non-finished only: the @Before cancel leaves earlier tests' leaked
         // work in CANCELLED state, which still shows up in the unique-work
         // list. Only a live enqueue from *this* fire would appear here.
-        activeWork(FetchAndNotifyWorker.UNIQUE_WORK_NAME).shouldBeEmpty()
+        workAfterBroadcast(FetchAndNotifyWorker.UNIQUE_WORK_NAME).shouldBeEmpty()
     }
 
     private fun throwingRepository(latch: CountDownLatch): SettingsRepository {
@@ -182,24 +181,14 @@ class AlarmReceiverErrorHandlingTest {
         }
     }
 
-    // Identical shape to ScheduleRefreshReceiverTest.waitForAlarms — the
-    // receiver finishes asynchronously via goAsync + Dispatchers.Default, so
-    // there's no Looper to idle.
-    private fun waitForAlarms(expected: Int) {
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline) {
-            if (shadowOf(alarmManager).scheduledAlarms.size >= expected) return
-            Thread.sleep(25)
-        }
-    }
-
-    private fun waitForWork(workName: String, expected: Int): List<WorkInfo> {
-        val deadline = System.currentTimeMillis() + 5_000
-        while (System.currentTimeMillis() < deadline) {
-            val infos = activeWork(workName)
-            if (infos.size >= expected) return infos
-            Thread.sleep(25)
-        }
+    // The receiver finishes asynchronously via goAsync + a coroutine; join it
+    // (see ReceiverWork) rather than polling for what it produced.
+    //
+    // Safe to read WorkManager straight after the join: its task executor is a
+    // single thread here, and the receiver submitted its enqueue to that thread
+    // before this query, so FIFO ordering puts the insert first.
+    private fun workAfterBroadcast(workName: String): List<WorkInfo> {
+        awaitBroadcasts()
         return activeWork(workName)
     }
 

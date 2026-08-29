@@ -13,12 +13,7 @@ import app.clothescast.core.domain.model.playsSpeech
 import app.clothescast.core.domain.model.postsNotification
 import app.clothescast.core.domain.usecase.isMqttPublishable
 import app.clothescast.work.FetchAndNotifyWorker
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 /**
  * Fires when an insight alarm goes off. Two actions arrive on this receiver:
@@ -62,8 +57,7 @@ class AlarmReceiver : BroadcastReceiver() {
         DiagLog.i(TAG, "AlarmReceiver fired (action=${intent.action}, period=$period)")
 
         val pending = goAsync()
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        scope.launch {
+        ReceiverWork.launch(pending) {
             val appCtx = context.applicationContext
             val app = appCtx as ClothesCastApplication
             val scheduler = DailyAlarmScheduler(appCtx)
@@ -137,9 +131,6 @@ class AlarmReceiver : BroadcastReceiver() {
                     }
                     scheduler.schedule(schedule, period)
                 }.onFailure { DiagLog.e(TAG, "Fallback re-arm failed for $period", it) }
-            } finally {
-                pending.finish()
-                scope.cancel()
             }
         }
     }

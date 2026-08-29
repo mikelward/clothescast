@@ -9,12 +9,7 @@ import app.clothescast.core.domain.model.Schedule
 import app.clothescast.diag.DiagLog
 import app.clothescast.widget.hasPlacedClothesCastWidgets
 import app.clothescast.work.FetchAndNotifyWorker
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 /**
@@ -39,8 +34,7 @@ class WidgetRefreshReceiver : BroadcastReceiver() {
         DiagLog.i(TAG, "WidgetRefreshReceiver fired")
 
         val pending = goAsync()
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        scope.launch {
+        ReceiverWork.launch(pending) {
             val appCtx = context.applicationContext
             try {
                 if (!hasPlacedClothesCastWidgets(appCtx)) {
@@ -72,9 +66,6 @@ class WidgetRefreshReceiver : BroadcastReceiver() {
                     FetchAndNotifyWorker.enqueueSilentRefresh(appCtx, alarmFiredAtMs = System.currentTimeMillis())
                     WidgetRefreshScheduler(appCtx).schedule(Schedule.default(), Schedule.defaultTonight())
                 }.onFailure { DiagLog.e(TAG, "Widget-refresh fallback re-arm failed", it) }
-            } finally {
-                pending.finish()
-                scope.cancel()
             }
         }
     }

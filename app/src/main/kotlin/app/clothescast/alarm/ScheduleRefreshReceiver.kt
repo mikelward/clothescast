@@ -6,12 +6,7 @@ import android.content.Intent
 import app.clothescast.ClothesCastApplication
 import app.clothescast.diag.DiagLog
 import app.clothescast.core.domain.model.ForecastPeriod
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 /**
  * Re-arms both the morning and the tonight insight alarms whenever the wall-clock
@@ -31,8 +26,7 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
         DiagLog.i(TAG, "ScheduleRefreshReceiver action=${intent.action}")
 
         val pending = goAsync()
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        scope.launch {
+        ReceiverWork.launch(pending) {
             try {
                 val app = context.applicationContext as ClothesCastApplication
                 val prefs = app.settingsRepository.preferences.first()
@@ -53,9 +47,6 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
                 reconcileWidgetRefreshChain(context.applicationContext, prefs)
             } catch (t: Throwable) {
                 DiagLog.e(TAG, "Re-arm failed", t)
-            } finally {
-                pending.finish()
-                scope.cancel()
             }
         }
     }

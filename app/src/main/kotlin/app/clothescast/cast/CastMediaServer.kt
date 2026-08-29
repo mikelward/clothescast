@@ -166,7 +166,7 @@ class CastMediaServer {
                 // An uncaught throw on a bare thread kills the process on
                 // Android; a failed engine shutdown isn't worth that.
                 runCatching { srv.stop(gracePeriodMillis = 0, timeoutMillis = 500) }
-                    .onFailure { DiagLog.w(TAG, "Cast media server engine shutdown failed", it) }
+                    .onFailure { DiagLog.w(TAG, it, "Cast media server engine shutdown failed") }
             }
         }
     }

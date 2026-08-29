@@ -34,7 +34,7 @@ internal suspend fun initAndroidTtsEngine(context: Context): TextToSpeech =
             // A cancelled caller must unwind, not bind a second engine
             // connection inside an already-cancelled coroutine.
             if (it is CancellationException) throw it
-            DiagLog.w(INIT_TAG, "Google TTS unavailable; falling back to system default.", it)
+            DiagLog.w(INIT_TAG, it, "Google TTS unavailable; falling back to system default.")
             initOneAttempt(context, null)
         }
 

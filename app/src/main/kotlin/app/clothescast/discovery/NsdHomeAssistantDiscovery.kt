@@ -65,7 +65,7 @@ internal class NsdHomeAssistantDiscovery(context: Context) : HomeAssistantDiscov
             }
             val resolveListener = object : NsdManager.ResolveListener {
                 override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                    DiagLog.d(TAG, "resolve failed: ${serviceInfo.serviceName} (code $errorCode)")
+                    DiagLog.d(TAG, "resolve failed: %s (code %s)", serviceInfo.serviceName, errorCode)
                     resolving.set(false)
                     drainResolves()
                 }
@@ -96,7 +96,7 @@ internal class NsdHomeAssistantDiscovery(context: Context) : HomeAssistantDiscov
                 @Suppress("DEPRECATION") // resolveService is the only path on API < 34.
                 manager.resolveService(next, resolveListener)
             }.onFailure { t ->
-                DiagLog.w(TAG, "resolveService threw", t)
+                DiagLog.w(TAG, t, "resolveService threw")
                 resolving.set(false)
                 drainResolves()
             }
@@ -118,11 +118,11 @@ internal class NsdHomeAssistantDiscovery(context: Context) : HomeAssistantDiscov
             val listener = object : NsdManager.DiscoveryListener {
                 override fun onDiscoveryStarted(serviceType: String) = Unit
                 override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
-                    DiagLog.w(TAG, "discovery start failed: $serviceType (code $errorCode)")
+                    DiagLog.w(TAG, "discovery start failed: %s (code %s)", serviceType, errorCode)
                     onListenerDied()
                 }
                 override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
-                    DiagLog.d(TAG, "discovery stop failed: $serviceType (code $errorCode)")
+                    DiagLog.d(TAG, "discovery stop failed: %s (code %s)", serviceType, errorCode)
                 }
                 override fun onDiscoveryStopped(serviceType: String) = Unit
                 override fun onServiceFound(serviceInfo: NsdServiceInfo) {
@@ -154,7 +154,7 @@ internal class NsdHomeAssistantDiscovery(context: Context) : HomeAssistantDiscov
             runCatching {
                 manager.discoverServices(dnsType, NsdManager.PROTOCOL_DNS_SD, listener)
             }.onFailure { t ->
-                DiagLog.w(TAG, "discoverServices threw for $dnsType", t)
+                DiagLog.w(TAG, t, "discoverServices threw for %s", dnsType)
                 onListenerDied()
             }
             listener

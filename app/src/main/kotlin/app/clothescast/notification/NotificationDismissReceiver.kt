@@ -24,7 +24,7 @@ class NotificationDismissReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1)
         val label = intent.getStringExtra(EXTRA_LABEL) ?: "insight"
-        DiagLog.i(TAG, "User dismissed the $label notification (id=$id).")
+        DiagLog.i(TAG, "User dismissed the %s notification (id=%s).", label, id)
     }
 
     companion object {

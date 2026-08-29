@@ -150,7 +150,7 @@ class SecureKeyStore(
             // drop the bad value so the next attempt starts clean, mirroring
             // [read]. Returns nulls rather than rethrowing: the forecast path
             // treats a missing Google key as "Google sits out", not an error.
-            DiagLog.w("SecureKeyStore", "Google key decrypt failed; clearing the corrupt value", e)
+            DiagLog.w("SecureKeyStore", e, "Google key decrypt failed; clearing the corrupt value")
             dataStore.edit { it.remove(GOOGLE_PREF_KEY) }
             null to null
         }

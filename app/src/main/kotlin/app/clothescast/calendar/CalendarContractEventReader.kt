@@ -70,7 +70,7 @@ class CalendarContractEventReader(
                     .filterNot { it.event.allDay && (date < it.date || date >= it.endDateExclusive) }
                     .map { it.event }
             }
-                .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
+                .onFailure { DiagLog.w(TAG, it, "Calendar query failed; degrading to no events.") }
                 .getOrDefault(emptyList())
         }
     }
@@ -108,7 +108,7 @@ class CalendarContractEventReader(
                     .map { UpcomingCalendarEvent(it.date, it.event.title, it.event.kind, it.event.ownerAccount) }
                     .sortedWith(compareBy({ it.date }, { it.title }))
             }
-                .onFailure { DiagLog.w(TAG, "Calendar query failed; degrading to no events.", it) }
+                .onFailure { DiagLog.w(TAG, it, "Calendar query failed; degrading to no events.") }
                 .getOrDefault(emptyList())
         }
     }
@@ -195,7 +195,7 @@ class CalendarContractEventReader(
             } catch (e: IllegalArgumentException) {
                 if (!eventTypeProjectionRejected) {
                     eventTypeProjectionRejected = true
-                    DiagLog.i(TAG, "Provider rejected `eventType` column; future queries will skip it.", e)
+                    DiagLog.i(TAG, e, "Provider rejected `eventType` column; future queries will skip it.")
                 }
                 context.contentResolver.query(uri, baseProjection, selection, null, sortOrder)
             }
@@ -308,7 +308,7 @@ class CalendarContractEventReader(
             val summary = classificationTally.entries
                 .sortedByDescending { it.value }
                 .joinToString(", ") { (key, count) -> "$count ${key.first} via ${key.second}" }
-            DiagLog.i(TAG, "Classified ${events.size} events: $summary")
+            DiagLog.i(TAG, "Classified %s events: %s", events.size, summary)
         }
         return events
     }
@@ -394,7 +394,11 @@ class CalendarContractEventReader(
                     )
                 }
             }
-        }.onFailure { DiagLog.w(TAG, "Calendar metadata lookup failed; classification/visibility degrade gracefully.", it) }
+        }.onFailure { DiagLog.w(
+            TAG,
+            it,
+            "Calendar metadata lookup failed; classification/visibility degrade gracefully.",
+        ) }
         return result
     }
 
@@ -420,7 +424,7 @@ class CalendarContractEventReader(
                     .distinctBy { it.id }
                     .sortedWith(compareBy({ it.accountName.lowercase() }, { it.displayName.lowercase() }))
             }
-                .onFailure { DiagLog.w(TAG, "Calendar enumeration failed; returning none.", it) }
+                .onFailure { DiagLog.w(TAG, it, "Calendar enumeration failed; returning none.") }
                 .getOrDefault(emptyList())
         }
     }

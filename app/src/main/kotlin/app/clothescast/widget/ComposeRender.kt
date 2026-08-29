@@ -126,7 +126,7 @@ internal suspend fun renderComposableToBitmap(
             val image = imageReader.acquireLatestImage() ?: continue
             frames++
             val frame = runCatching { image.toBitmap(widthPx, heightPx) }
-                .onFailure { DiagLog.w(TAG, "Failed to copy ImageReader frame", it) }
+                .onFailure { DiagLog.w(TAG, it, "Failed to copy ImageReader frame") }
                 .getOrNull()
             image.close()
             if (frame == null) continue
@@ -143,12 +143,12 @@ internal suspend fun renderComposableToBitmap(
             result = frame
         }
         when {
-            result == null -> DiagLog.w(TAG, "No frame produced in ${RENDER_BUDGET_MS}ms ($frames seen)")
+            result == null -> DiagLog.w(TAG, "No frame produced in %sms (%s seen)", RENDER_BUDGET_MS, frames)
             result.isBlank() -> {
-                DiagLog.w(TAG, "Rendered frame blank after $frames frames (${widthPx}x$heightPx)")
+                DiagLog.w(TAG, "Rendered frame blank after %s frames (%sx%s)", frames, widthPx, heightPx)
                 result = null
             }
-            else -> DiagLog.i(TAG, "Rendered widget chart in $frames frames")
+            else -> DiagLog.i(TAG, "Rendered widget chart in %s frames", frames)
         }
         result
     } catch (t: Throwable) {
@@ -157,7 +157,7 @@ internal suspend fun renderComposableToBitmap(
         // that breaks structured concurrency. Rethrow it before the blanket
         // catch, per AGENTS.md's error-handling rule.
         if (t is CancellationException) throw t
-        DiagLog.e(TAG, "Off-screen widget chart render failed", t)
+        DiagLog.e(TAG, t, "Off-screen widget chart render failed")
         null
     } finally {
         runCatching { presentation?.dismiss() }

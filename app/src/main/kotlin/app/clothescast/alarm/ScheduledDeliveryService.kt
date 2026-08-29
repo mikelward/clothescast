@@ -69,10 +69,7 @@ class ScheduledDeliveryService : Service() {
         val playsSpeech = intent?.getBooleanExtra(EXTRA_PLAYS_SPEECH, false) ?: false
         val deliveringWantsForeground =
             intent?.getBooleanExtra(EXTRA_DELIVERING_WANTS_FOREGROUND, false) ?: false
-        DiagLog.i(
-            TAG,
-            "ScheduledDeliveryService onStartCommand period=$period workId=$workIdString",
-        )
+        DiagLog.i(TAG, "ScheduledDeliveryService onStartCommand period=%s workId=%s", period, workIdString)
 
         if (workId == null) {
             DiagLog.w(TAG, "No workId on Service intent; nothing to watch — exiting")
@@ -82,7 +79,7 @@ class ScheduledDeliveryService : Service() {
 
         // Same workId arriving twice (rebroadcast / restart) → idempotent.
         if (workId == foregroundWorkId) {
-            DiagLog.i(TAG, "Already shepherding workId=$workId; no-op")
+            DiagLog.i(TAG, "Already shepherding workId=%s; no-op", workId)
             return START_NOT_STICKY
         }
 
@@ -97,7 +94,7 @@ class ScheduledDeliveryService : Service() {
         // enterForeground below updates the existing id 1005 with the new
         // content and stamps foregroundWorkId = newId.
         if (foregroundWorkId != null) {
-            DiagLog.i(TAG, "Replacing shepherd: oldWorkId=$foregroundWorkId → newWorkId=$workId")
+            DiagLog.i(TAG, "Replacing shepherd: oldWorkId=%s → newWorkId=%s", foregroundWorkId, workId)
             watcher?.cancel()
             watcher = null
         }
@@ -152,7 +149,12 @@ class ScheduledDeliveryService : Service() {
             }
         }
         if (phase1Info == null) {
-            DiagLog.w(TAG, "Worker for $period didn't reach RUNNING within ${PRE_RUNNING_TIMEOUT_MS}ms; exiting service")
+            DiagLog.w(
+                TAG,
+                "Worker for %s didn't reach RUNNING within %sms; exiting service",
+                period,
+                PRE_RUNNING_TIMEOUT_MS,
+            )
             Telemetry.logScheduledDeliveryTimeout(slot = slotName(period))
             return
         }
@@ -194,12 +196,21 @@ class ScheduledDeliveryService : Service() {
      */
     private fun logTerminal(info: WorkInfo, period: ForecastPeriod) {
         when (info.state) {
-            WorkInfo.State.SUCCEEDED -> DiagLog.i(TAG, "$period worker reached SUCCEEDED")
-            WorkInfo.State.FAILED -> DiagLog.w(TAG, "$period worker reached FAILED")
-            WorkInfo.State.CANCELLED -> DiagLog.w(TAG, "$period worker reached CANCELLED (possibly REPLACE or WorkManager's ~10-min cap)")
+            WorkInfo.State.SUCCEEDED -> DiagLog.i(TAG, "%s worker reached SUCCEEDED", period)
+            WorkInfo.State.FAILED -> DiagLog.w(TAG, "%s worker reached FAILED", period)
+            WorkInfo.State.CANCELLED -> DiagLog.w(
+                TAG,
+                "%s worker reached CANCELLED (possibly REPLACE or WorkManager's ~10-min cap)",
+                period,
+            )
             WorkInfo.State.ENQUEUED, WorkInfo.State.BLOCKED ->
-                DiagLog.i(TAG, "$period worker stepped back to ${info.state} (Result.retry backoff); exiting service — next attempt will promote itself if needed")
-            else -> DiagLog.i(TAG, "$period worker phase-2 exit state=${info.state}")
+                DiagLog.i(
+                    TAG,
+                    "%s worker stepped back to %s (Result.retry backoff); exiting service — next attempt will promote itself if needed",
+                    period,
+                    info.state,
+                )
+            else -> DiagLog.i(TAG, "%s worker phase-2 exit state=%s", period, info.state)
         }
     }
 
@@ -231,7 +242,7 @@ class ScheduledDeliveryService : Service() {
                 // shepherded run.
                 stopSelf()
             } else {
-                DiagLog.i(TAG, "Skipping teardown for workId=$workId; current foregroundWorkId=$foregroundWorkId")
+                DiagLog.i(TAG, "Skipping teardown for workId=%s; current foregroundWorkId=%s", workId, foregroundWorkId)
             }
         }
     }
@@ -294,7 +305,7 @@ class ScheduledDeliveryService : Service() {
         }
         return runCatching { startForeground(FOREGROUND_NOTIFICATION_ID, notification, type) }
             .onSuccess { foregroundWorkId = workId }
-            .onFailure { DiagLog.w(TAG, "startForeground($stage) failed", it) }
+            .onFailure { DiagLog.w(TAG, it, "startForeground(%s) failed", stage) }
             .isSuccess
     }
 

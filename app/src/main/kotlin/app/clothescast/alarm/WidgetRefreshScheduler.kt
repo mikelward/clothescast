@@ -55,7 +55,7 @@ class WidgetRefreshScheduler(
             triggerAt.toEpochMilli(),
             pendingIntent(context),
         )
-        DiagLog.i(TAG, "Widget-refresh alarm armed for $triggerAt")
+        DiagLog.i(TAG, "Widget-refresh alarm armed for %s", triggerAt)
     }
 
     fun cancel() {

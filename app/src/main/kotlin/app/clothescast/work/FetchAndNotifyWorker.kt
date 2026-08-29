@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ServiceInfo
 import android.location.LocationManager
 import app.clothescast.diag.DiagLog
+import app.clothescast.diag.sensitive
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
@@ -182,7 +183,7 @@ class FetchAndNotifyWorker(
         val prefs = try {
             app.settingsRepository.preferences.first()
         } catch (t: Throwable) {
-            DiagLog.e(TAG, "Failed to read user preferences; retrying", t)
+            DiagLog.e(TAG, t, "Failed to read user preferences; retrying")
             return Result.retry()
         }
 
@@ -238,7 +239,11 @@ class FetchAndNotifyWorker(
                 // clears the stale failure and shows a "Fetching" spinner while
                 // it runs.
                 val period = currentPeriodForSchedule(prefs)
-                DiagLog.i(TAG, "Cache-only refresh resolved a location with nothing cached; kicking $period refresh.")
+                DiagLog.i(
+                    TAG,
+                    "Cache-only refresh resolved a location with nothing cached; kicking %s refresh.",
+                    period,
+                )
                 enqueueOneShot(applicationContext, silent = true, period = period)
             } else {
                 DiagLog.i(TAG, "Cache-only location refresh; skipping insight pipeline.")
@@ -345,12 +350,12 @@ class FetchAndNotifyWorker(
             null
         } else {
             runCatching {
-                app.insightCache.deliveredForToday(today, period, prefs, overnight = overnight, diagLog = { DiagLog.i(TAG, it) })
+                app.insightCache.deliveredForToday(today, period, prefs, overnight = overnight, diagLog = { DiagLog.i(TAG, "%s", it) })
             }.getOrNull()
         }
         if (cached != null) {
             val cachedInsight = cached.insight
-            DiagLog.i(TAG, "Using cached $period insight for ${cachedInsight.forDate}.")
+            DiagLog.i(TAG, "Using cached %s insight for %s.", period, cachedInsight.forDate)
             // Mirror the fresh-fetch path: stamp KEY_FETCH_COMPLETE so
             // ScheduledDeliveryService swaps from PREPARING to DELIVERING
             // (mediaPlayback FGS when speech plays). Otherwise the Service
@@ -414,17 +419,20 @@ class FetchAndNotifyWorker(
                     } else {
                         DiagLog.i(
                             TAG,
-                            "Skipping next-window MQTT publish on cache hit: NEXT_PERIOD " +
-                                "(${nextSnapshot?.period}/${nextSnapshot?.bundle?.today?.date}) isn't the " +
-                                "expected $expectedPeriod/$expectedDate sibling for the current location — " +
-                                "stale, unrefreshed, or from a previous location.",
+                            "Skipping next-window MQTT publish on cache hit: NEXT_PERIOD (%s/%s) " +
+                                "isn't the expected %s/%s sibling for the current location — stale, " +
+                                "unrefreshed, or from a previous location.",
+                            nextSnapshot?.period,
+                            nextSnapshot?.bundle?.today?.date,
+                            expectedPeriod,
+                            expectedDate,
                         )
                     }
                     Result.success()
                 }
                 .getOrElse {
                     if (it is CancellationException) throw it
-                    DiagLog.e(TAG, "Cached delivery failed; falling through to fresh generate.", it)
+                    DiagLog.e(TAG, it, "Cached delivery failed; falling through to fresh generate.")
                     fresh(location, prefs, period, overnight)
                 }
         }
@@ -482,7 +490,7 @@ class FetchAndNotifyWorker(
             ).firstOrNull { it.period == requestedPeriod && it.bundle.today.date == targetDate }
         }.getOrElse {
             if (it is CancellationException) throw it
-            DiagLog.e(TAG, "Play cache read failed; treating as a miss.", it)
+            DiagLog.e(TAG, it, "Play cache read failed; treating as a miss.")
             null
         }
 
@@ -494,7 +502,7 @@ class FetchAndNotifyWorker(
             // WorkInfo.state directly.)
             markFetchComplete()
             return try {
-                val insight = app.deriveInsight(cached, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
+                val insight = app.deriveInsight(cached, prefs, diagLog = { DiagLog.i(TAG, "%s", it) }).insight
                 val prose = formatProse(insight, prefs)
                 deliverBestEffort(insight, prefs, prose, "Replayed", forceNotifyAndSpeak)
             } catch (ce: CancellationException) {
@@ -503,7 +511,7 @@ class FetchAndNotifyWorker(
                 // Same best-effort posture as deliverBestEffort: a replay
                 // that fails to derive shouldn't surface as a refresh
                 // failure — whatever's on screen is still valid.
-                DiagLog.e(TAG, "Play replay derivation failed.", t)
+                DiagLog.e(TAG, t, "Play replay derivation failed.")
                 Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
             }
         }
@@ -514,7 +522,7 @@ class FetchAndNotifyWorker(
             // Best-effort, like the old replay-on-empty-cache: nothing to play,
             // and the Today screen's location-required banner already prompts
             // the fix. No failure banner.
-            DiagLog.i(TAG, "Play requested for $requestedPeriod but no location available; skipping.")
+            DiagLog.i(TAG, "Play requested for %s but no location available; skipping.", requestedPeriod)
             return Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
         }
         markFetchComplete()
@@ -530,7 +538,7 @@ class FetchAndNotifyWorker(
         // store — fresh() always writes THIS_PERIOD, which would clobber the
         // current window's snapshot the Today screen is showing.
         if (requestedPeriod == currentPeriod) {
-            DiagLog.i(TAG, "Play cache miss for current window $requestedPeriod; fetching fresh.")
+            DiagLog.i(TAG, "Play cache miss for current window %s; fetching fresh.", requestedPeriod)
             return fresh(
                 location,
                 prefs,
@@ -546,16 +554,21 @@ class FetchAndNotifyWorker(
         // branch above, never here (and isn't an ephemeral fetch).
         val fetchDayOffset =
             if (requestedPeriod == ForecastPeriod.TODAY && targetDate.isAfter(now.toLocalDate())) 1 else 0
-        DiagLog.i(TAG, "Play cache miss for non-current window $requestedPeriod (+${fetchDayOffset}d); ephemeral fetch.")
+        DiagLog.i(
+            TAG,
+            "Play cache miss for non-current window %s (+%sd); ephemeral fetch.",
+            requestedPeriod,
+            fetchDayOffset,
+        )
         return try {
             val snapshot = capturedSnapshot(location, prefs, requestedPeriod, fetchDayOffset)
-            val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
+            val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, "%s", it) }).insight
             val prose = formatProse(insight, prefs)
             deliverBestEffort(insight, prefs, prose, "Previewed", forceNotifyAndSpeak)
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            DiagLog.e(TAG, "Play fetch failed for $requestedPeriod.", t)
+            DiagLog.e(TAG, t, "Play fetch failed for %s.", requestedPeriod)
             Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
         }
     }
@@ -579,12 +592,12 @@ class FetchAndNotifyWorker(
         forceNotifyAndSpeak: Boolean,
     ): Result = try {
         deliver(insight, prefs, prose, forceNotifyAndSpeak = forceNotifyAndSpeak)
-        DiagLog.i(TAG, "$verb insight for ${insight.forDate}: $prose")
+        DiagLog.i(TAG, "%s insight for %s: %s", verb, insight.forDate, prose)
         Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
     } catch (ce: CancellationException) {
         throw ce
     } catch (t: Throwable) {
-        DiagLog.e(TAG, "$verb delivery failed.", t)
+        DiagLog.e(TAG, t, "%s delivery failed.", verb)
         Result.success(workDataOf(KEY_SKIP_TELEMETRY to true))
     }
 
@@ -613,7 +626,7 @@ class FetchAndNotifyWorker(
         if (alarmFiredAtMs != 0L) {
             val jitterMs = Random.Default.nextLong(0L, ALARM_FETCH_JITTER_MS)
             if (jitterMs > 0L) {
-                DiagLog.i(TAG, "Jittering alarm-triggered fetch by ${jitterMs}ms.")
+                DiagLog.i(TAG, "Jittering alarm-triggered fetch by %sms.", jitterMs)
                 delay(jitterMs)
             }
         }
@@ -624,7 +637,7 @@ class FetchAndNotifyWorker(
             // off the same upstream data for free; the derive call here is the
             // one we deliver on this run.
             val snapshot = capturedSnapshot(location, prefs, period, dayOffset = 0, overnight = overnight)
-            val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, it) }).insight
+            val insight = app.deriveInsight(snapshot, prefs, diagLog = { DiagLog.i(TAG, "%s", it) }).insight
             val isSilentRun = inputData.getBoolean(KEY_SILENT_REFRESH, false)
             runCatching { app.insightCache.store(InsightCache.Slot.THIS_PERIOD, snapshot) }
                 .onSuccess {
@@ -636,7 +649,7 @@ class FetchAndNotifyWorker(
                     // on the next successful fetch.
                     updateAllClothesCastWidgets(applicationContext)
                 }
-                .onFailure { DiagLog.w(TAG, "Insight cache write failed; not blocking delivery.", it) }
+                .onFailure { DiagLog.w(TAG, it, "Insight cache write failed; not blocking delivery.") }
             // Also generate and cache the *next* 12-hour window's insight off
             // the same Open-Meteo bundle so the Today screen's pager always
             // surfaces the current + next windows, never a previous one.
@@ -668,7 +681,7 @@ class FetchAndNotifyWorker(
             // it, a new banner / chime / cast load on top of that is exactly
             // the surprise this flag exists to avoid.
             if (isSilentRun) {
-                DiagLog.i(TAG, "Silent refresh updated cache for ${insight.forDate}: $prose")
+                DiagLog.i(TAG, "Silent refresh updated cache for %s: %s", insight.forDate, prose)
             } else {
                 // Signal "fetch + cache are done" so the Today screen's
                 // working-banner can hide while deliver() handles the
@@ -686,7 +699,7 @@ class FetchAndNotifyWorker(
                 // mode; scheduled runs and the Schedule preview leave
                 // KEY_PLAY_FORCE unset and keep honouring the mode.
                 deliver(insight, prefs, prose, forceNotifyAndSpeak = inputData.getBoolean(KEY_PLAY_FORCE, false))
-                DiagLog.i(TAG, "Insight delivered for ${insight.forDate}: $prose")
+                DiagLog.i(TAG, "Insight delivered for %s: %s", insight.forDate, prose)
                 // With the active period delivered, publish the *next* window's
                 // full bundle to its own day/night MQTT segment so a consumer
                 // always finds both the current and upcoming cast. Strictly
@@ -707,26 +720,26 @@ class FetchAndNotifyWorker(
             val status = e.response.status
             when {
                 status.value == 429 -> {
-                    DiagLog.w(TAG, "Rate-limited by OpenMeteo ($status); retrying.")
+                    DiagLog.w(TAG, "Rate-limited by OpenMeteo (%s); retrying.", status)
                     Result.retry()
                 }
                 status.value in 500..599 -> {
-                    DiagLog.w(TAG, "Server error $status from OpenMeteo; retrying.")
+                    DiagLog.w(TAG, "Server error %s from OpenMeteo; retrying.", status)
                     Result.retry()
                 }
                 else -> {
-                    DiagLog.e(TAG, "Unexpected HTTP status $status from OpenMeteo", e)
+                    DiagLog.e(TAG, e, "Unexpected HTTP status %s from OpenMeteo", status)
                     Result.failure(reason(REASON_UNEXPECTED_HTTP, "$status"))
                 }
             }
         } catch (e: ConnectTimeoutException) {
-            DiagLog.w(TAG, "Connect timeout; retrying.", e); Result.retry()
+            DiagLog.w(TAG, e, "Connect timeout; retrying."); Result.retry()
         } catch (e: SocketTimeoutException) {
-            DiagLog.w(TAG, "Socket timeout; retrying.", e); Result.retry()
+            DiagLog.w(TAG, e, "Socket timeout; retrying."); Result.retry()
         } catch (e: HttpRequestTimeoutException) {
-            DiagLog.w(TAG, "Request timeout; retrying.", e); Result.retry()
+            DiagLog.w(TAG, e, "Request timeout; retrying."); Result.retry()
         } catch (e: IOException) {
-            DiagLog.w(TAG, "Network IO failure; retrying.", e); Result.retry()
+            DiagLog.w(TAG, e, "Network IO failure; retrying."); Result.retry()
         } catch (e: NoTransformationFoundException) {
             // Belt-and-braces for OpenMeteoClient's expectSuccess=true: the
             // gateway occasionally returns a 5xx with a text/html error page,
@@ -735,12 +748,12 @@ class FetchAndNotifyWorker(
             // of ResponseException. Treat as transient and retry — the
             // alternative is the cryptic Ktor message landing on the failure
             // card.
-            DiagLog.w(TAG, "Content-type mismatch from upstream (likely 5xx HTML body); retrying.", e)
+            DiagLog.w(TAG, e, "Content-type mismatch from upstream (likely 5xx HTML body); retrying.")
             Result.retry()
         } catch (e: CancellationException) {
             throw e
         } catch (t: Throwable) {
-            DiagLog.e(TAG, "Unhandled error; failing.", t)
+            DiagLog.e(TAG, t, "Unhandled error; failing.")
             Result.failure(reason(REASON_UNHANDLED, summarize(t)))
         }
     }
@@ -785,11 +798,17 @@ class FetchAndNotifyWorker(
         return runCatching {
             val snapshot = capturedSnapshot(location, prefs, nextWindowPeriod, dayOffset)
             app.insightCache.store(InsightCache.Slot.NEXT_PERIOD, snapshot)
-            DiagLog.i(TAG, "Next-window $nextWindowPeriod snapshot cached for ${snapshot.bundle.today.date}.")
+            DiagLog.i(TAG, "Next-window %s snapshot cached for %s.", nextWindowPeriod, snapshot.bundle.today.date)
             snapshot
         }.onFailure {
             if (it is CancellationException) throw it
-            DiagLog.w(TAG, "Next-window $nextWindowPeriod insight generation failed; not blocking $primaryPeriod delivery.", it)
+            DiagLog.w(
+                TAG,
+                it,
+                "Next-window %s insight generation failed; not blocking %s delivery.",
+                nextWindowPeriod,
+                primaryPeriod,
+            )
         }.getOrNull()
     }
 
@@ -822,11 +841,7 @@ class FetchAndNotifyWorker(
             // the framework already gave up on. Matches the rethrow pattern
             // every other catch in this file uses.
             if (it is CancellationException) throw it
-            DiagLog.w(
-                TAG,
-                "Daily history read failed; delta will fall back to upstream past-days data.",
-                it,
-            )
+            DiagLog.w(TAG, it, "Daily history read failed; delta will fall back to upstream past-days data.")
             null
         }
         return raw.copy(historicYesterday = historic)
@@ -850,7 +865,11 @@ class FetchAndNotifyWorker(
         runCatching { app.dailyHistoryStore.put(entry) }
             .onFailure {
                 if (it is CancellationException) throw it
-                DiagLog.w(TAG, "Daily history write failed; tomorrow's delta will fall back to upstream past-days data.", it)
+                DiagLog.w(
+                    TAG,
+                    it,
+                    "Daily history write failed; tomorrow's delta will fall back to upstream past-days data.",
+                )
             }
     }
 
@@ -922,7 +941,14 @@ class FetchAndNotifyWorker(
                 app.locationResolver.resolve()
             }
             if (device != null) {
-                DiagLog.i(TAG, "Using device-resolved location at ${device.latitude}, ${device.longitude}.")
+                // A coordinate is the one number the type rule would wave through and
+                // must not: it names where the user is, so it is marked explicitly.
+                DiagLog.i(
+                    TAG,
+                    "Using device-resolved location at %s, %s.",
+                    sensitive(device.latitude),
+                    sensitive(device.longitude),
+                )
                 // Best-effort reverse geocode so the home screen can show a
                 // friendly city name next to the date instead of the
                 // resolver's "Device location" placeholder. Null on AOSP /
@@ -966,7 +992,7 @@ class FetchAndNotifyWorker(
                 // when the morning alarm fires, the displayed location will
                 // swap to the freshly-resolved city — acceptable.
                 runCatching { app.settingsRepository.setLocation(resolved) }
-                    .onFailure { DiagLog.w(TAG, "Failed to cache resolved location.", it) }
+                    .onFailure { DiagLog.w(TAG, it, "Failed to cache resolved location.") }
                 return resolved
             }
             DiagLog.i(TAG, "Device location unavailable; falling back to settings location.")
@@ -1015,7 +1041,7 @@ class FetchAndNotifyWorker(
             // misconfiguration (REASON_NO_LOCATION failure instead of a
             // retry), so leave a trace for when that misdiagnosis is being
             // chased in the field.
-            DiagLog.w(TAG, "isProviderEnabled threw; treating location services as off", e)
+            DiagLog.w(TAG, e, "isProviderEnabled threw; treating location services as off")
             false
         }
     }
@@ -1110,7 +1136,7 @@ class FetchAndNotifyWorker(
                     runCatching { Mp4Encoder.encode(png, wav) }
                         .onFailure { t ->
                             if (t is CancellationException) throw t
-                            DiagLog.w(TAG, "Next-window MQTT video mux failed; publishing bundle without video.", t)
+                            DiagLog.w(TAG, t, "Next-window MQTT video mux failed; publishing bundle without video.")
                         }
                         .getOrNull()
                 }
@@ -1126,12 +1152,15 @@ class FetchAndNotifyWorker(
             )
             DiagLog.i(
                 TAG,
-                "Next-window ${insight.period} MQTT bundle published " +
-                    "(image=${png != null}, audio=${wav != null}, video=${video != null}).",
+                "Next-window %s MQTT bundle published (image=%s, audio=%s, video=%s).",
+                insight.period,
+                png != null,
+                wav != null,
+                video != null,
             )
         }.onFailure { t ->
             if (t is CancellationException) throw t
-            DiagLog.w(TAG, "Next-window MQTT publish failed.", t)
+            DiagLog.w(TAG, t, "Next-window MQTT publish failed.")
         }
     }
 
@@ -1150,7 +1179,7 @@ class FetchAndNotifyWorker(
             runCatching { app.deriveInsight(it, prefs).insight }
                 .onFailure { t ->
                     if (t is CancellationException) throw t
-                    DiagLog.w(TAG, "Next-window insight derive failed; skipping its MQTT publish.", t)
+                    DiagLog.w(TAG, t, "Next-window insight derive failed; skipping its MQTT publish.")
                 }
                 .getOrNull()
         } ?: return
@@ -1263,7 +1292,7 @@ class FetchAndNotifyWorker(
                         runCatching { Mp4Encoder.encode(png, wav) }
                             .onFailure { t ->
                                 if (t is CancellationException) throw t
-                                DiagLog.w(TAG, "MQTT video mux failed; publishing bundle without video.", t)
+                                DiagLog.w(TAG, t, "MQTT video mux failed; publishing bundle without video.")
                             }
                             .getOrNull()
                     }
@@ -1282,7 +1311,7 @@ class FetchAndNotifyWorker(
                 runCatching { postPeriodNotification(insight, prefs, prose, topColors, topStrokes, handsColors, outerColors, gates, forceNotify = forceNotifyAndSpeak) }
                     .onFailure { t ->
                         if (t is CancellationException) throw t
-                        DiagLog.w(TAG, "Posting the period notification failed.", t)
+                        DiagLog.w(TAG, t, "Posting the period notification failed.")
                     }
             }
 
@@ -1318,7 +1347,7 @@ class FetchAndNotifyWorker(
                 }
                     .onFailure { t ->
                         if (t is CancellationException) throw t
-                        DiagLog.w(TAG, "MQTT insight bundle publish failed.", t)
+                        DiagLog.w(TAG, t, "MQTT insight bundle publish failed.")
                     }
                     .getOrNull()
             }
@@ -1338,7 +1367,7 @@ class FetchAndNotifyWorker(
                     )
                 }.onFailure { t ->
                     if (t is CancellationException) throw t
-                    DiagLog.w(TAG, "Phone speaker playback failed.", t)
+                    DiagLog.w(TAG, t, "Phone speaker playback failed.")
                 }
             }
 
@@ -1365,7 +1394,7 @@ class FetchAndNotifyWorker(
                     // persistQuotaStatus does; log other write failures —
                     // a stale status row isn't worth failing delivery over.
                     if (t is CancellationException) throw t
-                    DiagLog.w(TAG, "Failed to persist the cast status.", t)
+                    DiagLog.w(TAG, t, "Failed to persist the cast status.")
                 }
             }
 
@@ -1382,7 +1411,7 @@ class FetchAndNotifyWorker(
                 }
             }.onFailure { t ->
                 if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Failed to persist the MQTT publish status.", t)
+                DiagLog.w(TAG, t, "Failed to persist the MQTT publish status.")
             }
 
             logActiveAppNotifications("after delivery")
@@ -1444,9 +1473,11 @@ class FetchAndNotifyWorker(
                     val backoffMs = GEMINI_TTS_SYNTH_BACKOFF_MS shl attempt
                     DiagLog.w(
                         TAG,
-                        "Gemini TTS synth attempt ${attempt + 1}/$GEMINI_TTS_SYNTH_ATTEMPTS " +
-                            "failed; retrying in ${backoffMs}ms.",
                         t,
+                        "Gemini TTS synth attempt %s/%s failed; retrying in %sms.",
+                        attempt + 1,
+                        GEMINI_TTS_SYNTH_ATTEMPTS,
+                        backoffMs,
                     )
                     delay(backoffMs)
                 }
@@ -1468,7 +1499,7 @@ class FetchAndNotifyWorker(
                 )
             }
         }
-        DiagLog.w(TAG, "Gemini TTS synth failed; downstream audio destinations degrade.", failure)
+        DiagLog.w(TAG, failure, "Gemini TTS synth failed; downstream audio destinations degrade.")
         return null
     }
 
@@ -1486,7 +1517,7 @@ class FetchAndNotifyWorker(
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
-            DiagLog.w(TAG, "Failed to persist Gemini TTS quota status.", t)
+            DiagLog.w(TAG, t, "Failed to persist Gemini TTS quota status.")
         }
     }
 
@@ -1561,7 +1592,7 @@ class FetchAndNotifyWorker(
         }
             .onFailure { t ->
                 if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Outfit render failed; MQTT image publish skipped.", t)
+                DiagLog.w(TAG, t, "Outfit render failed; MQTT image publish skipped.")
             }
             .getOrNull()
     }
@@ -1752,7 +1783,7 @@ class FetchAndNotifyWorker(
                     ).play(pcm)
                 }.onFailure { t ->
                     if (t is CancellationException) throw t
-                    DiagLog.w(TAG, "Gemini playback failed; insight is still posted as notification.", t)
+                    DiagLog.w(TAG, t, "Gemini playback failed; insight is still posted as notification.")
                 }
                 return@withSpeechAudioFocus
             }
@@ -1764,7 +1795,7 @@ class FetchAndNotifyWorker(
                 app.deviceTtsSpeaker(prefs.deviceVoice).speak(utterance.text, utterance.locale)
             }.onFailure { t ->
                 if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Device TTS failed; insight is still posted as notification.", t)
+                DiagLog.w(TAG, t, "Device TTS failed; insight is still posted as notification.")
             }
         }
     }
@@ -1835,11 +1866,19 @@ class FetchAndNotifyWorker(
         runCatching { setForeground(playbackForegroundInfo()) }
             .onSuccess {
                 ownsPlaybackForeground = true
-                DiagLog.i(TAG, "Promoted to the playback foreground service (notification id=$PLAYBACK_NOTIFICATION_ID).")
+                DiagLog.i(
+                    TAG,
+                    "Promoted to the playback foreground service (notification id=%s).",
+                    PLAYBACK_NOTIFICATION_ID,
+                )
             }
             .onFailure { t ->
                 if (t is CancellationException) throw t
-                DiagLog.w(TAG, "Couldn't start the playback foreground service; speech may be inaudible from the background.", t)
+                DiagLog.w(
+                    TAG,
+                    t,
+                    "Couldn't start the playback foreground service; speech may be inaudible from the background.",
+                )
             }
     }
 
@@ -1861,7 +1900,7 @@ class FetchAndNotifyWorker(
         val ids = active.joinToString { sbn ->
             "id=${sbn.id}" + (sbn.tag?.let { "/tag=$it" } ?: "")
         }
-        DiagLog.i(TAG, "Active notifications $stage: [$ids] (count=${active.size}).")
+        DiagLog.i(TAG, "Active notifications %s: [%s] (count=%s).", stage, ids, active.size)
     }
 
     /**
@@ -1911,7 +1950,7 @@ class FetchAndNotifyWorker(
             setForeground(playbackForegroundInfo(R.string.notification_delivering_title))
         }.onFailure { t ->
             if (t is CancellationException) throw t
-            DiagLog.w(TAG, "Couldn't swap the playback foreground notification to \"Delivering\".", t)
+            DiagLog.w(TAG, t, "Couldn't swap the playback foreground notification to \"Delivering\".")
         }
     }
 
@@ -1921,7 +1960,7 @@ class FetchAndNotifyWorker(
         val alignAtMs = alarmFiredAtMs + DELIVERY_ALIGN_AFTER_ALARM_MS
         val waitMs = alignAtMs - System.currentTimeMillis()
         if (waitMs > 0) {
-            DiagLog.i(TAG, "Aligning delivery to alarm + ${DELIVERY_ALIGN_AFTER_ALARM_MS}ms (waiting ${waitMs}ms).")
+            DiagLog.i(TAG, "Aligning delivery to alarm + %sms (waiting %sms).", DELIVERY_ALIGN_AFTER_ALARM_MS, waitMs)
             delay(waitMs)
         }
     }
@@ -2360,7 +2399,7 @@ class FetchAndNotifyWorker(
             // a real device the cleanup runs once per cold start.
             runCatching {
                 WorkManager.getInstance(context).cancelUniqueWork(LEGACY_UNIQUE_WORK_NAME_TONIGHT)
-            }.onFailure { DiagLog.w(TAG, "Legacy queue cleanup skipped (WorkManager unavailable)", it) }
+            }.onFailure { DiagLog.w(TAG, it, "Legacy queue cleanup skipped (WorkManager unavailable)") }
         }
 
         // Retired in the queue-merge — both periods now share UNIQUE_WORK_NAME.

@@ -482,29 +482,32 @@ Open work:
 - [ ] **Align the four app repos' debug loggers.** `ProcessExitReasons.kt`
       landed here as a deliberate copy of Type Launcher's — same file name,
       function names, log-line format and field names — so the two logs read
-      identically and a future unification is a lift-and-share rather than a
-      reconciliation. But the loggers underneath them differ, and the
-      divergence is real:
-      - **Type Launcher** has a *default-safe type rule* (`LogValue`): every
-        log call is a literal format string plus arguments, and an argument
-        reaches the Crashlytics breadcrumb mirror only if its type cannot name
-        anything of the user's — `safe(...)` and `sensitive(...)` override per
-        value. `DiagLog` here has no equivalent: it takes a pre-built `String`,
-        so redaction is whatever the call site remembered to do.
-      - **`DiagLog` writes to disk only** — no breadcrumb mirror at all — so
-        the port needed no redaction wrappers and deliberately invented none.
-        That is why the exit `description` and the timestamps are logged in
-        full here but marked `sensitive(...)` in Type Launcher: there, they
-        would otherwise be uploaded silently; here nothing leaves the device
-        until the user shares a bug report.
-      - Snoozemo and Simmo have their own loggers and their own privacy
-        floors again.
+      identically. The loggers underneath them are what differed, and three of
+      the four now share the rule:
+      - **Type Launcher** is the reference: a *default-safe type rule*
+        (`LogValue`) where every log call is a literal format string plus
+        arguments, and an argument reaches the Crashlytics breadcrumb mirror
+        only if its type cannot name anything of the user's — `safe(...)` and
+        `sensitive(...)` override per value.
+      - **Snoozemo** ported it, and **`DiagLog` here now has it too**: the five
+        level functions take `format` plus `vararg args`, the exception moved
+        ahead of the format so it can't bind as a formatting argument, and
+        `LogValue.kt` carries the same classification, markers and
+        `LogSummary` as the other two.
+      - **Nothing leaves the device from this log** — `DiagLog` writes to
+        `cacheDir` and logcat, and the Crashlytics integration attaches no
+        breadcrumbs — so the rule classifies arguments that are all still
+        rendered in full. That ordering is the point: adding a mirror later
+        cannot quietly widen what is sent. It is *not* a claim that adding one
+        then becomes trivial.
+      - **Simmo is what's left.** Its `SimmoDebugLog` redacts whole lines with
+        `scrubPii` and does fan out to Crashlytics breadcrumbs on opted-in
+        installs, so it is the one repo where the type rule changes what is
+        actually sent rather than only what could be — and the one where
+        `scrubPii` has to stay underneath as the on-device floor.
 
-      Unifying them is a bigger piece of work than any one port and is
-      deliberately **not** in scope for the port PRs — this entry exists so
-      whoever picks it up starts from an inventory rather than rediscovering
-      the differences. The floor stays per-repo regardless: uniformity must
-      not loosen any repo's privacy rules.
+      The floor stays per-repo regardless: uniformity must not loosen any
+      repo's privacy rules.
 
 
 - [x] **Robolectric tests** for the alarm + notification path. First

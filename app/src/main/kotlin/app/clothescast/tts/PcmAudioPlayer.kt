@@ -39,7 +39,7 @@ internal object PcmAudioPlayer {
         // truncated mid-sample; setting a marker past the last whole frame would
         // either click or never fire.
         if (pcm.size % 2 != 0) {
-            DiagLog.w(TAG, "PCM payload has odd byte count (${pcm.size}); aborting playback")
+            DiagLog.w(TAG, "PCM payload has odd byte count (%s); aborting playback", pcm.size)
             return
         }
 
@@ -49,7 +49,7 @@ internal object PcmAudioPlayer {
             AudioFormat.ENCODING_PCM_16BIT,
         )
         if (minBuffer <= 0) {
-            DiagLog.w(TAG, "getMinBufferSize returned $minBuffer for ${audio.sampleRate}Hz; aborting playback")
+            DiagLog.w(TAG, "getMinBufferSize returned %s for %sHz; aborting playback", minBuffer, audio.sampleRate)
             return
         }
         // A few periods of headroom smooth over jitter on slower devices without
@@ -97,7 +97,7 @@ internal object PcmAudioPlayer {
                 val chunk = minOf(bufferBytes, pcm.size - offset)
                 val written = track.write(pcm, offset, chunk)
                 if (written <= 0) {
-                    DiagLog.w(TAG, "AudioTrack.write returned $written at offset $offset; aborting playback")
+                    DiagLog.w(TAG, "AudioTrack.write returned %s at offset %s; aborting playback", written, offset)
                     return
                 }
                 offset += written
@@ -118,8 +118,9 @@ internal object PcmAudioPlayer {
             if (completed == null) {
                 DiagLog.w(
                     TAG,
-                    "End-of-playback marker never fired for $totalFrames frames " +
-                        "(~${clipMillis}ms); releasing the track anyway.",
+                    "End-of-playback marker never fired for %s frames (~%sms); releasing the track anyway.",
+                    totalFrames,
+                    clipMillis,
                 )
             }
         } finally {
@@ -140,6 +141,6 @@ internal object PcmAudioPlayer {
             )
             cont.invokeOnCancellation { runCatching { track.stop() } }
         }
-        DiagLog.i(TAG, "Played $markerInFrames PCM frames")
+        DiagLog.i(TAG, "Played %s PCM frames", markerInFrames)
     }
 }

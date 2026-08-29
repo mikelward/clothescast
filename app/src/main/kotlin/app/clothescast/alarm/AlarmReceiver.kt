@@ -54,7 +54,7 @@ class AlarmReceiver : BroadcastReceiver() {
             0L,
         )
         val firedAtMs = System.currentTimeMillis()
-        DiagLog.i(TAG, "AlarmReceiver fired (action=${intent.action}, period=$period)")
+        DiagLog.i(TAG, "AlarmReceiver fired (action=%s, period=%s)", intent.action, period)
 
         val pending = goAsync()
         ReceiverWork.launch(pending) {
@@ -104,7 +104,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
                 scheduler.schedule(schedule, period)
             } catch (t: Throwable) {
-                DiagLog.e(TAG, "Alarm handling failed for $period", t)
+                DiagLog.e(TAG, t, "Alarm handling failed for %s", period)
                 // Best-effort: still enqueue the worker even if pref read failed,
                 // so the user gets *something* if it's the morning slot.
                 if (period == ForecastPeriod.TODAY) {
@@ -115,7 +115,7 @@ class AlarmReceiver : BroadcastReceiver() {
                             alarmScheduledAtMs = scheduledAtMs,
                             alarmFiredAtMs = firedAtMs,
                         )
-                    }.onFailure { DiagLog.e(TAG, "Fallback worker enqueue failed for $period", it) }
+                    }.onFailure { DiagLog.e(TAG, it, "Fallback worker enqueue failed for %s", period) }
                 }
                 // Keep the self-perpetuating alarm chain alive: each fire arms
                 // the next, so a single transient failure (a DataStore read
@@ -130,7 +130,7 @@ class AlarmReceiver : BroadcastReceiver() {
                         ForecastPeriod.TONIGHT -> readPrefs?.tonightSchedule ?: Schedule.defaultTonight()
                     }
                     scheduler.schedule(schedule, period)
-                }.onFailure { DiagLog.e(TAG, "Fallback re-arm failed for $period", it) }
+                }.onFailure { DiagLog.e(TAG, it, "Fallback re-arm failed for %s", period) }
             }
         }
     }
@@ -199,7 +199,7 @@ class AlarmReceiver : BroadcastReceiver() {
         )
         runCatching { ContextCompat.startForegroundService(context, intent) }
             .onFailure { t ->
-                DiagLog.w(TAG, "startForegroundService for $period refused; falling back to worker-only path", t)
+                DiagLog.w(TAG, t, "startForegroundService for %s refused; falling back to worker-only path", period)
             }
     }
 

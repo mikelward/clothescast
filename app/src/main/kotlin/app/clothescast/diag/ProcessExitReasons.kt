@@ -47,7 +47,7 @@ fun logRecentProcessExits(context: Context) {
         // A denial or a dead system_server leaves us no worse off than before
         // this existed, so report and return rather than letting the failure
         // escape into startup.
-        DiagLog.w(TAG, "processExits query failed", e)
+        DiagLog.w(TAG, e, "processExits query failed")
         return
     }
     if (exits.isEmpty()) {
@@ -68,10 +68,12 @@ private fun logExitRecords(exits: List<ApplicationExitInfo>) {
     exits.forEach { info ->
         DiagLog.d(
             TAG,
-            "processExit reason=${exitReasonName(info.reason)} " +
-                "importance=${processImportanceName(info.importance)} " +
-                "status=${info.status} timestamp=${info.timestamp} " +
-                "description=${info.description}",
+            "processExit reason=%s importance=%s status=%s timestamp=%s description=%s",
+            safe(exitReasonName(info.reason)),
+            safe(processImportanceName(info.importance)),
+            safe(info.status),
+            info.timestamp,
+            info.description,
         )
     }
 }
@@ -89,18 +91,19 @@ private fun logOwnPackageTimestamps(context: Context) {
         val info = context.packageManager.getPackageInfo(context.packageName, 0)
         DiagLog.d(
             TAG,
-            "ownPackage lastUpdateTime=${info.lastUpdateTime} " +
-                "firstInstallTime=${info.firstInstallTime}",
+            "ownPackage lastUpdateTime=%s firstInstallTime=%s",
+            info.lastUpdateTime,
+            info.firstInstallTime,
         )
     } catch (e: PackageManager.NameNotFoundException) {
-        DiagLog.w(TAG, "ownPackage query failed", e)
+        DiagLog.w(TAG, e, "ownPackage query failed")
     } catch (e: RuntimeException) {
         // The lookup is a binder call, so it can also fail as a RuntimeException
         // — a dead system_server mid-restart being the realistic case, which is
         // exactly the sort of moment this diagnostic is read about. Caught for
         // the same reason as above: this is the optional half and must not take
         // the exit records down with it.
-        DiagLog.w(TAG, "ownPackage query failed", e)
+        DiagLog.w(TAG, e, "ownPackage query failed")
     }
 }
 

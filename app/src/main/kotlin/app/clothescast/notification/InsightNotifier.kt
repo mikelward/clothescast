@@ -83,7 +83,9 @@ class InsightNotifier(private val context: Context) {
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_DAILY_INSIGHT, notification)
         DiagLog.i(
             TAG,
-            "Posted daily insight notification (id=$NOTIFICATION_ID_DAILY_INSIGHT, channel=$CHANNEL_SCHEDULED_INSIGHT, importance=LOW).",
+            "Posted daily insight notification (id=%s, channel=%s, importance=LOW).",
+            NOTIFICATION_ID_DAILY_INSIGHT,
+            CHANNEL_SCHEDULED_INSIGHT,
         )
     }
 

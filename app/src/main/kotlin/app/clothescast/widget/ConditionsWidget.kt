@@ -89,7 +89,7 @@ class ConditionsWidget : GlanceAppWidget() {
                 // A formatter / strip-math failure blanks the widget to its
                 // empty state; without a log that's indistinguishable from
                 // "no data yet" when chasing a blank-widget report.
-                DiagLog.w(TAG, "Conditions strip computation failed; showing empty state", it)
+                DiagLog.w(TAG, it, "Conditions strip computation failed; showing empty state")
             }.getOrNull()
         } else {
             null

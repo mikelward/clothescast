@@ -83,7 +83,7 @@ internal suspend fun <T> withSpeechAudioFocus(
     when (am.requestAudioFocus(fullFocus)) {
         AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> Unit
         AudioManager.AUDIOFOCUS_REQUEST_DELAYED -> {
-            DiagLog.i(TAG, "Audio focus delayed (likely a call); waiting up to ${MAX_DELAYED_FOCUS_WAIT_MS}ms")
+            DiagLog.i(TAG, "Audio focus delayed (likely a call); waiting up to %sms", MAX_DELAYED_FOCUS_WAIT_MS)
             // null = our own timeout fired (current holder still has focus
             // after the cap); false = the listener got an explicit
             // AUDIOFOCUS_LOSS while we were queued (some other system event

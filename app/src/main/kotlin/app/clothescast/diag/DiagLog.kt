@@ -117,24 +117,91 @@ object DiagLog {
      */
     val unacknowledgedCrash: StateFlow<Boolean> = unacknowledgedCrashState.asStateFlow()
 
-    fun v(tag: String, msg: String, t: Throwable? = null) = log('V', tag, msg, t).also {
-        if (t == null) Log.v(tag, msg) else Log.v(tag, msg, t)
-    }
+    /**
+     * Records one line at [level].
+     *
+     * [format] is a hard-coded format string — a source literal, never a value
+     * — with one `%s` per argument. That split is what [LogValue] enforces: the
+     * literal cannot name anything of the user's, and each argument is carried
+     * or withheld on its own by `logArgumentMayLeaveDevice`. Nothing leaves the
+     * device today, so this renders every argument in full; the rule exists so
+     * that adding a mirror later cannot quietly widen what is sent.
+     *
+     * Passing a *built* string as [format] would defeat that. There is no way
+     * to enforce it in the type system, so it is a rule rather than a
+     * guarantee: interpolate nothing, pass values as arguments.
+     *
+     * A [Throwable] belongs in the overload that takes one, where it is logged
+     * with its stack rather than rendered into the text. Type Launcher gives
+     * that variant a distinct name (`failure`) so the compiler finds a call
+     * that passes an exception as an argument; five levels here would mean five
+     * more names, so this keeps the level names and catches the mistake at
+     * runtime instead — the reroute below loses nothing and says what happened.
+     */
+    fun v(tag: String, format: String, vararg args: Any?) = record('V', tag, format, args)
 
-    fun d(tag: String, msg: String, t: Throwable? = null) = log('D', tag, msg, t).also {
-        if (t == null) Log.d(tag, msg) else Log.d(tag, msg, t)
-    }
+    fun d(tag: String, format: String, vararg args: Any?) = record('D', tag, format, args)
 
-    fun i(tag: String, msg: String, t: Throwable? = null) = log('I', tag, msg, t).also {
-        if (t == null) Log.i(tag, msg) else Log.i(tag, msg, t)
-    }
+    fun i(tag: String, format: String, vararg args: Any?) = record('I', tag, format, args)
 
-    fun w(tag: String, msg: String, t: Throwable? = null) = log('W', tag, msg, t).also {
-        if (t == null) Log.w(tag, msg) else Log.w(tag, msg, t)
-    }
+    fun w(tag: String, format: String, vararg args: Any?) = record('W', tag, format, args)
 
-    fun e(tag: String, msg: String, t: Throwable? = null) = log('E', tag, msg, t).also {
-        if (t == null) Log.e(tag, msg) else Log.e(tag, msg, t)
+    fun e(tag: String, format: String, vararg args: Any?) = record('E', tag, format, args)
+
+    /**
+     * The same, with the exception behind the line. The throwable comes before
+     * [format] so the compiler can tell the two overloads apart: an exception
+     * in the trailing `vararg` position would otherwise bind as a formatting
+     * argument and lose its stack.
+     *
+     * Nullable because several call sites log whatever a `Result` failure or a
+     * platform callback handed them, which is typed `Throwable?`; a null lands
+     * on the same path as the overload without one.
+     */
+    fun v(tag: String, t: Throwable?, format: String, vararg args: Any?) =
+        record('V', tag, format, args, t)
+
+    fun d(tag: String, t: Throwable?, format: String, vararg args: Any?) =
+        record('D', tag, format, args, t)
+
+    fun i(tag: String, t: Throwable?, format: String, vararg args: Any?) =
+        record('I', tag, format, args, t)
+
+    fun w(tag: String, t: Throwable?, format: String, vararg args: Any?) =
+        record('W', tag, format, args, t)
+
+    fun e(tag: String, t: Throwable?, format: String, vararg args: Any?) =
+        record('E', tag, format, args, t)
+
+    /**
+     * Renders [format] with [args] and writes the line, mirroring it to logcat.
+     *
+     * A [Throwable] found among [args] is rerouted to the throwable path rather
+     * than rendered into the text, and the line says so: an exception that
+     * reaches the log as a formatting argument has lost its stack, which is the
+     * part of it worth keeping, and losing that silently is what the marker
+     * exists to prevent.
+     */
+    private fun record(
+        level: Char,
+        tag: String,
+        format: String,
+        args: Array<out Any?>,
+        t: Throwable? = null,
+    ) {
+        val strayThrowable = if (t == null) args.filterIsInstance<Throwable>().firstOrNull() else null
+        val effectiveFormat =
+            if (strayThrowable == null) format else "$format [throwable passed as an argument]"
+        val throwable = t ?: strayThrowable
+        val message = formatLogMessage(effectiveFormat, args, redactSensitive = false)
+        log(level, tag, message, throwable)
+        when (level) {
+            'V' -> if (throwable == null) Log.v(tag, message) else Log.v(tag, message, throwable)
+            'D' -> if (throwable == null) Log.d(tag, message) else Log.d(tag, message, throwable)
+            'I' -> if (throwable == null) Log.i(tag, message) else Log.i(tag, message, throwable)
+            'W' -> if (throwable == null) Log.w(tag, message) else Log.w(tag, message, throwable)
+            else -> if (throwable == null) Log.e(tag, message) else Log.e(tag, message, throwable)
+        }
     }
 
     /**
@@ -182,7 +249,15 @@ object DiagLog {
             previous?.uncaughtException(thread, throwable)
         }
         refreshUnacknowledgedCrash()
-        i("DiagLog", "---- process start ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) ----")
+        // The build's own version and code are fixed vocabulary — every install
+        // of this build reports the same pair — so they are marked safe rather
+        // than withheld as the String type would otherwise have it.
+        i(
+            "DiagLog",
+            "---- process start %s (%s) ----",
+            safe(BuildConfig.VERSION_NAME),
+            BuildConfig.VERSION_CODE,
+        )
     }
 
     /** Returns the persisted crash log from the previous process, or null if absent. */

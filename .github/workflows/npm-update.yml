@@ -41,6 +41,15 @@ jobs:
       contents: write
       pull-requests: write
       actions: write
+    secrets:
+      # Opens the batch PR as a real collaborator rather than as
+      # `GITHUB_TOKEN`, whose events start no `on: pull_request` workflow —
+      # so without this the PR's head gets no `zizmor` run and the ruleset
+      # holds it on a required check nothing produces (TODO.md, the same
+      # failure the snapshot job's `push-token` already fixes for
+      # regenerated heads). The sibling gradle-update caller supplies its
+      # own PAT the same way.
+      token: ${{ secrets.NPM_UPDATE_PAT }}
     with:
       working-directory: functions
       # The Cloud Functions build emits a gitignored functions/lib/, which is

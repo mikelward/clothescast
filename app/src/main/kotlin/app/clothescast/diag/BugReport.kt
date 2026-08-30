@@ -36,7 +36,7 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
-import app.mikelward.androidlog.android.PreviousRun
+import com.mikelward.androidlog.android.PreviousRun
 import java.io.File
 import java.io.FileOutputStream
 import java.time.Duration

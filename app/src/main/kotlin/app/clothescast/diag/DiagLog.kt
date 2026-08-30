@@ -3,11 +3,11 @@ package app.clothescast.diag
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import app.clothescast.BuildConfig
-import app.mikelward.androidlog.DebugLog
-import app.mikelward.androidlog.android.DebugFileSink
-import app.mikelward.androidlog.android.LogcatSink
-import app.mikelward.androidlog.android.PreviousRun
-import app.mikelward.androidlog.safe
+import com.mikelward.androidlog.DebugLog
+import com.mikelward.androidlog.android.DebugFileSink
+import com.mikelward.androidlog.android.LogcatSink
+import com.mikelward.androidlog.android.PreviousRun
+import com.mikelward.androidlog.safe
 import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

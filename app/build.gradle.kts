@@ -622,7 +622,7 @@ dependencies {
     // group and name and swaps in the local checkout before anything resolves —
     // and a catalog entry would read like a version somebody should keep
     // current. There is nothing to bump.
-    implementation("app.mikelward.androidlog:logging-android:0.0")
+    implementation("com.mikelward.androidlog:logging-android:0.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

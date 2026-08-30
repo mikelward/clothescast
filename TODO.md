@@ -607,21 +607,21 @@ Open work:
       group to key each `main` push by commit. Ported from
       mikelward/snoozemo#136, where `deploy` already had its group and the
       fix was therefore a single change.
-- [ ] **Decide whether the release needs a lossless, ordered queue.** A
-      concurrency group holds exactly one pending slot wherever it sits, so
-      the fix above did not remove the eviction — it moved it from the
-      workflow to `deploy` and changed its consequence (Codex, #1172). An
-      evicted workflow run lost its tests and its release; an evicted deploy
-      loses only the intermediate publish, and because "Prepare release
-      notes" bases its range on the last run that actually *published*, those
-      commits ship in the next release with their subjects intact. That is
-      benign enough that this may want no further work at all. If it does,
-      the options are a real queue (an external lock, or chaining via
-      `workflow_run`) — infrastructure, not a flag — or snoozemo's
-      superseded-run guard, which this repo lacks: `deploy` there skips when
-      a later push has already published, so an out-of-order deploy retires
-      quietly instead of failing on a stale `versionCode`. That guard is the
-      cheaper half and probably the right first step.
+- [x] **Decided: no ordered release queue; port the superseded-run guard**
+      (maintainer, 2026-08-30). A concurrency group holds exactly one pending
+      slot wherever it sits, so the fix above did not remove the eviction — it
+      moved it from the workflow to `deploy` and changed its consequence
+      (Codex, #1172). An evicted workflow run lost its tests and its release;
+      an evicted deploy loses only the intermediate publish, and because
+      "Prepare release notes" bases its range on the last run that actually
+      *published*, those commits ship in the next release with their subjects
+      intact. The maintainer accepted that — no repo in this fleet has an
+      ordered queue — so the real queue (an external lock, or chaining via
+      `workflow_run`) is not being built. snoozemo's superseded-run guard is
+      ported instead, in #1172: `deploy` skips when a later push has already
+      published, so an out-of-order deploy retires quietly instead of failing
+      Play's stale-`versionCode` rejection on a billed run. It removes the
+      failure, not the eviction.
 - [ ] Verify the settings half of the fleet's bar: a ruleset on the
       default branch requiring the CI gate, the `codex` status,
       conversation resolution and up-to-date branches, the auto-merge

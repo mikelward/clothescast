@@ -6,7 +6,7 @@
 # top-level `kotlin { compilerOptions { } }` block in app/build.gradle.kts.
 # Roborazzi must be >= 1.57 here: earlier releases use AGP's removed
 # `TestedExtension` and fail to apply on AGP 9.
-agp = "9.3.1"
+agp = "9.3.2"
 kotlin = "2.4.10"
 # Android API floor. Single source of truth: `app/build.gradle.kts` reads this
 # for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime

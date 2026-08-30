@@ -195,7 +195,7 @@ class CalendarContractEventReader(
             } catch (e: IllegalArgumentException) {
                 if (!eventTypeProjectionRejected) {
                     eventTypeProjectionRejected = true
-                    DiagLog.i(TAG, e, "Provider rejected `eventType` column; future queries will skip it.")
+                    DiagLog.w(TAG, e, "Provider rejected `eventType` column; future queries will skip it.")
                 }
                 context.contentResolver.query(uri, baseProjection, selection, null, sortOrder)
             }

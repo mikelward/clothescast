@@ -36,12 +36,7 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
+import app.mikelward.androidlog.android.PreviousRun
 import java.io.File
 import java.io.FileOutputStream
 import java.time.Duration
@@ -50,6 +45,12 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.coroutines.resume
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 
 /**
  * Builds a "paste-into-Claude" bug-report payload (version, device, settings,
@@ -58,6 +59,21 @@ import kotlin.coroutines.resume
  * deliver it to whichever app the user picks. Also drops the text on the
  * clipboard as a paste fallback.
  */
+/**
+ * A built report and the previous run it contains, if it carried one.
+ *
+ * The two travel together because they have to be settled together: the text
+ * has already absorbed that run's log, so whether the run may be deleted is
+ * decided by whether *this* text reached the user. Returning only the string
+ * would leave the handle stranded and the run uncleared, and every later
+ * report would re-append the same crash.
+ */
+internal class CollectedPayload(
+    val text: String,
+    /** Null when nothing was read — a fallback report, or no previous run. */
+    val previousRun: PreviousRun?,
+)
+
 object BugReport {
     private const val FILE_PROVIDER_AUTHORITY_SUFFIX = ".fileprovider"
     private val TIMESTAMP_FORMAT: DateTimeFormatter =
@@ -141,17 +157,17 @@ object BugReport {
      * value and the failure notice are behavior a test must be able to drive
      * every way, without a real window, `ClipboardManager`, or share target.
      */
-    suspend fun share(
+    internal suspend fun share(
         activity: Activity,
         includeScreenshot: Boolean = true,
         mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
-        payloadCollect: suspend (Context, ClothesCastApplication) -> String = ::buildPayload,
+        payloadCollect: suspend (Context, ClothesCastApplication) -> CollectedPayload = ::buildPayload,
         screenshotCapture: suspend (Activity) -> Uri? = ::captureAndPersistScreenshot,
         clipboardWrite: (Context, String) -> Boolean = ::copyToClipboard,
         chooserLaunch: (Activity, String, Uri?) -> Boolean = ::startShare,
     ): Boolean {
         val app = activity.application as? ClothesCastApplication
-        val text = try {
+        val collected = try {
             // Off the main thread: the payload reads preferences, the insight
             // cache, and the crash file from disk, and share() is launched from a
             // UI tap — blocking there janks the frame the share sheet animates in
@@ -167,8 +183,12 @@ object BugReport {
             // crash: this runs from a tap, where an escaping throwable takes the
             // app down. Retain a small shareable diagnostic instead.
             DiagLog.w("BugReport", t, "payload collection failed")
-            buildFallbackPayload(t)
+            // No handle: nothing was read, so there is nothing to consume. The
+            // prior run stays on disk for the next attempt rather than being
+            // spent on a report that could not name it.
+            CollectedPayload(buildFallbackPayload(t), previousRun = null)
         }
+        val text = collected.text
         // The capture draws the live window via PixelCopy and the clipboard /
         // chooser hand-off touches the Activity, so all three are pinned to the
         // main thread — the payload build above hopped to IO and its continuation
@@ -192,6 +212,17 @@ object BugReport {
             // all — no chooser, nothing on the clipboard — and the user would
             // retry into the same silence. Say so instead.
             if (!copied && !launched) notifyShareFailed(activity)
+            // Gated on the CLIPBOARD, not the chooser. `ACTION_SEND` reports
+            // nothing back, so a launched sheet is no evidence the report was
+            // sent -- the user can back out of it -- and consuming on that
+            // would spend a crash log on a share that never happened. The
+            // clipboard copy is the durable one.
+            //
+            // Consumes exactly the runs THIS report was built from, by the
+            // handle the read returned. That pairing is the point: two
+            // overlapping share flows cannot have the first delete a run only
+            // the second had read.
+            if (copied) collected.previousRun?.let(DiagLog::consumePreviousRun)
             copied
         }
     }
@@ -238,7 +269,7 @@ object BugReport {
         }.onFailure { DiagLog.w("BugReport", it, "share-failed notice could not be shown") }
     }
 
-    private suspend fun buildPayload(context: Context, app: ClothesCastApplication): String {
+    private suspend fun buildPayload(context: Context, app: ClothesCastApplication): CollectedPayload {
         // coRunCatching, not runCatching: these reads suspend, and the stdlib
         // form would swallow a cancellation of the sharing coroutine and keep
         // building (and then sharing) a gutted report from a cancelled scope.
@@ -267,7 +298,11 @@ object BugReport {
         val nextPeriod = if (nextSnapshot != null && prefs != null) {
             coRunCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
         } else null
-        val crash = DiagLog.readPersistedCrash()
+        // A handle, not a string: `consumePreviousRun` takes it back after the
+        // report lands, so the runs this report contained are the runs that get
+        // cleared. A caller that got no handle deletes nothing.
+        val previousRun = DiagLog.readPreviousRun()
+        val crash = previousRun?.text
         val recent = DiagLog.snapshot()
         val now = TIMESTAMP_FORMAT.format(Instant.now())
 
@@ -305,7 +340,7 @@ object BugReport {
             appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
             appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
         }
-        return assemble(head, crash, recent)
+        return CollectedPayload(assemble(head, crash, recent), previousRun)
     }
 
     /**

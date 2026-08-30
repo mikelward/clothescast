@@ -204,7 +204,7 @@ class LocationResolver(
         try {
             manager.removeUpdates(listener)
         } catch (t: Throwable) {
-            DiagLog.v(TAG, t, "removeUpdates threw %s; ignoring.", safe(t.javaClass.simpleName))
+            DiagLog.w(TAG, t, "removeUpdates threw %s; ignoring.", safe(t.javaClass.simpleName))
         }
     }
 

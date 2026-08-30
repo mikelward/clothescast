@@ -23,7 +23,6 @@ import org.junit.runner.Description
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
-import java.io.File
 
 /**
  * The post-crash banner reaches the settings root, not only Today.
@@ -70,22 +69,20 @@ class SettingsCrashBannerTest {
         )
         .around(composeRule)
 
-    private lateinit var cacheDir: File
-
     @Before
     fun seedCleanCrashState() {
-        cacheDir = composeRule.activity.applicationContext.cacheDir
-        // These two files are the whole of the banner's state, and Robolectric's
-        // cache directory is shared across tests in the class.
-        File(cacheDir, CRASH_FILE).delete()
-        File(cacheDir, ACK_FILE).delete()
-        DiagLog.install(composeRule.activity.applicationContext)
+        // Deliberately no `DiagLog.install(...)`: this test is about the screen
+        // reacting to the crash state, not about deriving it. Without the file
+        // sink the banner's ON_RESUME refresh is a no-op, so the state below is
+        // the only thing driving the assertion — with the sink installed, that
+        // refresh re-derives from an empty cache dir on the library's worker
+        // and races the seeded value to false.
+        DiagLog.publishCrashStateForTest(false)
     }
 
     @Test
     fun settings_root_offers_the_crash_report() {
-        File(cacheDir, CRASH_FILE).writeText("java.lang.IllegalStateException: boom")
-        DiagLog.refreshUnacknowledgedCrash()
+        DiagLog.publishCrashStateForTest(true)
 
         composeRule.setContent { SettingsRootUnderTest() }
 
@@ -94,7 +91,7 @@ class SettingsCrashBannerTest {
 
     @Test
     fun settings_root_shows_nothing_when_there_was_no_crash() {
-        DiagLog.refreshUnacknowledgedCrash()
+        DiagLog.publishCrashStateForTest(false)
 
         composeRule.setContent { SettingsRootUnderTest() }
 
@@ -115,8 +112,4 @@ class SettingsCrashBannerTest {
         )
     }
 
-    private companion object {
-        const val CRASH_FILE = "last-crash.txt"
-        const val ACK_FILE = "last-crash.ack"
-    }
 }

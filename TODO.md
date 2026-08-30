@@ -501,12 +501,17 @@ Open work:
         ci.yml's checkout step nor the session-start hook — takes the clone as
         the first of its `checks` commands. snoozemo, typelauncher and simmo
         each need the same sweep of their own workflows when their turn comes.
-      - **Next: `DiagLog` itself.** It keeps its own ring buffer, rotation,
-        crash file and acknowledgement state; those become
-        `DebugLog` + `DebugFileSink`, with `DiagLog` surviving as a thin
-        facade so the 278 call sites and their tags stay untouched. The
-        legacy `diag.log` / `last-crash.txt` files must be deleted on
-        migration rather than read by the new sink.
+      - **Done: `DiagLog` itself.** Its ring buffer, rotation, crash file and
+        acknowledgement state are now `DebugLog` + `DebugFileSink`, with
+        `DiagLog` a thin facade so all 278 call sites stayed untouched. The
+        legacy `diag.log` / `last-crash.txt` / `.ack` files are deleted on
+        first run after the migration rather than read: the reduced rendering
+        is not retroactive, so removing them is the only way lines written
+        under the old full rendering stop being readable.
+      - **Next: the other three apps**, in order — snoozemo, typelauncher,
+        simmo last. Each needs a sweep of *every* workflow that runs Gradle,
+        not just CI; clothescast's weekly `gradle-update` caller was the gap
+        here and would have stopped its dependency batch silently.
       - **`LogSummary` went with the swap**, and was already dead code — no
         production call site. The library renders each entry once, at
         ingestion, so a value carrying separate on-device and off-device
@@ -668,6 +673,52 @@ Open work:
       than this PR, flagged for whoever wants to take it further.
 
 ## Decisions needing review
+
+- **Per-call logcat tags are gone; the tag now rides in the message**
+  (autopilot, 2026-08-30). Every `DiagLog` call still takes its `TAG` and the
+  rendered line is byte-identical in shape — the old logger wrote
+  `timestamp LEVEL TAG: msg`, and folding the tag into the format literal
+  produces the same thing from the library's `timestamp LEVEL message`. What is
+  lost is the **logcat filter key**: every line now carries one fixed logcat tag
+  (`ClothesCastDebug`), so `adb logcat -s MqttPublisher` no longer selects. The
+  tag is still *in* the line, so the on-device log and any shared report are
+  unchanged, and `adb logcat -s ClothesCastDebug | grep MqttPublisher` gets it
+  back.
+  **Alternative:** add per-entry tag support to `mikelward/androidlog`, the way
+  the five levels were added — the level is already handed to each sink, and a
+  tag would follow the same path.
+  **Why this way:** 278 call sites needed no library API to keep working, and
+  the loss is a developer-facing filter rather than information. That is a
+  smaller loss than the level flattening was, where the information itself
+  would have gone.
+  **Reversible:** entirely, and additively — adding the API later changes no
+  call site here, only what the facade forwards.
+
+- **Two `v`/`i` call sites that carried a throwable are now `w`**
+  (autopilot, 2026-08-30). `LocationResolver` ("removeUpdates threw …;
+  ignoring.") and `CalendarContractEventReader` ("Provider rejected
+  `eventType` column…"). The shared library gives a throwable form to
+  `warning` and `error` only, and both sites are "something threw and we
+  degraded", which is what a warning *is*. The facade therefore offers no
+  `v`/`i` overload taking a throwable, so the compiler finds any future one
+  rather than a facade rule silently promoting it.
+  **Cost:** those two lines move from `V`/`I` to `W` in logcat severity.
+  **Alternative:** add `verbose(t, …)` / `info(t, …)` to the library — API
+  surface for two call sites out of 278.
+  **Reversible:** yes; adding those overloads later is additive.
+
+- **`BugReport` pairs the prior-run read with its own clear, rather than using
+  `DebugReport.deliver`** (autopilot, 2026-08-30). The library's
+  `collect`/`deliver` pair does this correctly and is the documented path, but
+  `CollectedReport` keeps its handle and sink `internal`, so it can only be
+  settled by `deliver` — and `deliver` builds its own chooser, which cannot
+  carry the screenshot this app attaches to the share intent. So the report
+  reads through the public `readPreviousRun()` handle and calls
+  `clearPreviousRun` itself, gated on the clipboard copy landing.
+  **Alternative:** widen androidlog so `deliver` can take an attachment, or so
+  a `CollectedReport` can be settled by a caller running its own share.
+  **Reversible:** yes — the pairing is in one place (`CollectedPayload` and the
+  `if (copied)` line in `share`), so adopting `deliver` later is a local change.
 
 - **`functions/README.md` is now code, not docs** (autopilot, 2026-08-30).
   Narrowing `.github/lanes.conf` from `docs **/*.md` to `docs *.md` +

@@ -43,3 +43,8 @@ jobs:
       actions: write
     with:
       working-directory: functions
+      # The Cloud Functions build emits a gitignored functions/lib/, which is
+      # not one of the outputs the hub knows about — so every run aborted at
+      # its ignored-file guard, after its own build step, and this batch never
+      # opened a PR (mikelward/npm-update#30).
+      ignored-build-outputs: lib/

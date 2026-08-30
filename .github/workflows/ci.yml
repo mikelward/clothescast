@@ -70,12 +70,34 @@ on:
         required: false
 
 concurrency:
-  group: ci-${{ github.ref }}
-  # Cancel superseded runs on PR branches, but let main runs finish: a
-  # second merge landing mid-run could otherwise cancel the first between
-  # its Firebase distribution and Play upload steps, skipping a publish.
-  # (The release-notes base logic self-heals the changelog either way; the
-  # cost was the skipped publish itself.)
+  # A PR branch shares one group and cancels superseded runs: without that,
+  # every force-push — routine here, since review fixes are folded into the
+  # commit they belong to rather than stacked — pays for the run it just
+  # obsoleted.
+  #
+  # A push to main gets a group of its OWN, keyed by commit. A shared group
+  # was unsafe even with cancel-in-progress false, because that flag governs
+  # the RUNNING run, not the queue: GitHub holds at most one pending run per
+  # group, so a third push to main evicted the second while it waited, and
+  # that commit reached `deploy` never rather than late — losing its tests as
+  # well as its release.
+  #
+  # What the shared group WAS providing moves to where it belongs: `deploy`'s
+  # own `deploy-main-release` group. Both halves have to move together — this
+  # group alone would leave two Play uploads free to overlap.
+  #
+  # Being exact about what that buys, because the two are NOT the same
+  # hazard removed twice (Codex, PR #1172): a concurrency group holds one
+  # pending slot wherever it sits, so a third main push can still evict a
+  # pending *deploy*. What changes is the consequence. An evicted workflow
+  # run lost its tests and its release; an evicted deploy loses only the
+  # intermediate publish, and "Prepare release notes" bases its range on the
+  # last run that actually PUBLISHED, so those commits ship in the next
+  # release with their subjects intact. A genuinely lossless ordered release
+  # queue is a different piece of machinery, noted in TODO.md.
+  group: ci-${{ github.ref }}-${{ github.ref == 'refs/heads/main' && github.sha || 'branch' }}
+  # Redundant given the per-commit group above (a group of one has nothing to
+  # cancel), kept because it states the intent the group is enforcing.
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 # Explicitly empty, not omitted: every job below declares its own downscoped
@@ -1033,6 +1055,25 @@ jobs:
     #      `release-build` joins them because this job publishes its
     #      artifact; it builds in parallel with the tests, and this `needs:`
     #      is what keeps an untested build from reaching Play.
+    # Serializes every run of THIS job across the repo, which the top-level
+    # `concurrency` block used to do for the whole workflow by queueing main
+    # runs — at the cost of dropping one entirely when three landed close
+    # together. This group still holds only one pending slot, so a third push
+    # can evict a pending deploy; what it stops is two publishes overlapping,
+    # and the release-notes range base makes the skipped publish self-healing
+    # (see the workflow-level comment above). Without serialization here, two
+    # pushes to main landing back to
+    # back could both reach "Prepare release notes" before either's Play
+    # upload finished, so both compute their range base from the same "nothing
+    # has published yet" snapshot: worst case the newer upload lands first and
+    # Play rejects the older push's now-lower versionCode; even in the right
+    # order, the newer release's notes repeat subjects the older already
+    # published. `cancel-in-progress: false` queues the second run rather than
+    # canceling the first — canceling mid-upload is the one thing this must
+    # never do, and it is why the fix is a queue here rather than a cancel.
+    concurrency:
+      group: deploy-main-release
+      cancel-in-progress: false
     if: |
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')

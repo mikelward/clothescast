@@ -596,15 +596,32 @@ Open work:
       test a divergence hazard. Which of the three (hoist, path gate, or
       leave it) is the maintainer's call — it is a release-pipeline
       change, not a one-line condition.
-- [ ] **Fix the `main`-queue hazard in `ci.yml`'s `concurrency:` block.**
-      `cancel-in-progress: false` governs the *running* run, not the
-      queue, and GitHub holds at most one pending run per group — so
-      three pushes to `main` in quick succession evict the second while
-      it waits, and that commit reaches `deploy` never. Found while
-      porting this repo's group to snoozemo, which now uses a per-commit
-      group on `main` (`ci-${{ github.ref }}-${{ github.ref ==
-      'refs/heads/main' && github.sha || 'branch' }}`) so no `main` run
-      can evict another; mikelward/snoozemo#136 has the fix to port.
+- [x] **Fix the `main`-queue hazard in `ci.yml`'s `concurrency:` block.**
+      `cancel-in-progress: false` governs the *running* run, not the queue,
+      and GitHub holds at most one pending run per group — so three pushes to
+      `main` in quick succession evicted the second while it waited, and that
+      commit reached `deploy` never. Fixed as two changes rather than one:
+      `deploy` gets its own `deploy-main-release` group (queueing, never
+      canceling — this repo had none, so the shared workflow group was the
+      only thing serializing Play uploads), which frees the workflow-level
+      group to key each `main` push by commit. Ported from
+      mikelward/snoozemo#136, where `deploy` already had its group and the
+      fix was therefore a single change.
+- [ ] **Decide whether the release needs a lossless, ordered queue.** A
+      concurrency group holds exactly one pending slot wherever it sits, so
+      the fix above did not remove the eviction — it moved it from the
+      workflow to `deploy` and changed its consequence (Codex, #1172). An
+      evicted workflow run lost its tests and its release; an evicted deploy
+      loses only the intermediate publish, and because "Prepare release
+      notes" bases its range on the last run that actually *published*, those
+      commits ship in the next release with their subjects intact. That is
+      benign enough that this may want no further work at all. If it does,
+      the options are a real queue (an external lock, or chaining via
+      `workflow_run`) — infrastructure, not a flag — or snoozemo's
+      superseded-run guard, which this repo lacks: `deploy` there skips when
+      a later push has already published, so an out-of-order deploy retires
+      quietly instead of failing on a stale `versionCode`. That guard is the
+      cheaper half and probably the right first step.
 - [ ] Verify the settings half of the fleet's bar: a ruleset on the
       default branch requiring the CI gate, the `codex` status,
       conversation resolution and up-to-date branches, the auto-merge

@@ -1,6 +1,11 @@
 package app.clothescast.diag
 
 import app.clothescast.cast.CastDeviceClass
+import app.mikelward.androidlog.REDACTED_PLACEHOLDER
+import app.mikelward.androidlog.formatLogMessage
+import app.mikelward.androidlog.logArgumentMayLeaveDevice
+import app.mikelward.androidlog.safe
+import app.mikelward.androidlog.sensitive
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -8,13 +13,19 @@ import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.Test
 
 /**
- * The default-safe contract for what a diagnostic line may carry off the device.
+ * This app's conformance test against the shared privacy floor
+ * (`mikelward/androidlog`), kept here deliberately rather than left to that
+ * repository's own suite.
  *
- * The value of these tests is the *default*: a filter that matches values it
- * has been taught fails open on every category nobody anticipated, so the
- * interesting assertions here are the ones about types nobody wrote a rule for.
- * Nothing leaves this app's device today, which is exactly why the rule is
- * worth having before something does.
+ * Consumers track `@main` with no pin, so a floor that widened or narrowed
+ * upstream reaches this APK on the next build with nothing in between. The
+ * cases below are the ones *this* app's call sites depend on — a geocoded
+ * place name, a coordinate, a weather model id, a cast device class — asserted
+ * in both directions, so a regression fails here rather than shipping.
+ *
+ * The value is in the *default*: a filter that matches only what it has been
+ * taught fails open on every category nobody anticipated, so the interesting
+ * assertions are about types nobody wrote a rule for.
  */
 class LogValueTest {
 
@@ -25,15 +36,9 @@ class LogValueTest {
         formatLogMessage(format, args, redactSensitive = false)
 
     @Test
-    fun `the on-device copy keeps every argument in full`() {
-        onDevice("fetch place=%s cached=%s", "Fitzroy North", false) shouldBe
-            "fetch place=Fitzroy North cached=false"
-    }
-
-    @Test
     fun `string arguments are withheld from the mirror`() {
         mirrored("fetch place=%s cached=%s", "Fitzroy North", false) shouldBe
-            "fetch place=<redacted> cached=false"
+            "fetch place=$REDACTED_PLACEHOLDER cached=false"
     }
 
     // The point of inverting the default: nobody taught this about a geocoded
@@ -46,7 +51,8 @@ class LogValueTest {
             "1 Example St, Suburb",
             "Morning standup",
             "Cold and wet — take the big coat.",
-        ) shouldBe "deliver address=<redacted> event=<redacted> prose=<redacted>"
+        ) shouldBe "deliver address=$REDACTED_PLACEHOLDER event=$REDACTED_PLACEHOLDER " +
+            "prose=$REDACTED_PLACEHOLDER"
     }
 
     @Test
@@ -74,20 +80,16 @@ class LogValueTest {
     @Test
     fun `a sensitive tag withholds an identifying number`() {
         mirrored("located at=%s accuracy=%s", sensitive(-37.8), 12) shouldBe
-            "located at=<redacted> accuracy=12"
-        onDevice("located at=%s accuracy=%s", sensitive(-37.8), 12) shouldBe
-            "located at=-37.8 accuracy=12"
+            "located at=$REDACTED_PLACEHOLDER accuracy=12"
     }
 
+    // Sensitive dominates wherever it appears, so a value cannot be un-marked
+    // by wrapping it again — the case an app hits by passing an already-tagged
+    // value through a helper that tags what it is given.
     @Test
-    fun `a summary chooses its own rendering per field`() {
-        val summary = LogSummary(
-            full = "model=gfs lat=-37.8 lon=144.9",
-            mirrored = "model=gfs lat=<redacted> lon=<redacted>",
-        )
-
-        onDevice("request=%s", summary) shouldBe "request=model=gfs lat=-37.8 lon=144.9"
-        mirrored("request=%s", summary) shouldBe "request=model=gfs lat=<redacted> lon=<redacted>"
+    fun `a sensitive value stays withheld under a safe wrapper`() {
+        mirrored("located at=%s", safe(sensitive(-37.8))) shouldBe
+            "located at=$REDACTED_PLACEHOLDER"
     }
 
     @Test
@@ -100,6 +102,34 @@ class LogValueTest {
         logArgumentMayLeaveDevice("Fitzroy North") shouldBe false
         logArgumentMayLeaveDevice(listOf("Fitzroy North")) shouldBe false
         logArgumentMayLeaveDevice(Any()) shouldBe false
+    }
+
+    // A throwable names a type, never the user — and the no-messages floor is
+    // what makes that true. This app logs `it.javaClass.simpleName` at a dozen
+    // call sites for exactly this reason; the floor carrying the type itself is
+    // what lets those eventually pass the exception instead.
+    @Test
+    fun `a throwable is carried as its type and never its message`() {
+        val line = mirrored("fetch failed: %s", IllegalStateException("secret detail"))
+
+        line shouldBe "fetch failed: java.lang.IllegalStateException"
+        line shouldNotContain "secret detail"
+    }
+
+    // The rule that makes the one above safe: the floor renders only what it
+    // defines the rendering of. An unknown type is named, never `toString()`d —
+    // otherwise any object holding a place name or an exception message could
+    // print it through a `toString()` nobody reviewed.
+    @Test
+    fun `an unknown type renders as its class name rather than its toString`() {
+        class Holder {
+            override fun toString() = "1 Example St, Suburb"
+        }
+
+        val line = onDevice("state=%s", Holder())
+
+        line shouldNotContain "Example St"
+        line shouldContain "Holder"
     }
 
     // A wrong format string must never turn into a silent leak: a surplus
@@ -128,14 +158,14 @@ class LogValueTest {
         mirrored("Daily insight is disabled; skipping.") shouldBe "Daily insight is disabled; skipping."
     }
 
-    // Both sides of a location change must reach the on-device log in full —
-    // naming them is what makes the line worth keeping — and neither may reach
-    // a mirror, which has no per-share review.
+    // Both sides of a location change reach the on-device log in full — naming
+    // them is what makes the line worth keeping — and neither reaches a mirror,
+    // which has no per-share review.
     @Test
     fun `a location change keeps both places on device and withholds them from a mirror`() {
         onDevice("location %s -> %s", "Fitzroy North", "Docklands") shouldBe
             "location Fitzroy North -> Docklands"
         mirrored("location %s -> %s", "Fitzroy North", "Docklands") shouldBe
-            "location <redacted> -> <redacted>"
+            "location $REDACTED_PLACEHOLDER -> $REDACTED_PLACEHOLDER"
     }
 }

@@ -3,6 +3,8 @@ package app.clothescast.diag
 import android.content.Context
 import android.util.Log
 import app.clothescast.BuildConfig
+import app.mikelward.androidlog.formatLogMessage
+import app.mikelward.androidlog.safe
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date

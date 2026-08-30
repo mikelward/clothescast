@@ -9,7 +9,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Looper
 import app.clothescast.diag.DiagLog
-import app.clothescast.diag.safe
+import app.mikelward.androidlog.safe
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import app.clothescast.core.domain.model.Location

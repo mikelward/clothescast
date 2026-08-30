@@ -616,6 +616,14 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
 
+    // The shared debug log (mikelward/androidlog), resolved from the composite
+    // build wired up in settings.gradle.kts. Deliberately a string rather than
+    // a version-catalog entry: the `0.0` is inert — substitution matches on
+    // group and name and swaps in the local checkout before anything resolves —
+    // and a catalog entry would read like a version somebody should keep
+    // current. There is nothing to bump.
+    implementation("app.mikelward.androidlog:logging-android:0.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)

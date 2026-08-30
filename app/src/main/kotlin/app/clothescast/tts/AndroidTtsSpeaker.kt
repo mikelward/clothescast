@@ -6,7 +6,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
 import app.clothescast.diag.DiagLog
-import app.clothescast.diag.safe
+import app.mikelward.androidlog.safe
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Locale
 import java.util.UUID

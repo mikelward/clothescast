@@ -3,7 +3,7 @@ package app.clothescast.mqtt
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
-import app.clothescast.diag.safe
+import app.mikelward.androidlog.safe
 import app.clothescast.net.NetworkErrorKind
 import app.clothescast.net.classifyNetworkError
 import com.hivemq.client.mqtt.MqttClient

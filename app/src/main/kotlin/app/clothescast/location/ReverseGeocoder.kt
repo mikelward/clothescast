@@ -6,7 +6,7 @@ import android.location.Geocoder
 import android.os.Build
 import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.diag.DiagLog
-import app.mikelward.androidlog.safe
+import com.mikelward.androidlog.safe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine

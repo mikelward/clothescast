@@ -1,11 +1,11 @@
 package app.clothescast.diag
 
 import app.clothescast.cast.CastDeviceClass
-import app.mikelward.androidlog.REDACTED_PLACEHOLDER
-import app.mikelward.androidlog.formatLogMessage
-import app.mikelward.androidlog.logArgumentMayLeaveDevice
-import app.mikelward.androidlog.safe
-import app.mikelward.androidlog.sensitive
+import com.mikelward.androidlog.REDACTED_PLACEHOLDER
+import com.mikelward.androidlog.formatLogMessage
+import com.mikelward.androidlog.logArgumentMayLeaveDevice
+import com.mikelward.androidlog.safe
+import com.mikelward.androidlog.sensitive
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain

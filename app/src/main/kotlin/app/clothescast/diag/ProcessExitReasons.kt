@@ -5,7 +5,7 @@ import android.app.ApplicationExitInfo
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.getSystemService
-import app.mikelward.androidlog.safe
+import com.mikelward.androidlog.safe
 
 private const val TAG = "ProcessExit"
 

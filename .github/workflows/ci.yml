@@ -24,11 +24,20 @@ on:
   #                                 CI most needs to validate.
   push:
     branches: [main]
-    paths:
-      - '**'
-      - '!.*'
-      - '!.*/**'
-      - '.github/workflows/**'
+    # No paths filter. There was one here restating .github/lanes.conf by
+    # hand, and it was the worst of the four in this fleet: it carried no
+    # `!**/*.md` line at all, so a README-only push took the full lane AND
+    # deployed, while the policy says `docs **/*.md`. It also skipped
+    # `.gitignore` and `.claude/**`, which match no rule and are therefore
+    # code. Nothing checked the two against each other.
+    #
+    # `push classify` in lanes.conf now decides that question from the policy
+    # itself, and every heavy job plus `deploy` is already gated on
+    # `docs_only`. The engine refuses the range rather than guessing whenever
+    # it cannot prove the push added it: a force-push, a first push, a branch
+    # deletion (where the payload's `after` is all zeros but GITHUB_SHA is
+    # main's tip), a comparison that is not `ahead`, or a file list at the
+    # API's 300-file page cap. Every refusal takes the code lane.
   # No paths filter on pull_request, deliberately: the main ruleset requires
   # the `gate` check, and a required check that never reports blocks the PR
   # forever — which is exactly what a path-filtered-out workflow produces.
@@ -874,7 +883,14 @@ jobs:
     # commit whose tests then fail. That artifact is never published: `deploy`
     # needs `unit-tests`, and only `deploy` talks to Play. What it buys is a
     # recoverable build to look at when a main run goes red.
+    #
+    # Also gated on the lane: a docs-only push publishes nothing (`deploy`
+    # needs `unit-tests`, which the lane skips, so it is skipped too), and
+    # this job needs only `classify` — without the lane in its own condition
+    # it would be the one heavy job a docs-only push still ran, entering the
+    # production environment and spending ~6 min on an AAB nobody uploads.
     if: |
+      needs.classify.outputs.docs_only != 'true' &&
       github.ref == 'refs/heads/main' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     needs: classify

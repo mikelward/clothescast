@@ -1,259 +1,157 @@
 package app.clothescast.diag
 
 import android.content.Context
-import android.util.Log
+import androidx.annotation.VisibleForTesting
 import app.clothescast.BuildConfig
-import app.mikelward.androidlog.formatLogMessage
+import app.mikelward.androidlog.DebugLog
+import app.mikelward.androidlog.android.DebugFileSink
+import app.mikelward.androidlog.android.LogcatSink
+import app.mikelward.androidlog.android.PreviousRun
 import app.mikelward.androidlog.safe
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * Process-wide diagnostic log that mirrors every call to [android.util.Log]
- * and write-throughs each entry to a rotating on-disk file in `cacheDir`, so
- * a bug-report payload can include the last few hundred lines of context —
- * including errors logged by background workers that returned cleanly
- * before the OS later killed the process.
+ * This app's diagnostic log, now a thin facade over the shared
+ * `mikelward/androidlog` — the recording buffer, the privacy floor, the
+ * persisted file and its crash record all live there and are shared with
+ * `simmo`, `snoozemo` and `typelauncher`.
  *
- * Writes are serialised on a single-threaded executor. Calls that carry a
- * [Throwable] block briefly until the line reaches the kernel page cache,
- * giving "error survives process death" semantics without paying for an
- * fsync. Non-error calls queue and return immediately.
+ * The facade exists so the 278 call sites keep reading in this app's
+ * vocabulary. What it adds over calling [DebugLog] directly is exactly two
+ * things: the tag, and this app's `StateFlow` view of the crash state.
  *
- * The legacy uncaught-crash channel ([readPersistedCrash] /
- * [unacknowledgedCrash]) is preserved unchanged; uncaught exceptions
- * still spill the recent log plus the stack to `last-crash.txt` on the
- * dying thread for the post-crash banner.
+ * **The tag is folded into the format string, and that is safe for the same
+ * reason the format string itself is.** Every call site passes a compile-time
+ * constant tag — 188 references to a per-file `TAG`, the rest string literals —
+ * so `"$tag: $format"` is a concatenation of two source literals and names
+ * nothing of the user's. It is a rule rather than a type-system guarantee,
+ * which is what "interpolate nothing into the format" already was; this is one
+ * more line held to it, in one reviewable place rather than at every call.
+ *
+ * The rendered line is unchanged by the move: this used to write
+ * `"$timestamp $level $tag: $msg"`, and folding the tag into the message
+ * produces the same shape from the library's `"$timestamp $level $message"`.
+ * What does change is **logcat tag filtering** — every line now carries one
+ * fixed logcat tag instead of a per-call one, so `adb logcat -s MqttPublisher`
+ * no longer selects. The tag is still *in* the line, so it survives in the
+ * on-device log and in a shared report; only the filter key is gone. See
+ * `TODO.md`, "Decisions needing review".
  */
 object DiagLog {
-    private const val MAX_SNAPSHOT_LINES = 300
-    private const val MAX_BYTES = 200L * 1024L
-    private const val SYNC_TIMEOUT_MS = 2_000L
+
+    /** This app's instance of the shared recording core. */
+    internal val log: DebugLog = object : DebugLog() {}
 
     /**
-     * How many `at …` frames per Throwable in the chain to keep in diag-log
-     * entries. A fuller (but still capped) trace goes to `last-crash.txt` for
-     * uncaught exceptions — see [CRASH_STACK_FRAMES] — so the snapshot just
-     * needs the call site. One frame trims a typical `MqttPublisher: publish
-     * failed` block from 13 lines to 4 — the cause chain text + the top frame
-     * for each link is enough to read on its own, and the ten-deep Netty /
-     * executor noise that otherwise dominates the 300-line buffer goes away.
+     * The persisted mirror, once [install] has run. Held so [BugReport] can
+     * hand it to `DebugReport.collect`, which reads the previous run and — on
+     * a delivered report — consumes exactly the runs that report was built
+     * from.
      */
-    private const val COMPACT_STACK_FRAMES = 1
-
-    /**
-     * How many `at …` frames per Throwable to keep in `last-crash.txt`. More
-     * generous than [COMPACT_STACK_FRAMES] because the crash file is the
-     * primary post-mortem record (it's only written once, so it isn't fighting
-     * the snapshot budget) — but still capped, because the deep tail of an
-     * uncaught exception is platform plumbing (Looper / Choreographer /
-     * ActivityThread, Compose recomposition internals) that tells you nothing,
-     * and in a release build every frame is obfuscated to single letters so
-     * there's no app frame worth digging out from the bottom. Keep the throw
-     * site and its immediate callers; drop the rest with a `... N more`
-     * summary so it's clear frames were elided rather than missing.
-     */
-    private const val CRASH_STACK_FRAMES = 12
-
-    /**
-     * Snapshot-side defence against an individual log entry dominating the
-     * 300-line buffer. Limits the consecutive continuation lines (anything
-     * not starting with a timestamp digit — stack frames, `Caused by:`,
-     * `Suppressed:`) that any one entry contributes, then summarises the
-     * dropped tail as `\t... [N lines elided]`.
-     *
-     * The current writer already routes throwables through
-     * [compactStackTraceString], so freshly-written entries cost at most a
-     * handful of continuation lines. The cap exists because `cacheDir`
-     * survives app upgrades, so `diag.log.1` can retain fat
-     * `Throwable.printStackTrace`-style entries written by an older build
-     * (pre-`compactStackTraceString`) until natural rotation flushes them,
-     * and a single 60-line entry from that era used to eat 20% of the
-     * snapshot budget. Sized to comfortably fit a 3-4-deep
-     * compact cause chain with a couple of `Suppressed:` lines per level
-     * (~8 continuation lines), with headroom.
-     */
-    private const val MAX_CONTINUATION_LINES_PER_ENTRY = 10
-
-    private val executor = Executors.newSingleThreadExecutor { r ->
-        Thread(r, "DiagLog-writer").apply { isDaemon = true }
-    }
-    private val timestampFormat = ThreadLocal.withInitial {
-        SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS Z", Locale.US)
-    }
-
     @Volatile
-    private var diagFileProvider: (() -> File)? = null
-
-    @Volatile
-    private var diagRotatedProvider: (() -> File)? = null
-
-    @Volatile
-    private var crashFileProvider: (() -> File)? = null
-
-    @Volatile
-    private var ackFileProvider: (() -> File)? = null
+    internal var files: DebugFileSink? = null
+        private set
 
     private val unacknowledgedCrashState = MutableStateFlow(false)
 
     /**
-     * Observable mirror of "is there an uncaught-crash file on disk from a
-     * previous run that the user hasn't yet acted on?" — backs the Today
-     * screen's crash banner. Single source of truth shared across every
-     * `LastCrashBanner` instance, so an acknowledgement on one (e.g. on the
-     * pager's page 0) flips the flow and the page 1 instance hides itself
-     * immediately rather than carrying stale local state.
+     * Observable mirror of "did a previous run end in an uncaught exception the
+     * user hasn't acted on?" — backs the crash banner, and is a single source
+     * of truth so an acknowledgement on one instance hides the others.
      *
-     * Seeded by [install] from disk at process start; updated by
-     * [writeCrashLog] when a fresh crash is captured, by
-     * [acknowledgePersistedCrash] when the user dismisses or shares, and
-     * by [refreshUnacknowledgedCrash] on lifecycle ON_RESUME (covers a
-     * crash written by a sibling process while the app was backgrounded).
+     * The library derives this on its own worker and publishes it through a
+     * listener rather than a `Flow`: it takes no third-party runtime
+     * dependency, and coroutines would reach four APKs to deliver one boolean.
+     * Wrapping the listener is this app's three lines, and they are here.
      */
     val unacknowledgedCrash: StateFlow<Boolean> = unacknowledgedCrashState.asStateFlow()
 
     /**
-     * Records one line at [level].
+     * Records one line at the named level.
      *
-     * [format] is a hard-coded format string — a source literal, never a value
-     * — with one `%s` per argument. That split is what [LogValue] enforces: the
+     * [format] is a hard-coded format string — a source literal, never a
+     * value — with one `%s` per argument. That split is the privacy floor: the
      * literal cannot name anything of the user's, and each argument is carried
-     * or withheld on its own by `logArgumentMayLeaveDevice`. Nothing leaves the
-     * device today, so this renders every argument in full; the rule exists so
-     * that adding a mirror later cannot quietly widen what is sent.
+     * or withheld on its own by its type. `safe(...)` and `sensitive(...)`
+     * override per value.
      *
-     * Passing a *built* string as [format] would defeat that. There is no way
-     * to enforce it in the type system, so it is a rule rather than a
-     * guarantee: interpolate nothing, pass values as arguments.
-     *
-     * A [Throwable] belongs in the overload that takes one, where it is logged
-     * with its stack rather than rendered into the text. Type Launcher gives
-     * that variant a distinct name (`failure`) so the compiler finds a call
-     * that passes an exception as an argument; five levels here would mean five
-     * more names, so this keeps the level names and catches the mistake at
-     * runtime instead — the reroute below loses nothing and says what happened.
+     * **The floor is applied as the line is recorded, and there is one
+     * rendering.** An unmarked `String` is `•••` in the buffer, in logcat, in
+     * the persisted file and in any shared report — it is never held in full
+     * anywhere. That is a change from this app's previous logger, which
+     * rendered everything in full and would have reduced at a boundary that
+     * did not exist.
      */
-    fun v(tag: String, format: String, vararg args: Any?) = record('V', tag, format, args)
+    fun v(tag: String, format: String, vararg args: Any?) = log.verbose(tagged(tag, format), *args)
 
-    fun d(tag: String, format: String, vararg args: Any?) = record('D', tag, format, args)
+    fun d(tag: String, format: String, vararg args: Any?) = log.event(tagged(tag, format), *args)
 
-    fun i(tag: String, format: String, vararg args: Any?) = record('I', tag, format, args)
+    fun i(tag: String, format: String, vararg args: Any?) = log.info(tagged(tag, format), *args)
 
-    fun w(tag: String, format: String, vararg args: Any?) = record('W', tag, format, args)
+    fun w(tag: String, format: String, vararg args: Any?) = log.warning(tagged(tag, format), *args)
 
-    fun e(tag: String, format: String, vararg args: Any?) = record('E', tag, format, args)
+    fun e(tag: String, format: String, vararg args: Any?) = log.error(tagged(tag, format), *args)
 
     /**
-     * The same, with the exception behind the line. The throwable comes before
-     * [format] so the compiler can tell the two overloads apart: an exception
-     * in the trailing `vararg` position would otherwise bind as a formatting
-     * argument and lose its stack.
+     * The same, with the exception behind the line rather than rendered into
+     * it. The throwable comes before [format] so it cannot bind as a trailing
+     * `vararg` and lose its stack.
      *
-     * Nullable because several call sites log whatever a `Result` failure or a
-     * platform callback handed them, which is typed `Throwable?`; a null lands
-     * on the same path as the overload without one.
+     * Only `w` and `e` take one, because those are the levels the shared
+     * library gives a throwable form — and "something threw" is what a warning
+     * *is*. A null lands on the path without one, which several call sites need
+     * because they log whatever a `Result` failure or a platform callback
+     * handed them.
+     *
+     * The stack is rendered as **types and frames, never a message**. The
+     * library reads no throwable's message anywhere, because a platform
+     * exception quotes what it was given and that is exactly what the floor
+     * bans.
      */
-    fun v(tag: String, t: Throwable?, format: String, vararg args: Any?) =
-        record('V', tag, format, args, t)
-
-    fun d(tag: String, t: Throwable?, format: String, vararg args: Any?) =
-        record('D', tag, format, args, t)
-
-    fun i(tag: String, t: Throwable?, format: String, vararg args: Any?) =
-        record('I', tag, format, args, t)
-
     fun w(tag: String, t: Throwable?, format: String, vararg args: Any?) =
-        record('W', tag, format, args, t)
+        if (t == null) log.warning(tagged(tag, format), *args)
+        else log.failure(t, tagged(tag, format), *args)
 
     fun e(tag: String, t: Throwable?, format: String, vararg args: Any?) =
-        record('E', tag, format, args, t)
+        if (t == null) log.error(tagged(tag, format), *args)
+        else log.error(t, tagged(tag, format), *args)
+
+    /** Two source literals, joined — see the class comment for why that is safe. */
+    private fun tagged(tag: String, format: String): String = "$tag: $format"
+
+    /** The recent log, oldest first, as the bug report and the crash record show it. */
+    fun snapshot(): List<String> = log.snapshot()
 
     /**
-     * Renders [format] with [args] and writes the line, mirroring it to logcat.
+     * Wires logcat and the persisted mirror. Call once from
+     * [android.app.Application.onCreate].
      *
-     * A [Throwable] found among [args] is rerouted to the throwable path rather
-     * than rendered into the text, and the line says so: an exception that
-     * reaches the log as a formatting argument has lost its stack, which is the
-     * part of it worth keeping, and losing that silently is what the marker
-     * exists to prevent.
-     */
-    private fun record(
-        level: Char,
-        tag: String,
-        format: String,
-        args: Array<out Any?>,
-        t: Throwable? = null,
-    ) {
-        val strayThrowable = if (t == null) args.filterIsInstance<Throwable>().firstOrNull() else null
-        val effectiveFormat =
-            if (strayThrowable == null) format else "$format [throwable passed as an argument]"
-        val throwable = t ?: strayThrowable
-        val message = formatLogMessage(effectiveFormat, args, redactSensitive = false)
-        log(level, tag, message, throwable)
-        when (level) {
-            'V' -> if (throwable == null) Log.v(tag, message) else Log.v(tag, message, throwable)
-            'D' -> if (throwable == null) Log.d(tag, message) else Log.d(tag, message, throwable)
-            'I' -> if (throwable == null) Log.i(tag, message) else Log.i(tag, message, throwable)
-            'W' -> if (throwable == null) Log.w(tag, message) else Log.w(tag, message, throwable)
-            else -> if (throwable == null) Log.e(tag, message) else Log.e(tag, message, throwable)
-        }
-    }
-
-    /**
-     * Returns the last [MAX_SNAPSHOT_LINES] lines across the rotated and
-     * current diag files, oldest first. Drains any queued writes first so
-     * the snapshot reflects every log call made before this point.
-     */
-    fun snapshot(): List<String> {
-        val file = diagFileProvider?.invoke() ?: return emptyList()
-        val rotated = diagRotatedProvider?.invoke() ?: return emptyList()
-        runCatching {
-            executor.submit { }.get(SYNC_TIMEOUT_MS, TimeUnit.MILLISECONDS)
-        }
-        // Read with headroom so the cap pass below can drop fat entries
-        // and the final `takeLast` still has [MAX_SNAPSHOT_LINES] worth of
-        // distinct entries to surface.
-        val raw = readTail(file, rotated, MAX_SNAPSHOT_LINES * 10)
-        return capEntryContinuations(raw, MAX_CONTINUATION_LINES_PER_ENTRY)
-            .takeLast(MAX_SNAPSHOT_LINES)
-    }
-
-    /**
-     * Wires the crash handler and the diag-file paths. Call once from
-     * [android.app.Application.onCreate]. Before this returns, log() calls
-     * are no-ops on disk; in practice install() is the first non-super line
-     * of onCreate so the window is empty.
+     * `start()` runs before `addSink` so the rotation is queued ahead of this
+     * run's first write, and everything it touches happens on the library's own
+     * daemon worker — neither call blocks cold start.
      *
-     * Emits a "process start" marker carrying the current build's version
-     * so bug-report readers can tell where in `diag.log` the current
-     * process began. `cacheDir` survives app upgrades, so without the
-     * marker a post-upgrade report would interleave lines from two
-     * versions under one header. The marker doesn't claim what version
-     * wrote the lines *before* it — just signals "treat earlier lines as
-     * an earlier (unknown) version."
+     * Emits a process-start marker carrying this build's version, so a reader
+     * can tell where in the log the current process began: `cacheDir` survives
+     * app upgrades, so without it a post-upgrade report interleaves two
+     * versions under one header.
      */
     fun install(context: Context) {
         val appContext = context.applicationContext
-        diagFileProvider = { File(appContext.cacheDir, "diag.log") }
-        diagRotatedProvider = { File(appContext.cacheDir, "diag.log.1") }
-        crashFileProvider = { File(appContext.cacheDir, "last-crash.txt") }
-        ackFileProvider = { File(appContext.cacheDir, "last-crash.ack") }
-        val previous = Thread.getDefaultUncaughtExceptionHandler()
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
-            runCatching { writeCrashLog(thread, throwable) }
-            previous?.uncaughtException(thread, throwable)
+        deleteLegacyFiles(appContext)
+        log.addSink(LogcatSink("ClothesCastDebug"))
+        val sink = DebugFileSink(log, appContext)
+        sink.start()
+        log.addSink(sink)
+        sink.addCrashListener { unacknowledged ->
+            unacknowledgedCrashState.value = unacknowledged
         }
-        refreshUnacknowledgedCrash()
+        files = sink
         // The build's own version and code are fixed vocabulary — every install
-        // of this build reports the same pair — so they are marked safe rather
-        // than withheld as the String type would otherwise have it.
+        // of this build reports the same pair — so the name is marked safe
+        // rather than withheld as the String type would otherwise have it.
         i(
             "DiagLog",
             "---- process start %s (%s) ----",
@@ -262,217 +160,83 @@ object DiagLog {
         )
     }
 
-    /** Returns the persisted crash log from the previous process, or null if absent. */
-    fun readPersistedCrash(): String? = crashFileProvider?.invoke()
-        ?.takeIf { it.exists() && it.length() > 0L }
-        ?.runCatching { readText() }
-        ?.getOrNull()
+    /**
+     * Removes the files this app's own logger used to write.
+     *
+     * They are dead the moment the library takes over — it writes its own
+     * `androidlog.log` / `androidlog-prev-*` and never reads these — and
+     * `cacheDir` survives app upgrades, so left alone they would sit there
+     * indefinitely holding log lines written under the *old* rendering, where
+     * every argument was kept in full. Deleting them is the migration: the
+     * reduced rendering is not retroactive, so the only way those lines stop
+     * being readable is to remove them.
+     *
+     * Best-effort and silent on failure by design — this runs on the cold-start
+     * path before the log exists to record anything, and a file that cannot be
+     * deleted is not a reason to fail startup. A leftover is inert: nothing
+     * reads it.
+     */
+    private fun deleteLegacyFiles(context: Context) {
+        listOf("diag.log", "diag.log.1", "last-crash.txt", "last-crash.ack").forEach { name ->
+            runCatching { File(context.cacheDir, name).delete() }
+        }
+    }
 
     /**
-     * Re-reads the crash + ack files from disk and republishes
-     * [unacknowledgedCrash]. Called once from [install] to seed the flow,
-     * and from the crash banner's lifecycle observer on ON_RESUME so a
-     * crash captured while the app was backgrounded (e.g. by a sibling
-     * process sharing the same `cacheDir`) surfaces without needing a
-     * process restart.
+     * The previous run's log, as a handle rather than a string.
      *
-     * Identity is the crash file's last-modified time, so a fresh crash
-     * bumps mtime and the flow flips back to true even if the previous
-     * one was acked.
+     * The handle is what [consumePreviousRun] takes back, so a report deletes
+     * exactly the runs it contained and nothing else — two overlapping report
+     * flows cannot have the first destroy a run only the second had read. A
+     * caller that got null read nothing and so deletes nothing.
+     *
+     * Reads disk on the library's worker; call it off the main thread.
+     */
+    internal fun readPreviousRun(): PreviousRun? = files?.readPreviousRun()
+
+    /**
+     * Consumes the runs [run] was read from, once the report carrying them has
+     * actually reached the user.
+     *
+     * "Reached the user" means the clipboard copy landed, not that a chooser
+     * opened: `ACTION_SEND` reports nothing back, so a launched sheet the user
+     * backed out of would otherwise spend a crash log on a share that never
+     * happened.
+     */
+    internal fun consumePreviousRun(run: PreviousRun) {
+        files?.clearPreviousRun(run)
+    }
+
+    /**
+     * Asks the library to re-derive the crash state from disk.
+     *
+     * Called from the crash banner's lifecycle observer on `ON_RESUME`, so a
+     * crash captured while the app was backgrounded surfaces without a process
+     * restart. The derivation runs on the library's worker and publishes
+     * through the listener [install] registered, so two screens cannot write
+     * stale answers over each other.
      */
     fun refreshUnacknowledgedCrash() {
-        val crash = crashFileProvider?.invoke() ?: return
-        val ack = ackFileProvider?.invoke() ?: return
-        unacknowledgedCrashState.value = isCrashUnacknowledged(crash, ack)
+        files?.requestCrashRecompute()
     }
 
-    /** Records the currently persisted crash as seen — see [unacknowledgedCrash]. */
+    /**
+     * Publishes a crash state directly, for tests of the screens that react to
+     * it.
+     *
+     * The *derivation* — which files mean an unacknowledged crash, and when —
+     * belongs to the library and is tested there. What this app owns is the
+     * mirror and the UI reading it, and driving those from disk would mean
+     * seeding the library's own files and then waiting for its worker to
+     * publish: a race dressed up as a test.
+     */
+    @VisibleForTesting
+    internal fun publishCrashStateForTest(unacknowledged: Boolean) {
+        unacknowledgedCrashState.value = unacknowledged
+    }
+
+    /** Records the current crash as seen — see [unacknowledgedCrash]. */
     fun acknowledgePersistedCrash() {
-        val crash = crashFileProvider?.invoke() ?: return
-        val ack = ackFileProvider?.invoke() ?: return
-        writeCrashAcknowledgement(crash, ack)
-        unacknowledgedCrashState.value = false
-    }
-
-    internal fun isCrashUnacknowledged(crashFile: File, ackFile: File): Boolean {
-        if (!crashFile.exists() || crashFile.length() == 0L) return false
-        if (!ackFile.exists()) return true
-        val ackedMtime = runCatching { ackFile.readText().trim().toLong() }.getOrNull()
-            ?: return true
-        return ackedMtime != crashFile.lastModified()
-    }
-
-    internal fun writeCrashAcknowledgement(crashFile: File, ackFile: File) {
-        if (!crashFile.exists()) return
-        runCatching {
-            ackFile.parentFile?.mkdirs()
-            ackFile.writeText(crashFile.lastModified().toString())
-        }
-    }
-
-    private fun writeCrashLog(thread: Thread, throwable: Throwable) {
-        val file = crashFileProvider?.invoke() ?: return
-        // Filter the deep, useless tail (platform plumbing, obfuscated frames)
-        // out of the crash record too — keep the exception, its cause chain,
-        // and the top [CRASH_STACK_FRAMES] frames, not the full ~80-frame dump.
-        val stack = compactStackTraceString(throwable, maxFrames = CRASH_STACK_FRAMES, omittedSummary = true)
-        val header = "Uncaught exception on thread \"${thread.name}\""
-        // log() with a non-null throwable blocks on the executor, so by the
-        // time snapshot() runs below the crash header line is on disk and
-        // included in the recent context.
-        log('E', "DiagLog", "$header: ${throwable.javaClass.name}: ${throwable.message}", throwable)
-        val recent = snapshot().joinToString("\n")
-        file.parentFile?.mkdirs()
-        file.writeText(buildString {
-            appendLine("=== ${timestampFormat.get().format(Date())} ===")
-            appendLine(header)
-            appendLine(stack)
-            appendLine("--- recent log ---")
-            append(recent)
-        })
-        unacknowledgedCrashState.value = true
-    }
-
-    /**
-     * Formats [t] like [Throwable.printStackTrace] but keeps only the top
-     * [maxFrames] frames per Throwable in the cause chain, dropping the deep
-     * tail of platform / framework plumbing that isn't useful for triage.
-     *
-     * By default the dropped frames aren't summarised, so each Throwable costs
-     * a flat `1 + maxFrames` lines — that maximises how much pre-failure
-     * history fits in the 300-line snapshot budget, where this runs for every
-     * logged throwable. Pass [omittedSummary] `true` (as [writeCrashLog] does
-     * for `last-crash.txt`, which isn't budget-constrained) to append a
-     * `\t... N more` line per Throwable so a reader can tell frames were
-     * elided rather than absent.
-     *
-     * Cyclic cause chains (`a.cause = b; b.cause = a`) are guarded via an
-     * identity set so a pathological Throwable can't spin the calling
-     * thread before the executor submit runs — printStackTrace does the
-     * same. Suppressed exceptions surface as a one-line `Suppressed: …`
-     * summary per parent so try-with-resources / `.use` close failures
-     * aren't silently lost; their frames are intentionally dropped to
-     * keep the budget tight. Visible for tests.
-     */
-    internal fun compactStackTraceString(
-        t: Throwable,
-        maxFrames: Int = COMPACT_STACK_FRAMES,
-        omittedSummary: Boolean = false,
-    ): String {
-        val sb = StringBuilder()
-        val seen = java.util.IdentityHashMap<Throwable, Boolean>()
-        var current: Throwable? = t
-        var depth = 0
-        while (current != null) {
-            if (seen.put(current, true) != null) {
-                sb.append('\n').append("\t[CIRCULAR REFERENCE: ")
-                    .append(current.javaClass.name).append(']')
-                break
-            }
-            if (depth > 0) sb.append('\n').append("Caused by: ")
-            sb.append(current.javaClass.name)
-            current.message?.let { sb.append(": ").append(it) }
-            val frames = current.stackTrace
-            val keep = minOf(maxFrames, frames.size)
-            for (i in 0 until keep) {
-                sb.append('\n').append("\tat ").append(frames[i])
-            }
-            if (omittedSummary && frames.size > keep) {
-                sb.append('\n').append("\t... ").append(frames.size - keep).append(" more")
-            }
-            for (suppressed in current.suppressed) {
-                sb.append('\n').append("\tSuppressed: ").append(suppressed.javaClass.name)
-                suppressed.message?.let { sb.append(": ").append(it) }
-            }
-            current = current.cause
-            depth++
-        }
-        return sb.toString()
-    }
-
-    private fun log(level: Char, tag: String, msg: String, t: Throwable?) {
-        val timestamp = timestampFormat.get().format(Date())
-        val formatted = if (t == null) {
-            "$timestamp $level $tag: $msg"
-        } else {
-            "$timestamp $level $tag: $msg\n${compactStackTraceString(t)}"
-        }
-        val file = diagFileProvider?.invoke() ?: return
-        val rotated = diagRotatedProvider?.invoke() ?: return
-        val task = runCatching {
-            executor.submit {
-                runCatching { appendAndRotate(file, rotated, formatted, MAX_BYTES) }
-            }
-        }.getOrNull() ?: return
-        if (t != null) {
-            runCatching { task.get(SYNC_TIMEOUT_MS, TimeUnit.MILLISECONDS) }
-        }
-    }
-
-    /**
-     * Append [line] (plus newline) to [file]; if the resulting file exceeds
-     * [maxBytes], rename it over [rotated] so the next append starts a
-     * fresh file. A single rotation slot keeps disk usage bounded.
-     * Visible for tests.
-     */
-    internal fun appendAndRotate(file: File, rotated: File, line: String, maxBytes: Long) {
-        file.parentFile?.mkdirs()
-        file.appendText(line + "\n")
-        if (file.length() > maxBytes) {
-            rotated.delete()
-            file.renameTo(rotated)
-        }
-    }
-
-    /**
-     * Returns the last [maxLines] lines across [rotated] (older) and [file]
-     * (newer), concatenated in chronological order. Missing files are
-     * treated as empty. Visible for tests.
-     */
-    internal fun readTail(file: File, rotated: File, maxLines: Int): List<String> {
-        val prev = if (rotated.exists()) {
-            runCatching { rotated.readLines() }.getOrDefault(emptyList())
-        } else emptyList()
-        val curr = if (file.exists()) {
-            runCatching { file.readLines() }.getOrDefault(emptyList())
-        } else emptyList()
-        return (prev + curr).takeLast(maxLines)
-    }
-
-    /**
-     * Groups [lines] into entries (leading line + subsequent non-leading
-     * "continuation" lines) and truncates each entry's continuation tail
-     * past [maxContinuation], replacing the dropped lines with a single
-     * `\t... [N lines elided]` marker. A leading line is one starting with
-     * a digit (the log timestamp); anything else — `\tat …` stack frames,
-     * `Caused by: …`, `\tSuppressed: …`, or an orphan continuation at
-     * the start of the snapshot whose header was rotated out — is a
-     * continuation. The cap resets at every leading line. Visible for
-     * tests.
-     */
-    internal fun capEntryContinuations(lines: List<String>, maxContinuation: Int): List<String> {
-        val result = mutableListOf<String>()
-        var continuationCount = 0
-        var elidedCount = 0
-        for (line in lines) {
-            val isLeading = line.isNotEmpty() && line[0].isDigit()
-            if (isLeading) {
-                if (elidedCount > 0) {
-                    result += "\t... [$elidedCount lines elided]"
-                    elidedCount = 0
-                }
-                continuationCount = 0
-                result += line
-            } else if (continuationCount < maxContinuation) {
-                result += line
-                continuationCount++
-            } else {
-                elidedCount++
-            }
-        }
-        if (elidedCount > 0) {
-            result += "\t... [$elidedCount lines elided]"
-        }
-        return result
+        files?.acknowledgeCrashBanner()
     }
 }

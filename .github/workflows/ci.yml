@@ -1235,6 +1235,39 @@ jobs:
           # workflow's entire run history on every main build. Deeper
           # than that, the no-base backstop below still applies.
 
+          # If a later push already published, this run is superseded — skip.
+          # The `deploy-main-release` concurrency group above stops two
+          # deploys running *at once*, but GitHub's own docs say queued jobs
+          # run in the order each one *starts waiting*, not push order, so an
+          # older push's deploy can reach this point after a newer push has
+          # already published a higher versionCode. Play rejects the stale
+          # upload outright, and on a job this size that is a failed billed
+          # run reported as a broken release.
+          #
+          # Checked against $prev_sha, never against main's raw current tip.
+          # main can advance past this run's SHA with nothing having
+          # published — the later push's own build or tests can fail before
+          # its `deploy` ever runs — and skipping on that would strand this
+          # run's otherwise-releasable commits with nothing left to ship
+          # them. The only signal that this run's work is genuinely already
+          # covered is $prev_sha, the head of a run that actually published,
+          # descending from this run's head.
+          #
+          # This does NOT make the release lossless, and is not meant to: an
+          # evicted pending deploy still never publishes. Its commits ship in
+          # the next release with their subjects intact, because the range
+          # base above is the last run that published rather than the
+          # previous push. The maintainer accepted that trade (2026-08-30) —
+          # no repo in this fleet has an ordered release queue — so what this
+          # guard removes is the failure, not the eviction.
+          if [ -n "$prev_sha" ] \
+             && git cat-file -e "$prev_sha" 2>/dev/null \
+             && git merge-base --is-ancestor "$head_sha" "$prev_sha" 2>/dev/null; then
+            echo "A later push already published (last published SHA ${prev_sha} already includes this run's ${head_sha}); skipping."
+            echo "RELEASE_NOTES_SKIP=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
           base_sha=""
           if [ -n "$prev_sha" ] && git cat-file -e "$prev_sha" 2>/dev/null; then
             base_sha="$prev_sha"

@@ -473,6 +473,16 @@ Open work:
         PR with `GITHUB_TOKEN` produces a head no workflow reports on, so
         it needs the same PAT treatment before its PRs can satisfy the
         ruleset.
+      - The weekly npm batch was that automation, and now has it:
+        `npm-update.yml` supplies `NPM_UPDATE_PAT` (mikelward/npm-update#33
+        added the optional `token` secret), matching what `gradle-update.yml`
+        already did. Its PRs now get the ordinary `pull_request` round like
+        any other. The alternative the hub also offers — naming each
+        required check in a `dispatch-workflows` input — was rejected here
+        for the reason above: it needs a `workflow_dispatch:` trigger on
+        `zizmor.yml`, which `mikelward/ci-commit-artifact`'s policy test
+        pins byte-for-byte, and it would leave the next required check to
+        rediscover the same gap.
 - [ ] **Finish the gate → lanes check rename** once `lanes` has reported on
       a `pull_request` run: flip the ruleset to require `lanes` instead of
       `gate`, then delete the now-redundant `gate` job in a follow-up PR.

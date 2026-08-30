@@ -662,6 +662,17 @@ Open work:
 
 ## Decisions needing review
 
+- **`functions/README.md` is now code, not docs** (autopilot, 2026-08-30).
+  Narrowing `.github/lanes.conf` from `docs **/*.md` to `docs *.md` +
+  `docs docs/*.md` — the standard lanes' README now states — moves the one
+  markdown file that is neither at the root, nor under `docs/`, nor already
+  matched by a `code` rule onto the code lane. (`core/parent-project/README.md`
+  was already code via `code core/**`.) **Alternative:** a `docs functions/*.md`
+  rule to keep it on the docs lane. **Not taken** — a per-path exception list
+  is what lanes' README warns decays silently, and `functions/` is deployed
+  code, so erring toward the full lane is the safe direction. **Reversible**
+  by adding that one line.
+
 Autopilot guesses from the CI-slowness pass. Each is cheap to undo.
 
 - [ ] **`ReceiverWork` shares one process-lifetime scope across broadcasts**,

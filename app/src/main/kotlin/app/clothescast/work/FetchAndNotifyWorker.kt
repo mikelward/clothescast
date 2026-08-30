@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.pm.ServiceInfo
 import android.location.LocationManager
 import app.clothescast.diag.DiagLog
-import app.clothescast.diag.sensitive
+import app.mikelward.androidlog.sensitive
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService

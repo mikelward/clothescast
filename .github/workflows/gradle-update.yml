@@ -47,3 +47,18 @@ jobs:
       # shared default android-ci.yml; it already carries workflow_dispatch
       # with the pr input on main.
       ci-workflow: ci.yml
+      # The default is `./gradlew test` + `./gradlew lint`. Both are kept, but
+      # the checkout has to come first: settings.gradle.kts includes
+      # mikelward/androidlog as a composite build and fails evaluation without
+      # it, so in this job's clean workspace — which runs neither ci.yml's
+      # checkout step nor the session-start hook — the first Gradle invocation
+      # would die before it read a single dependency (Codex, PR #1176).
+      #
+      # A clone rather than actions/checkout because `checks` is a command
+      # list, not a step list. Depth 1 of the default branch, matching what
+      # ci.yml and the hook take: there is no pin anywhere in this
+      # arrangement, so every consumer resolves @main for itself.
+      checks: |
+        git clone --depth 1 https://github.com/mikelward/androidlog .androidlog
+        ./gradlew test
+        ./gradlew lint

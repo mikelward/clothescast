@@ -479,35 +479,42 @@ Open work:
 
 ## Testing & quality
 
-- [ ] **Align the four app repos' debug loggers.** `ProcessExitReasons.kt`
-      landed here as a deliberate copy of Type Launcher's — same file name,
-      function names, log-line format and field names — so the two logs read
-      identically. The loggers underneath them are what differed, and three of
-      the four now share the rule:
-      - **Type Launcher** is the reference: a *default-safe type rule*
-        (`LogValue`) where every log call is a literal format string plus
-        arguments, and an argument reaches the Crashlytics breadcrumb mirror
-        only if its type cannot name anything of the user's — `safe(...)` and
-        `sensitive(...)` override per value.
-      - **Snoozemo** ported it, and **`DiagLog` here now has it too**: the five
-        level functions take `format` plus `vararg args`, the exception moved
-        ahead of the format so it can't bind as a formatting argument, and
-        `LogValue.kt` carries the same classification, markers and
-        `LogSummary` as the other two.
-      - **Nothing leaves the device from this log** — `DiagLog` writes to
-        `cacheDir` and logcat, and the Crashlytics integration attaches no
-        breadcrumbs — so the rule classifies arguments that are all still
-        rendered in full. That ordering is the point: adding a mirror later
-        cannot quietly widen what is sent. It is *not* a claim that adding one
-        then becomes trivial.
-      - **Simmo is what's left.** Its `SimmoDebugLog` redacts whole lines with
-        `scrubPii` and does fan out to Crashlytics breadcrumbs on opted-in
-        installs, so it is the one repo where the type rule changes what is
-        actually sent rather than only what could be — and the one where
-        `scrubPii` has to stay underneath as the on-device floor.
-
-      The floor stays per-repo regardless: uniformity must not loosen any
-      repo's privacy rules.
+- [ ] **Move this app onto the shared debug log** (`mikelward/androidlog`).
+      The four apps had each grown a copy of the same mechanism and the copies
+      were drifting — `LogValue.kt` byte-identical between two of them, the two
+      `DebugFileSink.kt` copies 525 lines apart, and each copy carrying a
+      review finding the others never heard about. The library is the fix, and
+      it is consumed with **no pin at all**: a git clone plus a Gradle
+      composite build, so a merge there is in the next build here with nothing
+      to bump. `settings.gradle.kts`, `ci.yml` and the session-start hook carry
+      that wiring.
+      - **Done: the privacy floor.** `safe`, `sensitive`,
+        `logArgumentMayLeaveDevice` and `formatLogMessage` come from the
+        library now, and this repo's `LogValue.kt` is gone. `LogValueTest`
+        stays as this app's own conformance test — consumers track `@main`, so
+        a floor that shifted upstream reaches this APK with nothing in
+        between, and the cases this app's call sites depend on are asserted
+        here rather than left to that repo's suite.
+      - **Every workflow that runs Gradle needs the checkout**, not just CI's
+        three jobs: `settings.gradle.kts` fails evaluation without it, so the
+        weekly `gradle-update` caller — a clean workspace that runs neither
+        ci.yml's checkout step nor the session-start hook — takes the clone as
+        the first of its `checks` commands. snoozemo, typelauncher and simmo
+        each need the same sweep of their own workflows when their turn comes.
+      - **Next: `DiagLog` itself.** It keeps its own ring buffer, rotation,
+        crash file and acknowledgement state; those become
+        `DebugLog` + `DebugFileSink`, with `DiagLog` surviving as a thin
+        facade so the 278 call sites and their tags stay untouched. The
+        legacy `diag.log` / `last-crash.txt` files must be deleted on
+        migration rather than read by the new sink.
+      - **`LogSummary` went with the swap**, and was already dead code — no
+        production call site. The library renders each entry once, at
+        ingestion, so a value carrying separate on-device and off-device
+        renderings has nowhere to put the second one; a call site that needs
+        a reduced form passes `safe(reducedForm)` instead.
+      - **The floor stays per-repo regardless**: uniformity must not loosen
+        any repo's privacy rules, and app-specific scrubbing stays out of the
+        shared core.
 
 
 - [x] **Robolectric tests** for the alarm + notification path. First

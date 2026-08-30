@@ -162,6 +162,17 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           persist-credentials: false
 
+      - name: Check out the shared debug log
+        # mikelward/androidlog, wired in as a composite build by
+        # settings.gradle.kts. Deliberately no `ref:`, so this takes its
+        # default branch: there is no pin anywhere, and a merge there reaches
+        # this build with nothing to bump (see that repo's README).
+        uses: actions/checkout@v5
+        with:
+          repository: mikelward/androidlog
+          path: .androidlog
+          persist-credentials: false
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -702,6 +713,17 @@ jobs:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.pr != '' && format('refs/pull/{0}/merge', inputs.pr) || '' }}
           persist-credentials: false
 
+      - name: Check out the shared debug log
+        # mikelward/androidlog, wired in as a composite build by
+        # settings.gradle.kts. Deliberately no `ref:`, so this takes its
+        # default branch: there is no pin anywhere, and a merge there reaches
+        # this build with nothing to bump (see that repo's README).
+        uses: actions/checkout@v5
+        with:
+          repository: mikelward/androidlog
+          path: .androidlog
+          persist-credentials: false
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -909,6 +931,17 @@ jobs:
           # No step here pushes, and nothing PR-controlled is checked out
           # (this job only runs on push/dispatch against main) — but the
           # token has no reason to sit in .git/config regardless.
+          persist-credentials: false
+
+      - name: Check out the shared debug log
+        # mikelward/androidlog, wired in as a composite build by
+        # settings.gradle.kts. Deliberately no `ref:`, so this takes its
+        # default branch: there is no pin anywhere, and a merge there reaches
+        # this build with nothing to bump (see that repo's README).
+        uses: actions/checkout@v5
+        with:
+          repository: mikelward/androidlog
+          path: .androidlog
           persist-credentials: false
 
       - name: Set up JDK 21

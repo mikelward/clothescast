@@ -41,3 +41,8 @@ firebase-app-distribution.json
 # Logs
 *.log
 hs_err_pid*
+
+# mikelward/androidlog, checked out here by CI and by the session-start hook
+# and included as a composite build (settings.gradle.kts). A checkout, not a
+# vendored copy — nothing in it is ours to commit.
+/.androidlog/

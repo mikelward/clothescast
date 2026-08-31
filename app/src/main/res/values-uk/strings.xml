@@ -630,14 +630,14 @@ only the displayed label localizes.
     <string name="settings_forecasters_title">Моделі прогнозу</string>
     <string name="settings_forecasters_description">Чип впевненості та графік по моделях спираються на ці моделі. Чим більше моделей вибрано, тим ширший розкид; чим менше — тим чіткіший фокус. Принаймні дві моделі залишаються вибраними.</string>
     <string name="settings_forecasters_auto_title">Авто (найкраще для вашого місцезнаходження)</string>
-    <string name="settings_forecasters_auto_subtitle">Автоматично вибирає регіональну модель — UKMO на Британських островах, JMA у Японії, GFS + GEM у Північній Америці тощо. Вимкніть, щоб вибирати моделі самостійно.</string>
+    <string name="settings_forecasters_auto_subtitle">Автоматично вибирає регіональну модель — UKMO на Британських островах, JMA у Японії, GEM у Північній Америці тощо. Вимкніть, щоб вибирати моделі самостійно.</string>
     <string name="settings_forecasters_cap_hint">Вибрано %1$d моделей — максимум, за якого графік залишається читабельним. Зніміть позначку з однієї, щоб додати іншу.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Європейська — як правило, найточніша глобальна модель. На відкритому каналі кожні 3 години.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Німецька (DWD) — сильна в Європі та на коротких термінах. Початково погодинна.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Американська (NOAA) — сильна над Північною Америкою. Початково погодинна.</string>
+    <string name="settings_forecasters_gfs_subtitle">Американська (NOAA) — початково погодинна. Найслабша в наборі щодо опадів: пропускає зливи, які ловлять інші.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Канадська (ECCC) — сильна над Північною Америкою. На відкритому каналі кожні 3 години.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

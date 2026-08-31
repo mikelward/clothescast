@@ -729,14 +729,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_title">Modelos de previsión</string>
     <string name="settings_forecasters_description">El indicador de confianza y el gráfico por modelo se basan en estos modelos. Elegir más amplía el abanico; elegir menos lo concentra. Al menos dos quedan seleccionados.</string>
     <string name="settings_forecasters_auto_title">Auto (lo mejor para tu ubicación)</string>
-    <string name="settings_forecasters_auto_subtitle">Elige automáticamente el modelo regional: UKMO en las islas británicas, JMA en Japón, GFS + GEM en Norteamérica, etc. Desactívalo para elegir los modelos tú.</string>
+    <string name="settings_forecasters_auto_subtitle">Elige automáticamente el modelo regional: UKMO en las islas británicas, JMA en Japón, GEM en Norteamérica, etc. Desactívalo para elegir los modelos tú.</string>
     <string name="settings_forecasters_cap_hint">Has seleccionado %1$d modelos: el máximo para que el gráfico siga siendo legible. Deselecciona uno para añadir otro.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europeo — por lo general el modelo global más preciso. Cada 3 h en el feed abierto.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Alemán (DWD) — sólido en Europa y a corto plazo. Horario nativo.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Estadounidense (NOAA) — sólido en Norteamérica. Horario nativo.</string>
+    <string name="settings_forecasters_gfs_subtitle">Estadounidense (NOAA) — horario nativo. El más flojo del conjunto en lluvia: se le escapan chubascos que los demás sí ven.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadiense (ECCC) — sólido en Norteamérica. Cada 3 h en el feed abierto.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

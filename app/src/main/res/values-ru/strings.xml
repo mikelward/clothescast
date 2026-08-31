@@ -686,14 +686,14 @@ only the displayed label localizes.
     <string name="settings_forecasters_title">Модели прогноза</string>
     <string name="settings_forecasters_description">Чип уверенности и график по моделям опираются на эти модели. Чем больше моделей выбрано, тем шире разброс; чем меньше — тем чётче фокус. Минимум две модели остаются выбранными.</string>
     <string name="settings_forecasters_auto_title">Авто (лучшее для твоего местоположения)</string>
-    <string name="settings_forecasters_auto_subtitle">Автоматически выбирает региональную модель — UKMO на Британских островах, JMA в Японии, GFS + GEM в Северной Америке и т. д. Отключи, чтобы выбирать модели самостоятельно.</string>
+    <string name="settings_forecasters_auto_subtitle">Автоматически выбирает региональную модель — UKMO на Британских островах, JMA в Японии, GEM в Северной Америке и т. д. Отключи, чтобы выбирать модели самостоятельно.</string>
     <string name="settings_forecasters_cap_hint">Выбрано %1$d моделей — максимум, при котором график остаётся читаемым. Сними отметку с одной, чтобы добавить другую.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Европейская — как правило, самая точная глобальная модель. На открытом канале каждые 3 часа.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Немецкая (DWD) — сильна в Европе и на коротких сроках. Изначально почасовая.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Американская (NOAA) — сильна над Северной Америкой. Изначально почасовая.</string>
+    <string name="settings_forecasters_gfs_subtitle">Американская (NOAA) — изначально почасовая. Самая слабая в наборе по осадкам: пропускает ливни, которые ловят остальные.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Канадская (ECCC) — сильна над Северной Америкой. На открытом канале каждые 3 часа.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

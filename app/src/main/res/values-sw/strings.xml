@@ -572,14 +572,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_title">Modeli za utabiri</string>
     <string name="settings_forecasters_description">Beji ya uhakika na chati ya kila modeli hutegemea modeli hizi. Kuchagua zaidi hutoa mtawanyiko mpana; chache hupunguza umakini. Angalau mbili hubaki zikiwa zimechaguliwa kila wakati.</string>
     <string name="settings_forecasters_auto_title">Otomatiki (bora kwa eneo lako)</string>
-    <string name="settings_forecasters_auto_subtitle">Huchagua modeli ya utabiri ya kanda kiotomatiki — UKMO katika Visiwa vya Uingereza, JMA Japani, GFS + GEM Amerika Kaskazini, n.k. Zima ili uchague modeli mwenyewe.</string>
+    <string name="settings_forecasters_auto_subtitle">Huchagua modeli ya utabiri ya kanda kiotomatiki — UKMO katika Visiwa vya Uingereza, JMA Japani, GEM Amerika Kaskazini, n.k. Zima ili uchague modeli mwenyewe.</string>
     <string name="settings_forecasters_cap_hint">Umechagua modeli %1$d — idadi kubwa zaidi ambapo chati hubaki ikisomeka. Ondoa moja ili kuongeza modeli nyingine.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Ulaya — kwa kawaida modeli sahihi zaidi duniani. Kila saa 3 kwenye mlisho wa wazi.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Kijerumani (DWD) — imara Ulaya na kwa muda mfupi. Kila saa moja kwa asili.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Kimarekani (NOAA) — imara juu ya Amerika Kaskazini. Kila saa moja kwa asili.</string>
+    <string name="settings_forecasters_gfs_subtitle">Kimarekani (NOAA) — kila saa moja kwa asili. Dhaifu zaidi kwenye mvua: hukosa manyunyu ambayo modeli nyingine hunasa.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kikanada (ECCC) — imara juu ya Amerika Kaskazini. Kila saa 3 kwenye mlisho wa wazi.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

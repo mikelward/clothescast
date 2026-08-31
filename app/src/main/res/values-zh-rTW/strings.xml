@@ -752,14 +752,14 @@ label localises.
     <string name="settings_forecasters_title">預報模型</string>
     <string name="settings_forecasters_description">信心標籤與分模型圖表皆來自這些模型。選得越多分佈越廣，越少則焦點越集中。至少需保留兩個。</string>
     <string name="settings_forecasters_auto_title">自動（最適合你所在位置）</string>
-    <string name="settings_forecasters_auto_subtitle">依所在位置自動選擇地區預報模型——不列顛群島使用 UKMO，日本使用 JMA，北美使用 GFS + GEM 等。關閉後可自行選擇模型。</string>
+    <string name="settings_forecasters_auto_subtitle">依所在位置自動選擇地區預報模型——不列顛群島使用 UKMO，日本使用 JMA，北美使用 GEM 等。關閉後可自行選擇模型。</string>
     <string name="settings_forecasters_cap_hint">你已選擇 %1$d 個模型——這是圖表仍能保持可讀的上限。先取消選擇一個，再加入其他模型。</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">歐洲——一般而言最準確的全球模型。開放資料來源為每 3 小時。</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">德國（DWD）——在歐洲及短期預報方面表現出色。原生每小時。</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">美國（NOAA）——北美地區表現出色。原生每小時。</string>
+    <string name="settings_forecasters_gfs_subtitle">美國（NOAA）——原生每小時。降水預報最弱，常漏掉其他模型能捕捉到的陣雨。</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">加拿大（ECCC）——北美地區表現出色。開放資料來源為每 3 小時。</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

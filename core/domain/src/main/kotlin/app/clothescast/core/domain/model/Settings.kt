@@ -955,7 +955,7 @@ data class UserPreferences(
      * (see [ForecastModel.defaultsFor]). Fresh installs default to null so
      * a user who never opens the Forecasters picker gets a region-appropriate
      * trio (UKMO + ECMWF + ICON over the British Isles, JMA over Japan,
-     * GFS + GEM + ECMWF over North America, etc.) that follows them if they
+     * GEM + ECMWF + ICON over North America, etc.) that follows them if they
      * move. The first explicit pick in the picker switches this to a non-null
      * Set; flipping the Auto switch back on clears it to null again.
      *
@@ -1159,15 +1159,30 @@ enum class ForecastModel(val openMeteoId: String, val requiresGeminiKey: Boolean
          * the recovery set when the user has somehow deselected everything
          * (the picker's UI prevents that, but a hand-edited DataStore could).
          *
-         * Five models: the original ECMWF / GFS / ICON trio (now ECMWF at
-         * 0.25°) for the high-resolution first week, plus GEM and AIFS so at
-         * least two models keep reporting through the second week once ICON
-         * drops out at ~day 7. Sits at the picker's MAX_MODELS = 5 ceiling on
-         * purpose — five overlay lines is the busy-but-readable upper bound.
+         * Four models: ECMWF (0.25°) and ICON for the high-resolution first
+         * week, plus GEM and AIFS so at least two keep reporting through the
+         * second week once ICON drops out at ~day 7. One under the picker's
+         * MAX_MODELS = 5 ceiling, leaving a slot free rather than filling it
+         * for its own sake.
+         *
+         * GFS was the fifth and was removed along with its North America
+         * slot (see [defaultsFor]). A mean-based consensus has no way to
+         * discount a member that is wrong in a consistent direction: GFS's
+         * rainfall record is not noisy-but-unbiased error that averaging
+         * cancels, it is a systematic failure to produce rain at all (POD
+         * 0.49 with FAR 0.04 against ERA5), so including it drags the
+         * blended chance of rain toward dry on every wet day. Weaker members
+         * are worth keeping when their errors are decorrelated; this one's
+         * are not.
+         *
+         * What this set gives up, and why it is acceptable: over Australia
+         * and the other regions that land here, ECMWF and GEM both carry
+         * precipitation probability across the full ~day-15 horizon (AIFS
+         * publishes none, ICON stops at ~day 7), so the rain surfaces still
+         * have two independent long-range voices without GFS.
          */
         val DEFAULTS: Set<ForecastModel> = setOf(
             ECMWF_IFS025,
-            GFS_SEAMLESS,
             ICON_SEAMLESS,
             GEM_SEAMLESS,
             ECMWF_AIFS025_SINGLE,

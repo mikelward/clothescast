@@ -659,14 +659,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_title">Mga modelo ng forecast</string>
     <string name="settings_forecasters_description">Ang confidence chip at chart ng bawat modelo ay kinukuha mula sa mga modelong ito. Mas maraming napiling modelo, mas malawak ang spread; mas konti, mas pokus. Hindi bababa sa dalawa ang mananatiling napili.</string>
     <string name="settings_forecasters_auto_title">Awtomatiko (pinakamainam para sa iyong lokasyon)</string>
-    <string name="settings_forecasters_auto_subtitle">Awtomatikong pinipili ang panrehiyong forecaster — UKMO sa British Isles, JMA sa Japan, GFS + GEM sa North America, atbp. I-off para mamili ka mismo ng mga modelo.</string>
+    <string name="settings_forecasters_auto_subtitle">Awtomatikong pinipili ang panrehiyong forecaster — UKMO sa British Isles, JMA sa Japan, GEM sa North America, atbp. I-off para mamili ka mismo ng mga modelo.</string>
     <string name="settings_forecasters_cap_hint">Pumili ka ng %1$d na modelo — ang pinakamarami na nababasa pa ang chart. Mag-alis ng isa para makapagdagdag ng iba.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">European — kadalasang pinakatumpak na global model. 3 oras kada update sa open feed.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">German (DWD) — malakas sa Europe at sa short-range. Native oras-oras.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — malakas sa North America. Native oras-oras.</string>
+    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — native oras-oras. Pinakamahina sa set pagdating sa ulan: hindi nito nahuhuli ang mga ulan na nakikita ng iba.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadian (ECCC) — malakas sa North America. 3 oras kada update sa open feed.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

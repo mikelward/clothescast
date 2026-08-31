@@ -129,6 +129,108 @@ enforced the same way, costs, and the open questions — are in
       via `ForecastModel.defaultsFor(location)`. Picker capped at 5
       models for chart readability; BOM shown but disabled while
       Open-Meteo's BOM open-data feed is suspended.
+- [x] **GFS dropped from every default set** (2026-08-31). Verified against
+      ERA5 over 85 days at five locations: GFS came last of the five
+      candidates on both MAE and ETS for daily rainfall and detected barely
+      half of wet days (POD 0.49, FAR 0.04 — systematically dry, not noisy).
+      A mean-based consensus cannot discount a member that is wrong in one
+      consistent direction, so it drags the blended chance of rain toward dry
+      on every wet day. North America took ICON in its place; the global
+      fallback dropped to four models. GFS remains selectable in the picker.
+      Weaker members are still worth keeping when their errors are
+      decorrelated — this one's were not.
+- [ ] **De-duplicate `best_match` from the consensus vote.** Open-Meteo's
+      `best_match` overlay resolves to a listed model at many locations
+      (verified byte-identical to GFS at a North American point, across both
+      the precipitation and precipitation-probability series), and
+      `blendConsensusHourly` counts it as a regular equal-weight member — so
+      that model votes twice. In a four-model set that is half the ballot.
+      `ConsensusBlend`'s KDoc accepts the double-weighting on the reasoning
+      that best_match adds location-tuned signal; where it is an exact
+      duplicate it adds none. Drop it from the candidate set per hour when
+      its values match another consulted model, or de-weight it generally.
+      Deferred by the maintainer 2026-08-31; the GFS swap above was taken
+      first and reduces, but does not remove, the exposure.
+- [ ] **Confidence chip: spread is a range, so it mis-reads a systematically
+      offset member as uncertainty — and punishes extra models.** Deferred by
+      the maintainer 2026-08-31; recorded here rather than built.
+
+      `ConfidenceInfo.computeFrom` scores agreement as
+      `tempHighs.max() - tempHighs.min()` against 1.5 °C (HIGH) / 3.0 °C
+      (MEDIUM), and 15 / 30 pp for precipitation. Two problems fall out of the
+      range:
+
+      1. **A lone offset member sets the tier by itself.** Google resolves
+         urban heat island and reads consistently warmer in cities than a
+         0.25° global model that smears the city across ~25 km, so the chip
+         reports disagreement every day over exactly the model that is right.
+         Same failure shape as the GFS rainfall case, opposite sign.
+      2. **A range is monotonically non-decreasing in the number of models.**
+         Adding a forecaster can only ever lower confidence. So the chip is
+         not comparable between a user with 2 models and one with 5, and
+         dropping GFS from the defaults will have raised apparent confidence
+         on its own, without the forecast improving.
+
+      Candidate statistics, measured on scenario vectors (°C):
+
+      | case | range | MAD | IQR | trim-1 |
+      |---|---|---|---|---|
+      | all agree | 0.30 | 0.10 | 0.15 | 0.20 |
+      | one offset +2.4 (the Google case) | 2.70 | 0.10 | 0.90 | 0.50 |
+      | 3 agree, 1 wild +8 | 8.00 | 0.10 | 2.07 | 0.20 |
+      | genuine 4-way spread | 6.00 | 2.00 | 3.00 | 4.00 |
+      | bimodal 2-v-2 split | 5.40 | 2.50 | 4.88 | 5.00 |
+
+      - **Per-model, per-variable weights** (Google up on temp, GFS down on
+        rain). Rejected as a first move: a hand-maintained matrix that goes
+        stale silently as models change, evidence for only a couple of its
+        cells, and it leaves the n-dependence untouched. It also misdiagnoses
+        Google, whose advantage is resolution, not general skill.
+      - **Olympic trim** (drop min and max). Rejected: with 4-5 members it
+        discards a third to a half of the data, and it culls whoever is
+        extreme *today* rather than whoever is persistently offset — so on a
+        genuinely uncertain day it would hide the spread the chip exists to
+        report. Quietly overconfident is the wrong failure direction.
+      - **MAD** (median absolute deviation). Fixes the Google case but goes
+        too far: rows 2 and 3 above both read 0.10, identical to full
+        agreement, because with three members clustered the outlier's
+        distance falls outside the middle and vanishes. A model 8 °C off
+        would read as perfect agreement.
+      - **IQR.** The preferred statistic if this is picked up. Damps the
+        Google case ~3x while still registering the wild one, because with
+        four models the quartiles interpolate between adjacent values, so an
+        outlier pulls a quartile without owning it.
+      - **Rolling per-model offset** (learn each model's persistent bias
+        against the ensemble median, subtract before measuring spread). The
+        principled fix, and the only option that separates "Google is always
+        warmer in cities" from "this model broke this morning". Needs stored
+        history per model / variable / location plus cold-start behavior.
+
+      The limitation worth remembering: **no purely statistical measure can
+      tell a trustworthy outlier from an untrustworthy one.** Rows 2 and 3
+      have the same shape and differ only in which model it is and whether it
+      is always like that. Any statistic that forgives one forgives the
+      other; only the rolling-offset option uses model identity.
+
+      Whichever is chosen, most of the work is **recalibration, not the
+      statistic**: the 1.5 / 3.0 / 15 / 30 thresholds are calibrated for a
+      range, and every robust alternative is numerically smaller, so swapping
+      one in without re-deriving them would push nearly everything to HIGH —
+      a quieter, more confident app, which is the worst direction to fail in.
+      Derive new thresholds from real per-model series before shipping.
+
+- [ ] **BOM (`bom_access_global`) is still suspended — re-check periodically.**
+      Status checked 2026-08-31: the model id is still accepted by Open-Meteo
+      but every field returns null (0/384 hourly, 0/16 daily at Sydney).
+      Open-Meteo's BOM docs page still carries the "open-data delivery has
+      been temporarily suspended" notice with no date, and their tracking
+      issue (open-meteo/open-meteo#1416) has been open since 2025-07-19 with
+      no timeline. The official routes back are BOM Registered User Services
+      (subscription (S)FTP GRIB2/NetCDF — a bulk gridded feed needing a
+      server to ingest, which this client-only app does not have) or BOM's
+      public precis XML products, which are official town forecasts rather
+      than ACCESS-G output and so cannot join the multi-model spread as a
+      peer. Nothing actionable until Open-Meteo resumes it.
 
 ## Smart Home / Home Assistant bridge
 

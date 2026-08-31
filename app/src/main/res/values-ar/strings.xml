@@ -596,14 +596,14 @@ they work correctly in both the single-band and range templates.
     <string name="settings_forecasters_title">نماذج التنبؤ</string>
     <string name="settings_forecasters_description">يعتمد مؤشر الثقة والرسم البياني لكل نموذج على هذه النماذج. اختيار عدد أكبر يمنح تشتتًا أوسع؛ وعدد أقل يمنح تركيزًا أضيق. يظل نموذجان مختاران على الأقل في كل الأحوال.</string>
     <string name="settings_forecasters_auto_title">تلقائي (الأفضل لموقعك)</string>
-    <string name="settings_forecasters_auto_subtitle">يختار نموذج التنبؤ الإقليمي تلقائيًا — UKMO في الجزر البريطانية، وJMA في اليابان، وGFS مع GEM في أمريكا الشمالية، وهكذا. أوقف هذا لاختيار النماذج بنفسك.</string>
+    <string name="settings_forecasters_auto_subtitle">يختار نموذج التنبؤ الإقليمي تلقائيًا — UKMO في الجزر البريطانية، وJMA في اليابان، وGEM في أمريكا الشمالية، وهكذا. أوقف هذا لاختيار النماذج بنفسك.</string>
     <string name="settings_forecasters_cap_hint">اخترت %1$d نماذج — الحد الأقصى الذي يظل عنده الرسم البياني واضحًا. ألغِ اختيار أحدها لإضافة نموذج مختلف.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">أوروبي — يُعد عمومًا النموذج العالمي الأدق. كل ثلاث ساعات على البيانات المفتوحة.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">ألماني (DWD) — قوي في أوروبا وعلى المدى القصير. ساعي أصلي.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">أمريكي (NOAA) — قوي فوق أمريكا الشمالية. ساعي أصلي.</string>
+    <string name="settings_forecasters_gfs_subtitle">أمريكي (NOAA) — ساعي أصلي. الأضعف في التنبؤ بالمطر: تفوته الزخات التي تلتقطها النماذج الأخرى.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">كندي (ECCC) — قوي فوق أمريكا الشمالية. كل ثلاث ساعات على البيانات المفتوحة.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

@@ -614,14 +614,14 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_forecasters_title">Modeli napovedi</string>
     <string name="settings_forecasters_description">Oznaka zanesljivosti in graf po modelih črpata podatke iz teh modelov. Več izbranih pomeni širši razpon; manj pomeni ožji fokus. Vsaj dva ostaneta izbrana.</string>
     <string name="settings_forecasters_auto_title">Samodejno (najboljše za tvojo lokacijo)</string>
-    <string name="settings_forecasters_auto_subtitle">Samodejno izbere regionalni model — UKMO na Britanskem otočju, JMA na Japonskem, GFS + GEM v Severni Ameriki itd. Izklopi, da modele izbereš sam.</string>
+    <string name="settings_forecasters_auto_subtitle">Samodejno izbere regionalni model — UKMO na Britanskem otočju, JMA na Japonskem, GEM v Severni Ameriki itd. Izklopi, da modele izbereš sam.</string>
     <string name="settings_forecasters_cap_hint">Izbral si %1$d modelov — največ, pri katerih graf ostane berljiv. Odznači enega, da dodaš drug model.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Evropski — na splošno najnatančnejši globalni model. Trourni korak na odprtem viru.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Nemški (DWD) — močan v Evropi in na kratek rok. Domorodno urni.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Ameriški (NOAA) — močan nad Severno Ameriko. Domorodno urni.</string>
+    <string name="settings_forecasters_gfs_subtitle">Ameriški (NOAA) — domorodno urni. Najšibkejši v naboru za padavine: spregleda plohe, ki jih drugi ujamejo.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadski (ECCC) — močan nad Severno Ameriko. Trourni korak na odprtem viru.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

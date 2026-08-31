@@ -631,14 +631,14 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_forecasters_title">Prognosemodeller</string>
     <string name="settings_forecasters_description">Sikkerhetsbrikken og modelldiagrammet henter fra disse modellene. Flere valgte gir en bredere spredning, færre gir et smalere fokus. Minst to forblir valgt.</string>
     <string name="settings_forecasters_auto_title">Auto (best for stedet ditt)</string>
-    <string name="settings_forecasters_auto_subtitle">Velger den regionale modellen automatisk — UKMO på De britiske øyer, JMA i Japan, GFS + GEM i Nord-Amerika osv. Slå av for å velge modeller selv.</string>
+    <string name="settings_forecasters_auto_subtitle">Velger den regionale modellen automatisk — UKMO på De britiske øyer, JMA i Japan, GEM i Nord-Amerika osv. Slå av for å velge modeller selv.</string>
     <string name="settings_forecasters_cap_hint">Du har valgt %1$d modeller — det høyeste antallet der diagrammet forblir lesbart. Fjern en for å legge til en annen modell.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europeisk — som regel den mest nøyaktige globale modellen. 3-timers oppløsning i den åpne strømmen.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Tysk (DWD) — sterk i Europa og på kort sikt. Nativ timeoppløsning.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikansk (NOAA) — sterk over Nord-Amerika. Nativ timeoppløsning.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikansk (NOAA) — nativ timeoppløsning. Svakest i settet på nedbør: den bommer på byger de andre fanger.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadisk (ECCC) — sterk over Nord-Amerika. 3-timers oppløsning i den åpne strømmen.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

@@ -17,7 +17,7 @@ from:
 | `ecmwf_ifs025` | ECMWF | Generally best long-range global model; 0.25° open feed, reaches ~day 15 (replaced the older 0.4° `ecmwf_ifs04` in Feb 2024) |
 | `ecmwf_aifs025_single` | ECMWF | AI model (graph neural net, "AIFS Single"); skillful to ~day 15; exposes a reduced hourly field set, so it may not draw a line on every diagnostic chart; carries the second-week charts |
 | `icon_seamless` / `icon_eu` | DWD (Germany) | Strong European coverage; short-range, stops at ~day 7 |
-| `gfs_seamless` | NOAA (US) | Strong American coverage; reaches ~day 16 |
+| `gfs_seamless` | NOAA (US) | Broad American coverage, reaches ~day 16; weakest of the set on rainfall (last on MAE and ETS against ERA5, POD 0.49 on wet days), so it is no longer in any default set — selectable, but never a default |
 | `meteofrance_seamless` | Météo-France | Strong for France/W. Europe (ARPEGE); short-range |
 | `gem_seamless` | ECCC (Canada) | Strong for North America; reaches ~day 10 |
 | `ukmo_seamless` | UK Met Office | Strong for the British Isles; short-range |
@@ -26,10 +26,11 @@ from:
 
 Horizon matters for the two-week forecast: ICON and the regional locals
 (UKMO, ARPEGE, JMA) fade after ~day 7, so the second-week ("Following 7
-days") charts lean on the longer-horizon models — ECMWF IFS 0.25°, AIFS, and
-GFS reach into days 8-14, with GEM reinforcing days 8-10. The default model
-set per region (see `ForecastModelDefaults`) is built to keep at least two
-models reporting across the whole fortnight.
+days") charts lean on the longer-horizon models — ECMWF IFS 0.25° and AIFS
+reach into days 8-14, with GEM reinforcing days 8-10. (GFS reaches ~day 16
+too, but is no longer a default anywhere; see its row above.) The default
+model set per region (see `ForecastModelDefaults`) is built to keep at least
+two models reporting across the whole fortnight.
 
 Default `best_match` picks the model believed to be most accurate for the
 requested coordinates. We currently don't pass `models=` at all, so we get

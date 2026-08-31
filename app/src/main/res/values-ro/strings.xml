@@ -605,14 +605,14 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_forecasters_title">Modele de prognoză</string>
     <string name="settings_forecasters_description">Indicatorul de încredere și graficul per model se bazează pe aceste modele. Mai multe extind paleta; mai puține o restrâng. Cel puțin două rămân selectate.</string>
     <string name="settings_forecasters_auto_title">Auto (cel mai bun pentru locația ta)</string>
-    <string name="settings_forecasters_auto_subtitle">Alege automat modelul regional — UKMO în Insulele Britanice, JMA în Japonia, GFS + GEM în America de Nord etc. Dezactivează pentru a alege tu modelele.</string>
+    <string name="settings_forecasters_auto_subtitle">Alege automat modelul regional — UKMO în Insulele Britanice, JMA în Japonia, GEM în America de Nord etc. Dezactivează pentru a alege tu modelele.</string>
     <string name="settings_forecasters_cap_hint">Ai ales %1$d modele — maximul pentru ca graficul să rămână lizibil. Deselectează unul pentru a adăuga altul.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">European — în general cel mai precis model global. La 3 ore în feedul deschis.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">German (DWD) — solid în Europa și pe termen scurt. Orar nativ.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — solid în America de Nord. Orar nativ.</string>
+    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — orar nativ. Cel mai slab din set la precipitații: ratează averse pe care celelalte le prind.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadian (ECCC) — solid în America de Nord. La 3 ore în feedul deschis.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

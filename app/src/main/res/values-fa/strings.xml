@@ -588,14 +588,14 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_forecasters_title">مدل‌های پیش‌بینی</string>
     <string name="settings_forecasters_description">نشان اطمینان و نمودار هر مدل از این مدل‌ها تغذیه می‌شود. انتخاب تعداد بیشتر گستره‌ای غنی‌تر می‌دهد؛ تعداد کمتر تمرکز را محدودتر می‌کند. دست‌کم دو مدل همیشه انتخاب باقی می‌ماند.</string>
     <string name="settings_forecasters_auto_title">خودکار (بهترین برای موقعیت شما)</string>
-    <string name="settings_forecasters_auto_subtitle">مدل پیش‌بینی منطقه‌ای را به‌طور خودکار انتخاب می‌کند — UKMO در جزایر بریتانیا، JMA در ژاپن، GFS + GEM در آمریکای شمالی و غیره. برای انتخاب دستی مدل‌ها، آن را خاموش کنید.</string>
+    <string name="settings_forecasters_auto_subtitle">مدل پیش‌بینی منطقه‌ای را به‌طور خودکار انتخاب می‌کند — UKMO در جزایر بریتانیا، JMA در ژاپن، GEM در آمریکای شمالی و غیره. برای انتخاب دستی مدل‌ها، آن را خاموش کنید.</string>
     <string name="settings_forecasters_cap_hint">%1$d مدل انتخاب کرده‌اید — بیشترین تعدادی که نمودار خوانا می‌ماند. برای افزودن مدل دیگر، انتخاب یکی را بردارید.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">اروپایی — معمولاً دقیق‌ترین مدل جهانی. روی خوراک باز، هر 3 ساعت یک بار.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">آلمانی (DWD) — قوی در اروپا و در برد کوتاه. ساعتی بومی.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">آمریکایی (NOAA) — قوی روی آمریکای شمالی. ساعتی بومی.</string>
+    <string name="settings_forecasters_gfs_subtitle">آمریکایی (NOAA) — ساعتی بومی. ضعیف‌ترین در بارش: رگبارهایی را که بقیه می‌گیرند از دست می‌دهد.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">کانادایی (ECCC) — قوی روی آمریکای شمالی. روی خوراک باز، هر 3 ساعت یک بار.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

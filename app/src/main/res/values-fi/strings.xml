@@ -610,14 +610,14 @@ displayed label localizes.
     <string name="settings_forecasters_title">Ennustemallit</string>
     <string name="settings_forecasters_description">Varmuussiru ja mallikaavio perustuvat näihin malleihin. Useammat valinnat antavat laajemman hajonnan, harvemmat tarkemman keskittymisen. Vähintään kaksi pysyy valittuna.</string>
     <string name="settings_forecasters_auto_title">Automaattinen (paras sijaintiisi)</string>
-    <string name="settings_forecasters_auto_subtitle">Valitsee alueellisen mallin automaattisesti — UKMO Britteinsaarilla, JMA Japanissa, GFS + GEM Pohjois-Amerikassa jne. Poista käytöstä valitaksesi mallit itse.</string>
+    <string name="settings_forecasters_auto_subtitle">Valitsee alueellisen mallin automaattisesti — UKMO Britteinsaarilla, JMA Japanissa, GEM Pohjois-Amerikassa jne. Poista käytöstä valitaksesi mallit itse.</string>
     <string name="settings_forecasters_cap_hint">Olet valinnut %1$d mallia — enimmäismäärä, jolla kaavio pysyy luettavana. Poista valinta lisätäksesi toisen mallin.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Eurooppalainen — yleensä tarkin globaali malli. 3 tunnin tarkkuus avoimessa syötteessä.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Saksalainen (DWD) — vahva Euroopassa ja lyhyellä aikavälillä. Natiivisti tunneittain.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Yhdysvaltalainen (NOAA) — vahva Pohjois-Amerikassa. Natiivisti tunneittain.</string>
+    <string name="settings_forecasters_gfs_subtitle">Yhdysvaltalainen (NOAA) — natiivisti tunneittain. Joukon heikoin sateissa: siltä jäävät kuurot, jotka muut havaitsevat.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadalainen (ECCC) — vahva Pohjois-Amerikassa. 3 tunnin tarkkuus avoimessa syötteessä.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

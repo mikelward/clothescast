@@ -39,7 +39,7 @@ class MultiModelConfidenceFetcherTest {
     // (or an empty) model list — mirrors MultiModelConfidenceFetcher
     // .DEFAULT_MODELS. Joined into the request's models= parameter.
     private val defaultModelsParam =
-        "ecmwf_ifs025,gfs_seamless,icon_seamless,gem_seamless,ecmwf_aifs025_single"
+        "ecmwf_ifs025,icon_seamless,gem_seamless,ecmwf_aifs025_single"
 
     private data class LogEntry(val message: String, val throwable: Throwable?)
 

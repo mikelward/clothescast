@@ -616,14 +616,14 @@ What is NOT overridden, by design:
     <string name="settings_forecasters_title">Модели за прогноза</string>
     <string name="settings_forecasters_description">Чипът за увереност и графиката по модели се захранват от тези модели. Повече избрани модели дават по-широк разсейв; по-малко — по-стегнат фокус. Поне два остават избрани.</string>
     <string name="settings_forecasters_auto_title">Авто (най-добро за твоето местоположение)</string>
-    <string name="settings_forecasters_auto_subtitle">Избира регионалния модел автоматично — UKMO на Британските острови, JMA в Япония, GFS + GEM в Северна Америка и т.н. Изключи, за да избираш моделите сам.</string>
+    <string name="settings_forecasters_auto_subtitle">Избира регионалния модел автоматично — UKMO на Британските острови, JMA в Япония, GEM в Северна Америка и т.н. Изключи, за да избираш моделите сам.</string>
     <string name="settings_forecasters_cap_hint">Избрал си %1$d модела — максимумът, при който графиката остава четлива. Махни отметката от един, за да добавиш друг.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Европейски — като правило най-точният глобален модел. На отворения канал — на всеки 3 часа.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Немски (DWD) — силен в Европа и в краткосрочен план. По принцип на час.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Американски (NOAA) — силен над Северна Америка. По принцип на час.</string>
+    <string name="settings_forecasters_gfs_subtitle">Американски (NOAA) — по принцип на час. Най-слабият за валежи: пропуска превалявания, които другите улавят.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Канадски (ECCC) — силен над Северна Америка. На отворения канал — на всеки 3 часа.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

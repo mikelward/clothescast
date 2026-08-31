@@ -615,14 +615,14 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_forecasters_title">Model ramalan</string>
     <string name="settings_forecasters_description">Cip keyakinan dan carta setiap model mengambil data daripada model-model ini. Memilih lebih banyak memberi taburan yang lebih luas; lebih sedikit memberi tumpuan yang lebih sempit. Sekurang-kurangnya dua kekal dipilih.</string>
     <string name="settings_forecasters_auto_title">Auto (terbaik untuk lokasi anda)</string>
-    <string name="settings_forecasters_auto_subtitle">Memilih peramal cuaca serantau secara automatik — UKMO di Kepulauan British, JMA di Jepun, GFS + GEM di Amerika Utara, dll. Matikan untuk memilih model sendiri.</string>
+    <string name="settings_forecasters_auto_subtitle">Memilih peramal cuaca serantau secara automatik — UKMO di Kepulauan British, JMA di Jepun, GEM di Amerika Utara, dll. Matikan untuk memilih model sendiri.</string>
     <string name="settings_forecasters_cap_hint">Anda memilih %1$d model — had maksimum supaya carta kekal boleh dibaca. Nyahpilih satu untuk menambah model lain.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Eropah — secara amnya model global paling tepat. Setiap 3 jam pada suapan terbuka.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Jerman (DWD) — kuat di Eropah dan jangka pendek. Asli setiap jam.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerika (NOAA) — kuat di Amerika Utara. Asli setiap jam.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerika (NOAA) — asli setiap jam. Paling lemah dalam set untuk hujan: terlepas hujan yang ditangkap model lain.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanada (ECCC) — kuat di Amerika Utara. Setiap 3 jam pada suapan terbuka.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

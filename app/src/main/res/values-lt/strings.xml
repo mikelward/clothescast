@@ -621,14 +621,14 @@ What is NOT overridden, by design:
     <string name="settings_forecasters_title">Prognozės modeliai</string>
     <string name="settings_forecasters_description">Pasitikėjimo žetonas ir modelių diagrama remiasi šiais modeliais. Pasirinkus daugiau, sklaida platesnė; pasirinkus mažiau — fokusas tikslesnis. Bent du modeliai lieka pasirinkti.</string>
     <string name="settings_forecasters_auto_title">Auto (geriausia tavo vietovei)</string>
-    <string name="settings_forecasters_auto_subtitle">Automatiškai parenka regioninį modelį — UKMO Britų salose, JMA Japonijoje, GFS + GEM Šiaurės Amerikoje ir t. t. Išjunk, kad rinktumeisi modelius pats.</string>
+    <string name="settings_forecasters_auto_subtitle">Automatiškai parenka regioninį modelį — UKMO Britų salose, JMA Japonijoje, GEM Šiaurės Amerikoje ir t. t. Išjunk, kad rinktumeisi modelius pats.</string>
     <string name="settings_forecasters_cap_hint">Pasirinkai %1$d modelių — daugiausia, kiek diagrama išlieka įskaitoma. Atžymėk vieną, kad pridėtum kitą.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europos — paprastai tiksliausias pasaulinis modelis. Atvirame sraute kas 3 valandas.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Vokiečių (DWD) — stiprus Europoje ir trumpalaikėje prognozėje. Iš prigimties kas valandą.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikiečių (NOAA) — stiprus virš Šiaurės Amerikos. Iš prigimties kas valandą.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikiečių (NOAA) — iš prigimties kas valandą. Silpniausias iš rinkinio dėl kritulių: praleidžia liūtis, kurias pagauna kiti.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanados (ECCC) — stiprus virš Šiaurės Amerikos. Atvirame sraute kas 3 valandas.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

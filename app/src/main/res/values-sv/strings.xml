@@ -631,14 +631,14 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_forecasters_title">Prognosmodeller</string>
     <string name="settings_forecasters_description">Säkerhetschippet och modelldiagrammet bygger på de här modellerna. Fler val ger en bredare spridning, färre ger ett snävare fokus. Minst två förblir valda.</string>
     <string name="settings_forecasters_auto_title">Auto (bäst för din plats)</string>
-    <string name="settings_forecasters_auto_subtitle">Väljer den regionala modellen automatiskt — UKMO på Brittiska öarna, JMA i Japan, GFS + GEM i Nordamerika osv. Stäng av för att välja modeller själv.</string>
+    <string name="settings_forecasters_auto_subtitle">Väljer den regionala modellen automatiskt — UKMO på Brittiska öarna, JMA i Japan, GEM i Nordamerika osv. Stäng av för att välja modeller själv.</string>
     <string name="settings_forecasters_cap_hint">Du har valt %1$d modeller — det maximala antal där diagrammet förblir läsbart. Avmarkera en för att lägga till en annan modell.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europeisk — i regel den mest precisa globala modellen. 3-timmesupplösning i det öppna flödet.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Tysk (DWD) — stark i Europa och på kort sikt. Nativ timupplösning.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikansk (NOAA) — stark över Nordamerika. Nativ timupplösning.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikansk (NOAA) — nativ timupplösning. Svagast i uppsättningen på nederbörd: den missar skurar som de andra fångar.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadensisk (ECCC) — stark över Nordamerika. 3-timmesupplösning i det öppna flödet.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

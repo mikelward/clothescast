@@ -762,14 +762,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_title">Vorhersagemodelle</string>
     <string name="settings_forecasters_description">Der Konfidenz-Chip und das Modell-Diagramm beziehen sich auf diese Modelle. Mehr ausgewählte Modelle ergeben eine breitere Streuung, weniger einen engeren Fokus. Mindestens zwei bleiben ausgewählt.</string>
     <string name="settings_forecasters_auto_title">Auto (am besten für deinen Standort)</string>
-    <string name="settings_forecasters_auto_subtitle">Wählt das regionale Modell automatisch — UKMO auf den Britischen Inseln, JMA in Japan, GFS + GEM in Nordamerika usw. Schalte es aus, um die Modelle selbst zu wählen.</string>
+    <string name="settings_forecasters_auto_subtitle">Wählt das regionale Modell automatisch — UKMO auf den Britischen Inseln, JMA in Japan, GEM in Nordamerika usw. Schalte es aus, um die Modelle selbst zu wählen.</string>
     <string name="settings_forecasters_cap_hint">Du hast %1$d Modelle ausgewählt — das Maximum, bei dem das Diagramm lesbar bleibt. Deaktiviere eins, um ein anderes hinzuzufügen.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europäisch — in der Regel das genaueste globale Modell. 3-stündig im offenen Feed.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Deutsch (DWD) — stark in Europa und auf kurze Sicht. Stündlich nativ.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikanisch (NOAA) — stark über Nordamerika. Stündlich nativ.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikanisch (NOAA) — stündlich nativ. Am schwächsten bei Niederschlag: Schauer, die andere erfassen, übersieht es.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadisch (ECCC) — stark über Nordamerika. 3-stündig im offenen Feed.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

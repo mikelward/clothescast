@@ -571,14 +571,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_title">የትንበያ ሞዴሎች</string>
     <string name="settings_forecasters_description">የእምነት ምልክቱና በሞዴል የተከፋፈለው ቻርት ከእነዚህ ሞዴሎች ይነሳሉ። ብዙ መምረጥ ሰፊ ድርሻ ይሰጣል፤ ጥቂት መምረጥ ትኩረት ያጠብባል። ቢያንስ ሁለት ሞዴሎች ሁልጊዜ ተመርጠው ይቆያሉ።</string>
     <string name="settings_forecasters_auto_title">ራስ-ሰር (ለቦታዎ ምርጥ)</string>
-    <string name="settings_forecasters_auto_subtitle">የክልል ትንበያ ሞዴሉን በራሱ ይመርጣል — በብሪታኒያ ደሴቶች UKMO፣ በጃፓን JMA፣ በሰሜን አሜሪካ GFS + GEM ወዘተ። ሞዴሎቹን በራስዎ ለመምረጥ ካስፈለገ ያጥፉ።</string>
+    <string name="settings_forecasters_auto_subtitle">የክልል ትንበያ ሞዴሉን በራሱ ይመርጣል — በብሪታኒያ ደሴቶች UKMO፣ በጃፓን JMA፣ በሰሜን አሜሪካ GEM ወዘተ። ሞዴሎቹን በራስዎ ለመምረጥ ካስፈለገ ያጥፉ።</string>
     <string name="settings_forecasters_cap_hint">%1$d ሞዴሎችን መርጠዋል — ቻርቱ ለማንበብ የሚቀልበት ከፍተኛ ቁጥር። ሌላ ሞዴል ለመጨመር አንዱን ምርጫ ይሰርዙ።</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">አውሮፓዊ — በአጠቃላይ በጣም ትክክለኛው ዓለም አቀፍ ሞዴል። በክፍት ምግብ በሰዓታት ሶስት።</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">ጀርመናዊ (DWD) — በአውሮፓ እና በአጭር ጊዜ ጠንካራ። የራሱ ሰዓታዊ።</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">አሜሪካዊ (NOAA) — በሰሜን አሜሪካ ጠንካራ። የራሱ ሰዓታዊ።</string>
+    <string name="settings_forecasters_gfs_subtitle">አሜሪካዊ (NOAA) — የራሱ ሰዓታዊ። በዝናብ ላይ ከሁሉ ደካማው፤ ሌሎቹ የሚይዙትን ዝናብ ያመልጠዋል።</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">ካናዳዊ (ECCC) — በሰሜን አሜሪካ ጠንካራ። በክፍት ምግብ በሰዓታት ሶስት።</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

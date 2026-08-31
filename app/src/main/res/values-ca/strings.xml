@@ -572,14 +572,14 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_forecasters_title">Models de previsió</string>
     <string name="settings_forecasters_description">L\'indicador de confiança i el gràfic per model es basen en aquests models. Triar-ne més amplia el ventall; menys, el concentra. Almenys dos resten seleccionats.</string>
     <string name="settings_forecasters_auto_title">Auto (el millor per a la teva ubicació)</string>
-    <string name="settings_forecasters_auto_subtitle">Tria automàticament el model regional — UKMO a les illes britàniques, JMA al Japó, GFS + GEM a Amèrica del Nord, etc. Desactiva\'l per triar tu mateix els models.</string>
+    <string name="settings_forecasters_auto_subtitle">Tria automàticament el model regional — UKMO a les illes britàniques, JMA al Japó, GEM a Amèrica del Nord, etc. Desactiva\'l per triar tu mateix els models.</string>
     <string name="settings_forecasters_cap_hint">Has triat %1$d models — el màxim perquè el gràfic continuï llegible. Desselecciona\'n un per afegir-ne un altre.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europeu — generalment el model global més precís. Cada 3 h al canal obert.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Alemany (DWD) — sòlid a Europa i a curt termini. Horari natiu.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Americà (NOAA) — sòlid a Amèrica del Nord. Horari natiu.</string>
+    <string name="settings_forecasters_gfs_subtitle">Americà (NOAA) — horari natiu. El més fluix del grup en pluja: se li escapen ruixats que els altres detecten.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadenc (ECCC) — sòlid a Amèrica del Nord. Cada 3 h al canal obert.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

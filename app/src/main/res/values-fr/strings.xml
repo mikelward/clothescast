@@ -728,14 +728,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_title">Modèles de prévision</string>
     <string name="settings_forecasters_description">La puce de confiance et le graphique par modèle s\'appuient sur ces modèles. En choisir plus élargit l\'éventail ; en choisir moins resserre le focus. Au moins deux restent sélectionnés.</string>
     <string name="settings_forecasters_auto_title">Auto (le mieux pour ta position)</string>
-    <string name="settings_forecasters_auto_subtitle">Choisit automatiquement le modèle régional — UKMO sur les îles Britanniques, JMA au Japon, GFS + GEM en Amérique du Nord, etc. Désactive pour choisir tes modèles toi-même.</string>
+    <string name="settings_forecasters_auto_subtitle">Choisit automatiquement le modèle régional — UKMO sur les îles Britanniques, JMA au Japon, GEM en Amérique du Nord, etc. Désactive pour choisir tes modèles toi-même.</string>
     <string name="settings_forecasters_cap_hint">Tu as sélectionné %1$d modèles — le maximum pour que le graphique reste lisible. Désélectionnes-en un pour en ajouter un autre.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Européen — généralement le modèle global le plus précis. Toutes les 3 h sur le flux ouvert.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Allemand (DWD) — solide en Europe et à courte échéance. Pas horaire natif.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Américain (NOAA) — solide sur l\'Amérique du Nord. Pas horaire natif.</string>
+    <string name="settings_forecasters_gfs_subtitle">Américain (NOAA) — pas horaire natif. Le plus faible du lot sur la pluie : il rate des averses que les autres captent.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadien (ECCC) — solide sur l\'Amérique du Nord. Toutes les 3 h sur le flux ouvert.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

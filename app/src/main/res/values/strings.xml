@@ -645,14 +645,14 @@
     <string name="settings_forecasters_title">Forecast models</string>
     <string name="settings_forecasters_description">The confidence chip and the per-model chart pull from these models. Picking more gives a richer spread; fewer means a tighter focus. At least two stay selected.</string>
     <string name="settings_forecasters_auto_title">Auto (best for your location)</string>
-    <string name="settings_forecasters_auto_subtitle">Pick the regional forecaster automatically — UKMO in the British Isles, JMA in Japan, GFS + GEM in North America, etc. Turn off to choose models yourself.</string>
+    <string name="settings_forecasters_auto_subtitle">Pick the regional forecaster automatically — UKMO in the British Isles, JMA in Japan, GEM in North America, etc. Turn off to choose models yourself.</string>
     <string name="settings_forecasters_cap_hint">You\'ve picked %1$d models — the most the chart stays readable for. Deselect one to add a different model.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">European — generally the most accurate global model. 0.25° open feed, out to 15 days.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">German (DWD) — strong in Europe and at short range. Native hourly.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — strong over North America. Native hourly.</string>
+    <string name="settings_forecasters_gfs_subtitle">American (NOAA) — native hourly. Weakest of the set on rainfall: it misses showers the others catch.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadian (ECCC) — strong over North America. 3-hourly on the open feed.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

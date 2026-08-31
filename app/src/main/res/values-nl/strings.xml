@@ -677,14 +677,14 @@ the displayed label localizes.
     <string name="settings_forecasters_title">Voorspellingsmodellen</string>
     <string name="settings_forecasters_description">De betrouwbaarheidschip en de grafiek per model komen uit deze modellen. Meer keuzes geven een breder bereik; minder een scherpere focus. Minstens twee blijven geselecteerd.</string>
     <string name="settings_forecasters_auto_title">Auto (het beste voor jouw locatie)</string>
-    <string name="settings_forecasters_auto_subtitle">Kiest automatisch het regionale model — UKMO op de Britse eilanden, JMA in Japan, GFS + GEM in Noord-Amerika, enz. Zet uit om zelf modellen te kiezen.</string>
+    <string name="settings_forecasters_auto_subtitle">Kiest automatisch het regionale model — UKMO op de Britse eilanden, JMA in Japan, GEM in Noord-Amerika, enz. Zet uit om zelf modellen te kiezen.</string>
     <string name="settings_forecasters_cap_hint">Je hebt %1$d modellen gekozen — het maximum waarbij de grafiek leesbaar blijft. Schakel er een uit om een ander toe te voegen.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europees — doorgaans het meest nauwkeurige wereldwijde model. Om de 3 uur op de open feed.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Duits (DWD) — sterk in Europa en op korte termijn. Natief per uur.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikaans (NOAA) — sterk in Noord-Amerika. Natief per uur.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikaans (NOAA) — natief per uur. Het zwakst van de set bij regen: mist buien die de andere wel zien.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadees (ECCC) — sterk in Noord-Amerika. Om de 3 uur op de open feed.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

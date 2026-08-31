@@ -637,14 +637,14 @@ Not overridden by design:
     <string name="settings_forecasters_title">पूर्वानुमान मॉडल</string>
     <string name="settings_forecasters_description">कॉन्फिडेंस चिप और प्रति-मॉडल चार्ट इन मॉडलों से डेटा लेते हैं। ज़्यादा चुनने पर अधिक विस्तार मिलता है; कम चुनने पर ध्यान केंद्रित रहता है। कम से कम दो हमेशा चयनित रहते हैं।</string>
     <string name="settings_forecasters_auto_title">स्वतः (आपके स्थान के लिए सर्वोत्तम)</string>
-    <string name="settings_forecasters_auto_subtitle">क्षेत्रीय पूर्वानुमानकर्ता स्वतः चुनें — ब्रिटिश आइल्स में UKMO, जापान में JMA, उत्तरी अमेरिका में GFS + GEM, इत्यादि। स्वयं मॉडल चुनने के लिए बंद करें।</string>
+    <string name="settings_forecasters_auto_subtitle">क्षेत्रीय पूर्वानुमानकर्ता स्वतः चुनें — ब्रिटिश आइल्स में UKMO, जापान में JMA, उत्तरी अमेरिका में GEM, इत्यादि। स्वयं मॉडल चुनने के लिए बंद करें।</string>
     <string name="settings_forecasters_cap_hint">आपने %1$d मॉडल चुने हैं — चार्ट जितने पर पठनीय रहता है उसकी सीमा। दूसरा मॉडल जोड़ने के लिए एक का चयन हटाएँ।</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">यूरोपीय — आम तौर पर सबसे सटीक वैश्विक मॉडल। ओपन फ़ीड पर 3-घंटे का अंतराल।</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">जर्मन (DWD) — यूरोप और अल्प-दूरी पर मजबूत। नेटिव प्रति घंटा।</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">अमेरिकी (NOAA) — उत्तरी अमेरिका पर मजबूत। नेटिव प्रति घंटा।</string>
+    <string name="settings_forecasters_gfs_subtitle">अमेरिकी (NOAA) — नेटिव प्रति घंटा। वर्षा में सबसे कमज़ोर: दूसरे जिन बौछारों को पकड़ते हैं, यह उन्हें चूक जाता है।</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">कनाडाई (ECCC) — उत्तरी अमेरिका पर मजबूत। ओपन फ़ीड पर 3-घंटे का अंतराल।</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

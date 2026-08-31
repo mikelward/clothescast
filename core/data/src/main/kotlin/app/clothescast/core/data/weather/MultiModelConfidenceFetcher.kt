@@ -521,12 +521,14 @@ internal class MultiModelConfidenceFetcher(
     companion object {
         // Safety-net default when the caller passes an empty model list (a
         // hand-edited DataStore could). Mirrors ForecastModel.DEFAULTS: the
-        // ECMWF (0.25°) / GFS / ICON trio for the high-res first week, plus
-        // GEM and AIFS so two-plus models keep reporting through the second
-        // week once ICON drops out at ~day 7. The real selection flows in via
-        // the `models` parameter (SettingsRepository → defaultsFor).
+        // ECMWF (0.25°) / ICON pair for the high-res first week, plus GEM and
+        // AIFS so two-plus models keep reporting through the second week once
+        // ICON drops out at ~day 7. GFS is deliberately absent — see
+        // ForecastModel.DEFAULTS for why. Keep this list in step with it; the
+        // real selection flows in via the `models` parameter
+        // (SettingsRepository → defaultsFor).
         val DEFAULT_MODELS =
-            listOf("ecmwf_ifs025", "gfs_seamless", "icon_seamless", "gem_seamless", "ecmwf_aifs025_single")
+            listOf("ecmwf_ifs025", "icon_seamless", "gem_seamless", "ecmwf_aifs025_single")
 
         // Open-Meteo's status for an invalid/withdrawn `models=` entry.
         private const val HTTP_BAD_REQUEST = 400

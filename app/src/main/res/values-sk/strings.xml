@@ -633,14 +633,14 @@ What is NOT overridden, by design:
     <string name="settings_forecasters_title">Modely prognóz</string>
     <string name="settings_forecasters_description">Indikátor istoty a graf podľa modelov čerpajú z týchto modelov. Viac vybraných znamená širší rozptyl; menej znamená užší fokus. Aspoň dva zostávajú vybrané.</string>
     <string name="settings_forecasters_auto_title">Automaticky (najlepšie pre tvoju polohu)</string>
-    <string name="settings_forecasters_auto_subtitle">Automaticky vyberie regionálny model — UKMO na Britských ostrovoch, JMA v Japonsku, GFS + GEM v Severnej Amerike atď. Vypni, ak si chceš modely zvoliť sám.</string>
+    <string name="settings_forecasters_auto_subtitle">Automaticky vyberie regionálny model — UKMO na Britských ostrovoch, JMA v Japonsku, GEM v Severnej Amerike atď. Vypni, ak si chceš modely zvoliť sám.</string>
     <string name="settings_forecasters_cap_hint">Vybral si %1$d modelov — najviac, koľko zostane graf čitateľný. Odznač jeden, ak chceš pridať iný model.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Európsky — vo všeobecnosti najpresnejší globálny model. Trojhodinový krok na otvorenom feede.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Nemecký (DWD) — silný v Európe a na krátky horizont. Natívne hodinový.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Americký (NOAA) — silný nad Severnou Amerikou. Natívne hodinový.</string>
+    <string name="settings_forecasters_gfs_subtitle">Americký (NOAA) — natívne hodinový. Najslabší zo sady na zrážky: uniknú mu prehánky, ktoré ostatné zachytia.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadský (ECCC) — silný nad Severnou Amerikou. Trojhodinový krok na otvorenom feede.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

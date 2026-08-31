@@ -42,7 +42,7 @@ firebase-app-distribution.json
 *.log
 hs_err_pid*
 
-# mikelward/androidlog, checked out here by CI and by the session-start hook
-# and included as a composite build (settings.gradle.kts). A checkout, not a
-# vendored copy — nothing in it is ours to commit.
+# mikelward/androidlog. No longer needed to build — the library is resolved
+# from its published Maven repository — but `-PandroidlogLocal` still picks a
+# checkout up from here, so an optional one must not be committable.
 /.androidlog/

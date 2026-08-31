@@ -616,13 +616,12 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
 
-    // The shared debug log (mikelward/androidlog), resolved from the composite
-    // build wired up in settings.gradle.kts. Deliberately a string rather than
-    // a version-catalog entry: the `0.0` is inert — substitution matches on
-    // group and name and swaps in the local checkout before anything resolves —
-    // and a catalog entry would read like a version somebody should keep
-    // current. There is nothing to bump.
-    implementation("com.mikelward.androidlog:logging-android:0.0")
+    // The shared debug log (mikelward/androidlog), now a published coordinate
+    // rather than a composite build — so it IS a version somebody keeps
+    // current, and the weekly Gradle batch does it. The `-PandroidlogLocal`
+    // escape hatch in settings.gradle.kts still substitutes a local checkout
+    // when you are changing both repositories at once.
+    implementation(libs.androidlog.logging.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

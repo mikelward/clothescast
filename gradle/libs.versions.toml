@@ -1,5 +1,5 @@
 [versions]
-androidlog = "1.0.42"
+androidlog = "1.0.48"
 # AGP 9.x pairs with the Gradle 9.x wrapper (kept in lockstep in
 # gradle-wrapper.properties — currently 9.7.0; AGP 9.3 requires Gradle 9.5.0+
 # and JDK 17+, we build on 21). AGP 9 ships Kotlin support built-in, so the

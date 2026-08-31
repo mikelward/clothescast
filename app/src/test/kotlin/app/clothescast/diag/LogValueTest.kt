@@ -1,7 +1,7 @@
 package app.clothescast.diag
 
 import app.clothescast.cast.CastDeviceClass
-import com.mikelward.androidlog.REDACTED_PLACEHOLDER
+import com.mikelward.androidlog.OFF_DEVICE_PLACEHOLDER
 import com.mikelward.androidlog.formatLogMessage
 import com.mikelward.androidlog.logArgumentMayLeaveDevice
 import com.mikelward.androidlog.safe
@@ -30,15 +30,15 @@ import org.junit.jupiter.api.Test
 class LogValueTest {
 
     private fun mirrored(format: String, vararg args: Any?) =
-        formatLogMessage(format, args, redactSensitive = true)
+        formatLogMessage(format, args, leavingDevice = true)
 
     private fun onDevice(format: String, vararg args: Any?) =
-        formatLogMessage(format, args, redactSensitive = false)
+        formatLogMessage(format, args, leavingDevice = false)
 
     @Test
     fun `string arguments are withheld from the mirror`() {
         mirrored("fetch place=%s cached=%s", "Fitzroy North", false) shouldBe
-            "fetch place=$REDACTED_PLACEHOLDER cached=false"
+            "fetch place=$OFF_DEVICE_PLACEHOLDER cached=false"
     }
 
     // The point of inverting the default: nobody taught this about a geocoded
@@ -51,8 +51,8 @@ class LogValueTest {
             "1 Example St, Suburb",
             "Morning standup",
             "Cold and wet — take the big coat.",
-        ) shouldBe "deliver address=$REDACTED_PLACEHOLDER event=$REDACTED_PLACEHOLDER " +
-            "prose=$REDACTED_PLACEHOLDER"
+        ) shouldBe "deliver address=$OFF_DEVICE_PLACEHOLDER event=$OFF_DEVICE_PLACEHOLDER " +
+            "prose=$OFF_DEVICE_PLACEHOLDER"
     }
 
     @Test
@@ -80,7 +80,7 @@ class LogValueTest {
     @Test
     fun `a sensitive tag withholds an identifying number`() {
         mirrored("located at=%s accuracy=%s", sensitive(-37.8), 12) shouldBe
-            "located at=$REDACTED_PLACEHOLDER accuracy=12"
+            "located at=$OFF_DEVICE_PLACEHOLDER accuracy=12"
     }
 
     // Sensitive dominates wherever it appears, so a value cannot be un-marked
@@ -89,7 +89,7 @@ class LogValueTest {
     @Test
     fun `a sensitive value stays withheld under a safe wrapper`() {
         mirrored("located at=%s", safe(sensitive(-37.8))) shouldBe
-            "located at=$REDACTED_PLACEHOLDER"
+            "located at=$OFF_DEVICE_PLACEHOLDER"
     }
 
     @Test
@@ -166,6 +166,6 @@ class LogValueTest {
         onDevice("location %s -> %s", "Fitzroy North", "Docklands") shouldBe
             "location Fitzroy North -> Docklands"
         mirrored("location %s -> %s", "Fitzroy North", "Docklands") shouldBe
-            "location $REDACTED_PLACEHOLDER -> $REDACTED_PLACEHOLDER"
+            "location $OFF_DEVICE_PLACEHOLDER -> $OFF_DEVICE_PLACEHOLDER"
     }
 }

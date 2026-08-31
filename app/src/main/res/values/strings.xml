@@ -414,7 +414,7 @@
     <!-- TODO: translate -->
     <string name="today_telemetry_invite_body" tools:ignore="MissingTranslation">Send crash reports and anonymous usage stats so bugs get found and fixed?</string>
     <!-- TODO: translate -->
-    <string name="today_telemetry_invite_accept" tools:ignore="MissingTranslation">Yes</string>
+    <string name="today_telemetry_invite_accept" tools:ignore="MissingTranslation">Yes please</string>
     <!-- TODO: translate -->
     <string name="today_telemetry_invite_decline" tools:ignore="MissingTranslation">No thanks</string>
     <string name="today_telemetry_notice_open_settings">Privacy settings</string>

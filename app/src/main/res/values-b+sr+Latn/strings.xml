@@ -618,14 +618,14 @@ default English (matching values-pl / values-uk).
     <string name="settings_forecasters_title">Modeli prognoze</string>
     <string name="settings_forecasters_description">Oznaka pouzdanosti i grafikon po modelu povlače podatke iz ovih modela. Više izabranih daje širi raspon; manje znači uži fokus. Najmanje dva ostaju izabrana.</string>
     <string name="settings_forecasters_auto_title">Automatski (najbolje za tvoju lokaciju)</string>
-    <string name="settings_forecasters_auto_subtitle">Automatski bira regionalni model — UKMO na Britanskim ostrvima, JMA u Japanu, GFS + GEM u Severnoj Americi itd. Isključi da modele biraš sam.</string>
+    <string name="settings_forecasters_auto_subtitle">Automatski bira regionalni model — UKMO na Britanskim ostrvima, JMA u Japanu, GEM u Severnoj Americi itd. Isključi da modele biraš sam.</string>
     <string name="settings_forecasters_cap_hint">Izabrao si %1$d modela — najviše koliko grafikon ostaje čitljiv. Odznači jedan da dodaš drugi.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Evropski — uglavnom najtačniji globalni model. Trosatni korak na otvorenom fidu.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Nemački (DWD) — jak u Evropi i na kratke rokove. Nativno satni.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Američki (NOAA) — jak nad Severnom Amerikom. Nativno satni.</string>
+    <string name="settings_forecasters_gfs_subtitle">Američki (NOAA) — nativno satni. Najslabiji u grupi za padavine: propušta pljuskove koje drugi uhvate.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadski (ECCC) — jak nad Severnom Amerikom. Trosatni korak na otvorenom fidu.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

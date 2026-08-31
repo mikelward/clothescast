@@ -458,14 +458,14 @@
     <string name="settings_forecasters_title">Modelet e parashikimit</string>
     <string name="settings_forecasters_description">Çipi i besueshmërisë dhe grafiku për çdo model mbështeten te këto modele. Zgjedhja e më shumëve jep një larmi më të pasur; më pak do të thotë fokus më i ngushtë. Të paktën dy mbeten të zgjedhur.</string>
     <string name="settings_forecasters_auto_title">Automatik (më i miri për vendndodhjen tënde)</string>
-    <string name="settings_forecasters_auto_subtitle">Zgjidh automatikisht parashikuesin rajonal — UKMO në Ishujt Britanikë, JMA në Japoni, GFS + GEM në Amerikën e Veriut, etj. Çaktivizoje për të zgjedhur vetë modelet.</string>
+    <string name="settings_forecasters_auto_subtitle">Zgjidh automatikisht parashikuesin rajonal — UKMO në Ishujt Britanikë, JMA në Japoni, GEM në Amerikën e Veriut, etj. Çaktivizoje për të zgjedhur vetë modelet.</string>
     <string name="settings_forecasters_cap_hint">Ke zgjedhur %1$d modele — më të shumtat për të cilat grafiku mbetet i lexueshëm. Çzgjidh një për të shtuar një model tjetër.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Evropian — në përgjithësi modeli global më i saktë. Çdo 3 orë në burimin e hapur.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Gjerman (DWD) — i fortë në Evropë dhe në distanca të shkurtra. Orar nga burimi.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikan (NOAA) — i fortë mbi Amerikën e Veriut. Orar nga burimi.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikan (NOAA) — orar nga burimi. Më i dobëti i grupit për reshjet: i shpëtojnë rrebeshet që të tjerët i kapin.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadez (ECCC) — i fortë mbi Amerikën e Veriut. Çdo 3 orë në burimin e hapur.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

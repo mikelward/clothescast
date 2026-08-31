@@ -36,9 +36,9 @@ class ForecastModelDefaultsTest {
         ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val northAmerica = listOf(
-        ForecastModel.GFS_SEAMLESS,
         ForecastModel.GEM_SEAMLESS,
         ForecastModel.ECMWF_IFS025,
+        ForecastModel.ICON_SEAMLESS,
         ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val eastAsia = listOf(
@@ -55,14 +55,40 @@ class ForecastModelDefaultsTest {
     }
 
     @Test
-    fun `global default is the five-model blend with second-week coverage`() {
+    fun `global default is the four-model blend with second-week coverage`() {
         ForecastModel.DEFAULTS shouldContainExactlyInAnyOrder listOf(
             ForecastModel.ECMWF_IFS025,
-            ForecastModel.GFS_SEAMLESS,
             ForecastModel.ICON_SEAMLESS,
             ForecastModel.GEM_SEAMLESS,
             ForecastModel.ECMWF_AIFS025_SINGLE,
         )
+    }
+
+    @Test
+    fun `no default set anywhere carries GFS`() {
+        // GFS is out of every default set, regional and global alike: a
+        // mean-based consensus cannot discount a member that is wrong in a
+        // consistent direction, and GFS's rainfall errors are systematically
+        // dry rather than noisy. Users can still select it explicitly in the
+        // Forecasters picker.
+        val everywhere = listOf(
+            null, // no location yet
+            at(51.51, -0.13), // London
+            at(48.86, 2.35), // Paris
+            at(59.33, 18.07), // Stockholm
+            at(64.13, -21.94), // Reykjavik
+            at(40.71, -74.01), // New York
+            at(49.28, -123.12), // Vancouver
+            at(19.43, -99.13), // Mexico City
+            at(35.68, 139.76), // Tokyo
+            at(37.57, 126.98), // Seoul
+            at(-33.87, 151.21), // Sydney
+            at(-23.55, -46.63), // Sao Paulo
+            at(1.35, 103.82), // Singapore
+        )
+        for (location in everywhere) {
+            ForecastModel.defaultsFor(location) shouldNotContain ForecastModel.GFS_SEAMLESS
+        }
     }
 
     @Test
@@ -171,6 +197,15 @@ class ForecastModelDefaultsTest {
         for (city in cities) {
             ForecastModel.defaultsFor(city) shouldContain ForecastModel.ECMWF_AIFS025_SINGLE
         }
+    }
+
+    @Test
+    fun `North American defaults keep two models reporting in the second week`() {
+        // ICON replaced GFS and stops at ~day 7, so assert the long-range
+        // pair that paints days 8-14 is still there.
+        val models = ForecastModel.defaultsFor(at(40.71, -74.01))
+        models shouldContain ForecastModel.ECMWF_IFS025
+        models shouldContain ForecastModel.ECMWF_AIFS025_SINGLE
     }
 
     @Test

@@ -749,14 +749,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_title">Μοντέλα πρόβλεψης</string>
     <string name="settings_forecasters_description">Το chip βεβαιότητας και το διάγραμμα ανά μοντέλο αντλούν από αυτά τα μοντέλα. Όσα περισσότερα διαλέξεις, τόσο πιο πλούσια η διασπορά· όσα λιγότερα, τόσο πιο εστιασμένη η εικόνα. Τουλάχιστον δύο παραμένουν επιλεγμένα.</string>
     <string name="settings_forecasters_auto_title">Αυτόματο (το καλύτερο για την τοποθεσία σου)</string>
-    <string name="settings_forecasters_auto_subtitle">Διαλέγει αυτόματα το περιφερειακό μοντέλο — UKMO στις Βρετανικές Νήσους, JMA στην Ιαπωνία, GFS + GEM στη Βόρεια Αμερική κ.ο.κ. Απενεργοποίησέ το για να διαλέξεις μοντέλα μόνος σου.</string>
+    <string name="settings_forecasters_auto_subtitle">Διαλέγει αυτόματα το περιφερειακό μοντέλο — UKMO στις Βρετανικές Νήσους, JMA στην Ιαπωνία, GEM στη Βόρεια Αμερική κ.ο.κ. Απενεργοποίησέ το για να διαλέξεις μοντέλα μόνος σου.</string>
     <string name="settings_forecasters_cap_hint">Έχεις διαλέξει %1$d μοντέλα — ο μέγιστος αριθμός στον οποίο το διάγραμμα παραμένει ευανάγνωστο. Αποεπίλεξε ένα για να προσθέσεις άλλο.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Ευρωπαϊκό — γενικά το πιο ακριβές παγκόσμιο μοντέλο. 3-ωρη ανάλυση στο ανοιχτό feed.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Γερμανικό (DWD) — ισχυρό στην Ευρώπη και σε μικρή χρονική εμβέλεια. Εγγενώς ωριαία ανάλυση.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Αμερικανικό (NOAA) — ισχυρό στη Βόρεια Αμερική. Εγγενώς ωριαία ανάλυση.</string>
+    <string name="settings_forecasters_gfs_subtitle">Αμερικανικό (NOAA) — εγγενώς ωριαία ανάλυση. Το πιο αδύναμο του συνόλου στη βροχή: χάνει μπόρες που πιάνουν τα άλλα.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Καναδικό (ECCC) — ισχυρό στη Βόρεια Αμερική. 3-ωρη ανάλυση στο ανοιχτό feed.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

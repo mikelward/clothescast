@@ -670,14 +670,14 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_forecasters_title">Mô hình dự báo</string>
     <string name="settings_forecasters_description">Chỉ báo độ tin cậy và biểu đồ theo mô hình lấy dữ liệu từ các mô hình này. Chọn nhiều hơn cho phổ rộng hơn; chọn ít hơn cho tiêu điểm hẹp hơn. Tối thiểu hai mô hình luôn được chọn.</string>
     <string name="settings_forecasters_auto_title">Tự động (tốt nhất cho vị trí của bạn)</string>
-    <string name="settings_forecasters_auto_subtitle">Tự động chọn nguồn dự báo theo khu vực — UKMO ở Quần đảo Anh, JMA ở Nhật Bản, GFS + GEM ở Bắc Mỹ, v.v. Tắt để tự chọn mô hình.</string>
+    <string name="settings_forecasters_auto_subtitle">Tự động chọn nguồn dự báo theo khu vực — UKMO ở Quần đảo Anh, JMA ở Nhật Bản, GEM ở Bắc Mỹ, v.v. Tắt để tự chọn mô hình.</string>
     <string name="settings_forecasters_cap_hint">Bạn đã chọn %1$d mô hình — mức tối đa để biểu đồ vẫn dễ đọc. Bỏ chọn một để thêm mô hình khác.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Châu Âu — thường là mô hình toàn cầu chính xác nhất. Cập nhật 3 giờ một lần trên nguồn mở.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Đức (DWD) — mạnh ở châu Âu và dự báo ngắn hạn. Gốc theo giờ.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Mỹ (NOAA) — mạnh ở Bắc Mỹ. Gốc theo giờ.</string>
+    <string name="settings_forecasters_gfs_subtitle">Mỹ (NOAA) — gốc theo giờ. Yếu nhất trong nhóm về mưa: bỏ sót những cơn mưa rào mà các mô hình khác bắt được.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canada (ECCC) — mạnh ở Bắc Mỹ. Cập nhật 3 giờ một lần trên nguồn mở.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

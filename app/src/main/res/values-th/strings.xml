@@ -609,14 +609,14 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_title">แบบจำลองพยากรณ์</string>
     <string name="settings_forecasters_description">ป้ายความเชื่อมั่นและแผนภูมิตามแบบจำลองดึงข้อมูลจากแบบจำลองเหล่านี้ เลือกเพิ่มเพื่อให้ขอบเขตกว้างขึ้น เลือกน้อยลงเพื่อโฟกัสมากขึ้น อย่างน้อยสองตัวจะถูกเลือกอยู่เสมอ</string>
     <string name="settings_forecasters_auto_title">อัตโนมัติ (เหมาะสมที่สุดสำหรับตำแหน่งของคุณ)</string>
-    <string name="settings_forecasters_auto_subtitle">เลือกแบบจำลองพยากรณ์ระดับภูมิภาคโดยอัตโนมัติ — UKMO ในหมู่เกาะอังกฤษ JMA ในญี่ปุ่น GFS + GEM ในอเมริกาเหนือ ฯลฯ ปิดเพื่อเลือกแบบจำลองด้วยตนเอง</string>
+    <string name="settings_forecasters_auto_subtitle">เลือกแบบจำลองพยากรณ์ระดับภูมิภาคโดยอัตโนมัติ — UKMO ในหมู่เกาะอังกฤษ JMA ในญี่ปุ่น GEM ในอเมริกาเหนือ ฯลฯ ปิดเพื่อเลือกแบบจำลองด้วยตนเอง</string>
     <string name="settings_forecasters_cap_hint">คุณเลือก %1$d แบบจำลอง — สูงสุดที่แผนภูมิยังคงอ่านง่าย ยกเลิกการเลือกหนึ่งตัวเพื่อเพิ่มแบบจำลองอื่น</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">ยุโรป — โดยทั่วไปแม่นยำที่สุดในระดับโลก ฟีดเปิด 3 ชั่วโมงต่อครั้ง</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">เยอรมัน (DWD) — แม่นยำในยุโรปและพยากรณ์ระยะสั้น เนทีฟทุกชั่วโมง</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">อเมริกัน (NOAA) — แม่นยำในอเมริกาเหนือ เนทีฟทุกชั่วโมง</string>
+    <string name="settings_forecasters_gfs_subtitle">อเมริกัน (NOAA) — เนทีฟทุกชั่วโมง อ่อนที่สุดในชุดเรื่องฝน มักพลาดฝนที่แบบจำลองอื่นจับได้</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">แคนาดา (ECCC) — แม่นยำในอเมริกาเหนือ ฟีดเปิด 3 ชั่วโมงต่อครั้ง</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

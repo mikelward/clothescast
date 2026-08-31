@@ -609,14 +609,14 @@ displayed label localizes.
     <string name="settings_forecasters_title">Tahmin modelleri</string>
     <string name="settings_forecasters_description">Güven rozeti ve model bazlı grafik bu modellerden beslenir. Daha fazla seçmek dağılımı zenginleştirir; daha az seçmek odağı daraltır. En az iki model her zaman seçili kalır.</string>
     <string name="settings_forecasters_auto_title">Otomatik (konumun için en iyisi)</string>
-    <string name="settings_forecasters_auto_subtitle">Bölgesel tahmin sağlayıcıyı otomatik olarak seçer — Britanya Adaları\'nda UKMO, Japonya\'da JMA, Kuzey Amerika\'da GFS + GEM gibi. Modelleri kendin seçmek istersen kapat.</string>
+    <string name="settings_forecasters_auto_subtitle">Bölgesel tahmin sağlayıcıyı otomatik olarak seçer — Britanya Adaları\'nda UKMO, Japonya\'da JMA, Kuzey Amerika\'da GEM gibi. Modelleri kendin seçmek istersen kapat.</string>
     <string name="settings_forecasters_cap_hint">%1$d model seçtin — grafiğin okunabilir kaldığı en yüksek sayı. Farklı bir model eklemek için birinin seçimini kaldır.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Avrupa — genelde en doğru küresel model. Açık akışta 3 saatte bir.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Alman (DWD) — Avrupa\'da ve kısa vadede güçlü. Saatlik veri sağlar.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikan (NOAA) — Kuzey Amerika üzerinde güçlü. Saatlik veri sağlar.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikan (NOAA) — saatlik veri sağlar. Yağış konusunda setin en zayıfı: diğerlerinin yakaladığı sağanakları kaçırır.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadalı (ECCC) — Kuzey Amerika üzerinde güçlü. Açık akışta 3 saatte bir.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

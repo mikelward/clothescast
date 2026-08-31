@@ -697,14 +697,14 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_forecasters_title">Modeli prognoze</string>
     <string name="settings_forecasters_description">Oznaka pouzdanosti i grafikon po modelu povlače podatke iz ovih modela. Više odabranih daje širi raspon; manje znači uži fokus. Najmanje dva ostaju odabrana.</string>
     <string name="settings_forecasters_auto_title">Automatski (najbolje za tvoju lokaciju)</string>
-    <string name="settings_forecasters_auto_subtitle">Automatski odabire regionalni model — UKMO na Britanskom otočju, JMA u Japanu, GFS + GEM u Sjevernoj Americi itd. Isključi da modele biraš sam.</string>
+    <string name="settings_forecasters_auto_subtitle">Automatski odabire regionalni model — UKMO na Britanskom otočju, JMA u Japanu, GEM u Sjevernoj Americi itd. Isključi da modele biraš sam.</string>
     <string name="settings_forecasters_cap_hint">Odabrao si %1$d modela — najviše koliko grafikon ostaje čitljiv. Odznači jedan da dodaš drugi.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europski — općenito najtočniji globalni model. Trosatno na otvorenom feedu.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Njemački (DWD) — jak u Europi i na kratke rokove. Nativno satno.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Američki (NOAA) — jak nad Sjevernom Amerikom. Nativno satno.</string>
+    <string name="settings_forecasters_gfs_subtitle">Američki (NOAA) — nativno satno. Najslabiji u skupu za oborine: promaknu mu pljuskovi koje drugi uhvate.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadski (ECCC) — jak nad Sjevernom Amerikom. Trosatno na otvorenom feedu.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

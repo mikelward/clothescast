@@ -608,14 +608,14 @@ to values/strings.xml (English).
     <string name="settings_forecasters_title">Model prakiraan</string>
     <string name="settings_forecasters_description">Indikator kepercayaan dan diagram per model mengambil data dari model-model ini. Memilih lebih banyak memberi sebaran yang lebih luas; lebih sedikit berarti fokus yang lebih sempit. Minimal dua tetap dipilih.</string>
     <string name="settings_forecasters_auto_title">Otomatis (terbaik untuk lokasi Anda)</string>
-    <string name="settings_forecasters_auto_subtitle">Memilih prakiraan regional secara otomatis — UKMO di Kepulauan Inggris, JMA di Jepang, GFS + GEM di Amerika Utara, dsb. Matikan untuk memilih model sendiri.</string>
+    <string name="settings_forecasters_auto_subtitle">Memilih prakiraan regional secara otomatis — UKMO di Kepulauan Inggris, JMA di Jepang, GEM di Amerika Utara, dsb. Matikan untuk memilih model sendiri.</string>
     <string name="settings_forecasters_cap_hint">Anda memilih %1$d model — batas maksimum agar diagram tetap mudah dibaca. Hapus pilihan satu untuk menambahkan model lain.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Eropa — umumnya model global paling akurat. Tiap 3 jam pada open feed.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Jerman (DWD) — kuat di Eropa dan jangka pendek. Native per jam.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerika (NOAA) — kuat di Amerika Utara. Native per jam.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerika (NOAA) — native per jam. Paling lemah soal hujan: melewatkan hujan yang ditangkap model lain.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanada (ECCC) — kuat di Amerika Utara. Tiap 3 jam pada open feed.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

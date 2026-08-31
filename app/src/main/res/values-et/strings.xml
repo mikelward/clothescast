@@ -577,14 +577,14 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_forecasters_title">Prognoosimudelid</string>
     <string name="settings_forecasters_description">Kindlustunde silt ja mudelite graafik tuginevad neile mudelitele. Rohkem mudeleid annab laiema hajumise; vähem — kitsama fookuse. Vähemalt kaks jäävad valituks.</string>
     <string name="settings_forecasters_auto_title">Auto (parim sinu asukohale)</string>
-    <string name="settings_forecasters_auto_subtitle">Valib piirkondliku mudeli automaatselt — UKMO Briti saartel, JMA Jaapanis, GFS + GEM Põhja-Ameerikas jne. Lülita välja, et valida mudelid ise.</string>
+    <string name="settings_forecasters_auto_subtitle">Valib piirkondliku mudeli automaatselt — UKMO Briti saartel, JMA Jaapanis, GEM Põhja-Ameerikas jne. Lülita välja, et valida mudelid ise.</string>
     <string name="settings_forecasters_cap_hint">Oled valinud %1$d mudelit — maksimum, mille puhul graafik püsib loetav. Eemalda valik ühelt, et lisada teine.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Euroopa — üldjuhul kõige täpsem globaalne mudel. Avatud kanalil iga 3 tunni järel.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Saksa (DWD) — tugev Euroopas ja lühikeses prognoosis. Algselt tunnipõhine.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Ameerika (NOAA) — tugev Põhja-Ameerika kohal. Algselt tunnipõhine.</string>
+    <string name="settings_forecasters_gfs_subtitle">Ameerika (NOAA) — algselt tunnipõhine. Sademete osas komplekti nõrgim: jätab vahele hoovihmad, mida teised tabavad.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanada (ECCC) — tugev Põhja-Ameerika kohal. Avatud kanalil iga 3 tunni järel.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

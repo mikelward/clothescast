@@ -282,7 +282,7 @@ class ClothesCastApplication : Application() {
                 // (stored selection is null), resolve a location-aware
                 // default trio via [ForecastModel.defaultsFor] — so a UK
                 // user gets UKMO + ECMWF + ICON without ever opening the
-                // picker, a North American gets GFS + GEM + ECMWF, etc.
+                // picker, a North American gets GEM + ECMWF + ICON, etc.
                 // DataStore caches the latest emission, so this is a memory
                 // read after the first call.
                 confidenceModelsProvider = { location ->

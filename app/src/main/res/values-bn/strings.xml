@@ -679,14 +679,14 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_forecasters_title">পূর্বাভাস মডেল</string>
     <string name="settings_forecasters_description">কনফিডেন্স চিপ এবং প্রতি-মডেল চার্ট এই মডেলগুলো থেকে তথ্য নেয়। বেশি বেছে নিলে বিস্তার বাড়ে; কম হলে ফোকাস সংকীর্ণ হয়। অন্তত দুটি নির্বাচিত থাকে।</string>
     <string name="settings_forecasters_auto_title">স্বয়ংক্রিয় (আপনার অবস্থানের জন্য সেরা)</string>
-    <string name="settings_forecasters_auto_subtitle">আঞ্চলিক পূর্বাভাসদাতা স্বয়ংক্রিয়ভাবে বেছে নেয় — ব্রিটিশ আইলসে UKMO, জাপানে JMA, উত্তর আমেরিকায় GFS + GEM ইত্যাদি। নিজে মডেল বেছে নিতে হলে বন্ধ করুন।</string>
+    <string name="settings_forecasters_auto_subtitle">আঞ্চলিক পূর্বাভাসদাতা স্বয়ংক্রিয়ভাবে বেছে নেয় — ব্রিটিশ আইলসে UKMO, জাপানে JMA, উত্তর আমেরিকায় GEM ইত্যাদি। নিজে মডেল বেছে নিতে হলে বন্ধ করুন।</string>
     <string name="settings_forecasters_cap_hint">আপনি %1$d টি মডেল বেছেছেন — চার্ট পাঠযোগ্য রাখার সর্বোচ্চ। অন্য মডেল যোগ করতে একটি অনির্বাচিত করুন।</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">ইউরোপীয় — সাধারণত সবচেয়ে নির্ভুল বৈশ্বিক মডেল। উন্মুক্ত ফিডে ৩-ঘণ্টা পরপর।</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">জার্মান (DWD) — ইউরোপে ও স্বল্প-পরিসরে শক্তিশালী। নেটিভ ঘণ্টায়।</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">আমেরিকান (NOAA) — উত্তর আমেরিকায় শক্তিশালী। নেটিভ ঘণ্টায়।</string>
+    <string name="settings_forecasters_gfs_subtitle">আমেরিকান (NOAA) — নেটিভ ঘণ্টায়। বৃষ্টিপাতে সবচেয়ে দুর্বল: অন্যরা যে বৃষ্টি ধরে, এটি তা মিস করে।</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">কানাডিয়ান (ECCC) — উত্তর আমেরিকায় শক্তিশালী। উন্মুক্ত ফিডে ৩-ঘণ্টা পরপর।</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

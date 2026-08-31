@@ -744,14 +744,14 @@ the displayed label localizes.
     <string name="settings_forecasters_title">予報モデル</string>
     <string name="settings_forecasters_description">信頼度チップとモデル別チャートは、これらのモデルから値を取得します。多く選ぶほど分布が広くなり、少なくするほど焦点が絞られます。最低2つは選択されたままになります。</string>
     <string name="settings_forecasters_auto_title">自動（あなたの場所に最適）</string>
-    <string name="settings_forecasters_auto_subtitle">地域の予報モデルを自動で選択します — 英国諸島では UKMO、日本では JMA、北米では GFS + GEM など。オフにすると自分でモデルを選べます。</string>
+    <string name="settings_forecasters_auto_subtitle">地域の予報モデルを自動で選択します — 英国諸島では UKMO、日本では JMA、北米では GEM など。オフにすると自分でモデルを選べます。</string>
     <string name="settings_forecasters_cap_hint">%1$d 個のモデルを選択しています — チャートが読みやすく保てる上限です。別のモデルを追加するには1つ解除してください。</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">ヨーロッパ — 一般的に最も正確な全球モデル。オープンフィードでは3時間ごと。</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">ドイツ（DWD）— ヨーロッパおよび短期予報に強い。ネイティブで1時間ごと。</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">アメリカ（NOAA）— 北米に強い。ネイティブで1時間ごと。</string>
+    <string name="settings_forecasters_gfs_subtitle">アメリカ（NOAA）— ネイティブで1時間ごと。降水では最も弱く、他のモデルが捉えるにわか雨を見逃します。</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">カナダ（ECCC）— 北米に強い。オープンフィードでは3時間ごと。</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

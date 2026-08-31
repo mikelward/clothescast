@@ -606,14 +606,14 @@ surfaces.
     <string name="settings_forecasters_title">Модели прогнозе</string>
     <string name="settings_forecasters_description">Ознака поузданости и графикон по моделу повлаче податке из ових модела. Више изабраних даје шири распон; мање значи ужи фокус. Најмање два остају изабрана.</string>
     <string name="settings_forecasters_auto_title">Autoматски (најбоље за твоју локацију)</string>
-    <string name="settings_forecasters_auto_subtitle">Autoматски бира регионални модел — UKMO на Британским острвима, JMA у Јапану, GFS + GEM у Северној Америци итд. Искључи да моделе бираш сам.</string>
+    <string name="settings_forecasters_auto_subtitle">Autoматски бира регионални модел — UKMO на Британским острвима, JMA у Јапану, GEM у Северној Америци итд. Искључи да моделе бираш сам.</string>
     <string name="settings_forecasters_cap_hint">Изабрао си %1$d модела — највише колико графикон остаје читљив. Одзначи један да додаш други.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Европски — углавном најтачнији глобални модел. Тросатни корак на отвореном фиду.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Немачки (DWD) — јак у Европи и на кратке рокове. Нативно сатни.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Амерички (NOAA) — јак над Северном Америком. Нативно сатни.</string>
+    <string name="settings_forecasters_gfs_subtitle">Амерички (NOAA) — нативно сатни. Најслабији у групи за падавине: пропушта пљускове које други ухвате.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Канадски (ЕЦЦЦ) — јак над Северном Америком. Тросатни корак на отвореном фиду.</string>
     <string name="settings_forecasters_arpege">АРПЕГЕ</string>

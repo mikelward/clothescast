@@ -594,14 +594,14 @@ standard in Israeli digital communication.
     <string name="settings_forecasters_title">מודלי תחזית</string>
     <string name="settings_forecasters_description">תווית הביטחון והגרף לפי מודל ניזונים מהמודלים האלה. בחירת יותר מודלים מרחיבה את הפיזור; פחות מודלים מצמצמים את המיקוד. לפחות שניים נשארים מסומנים תמיד.</string>
     <string name="settings_forecasters_auto_title">אוטומטי (הכי טוב למיקום שלך)</string>
-    <string name="settings_forecasters_auto_subtitle">בוחר אוטומטית את מודל התחזית האזורי — UKMO באיים הבריטיים, JMA ביפן, GFS + GEM בצפון אמריקה וכו׳. כבה/י כדי לבחור מודלים בעצמך.</string>
+    <string name="settings_forecasters_auto_subtitle">בוחר אוטומטית את מודל התחזית האזורי — UKMO באיים הבריטיים, JMA ביפן, GEM בצפון אמריקה וכו׳. כבה/י כדי לבחור מודלים בעצמך.</string>
     <string name="settings_forecasters_cap_hint">בחרת %1$d מודלים — המספר המרבי שבו הגרף נשאר קריא. בטל/י בחירה של אחד כדי להוסיף מודל אחר.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">אירופי — בדרך כלל המודל הגלובלי המדויק ביותר. כל 3 שעות בפיד הפתוח.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">גרמני (DWD) — חזק באירופה ובטווח קצר. שעתי מקורי.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">אמריקאי (NOAA) — חזק מעל צפון אמריקה. שעתי מקורי.</string>
+    <string name="settings_forecasters_gfs_subtitle">אמריקאי (NOAA) — שעתי מקורי. החלש ביותר בקבוצה בגשם: מפספס ממטרים שהאחרים קולטים.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">קנדי (ECCC) — חזק מעל צפון אמריקה. כל 3 שעות בפיד הפתוח.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

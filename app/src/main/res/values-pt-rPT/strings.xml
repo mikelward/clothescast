@@ -759,14 +759,14 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_forecasters_title">Modelos de previsão</string>
     <string name="settings_forecasters_description">O indicador de confiança e o gráfico por modelo baseiam-se nestes modelos. Escolher mais alarga o leque; menos torna o foco mais apertado. Pelo menos dois permanecem selecionados.</string>
     <string name="settings_forecasters_auto_title">Auto (o melhor para a tua localização)</string>
-    <string name="settings_forecasters_auto_subtitle">Escolhe automaticamente o modelo regional — UKMO nas ilhas britânicas, JMA no Japão, GFS + GEM na América do Norte, etc. Desativa para escolheres tu os modelos.</string>
+    <string name="settings_forecasters_auto_subtitle">Escolhe automaticamente o modelo regional — UKMO nas ilhas britânicas, JMA no Japão, GEM na América do Norte, etc. Desativa para escolheres tu os modelos.</string>
     <string name="settings_forecasters_cap_hint">Selecionaste %1$d modelos — o máximo para que o gráfico continue legível. Desseleciona um para adicionar outro.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europeu — geralmente o modelo global mais preciso. De 3 em 3 horas no feed aberto.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Alemão (DWD) — forte na Europa e a curto prazo. Horário nativo.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Americano (NOAA) — forte na América do Norte. Horário nativo.</string>
+    <string name="settings_forecasters_gfs_subtitle">Americano (NOAA) — horário nativo. O mais fraco do conjunto na chuva: deixa passar aguaceiros que os outros captam.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadiano (ECCC) — forte na América do Norte. De 3 em 3 horas no feed aberto.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

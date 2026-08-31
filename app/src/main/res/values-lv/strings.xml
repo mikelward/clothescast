@@ -574,14 +574,14 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_forecasters_title">Prognozes modeļi</string>
     <string name="settings_forecasters_description">Pārliecības čips un modeļu diagramma balstās uz šiem modeļiem. Vairāk izvēlētu modeļu dod plašāku izkliedi; mazāk — ciešāku fokusu. Vismaz divi paliek izvēlēti.</string>
     <string name="settings_forecasters_auto_title">Auto (vislabākais tavai atrašanās vietai)</string>
-    <string name="settings_forecasters_auto_subtitle">Automātiski izvēlas reģionālo modeli — UKMO Britu salās, JMA Japānā, GFS + GEM Ziemeļamerikā utt. Izslēdz, lai izvēlētos modeļus pats.</string>
+    <string name="settings_forecasters_auto_subtitle">Automātiski izvēlas reģionālo modeli — UKMO Britu salās, JMA Japānā, GEM Ziemeļamerikā utt. Izslēdz, lai izvēlētos modeļus pats.</string>
     <string name="settings_forecasters_cap_hint">Esi izvēlējies %1$d modeļus — maksimums, pie kura diagramma paliek lasāma. Atzīmē kādu, lai pievienotu citu.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Eiropas — parasti precīzākais globālais modelis. Atvērtajā plūsmā ik pēc 3 stundām.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Vācu (DWD) — spēcīgs Eiropā un īsā termiņā. Sākotnēji ik stundu.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikāņu (NOAA) — spēcīgs pār Ziemeļameriku. Sākotnēji ik stundu.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikāņu (NOAA) — sākotnēji ik stundu. Vājākais komplektā nokrišņiem: palaiž garām lietusgāzes, ko citi pamana.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanādas (ECCC) — spēcīgs pār Ziemeļameriku. Atvērtajā plūsmā ik pēc 3 stundām.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

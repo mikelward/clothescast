@@ -14,8 +14,8 @@ package app.clothescast.core.domain.model
  * for each broad region we pair the local official with two strong global
  * majors as a divergence check: ECMWF — widely benchmarked as the world's
  * most accurate global model — plus a structurally different second one
- * (GFS or ICON) so the spread doesn't collapse when the regional model and
- * ECMWF happen to share a synoptic interpretation.
+ * (ICON) so the spread doesn't collapse when the regional model and ECMWF
+ * happen to share a synoptic interpretation.
  *
  * Tail reinforcement: the regional locals (UKMO, ARPEGE, JMA) and ICON are
  * short-range — they fall silent after ~day 7, which would leave the
@@ -30,7 +30,10 @@ package app.clothescast.core.domain.model
  * performer over Europe — the same reason GFS (NOAA) is kept out of every
  * European set — so the British Isles, Iceland, Nordics, and Western/Central
  * Europe branches leave it out and lean on ECMWF IFS + AIFS for the second
- * week.
+ * week. GFS is now absent from every default set — the regional branches,
+ * North America included, and the global fallback; see the North America
+ * branch for the rainfall record behind that, and [ForecastModel.DEFAULTS]
+ * for why a systematically dry member is worse than no member at all.
  *
  * The mapping is intentionally coarse — bounding boxes, not country
  * polygons — because the goal is "good defaults", not "perfect mapping".
@@ -44,8 +47,8 @@ package app.clothescast.core.domain.model
  * the picker's MIN_MODELS = 2 floor means dropping the first model leaves
  * a usable pair, so the "most local" model goes first.
  *
- * Returns the global default trio (ECMWF / GFS / ICON) when [location] is
- * null (no location set yet) or falls outside every regional bounding box.
+ * Returns the global default set (ECMWF / ICON / GEM / AIFS) when [location]
+ * is null (no location set yet) or falls outside every regional bounding box.
  * This matches the picker's pre-location-awareness behaviour and also acts
  * as a safe initial value for a fresh install before the first GPS fix
  * resolves.
@@ -129,22 +132,44 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
-        // North America: US (lower 48 + Alaska) + Canada + Mexico. GFS
-        // (NCEP, American) and GEM (Environment Canada) are the locals;
-        // ECMWF as the global cross-check that's still considered the
-        // most accurate over North America even by NOAA's own metrics.
+        // North America: US (lower 48 + Alaska) + Canada + Mexico. GEM
+        // (Environment Canada) is the local official; ECMWF is the global
+        // cross-check still considered the most accurate over North America
+        // even by NOAA's own metrics; ICON is the structurally different
+        // second global.
+        //
+        // GFS (NCEP) used to lead this set as the American local. It was
+        // swapped for ICON because it is markedly the weakest of the
+        // candidates on rainfall: verified against ERA5 over 85 days at five
+        // locations (including two North American ones), GFS came last on
+        // both mean absolute error and equitable threat score for daily
+        // totals, and detected barely half of wet days — POD 0.49, against
+        // 0.76 for ICON and 0.86 for ECMWF. The misses run systematically
+        // dry, which is the damaging direction here: a missed shower sends
+        // the user out without an umbrella, while a false alarm only costs
+        // them carrying one.
+        //
+        // This de-weights GFS rather than silencing it. Open-Meteo's
+        // `best_match` overlay resolves to GFS at many North American points
+        // and votes in the consensus blend as a regular model, so GFS keeps
+        // one voice in the average instead of the two it held while it was
+        // also listed here.
+        //
+        // Second-week coverage survives the swap: ICON stops at ~day 7, but
+        // ECMWF IFS and AIFS both reach ~day 15 and GEM ~day 10, so at least
+        // two models still report across days 8-14.
         lat in 15.0..72.0 && lon in -170.0..-50.0 ->
             setOf(
-                ForecastModel.GFS_SEAMLESS,
                 ForecastModel.GEM_SEAMLESS,
                 ForecastModel.ECMWF_IFS025,
+                ForecastModel.ICON_SEAMLESS,
                 ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // Australia + New Zealand: BOM (Australian Bureau of Meteorology)
         // would be the obvious local pick but Open-Meteo currently has
         // BOM open-data delivery suspended (see Settings.kt for the link),
-        // so we fall back to the global trio. Re-add BOM to this branch
+        // so we fall back to the global set. Re-add BOM to this branch
         // when the enum entry comes back in Settings.kt.
         lat in -47.0..-10.0 && lon in 110.0..180.0 -> DEFAULTS
 

@@ -714,14 +714,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_title">Modelli di previsione</string>
     <string name="settings_forecasters_description">L\'indicatore di confidenza e il grafico per modello attingono da questi modelli. Sceglierne di più amplia la gamma; meno restringe il fuoco. Almeno due restano selezionati.</string>
     <string name="settings_forecasters_auto_title">Auto (il migliore per la tua posizione)</string>
-    <string name="settings_forecasters_auto_subtitle">Sceglie automaticamente il modello regionale: UKMO nelle isole britanniche, JMA in Giappone, GFS + GEM in Nord America, ecc. Disattiva per scegliere i modelli da solo.</string>
+    <string name="settings_forecasters_auto_subtitle">Sceglie automaticamente il modello regionale: UKMO nelle isole britanniche, JMA in Giappone, GEM in Nord America, ecc. Disattiva per scegliere i modelli da solo.</string>
     <string name="settings_forecasters_cap_hint">Hai selezionato %1$d modelli — il massimo per cui il grafico resta leggibile. Deselezionane uno per aggiungerne un altro.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Europeo — in genere il modello globale più accurato. Ogni 3 ore sul feed aperto.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Tedesco (DWD) — solido in Europa e a breve termine. Orario nativo.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Americano (NOAA) — solido sul Nord America. Orario nativo.</string>
+    <string name="settings_forecasters_gfs_subtitle">Americano (NOAA) — orario nativo. Il più debole del gruppo sulla pioggia: si perde rovesci che gli altri colgono.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Canadese (ECCC) — solido sul Nord America. Ogni 3 ore sul feed aperto.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

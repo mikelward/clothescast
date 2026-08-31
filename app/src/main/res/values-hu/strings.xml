@@ -622,14 +622,14 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_forecasters_title">Előrejelzési modellek</string>
     <string name="settings_forecasters_description">A megbízhatósági címke és a modellenkénti grafikon ezekből a modellekből merít. Több kiválasztott modell szélesebb szórást ad, kevesebb feszesebb fókuszt. Legalább kettő mindig kiválasztva marad.</string>
     <string name="settings_forecasters_auto_title">Auto (a helyedhez legjobb)</string>
-    <string name="settings_forecasters_auto_subtitle">A regionális előrejelzőt automatikusan választja — UKMO a Brit-szigeteken, JMA Japánban, GFS + GEM Észak-Amerikában stb. Kapcsold ki, ha magad szeretnéd kiválasztani a modelleket.</string>
+    <string name="settings_forecasters_auto_subtitle">A regionális előrejelzőt automatikusan választja — UKMO a Brit-szigeteken, JMA Japánban, GEM Észak-Amerikában stb. Kapcsold ki, ha magad szeretnéd kiválasztani a modelleket.</string>
     <string name="settings_forecasters_cap_hint">%1$d modellt választottál — ennyinél marad még olvasható a grafikon. Vegyél le egyet a listáról, hogy másikat tehess hozzá.</string>
     <string name="settings_forecasters_ecmwf">ECMWF</string>
     <string name="settings_forecasters_ecmwf_subtitle">Európai — általában a legpontosabb globális modell. A nyílt csatornán 3 óránként.</string>
     <string name="settings_forecasters_icon">ICON</string>
     <string name="settings_forecasters_icon_subtitle">Német (DWD) — erős Európában és rövid távon. Eredetileg óránkénti.</string>
     <string name="settings_forecasters_gfs">GFS</string>
-    <string name="settings_forecasters_gfs_subtitle">Amerikai (NOAA) — erős Észak-Amerika felett. Eredetileg óránkénti.</string>
+    <string name="settings_forecasters_gfs_subtitle">Amerikai (NOAA) — eredetileg óránkénti. A készlet leggyengébbje csapadékra: elszalasztja a záporokat, amiket a többi elkap.</string>
     <string name="settings_forecasters_gem">GEM</string>
     <string name="settings_forecasters_gem_subtitle">Kanadai (ECCC) — erős Észak-Amerika felett. A nyílt csatornán 3 óránként.</string>
     <string name="settings_forecasters_arpege">ARPEGE</string>

@@ -143,10 +143,10 @@ class OpenMeteoClientTest {
               "daily": {"time": ["2026-04-25"]},
               "hourly": {
                 "time": ["2026-04-25T12:00", "2026-04-25T13:00"],
-                "temperature_2m_gfs_seamless": [21.0, 10.0],
-                "apparent_temperature_gfs_seamless": [21.0, 10.0],
-                "precipitation_probability_gfs_seamless": [50, 60],
-                "wind_speed_10m_gfs_seamless": [20.0, 20.0],
+                "temperature_2m_ecmwf_ifs025": [21.0, 10.0],
+                "apparent_temperature_ecmwf_ifs025": [21.0, 10.0],
+                "precipitation_probability_ecmwf_ifs025": [50, 60],
+                "wind_speed_10m_ecmwf_ifs025": [20.0, 20.0],
                 "temperature_2m_icon_seamless": [23.0, 20.0],
                 "apparent_temperature_icon_seamless": [23.0, 20.0],
                 "precipitation_probability_icon_seamless": [70, 80],
@@ -176,7 +176,7 @@ class OpenMeteoClientTest {
 
         val bundle = client.fetchForecast(london)
 
-        // 12:00 — all three vote: best_match 20, GFS 21, ICON 23. Wind rides
+        // 12:00 — all three vote: best_match 20, ECMWF 21, ICON 23. Wind rides
         // the primary call, so best_match votes there too: (10 + 20 + 30) / 3.
         bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0) / 3 plusOrMinus 1e-6)
         bundle.today.hourly[0].windSpeedKmh!! shouldBe ((10.0 + 20.0 + 30.0) / 3 plusOrMinus 1e-6)
@@ -230,8 +230,8 @@ class OpenMeteoClientTest {
               "daily": {"time": ["2026-04-25"]},
               "hourly": {
                 "time": ["2026-04-24T21:00", "2026-04-25T12:00"],
-                "temperature_2m_gfs_seamless": [15.0, 21.0],
-                "apparent_temperature_gfs_seamless": [15.0, 21.0],
+                "temperature_2m_ecmwf_ifs025": [15.0, 21.0],
+                "apparent_temperature_ecmwf_ifs025": [15.0, 21.0],
                 "temperature_2m_icon_seamless": [13.0, 23.0],
                 "apparent_temperature_icon_seamless": [13.0, 23.0]
               }
@@ -265,8 +265,8 @@ class OpenMeteoClientTest {
 
     @Test
     fun `google is treated as just another model - votes in the blend and lands in the stored per-model map`() = runTest {
-        // Same two-model side-band (GFS + ICON) and best_match primary as the
-        // synthetic-zero test above. At 12:00 best_match=20, GFS=21, ICON=23.
+        // Same two-model side-band (ECMWF + ICON) and best_match primary as the
+        // synthetic-zero test above. At 12:00 best_match=20, ECMWF=21, ICON=23.
         // Folding Google in (temp 27, precip 90) must shift the blended mean to
         // a four-way average — Google is one more equal-weight vote — and it must
         // also land in the stored per-model map under "google" so it draws on
@@ -300,9 +300,9 @@ class OpenMeteoClientTest {
               "daily": {"time": ["2026-04-25"]},
               "hourly": {
                 "time": ["2026-04-25T12:00"],
-                "temperature_2m_gfs_seamless": [21.0],
-                "apparent_temperature_gfs_seamless": [21.0],
-                "precipitation_probability_gfs_seamless": [50],
+                "temperature_2m_ecmwf_ifs025": [21.0],
+                "apparent_temperature_ecmwf_ifs025": [21.0],
+                "precipitation_probability_ecmwf_ifs025": [50],
                 "temperature_2m_icon_seamless": [23.0],
                 "apparent_temperature_icon_seamless": [23.0],
                 "precipitation_probability_icon_seamless": [70]
@@ -338,7 +338,7 @@ class OpenMeteoClientTest {
 
         val bundle = client.fetchForecast(london)
 
-        // Four equal-weight votes: best_match 20, GFS 21, ICON 23, Google 27.
+        // Four equal-weight votes: best_match 20, ECMWF 21, ICON 23, Google 27.
         bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0 + 27.0) / 4 plusOrMinus 1e-6)
         bundle.today.hourly[0].precipitationProbabilityPct shouldBe ((40.0 + 50.0 + 70.0 + 90.0) / 4 plusOrMinus 1e-6)
 
@@ -347,7 +347,7 @@ class OpenMeteoClientTest {
         // hint all see it as a peer.
         val byModel = checkNotNull(bundle.perModelHourly).byModel
         byModel.keys shouldContainAll
-            listOf(GOOGLE_MODEL_ID, "gfs_seamless", "icon_seamless", PerModelHourly.BEST_MATCH_MODEL_ID)
+            listOf(GOOGLE_MODEL_ID, "ecmwf_ifs025", "icon_seamless", PerModelHourly.BEST_MATCH_MODEL_ID)
         byModel.getValue(GOOGLE_MODEL_ID).single().temperatureC shouldBe 27.0
     }
 

@@ -1,4 +1,5 @@
 [versions]
+androidlog = "1.0.42"
 # AGP 9.x pairs with the Gradle 9.x wrapper (kept in lockstep in
 # gradle-wrapper.properties — currently 9.7.0; AGP 9.3 requires Gradle 9.5.0+
 # and JDK 17+, we build on 21). AGP 9 ships Kotlin support built-in, so the
@@ -99,6 +100,7 @@ guava = "33.6.0-android"
 aboutlibraries = "12.2.4"
 
 [libraries]
+androidlog-logging-android = { group = "com.mikelward.androidlog", name = "logging-android", version.ref = "androidlog" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }

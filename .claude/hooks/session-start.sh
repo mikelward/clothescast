@@ -49,28 +49,6 @@ persist_env() {
   fi
 }
 
-# mikelward/androidlog — the shared debug log, included as a composite build
-# by settings.gradle.kts, which fails the build outright if it is missing. So
-# this runs *before* the SDK fast path below: a warm sandbox that already has
-# the SDK still needs the checkout, and returning early would leave every
-# Gradle invocation in the session dead on settings evaluation.
-#
-# Ahead of the fast path also means it refreshes every session rather than
-# pinning whatever `main` was the first time this container ran — there is no
-# version here, so "what @main says now" is the only correct answer.
-#
-# Best-effort: an unreachable GitHub keeps whatever checkout is already there
-# and says so, rather than failing session startup over it.
-ANDROIDLOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/.androidlog"
-if [ -d "$ANDROIDLOG_DIR/.git" ]; then
-  git -C "$ANDROIDLOG_DIR" fetch --depth 1 origin HEAD \
-    && git -C "$ANDROIDLOG_DIR" reset --hard FETCH_HEAD \
-    || echo "androidlog: could not refresh $ANDROIDLOG_DIR — keeping the existing checkout." >&2
-elif [ ! -d "$ANDROIDLOG_DIR" ]; then
-  git clone --depth 1 https://github.com/mikelward/androidlog "$ANDROIDLOG_DIR" \
-    || echo "androidlog: clone failed — Gradle will not configure until $ANDROIDLOG_DIR exists." >&2
-fi
-
 # Fast path: SDK already installed (warm sandbox or re-run). Just re-export.
 if [ -x "$CMDLINE_TOOLS_DIR/bin/sdkmanager" ] \
   && [ -d "$ANDROID_HOME/platforms/android-37.0" ] \

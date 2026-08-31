@@ -47,18 +47,21 @@ jobs:
       # shared default android-ci.yml; it already carries workflow_dispatch
       # with the pr input on main.
       ci-workflow: ci.yml
-      # The default is `./gradlew test` + `./gradlew lint`. Both are kept, but
-      # the checkout has to come first: settings.gradle.kts includes
-      # mikelward/androidlog as a composite build and fails evaluation without
-      # it, so in this job's clean workspace — which runs neither ci.yml's
-      # checkout step nor the session-start hook — the first Gradle invocation
-      # would die before it read a single dependency (Codex, PR #1176).
+      # mikelward/androidlog publishes its own Maven repository into the
+      # `maven` branch of that repository, which raw.githubusercontent.com
+      # serves; settings.gradle.kts declares it, scoped to that one group.
+      # Declaring it HERE as well is not optional — the batch resolves
+      # versions itself, and without this it would never see a release of
+      # com.mikelward.androidlog at all.
+      extra-repositories: |
+        https://raw.githubusercontent.com/mikelward/androidlog/maven
+      # The release-age cooldown exists so a compromised THIRD-PARTY release
+      # has time to be yanked. androidlog is this owner's own repository,
+      # published by its own gated workflow, so the window guards nothing and
+      # only adds latency between a release there and the batch that takes it.
       #
-      # A clone rather than actions/checkout because `checks` is a command
-      # list, not a step list. Depth 1 of the default branch, matching what
-      # ci.yml and the hook take: there is no pin anywhere in this
-      # arrangement, so every consumer resolves @main for itself.
-      checks: |
-        git clone --depth 1 https://github.com/mikelward/androidlog .androidlog
-        ./gradlew test
-        ./gradlew lint
+      # It would also never expire: raw.githubusercontent.com serves no
+      # `Last-Modified`, so there is no release date to age out — the
+      # coordinate would be deferred forever rather than merely delayed.
+      no-cooldown-for: |
+        com.mikelward.androidlog:logging-android

@@ -596,10 +596,13 @@ Open work:
       were drifting — `LogValue.kt` byte-identical between two of them, the two
       `DebugFileSink.kt` copies 525 lines apart, and each copy carrying a
       review finding the others never heard about. The library is the fix, and
-      it is consumed with **no pin at all**: a git clone plus a Gradle
-      composite build, so a merge there is in the next build here with nothing
-      to bump. `settings.gradle.kts`, `ci.yml` and the session-start hook carry
-      that wiring.
+      it is now consumed as a **published coordinate** — androidlog serves its
+      own Maven repository from its `maven` branch over
+      raw.githubusercontent.com, and `gradle/libs.versions.toml` pins the
+      version like any other dependency. `settings.gradle.kts` declares the
+      repository (scoped to that one group) and keeps a `-PandroidlogLocal`
+      opt-in for the composite build when both repositories are being changed
+      at once.
       - **Done: the privacy floor.** `safe`, `sensitive`,
         `logArgumentMayLeaveDevice` and `formatLogMessage` come from the
         library now, and this repo's `LogValue.kt` is gone. `LogValueTest`
@@ -607,12 +610,21 @@ Open work:
         a floor that shifted upstream reaches this APK with nothing in
         between, and the cases this app's call sites depend on are asserted
         here rather than left to that repo's suite.
-      - **Every workflow that runs Gradle needs the checkout**, not just CI's
-        three jobs: `settings.gradle.kts` fails evaluation without it, so the
-        weekly `gradle-update` caller — a clean workspace that runs neither
-        ci.yml's checkout step nor the session-start hook — takes the clone as
-        the first of its `checks` commands. snoozemo, typelauncher and simmo
-        each need the same sweep of their own workflows when their turn comes.
+      - **Done: off the composite build, onto the coordinate.** That is what
+        ended the AGP lockstep — a composite puts androidlog's toolchain
+        alongside this one in a single Gradle invocation, and AGP refuses to
+        compare two versions at all, so a patch bump there broke every build
+        here at once (2026-08-30). A resolved AAR carries no `AgpVersionAttr`,
+        so the versions are now independent.
+        The checkout is gone from CI's three jobs, from the session-start
+        hook, and from the `gradle-update` caller's `checks` — every workflow
+        that ran Gradle needed it, which was itself the tell. That caller now
+        declares the repository (`extra-repositories`) and waives the
+        release-age cooldown for the coordinate (`no-cooldown-for`), since
+        raw.githubusercontent.com serves no `Last-Modified` and the batch
+        would otherwise defer it forever rather than merely delay it.
+        snoozemo, typelauncher and simmo each need the same migration when
+        their turn comes.
       - **Done: `DiagLog` itself.** Its ring buffer, rotation, crash file and
         acknowledgement state are now `DebugLog` + `DebugFileSink`, with
         `DiagLog` a thin facade so all 278 call sites stayed untouched. The
@@ -620,10 +632,22 @@ Open work:
         first run after the migration rather than read: the reduced rendering
         is not retroactive, so removing them is the only way lines written
         under the old full rendering stop being readable.
+      - **The licenses screen now lists androidlog, with a blank license.**
+        A composite build contributed *project* dependencies, which
+        AboutLibraries does not treat as bundled libraries; a resolved
+        coordinate is one, so `app/src/main/res/raw/aboutlibraries.json` gained
+        `logging-android` and `logging-core` — and both carry
+        `"licenses": []`, because androidlog's publication declares no license
+        metadata. Harmless (it is our own code in our own app) but it reads
+        oddly beside 37 attributed entries. The fix belongs in androidlog: add
+        a `<licenses>` block to its `maven-publish` POM, after which this file
+        regenerates with it. The same will happen in each of the other three
+        apps as they migrate.
       - **Next: the other three apps**, in order — snoozemo, typelauncher,
-        simmo last. Each needs a sweep of *every* workflow that runs Gradle,
-        not just CI; clothescast's weekly `gradle-update` caller was the gap
-        here and would have stopped its dependency batch silently.
+        simmo last. Each takes the coordinate the same way clothescast did,
+        and each needs a sweep of *every* workflow that runs Gradle, not just
+        CI; clothescast's weekly `gradle-update` caller was the gap here and
+        would have stopped its dependency batch silently.
       - **`LogSummary` went with the swap**, and was already dead code — no
         production call site. The library renders each entry once, at
         ingestion, so a value carrying separate on-device and off-device

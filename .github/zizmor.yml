@@ -56,3 +56,19 @@ rules:
       # from it. See check-consumer.yml in mikelward/codex-review for the
       # full reasoning.
       - codex-review-check.yml
+  # `secrets-inherit` is deliberately NOT configured here. The three callers
+  # that pass `secrets: inherit` on purpose -- the weekly batches in
+  # gradle-update.yml and npm-update.yml, and the snapshot commit-back in
+  # ci.yml -- carry an inline `# zizmor: ignore[secrets-inherit]` on that
+  # one line, with the reasoning beside it: the called workflow's
+  # publish/commit job reads its credential from an environment
+  # (`gradle-update`, `npm-update`, `ci-commit-artifact`), and an
+  # environment secret reaches a called workflow no other way, while the
+  # `secrets:` block zizmor prefers delivers the credential to the runner of
+  # every job in the called workflow, the untrusted update job included. A
+  # file entry here would also excuse a NEW `secrets: inherit` on any other
+  # call in those files; the inline form excuses only the call it sits on.
+  # The price of `inherit` is that every repository-level secret reaches
+  # the called jobs too, so this repository keeps its secrets
+  # environment-scoped (mikelward/repo's `repo audit` reports any that are
+  # not, and `repo setup` moves them).

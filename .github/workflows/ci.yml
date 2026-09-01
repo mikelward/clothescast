@@ -472,18 +472,26 @@ jobs:
       pr-number: ${{ github.event.pull_request.number }}
       comment-marker: "<!-- ui-snapshots-status -->"
       artifact-noun: "UI snapshot"
-    secrets:
-      # A GITHUB_TOKEN-authored push starts no workflow run on its own, so
-      # the regenerated commit would carry no checks. `dispatch-workflow:
-      # ci.yml` used to cover that, but a dispatch reaches exactly one
-      # workflow and this repo's required set is {zizmor, lanes, codex} —
-      # `zizmor` lives in its own file, never reported on a snapshot commit,
-      # and held PR #1166 unmergeable on a check that could never arrive. A
-      # fine-grained PAT pushes as an ordinary authenticated push, which
-      # fires the normal `pull_request` round over every workflow. Contents:
-      # read and write is all it needs: the hub uses this token for the push
-      # alone and `github.token` for the comment.
-      push-token: ${{ secrets.CI_COMMIT_ARTIFACT_TOKEN }}
+    # `inherit`, not a `secrets:` block: the called workflow's commit job
+    # reads CI_COMMIT_ARTIFACT_TOKEN from this repository's
+    # `ci-commit-artifact` environment (the hub's `environment` input, at
+    # its default), and an environment secret reaches a called workflow no
+    # other way — where a repository-level copy would reach the weekly
+    # batches' untrusted update jobs through their callers' `inherit`. The
+    # token itself is what it was: a GITHUB_TOKEN-authored push starts no
+    # workflow run on its own, so the regenerated commit would carry no
+    # checks. `dispatch-workflow: ci.yml` used to cover that, but a dispatch
+    # reaches exactly one workflow and this repo's required set is {zizmor,
+    # lanes, codex} — `zizmor` lives in its own file, never reported on a
+    # snapshot commit, and held PR #1166 unmergeable on a check that could
+    # never arrive. A fine-grained PAT pushes as an ordinary authenticated
+    # push, which fires the normal `pull_request` round over every workflow.
+    # Contents: read and write is all it needs: the hub uses this token for
+    # the push alone and `github.token` for the comment. The corresponding
+    # zizmor finding (secrets-inherit) is excused inline on that one line,
+    # with the same reason; .github/zizmor.yml says why the inline form
+    # rather than a file entry.
+    secrets: inherit # zizmor: ignore[secrets-inherit]
 
   # Clothescast-specific PR comment (embedded before/after images) — nothing
   # this generic belongs in the hub. Runs in its own clean job for the same

@@ -41,15 +41,22 @@ jobs:
       contents: write
       pull-requests: write
       actions: write
-    secrets:
-      # Opens the batch PR as a real collaborator rather than as
-      # `GITHUB_TOKEN`, whose events start no `on: pull_request` workflow —
-      # so without this the PR's head gets no `zizmor` run and the ruleset
-      # holds it on a required check nothing produces (TODO.md, the same
-      # failure the snapshot job's `push-token` already fixes for
-      # regenerated heads). The sibling gradle-update caller supplies its
-      # own PAT the same way.
-      token: ${{ secrets.NPM_UPDATE_PAT }}
+    # `inherit`, not a `secrets:` block: the called workflow's publish job
+    # reads NPM_UPDATE_PAT (or the App pair) from this repository's
+    # `npm-update` environment, and an environment secret reaches a called
+    # workflow no other way. A secret passed by name reaches the runner of
+    # every job in the called workflow, the untrusted update job included,
+    # which is what this replaces. The credential itself is what it was: it
+    # opens the batch PR as a real collaborator rather than as
+    # `GITHUB_TOKEN`, whose events start no `on: pull_request` workflow —
+    # so without it the PR's head gets no `zizmor` run and the ruleset
+    # holds it on a required check nothing produces (TODO.md, the same
+    # failure the snapshot job's token already fixes for regenerated
+    # heads). The sibling gradle-update caller inherits the same way. The
+    # corresponding zizmor finding (secrets-inherit) is excused inline on
+    # that one line, with the same reason; .github/zizmor.yml says why the
+    # inline form rather than a file entry.
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     with:
       working-directory: functions
       # The Cloud Functions build emits a gitignored functions/lib/, which is

@@ -532,6 +532,13 @@ class ClothesCastApplication : Application() {
                 .drop(1)
                 .collect { prefs ->
                     try {
+                        // Whatever is armed points at the *old* boundary time,
+                        // so it is replaced — unless one is genuinely in flight
+                        // right now, which the reconcile measures against the
+                        // times just chosen. That alarm fires within moments and
+                        // re-arms itself on the new schedule, so preserving it
+                        // costs nothing and canceling it would drop the fetch
+                        // for the window it was about to open.
                         reconcileWidgetRefreshChain(this@ClothesCastApplication, prefs)
                     } catch (c: CancellationException) {
                         throw c

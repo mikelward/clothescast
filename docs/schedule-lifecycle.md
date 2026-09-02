@@ -242,22 +242,59 @@ on any of the other owner-gate fallbacks above.
   No FGS needed; the Worker runs at normal priority.
 - **Widget-only refresh chain** (`WidgetRefreshScheduler` /
   `WidgetRefreshReceiver`). While any ClothesCast widget is placed, a
-  self-re-arming inexact alarm (`setAndAllowWhileIdle`, request code
-  `0xADA3`) fires at both schedule boundary times every day — ignoring the
-  enable toggles *and* the schedules' day-of-week sets — and enqueues a
-  silent refresh so the widgets keep tracking the current window. The
+  self-re-arming inexact alarm (request code `0xADA3`) ticks at both
+  schedule boundary times *and* the top of every hour in between, so the
+  widgets keep tracking the current window and the current hour. The
   toggles gate scheduled *delivery*, not refresh: without this chain,
   disabling both slots cancels every delivery alarm and a placed widget
-  starves (stuck on "No forecast yet" until an app open). A fire whose
-  boundary the delivery alarm already covers (slot enabled and today in its
-  day set) skips the enqueue instead of double-fetching. The chain is armed
-  from every widget render (which is what starts it when the first widget
-  is placed), reconciled on app start, by `ScheduleRefreshReceiver`, and by
-  `ClothesCastApplication`'s schedule-time observer when a boundary time is
-  edited, and ends itself when a fire finds no widgets left. These runs carry
-  `KEY_ALARM_FIRED_AT_MS` purely for the anti-thundering-herd fetch jitter;
-  `promoteToPlaybackServiceIfNeeded` explicitly skips silent runs so they
-  never surface an FGS notification.
+  starves (stuck on "No forecast yet" until an app open). One alarm is
+  slots are independent — separate request codes, each re-armed only by its
+  own fire — and differ in what they do and in how much they cost:
+  - **Boundary** (`setAndAllowWhileIdle(RTC_WAKEUP)`, request code `0xADA3`)
+    — ignores the enable toggles *and* the schedules' day-of-week sets and
+    enqueues a silent refresh for the window that just opened, except when
+    the delivery alarm already covers that boundary (slot enabled and today
+    in its day set), where it skips the enqueue instead of double-fetching.
+  - **Hourly** (non-wakeup `set(RTC)`, request code `0xADA4`) — repaints
+    every placed widget so the chart's now-line and readout move on, and
+    refetches only once the cached snapshot is older than
+    `WIDGET_REFRESH_MAX_AGE` (6h). Same pipeline as an app open — same cache,
+    same `enqueueSilentRefresh`, same REPLACE-deduped queue, so the two
+    collapse into one run — but a longer threshold on purpose: an app open is
+    a person on the screen and its 1h matches the repository's own TTL, while
+    this tick fires whether or not anyone is looking. Non-wakeup for the same
+    reason: the tick lands on the device's next wakefulness rather than
+    creating any, and Doze collapses the overnight ticks.
+
+  Protecting the boundary alarm takes three rules, because arming a matching
+  `PendingIntent` cancels the pending one and a re-arm always computes the
+  *next* boundary: the slots stay separate (a late non-wakeup tick would
+  otherwise re-arm past the boundary it was deferred through); a fire re-arms
+  only its own slot (both coincide whenever a boundary sits on the hour); and a
+  routine reconcile skips the boundary slot only while one is actually
+  *pending*, since every widget render reconciles and the hourly fire's first
+  act is a repaint. Pending is read from a recorded trigger time (a small
+  `widget_refresh_chain` SharedPreferences file), not inferred from the clock,
+  and means specifically *in flight* — the trigger has arrived and the next
+  boundary after it has not, so the fire is still owed. That far end is the
+  schedule's, not a latency guess: `setAndAllowWhileIdle` has no maximum delay,
+  so a fixed grace would cancel an overdue but live alarm. A future trigger is
+  re-armed to the same instant, which costs nothing; a clock-keyed guard would
+  instead decline to arm a slot that is merely empty. The third test is whether
+  the `PendingIntent` still exists at all (`FLAG_NO_CREATE`) — a force-stop, a
+  boot and a package replacement each drop the alarm while leaving the record,
+  and without asking, that record would read as live until the next boundary.
+  Those three make one gate for every caller: nothing needs a "replace it
+  regardless" mode, and a schedule edit made while a boundary is mid-flight
+  leaves it to fire and re-arm itself on the new times.
+
+  The chain is armed from every widget render (which is what starts it when
+  the first widget is placed), reconciled on app start, by
+  `ScheduleRefreshReceiver`, and by `ClothesCastApplication`'s schedule-time
+  observer when a boundary time is edited, and ends itself when a fire finds
+  no widgets left. These runs carry `KEY_ALARM_FIRED_AT_MS` purely for the
+  anti-thundering-herd fetch jitter; `promoteToPlaybackServiceIfNeeded`
+  explicitly skips silent runs so they never surface an FGS notification.
 - **Location-cache refresh** (device-location toggle on). Network-only side
   effect, no delivery pipeline.
 

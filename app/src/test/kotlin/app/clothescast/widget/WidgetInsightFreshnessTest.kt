@@ -137,6 +137,34 @@ class WidgetInsightFreshnessTest {
         assertEquals(REFRESH, action(old, justNow))
     }
 
+    @Test
+    fun `a young snapshot from the previous window refreshes at the boundary`() {
+        // A glance at the 07:00 boundary. Last night's window was refreshed at
+        // 06:30, so the cached snapshot is TONIGHT and only 30 minutes old. The
+        // age loop-breaker used to let that render — drawing last night as if it
+        // were the day ahead, for up to an hour. The period has flipped, so it
+        // refreshes instead: empty state, fetch, then the real 12 hours.
+        val boundary = at(2026, 6, 18, 7, 0)
+        val lastNight = nightInsight(
+            forDate = LocalDate.of(2026, 6, 17),
+            generatedAt = boundary.minusSeconds(1800),
+        )
+        assertEquals(REFRESH, action(lastNight, boundary))
+    }
+
+    @Test
+    fun `the loop-breaker still covers a young snapshot of the right period`() {
+        // The disagreement it was written for is a *date* one, and that still
+        // renders: same period, cross-zone forDate, seconds old. Narrowing the
+        // gate to period mismatches must not reopen the refresh→reject loop.
+        val justNow = at(2026, 6, 18, 12, 0)
+        val fresh = dayInsight(
+            forDate = LocalDate.of(2026, 6, 19),
+            generatedAt = justNow.minusSeconds(30),
+        )
+        assertEquals(RENDER, action(fresh, justNow))
+    }
+
     private fun action(insight: Insight, now: Instant): WidgetCacheAction =
         widgetCacheAction(insight, now, morning, tonight, zone)
 

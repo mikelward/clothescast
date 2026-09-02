@@ -43,7 +43,10 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
                 }
                 // Boot / update / clock changes wipe the widget-only refresh
                 // chain too; re-arm it while any widget is placed so widgets
-                // keep refreshing even with both delivery slots disabled.
+                // keep refreshing even with both delivery slots disabled. The
+                // arm record survives all three, but the alarm it names does
+                // not, and the reconcile checks for the alarm itself — so this
+                // arms rather than deferring to a record with nothing behind it.
                 reconcileWidgetRefreshChain(context.applicationContext, prefs)
             } catch (t: Throwable) {
                 DiagLog.e(TAG, t, "Re-arm failed")

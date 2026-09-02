@@ -133,12 +133,18 @@ internal enum class WidgetCacheAction {
  *
  * Two carve-outs keep that from churning:
  *
- *  - **Loop-breaker (age).** The worker stamps [Insight.forDate] from the
- *    *forecast location's* zone but picks the period from the *device* clock, so
- *    for a manual location a calendar day off the device the period/date match
- *    can disagree with what a refresh just wrote. Accepting any snapshot younger
- *    than [FetchAndNotifyWorker.SILENT_REFRESH_MIN_AGE] ([RENDER]) guarantees a
- *    freshly written one ends the staleness instead of feeding refresh→reject→…
+ *  - **Loop-breaker (age), on a date mismatch only.** The worker stamps
+ *    [Insight.forDate] from the *forecast location's* zone but picks the period
+ *    from the *device* clock, so for a manual location a calendar day off the
+ *    device the date can disagree with what a refresh just wrote. Accepting a
+ *    snapshot younger than [FetchAndNotifyWorker.SILENT_REFRESH_MIN_AGE]
+ *    ([RENDER]) guarantees a freshly written one ends the staleness instead of
+ *    feeding refresh→reject→… It applies only while the *period* still matches:
+ *    a period mismatch means the window itself has flipped, a refresh resolves
+ *    the period from the wall clock and so lands on the one being asked for,
+ *    and there is no loop to break. Widening it to period mismatches is how a
+ *    glance at the 07:00 boundary drew last night's window as if it were the
+ *    day ahead — silently wrong, for up to an hour.
  *  - **Unreachable window ([KEEP]).** Defensive backstop: a `dayOffset = 0`
  *    refresh targets the window dated *today*, so if the current window's date
  *    ever trailed the device date the refresh couldn't reach it. Not a live
@@ -178,7 +184,20 @@ internal fun widgetCacheAction(
         insight.period == currentPeriod && insight.forDate == currentDate
     }
     if (matchesCurrentWindow) return WidgetCacheAction.RENDER
-    if (Duration.between(insight.generatedAt, now) < FetchAndNotifyWorker.SILENT_REFRESH_MIN_AGE) {
+    // The age loop-breaker, narrowed to the disagreement it was written for: a
+    // *date* mismatch, where the worker's forecast-zone forDate can differ from
+    // the device-clock period for a manual location and re-kicking would churn.
+    // A *period* mismatch is not that case — the window has flipped, and a
+    // refresh resolves the period from the wall clock, so it lands on the one
+    // being asked for and cannot loop. Letting a young snapshot through on a
+    // period mismatch is how a glance at 07:00 drew last night's window as if
+    // it were the day ahead: silently wrong, and for up to an hour. Falling
+    // through to [REFRESH] shows the empty state — a "tap to open" — and
+    // fetches, which is the honest version of the same moment.
+    val periodMatches = insight.period == if (currentlyOvernight) ForecastPeriod.TONIGHT else currentPeriod
+    if (periodMatches &&
+        Duration.between(insight.generatedAt, now) < FetchAndNotifyWorker.SILENT_REFRESH_MIN_AGE
+    ) {
         return WidgetCacheAction.RENDER
     }
     // Defensive: [currentDate] no longer trails the device date (the overnight is

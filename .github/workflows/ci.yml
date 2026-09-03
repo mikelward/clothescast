@@ -913,19 +913,24 @@ jobs:
     needs: classify
     runs-on: ubuntu-latest
     environment: production
+    env:
+      # A step `if:` cannot read `secrets.*`, so the presence of the keystore
+      # becomes a job-level boolean the steps below can branch on. This job
+      # declares `environment: production`, so an environment-scoped secret
+      # is visible here — but the fork gate below deliberately does not key
+      # on this flag, see "Require an upload keystore".
+      HAS_UPLOAD_KEYSTORE: ${{ secrets.UPLOAD_KEYSTORE_BASE64 != '' }}
     # Read by `deploy` as needs.release-build.outputs.signed, so the publish
     # steps there gate on exactly what the sibling Android repos gate on. It
     # is set after the bundle command rather than after the keystore decode,
     # so it means "a signed AAB exists" and not "the secret was present".
     #
-    # Today it is always `true` when `deploy` runs, because "Decode upload
-    # keystore from secret" below fails this job outright when the keystore
-    # is missing and `deploy` `needs:` this job — so the gate is currently
-    # redundant here. It is declared anyway: the siblings exempt forks from
-    # that hard failure (`github.event.repository.fork != true`) and skip
-    # their bundle step instead, which is the one path where a green
-    # release-build produced no bundle at all. If clothescast adopts that
-    # exemption, this output is what already carries it.
+    # It is unset in exactly one case: a fork's own `main` push, where
+    # "Require an upload keystore" is exempted and the bundle step then skips
+    # for want of a keystore. That is a green release-build that built
+    # nothing, which is what `deploy` has to be able to tell apart from a
+    # green one that built a bundle — nothing here ever builds an *unsigned*
+    # one.
     outputs:
       signed: ${{ steps.bundle.outputs.signed }}
     permissions:
@@ -990,21 +995,53 @@ jobs:
           fi
           echo "google-services.json materialised (${bytes} bytes)."
 
+      - name: Require an upload keystore
+        # A push to this repo's own `main` must produce a signed AAB, so a
+        # missing keystore is a hard failure rather than a quiet skip: the
+        # alternative is a green release that published nothing.
+        #
+        # Forks are exempt. A fork's own `main` push cannot hold this secret
+        # — and, declaring `environment: production`, cannot reach an
+        # environment-scoped one at all — so failing it would only ever say
+        # "you are not us". The bundle step below then skips for want of a
+        # keystore, `signed` stays unset, and `deploy`'s publish steps skip
+        # on it, so a fork publishes nothing rather than publishing
+        # something unsigned.
+        #
+        # Gated on fork status rather than on HAS_UPLOAD_KEYSTORE, matching
+        # the sibling repos: keying the exemption on the secret's absence
+        # would make the check exempt *itself* — it would skip in exactly
+        # the case it exists to catch, and this repo's own `main` could then
+        # go green having built nothing. Fork status comes from the `github`
+        # context and cannot be absent.
+        #
+        # `github.event.repository` is the base repo on a `pull_request`
+        # event, so `.fork` is false for a fork's PR — which costs nothing
+        # here, since this job only runs on a push or dispatch against
+        # `main`. The case it covers is a fork pushing to its own `main`,
+        # where the event's repository *is* the fork.
+        if: env.HAS_UPLOAD_KEYSTORE != 'true' && github.event.repository.fork != true
+        run: |
+          echo "::error::UPLOAD_KEYSTORE_BASE64 secret is not set; cannot build a Play-uploadable AAB. Set it together with UPLOAD_KEYSTORE_PASSWORD, UPLOAD_KEY_ALIAS and UPLOAD_KEY_PASSWORD, or this release would publish nothing."
+          exit 1
+
       - name: Decode upload keystore from secret
         # Mirrors `android-build`'s debug-keystore decode: base64-decode,
         # validate with `keytool -list` so wrong-base64 / wrong-password
         # fails here rather than at signing time, then export the path to
         # GITHUB_ENV for bundleRelease to pick up.
+        #
+        # Skipped when the secret is absent, which after the step above can
+        # only be a fork. The companion-secret and keystore-validity checks
+        # below stay hard failures: a keystore that is present but broken is
+        # a misconfiguration to report, not a state to build around.
+        if: env.HAS_UPLOAD_KEYSTORE == 'true'
         env:
           UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
           UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
           UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
-          if [ -z "$UPLOAD_KEYSTORE_BASE64" ]; then
-            echo "::error::UPLOAD_KEYSTORE_BASE64 secret is not set; cannot build a Play-uploadable AAB."
-            exit 1
-          fi
           missing=""
           [ -z "$UPLOAD_KEYSTORE_PASSWORD" ] && missing="$missing UPLOAD_KEYSTORE_PASSWORD"
           [ -z "$UPLOAD_KEY_ALIAS" ]         && missing="$missing UPLOAD_KEY_ALIAS"
@@ -1022,6 +1059,10 @@ jobs:
 
       - name: Bundle release AAB
         id: bundle
+        # Runs only once a keystore has been decoded — on this repo it always
+        # has, since the step two above fails the job otherwise; on a fork it
+        # has not, and skipping here is what leaves `signed` unset.
+        if: env.UPLOAD_KEYSTORE_FILE != ''
         # Produces app/build/outputs/bundle/release/app-release.aab signed
         # with the upload key; Play App Signing re-signs with the real signing
         # key on download.
@@ -1051,7 +1092,11 @@ jobs:
         # Browser-downloadable artifact for manual upload to Play Console — kept
         # even after the auto-upload step below so the AAB is recoverable if the
         # Play upload fails (or for ad-hoc browser uploads to other tracks).
-        if: success()
+        #
+        # `env.UPLOAD_KEYSTORE_FILE` as well as `success()`: with no keystore
+        # there is no bundle to upload, and the action would fail the job on
+        # the missing path.
+        if: success() && env.UPLOAD_KEYSTORE_FILE != ''
         uses: actions/upload-artifact@v7
         with:
           name: app-release-aab
@@ -1541,12 +1586,13 @@ jobs:
         # second distribution channel.
         #
         # Gated on release-build's `signed` output, the same as the siblings.
-        # None of the three can produce an *unsigned* bundle — all of them
-        # fail the release build when the keystore secret is missing. What
-        # `signed` distinguishes is a green release-build that built nothing:
-        # the siblings exempt forks from that hard failure and skip their
-        # bundle step instead. clothescast has no such exemption yet, so the
-        # gate is redundant today and load-bearing the moment it does.
+        # Nothing here can produce an *unsigned* bundle — "Require an upload
+        # keystore" fails that job when the secret is missing. What `signed`
+        # distinguishes is a green release-build that built *nothing*: a fork
+        # is exempt from that failure, its bundle step skips, and this step
+        # and the Play upload both skip in turn. So a fork's `main` push runs
+        # green and publishes nothing, rather than going red on a secret it
+        # cannot hold.
         #
         # Play's own upload needs everything this needs and the service
         # account besides, so the invariant is one-way: every Play upload is

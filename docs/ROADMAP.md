@@ -707,8 +707,13 @@ price is committed — service-fee terms have moved before.)
   Two reads is the correct choice, not merely the cheap one.
 - Two additional Cloud Functions — within the ~2M invocation free tier.
 
-So the marginal infrastructure cost is effectively zero; Gemini remains
-the only bill that scales. **At the 5/day cap the maintainer's trial shape
+So the marginal infrastructure cost is effectively zero **for the billing
+functions**; among those, Gemini remains the only bill that scales. **This does
+not cover the forecast proxy** (Codex, 2026-09-03), which the paid Open-Meteo
+branch forces (`MONETIZATION.md`): it serves every *active install* rather than
+every subscriber, and its compute and egress are usage-dependent and unpriced.
+Where that branch is taken, this margin conclusion is incomplete until the
+proxy is sized. **At the 5/day cap the maintainer's trial shape
 keeps** (`MONETIZATION.md`), worst-case exposure per paying user is
 **~$0.45/month** against ~$2.54 net revenue at $2.99 — a ~5.6× margin even
 for a user who never misses a slot. The earlier figure here was
@@ -721,10 +726,16 @@ this paragraph said it did, and `MONETIZATION.md`'s question 3 no longer
 does. Two costs sit outside the per-subscriber recurring quota: trial
 acquisition, where a max-use 30-day trial is ~$0.45 spent before any
 revenue and is spent again on every non-converter and every trial restart;
-and the **commercial Open-Meteo license**, a fixed monthly floor whose
-figure is not yet known (`MONETIZATION.md`). Both are divided by the
-subscriber count rather than charged per subscriber, so at low conversion
-or low volume they dominate this ratio. Cost recovery is settled for a
+and the **commercial Open-Meteo license**, a fixed **$29/month** floor
+(maintainer, 2026-09-03; API Standard, 1M calls — `MONETIZATION.md`). Both
+are divided by the subscriber count rather than charged per subscriber, so
+at low conversion or low volume they dominate this ratio: net of Play's fee
+the license alone takes ~12 subscribers at $2.99/month and ~35 at $1 — and
+~14 and ~60 counting per-subscriber Gemini spend, which is still a subtotal
+rather than break-even, since the paid plan also forces an authenticated
+proxy nobody has priced. All of those counts assume the $29 Standard tier
+fits; its 1M-call allowance is a capacity limit nobody has sized, and at $99
+each count rises 3.41x — ~46 at $2.99 and ~203 at $1 (`MONETIZATION.md`). Cost recovery is settled for a
 *steady-state* subscriber and unsettled for the business. Realistic use
 is lower still: a smart-home user on twice-daily delivery spends 4
 syntheses/day (two runs × the active and paired windows), about
@@ -790,9 +801,19 @@ section before any of this ships. Specifically:
   or export exposes while buying nothing, which is exactly the "less, not
   more" default PRIVACY.md sets. If a support workflow later needs it,
   add it then, with a reason.
-- Nothing about the forecast, calendar, or location is involved, and
-  none of it should ever be attached to an entitlement doc. The hard
-  "do not transmit" list in PRIVACY.md applies unchanged.
+- Nothing about the forecast, calendar, or location is involved **in the
+  billing path**, and none of it should ever be attached to an entitlement
+  doc. The hard "do not transmit" list in PRIVACY.md applies unchanged.
+- **But the paid Open-Meteo branch is a different disclosure, and this
+  section does not cover it** (Codex, 2026-09-03). Taking that branch forces
+  an authenticated forecast proxy of ours (`MONETIZATION.md`), which receives
+  **the coordinates the device sends direct today**; and if geocoding is
+  proxied too, **the place names the user types into location search**. That
+  is location data reaching a developer-operated service, so PRIVACY.md and
+  the Data Safety declaration both need it stated before the proxy ships —
+  not the purchase-token wording above, which describes only billing. An
+  implementer following this section alone would ship an incomplete
+  disclosure.
 - Play Billing itself requires no new Android permission beyond
   `com.android.vending.BILLING`.
 
@@ -855,6 +876,17 @@ everything else.
    **configured OR needs-reentry**, and give the needs-reentry state its
    own copy (re-enter or clear the key) rather than a subscription offer.
    See [MONETIZATION.md](../MONETIZATION.md).
+5. **Price the forecast proxy, if the paid Open-Meteo branch is taken.**
+   Its compute and egress scale with *active installs* rather than
+   subscribers, and nothing here sizes them, so the subscriber thresholds
+   above cannot yet say whether that branch is affordable. Needs the
+   weighted-call definition (`MONETIZATION.md` input 1, unread) plus a
+   payload-size x refresh-rate x active-install estimate. **Cross-instance
+   request coalescing belongs to this question too**: an in-memory
+   single-flight only coalesces within one instance, so holding the plan's
+   per-minute ceiling during a burst needs coordination whose mechanism, cost
+   and failure behavior are all unsized. Not answerable from figures on hand;
+   do not guess it.
 
 ### Related
 

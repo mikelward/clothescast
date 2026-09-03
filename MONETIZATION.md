@@ -91,7 +91,16 @@ positive once it is counted. Nothing about the widening makes it preferable — 
 per-subscriber spend** a market question rather than a cost question, that
 clause only (Codex, 2026-09-03): trial acquisition and the fixed Open-Meteo
 license sit outside it, and until those land no price here is established as
-viable. The four inputs below are how it gets settled.
+viable. **The license half has landed — $29/month** (maintainer, 2026-09-03) —
+and it is a fixed floor rather than a per-subscriber cost, so it converts into a
+subscriber count: **the license alone** takes ~12 subscribers at $2.99 and ~35 at
+$1, net of Play's fee, and ~14 and ~60 once per-subscriber Gemini spend is
+counted — still a subtotal, since the paid plan also forces an unpriced proxy.
+**Every one of those counts assumes the $29 Standard tier fits** (Codex,
+2026-09-03), which is not established: 1M calls is a capacity limit and the
+weighted workload has not been computed. If it does not fit, the floor is $99
+**for the 1M–5M band** — Professional stops at 5M too, and past that neither
+published tier applies — and none of these numbers survives either way. Trial acquisition is still unmeasured. The four inputs below are how it gets settled.
 
 **But the price properly follows from four things nobody has measured yet**
 (maintainer, 2026-09-03), and this is the conversation to have before committing:
@@ -185,7 +194,7 @@ and trivially resettable by clearing app data. Three ways to answer it:
   actually a cap. Its costs are real and belong in the decision rather than
   standing in for one: it changes the **Play Data Safety declaration**, it is
   collected from *free* users — the population least compensated for it — and it
-  **would likely mean editing `docs/PRIVACY.md`**, which today rules out ad
+  **would likely mean editing `PRIVACY.md`**, which today rules out ad
   identifiers. **That is a document this project writes, not a constraint handed
   to it** (maintainer, 2026-09-03): a policy change is a cost to weigh, not a
   veto, and an app-scoped ID that survives a reinstall is a different thing from
@@ -365,7 +374,8 @@ changes the cost side out of recognition:
   arithmetic is bounded: a $1/month price nets ~$0.85 against a ~$0.45 ceiling.
   Trial acquisition and the fixed Open-Meteo floor sit outside that bound, and at
   low conversion or low volume either can still decide the price — the next
-  bullet and the license section below.
+  bullet and the license section below, where that floor is now a real number
+  ($29/month, maintainer 2026-09-03) and therefore a real subscriber count.
 - **But that does not make $1 safe, because it counts no trial** (Codex,
   2026-09-03). A max-use install on the 30-day trial proposed below costs ~$0.45
   before earning anything, and its first max-use paid month costs ~$0.45 again —
@@ -377,8 +387,9 @@ changes the cost side out of recognition:
   subscriber stays — none of which this page has numbers for. A shorter trial, or
   a trial metered below 5/day, moves it as much as the price does.
 - **Which makes the *recurring* half a market question rather than a cost
-  question** — that half only, since trial acquisition and the fixed Open-Meteo
-  license are still cost questions with no numbers in them. What
+  question** — that half only, since trial acquisition is still a cost question
+  with no numbers in it, and the Open-Meteo license, now priced at $29/month, is
+  a fixed floor that no per-subscriber argument reaches. What
   will someone pay to keep a spoken briefing in a natural voice? Nobody here
   knows, and the recurring arithmetic no longer answers it. The **safe range
   widens downward** — $1/month is no longer underwater against a heavy
@@ -408,7 +419,7 @@ design bounds the next one. **Per-device is unbounded per subscriber unless it
 gains either a durable device identity or an aggregate per-purchase ceiling.**
 Both stay live options (maintainer, 2026-09-03) — the free-cap section sets out
 what a durable identifier would cost (a Data Safety answer, and an identifier
-that is not an ad ID), and neither it nor `docs/PRIVACY.md` forbids one.
+that is not an ad ID), and neither it nor `PRIVACY.md` forbids one.
 
 **That changes the trade rather than settling it.** Per-purchase-token metering
 is bounded by construction at ~$0.45; per-device is a simplification whose cost
@@ -505,16 +516,291 @@ posture rather than fighting it.
   comparison marks "Commercial use ❌" against the free tier, alongside 10,000
   calls/day and 300,000/month with no uptime guarantee. Shipping a subscription
   makes the use commercial, so it needs one of:
-  - **A paid Open-Meteo plan.** Standard grants the commercial license and a
+  - **A paid Open-Meteo plan — $29/month** (maintainer, 2026-09-03, read off
+    open-meteo.com/en/pricing; the plan prices render through a Stripe table that
+    no `curl` or headless browser from this sandbox could execute, so the figure
+    was owed by hand). **API Standard** grants the commercial license and a
     dedicated endpoint (`customer-api.open-meteo.com`, same syntax plus an
-    `apikey` parameter), 1M calls/month, a 99.9% uptime target, and **fixed
-    monthly pricing with no per-call overage** — their words. **The figure itself
-    is the one number this page cannot state** (Codex, 2026-09-03, asking for it):
-    the plan prices render through a Stripe pricing table, which neither a `curl`
-    nor a headless browser from this sandbox could execute. It is a two-minute
-    look at open-meteo.com/en/pricing and it is **owed before any break-even is
-    claimed**, because a fixed monthly cost is the wrong shape for everything else
-    here — it exists in full at one subscriber.
+    `apikey` parameter), 1M calls/month, a 99.9% uptime target, and fixed monthly
+    pricing with no per-call overage — their words — covering Forecast plus Air
+    Quality, Marine, Flood, Elevation and Geocoding. **API Professional is
+    $99/month** for 5M calls and historical/climate data, which this app does not
+    use.
+
+    **Standard is the tier to price against on *features*, and that is not the
+    same as it being the tier this app fits** (Codex, 2026-09-03). 1M calls/month
+    is a **capacity** limit, consumed by every install rather than every
+    subscriber — free ones included, since one commercial key serves the whole
+    app. `OpenMeteoClient.fetchForecast` issues a primary *and* a multi-model
+    request per forecast, so **a forecast is at least two HTTP requests**, before
+    geocoding — but **two requests is not two billed calls, and the install
+    estimate this paragraph used to give was wrong** (Codex, 2026-09-03).
+    Open-Meteo accounts for usage by *weighted* calls, and both requests are
+    larger than a request count suggests: the primary asks for 14 variables
+    across 15 days (`past_days=1` plus `forecast_days=14`, 7 daily and 7
+    hourly), while the side-band request is **not the same set and not smaller**
+    (Codex, 2026-09-03) — `MultiModelConfidenceFetcher.requestModels` asks for
+    **11 hourly variables plus 3 daily**, and expands them across up to five
+    models. So one refresh may consume many times two calls. **No install
+    ceiling is stated here, because deriving one from request counts produced a
+    figure that flattered the cheap tier.** Four things are needed before $29 is
+    established as the applicable floor:
+
+    1. **Open-Meteo's own weighted-call definition**, which this sandbox has not
+       read — everything else is unusable without it.
+    2. **Refreshes per active install, plus retry behavior and cold-process
+       misses** (Codex, 2026-09-03 and 2026-09-04), which an earlier two-input
+       version of this recipe omitted and a later one counted the cache against
+       without asking whether the process was alive to hold it. Refreshes are
+       not user-initiated events that can be estimated from habit: the hourly
+       widget tick repaints unconditionally and *refetches* whenever the cached
+       snapshot has aged past `WIDGET_REFRESH_MAX_AGE` (`WidgetRefreshReceiver`),
+       on top of the scheduled, app-open and manual paths.
+       **`WIDGET_REFRESH_MAX_AGE` is 6 hours, not 1** (maintainer, 2026-09-03;
+       `WidgetRefreshReceiver.kt` confirms `Duration.ofHours(6)`) — so the widget
+       path is often around **four *successful* refreshes a day** — a rough figure and
+       **not a cap** (Codex, 2026-09-03), because a separate `BOUNDARY` alarm
+       enqueues a silent refresh at each configured window boundary whenever
+       delivery does not already cover it (`WidgetRefreshReceiver`), on top of
+       the stale checks; with uneven user-chosen boundaries the longer window can
+       hold several six-hour refreshes of its own. So the widget path alone can
+       exceed four before retries, app opens or manual refreshes are counted — which is not
+       a cap on request *attempts* (Codex, 2026-09-03), and an earlier revision
+       of this line said "fetches" as though it were. On a transient Open-Meteo
+       failure `FetchAndNotifyWorker` returns `Result.retry()` — network errors,
+       429s, 5xx, connect and socket timeouts all take that path — so
+       `WorkManager` retries with backoff while the snapshot stays stale. So
+       attempts are not bounded by the TTL — but **a later hourly tick replaces
+       the pending retry rather than adding to it** (Codex, 2026-09-03, and an
+       earlier revision of this line said "on top", which overcounted):
+       `enqueueSilentRefresh` uses `UNIQUE_WORK_NAME_SILENT` with
+       `ExistingWorkPolicy.REPLACE`, so the tick cancels work sitting in backoff
+       and restarts it. **But that model covers the silent queue only, and
+       scoping it to "one queue" was still too generous** (Codex, 2026-09-03):
+       `FetchAndNotifyWorker` defines four deliberately distinct unique-work
+       names — `UNIQUE_WORK_NAME` (alarm-driven delivery), `..._PLAY`,
+       `..._SILENT` and `..._LOCATION_CACHE` — precisely so they cannot cancel
+       each other, and REPLACE dedupes only *within* a queue. So an alarm
+       delivery or a Play tap sitting in backoff is untouched by the hourly
+       widget tick. **But "runs concurrently" was the overcorrection** (Codex,
+       2026-09-04, and the third time this passage has swung past the claim it
+       was fixing): distinct queues can overlap in WorkManager, and they still
+       cannot each produce a concurrent Open-Meteo fetch, because they share one
+       lazily-built `CachingWeatherRepository` whose `fetchForecast` holds a
+       single mutex across the cache lookup *and* the delegate network call. So
+       they **serialize**, and a success populates a one-hour location-keyed
+       cache the next one hits — a second, tighter dedup layer than the widget's
+       six-hour TTL, which this recipe had not counted at all. `..._LOCATION_CACHE`
+       is a cache-only worker rather than a fourth forecast pipeline, too.
+
+       **And that cache is process-local, which is the fourth correction and the
+       one that matters most for sizing** (Codex, 2026-09-04). `entry` is a
+       plain `private var` on a repository the Application builds `by lazy`, so
+       the mutex and the cached bundle both die with the process — and the
+       normal shape of this app's load is precisely a process that is *not*
+       alive between firings: an alarm wakes a killed app at 07:00, serves one
+       forecast, and is killed again. Two jobs an hour apart on a phone that
+       reclaimed the app in between are two cold starts and two real requests,
+       whatever the TTL says. (It is a **single-slot** cache besides — one
+       `Entry`, not a map — so within a live process two locations evict each
+       other as well.)
+
+       The model that survives all four corrections: back-to-back successful
+       jobs collapse into the one-hour cache **only while the process lives**,
+       and then regardless of which queue they came from; a cold process is a
+       guaranteed miss; **failed** attempts populate nothing, so each is a real
+       request; and jobs proceed serially rather than in parallel *within* a
+       process, with no serialization at all across one that has been restarted.
+       Sizing that treats the cache as unconditional overstates its help on the
+       alarm path, which is the path the 07:00 burst is made of; sizing that
+       ignores the failures understates an outage. So **cold-process requests
+       belong in input (2) alongside retries**, and the honest ceiling on what
+       the cache saves is "repeat requests inside one live process", not
+       "repeat requests inside an hour". Persisting the cache would change that
+       and is the obvious lever, but it is a design change with its own
+       staleness and storage questions, not a fact about today.
+
+       **And there are two retry layers, not one** (Codex, 2026-09-03).
+       `MultiModelConfidenceFetcher` retries *inside itself* and never reaches
+       the worker's path: a transient I/O failure is retried up to
+       `MAX_TRANSIENT_RETRIES` (2) and then swallowed, and an invalid or
+       withdrawn `models=` id makes it prune and reissue, bounded by
+       `MAX_FETCH_ATTEMPTS` (6) — **worst case seven requests, not six**
+       (Codex, 2026-09-03): `attempts` increments *before* each call and the
+       loop gives up only once a request lands beyond the constant, which the
+       source comment says in as many words. Transient retries spend from the
+       same budget. A withdrawn model id makes that extra weighted request
+       recur on **every** refresh until the model list changes, which is the
+       part worth sizing — it is a standing cost, not a one-off. So one side-band fetch can be several requests
+       on its own — and because each `WorkManager` retry of the primary re-runs
+       the whole refresh, it starts a **fresh** set of those attempts. The two
+       layers multiply rather than add, which is the shape most likely to
+       undercount weighted usage badly, and both belong in the sizing. The 6 is a considered guess rather
+       than a measurement (maintainer, 2026-09-03): nobody knows how often users
+       look at the widget, and the theory is that they don't need to, since
+       someone who set their schedule correctly is already dressed. **A stronger
+       version of that argument does not need the user behavior at all**: a
+       forecast fetched at 07:00 already contains the 18:00 hours, so a refetch
+       buys the forecast's *revision*, not new coverage — and within six hours,
+       temperature and general conditions rarely revise enough to change what
+       someone should wear.
+
+       **Recorded lean, not a decision** (2026-09-03): the exception is
+       fast-moving rain, where the three-hours-out probability genuinely does
+       revise and a stale widget says dry under a darkening sky. So an
+       **adaptive TTL** — 6 hours by default, shorter when the next few hours
+       carry meaningful precipitation probability — is worth more than any
+       universal value.
+
+       **Its load is bounded but not estimated, and calling it negligible was
+       unsupported** (Codex, 2026-09-03). An adaptive TTL sits somewhere between
+       the 6-hour cadence and whatever the shortened one costs, and where it
+       sits is set by the **fraction of days that trigger it** — which is
+       unmeasured, climate-dependent, and in a wet region or a wet season could
+       be most days, at which point it approaches universal shortening rather
+       than the current cadence. So it is not a free upgrade, and an earlier
+       revision of this line asserting it "barely moves" total load was making
+       exactly the kind of unmeasured capacity claim the rest of this section
+       refuses to make. The lean stands on the *product* argument — a stale
+       widget saying dry under a darkening sky — with its cost left open.
+
+       The maintainer considers 6 hours about right and tunable. Cadence stays
+       an input because it is a *policy*: retries, and any change to the TTL,
+       adaptive or not, move total load without any user behavior changing.
+    3. Then an estimate of **active installs** — not subscribers, and **not the
+       cumulative installed base** either (Codex, 2026-09-03; an earlier
+       revision said "total installs", which contradicts input (2)'s own *per
+       active install* and would overstate traffic enough to select $99
+       wrongly). Only installs that open the app, run an enabled schedule, or
+       carry a placed widget issue forecast requests at all; dormant ones cost
+       nothing.
+    4. And the plan's **short-window ceilings — per minute, hour and day —
+       against the distribution of scheduled times** (Codex, 2026-09-03), which
+       the first three inputs miss entirely by reasoning only about a monthly
+       total. Those are not independent here: `FetchAndNotifyWorker` spreads
+       alarm-triggered requests across a window of only **30 seconds**
+       (`ALARM_FETCH_JITTER_MS`, verified), so installs firing at the same
+       instant arrive as a synchronized burst rather than spread over the day —
+       and each refresh is several weighted requests, not one.
+
+       **But the burst is per time zone, not global** (Codex, 2026-09-03), and
+       an earlier version of this input applied the whole active-install count
+       to a single window, which overstates peak badly enough to select a tier —
+       or a jitter change — that nothing needed. `Schedule` carries a `zoneId`
+       and the default is 07:00 *local*, so installs group by **UTC firing
+       instant**: the collision is real and full within a zone, and a globally
+       spread base spreads across the day by itself. So the input is the
+       distribution of schedule times **bucketed by UTC instant** — and each
+       ceiling reads a different figure off those buckets (Codex, 2026-09-03,
+       correcting the previous revision's "the largest bucket" as though one
+       number served all three): every ceiling takes the **maximum sum over its own
+       window**. For the **hourly** and **daily** ones that is every bucket
+       falling inside it. For the **minute** ceiling it is *not* simply the
+       largest bucket (Codex, 2026-09-03, catching the same overcorrection a
+       second time): the 30-second jitter lets nearby buckets bleed into one
+       rolling minute, and the widget, app-open, manual and retry traffic that
+       lands there regardless of anyone's schedule counts against every window,
+       not only the wide ones. Reducing any of them to the peak bucket
+       understates it and picks a tier — or a jitter — that still 429s. Which also says where the risk is: a user base concentrated in
+       one country is the case where peak and total are the same problem.
+
+       With that correction, the point stands — a workload whose monthly total
+       fits Standard comfortably can still take 429s at 07:00 in its largest
+       zone, which the user experiences as the forecast failing at exactly the
+       moment the app exists for. Sizing that ignores the shape of the traffic
+       can pick the right tier and still be wrong. Widening the jitter belongs in
+       the same conversation but is not cheap — it is bounded by the delivery
+       alignment, and both ways of widening it cost something visible (see the
+       burst-overshoot paragraph below).
+
+    If the *monthly* load exceeds Standard, the floor is $99 **for the 1M–5M band
+    only** (Codex, 2026-09-03) — despite none of Professional's extra datasets
+    being used. An earlier revision made $99 the answer to *any* overshoot,
+    which the plan description above contradicts: Professional is 5M calls, so a
+    workload past that fits neither published tier and its price and terms are
+    simply unknown from here. With no overage on either plan, the alternative to
+    upgrading is failing forecasts, and above 5M the alternative to a quote
+    nobody has is self-hosting or reducing the request shape.
+
+    **A short-window failure is a different failure and does not map onto that
+    band at all** (Codex, 2026-09-03, on the input added above). A workload
+    comfortably under 1M a month can still breach the minute or hour ceiling in
+    its largest bucket, and *nothing about being under 1M* says which tier fixes
+    that: whether Professional's short-window ceilings are higher — or published
+    at all — is unread here alongside the weighted-call definition. So the two
+    failure modes route differently. **Monthly overshoot** is a tier question,
+    answered by the band above. **Burst overshoot** is a *shape* question, and
+    its first answer is not money — but it is also **not a free knob**, which an
+    earlier version of this paragraph implied by offering "widen
+    `ALARM_FETCH_JITTER_MS`" at the cost of "a little punctuality" (Codex,
+    2026-09-04). The jitter is bounded from above by a second constant.
+    `FetchAndNotifyWorker` realigns the notification and TTS to
+    `DELIVERY_ALIGN_AFTER_ALARM_MS` (60 s), so every device in a household
+    delivers at the same wall-clock moment, and the 30 s jitter is held
+    *strictly below* it precisely so the worst roll plus a slow fetch still
+    lands before the barrier — the source says so in as many words, including
+    that going wider would let some rolls overshoot it. So there are two moves
+    and both cost something visible: widen the jitter alone and late rolls miss
+    the barrier, delivering at whatever time their fetch happens to finish,
+    which loses the synchronized delivery the constant exists to provide; widen
+    both and *every* briefing arrives later, every day, for a ceiling problem
+    most users never trigger. Neither is "a little punctuality". Only once that
+    trade is priced does it become a tier question, and then it needs
+    Professional's short-window limits — which have to be read before $29 can be
+    ruled out or $99 ruled in on burst grounds.
+
+    **What the number does to the arithmetic.** $29/month is a floor that exists
+    in full at one subscriber, so it converts directly into a subscriber count
+    before anything else is paid for. Net of Play's 15%, **$2.99/month clears it
+    at ~12 paying subscribers and $1/month at ~35** — and that is the license
+    alone. Counting the per-subscriber Gemini spend too, **license plus Gemini**
+    is cleared at roughly **14 subscribers at $2.99 and 60 at $1** (73 at $1
+    against the $0.45 max-use ceiling). **All of these are Standard-tier
+    scenarios** (Codex, 2026-09-03) — the paragraph above says $29 is not
+    established as the applicable floor until the weighted workload, refresh
+    cadence, retries and install volume are known, and at $99 every count here
+    rises 3.41x: ~46 at $2.99 and ~203 at $1.
+
+    **Those are a subtotal, not the tier's break-even** (Codex, 2026-09-03), and
+    calling them break-even was wrong for a reason this same bullet supplies four
+    paragraphs down: taking the paid plan means the key cannot ship in the app, so
+    forecasts have to route through an **authenticated proxy of ours** — a term
+    this page has never priced, **and its dollar cost is unknown rather than
+    ~$0** (Codex, 2026-09-03, correcting an earlier line here that claimed the
+    latter). The repo does already deploy an authenticated HTTP function in the
+    same Firebase codebase, and `docs/ROADMAP.md` does place two more inside the
+    free tier — but that sizing is **invocation counts for low-volume billing
+    functions**, and it does not transfer to proxying full forecast responses.
+    The term that would decide it is **egress**, for a payload that is large and
+    generated by **every active install**, free ones included — the same
+    population the capacity paragraph above says is unmeasured. So a free tier
+    sized against a handful of billing calls proves nothing about this.
+
+    What can be said without the number: the cost is at least **engineering** —
+    App Check, a second surface to maintain, added latency, and a new failure
+    mode on the forecast path — and the dollar term is unpriced in both
+    directions. It is not grounds for claiming the threshold moves, and it is
+    not grounds for claiming it doesn't. Every trial that never converts is on top of these figures
+    as well. Two things follow. The recurring-spend argument above is unaffected
+    **by the license**, which is genuinely fixed — it was always scoped to
+    per-subscriber cost, and $29 does not move with usage. **The proxy is not
+    fixed and must not be folded into that conclusion** (Codex, 2026-09-03): its
+    egress is generated by every active install, free ones included, so it is a
+    *variable* cost that grows with installs and can move margins while the
+    subscriber count stands still. The fixed-cost reasoning here covers the
+    license only. But **the "safe range widens downward" conclusion does not reach $1**
+    at any plausible early volume — at ten subscribers $1/month is $8.50 against
+    $29 — so the case for the bottom of the range now needs a subscriber count
+    nobody has, on top of the trial numbers it already needed. $2.99 needs the
+    same count argument, just a shallower one.
+
+    **This is not a reason to price higher; it is a reason the first question is
+    volume.** A fixed floor is cleared by subscribers, not by price: $9.99 clears
+    it at four, and a price nobody pays clears it at none. What the figure
+    settles is that **any** paid tier here starts $29/month underwater, so it is
+    a decision about whether there is an audience at all — which is what the
+    discovery argument elsewhere on this page already says is the binding
+    constraint.
 
     **And the key cannot live in the app** (Codex, 2026-09-03). `OpenMeteoClient`
     calls the forecast endpoint straight from the device, so "same syntax plus an
@@ -522,10 +808,349 @@ posture rather than fighting it.
     every request: anyone can extract it, replay it, and burn the 1M-call
     allowance, at which point forecasts fail for everyone who paid. Taking this
     branch therefore means routing forecasts through an authenticated proxy of
-    ours — which is a second always-on service with its own dollar cost, added
-    latency on the forecast path, an outage that takes every user's forecast with
-    it, and a privacy boundary the app does not have today, since the proxy would
+    ours — a second always-on service whose dollar cost is unpriced (its egress
+    scales with active installs, not subscribers) and whose other costs are
+    certain: added latency on the forecast path, an outage that takes every
+    user's forecast with it, and a privacy boundary the app does not have today, since the proxy would
     see the coordinates the device currently sends direct.
+
+    **Authentication is not a quota, and the proxy needs one** (Codex,
+    2026-09-03). App Check and anonymous auth establish *who* is calling, not
+    *how much* — so one genuine install hammering manual refresh can spend the
+    shared weighted-call allowance until forecasts fail for everybody, which is
+    precisely the quota-exhaustion failure that moving the key out of the APK
+    exists to prevent. The repo already has the pattern: the TTS function
+    reserves a daily slot per caller (`reserveDailySlot`). The forecast proxy
+    needs the equivalent, and a **shared response cache** is the better half of
+    the answer here than a pure rate limit — many installs in one area want the
+    same forecast, so caching cuts the upstream bill and the abuse surface at
+    once.
+
+    **A response cache alone does not survive the burst it is being counted
+    against, though** (Codex, 2026-09-04). Input (4) above is a crowd of installs
+    firing inside one 30-second jitter window in a single zone; a plain
+    read-through cache is *empty or just-expired* for that key at exactly that
+    instant, so every one of them misses, and every one forwards upstream before
+    the first response is stored. The cache then fills — after the spike it was
+    supposed to absorb has already been spent against a per-minute allowance. So
+    counting cache sharing as burst capacity, or as abuse mitigation, requires
+    **per-key single-flight**: the first miss fetches, the rest await that same
+    in-flight result. **In memory that is per-instance**, and the deployment
+    this would sit on sets no instance constraint, so a burst that scales
+    horizontally still forwards one miss per instance. **Coalescing across
+    instances is unsolved here** — it is a design and a cost of its own, and it
+    belongs with the rest of the proxy's unsized pricing in `docs/ROADMAP.md`
+    open question 5 rather than being named as a solution this page has not
+    priced. Single-flight also has its own contract to specify rather than
+    assume —
+    what the waiters get when the leader fails (an error each, or one shared
+    failure), how long they wait before giving up, and whether a failure is
+    negative-cached at all, since caching an upstream 429 turns one refusal into
+    a quiet outage for a whole cell. Without it, the honest claim is that the
+    cache cuts the *monthly* bill and does nothing for the minute ceiling.
+
+    **That cache is itself a privacy decision, not just a cost control**
+    (Codex, 2026-09-03): it *stores* a location-keyed forecast on infrastructure
+    this project operates, where the proxy above only forwarded coordinates in
+    flight. So it cannot be recommended without settling what it retains — the
+    key's granularity (grid-snapped, per the paragraph below, is the privacy
+    answer as much as the abuse one), how long an entry lives and what evicts
+    it, and whether any caller identifier is stored beside the entry, which is
+    the difference between a cache of *places* and a log of *who asked about
+    where*. The default that needs no argument is: coarse key (plus the caller's
+    zone, which also has to travel upstream — see the boundary correction below),
+    short TTL, no identifier stored, and the privacy policy says so before it
+    ships.
+
+    **But neither half survives a determined caller as specified** (Codex,
+    2026-09-03), and reusing the TTS pattern unexamined was the mistake. That
+    quota keys on the **anonymous Firebase uid**, which this page establishes
+    elsewhere *rotates* on a reinstall or an app-data clear — so the same
+    physical install can mint a fresh allowance at will. And a shared cache keys
+    on location, so varying the coordinates slightly misses it every time. The
+    two weaknesses compose: rotate the uid, jitter the coordinates, and both
+    defenses are gone. What is actually needed is a **durable or aggregate
+    server-side boundary**, and **these are layers, not alternatives** (Codex,
+    2026-09-03) — offering them as a menu was the second version of the same
+    mistake, because none of them bounds a single caller on its own. Grid
+    snapping only makes coordinate variation coarser, so a scripted caller walks
+    distinct cells; an attestation that survives a reinstall supplies a *durable
+    identity* and imposes no limit by itself; and a global ceiling, alone, just
+    lets one caller reach the everybody-fails state sooner. So the shape is a
+    composition — a per-caller rate limit, with coarse-keyed caching **plus
+    per-key single-flight** underneath it to cut what reaches upstream, and an
+    aggregate circuit breaker above it as the last stop — and **the key that
+    per-caller limit sits on is the unresolved part**: what follows is why Play
+    offers a durable *flag* and no durable *key*. The single-flight is not a refinement of the cache
+    but the half that makes it count against a burst at all, per the paragraph
+    above.
+
+    **A durable identity sounds like a disclosure, and the mechanism Play
+    actually offers is not one** — but the first version of this paragraph
+    named the wrong primitive (Codex, 2026-09-03, correctly). Play Integrity
+    tokens are **per-request attestations carrying no stable per-device
+    identifier**, so an opaque id derived from one links nothing across
+    reinstalls; proposing that was proposing something that does not work.
+
+    What does is **device recall** (`developer.android.com/google/play/integrity/device-recall`,
+    read 2026-09-03, beta): Google stores **three bits per device** on this
+    app's behalf — three flags, or eight labels combined — and they **survive an
+    app reinstall and a factory reset**, held for three years after the last
+    access. Crucially, "the requesting app can only recall the limited data that
+    it associated with devices, without accessing any device or user
+    identifiers": nothing durable is sent to or stored by us at all, because
+    Google holds the association and hands back only our own bits. So the
+    trade-off this paragraph previously recorded as a genuine tension is
+    **narrower than it looked** — the reinstall-resistant half costs no
+    identifier.
+
+    **What it narrows is what *we* receive; what Google holds is a separate
+    flow, and this page owed it** (Codex, 2026-09-04, P2). The sentence above
+    is true about the app and stops there. On the other side of it Google is
+    storing **per-device state written on this app's behalf** — surviving a
+    reinstall and a factory reset, held three years past last access — that
+    would not exist but for our writing it. "No identifier comes back" does
+    not make that undeclared: it is a persistent third-party data flow whose
+    **purpose and retention need a Data Safety answer and a `PRIVACY.md`
+    line before the mechanism is adopted**, not after. Two concrete gaps.
+    `docs/ROADMAP.md`'s privacy checklist covers the purchase token and, since
+    the last round, the coordinates and typed place names the proxy would
+    receive — device recall has no slot in it, which is the same shape of
+    omission that bullet was itself added to fix. And `PRIVACY.md`'s
+    provider table closes with *"These providers act as service providers
+    fulfilling a single request and returning the result"* — accurate for
+    every row it has today, and exactly what device recall is not. A write
+    that outlives its request needs its own sentence, not another row under
+    that one.
+
+    **It is not free of cost or failure modes, though, and this page owes both
+    before treating it as the mechanism** (Codex, 2026-09-04, against the repo's
+    own cost-and-reliability rule). Device recall is a **second, beta**
+    dependency on top of the App Check flow the proxy already needs: another
+    integration, another SDK surface, another thing that can change under a
+    beta label. Its own request quota and any cost are **unsized here** — writes
+    carry rate limits separate from the integrity-token quota, and nobody has
+    counted what this app would spend. And the outage behavior is the part that
+    has to be decided rather than discovered: **when a recall verdict or write
+    is unavailable, failing open removes the durable boundary exactly when an
+    abuser would want it gone, while failing closed denies forecasts to
+    legitimate installs for an outage that is not theirs.** Given this app's
+    stakes — a wrong forecast is an annoyance, a blocked one is the product not
+    working — the defensible default is **fail open on the durable layer and
+    lean on the aggregate ceiling**, which fails everybody rather than singling
+    out the innocent, with the outage logged so a sustained one is visible. Not
+    a decision; the point is that the choice exists and the fail-closed version
+    would be a quiet way to break the app for real users.
+
+    **But three bits is a flag, not a counter, which changes the design rather
+    than completing it.** It cannot carry a rolling per-caller quota; it can
+    carry *"this device has already been caught abusing"* or *"this device has
+    had the free trial"*. So the shape is: ordinary rate limiting keyed on the
+    app-instance identity for routine load — which a reinstall resets, and that
+    is an acceptable cost for the ordinary case — with device recall as the
+    durable mark for a caller already caught, and the aggregate ceiling behind
+    both. **That leaves a gap this page should not pretend is closed** (Codex,
+    2026-09-03): a caller who reinstalls *before* crossing the per-instance
+    threshold is never marked, so repeated sub-threshold batches spend
+    arbitrarily much and the aggregate breaker — which fails everybody, not
+    them — becomes the only thing that stops it. Closing it needs accounting
+    that survives a reset *before* the limit is reached, not a post-detection
+    flag. Three bits still cannot count, so the candidates are marking on
+    something cheaper than proven abuse (a first bit set at first use, making
+    reinstall itself visible), a much lower ceiling for an instance with no
+    history, or accepting the gap explicitly on the grounds that this app's
+    traffic is not worth scripting. Unresolved; naming it beats a design that
+    reads complete. Its own constraints belong in any estimate: bits are writable only
+    within **14 days** of the verdict they cite, propagation to the next read is
+    ~30 s, and writes carry their own rate limits.
+
+    What still needs settling is the **quota row itself**: how long it lives (an
+    hour or a day of counters, not a history) and whether it can be joined to
+    anything else the proxy holds — a quota row beside a cache entry is a log of
+    who asked about where, which the paragraph above already ruled against.
+    **Coarsening the coordinate is not the same as keying on it** (Codex,
+    2026-09-03): `OpenMeteoClient.fetchForecast` fires the primary request and
+    the multi-model confidence fetch at the *same* location concurrently, each
+    asking for different variables, and the model set is user-selectable — so a
+    location-only key would serve one request's payload to the other and produce
+    either a parse failure or a forecast blended from somebody else's
+    configuration. The key is the whole request: endpoint plus normalized
+    non-location parameters, with only the coordinate component coarsened.
+    **`past_days` and `forecast_days` are relative, so the key needs the target
+    zone's local date too** (Codex, 2026-09-04) — otherwise an entry cached just
+    before midnight there keeps serving after it, and the mapper reads daily
+    index 1 as today whatever day the bundle is actually for. Either that date is
+    a key component or each entry's expiry is capped at that zone's next
+    midnight; not picked here.
+    **And coarsening the key alone is not enough — the coordinate sent upstream
+    has to be snapped too** (Codex, 2026-09-03). Cache the first caller's
+    *exact-location* response under a coarse key and the second caller at a
+    different point inside that cell is served weather for somewhere they are
+    not; with `timezone=auto` (both clients set it) the response also carries
+    the first caller's resolved zone, so the dates and times can be wrong as
+    well, not only the numbers. It is a privacy fault before it is a correctness
+    one: the stored payload retains a finer location than the key admits to, in
+    a store this page has already said should hold no more than it must. The
+    proxy therefore requests the canonical snapped point, and what is cached is
+    the answer for *that* point — which is what makes the entry honestly
+    shareable.
+
+    **Snapping alone still gets the dates wrong across a zone boundary, though**
+    (Codex, 2026-09-04). A coarse cell is a rectangle on a map and a time-zone
+    line does not respect it: with `timezone=auto` the upstream resolves the zone
+    at the *snapped* point, so every caller on the other side of the line inside
+    that cell receives a forecast labeled with the wrong local day. That is worse
+    than a numeric error, because this app's whole output is day-shaped —
+    "today", "tonight", the morning insight — so a caller one cell-width from the
+    boundary is told about the wrong day entirely, consistently, and with nothing
+    that looks like a fault. Snapping makes the entry *consistent*; it does not
+    make it *correct*, and the previous paragraph conflated the two.
+
+    **And keying on the zone is only half of that fix** (Codex, 2026-09-04,
+    against the first version of this paragraph, which stopped at the key). A key
+    decides which entry a caller is served; it does not change what the entry
+    contains. Leave `timezone=auto` in place and the upstream still resolves the
+    zone at the *snapped* point, so a straddling cell yields two entries that both
+    carry the same wrong zone — the same bad answer, filed twice. The zone has to
+    travel **upstream as well as into the key**: send the caller's resolved zone
+    as an explicit `timezone=<IANA name>` instead of `auto`, and key on it, so the
+    response is dated for the caller and the entry is shared only with others in
+    that zone. The alternative — request UTC and localize on the device — removes
+    the zone from the cache dimension, but it is the weaker of the two: it works
+    only if every daily aggregate is rebuilt from hourly data, since
+    `fetchPrimary` asks for day-bucketed extrema and totals that cannot be
+    re-bucketed after the fact.
+
+    **Calling the explicit-zone version "the smaller change" skipped a step: the
+    client has no zone to send** (Codex, 2026-09-04). `Location` carries
+    latitude, longitude, a display name, a country code and an address
+    detail — no zone. `GeocodingResult` drops Open-Meteo's `timezone` field on
+    the floor. And `forecastZone` is *learned from the forecast response*, which
+    is the thing being requested. So for a manually picked location the value
+    simply does not exist yet, and the device's system zone is the wrong answer
+    for a location the device is not in — which is exactly the remote-location
+    case the feature exists for. The three sources, once separated, are not
+    equally hard:
+
+    - **Device location** — the system zone is usually right for a fresh fix,
+      and it is free, but it is **not implied by one**: automatic time-zone
+      detection can be off, or not yet caught up after travel, and then sending
+      it upstream is worse than today's `timezone=auto`. And `LocationResolver`
+      can fall back to an old cached coordinate, which carries no zone at all —
+      `toDomain` copies latitude, longitude and a display name and then
+      coarsens. So this source is free only where the system zone can be
+      trusted; both other cases land in the unsolved one below.
+    - **A geocoded manual pick** — Open-Meteo's geocoding response already
+      returns `timezone`; the DTO discards it. Capturing it, carrying it on
+      `Location`, and persisting it closes this case with no new network call
+      and no new disclosure. That is the whole fix, and it is small — but it is
+      a schema and migration change, not a query-parameter change.
+    - **A location persisted before that field exists** — the unsolved one, and
+      the previous version of this bullet answered it with two non-answers
+      (Codex, 2026-09-04). "Learn it from the first response" cannot work: the
+      proxy asks for the *snapped* point, so `timezone=auto` returns that
+      point's zone, and a legacy location near a boundary would permanently
+      record the wrong one — the precise failure this whole passage is about.
+      "Take the UTC route" cannot work either, because localizing a UTC
+      response still needs the target IANA zone. The zone has to be resolved
+      **independently, before snapping**, and the candidates each cost
+      something: **re-geocode the persisted display name** (Open-Meteo's
+      geocoding returns `timezone`, and manual picks are exactly the ones that
+      persist a name — null for a location saved without one, and on the proxy
+      branch it sends that stored name to our own infrastructure). It is one
+      geocoding request per affected saved location, once, so the volume is
+      trivial against any of the ceilings above — but it counts against the same
+      unsized geocoding path, and a no-match or an unavailable service leaves the
+      zone unresolved, which drops back to the other candidates rather than
+      guessing one; or simply **asking on the Location page** during
+      migration. **Nothing that resolves from the persisted coordinate is on
+      the list** — neither a lookup through the proxy nor a bundled offline
+      tz-boundary database — because those records were coarsened before they
+      were stored, so a 2-decimal point can land on the wrong side of the very
+      boundary this is about. That leaves only independent sources. Unresolved
+      here, and naming it is the point.
+
+    So the explicit-zone version is the answer: UTC needs a persisted zone to
+    render anyway, and it additionally needs every daily aggregate rebuilt. The
+    legacy-location problem above survives either choice. A cache keyed on a
+    coarsened coordinate without a zone is quietly wrong for everyone near a
+    boundary.
+    **The third concurrent call is not Open-Meteo's** (Codex, 2026-09-03) and
+    was wrong to count here: `extraModelHourly` is the Google Weather path,
+    fired against the user's own Google Cloud key with its own device-side
+    `GoogleForecastCache`, and a miss there is roughly ten paginated Google
+    calls. It spends none of the Open-Meteo allowance, and it must stay outside
+    this proxy and its cache — routing BYOK Google traffic through
+    developer-operated infrastructure is a different decision, taken nowhere on
+    this page.
+    Unresolved here; naming it is the point, because "reuse `reserveDailySlot`"
+    reads like a solved problem and is not one. Whichever is chosen, the **user-visible behavior at the limit has to
+    be specified**, in both cases: where the device or the cache still holds a
+    forecast, show it labeled as stale rather than a blank screen. Where neither
+    does — a fresh install, or a location nobody has asked about yet — there is
+    nothing stale to fall back on (Codex, 2026-09-03), so that path needs its own
+    explicit state: a named "forecast unavailable, try later" screen with a retry,
+    never an empty one and never a spinner that never resolves. Saying "never a
+    blank screen" without defining the cold case leaves the worst version of it
+    undefined.
+
+    **And it is not only forecasts** (Codex, 2026-09-03). `OpenMeteoGeocodingClient`
+    calls `geocoding-api.open-meteo.com/v1/search` straight from the device with
+    the user's **typed place name** as the `name` parameter — a separate host,
+    keyless today, and one the commercial plan also covers. So either that
+    endpoint stays licensed for this app's commercial use without a key, which
+    nobody here has confirmed, or it is proxied too; scoping the analysis to
+    forecasts understated all three costs — and, on the proxied branch, the
+    abuse controls above apply to it too (Codex, 2026-09-03). Everything in this
+    section has been scoped to the forecast proxy while this branch listed only
+    capacity, engineering and privacy, which leaves the second endpoint open: an
+    authenticated caller can issue arbitrary search strings, and neither the
+    forecast cache nor grid snapping absorbs any of that — search text does not
+    snap to a grid, and a novel string is a miss by definition. So proxied
+    geocoding inherits the same per-caller limit and aggregate circuit breaker
+    — and with them the same unresolved key and the same pre-threshold
+    reinstall gap — or one client exhausts the shared allowance and takes
+    everybody's forecasts down through the endpoint nobody was watching. Its own
+    cacheability is worth a separate look, since repeated searches for the same
+    place are common and a normalized query string is a fair **component** of a key
+    — though not the key itself (Codex, 2026-09-04): `OpenMeteoGeocodingClient.search`
+    takes `limit` and `languageTag` too and sends `name`, `count`, `language` and
+    `format`, so a query-only key hands one caller another's language or result
+    count. The forecast cache above already established "key on the whole
+    request"; failing to carry that one paragraph later is the same miss this
+    page keeps making. Same rule here, or canonicalize those parameters at the
+    proxy so there is only one shape to cache. It is also a
+    saving rather than a control, **and the same storage decision the forecast
+    cache already had to make** (Codex, 2026-09-03), which offering it as a
+    plain optimization skipped. A query-string key *is* the user's typed
+    location, persisted server-side rather than forwarded in transit — and a
+    typed search can be a street address, which is finer than any coordinate the
+    forecast path sends. So it carries the forecast cache's conditions and one
+    more: stated retention and eviction, **no caller linkage of any kind** (a
+    query keyed beside an identity is a search history, which is worse than the
+    "who asked about where" the forecast cache was already told to avoid), and
+    the disclosure written before it ships. Cheaper than the forecast cache it
+    is not; whether the saving is worth that is undecided here.
+
+    - **Capacity, but only on one branch** (Codex, 2026-09-03): geocoding
+      requests count against the same allowance **if that endpoint is proxied
+      too**. On the other branch — the one where keyless commercial use of the
+      geocoding host turns out to be licensed — searches keep going direct from
+      each device with no customer key, and consume none of the paid account's
+      allowance. Counting them unconditionally would inflate the sizing and
+      could select the $99 tier for calls that were never billed to it, so they
+      belong inside the weighted-call sizing *in the proxied branch* and are
+      sized against the direct endpoint's own limits otherwise. Which branch
+      holds is the unconfirmed question above; this is a consequence of it, not
+      a separate one.
+    - **Engineering**: a second proxied surface, a second failure mode, and
+      added latency on a path where the user is typing.
+    - **Privacy, which is not just arithmetic**: the proxy would receive **what
+      the user typed into a location search**, not only coordinates. Under this
+      repo's own rules that is user data crossing the device boundary to *us*,
+      which changes the Data Safety declaration and is a product decision rather
+      than an implementation detail. Nothing here decides it; it is named so the
+      paid-plan branch is not costed as if it were forecast traffic alone.
   - **Self-hosting** the server, which is open source (AGPLv3, data CC BY 4.0).
     No license fee — but **"a few dollars a month" was wrong, and the driver is
     not request volume** (Codex, 2026-09-03). A self-hosted instance continuously
@@ -546,9 +1171,17 @@ posture rather than fighting it.
 
   **Two consequences for the pricing section**, both of which cut against the low
   end: at $1/month the fixed floor is divided over very few subscribers, so the
-  break-even subscriber count is the arithmetic that actually matters and it is
-  not computable until the figure above is filled in — and until it is, no price
-  on this page is established as viable, $2.99 included.
+  break-even subscriber count is the arithmetic that actually matters — **and it
+  is now computable** (maintainer supplied $29/month, 2026-09-03). Net of Play's
+  fee and the realistic ~$0.36/subscriber Gemini spend, **license plus Gemini** is
+  cleared at roughly **14 subscribers at $2.99 and 60 at $1** (73 at $1 against
+  the $0.45 max-use ceiling), **on the $29 Standard tier, whose fit is itself
+  unestablished** — a subtotal rather than the tier's break-even,
+  since the paid plan also forces an authenticated proxy this page has never
+  priced (Codex, 2026-09-03). What is still *not* computable is whether a price
+  is viable, because that needs trial cost and conversion, which nothing here
+  measures — so the earlier conclusion holds for a different reason than it used
+  to: no price on this page is established as viable, $2.99 included.
 - **A cap an existing install already has — the one item here that is NOT an
   absolute** (Codex, 2026-09-03), listed because it is where a reader expects to
   find it, not because it belongs to the floor. Everything else in this section
@@ -759,7 +1392,16 @@ this page argues for; it is not the only defensible number.
   against ~$0.85 received at $1, before any non-converter or trial restart. So
   the range is wide on *recurring* grounds and unproven at the bottom until trial
   length, conversion, restartability and retention are known — and the Open-Meteo
-  commercial license above is a fixed floor underneath all of it.
+  commercial license above is a **$29/month** fixed floor underneath all of it
+  (maintainer, 2026-09-03). At $1/month that floor alone takes ~35 subscribers to
+  cover, and **the tier does not break even there** (Codex, 2026-09-03): 35
+  subscribers net $29.75, which clears the license by $0.75 while their Gemini
+  use costs ~$12.60 at the realistic $0.36 each. Counting both, $1/month turns
+  positive at roughly **60 subscribers** — 73 against the $0.45 max-use ceiling —
+  versus ~14 at $2.99. Those clear the license and Gemini only, **and only if
+  the $29 tier fits at all** (Codex, 2026-09-03) — its 1M-call allowance is a
+  capacity limit nobody has sized, and $99 multiplies each count by 3.41. The proxy
+  the paid plan forces is unpriced too, and trial cost is on top of all of it.
 
 **4. Whether the trial and the paid tier meter on the same unit.** They don't
 today: the trial meters per install, the paid tier per purchase token. A

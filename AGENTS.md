@@ -552,9 +552,35 @@ future task; the incident narrative belongs in the commit message.
 - Four heavy jobs: `JVM unit tests` runs `:core:*:test` +
   `:app:testDebugUnitTest`; `Android release check` runs `:app:assembleRelease`
   on PRs and nothing on `main`; `Build the release AAB` runs
-  `:app:bundleRelease` on `main` only; `Distribute and release` uploads that
-  AAB to Play. All upload artifacts; Roborazzi PNG snapshots upload as
+  `:app:bundleRelease` on `main` only; `Distribute and release` publishes that
+  AAB as a GitHub prerelease tagged `v<versionCode>` and uploads it to Play.
+  All upload artifacts; Roborazzi PNG snapshots upload as
   `ui-preview-snapshots` from the JVM-tests job.
+- **The prerelease is the durable record; Play is the delivery.** The workflow
+  artifact expires and hides inside one run, so "which build is current, and
+  where is it" had no lasting answer. The release step runs on a strictly
+  weaker condition than the Play upload — no service account needed — so the
+  invariant is one-way: every Play upload is preceded by its prerelease, never
+  the reverse. It stands down, and stands the Play upload down with it, when a
+  higher `versionCode` is already released, since the Releases page orders by
+  publication time and the deploy queue does not order by push
+  (`docs/play-store-internal-testing.md`).
+- **`release-build`'s `signed` output is not about unsigned bundles.** Nothing
+  here builds one: "Decode upload keystore from secret" fails that job when
+  the keystore is missing. It distinguishes a *green release-build that built
+  nothing*, which is the shape the sibling repos have — they exempt forks from
+  that hard failure (`github.event.repository.fork != true`) and skip the
+  bundle step instead, so a fork's `main` push stays green on secrets it can
+  never hold. clothescast has no such exemption, so its fork main pushes go
+  red there and this gate is redundant until that changes. It is declared so
+  the publish conditions are identical across the three repos.
+- **`scripts/publish-github-release.sh` is stub-tested on every PR**
+  (`scripts/publish_github_release_test.py`, wired into `JVM unit tests`).
+  `deploy` is main-only, so nothing it does is otherwise reachable before a
+  merge, and that script's branches all handle a publication that has already
+  partly failed. The script is byte-identical across the sibling Android
+  repos — the bundle path and asset base come in through the step's `env` —
+  so a fix does not need finding three times.
 - **The release build runs in parallel with the tests, and the publish waits
   for both.** `Build the release AAB` needs only `classify`, so R8 overlaps the
   test job instead of following it; `Distribute and release` needs

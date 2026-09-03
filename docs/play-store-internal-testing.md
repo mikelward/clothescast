@@ -10,11 +10,19 @@ clicking anything in the Play Console.
   on the `internal` track with `status: completed` → testers in the internal
   list get the new version on next Play Store check (typically minutes to a
   few hours, depending on Play caching on each device).
-- This is the only distribution channel. Firebase App Distribution used to
-  ship the debug APK to the same testers in parallel; it was removed once the
-  internal track proved sufficient, and the `app-debug-apk` CI artifact that
-  outlived it has been removed too. Anyone who wants a build by hand builds
-  one locally — see `README.md`.
+- The same signed bundle is also published as a **GitHub prerelease**, tagged
+  `v<versionCode>` with `clothescast-<versionCode>.aab` attached and the same
+  "What's new" notes. It is not a second way to install anything — nobody
+  installs an AAB — it is the durable record of what shipped: the workflow
+  artifact expires and is reachable only from its own run's page, and the
+  Actions list titles a run by its last commit, so a push tipped with a
+  housekeeping commit reads as housekeeping even when it published. The
+  release is permanent, linkable, and lists every build in one place.
+- So the internal track is the only channel a *device* gets a build from.
+  Firebase App Distribution used to ship the debug APK to the same testers in
+  parallel; it was removed once the internal track proved sufficient, and the
+  `app-debug-apk` CI artifact that outlived it has been removed too. Anyone
+  who wants a build by hand builds one locally — see `README.md`.
 
 ## Prerequisites
 
@@ -151,7 +159,16 @@ change.
 ## Troubleshooting
 
 - **"Upload AAB to Play Store internal track" is skipped** → `PLAY_SERVICE_ACCOUNT_JSON`
-  isn't set, or you pushed to a feature branch (only `main` publishes).
+  isn't set, or you pushed to a feature branch (only `main` publishes). The
+  GitHub prerelease is unaffected in the first case — it does not gate on that
+  secret, which is the point of it — so the signed bundle is still on the
+  Releases page even when nothing reached Play.
+- **"Publish a GitHub release" says a later push already published** → an
+  older push's deploy reached that step after a newer one had already
+  published a higher `versionCode`. Standing down is correct: it keeps the
+  newest release the newest build, and it stands the Play upload down too so
+  Play cannot receive the older bundle either. The older push's commits are
+  not lost — the notes range still measures from the last Play publication.
 - **Release blocked: "You must let us know whether your app uses any
   Foreground Service permissions"** → complete the Foreground service
   permissions declaration under **App content** — see the section above. The
@@ -176,10 +193,11 @@ change.
 
 ## Getting a build another way
 
-The internal track is the only channel CI publishes to. The trade it makes is
-latency: a build reaches a device minutes to hours after CI goes green,
-depending on Play's caching, where Firebase App Distribution used to take
-about thirty seconds.
+The internal track is the only channel CI publishes to that a device can
+install from — the GitHub prerelease alongside it carries the same bundle, but
+an AAB is not installable. The trade the track makes is latency: a build
+reaches a device minutes to hours after CI goes green, depending on Play's
+caching, where Firebase App Distribution used to take about thirty seconds.
 
 When that wait doesn't suit — iterating on a fix with someone, or testing a
 branch that will never reach `main` — build a debug APK locally:

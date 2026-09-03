@@ -34,15 +34,28 @@ The structural fact that splits the feature set in two:
 
 | | Gemini shared-key TTS | Smart Home (MQTT bridge) |
 |---|---|---|
-| Where it runs | Developer-operated Cloud Function | Entirely on-device |
-| Who pays | Developer (Gemini API key) | Nobody — user's own broker |
+| Where the **gate** runs | Developer-operated Cloud Function | On the device |
+| Who pays to run it | Developer (Gemini API key) | Nobody — the user's own broker |
 | Can gating be enforced? | **Yes** — the proxy holds the key | **No** — honor system only |
 | Bypass | Impossible without the key | Patch the APK |
 
 Gemini can be genuinely gated because the developer holds the API key
 and the proxy can refuse to forward. Smart Home cannot: a modified build
-flips any local boolean, and the bridge talks to the user's own broker
-over their own LAN with no developer-operated hop to intercept.
+flips any local boolean, and the delivery paths have no developer-operated
+hop to intercept — the MQTT publish goes to the user's own broker over their
+own LAN, and a direct Cast target is reached from the device without the
+broker at all.
+
+**The rows above are about the gate, not about where the content comes
+from** (Codex, 2026-09-03). An earlier version of this table said Smart
+Home runs "entirely on-device", which is false in two ways and was carried
+into `MONETIZATION.md` as an architecture and privacy claim before being
+retracted there: the `audio` and `video` payloads are PCM synthesized
+through the *remote* Gemini path (see the modality table below), so
+developer money is spent producing what the bridge carries, and direct Cast
+is a second transport that never touches the broker. Neither changes the
+enforcement conclusion, which turns only on there being no developer-held
+chokepoint at delivery time.
 
 That doesn't make gating Smart Home pointless — the overwhelming
 majority of users won't sideload a patched APK — but it does mean the
@@ -84,10 +97,20 @@ of entitlement code.
 
 This reframes the whole question. **The paid tier can be Gemini and
 nothing else,** and smart-home users are still a natural audience for
-it: the upsell isn't "pay to unlock MQTT", it's "pay so your Hub keeps
-talking". Text, image, and `has_events` stay free forever, which is
-right — they cost the developer nothing and they're what the bridge's
-privacy story is built on.
+it — but **the upsell has to name the modality, not the Hub** (Codex,
+2026-09-03). It isn't "pay to unlock MQTT", and it isn't "pay so your Hub
+keeps talking" either: the canonical setup in `docs/smart-home.md` speaks
+the `text` topic through Home Assistant's own TTS, which needs no Gemini
+and never stops. What stops at expiry is anything carrying ClothesCast's
+own PCM — the `audio` and `video` topics, and the *spoken* half of a
+Cast target. A Cast **display** keeps working image-only at expiry
+(`FetchAndNotifyWorker.castDestination` feeds `silentWavStub` and the
+receiver still shows the outfit PNG); only an audio-only speaker skips
+the load entirely. So the honest pitch is *"pay to keep the good voice on your
+speaker"*, aimed at that subset; promising continuation to a `text`
+subscriber sells them something they already have. Text, image, and
+`has_events` stay free forever, which is right — they cost the developer
+nothing and they're what the bridge's privacy story is built on.
 
 The rest of this document covers the entitlement mechanics for that
 Gemini-only tier. The client-side Smart Home gate is documented further
@@ -203,13 +226,94 @@ So when `linkedPurchaseToken` is present, do the whole swap in **one
 transaction**: **migrate** the old record's `installs` into the
 replacement (merging on `lastSeenAt`, then applying the five-install cap
 so the oldest are dropped if the union overflows), **carry today's quota
-usage across** to the replacement's bucket, repoint every surviving
+usage across** to the replacement's bucket — **and today's carried-uid
+markers with it** (Codex, 2026-09-03): the idempotence record below lives
+alongside the count, so migrating the count without it leaves the new
+token believing it has carried nobody, and the next link re-adds a uid's
+trial usage on top of the figure just migrated — the same double-count,
+reached by a different route. Then repoint every surviving
 `entitlement/<uid>` at the new token, and only then revoke the old
 purchase record and retire its quota key.
 
+**The same carry is needed on *every* `linkPurchase`, and this rule as
+written covers only a plan change** (Codex, 2026-09-03).
+`linkedPurchaseToken` is present only on a plan change, so a first
+subscribe writes a fresh token bucket starting at zero — and under the
+maintainer's trial shape the user who subscribes is precisely one who has
+been using a 5/day allowance. Someone who spends today's five as a trial
+user and then subscribes gets **five more the same day**, breaking both
+the advertised cap and the cost bound below.
+
+**And it is not only the first caller.** Each device links itself, so a
+later join has exactly the same shape one device further along: a tablet
+spends its five as a trial user, the phone — which has spent none —
+subscribes and opens an empty purchase bucket, and linking the tablet
+afterwards contributes nothing, so the pair gets five more that day. So
+the rule is per link, not per purchase: on **any** `linkPurchase`, merge
+the calling uid's current-day usage into the purchase bucket in the same
+transaction that adds the uid, the same way a plan change merges the old
+token's. Merging in the transaction is what stops two devices linking
+concurrently and each reading a bucket that does not yet hold the
+other's.
+
+**And the merge has to be fenced against in-flight reservations** (Codex,
+2026-09-03). A trial request can resolve its uid as unentitled, then reserve its
+slot *after* the link transaction has copied that uid's count — the reservation
+lands in the old uid bucket while every later call reads the purchase bucket, and
+enough concurrent requests escape the carry to exceed 5/day. The inverse
+overcounts: a reservation carried while in flight, then rolled back only from the
+uid bucket, charges a paying user for a synthesis that never happened. So
+entitlement has to be re-resolved inside the same transaction that reserves the
+slot, or uid reservations fenced for the duration of the link. Whichever, the
+plan owes it explicitly — the per-link merge below is not sufficient on its own.
+
+**Neither of those two covers the rollback direction** (Codex, 2026-09-03), and
+that is a third requirement rather than a restatement. A reservation that commits
+*before* the link and rolls back *after* it escapes both: re-resolving entitlement
+at reservation time legitimately sees the pre-link state, which was correct when
+it was read, and a fence held only for the link transaction has been released long
+before synthesis fails. The carried count is then in the purchase bucket while the
+decrement lands on the old uid bucket, so the paid bucket stays inflated and the
+subscriber's allowance is spent on a synthesis that never happened. **A rollback
+must resolve the bucket that currently owns the reservation, not the one that
+owned it when it was taken** — which means a reservation carries an identity the
+rollback can follow across a link, or the link waits for in-flight requests to
+settle. The first is cheaper; the second is simpler and costs a link a few
+seconds.
+
+**The merge has to be idempotent, and the transaction alone does not make
+it so** (Codex, 2026-09-03). Linking is not a once-per-purchase event — a
+client re-links whenever its cached entitlement is stale, so the same uid
+can call `linkPurchase` several times in one UTC day, and a merge that
+just adds the uid's counter would add the same trial usage again each
+time. That is the failure this rule exists to prevent, inverted: instead
+of a subscriber getting extra syntheses, a paying one is cut off early by
+usage counted twice. So the purchase bucket records **which uids it has
+already carried for the current UTC day**, and the transaction checks that
+record before adding: a repeat link for a uid already carried today is a
+no-op on the counter. The record rolls over with the day, like the counter
+it guards, and being inside the same transaction is what makes the check
+and the add atomic.
+
+**A no-op is not enough on its own** (Codex, 2026-09-03). A carried uid can
+later be evicted from `purchases.installs`, fall back to its own still-live
+uid-keyed trial, spend more calls that day, and relink — and an unconditional
+no-op leaves that second tranche outside the purchase bucket, so the account
+exceeds both 5/day and the cost ceiling this rule is meant to hold. **The delta is accounting, not
+enforcement, and cannot be the answer on its own** (Codex, 2026-09-03): by the
+time a later link merges it, the evicted uid has already run those syntheses off
+its own trial bucket while the purchase bucket was exhausted, so the merge only
+records an overrun it did nothing to prevent. What actually closes it is stopping
+the second tranche from happening — **retire that uid's trial eligibility
+permanently the first time it links**, or route every later reservation for a
+carried uid through the purchase bucket even while it is evicted. Retirement is
+the simpler of the two and costs a re-linking user the remainder of a trial they
+have already stopped using; the delta is worth keeping alongside either one for
+the counter's accuracy, never instead of them.
+
 Carrying the usage matters because the paid bucket is keyed on the
 purchase token: a fresh token otherwise starts the day at zero, so
-changing plan would reset the 50/day cap. Repeated plan changes would
+changing plan would reset the paid daily cap. Repeated plan changes would
 then lift the ceiling arbitrarily and break the worst-case cost bound in
 the cost section — which assumes one cap per subscriber per day, not one
 per token they can mint.
@@ -230,9 +334,44 @@ any subscription left unacknowledged for 3 days.
 
 Resolve `entitlement/<uid>` → `purchases/<purchaseToken>`, then grant the
 paid limit only if **both** hold: the state/expiry rule from step 2
-passes, **and** this uid is present in `purchases.installs`. Otherwise
-`DAILY_LIMIT` (5). Meter the paid bucket on the purchase token, not the
-uid.
+passes, **and** this uid is present in `purchases.installs`. Meter the
+paid bucket on the purchase token, not the uid.
+
+**The unentitled branch is no longer simply `DAILY_LIMIT` (5)** — the
+product direction is a *time-limited trial* at 5/day, then pay to keep
+5/day (maintainer, 2026-09-03; see
+[MONETIZATION.md](../MONETIZATION.md)). So this step needs a third piece
+this plan does not yet specify: **server-verifiable trial state** — when
+the trial began, when it ends, and what the post-trial quota is (today's
+code would leave a non-subscriber on 5/day forever, which is the shape
+the direction replaces). The trial start cannot be a client claim for the
+same reason the cap cannot: the anonymous uid rotates on reinstall, so a
+client-asserted start is resettable. Design it with the free-cap privacy
+question in MONETIZATION.md, not separately.
+
+**That state has to outlive the entitlement, and be consulted on every
+paid-entitlement failure** (Codex, 2026-09-03). Two paths in this plan
+resolve to "the free tier" — an ineligible purchase state, and the RTDN
+cleanup that deletes a terminal subscriber's entitlement pointer — and
+once the permanent 5/day is gone, "the free tier" means *the trial*. So
+an expired, refunded or canceled subscriber would be handed a fresh
+allowance the moment their pointer is deleted, which is also a renewable
+one. The trial/lapse record therefore survives entitlement deletion and
+is read whenever the paid check fails, so a lapse resolves to
+*post-trial*, never to *new*.
+
+**And retiring the legacy `X-Install-Id` fallback is a prerequisite for the
+trial, not a later cleanup** (Codex, 2026-09-03). Today a caller with a valid
+App Check token but no `Authorization: Bearer` header has its *caller-chosen*
+`X-Install-Id` accepted as the quota key (`functions/src/index.ts`), and
+`docs/gemini-tts-proxy.md` says outright that rotating it evades the cap for as
+long as the fallback exists. So trial state keyed on the anonymous uid is not
+server-enforceable while that branch is live: expiry is escaped by omitting the
+Bearer token and picking a fresh id, without even reinstalling. Two ways to
+satisfy it — close the fallback before the trial ships (drop the header from the
+client, delete the branch, `missing_identity` becomes `missing_auth_token`
+again), or design the expiry to key on something that survives it. The first is
+already the planned cleanup; the trial is what makes its timing load-bearing.
 
 **Don't try to shortcut this with a Firebase custom claim.** It's the
 obvious optimization — put `tier: "pro"` in the ID token the proxy
@@ -259,9 +398,14 @@ a trade worth making. Resolve the purchase record every time.
 One refinement that *is* worth it:
 
 - **Keep a cap on the paid tier too.** "Unmetered" means the developer
-  eats unbounded Gemini spend if a paid account is scripted. A generous
-  cap (say 50/day, ~10× the free tier and far past any honest use) costs
-  the user nothing and bounds the downside.
+  eats unbounded Gemini spend if a paid account is scripted.
+  **Superseded figure:** this originally proposed 50/day as "~10× the
+  free tier and far past any honest use". Under the current direction the
+  paid tier is the *same* 5/day the trial gave (maintainer, 2026-09-03),
+  so there is no higher tier for a 50/day ceiling to cap — **do not ship
+  50/day**, and do not reuse the worst-case cost figures derived from it
+  (~$4.50/month; the real ceiling at 5/day is ~$0.45). The principle
+  stands: whatever the paid number is, cap it.
 
 #### 4. RTDN keeps it honest
 
@@ -401,7 +545,7 @@ housekeeping rather than the enforcement mechanism.
 This has a consequence worth stating: for paid users the **quota bucket
 should key on the purchase token, not the uid**. Keeping it per-uid
 would multiply the cap by the number of linked installs — 5 devices × a
-50/day cap is 250 syntheses a day against one subscription. Per-purchase
+5/day cap is 25 syntheses a day against one subscription. Per-purchase
 metering also matches how the user thinks about it ("my subscription"),
 and makes the worst-case cost figure below hold regardless of device
 count.
@@ -523,8 +667,13 @@ subscription pays for the things that cost money to run.**
 
 ### Cost and reliability
 
-**Revenue side.** Play takes 15% of the first $1M/year. A $2.99/month
-subscription nets ~$2.54.
+**Revenue side.** Play's service fee on auto-renewing subscription revenue is
+**15% from day one** — not a first-$1M rate that rises to 30% above the
+threshold, which is a separate program for one-time products that a developer
+account must enroll in. A $2.99/month subscription nets ~$2.54. (Corrected
+2026-09-03; the earlier "15% of the first $1M/year" wording conflated the two
+and understated the margin. Confirm against the current Play terms before the
+price is committed — service-fee terms have moved before.)
 
 **Infrastructure cost of the subscription machinery itself:**
 
@@ -559,14 +708,42 @@ subscription nets ~$2.54.
 - Two additional Cloud Functions — within the ~2M invocation free tier.
 
 So the marginal infrastructure cost is effectively zero; Gemini remains
-the only bill that scales. At a 50/day paid cap, worst-case exposure per
-paying user is ~$4.50/month against ~$2.54 net revenue — which is why
-the cap matters. Realistic use is far below it: a smart-home user on
-twice-daily delivery spends 4 syntheses/day (two runs × the active and
-paired windows), about $0.36/month. That figure only holds if the cap is
-metered **per purchase token** rather than per uid; see the identity
-section — per-uid metering would multiply it by the number of linked
-devices.
+the only bill that scales. **At the 5/day cap the maintainer's trial shape
+keeps** (`MONETIZATION.md`), worst-case exposure per paying user is
+**~$0.45/month** against ~$2.54 net revenue at $2.99 — a ~5.6× margin even
+for a user who never misses a slot. The earlier figure here was
+~$4.50/month, derived from the superseded 50/day cap; it is an order of
+magnitude out and must not be reused.
+
+**That margin bounds the *recurring* cost only, and does not make the price
+a willingness-to-pay question** (Codex, 2026-09-03) — an earlier version of
+this paragraph said it did, and `MONETIZATION.md`'s question 3 no longer
+does. Two costs sit outside the per-subscriber recurring quota: trial
+acquisition, where a max-use 30-day trial is ~$0.45 spent before any
+revenue and is spent again on every non-converter and every trial restart;
+and the **commercial Open-Meteo license**, a fixed monthly floor whose
+figure is not yet known (`MONETIZATION.md`). Both are divided by the
+subscriber count rather than charged per subscriber, so at low conversion
+or low volume they dominate this ratio. Cost recovery is settled for a
+*steady-state* subscriber and unsettled for the business. Realistic use
+is lower still: a smart-home user on twice-daily delivery spends 4
+syntheses/day (two runs × the active and paired windows), about
+$0.36/month. All of it holds only if the cap is metered **per purchase
+token** rather than per uid; see the identity section — per-uid metering
+multiplies it by the number of linked devices (~$1.35/month at three,
+~$2.25 at five) and, because the uid rotates on reinstall, has no ceiling
+at all without an aggregate per-purchase bound (`MONETIZATION.md`).
+
+**These are normal-operation figures, not an absolute bound** (Codex,
+2026-09-03). `reserveDailySlot` **fails open** — it logs "Quota
+reservation failed; failing open" and proceeds — so during a Firestore
+outage neither the daily counter nor the entitlement check constrains
+anything, and a scripted client (a lapsed trial included) can reach Gemini
+at whatever rate it likes. That is the right availability choice and this
+plan keeps it, but it means the outage exposure is a **separate bound that
+does not exist yet**: it wants a rate limit that survives the store being
+down, or a spend alarm that notices. Sizing it is open work; what is not
+open is that ~$0.45 describes the healthy path only.
 
 **New failure modes**, each of which the user experiences as "my voice
 stopped working":
@@ -638,22 +815,46 @@ everything else.
    developer-side cost that Gemini quota doesn't already track.
 2. **Price point and free-tier cap.** These move together: the current
    5/day cap was set to bound developer cost, not to create upgrade
-   pressure. If it stays as-is, the subscription is a genuine upsell; if
-   it drops, it's a paywall on something users already have. **The cap
-   may already be too tight**: a smart-home user on twice-daily delivery
+   pressure. **The maintainer's trial shape settles the direction and
+   removes the "upsell" reading**: the cap stays at 5/day and the trial
+   expiring is what creates the pressure, so what is sold is *continued
+   access at the same cap*, never a lifted limit — a subscription pitched
+   as an upsell would promise usage it does not deliver
+   (`MONETIZATION.md`). What stays open is the trial's length and the
+   price. **The cap may already be too tight**: a smart-home user on twice-daily delivery
    spends 4 of 5 slots on scheduled runs alone (the active window plus
    the paired one, per the metering section), leaving a single preview
-   tap. Worth measuring the real distribution before setting a price —
-   and worth deciding whether that user hitting the cap is the intended
-   upgrade trigger or an accident of how the paired publish works.
+   tap. Worth measuring the real distribution before setting a price.
+   **It cannot be an upgrade trigger, though, and the question as first
+   written asked whether it was** (Codex, 2026-09-03): paid access is the
+   *same* 5/day, so a user who has hit the cap gains nothing by
+   subscribing — they stay capped until the UTC reset either way. Prompting
+   there sells something that does not arrive, which is the "upsell
+   reading" this paragraph rejects two sentences earlier. **Trial expiry is
+   the only conversion moment under this shape.** So the open question is
+   narrower: whether a smart-home user spending 4 of 5 slots on scheduled
+   runs is an accident of how the paired publish works — and if it is,
+   whether the fix is a higher cap, a cheaper scheduled path, or counting
+   the pair as one.
 3. **One-time purchase vs. subscription.** Recurring Gemini cost argues
    for a subscription: a one-time payment can't fund an ongoing
    per-synthesis bill. Play supports both, but the cost structure only
    fits the recurring model here.
 4. **BYOK users.** Anyone who pastes their own Gemini key already
    bypasses the proxy and pays their own bill. They should presumably
-   never see an upsell for TTS quota, which means the paywall copy has
-   to be aware of the key's presence.
+   never see an upsell for TTS quota — but **the gate is not the key's
+   presence**, and building it that way ships a broken paywall. Once a
+   stored key fails to decrypt, `SecureKeyStore.read` removes the
+   ciphertext and sets `GEMINI_NEEDS_REENTRY`, then throws
+   `InvalidApiKeyException`; `AppCheckGeminiCallPlanner.readOwnKey`
+   catches only `MissingApiKeyException`, so that state deliberately does
+   *not* fall through to the shared proxy. Meanwhile
+   `geminiKeyConfiguredFlow` reads ciphertext presence, which is now
+   false — so a presence check offers the quota upsell to exactly the
+   user whose purchased quota the planner will refuse to use. Gate on
+   **configured OR needs-reentry**, and give the needs-reentry state its
+   own copy (re-enter or clear the key) rather than a subscription offer.
+   See [MONETIZATION.md](../MONETIZATION.md).
 
 ### Related
 
@@ -664,3 +865,7 @@ everything else.
   Play Console setup; subscriptions are configured in the same console
   and need a testing track to exercise.
 - PRIVACY.md — the data-handling contract a billing flow would amend.
+- [MONETIZATION.md](../MONETIZATION.md) — the product half: what is being
+  sold, the price, the free cap as a product decision rather than a spend
+  limit, and how anyone finds the app. It answers some of the open
+  questions above and restates none of the mechanics here.

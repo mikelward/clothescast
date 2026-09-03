@@ -808,7 +808,33 @@ Open work:
       (signing, or a second independent verification job) — bigger scope
       than this PR, flagged for whoever wants to take it further.
 
+## Privacy disclosure to correct
+
+- [ ] **"Device" voice does not keep spoken text on-device, but `PRIVACY.md` says
+      it does.** `PRIVACY.md`'s "How to turn things off" tells the user to switch
+      the voice engine to Device "to keep all spoken text on-device";
+      `pickBestVoice` (`app/src/main/kotlin/app/clothescast/tts/AndroidTtsEngine.kt:79`)
+      ranks `compareBy { it.quality }.thenBy { !it.isNetworkConnectionRequired }`,
+      so offline is only a tie-break and a higher-quality **network** voice is
+      selected in Device mode — sending insight prose, which is calendar- and
+      location-derived, to the platform TTS provider. A user relying on that
+      control is not getting what it promises. **Maintainer's call which way to
+      fix it**: prefer offline voices in Device mode (a code change, and it may
+      cost voice quality), or reword the disclosure to describe what the app
+      actually does. Surfaced by Codex on PR #1196 (2026-09-03) while writing
+      `MONETIZATION.md`; independent of monetization and worth doing regardless.
+
 ## Decisions needing review
+- [ ] **Decide whether "we don't hold a user's data captive" belongs in this
+      file's quality bar, not only in `MONETIZATION.md`.** Recorded 2026-09-03
+      as the reason backup and restore of a user's own data is never paywalled —
+      the neighbor of "never lose the user's work": never withhold it either.
+      The 2027 platform mandate requiring backup and restore is the deadline,
+      not the justification, so the principle has to stand on its own. It
+      currently lives in the monetization page, which binds pricing decisions
+      only; if it is meant to bind design generally it wants promoting. Not
+      decided here.
+
 
 - **Per-call logcat tags are gone; the tag now rides in the message**
   (autopilot, 2026-08-30). Every `DiagLog` call still takes its `TAG` and the

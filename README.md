@@ -20,9 +20,10 @@ rules, voice, API keys, calendar extras, smart-home outputs, privacy, and
 telemetry, runtime permission UX, boot/timezone/locale alarm re-arm, and debug
 / manual actions for testing without waiting until the scheduled time.
 
-Distribution: every push to `main` ships a signed AAB to the Play Store
-internal track for testers. For anything faster, build and install a debug
-APK locally (see below).
+Distribution: a push to `main` that changes something shippable builds and
+signs a release AAB, publishes it as a GitHub prerelease, and ships it to the
+Play Store internal track for testers. For anything faster, build and install
+a debug APK locally (see below).
 
 ## Tech stack
 
@@ -64,8 +65,10 @@ APK locally (see below).
 Two options, in roughly increasing order of friction:
 
 - **Play Store internal track** (testers): added in the Play Console, you
-  get the latest `main` build automatically. Every push to `main` ships a
-  signed AAB to this track.
+  get the latest `main` build automatically. A push to `main` that changes
+  something shippable ships a signed AAB to this track. (The same bundle is
+  attached to a GitHub prerelease, but an AAB is not installable — that copy
+  is a record, not an install path.)
 - **Build it yourself** (anyone with a checkout): works for any branch,
   committed or not, with no PR and no waiting on CI.
   1. `./gradlew :app:installDebug` with a device attached over ADB, or

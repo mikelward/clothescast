@@ -162,6 +162,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           persist-credentials: false
 
+      - name: Test the release-publishing script
+        # `scripts/publish-github-release.sh` runs only in `deploy`, which is
+        # main-only — so nothing it does is reachable on a pull request, and a
+        # regression in it would first surface on the push that ships it.
+        # This drives the real script against a stubbed `gh` and a throwaway
+        # git repository. Stdlib Python only, and it costs about a second, so
+        # it sits ahead of the Gradle work rather than behind it.
+        run: python3 scripts/publish_github_release_test.py
+
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -904,6 +913,21 @@ jobs:
     needs: classify
     runs-on: ubuntu-latest
     environment: production
+    # Read by `deploy` as needs.release-build.outputs.signed, so the publish
+    # steps there gate on exactly what the sibling Android repos gate on. It
+    # is set after the bundle command rather than after the keystore decode,
+    # so it means "a signed AAB exists" and not "the secret was present".
+    #
+    # Today it is always `true` when `deploy` runs, because "Decode upload
+    # keystore from secret" below fails this job outright when the keystore
+    # is missing and `deploy` `needs:` this job — so the gate is currently
+    # redundant here. It is declared anyway: the siblings exempt forks from
+    # that hard failure (`github.event.repository.fork != true`) and skip
+    # their bundle step instead, which is the one path where a green
+    # release-build produced no bundle at all. If clothescast adopts that
+    # exemption, this output is what already carries it.
+    outputs:
+      signed: ${{ steps.bundle.outputs.signed }}
     permissions:
       contents: read
     steps:
@@ -997,6 +1021,7 @@ jobs:
           echo "UPLOAD_KEYSTORE_FILE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
 
       - name: Bundle release AAB
+        id: bundle
         # Produces app/build/outputs/bundle/release/app-release.aab signed
         # with the upload key; Play App Signing re-signs with the real signing
         # key on download.
@@ -1018,6 +1043,9 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew :app:bundleRelease --stacktrace --info 2>&1 | tee /tmp/release-build.log
+          # After the build, so it reports a bundle that exists rather than a
+          # secret that decoded. See this job's `outputs:` for why.
+          echo "signed=true" >> "$GITHUB_OUTPUT"
 
       - name: Upload release AAB
         # Browser-downloadable artifact for manual upload to Play Console — kept
@@ -1105,7 +1133,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     permissions:
-      contents: read
+      # Write, not read, for "Publish a GitHub release" below: it creates the
+      # release and the tag that carries it. Nothing else in this job writes
+      # to the repository, and the checkout above still discards its
+      # credentials.
+      contents: write
       # Used by "Prepare release notes" to walk recent main runs of this
       # workflow and find the last one that actually published.
       actions: read
@@ -1198,8 +1230,12 @@ jobs:
         # practice the 500-char cap bites first.
         #
         # Output: $RUNNER_TEMP/whatsnew/whatsnew-en-US, consumed by the Play
-        # upload. (This step used to also export $RELEASE_NOTES for the
-        # Firebase step's releaseNotes input; nothing reads it now.)
+        # upload, and $RELEASE_NOTES with the same text, consumed by
+        # "Publish a GitHub release". That export was dropped when the
+        # Firebase step went away and nothing read it; the release step is a
+        # reader again, and it takes the text through the environment rather
+        # than re-reading the file so the shared script stays byte-identical
+        # with the siblings that have no whatsnew directory.
         #
         # No secret gate: the Play upload has its own downstream, but the
         # notes should be computed regardless. (The push/dispatch-on-main
@@ -1446,6 +1482,23 @@ jobs:
           fi
 
           printf '%s' "$bullets" > "$RUNNER_TEMP/whatsnew/whatsnew-en-US"
+
+          # Multi-line, so GITHUB_ENV needs the delimiter form. The
+          # delimiter is random per run and checked against the content:
+          # the bullets are commit-authored, and a subject that happened to
+          # contain a fixed delimiter could otherwise inject an arbitrary
+          # variable into every later step in this job.
+          delim="RELEASE_NOTES_EOF_$(head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+          if printf '%s' "$bullets" | grep -qF "$delim"; then
+            echo "::error::Release notes contain the generated heredoc delimiter; refusing to export them."
+            exit 1
+          fi
+          {
+            printf '%s<<%s\n' RELEASE_NOTES "$delim"
+            printf '%s\n' "$bullets"
+            printf '%s\n' "$delim"
+          } >> "$GITHUB_ENV"
+
           echo "Release notes:"
           printf '%s\n' "$bullets"
 
@@ -1469,10 +1522,71 @@ jobs:
         # Built by `release-build`, in parallel with the tests rather than
         # after them. Restored to the path Gradle would have written it to, so
         # the Play upload step's `releaseFiles` is unchanged.
+        if: needs.release-build.outputs.signed == 'true'
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: app-release-aab
           path: app/build/outputs/bundle/release
+
+      - name: Publish a GitHub release
+        # Makes the signed bundle durable and the push's outcome legible.
+        # `release-build`'s artifact expires and is reachable only from that
+        # run's page, which is what makes "did this push ship?" unanswerable
+        # from the Actions list: a run is titled by its last commit, so a
+        # push tipped with a housekeeping commit reads as housekeeping even
+        # when it built, signed and published. A release is permanent,
+        # linkable, listed on a page of its own, and `gh release download`
+        # works against it. Nobody installs an AAB — this is a record of what
+        # shipped and the copy a maintainer hands to Play Console, not a
+        # second distribution channel.
+        #
+        # Gated on release-build's `signed` output, the same as the siblings.
+        # None of the three can produce an *unsigned* bundle — all of them
+        # fail the release build when the keystore secret is missing. What
+        # `signed` distinguishes is a green release-build that built nothing:
+        # the siblings exempt forks from that hard failure and skip their
+        # bundle step instead. clothescast has no such exemption yet, so the
+        # gate is redundant today and load-bearing the moment it does.
+        #
+        # Play's own upload needs everything this needs and the service
+        # account besides, so the invariant is one-way: every Play upload is
+        # preceded by a release, never the reverse, and a repository holding
+        # only the upload keystore still gets a discoverable build. Ahead of
+        # the upload deliberately — a rejection is exactly when having the
+        # bundle to hand matters.
+        #
+        # Prerelease because nothing in this pipeline promotes a build past
+        # Play's internal track.
+        #
+        # Supersession is the script's own check, not this `if:`. The
+        # `concurrency` block above stops two deploys running at once, but
+        # GitHub queues by when each job began waiting rather than by push
+        # order, and the Releases page orders by publication time — so an
+        # older push's deploy finishing second would sit on top reading as
+        # current. The script asks the release list, which is the record of
+        # what published, and sets RELEASE_SUPERSEDED so the Play upload
+        # below stands down too; folding that into "Prepare release notes"
+        # instead would be wrong, because its probe keys on a successful
+        # *Play* upload precisely because it doubles as the notes' range
+        # base.
+        #
+        # The body lives in `scripts/publish-github-release.sh`, which
+        # `scripts/publish_github_release_test.py` drives against a stubbed
+        # `gh` on every pull request. This job cannot run on one, so an
+        # inline body could only ever be verified by merging it. Nothing in
+        # that script is app-specific: the bundle path and asset base name
+        # come in here, so the file stays byte-identical across the siblings
+        # that publish this way.
+        if: |
+          success() &&
+          needs.release-build.outputs.signed == 'true' &&
+          env.RELEASE_NOTES_SKIP != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+          AAB_PATH: app/build/outputs/bundle/release/app-release.aab
+          ASSET_BASE: clothescast
+        run: scripts/publish-github-release.sh
 
       - name: Upload AAB to Play Store internal track
         # Skipped when PLAY_SERVICE_ACCOUNT_JSON isn't set (PLAY_AVAILABLE
@@ -1484,8 +1598,10 @@ jobs:
         # deliberately.
         if: |
           success() &&
+          needs.release-build.outputs.signed == 'true' &&
           env.PLAY_AVAILABLE == 'true' &&
-          env.RELEASE_NOTES_SKIP != 'true'
+          env.RELEASE_NOTES_SKIP != 'true' &&
+          env.RELEASE_SUPERSEDED != 'true'
         uses: r0adkll/upload-google-play@a80b0bcdcfdfcc2d026f2bc73f726760b2cbc967 # post-v1.1.5: fixes DEP0040/DEP0169 Node.js deprecation warnings
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}

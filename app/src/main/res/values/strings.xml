@@ -1214,6 +1214,12 @@
          app\'s own version name and code. -->
     <!-- TODO: translate -->
     <string name="settings_licenses_version" tools:ignore="MissingTranslation">Version %1$s</string>
+    <!-- Who wrote one bundled component, shown under its version in the same
+         dialog. Apache-2.0 §4 asks that attribution travel with the code, so
+         the page names the authors rather than only the license they chose.
+         Omitted entirely when the component's own metadata names nobody. -->
+    <!-- TODO: translate -->
+    <string name="settings_licenses_authors" tools:ignore="MissingTranslation">By %1$s</string>
 
     <!-- Consent dialog shown before any "share bug report" action (Today
          overflow, About page, or the post-crash banner). Brief by design:

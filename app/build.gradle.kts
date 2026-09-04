@@ -595,9 +595,29 @@ tasks.register("exportBundledLicenses") {
         val root = groovy.json.JsonSlurper().parse(licensesFile) as MutableMap<String, Any?>
         val libraries = root["libraries"] as List<Map<String, Any?>>
         val kept = libraries.filter { (it["uniqueId"] as String) in bundled }
-        root["libraries"] = kept
+        // The org.jetbrains.compose redirect modules publish real `-android`
+        // artifacts that alias the androidx ones, so they resolve on the
+        // release classpath and survive the bundled-artifact filter above --
+        // rendering a second, identical row per component on the Licenses
+        // page. Drop a redirect only when the artifact it aliases is itself
+        // kept, matched on artifact name + version: a redirect with no
+        // androidx counterpart (ui-backhandler-android) is a real attribution
+        // and has to stay. Matching on the coordinate rather than the display
+        // name also leaves genuinely distinct artifacts that happen to share a
+        // POM name alone (vico:compose-android vs vico:compose-m3-android).
+        val artifactOf = { id: String -> id.substringAfter(':') }
+        val aliased = kept
+            .filterNot { (it["uniqueId"] as String).startsWith("org.jetbrains.compose") }
+            .map { artifactOf(it["uniqueId"] as String) to it["artifactVersion"] }
+            .toSet()
+        val bundledOnly = kept.filterNot { library ->
+            val id = library["uniqueId"] as String
+            id.startsWith("org.jetbrains.compose") &&
+                (artifactOf(id) to library["artifactVersion"]) in aliased
+        }
+        root["libraries"] = bundledOnly
         // Prune any license no longer referenced by a kept library.
-        val used = kept.flatMap { (it["licenses"] as? List<String>).orEmpty() }.toSet()
+        val used = bundledOnly.flatMap { (it["licenses"] as? List<String>).orEmpty() }.toSet()
         (root["licenses"] as? MutableMap<String, Any?>)?.keys?.retainAll(used)
         licensesFile.writeText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(root)) + "\n")
     }

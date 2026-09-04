@@ -1282,10 +1282,10 @@
         },
         {
             "uniqueId": "androidx.glance:glance",
-            "artifactVersion": "1.1.1",
+            "artifactVersion": "1.2.0",
             "name": "Glance",
             "description": "Glance allows developers to build layouts for remote surfaces using a Jetpack Compose-style API.",
-            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.1.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.2.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1307,10 +1307,10 @@
         },
         {
             "uniqueId": "androidx.glance:glance-appwidget",
-            "artifactVersion": "1.1.1",
+            "artifactVersion": "1.2.0",
             "name": "Glance For App Widgets",
             "description": "Glance-appwidgets allows developers to build layouts for Android AppWidgets using a Jetpack Compose-style API.",
-            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.1.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.2.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1332,10 +1332,10 @@
         },
         {
             "uniqueId": "androidx.glance:glance-appwidget-external-protobuf",
-            "artifactVersion": "1.1.1",
+            "artifactVersion": "1.2.0",
             "name": "Glance AppWidget External Protobuf",
             "description": "Repackaged proto-lite dependency for use by galnce",
-            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.1.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.2.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1357,10 +1357,10 @@
         },
         {
             "uniqueId": "androidx.glance:glance-appwidget-proto",
-            "artifactVersion": "1.1.1",
+            "artifactVersion": "1.2.0",
             "name": "Glance AppWidget Protos",
             "description": "Protos for use with glance app widgets.",
-            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.1.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.2.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1382,10 +1382,10 @@
         },
         {
             "uniqueId": "androidx.glance:glance-material3",
-            "artifactVersion": "1.1.1",
+            "artifactVersion": "1.2.0",
             "name": "Glance Material",
             "description": "Glance Material integration library. This library provides interop APIs with Material 3.",
-            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.1.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/glance#1.2.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1942,10 +1942,10 @@
         },
         {
             "uniqueId": "androidx.navigation:navigation-common-android",
-            "artifactVersion": "2.9.8",
+            "artifactVersion": "2.10.0",
             "name": "Navigation Common",
             "description": "Android Navigation-Common",
-            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.9.8",
+            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1967,10 +1967,10 @@
         },
         {
             "uniqueId": "androidx.navigation:navigation-compose-android",
-            "artifactVersion": "2.9.8",
+            "artifactVersion": "2.10.0",
             "name": "Compose Navigation",
             "description": "Compose integration with Navigation",
-            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.9.8",
+            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1992,10 +1992,10 @@
         },
         {
             "uniqueId": "androidx.navigation:navigation-runtime-android",
-            "artifactVersion": "2.9.8",
+            "artifactVersion": "2.10.0",
             "name": "Navigation Runtime",
             "description": "Android Navigation-Runtime",
-            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.9.8",
+            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -2258,10 +2258,10 @@
         },
         {
             "uniqueId": "androidx.savedstate:savedstate-android",
-            "artifactVersion": "1.4.0",
+            "artifactVersion": "1.5.0",
             "name": "Saved State",
             "description": "Android Lifecycle Saved State",
-            "website": "https://developer.android.com/jetpack/androidx/releases/savedstate#1.4.0",
+            "website": "https://developer.android.com/jetpack/androidx/releases/savedstate#1.5.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -2283,10 +2283,10 @@
         },
         {
             "uniqueId": "androidx.savedstate:savedstate-compose-android",
-            "artifactVersion": "1.4.0",
+            "artifactVersion": "1.5.0",
             "name": "Saved State Compose",
             "description": "Compose integration with Saved State",
-            "website": "https://developer.android.com/jetpack/androidx/releases/savedstate#1.4.0",
+            "website": "https://developer.android.com/jetpack/androidx/releases/savedstate#1.5.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -2308,10 +2308,10 @@
         },
         {
             "uniqueId": "androidx.savedstate:savedstate-ktx",
-            "artifactVersion": "1.4.0",
+            "artifactVersion": "1.5.0",
             "name": "SavedState Kotlin Extensions",
             "description": "Kotlin extensions for 'savedstate' artifact",
-            "website": "https://developer.android.com/jetpack/androidx/releases/savedstate#1.4.0",
+            "website": "https://developer.android.com/jetpack/androidx/releases/savedstate#1.5.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -3134,7 +3134,7 @@
         },
         {
             "uniqueId": "com.google.errorprone:error_prone_annotations",
-            "artifactVersion": "2.47.0",
+            "artifactVersion": "2.50.0",
             "name": "error-prone annotations",
             "description": "Error Prone is a static analysis tool for Java that catches common programming mistakes at compile-time.",
             "website": "https://errorprone.info/error_prone_annotations",
@@ -3195,7 +3195,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-appcheck",
-            "artifactVersion": "19.4.0",
+            "artifactVersion": "19.4.1",
             "name": "com.google.firebase:firebase-appcheck",
             "description": "",
             "developers": [
@@ -3233,7 +3233,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-appcheck-playintegrity",
-            "artifactVersion": "19.4.0",
+            "artifactVersion": "19.4.1",
             "name": "com.google.firebase:firebase-appcheck-playintegrity",
             "description": "",
             "developers": [
@@ -3522,7 +3522,7 @@
         },
         {
             "uniqueId": "com.google.guava:guava",
-            "artifactVersion": "33.6.0-android",
+            "artifactVersion": "33.7.1-android",
             "name": "Guava: Google Core Libraries for Java",
             "description": "Guava is a suite of core and expanded libraries that include\n    utility classes, Google's collections, I/O classes, and\n    much more.",
             "website": "https://github.com/google/guava",
@@ -3616,7 +3616,7 @@
         },
         {
             "uniqueId": "com.hivemq:hivemq-mqtt-client",
-            "artifactVersion": "1.3.17",
+            "artifactVersion": "1.4.0",
             "name": "HiveMQ MQTT Client",
             "description": "HiveMQ MQTT Client is an MQTT 5.0 and MQTT 3.1.1 compatible and feature-rich high-performance Java client library with different API flavours and backpressure support",
             "website": "https://github.com/hivemq/hivemq-mqtt-client",
@@ -3643,12 +3643,14 @@
         },
         {
             "uniqueId": "com.mikelward.androidlog:logging-android",
-            "artifactVersion": "2.0.50",
+            "artifactVersion": "2.0.55",
             "name": "androidlog logging-android",
             "description": "The Android sinks and bug-report transport for androidlog.",
             "website": "https://github.com/mikelward/androidlog",
             "developers": [
-                
+                {
+                    "name": "Mikel Ward"
+                }
             ],
             "licenses": [
                 "Apache-2.0"
@@ -3659,12 +3661,14 @@
         },
         {
             "uniqueId": "com.mikelward.androidlog:logging-core",
-            "artifactVersion": "2.0.50",
+            "artifactVersion": "2.0.55",
             "name": "androidlog logging-core",
             "description": "The privacy floor and ring buffer, testable without Android.",
             "website": "https://github.com/mikelward/androidlog",
             "developers": [
-                
+                {
+                    "name": "Mikel Ward"
+                }
             ],
             "licenses": [
                 "Apache-2.0"
@@ -3744,7 +3748,7 @@
         },
         {
             "uniqueId": "com.patrykandpatrick.vico:compose-android",
-            "artifactVersion": "3.3.0",
+            "artifactVersion": "3.3.1",
             "name": "Vico",
             "description": "A powerful and extensible multiplatform chart library.",
             "website": "https://github.com/patrykandpatrick/vico",
@@ -3770,7 +3774,7 @@
         },
         {
             "uniqueId": "com.patrykandpatrick.vico:compose-m3-android",
-            "artifactVersion": "3.3.0",
+            "artifactVersion": "3.3.1",
             "name": "Vico",
             "description": "A powerful and extensible multiplatform chart library.",
             "website": "https://github.com/patrykandpatrick/vico",
@@ -4308,7 +4312,7 @@
         },
         {
             "uniqueId": "io.netty:netty-buffer",
-            "artifactVersion": "4.1.136.Final",
+            "artifactVersion": "4.1.137.Final",
             "name": "Netty/Buffer",
             "description": "Netty is an asynchronous event-driven network application framework for\n    rapid development of maintainable high performance protocol servers and\n    clients.",
             "website": "https://netty.io/netty-buffer/",
@@ -4336,7 +4340,7 @@
         },
         {
             "uniqueId": "io.netty:netty-codec",
-            "artifactVersion": "4.1.136.Final",
+            "artifactVersion": "4.1.137.Final",
             "name": "Netty/Codec",
             "description": "Netty is an asynchronous event-driven network application framework for\n    rapid development of maintainable high performance protocol servers and\n    clients.",
             "website": "https://netty.io/netty-codec/",
@@ -4364,7 +4368,7 @@
         },
         {
             "uniqueId": "io.netty:netty-common",
-            "artifactVersion": "4.1.136.Final",
+            "artifactVersion": "4.1.137.Final",
             "name": "Netty/Common",
             "description": "Netty is an asynchronous event-driven network application framework for\n    rapid development of maintainable high performance protocol servers and\n    clients.",
             "website": "https://netty.io/netty-common/",
@@ -4392,7 +4396,7 @@
         },
         {
             "uniqueId": "io.netty:netty-handler",
-            "artifactVersion": "4.1.136.Final",
+            "artifactVersion": "4.1.137.Final",
             "name": "Netty/Handler",
             "description": "Netty is an asynchronous event-driven network application framework for\n    rapid development of maintainable high performance protocol servers and\n    clients.",
             "website": "https://netty.io/netty-handler/",
@@ -4420,7 +4424,7 @@
         },
         {
             "uniqueId": "io.netty:netty-resolver",
-            "artifactVersion": "4.1.136.Final",
+            "artifactVersion": "4.1.137.Final",
             "name": "Netty/Resolver",
             "description": "Netty is an asynchronous event-driven network application framework for\n    rapid development of maintainable high performance protocol servers and\n    clients.",
             "website": "https://netty.io/netty-resolver/",
@@ -4448,7 +4452,7 @@
         },
         {
             "uniqueId": "io.netty:netty-transport",
-            "artifactVersion": "4.1.136.Final",
+            "artifactVersion": "4.1.137.Final",
             "name": "Netty/Transport",
             "description": "Netty is an asynchronous event-driven network application framework for\n    rapid development of maintainable high performance protocol servers and\n    clients.",
             "website": "https://netty.io/netty-transport/",
@@ -4476,7 +4480,7 @@
         },
         {
             "uniqueId": "io.netty:netty-transport-native-unix-common",
-            "artifactVersion": "4.1.136.Final",
+            "artifactVersion": "4.1.137.Final",
             "name": "Netty/Transport/Native/Unix/Common",
             "description": "Static library which contains common unix utilities.",
             "website": "https://netty.io/netty-transport-native-unix-common/",
@@ -4546,7 +4550,7 @@
         },
         {
             "uniqueId": "org.jctools:jctools-core",
-            "artifactVersion": "4.0.6",
+            "artifactVersion": "4.0.7",
             "name": "Java Concurrency Tools Core Library",
             "description": "Java Concurrency Tools Core Library",
             "website": "https://github.com/JCTools",
@@ -4568,10 +4572,10 @@
         },
         {
             "uniqueId": "org.jetbrains.compose.ui:ui-backhandler-android",
-            "artifactVersion": "1.9.1",
-            "name": "Compose Multiplatform BackHandler",
+            "artifactVersion": "1.12.0",
+            "name": "Compose BackHandler",
             "description": "Provides BackHandler in Compose Multiplatform projects",
-            "website": "https://github.com/JetBrains/compose-jb",
+            "website": "https://github.com/JetBrains/compose-multiplatform",
             "developers": [
                 {
                     "name": "Compose Multiplatform Team",
@@ -4579,9 +4583,9 @@
                 }
             ],
             "scm": {
-                "connection": "scm:git:https://github.com/JetBrains/compose-jb.git",
-                "developerConnection": "scm:git:https://github.com/JetBrains/compose-jb.git",
-                "url": "https://github.com/JetBrains/compose-jb"
+                "connection": "scm:git:https://github.com/JetBrains/compose-multiplatform.git",
+                "developerConnection": "scm:git:https://github.com/JetBrains/compose-multiplatform.git",
+                "url": "https://github.com/JetBrains/compose-multiplatform"
             },
             "licenses": [
                 "Apache-2.0"
@@ -4932,13 +4936,19 @@
         },
         {
             "uniqueId": "org.jspecify:jspecify",
-            "artifactVersion": "1.0.0",
+            "artifactVersion": "1.0.1",
             "name": "JSpecify annotations",
             "description": "An artifact of well-named and well-specified annotations to power static analysis checks",
-            "website": "http://jspecify.org/",
+            "website": "https://jspecify.dev/",
             "developers": [
                 {
+                    "name": "Chris Povirk"
+                },
+                {
                     "name": "Kevin Bourrillion"
+                },
+                {
+                    "name": "David P. Baker"
                 }
             ],
             "scm": {

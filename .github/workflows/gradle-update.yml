@@ -69,3 +69,11 @@ jobs:
       # coordinate would be deferred forever rather than merely delayed.
       no-cooldown-for: |
         com.mikelward.androidlog:logging-android
+      # The license inventory is derived from the dependency set, so the
+      # batch rebuilds it and commits it alongside the catalog — without
+      # this, ci.yml's drift check turns every benign bump into a manual
+      # regeneration push.
+      regenerate: |
+        ./gradlew :app:exportBundledLicenses --rerun
+      regenerated-files: |
+        app/src/main/res/raw/aboutlibraries.json

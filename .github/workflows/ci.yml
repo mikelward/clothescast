@@ -104,10 +104,21 @@ concurrency:
   # last run that actually PUBLISHED, so those commits ship in the next
   # release with their subjects intact. A genuinely lossless ordered release
   # queue is a different piece of machinery, noted in TODO.md.
-  group: ci-${{ github.ref }}-${{ github.ref == 'refs/heads/main' && github.sha || 'branch' }}
+  # Keyed on the EVENT, not the ref. Under `pull_request` the two agree —
+  # github.ref is refs/pull/<n>/merge, so every PR already lands in its own
+  # group — but the ref form inverts the moment this workflow moves to
+  # `pull_request_target`: github.ref becomes refs/heads/main for every PR
+  # run, so all open PRs collapse into ONE group keyed on the base commit,
+  # and cancel-in-progress goes false in the same breath, leaving them to
+  # queue behind each other with nothing evicting them. Both halves have to
+  # move together for that reason. The event form says what was always meant
+  # (only a push, or a dispatch aimed at main, is a "main run") and is
+  # correct under both triggers, so the migration can't reopen this by
+  # omission. typelauncher, already migrated, carries this exact shape.
+  group: ci-${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) && format('main-{0}', github.sha) || github.event.pull_request.number || github.ref }}
   # Redundant given the per-commit group above (a group of one has nothing to
   # cancel), kept because it states the intent the group is enforcing.
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  cancel-in-progress: ${{ !(github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')) }}
 
 # Explicitly empty, not omitted: every job below declares its own downscoped
 # block, so this grants nothing itself — it exists so a future job that

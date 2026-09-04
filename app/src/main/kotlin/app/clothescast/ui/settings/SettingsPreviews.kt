@@ -965,9 +965,10 @@ internal fun SettingsLicensesPreview() {
     }
 }
 
-// The dialog a component row opens: version plus each license as a link out to
-// its full text. Pinned to one fixed library rather than "the first in the
-// list" so a dependency change can't silently re-point the snapshot.
+// The dialog a component row opens: version, who wrote it, and each license as
+// a link out to its full text. Pinned to one fixed library rather than "the
+// first in the list" so a dependency change can't silently re-point the
+// snapshot.
 @Preview(name = "Settings · License details", widthDp = 360)
 @Composable
 internal fun SettingsLicenseDetailsPreview() {

@@ -125,10 +125,10 @@ internal fun LicensesContent(
 }
 
 /**
- * Version and license(s) for a tapped [library]. The bundled export carries no
- * license text (it's excluded to keep CI's regenerate-and-diff deterministic —
- * see app/build.gradle.kts), so each license with a URL is a link to the full
- * text rather than inline body copy.
+ * Version, authors and license(s) for a tapped [library]. The bundled export
+ * carries no license text (it's excluded to keep CI's regenerate-and-diff
+ * deterministic — see app/build.gradle.kts), so each license with a URL is a
+ * link to the full text rather than inline body copy.
  */
 @Composable
 internal fun LibraryDetailsDialog(
@@ -136,6 +136,7 @@ internal fun LibraryDetailsDialog(
     onOpenLicenseUrl: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val authors = remember(library) { library.authorsOrEmpty() }
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -151,6 +152,13 @@ internal fun LibraryDetailsDialog(
                 library.artifactVersion?.let { version ->
                     Text(
                         text = stringResource(R.string.settings_licenses_version, version),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if (authors.isNotEmpty()) {
+                    Text(
+                        text = stringResource(R.string.settings_licenses_authors, authors),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -190,3 +198,21 @@ internal fun LibraryDetailsDialog(
         },
     )
 }
+
+/**
+ * Who wrote this component, as the export records it — the POM's declared
+ * developers, or the organization that published it when no developer is
+ * named. Empty when the POM declares neither, and the dialog then shows no
+ * authors line at all rather than an empty label.
+ *
+ * Apache-2.0 §4 asks that attribution travel with the code, and the license
+ * name alone does not carry it: a page that says "Apache License 2.0" and
+ * nothing else has named the terms without naming who the terms are for.
+ * Names only — the export also carries organization URLs, and a second link
+ * per component would bury the license link this dialog exists for.
+ */
+internal fun Library.authorsOrEmpty(): String =
+    developers
+        .mapNotNull { developer -> developer.name?.takeIf(String::isNotBlank) }
+        .ifEmpty { listOfNotNull(organization?.name?.takeIf(String::isNotBlank)) }
+        .joinToString(", ")

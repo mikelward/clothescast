@@ -56,10 +56,16 @@ I put on before I leave?" instead of a full weather-office report.
   Settings are meant to be discoverable and reversible rather than hidden behind
   one monolithic preferences list. About also opens a **Licenses** page: every
   third-party component the APK bundles, listed by name alone, one row each,
-  with that component's version and a link out to the full text of each license
-  behind a tap. Its list names what the APK actually bundles rather than what
-  the dependency graph mentions, and is kept current by the build rather than by
-  hand.
+  with that component's version, who wrote it, and a link out to the full text
+  of each license behind a tap. The authors are part of the attribution rather
+  than decoration: Apache-2.0 §4 asks that attribution travel with the code and
+  almost everything bundled here ships under it, so naming only the license
+  would state the terms without stating who they are for. The component's
+  declared developers are preferred, the organization that published it stands
+  in where no developer is named, and the line is omitted where the component's
+  own metadata names neither. Its list names what the APK actually bundles
+  rather than what the dependency graph mentions, and is kept current by the
+  build rather than by hand.
 - **Notifications.** Separate Today and Tonight notifications;
   tapping insight notifications returns to Today.
 - **Widgets.** Glance widgets expose outfit and feels-like chart summaries on the

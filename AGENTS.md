@@ -32,8 +32,8 @@ future task; the incident narrative belongs in the commit message.
   everything at once.
 - **Don't narrate routine machinery.** A check run flipping, a re-run, a scheduled check
   re-arming, a webhook echo, a resolved thread — act on those silently; the noise buries
-  the one line that matters. Reports another rule requires stand (the Codex SHA and
-  comment count, the versionCode).
+  the one line that matters. Reports another rule requires stand (each review and its
+  findings, the versionCode).
 - **Don't report your own caught mistakes.** A wrong turn you noticed
   and fixed before it reached the user is not news — no "one thing worth
   flagging", no post-mortem of your own reasoning, no inside baseball

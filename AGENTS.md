@@ -288,7 +288,10 @@ future task; the incident narrative belongs in the commit message.
   dropped either way — but still prefix it so the subject's intent is
   explicit and never reads like a shippable bullet. Reach for `internal:`
   especially when an internal-only change touches paths that *would*
-  otherwise ship a bullet.
+  otherwise ship a bullet. A dependency the app ships is bare instead: the
+  bump changes what the app runs, so it gets its own release. A test- or
+  build-only bump you write stays prefixed; the weekly batch can't tell the
+  two apart, so it lands bare either way.
 - **Docs-only commits use a `docs:` subject prefix.** A commit touching
   only `docs/`, `*.md` files (READMEs, setup guides — any depth), or
   dotfiles takes `docs:` (e.g. `docs: fix stale Firebase Console nav`).

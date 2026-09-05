@@ -1278,15 +1278,18 @@ jobs:
         # snapshot-regen bot commits "ci: regenerate UI snapshots", workflow
         # tweaks, etc.), `test:` (test-only changes that ship nothing in
         # the APK), or `internal:` (internal-only changes that ship nothing
-        # user-visible — refactors, renames, dependency bumps), and changes
+        # user-visible — refactors, renames; a bump the app ships is bare
+        # instead, since it changes what the app runs), and changes
         # whose paths are all under `docs/`, all
         # top-level dotfiles or hidden directories (`.github/`, `.claude/`,
         # `.gitignore`, `.editorconfig`, …), top-level `*.md`, or `functions/`
         # (the Cloud Functions backend — a separate Firebase deployment, not
         # bundled into the APK, so nothing under it is Play-user-visible
-        # either; this is what lets the weekly npm-update batch there use the
-        # hub's own fixed `deps:` prefix instead of needing its own `internal:`
-        # override). PRIVACY.md is ordinary docs here too: Play's "What's new"
+        # either; this is what keeps the weekly npm-update batch there out
+        # of the changelog by path, leaving the hub free to write the bare
+        # subject a bump the app ships takes elsewhere — a hand-written
+        # test- or build-only bump stays prefixed, same as AGENTS.md says).
+        # PRIVACY.md is ordinary docs here too: Play's "What's new"
         # is a store-listing field a user installing an update never sees at
         # update time, so a wording-only policy change shipping a bullet
         # bought no real visibility.

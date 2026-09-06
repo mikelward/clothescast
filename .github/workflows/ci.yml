@@ -705,6 +705,9 @@ jobs:
       - name: Build
         working-directory: functions
         run: npm run build
+      - name: Test
+        working-directory: functions
+        run: npm test
 
   android-build:
     name: Android release check

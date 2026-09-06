@@ -16,7 +16,7 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "lint": "echo 'No lint configured yet for the Functions tree.'",
-    "test": "echo 'No tests configured yet for the Functions tree.'"
+    "test": "npm run build && node --test test/*.test.js"
   },
   "dependencies": {
     "firebase-admin": "^13.10.0",

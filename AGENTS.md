@@ -420,7 +420,7 @@ future task; the incident narrative belongs in the commit message.
 - Open PRs as **ready for review** (non-draft) immediately — don't wait for
   CI to go green or for an eyeball pass before marking them ready.
 - **Keep PR title and body in sync with the branch, updated with the
-  push rather than after it.** A PR's title and description are read as
+  push — body first, then push.** A PR's title and description are read as
   the canonical summary of what's landing; if the branch has grown,
   narrowed, or pivoted since the PR opened, the original text lies. With
   every push (force-push, follow-up commit, rebase-and-push), as part of

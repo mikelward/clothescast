@@ -95,21 +95,27 @@ Gemini TTS is relative to a Firestore read.
 
 ## Dependency pins
 
-`package.json` carries an `overrides` block that holds a few transitive
+`package.json` carries an `overrides` block that holds two transitive
 dependencies inside their current majors. Without it, the weekly npm-update
-batch (`.github/workflows/npm-update.yml`) trips its own no-majors rule on
-the first run and can never open a PR: `firebase-functions` declares
-`express ^4 || ^5` so an unconstrained resolve jumps to express 5, and the
-`@types/*` packages reference `@types/node` as `*`.
+batch (`.github/workflows/npm-update.yml`) trips its own no-majors rule and
+can never open a PR: the `@types/*` packages reference `@types/node` as `*`,
+and newer `fast-xml-parser` 5.x minors cross a major underneath.
 
 Each override is a deferred migration, not a permanent fact. Drop one when
 you are ready to take the crossing deliberately:
 
-- `express` / `@types/express` `^4` — express 5 is supported by
-  `firebase-functions` v7; migrating is a code review of the handler
-  surface, not a version bump.
 - `@types/node` `^22` — matches `engines.node`. Move both together when the
   Functions runtime moves.
 - `fast-xml-parser` `~5.8.0` — newer 5.x minors moved their `entities`
   dependency across a major; held rather than forcing the sub-dependency
   against its declared range. Revisit on the next `firebase-admin` bump.
+
+Express is no longer pinned — that migration is done. `firebase-functions`
+v7.3.2 declares `express ^5.2.1`, so express and `@types/express` resolve to
+5 and holding them at 4 would have forced the SDK against its own declared
+range. The handler was read against express 5's breaking changes first: it
+sets status through `res.status(...)`, never the removed
+`res.json(status, body)` / `res.send(status)` overloads; it registers a
+single bare handler, so there are no route patterns for path-to-regexp 8 to
+reject; and it reads only `req.method`, `req.header(...)` and `req.body`,
+none of which changed.

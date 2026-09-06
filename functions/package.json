@@ -20,15 +20,13 @@
   },
   "dependencies": {
     "firebase-admin": "^13.10.0",
-    "firebase-functions": "^7.2.5"
+    "firebase-functions": "^7.3.2"
   },
   "devDependencies": {
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "@types/express": "^4",
     "@types/node": "^22",
-    "express": "^4",
     "fast-xml-parser": "~5.8.0"
   }
 }

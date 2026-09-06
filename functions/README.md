@@ -98,16 +98,39 @@ Gemini TTS is relative to a Firestore read.
 `package.json` carries an `overrides` block that holds a few transitive
 dependencies inside their current majors. Without it, the weekly npm-update
 batch (`.github/workflows/npm-update.yml`) trips its own no-majors rule on
-the first run and can never open a PR: `firebase-functions` declares
-`express ^4 || ^5` so an unconstrained resolve jumps to express 5, and the
-`@types/*` packages reference `@types/node` as `*`.
+the first run and can never open a PR: the `@types/*` packages reference
+`@types/node` as `*`.
+
+This paragraph used to give a second reason — that `firebase-functions`
+declares `express ^4 || ^5`, so an unconstrained resolve jumps to express 5.
+No v7 release declares that: it is `express ^4.21.0` through 7.3.0 and
+`^5.2.1` from 7.3.2, with nothing in between accepting both.
 
 Each override is a deferred migration, not a permanent fact. Drop one when
 you are ready to take the crossing deliberately:
 
-- `express` / `@types/express` `^4` — express 5 is supported by
-  `firebase-functions` v7; migrating is a code review of the handler
-  surface, not a version bump.
+- `express` / `@types/express` `^4` — **this one has stopped being
+  deferrable.** `firebase-functions` 7.3.2 declares `express ^5.2.1` and
+  `@types/express ^5.0.0`, dropping express 4 from its range entirely.
+  7.3.0 is the last release that still declares `express ^4.21.0` (7.3.1
+  was never published), so that is the ceiling this override supports.
+  Past it the override no longer holds the SDK inside a supported
+  combination — it forces one outside it, and silently: an `overrides`
+  entry is authoritative for npm, and forcing the v4 types alongside the
+  runtime stops `tsc` seeing the mismatch. It also clears the batch's
+  hold-back check, which compares resolved lockfile versions — express does
+  not move, so nothing reads as a crossing. Until the override is dropped,
+  every batch that would take 7.3.2 has to hold `firebase-functions` back
+  by hand (#1211), landing on whatever the lockfile already pins.
+
+  Migrating is still a code review of the handler surface rather than a
+  version bump, and that surface is small. `src/index.ts` uses `req.body`,
+  `req.header`, `req.method`, `res.status`, `res.json`, `res.setHeader` and
+  `res.send`. Express 5 dropped the `res.json(status, body)` and
+  `res.send(status)` overloads; every call here is the surviving form —
+  `res.status(n).json(obj)` and `res.send(buffer)` — so no call site
+  changes. `res.setHeader` is Node's own, and `req.header` / `req.method`
+  are unchanged.
 - `@types/node` `^22` — matches `engines.node`. Move both together when the
   Functions runtime moves.
 - `fast-xml-parser` `~5.8.0` — newer 5.x minors moved their `entities`

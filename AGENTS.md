@@ -464,6 +464,14 @@ future task; the incident narrative belongs in the commit message.
   Acknowledgement noise ("good catch, will do") is fine and preferred over
   silence, but it is not an answer and does not resolve anything; the
   discipline is "answer, then resolve," not "say nothing."
+- **Deferring a real-but-out-of-scope finding.** Don't ask the maintainer to
+  merge past it: note the follow-up in `TODO.md`, commit and push that first,
+  reply on the thread citing the sha, and resolve — resolving a deferred thread
+  is the exception to "anything still to do stays open" above. A finding with
+  no thread (top-level comment or review body) still gets the `TODO.md` record,
+  the push, and the reply — only the resolve is skipped. The push re-triggers
+  Codex; `@codex review` only for the five-minute-silence case. Escalate only
+  if the re-review re-raises it.
 - **Always link every open PR in the stack.** Any time you push, summarise
   CI, or invite the user to review, list every currently-open PR on the
   feature by URL — one per line — not just the topmost one. The Claude Code
@@ -478,7 +486,9 @@ future task; the incident narrative belongs in the commit message.
 - **Address Codex comments automatically — don't wait to be asked.** When a
   Codex review lands, treat each comment like a real review note: read it,
   decide whether it's a real issue or a false positive, and if it's real,
-  fix it in the same PR. Fold the fix into the commit it belongs to
+  fix it in the same PR — the one exception being a real finding that's
+  genuinely out of scope for this PR, which you defer instead (see *Deferring a
+  finding* below). Fold the fix into the commit it belongs to
   (rebase / `--fixup`) rather than tacking on an "address review" commit,
   per the *clean up unmerged commits* rule under "Commits and PRs". Group
   several small fixes into one commit when they share a topic.
@@ -505,8 +515,9 @@ future task; the incident narrative belongs in the commit message.
   a review is the attributable form, naming the commit it read. Findings
   arrive as review comments, as a top-level comment, or as a review — read
   `get_review_comments`, `get_comments` and `get_reviews` to the last page,
-  since all three page oldest first — and they block the merge until fixed
-  or rebutted; an acknowledgement is not an answer. Nothing from Codex since
+  since all three page oldest first — and they block the merge until fixed,
+  rebutted, or deferred (see *Deferring a finding* above); an acknowledgement
+  is not an answer. Nothing from Codex since
   the push, five minutes on, means it never picked it up — comment `@codex
   review`, once. Reading the verdict is a protocol, not a glance: a state
   report draws on ALL the sources — the PR-body reactions, the reviews, the

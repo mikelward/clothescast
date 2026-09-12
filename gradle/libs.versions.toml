@@ -1,5 +1,5 @@
 [versions]
-androidlog = "2.0.57"
+androidlog = "2.0.60"
 # AGP 9.x pairs with the Gradle 9.x wrapper (kept in lockstep in
 # gradle-wrapper.properties — currently 9.7.0; AGP 9.3 requires Gradle 9.5.0+
 # and JDK 17+, we build on 21). AGP 9 ships Kotlin support built-in, so the
@@ -7,7 +7,7 @@ androidlog = "2.0.57"
 # top-level `kotlin { compilerOptions { } }` block in app/build.gradle.kts.
 # Roborazzi must be >= 1.57 here: earlier releases use AGP's removed
 # `TestedExtension` and fail to apply on AGP 9.
-agp = "9.3.2"
+agp = "9.4.0"
 kotlin = "2.4.10"
 # Android API floor. Single source of truth: `app/build.gradle.kts` reads this
 # for `minSdk` and re-emits it as `BuildConfig.MIN_SDK_VERSION` so the runtime

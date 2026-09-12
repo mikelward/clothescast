@@ -448,7 +448,9 @@ future task; the incident narrative belongs in the commit message.
   Quote the rule and decline rather than narrowing the code to satisfy
   it; where the rule really does forbid what the product needs, that
   conflict is the maintainer's call, not one to settle either way
-  yourself.
+  yourself. Declining doesn't clear the required `codex` status: post
+  the rebuttal, then `@codex review` once — a push does the same if the
+  rebuttal is up first. Escalate if it re-raises, or stays silent.
 - **A second verified finding in the same mechanism is evidence about the
   design, not another bug.** Before fixing it, look for the same shape
   elsewhere and ask whether a different design would delete the class rather
@@ -470,8 +472,8 @@ future task; the incident narrative belongs in the commit message.
   is the exception to "anything still to do stays open" above. A finding with
   no thread (top-level comment or review body) still gets the `TODO.md` record,
   the push, and the reply — only the resolve is skipped. The push re-triggers
-  Codex; `@codex review` only for the five-minute-silence case. Escalate only
-  if the re-review re-raises it.
+  Codex, so don't also poke it unless five minutes pass with nothing back;
+  escalate only if the re-review re-raises it.
 - **Always link every open PR in the stack.** Any time you push, summarise
   CI, or invite the user to review, list every currently-open PR on the
   feature by URL — one per line — not just the topmost one. The Claude Code
@@ -482,7 +484,7 @@ future task; the incident narrative belongs in the commit message.
 - **Codex is the automated reviewer on this repo** — not Copilot. Its
   reviews are triggered automatically; you don't request them, except when
   nothing has come back five minutes after a push — that means it never
-  picked the push up.
+  picked the push up — or to confirm a rebutted false positive.
 - **Address Codex comments automatically — don't wait to be asked.** When a
   Codex review lands, treat each comment like a real review note: read it,
   decide whether it's a real issue or a false positive, and if it's real,

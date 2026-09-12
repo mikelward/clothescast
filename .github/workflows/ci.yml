@@ -1440,7 +1440,7 @@ jobs:
             # commits BEFORE `--reverse` applies, so a pre-walk cap would
             # keep the newest N and silently drop the oldest — the exact
             # commits the oldest-first notes must preserve. The safety cap
-            # lives on qualifying subjects in the filter loop below.
+            # lives on distinct subjects in the filter loop below.
             mapfile -t shas < <(git rev-list --reverse \
               "$base_sha..$head_sha")
             if [ "${#shas[@]}" -eq 0 ]; then
@@ -1473,22 +1473,36 @@ jobs:
           }
 
           subjects=()
-          # Counts commits that QUALIFY, which is what the cap below
-          # actually bounds: the per-commit `git show` that `is_noise`
-          # runs. Before dedup that was the same number as the subjects
-          # collected, so the cap could read the array; a range of
-          # repeated subjects would now leave the array at one entry and
-          # let a pathologically long range walk every commit in it.
-          qualifying=0
+          # ONE bound, on the card: at most 50 DISTINCT subjects. Counting
+          # commits instead lets 50 repeats eat the budget and silently drop
+          # the distinct subject behind them, with the card holding one
+          # bullet and nowhere near the 500-char cap.
+          #
+          # There is deliberately no separate bound on the walk. Repeats no
+          # longer grow the array, so the budget stops bounding the loop —
+          # but the range is bounded by the release cadence, each commit
+          # costs one `git show`, and such a bound has to answer two
+          # questions this one does not: what marks the notes truncated, and
+          # what a capped scan that collected nothing means. Getting the
+          # second wrong sets RELEASE_NOTES_SKIP, which never advances the
+          # base, so every later push rescans the same prefix and can never
+          # publish again.
+          MAX_SUBJECTS=50
+          truncated=false
           # Collapses a subject already collected, so two dependency
           # batches in one release window do not print the same bullet
           # twice. The FIRST occurrence is kept: the list is oldest-first
           # and both caps drop from the tail, so a repeat must never
           # displace the head or spend budget a later distinct subject
           # needs.
+          # Returns non-zero only when the budget is spent AND this subject
+          # would have taken a slot — so the caller stops, and `truncated`
+          # means something really was cut. Checking the budget before that
+          # point claims omission over a tail of duplicates and housekeeping
+          # that would have added nothing, publishing a complete list with a
+          # "…" on the end.
           add_subject() {
             local s="$1" i
-            qualifying=$((qualifying + 1))
             # Indexed rather than "${subjects[@]}": the count is always
             # safe to read under `set -u`, an empty array included.
             for (( i = 0; i < ${#subjects[@]}; i++ )); do
@@ -1497,23 +1511,23 @@ jobs:
                 return 0
               fi
             done
+            if [ "${#subjects[@]}" -ge "$MAX_SUBJECTS" ]; then
+              echo "Reached $MAX_SUBJECTS distinct subjects; ignoring the rest of the range."
+              truncated=true
+              return 1
+            fi
             subjects+=("$s")
           }
 
           for sha in "${shas[@]}"; do
             [ -z "$sha" ] && continue
-            # Safety net for unusually long ranges (release outage),
-            # applied AFTER oldest-first ordering so the head of the list
-            # is never dropped; in practice the 500-char Play cap
+            # The budget applies AFTER oldest-first ordering, so the head of
+            # the list is never dropped; in practice the 500-char Play cap
             # truncates far sooner.
-            if [ "$qualifying" -ge 50 ]; then
-              echo "Reached 50 qualifying commits; ignoring the rest of the range."
-              break
-            fi
             if is_noise "$sha"; then
               continue
             fi
-            add_subject "$(git log -1 --pretty=%s "$sha")"
+            add_subject "$(git log -1 --pretty=%s "$sha")" || break
           done
 
           # With no usable release base (fresh repo, history rewrite, or a
@@ -1582,7 +1596,6 @@ jobs:
           # dropping further bullets if the marker itself overflows. A
           # single subject too long to fit at all is hard-truncated.
           kept=()
-          truncated=false
           for s in "${subjects[@]}"; do
             candidate=$(format_notes "${kept[@]}" "$s")
             if [ "$(char_len "$candidate")" -gt "$MAX" ]; then

@@ -477,7 +477,7 @@ future task; the incident narrative belongs in the commit message.
   no thread (top-level comment or review body) still gets the `TODO.md` record,
   the push, and the reply — only the resolve is skipped. The push re-triggers
   Codex, so don't also poke it unless five minutes pass with nothing back;
-  escalate only if the re-review re-raises it.
+  escalate if the re-review re-raises it, or stays silent.
 - **Always link every open PR in the stack.** Any time you push, summarise
   CI, or invite the user to review, list every currently-open PR on the
   feature by URL — one per line — not just the topmost one. The Claude Code

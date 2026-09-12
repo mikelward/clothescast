@@ -95,7 +95,7 @@ Gemini TTS is relative to a Firestore read.
 
 ## Dependency pins
 
-`package.json` carries an `overrides` block that holds two transitive
+`package.json` carries an `overrides` block that holds three transitive
 dependencies inside their current majors. Without it, the weekly npm-update
 batch (`.github/workflows/npm-update.yml`) trips its own no-majors rule and
 can never open a PR: the `@types/*` packages reference `@types/node` as `*`,
@@ -109,6 +109,11 @@ you are ready to take the crossing deliberately:
 - `fast-xml-parser` `~5.8.0` — newer 5.x minors moved their `entities`
   dependency across a major; held rather than forcing the sub-dependency
   against its declared range. Revisit on the next `firebase-admin` bump.
+- `fast-xml-builder` `~1.2.0` — 1.3.x moved its own `xml-naming` dependency
+  from `^0.1.0` to `^0.3.0`, which a caret pins to the minor on a 0.x line,
+  so the batch reads it as breaking. Pinning `fast-xml-parser` does not
+  constrain the edges beneath it, which is why this needs a pin of its own
+  rather than a tighter one above. Drop it with `fast-xml-parser`.
 
 Express is no longer pinned — that migration is done. `firebase-functions`
 v7.3.2 declares `express ^5.2.1`, so express and `@types/express` resolve to

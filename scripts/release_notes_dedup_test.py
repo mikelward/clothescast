@@ -9,12 +9,8 @@ The whole collection block is extracted from the workflow and run against a
 throwaway git repository, rather than a copy of the helper being tested in
 isolation. Two reasons, both about what a test like this gets wrong: a copy
 passes forever once the workflow drifts, and exercising only the helper would
-stay green if a loop stopped calling it — putting the duplicate bullets
+stay green if the loop stopped calling it — putting the duplicate bullets
 straight back while every assertion still reported ok.
-
-The block here spans `is_noise` through the ancestor-walk backstop, so BOTH
-append sites are the shipped text: the range walk, and the fallback that
-looks up to 20 ancestors when there was no usable release base.
 
 Standard library only, matching the other scripts in this directory — no YAML
 parser, so the block is located by its own source. Run it directly:
@@ -36,11 +32,11 @@ def extract_collection_block() -> str:
     """Return the workflow's subject-collection block, dedented.
 
     Spans the `is_noise` predicate through the ancestor-walk backstop, so
-    both filters, the qualifying counter, the cap and both append sites are
-    the shipped text. Fails loudly when the block cannot be found: a test
-    that silently exercises nothing is worse than no test, and restructuring
-    this step is exactly the change that should fail here rather than
-    quietly pass.
+    both filters, the subject budget, the helper and BOTH append sites are
+    all the shipped text. Fails loudly when the block cannot
+    be found: a test that silently exercises nothing is worse than no test,
+    and restructuring this step is exactly the change that should fail here
+    rather than quietly pass.
     """
     source = WORKFLOW.read_text()
     match = re.search(
@@ -57,8 +53,7 @@ def extract_collection_block() -> str:
             "\"Range was all-filtered\" comment. If the step was restructured, "
             "update this test with it; do not delete the test."
         )
-    block = "is_noise() {\n" + match.group("body") + "\n"
-    return textwrap.dedent(block)
+    return "is_noise() {\n" + match.group("body") + "\n"
 
 
 def git(repo: Path, *args: str) -> str:
@@ -83,10 +78,7 @@ def make_commit(repo: Path, subject: str, filename: str, nonce: int) -> str:
 
 
 def collect(block: str, commits: list, walk: bool = False) -> tuple:
-    """Run the block over `commits` and return (subjects, qualifying).
-
-    With `walk` set, `base_sha` is left empty and `shas` holds only the head
-    commit, which is the shape that arms the ancestor-walk backstop.
+    """Run the block over `commits` and return (subjects, truncated).
 
     `commits` is a list of (subject, filename). A setup commit is made first
     and excluded from the range: the production step runs `git diff-tree`
@@ -112,11 +104,11 @@ def collect(block: str, commits: list, walk: bool = False) -> tuple:
 
         script = (
             "set -euo pipefail\n"
-            + f"shas=({' '.join(shas)})\n"
+            f"shas=({' '.join(shas)})\n"
             + f'head_sha="{shas[-1] if shas else ""}"\n'
             + f'base_sha="{"" if walk else "base"}"\n'
             + block
-            + '\nprintf "Q:%s\\n" "$qualifying"\n'
+            + '\nprintf "T:%s\\n" "$truncated"\n'
             + 'for s in ${subjects[@]+"${subjects[@]}"}; do printf "S:%s\\n" "$s"; done\n'
         )
         result = subprocess.run(
@@ -130,8 +122,8 @@ def collect(block: str, commits: list, walk: bool = False) -> tuple:
             raise AssertionError(f"block exited {result.returncode}: {result.stderr}")
         lines = result.stdout.splitlines()
         subjects = [l[2:] for l in lines if l.startswith("S:")]
-        qualifying = int(next(l[2:] for l in lines if l.startswith("Q:")))
-        return subjects, qualifying
+        truncated = next(l[2:] for l in lines if l.startswith("T:")) == "true"
+        return subjects, truncated
 
 
 def main() -> int:
@@ -146,7 +138,7 @@ def main() -> int:
 
     # The behavior this exists for: two dependency batches in one release
     # window write the same subject, and the card must carry it once.
-    subjects, qualifying = collect(
+    subjects, truncated = collect(
         block,
         [
             ("Update dependencies", "gradle/libs.versions.toml"),
@@ -154,10 +146,10 @@ def main() -> int:
         ],
     )
     check("a repeated subject is collected once", subjects, ["Update dependencies"])
-    check("both commits still counted as qualifying", qualifying, 2)
+    check("a short range is not marked truncated", truncated, False)
 
     # The FIRST occurrence survives, keeping its position. The list is
-    # oldest-first and both caps drop from the tail, so a repeat must never
+    # oldest-first and the cap drops from the tail, so a repeat must never
     # displace the head.
     subjects, _ = collect(
         block,
@@ -202,9 +194,8 @@ def main() -> int:
         ["Fix * and ? in names", "Fix anything", 'He said "hi"'],
     )
 
-    # The filters still run, and filtered commits never reach the counter —
-    # so the cap continues to bound qualifying commits, not walked ones.
-    subjects, qualifying = collect(
+    # The filters still run.
+    subjects, _ = collect(
         block,
         [
             ("ci: regenerate snapshots", "app/a.kt"),
@@ -213,7 +204,6 @@ def main() -> int:
         ],
     )
     check("prefixed commits are filtered out", subjects, ["Real change"])
-    check("filtered commits are not counted as qualifying", qualifying, 1)
 
     subjects, _ = collect(
         block,
@@ -224,22 +214,67 @@ def main() -> int:
     )
     check("housekeeping-path commits are filtered out", subjects, ["Real change"])
 
-    # The cap bounds the WALK, and after dedup the array no longer measures
-    # it: 60 commits sharing one subject leave the array at one entry, so a
-    # cap reading the array would walk every one of them. Reading the counter
-    # instead, the loop stops at 50 — which is what `qualifying` reports back.
-    subjects, qualifying = collect(
+    # The subject budget counts DISTINCT subjects, so repeats must not eat
+    # the slots a later distinct subject needs. Counting commits instead
+    # drops "Add call history" here and prints one bullet, with no ellipsis
+    # and nowhere near the 500-char cap — a release-worthy change silently
+    # gone (Codex, PR #338).
+    subjects, _ = collect(
         block,
-        [(f"Subject {i // 30}", "app/a.kt") for i in range(60)],
+        [("Update dependencies", "gradle/libs.versions.toml")] * 50
+        + [("Add call history", "app/a.kt")],
     )
-    check("the cap stops the walk at 50 qualifying commits", qualifying, 50)
-    check("dedup still applies under the cap", subjects, ["Subject 0", "Subject 1"])
+    check(
+        "repeats do not consume the subject budget",
+        subjects,
+        ["Update dependencies", "Add call history"],
+    )
 
-    # The ancestor-walk backstop is the second append site: with no usable
+    # The budget still bites on genuinely distinct subjects, keeps the
+    # oldest — the list is oldest-first and the cap drops from the tail —
+    # and says so, since the formatter only appends the "…" marker when
+    # something told it the list was cut.
+    subjects, truncated = collect(
+        block, [(f"Subject {i}", "app/a.kt") for i in range(60)]
+    )
+    check("the budget stops at 50 distinct subjects", len(subjects), 50)
+    check("the budget keeps the oldest", subjects[0], "Subject 0")
+    check("a budget hit marks the notes truncated", truncated, True)
+
+    # A long range of repeats is exactly what dedup is for, and must NOT be
+    # cut: the budget counts distinct subjects, so it never fires here. This
+    # is also the case a separate walk bound would have cut silently.
+    subjects, truncated = collect(
+        block, [("Update dependencies", "gradle/libs.versions.toml")] * 200
+    )
+    check("a long repeated range collects one subject", subjects, ["Update dependencies"])
+    check("and is not marked truncated", truncated, False)
+
+    # A full budget followed by nothing that would have taken a slot is a
+    # COMPLETE list, so it must not claim otherwise: an ellipsis there says
+    # content was dropped when the tail was duplicates and housekeeping.
+    subjects, truncated = collect(
+        block,
+        [(f"Subject {i}", "app/a.kt") for i in range(50)]
+        + [("Subject 0", "app/b.kt"), ("ci: regenerate snapshots", "app/c.kt")],
+    )
+    check("a full budget plus a duplicate tail collects 50", len(subjects), 50)
+    check("and is not marked truncated", truncated, False)
+
+    check(
+        "the shipped subject budget is 50",
+        bool(re.search(r"^\s*MAX_SUBJECTS=50$", block, re.M)),
+        True,
+    )
+
+    # The ancestor-walk backstop is the SECOND append site: with no usable
     # release base the "range" is only the head commit, so an all-filtered
     # result does not prove nothing is unreleased. It must still reach a
-    # subject, and through the same helper.
-    subjects, qualifying = collect(
+    # subject, and through the same helper — the old test pinned that via a
+    # counter that no longer exists, so it is pinned by behavior instead:
+    # the walk's subject is collected, and it is collected exactly once even
+    # though a duplicate sits in the range.
+    subjects, truncated = collect(
         block,
         [
             ("Real change", "app/a.kt"),
@@ -248,18 +283,23 @@ def main() -> int:
         walk=True,
     )
     check("the ancestor walk still finds a subject", subjects, ["Real change"])
-    # Dedup cannot show itself here — the walk appends once, to a list it
-    # only runs on when it is empty — so the counter is what pins that this
-    # append goes through the helper too. Reverting it to a bare
-    # `subjects+=` is otherwise invisible, and one bare append left behind
-    # is how the next reader concludes there is no single place subjects
-    # enter the list.
-    check("the ancestor walk appends through the helper", qualifying, 1)
+    check("the ancestor walk does not mark the notes truncated", truncated, False)
+
+    # Routing the walk through the helper has no behavioral signature — it
+    # appends once, to a list it only runs on when empty, so dedup and the
+    # budget are both unreachable there. This is the one structural
+    # assertion in the file, and it is the claim itself: `add_subject` is
+    # the only place a subject enters the list. Without it, reverting that
+    # second call site to a bare append passes every behavioral check.
+    check(
+        "the helper is the only append path",
+        len(re.findall(r"subjects\+=\(", block)),
+        1,
+    )
 
     # An empty result is reachable and must not trip `set -u` on the array.
-    subjects, qualifying = collect(block, [("ci: nothing to ship", "app/a.kt")])
+    subjects, _ = collect(block, [("ci: nothing to ship", "app/a.kt")])
     check("an all-filtered range yields no subjects", subjects, [])
-    check("an all-filtered range counts none qualifying", qualifying, 0)
 
     for failure in failures:
         print(f"FAIL: {failure}", file=sys.stderr)

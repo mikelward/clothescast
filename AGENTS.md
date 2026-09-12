@@ -255,7 +255,8 @@ future task; the incident narrative belongs in the commit message.
 - **Every commit subject ships verbatim to the Play Store changelog.** CI
   collects the subject line of *every* commit landed since the previous
   successful main CI run, formats them as `• `-prefixed bullets (oldest →
-  newest), and writes the result to `whatsnew-en-US` — that's the "What's
+  newest, a subject repeated within one release's range appearing once at
+  its first position), and writes the result to `whatsnew-en-US` — that's the "What's
   new" blurb internal testers and, eventually, production users see. So
   treat each subject as end-user copy: sentence case, no jargon, no scope
   prefix, ≤ ~80 chars. e.g. `Bigger outfit icons on the Today screen`,

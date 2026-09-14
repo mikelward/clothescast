@@ -454,8 +454,9 @@ future task; the incident narrative belongs in the commit message.
   it; where the rule really does forbid what the product needs, that
   conflict is the maintainer's call, not one to settle either way
   yourself. Declining doesn't clear the required `codex` status: post
-  the rebuttal, then `@codex review` once — a push does the same if the
-  rebuttal is up first. Escalate if it re-raises, or stays silent.
+  the rebuttal, then `@codex review` once — or let the next push do it,
+  if the rebuttal is up first. Escalate if it re-raises, or stays
+  silent.
 - **A second verified finding in the same mechanism is evidence about the
   design, not another bug.** Before fixing it, look for the same shape
   elsewhere and ask whether a different design would delete the class rather

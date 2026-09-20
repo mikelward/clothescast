@@ -37,6 +37,7 @@ import app.clothescast.ui.garment.STRIP_SURFACE_LIGHT_ARGB
 import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderConditionsStripBitmap
+import kotlin.math.roundToInt
 
 /**
  * A glanceable home-screen widget showing the day's conditions as a horizontal
@@ -137,8 +138,11 @@ private fun ConditionsWidgetContent(info: OutfitCardInfoLines?, darkTheme: Boole
             val density = Density(context)
             val contentWidth = (size.width - STRIP_PADDING * 2).coerceAtLeast(1.dp)
             val contentHeight = (size.height - STRIP_PADDING * 2).coerceAtLeast(1.dp)
-            val widthPx = with(density) { contentWidth.toPx() }.toInt().coerceAtLeast(1)
-            val heightPx = with(density) { contentHeight.toPx() }.toInt().coerceAtLeast(1)
+            val rawWidthPx = with(density) { contentWidth.toPx() }.toInt().coerceAtLeast(1)
+            val rawHeightPx = with(density) { contentHeight.toPx() }.toInt().coerceAtLeast(1)
+            // Clamp the render height so a tall cell can't balloon the strip; the
+            // Image below centers the short bitmap vertically under Fit.
+            val (widthPx, heightPx) = conditionsStripRenderSize(rawWidthPx, rawHeightPx)
             Image(
                 provider = ImageProvider(
                     renderConditionsStripBitmap(
@@ -158,6 +162,23 @@ private fun ConditionsWidgetContent(info: OutfitCardInfoLines?, darkTheme: Boole
 }
 
 private val STRIP_PADDING = 8.dp
+
+// The conditions strip is a wide, short band — its on-screen twin is a fixed
+// 36dp-tall row (TodayScreen.ConditionsStrip), and the widget defaults to a 3x1
+// cell. A launcher can hand it a far taller cell, most visibly a lock-screen
+// host that gives it a large near-square card; rendering the strip at the cell's
+// own aspect then blows the thermometer and label up to fill the height. Clamp
+// the render height so the bitmap never falls below [MIN_STRIP_ASPECT] wide:tall,
+// so ContentScale.Fit centers a proportioned strip in a tall cell instead of
+// ballooning it. A cell already wider than that (the 3x1 default is ~4.5:1) is
+// left untouched. Mirrors FeelsLikeWidget.chartRenderSizePx' aspect clamp.
+internal fun conditionsStripRenderSize(widthPx: Int, heightPx: Int): Pair<Int, Int> {
+    val w = widthPx.coerceAtLeast(1)
+    val maxHeight = (w / MIN_STRIP_ASPECT).roundToInt().coerceAtLeast(1)
+    return w to heightPx.coerceIn(1, maxHeight)
+}
+
+private const val MIN_STRIP_ASPECT = 3f
 
 // Surface + text colours for the strip, keyed off the resolved app theme so the
 // widget honours the in-app ThemeMode rather than the device night mode. The

@@ -6,7 +6,6 @@ import app.clothescast.BuildConfig
 import com.mikelward.androidlog.DebugLog
 import com.mikelward.androidlog.android.DebugFileSink
 import com.mikelward.androidlog.android.LogcatSink
-import com.mikelward.androidlog.android.PreviousRun
 import com.mikelward.androidlog.safe
 import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -180,31 +179,6 @@ object DiagLog {
         listOf("diag.log", "diag.log.1", "last-crash.txt", "last-crash.ack").forEach { name ->
             runCatching { File(context.cacheDir, name).delete() }
         }
-    }
-
-    /**
-     * The previous run's log, as a handle rather than a string.
-     *
-     * The handle is what [consumePreviousRun] takes back, so a report deletes
-     * exactly the runs it contained and nothing else — two overlapping report
-     * flows cannot have the first destroy a run only the second had read. A
-     * caller that got null read nothing and so deletes nothing.
-     *
-     * Reads disk on the library's worker; call it off the main thread.
-     */
-    internal fun readPreviousRun(): PreviousRun? = files?.readPreviousRun()
-
-    /**
-     * Consumes the runs [run] was read from, once the report carrying them has
-     * actually reached the user.
-     *
-     * "Reached the user" means the clipboard copy landed, not that a chooser
-     * opened: `ACTION_SEND` reports nothing back, so a launched sheet the user
-     * backed out of would otherwise spend a crash log on a share that never
-     * happened.
-     */
-    internal fun consumePreviousRun(run: PreviousRun) {
-        files?.clearPreviousRun(run)
     }
 
     /**

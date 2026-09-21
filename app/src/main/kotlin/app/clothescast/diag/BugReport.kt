@@ -1,11 +1,8 @@
 package app.clothescast.diag
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.net.Uri
@@ -36,7 +33,9 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
-import com.mikelward.androidlog.android.PreviousRun
+import com.mikelward.androidlog.android.CollectedReport
+import com.mikelward.androidlog.android.DebugReport
+import com.mikelward.androidlog.android.ShareOutcome
 import java.io.File
 import java.io.FileOutputStream
 import java.time.Duration
@@ -45,7 +44,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.coroutines.resume
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -54,26 +52,13 @@ import kotlinx.coroutines.withContext
 
 /**
  * Builds a "paste-into-Claude" bug-report payload (version, device, settings,
- * the latest cached this-period + next-period ClothesCasts, recent log lines, last crash
- * if any) and hands it off via [Intent.ACTION_SEND] so the share sheet can
- * deliver it to whichever app the user picks. Also drops the text on the
- * clipboard as a paste fallback.
+ * the latest cached this-period + next-period ClothesCasts, recent log lines)
+ * and hands it to the shared `androidlog` library's [DebugReport], which shares
+ * it via the system chooser — with the current screen attached as a screenshot
+ * — and copies the text to the clipboard as the paste fallback. The library
+ * appends the previous run's log (the last crash, if any) and consumes it only
+ * once the report has actually reached the user.
  */
-/**
- * A built report and the previous run it contains, if it carried one.
- *
- * The two travel together because they have to be settled together: the text
- * has already absorbed that run's log, so whether the run may be deleted is
- * decided by whether *this* text reached the user. Returning only the string
- * would leave the handle stranded and the run uncleared, and every later
- * report would re-append the same crash.
- */
-internal class CollectedPayload(
-    val text: String,
-    /** Null when nothing was read — a fallback report, or no previous run. */
-    val previousRun: PreviousRun?,
-)
-
 object BugReport {
     private const val FILE_PROVIDER_AUTHORITY_SUFFIX = ".fileprovider"
     private val TIMESTAMP_FORMAT: DateTimeFormatter =
@@ -93,40 +78,14 @@ object BugReport {
     private const val MAX_LOG_LINES = 100
 
     /**
-     * The ceiling a whole shared report stays under.
-     *
-     * The line cap above keeps the caption friendly for messenger targets; this
-     * is the hard failure it doesn't cover. Strings parcel as UTF-16, so N
-     * characters cost 2N bytes on the wire, and the payload crosses Binder twice
-     * — into the clipboard, then again in the chooser's `ACTION_SEND` extra. The
-     * per-process Binder buffer is ~1 MB **shared** across every in-flight
-     * transaction, so an unbounded report (a long clothes-rule list, a fat crash
-     * trace) could throw `TransactionTooLargeException` at both ends — and since
-     * both are best-effort, the tap would then do nothing whatsoever: no chooser,
-     * nothing on the clipboard. The three section budgets below add up to 60,000;
-     * the slack covers headers and the one over-budget line each bounded section
-     * may keep.
-     */
-    internal const val MAX_SHARE_PAYLOAD_CHARS = 64_000
-
-    /**
      * Ceiling for the structured section (build, device, settings, ClothesCasts),
      * bounded separately from the log so a long clothes-rule list can't crowd the
      * log out. It degrades most gracefully — a settings dump reads fine
-     * truncated, a truncated log tail loses events.
+     * truncated, a truncated log tail loses events. The previous run the library
+     * appends after this section is bounded on its own, by the library's persist
+     * budget, so a fat crash cannot crowd this app's own state out either.
      */
     private const val MAX_STRUCTURED_CHARS = 24_000
-
-    /** Ceiling for the previous run's crash section. */
-    private const val MAX_CRASH_PAYLOAD_CHARS = 16_000
-
-    /**
-     * Of that, the slice reserved for the crash itself (timestamp, exception,
-     * stack) before the recent-log half of the file gets the rest. A capped
-     * 12-frame trace with a cause chain fits comfortably; anything larger is a
-     * pathological trace worth clipping.
-     */
-    private const val MAX_CRASH_STACK_CHARS = 6_000
 
     /** Cap for an exception message quoted into the collection-failure fallback. */
     private const val MAX_FAILURE_MESSAGE_CHARS = 300
@@ -135,96 +94,139 @@ object BugReport {
     private const val MAX_LOG_PAYLOAD_CHARS = 20_000
 
     /**
-     * Captures the screen, builds the text payload, copies the text to the
-     * clipboard, and fires the share-sheet chooser. When [includeScreenshot] is
-     * true (the default) the current window is grabbed and attached as a PNG so
-     * the report shows what the user was looking at; when it's false (or the
-     * capture fails) the report shares text-only. The text payload is capped to
-     * [MAX_LOG_LINES] log lines so the `EXTRA_TEXT` caption stays under the
-     * length limits image-share targets impose.
+     * Captures the screen, builds the text payload, and hands both to the shared
+     * library's [DebugReport] to copy to the clipboard and fire the share-sheet
+     * chooser. When [includeScreenshot] is true (the default) the current window
+     * is grabbed and passed as a PNG `content://` URI so the report shows what
+     * the user was looking at; when it's false (or the capture fails) the report
+     * shares text-only. The text payload is capped to [MAX_LOG_LINES] log lines
+     * so the `EXTRA_TEXT` caption stays under the length limits image-share
+     * targets impose.
      *
-     * Returns whether the report was *retained* somewhere the user can still get
-     * it — i.e. the clipboard copy landed. `ACTION_SEND` gives no delivery or
+     * The library reads and appends the previous run's log to the report and
+     * consumes it only once the report is *retained* somewhere the user can
+     * still get it — the clipboard copy. `ACTION_SEND` gives no delivery or
      * selection callback, so a launched chooser is no proof the report was sent
      * (the user can back out of the sheet); the clipboard copy is the durable
-     * fallback that survives that. The post-crash banner gates its
-     * acknowledgement on this, so a share that reached nobody leaves the banner
-     * up for a retry instead of quietly dismissing it.
+     * fallback the library gates that consumption on. That consumption is what
+     * lowers the post-crash banner (via [DiagLog.unacknowledgedCrash]), so a
+     * share that reached nobody leaves it up for a retry — the banner is driven
+     * by the library's crash state, not by this return.
      *
-     * [mainDispatcher], [payloadCollect], [screenshotCapture], [clipboardWrite],
-     * and [chooserLaunch] are injectable test seams (production uses the
-     * defaults): each delivery route can fail on its own, and both the return
-     * value and the failure notice are behavior a test must be able to drive
-     * every way, without a real window, `ClipboardManager`, or share target.
+     * Returns whether a delivery route landed at all (`SHARED` or `COPIED_ONLY`,
+     * not `FAILED`), used only to decide whether to warn the user that nothing
+     * happened. It is **not** a retention signal: `SHARED` reports a launched
+     * chooser even if the clipboard write failed, so callers that need "the user
+     * can still get at this" must read the library's crash state, not this.
+     *
+     * [mainDispatcher], [payloadCollect], [screenshotCapture], [collectReport]
+     * and [deliverReport] are injectable test seams (production uses the
+     * defaults): the payload build, the screenshot capture and the delivery each
+     * fail on their own, and every one has to be drivable in a test without a
+     * real window, `ClipboardManager`, or share target.
      */
     internal suspend fun share(
         activity: Activity,
         includeScreenshot: Boolean = true,
         mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
-        payloadCollect: suspend (Context, ClothesCastApplication) -> CollectedPayload = ::buildPayload,
+        payloadCollect: suspend (Context, ClothesCastApplication) -> String = ::buildPayload,
         screenshotCapture: suspend (Activity) -> Uri? = ::captureAndPersistScreenshot,
-        clipboardWrite: (Context, String) -> Boolean = ::copyToClipboard,
-        chooserLaunch: (Activity, String, Uri?) -> Boolean = ::startShare,
+        collectReport: (buildText: () -> String) -> CollectedReport = ::collectViaLibrary,
+        deliverReport: (Context, CollectedReport, Uri?) -> ShareOutcome = ::deliverViaLibrary,
     ): Boolean {
         val app = activity.application as? ClothesCastApplication
-        val collected = try {
+        val report: CollectedReport = withContext(Dispatchers.IO) {
             // Off the main thread: the payload reads preferences, the insight
-            // cache, and the crash file from disk, and share() is launched from a
-            // UI tap — blocking there janks the frame the share sheet animates in
-            // over.
-            withContext(Dispatchers.IO) {
-                if (app == null) error("no ClothesCastApplication") else payloadCollect(activity, app)
+            // cache and settings from disk, and collectReport reads the prior
+            // run's files — and share() is launched from a UI tap, where blocking
+            // janks the frame the share sheet animates in over.
+            //
+            // The whole collection is contained — this app's own build *and* the
+            // library hand-off that reads the prior run — so a failure while
+            // inspecting that state can never itself crash the application-scope
+            // coroutine this share runs in. A report is most useful after
+            // something has already gone wrong; the reporting must not become the
+            // next wrong thing. coRunCatching rethrows cancellation.
+            coRunCatching {
+                val section =
+                    if (app == null) error("no ClothesCastApplication") else payloadCollect(activity, app)
+                // The library appends the prior run and pairs it with the handle
+                // it consumes, so carrying that run and clearing it cannot come
+                // apart.
+                collectReport { section }
+            }.getOrElse { t ->
+                DiagLog.w("BugReport", t, "report collection failed")
+                // Last resort with no sink: the library never reads a prior run
+                // it was not given, so this cannot repeat a failure that came
+                // from reading one. Still carries the in-memory log tail, which
+                // is the diagnostic the report exists for.
+                DebugReport.collect(DiagLog.log, sink = null) { buildFallbackPayload(t) }
             }
-        } catch (c: CancellationException) {
-            throw c
-        } catch (t: Throwable) {
-            // A report is most useful after something has already gone wrong.
-            // Never turn a failure while inspecting that state into another
-            // crash: this runs from a tap, where an escaping throwable takes the
-            // app down. Retain a small shareable diagnostic instead.
-            DiagLog.w("BugReport", t, "payload collection failed")
-            // No handle: nothing was read, so there is nothing to consume. The
-            // prior run stays on disk for the next attempt rather than being
-            // spent on a report that could not name it.
-            CollectedPayload(buildFallbackPayload(t), previousRun = null)
         }
-        val text = collected.text
         // The capture draws the live window via PixelCopy and the clipboard /
-        // chooser hand-off touches the Activity, so all three are pinned to the
-        // main thread — the payload build above hopped to IO and its continuation
-        // must not leave this on a worker thread.
+        // chooser hand-off touches the Activity, so both are pinned to the main
+        // thread — the payload build above hopped to IO and its continuation must
+        // not leave this on a worker thread.
         return withContext(mainDispatcher) {
             val screenshotUri: Uri? = if (includeScreenshot) screenshotCapture(activity) else null
-            // Guarded: both are injectable seams, and share() runs in a caller's
-            // coroutine scope where an escaping throwable would take the app down
-            // with it — the one thing a bug-report path must never do.
-            // Each logs what it caught: these guards also cover the work *around*
-            // the inner logged ones (building the chooser intent, resolving the
-            // clipboard service), so without this the user could see only the
-            // generic toast while the log said nothing about why.
-            val copied = runCatching { clipboardWrite(activity, text) }
-                .onFailure { DiagLog.w("BugReport", it, "clipboard hand-off threw") }
-                .getOrDefault(false)
-            val launched = runCatching { chooserLaunch(activity, text, screenshotUri) }
-                .onFailure { DiagLog.w("BugReport", it, "chooser hand-off threw") }
-                .getOrDefault(false)
+            // Guarded: deliverReport is an injectable seam, and share() runs in a
+            // caller's coroutine scope where an escaping throwable would take the
+            // app down with it — the one thing a bug-report path must never do.
+            val outcome = runCatching { deliverReport(activity, report, screenshotUri) }
+                .onFailure { DiagLog.w("BugReport", it, "report delivery threw") }
+                .getOrDefault(ShareOutcome.FAILED)
             // Neither route landed: the tap would otherwise do nothing visible at
             // all — no chooser, nothing on the clipboard — and the user would
             // retry into the same silence. Say so instead.
-            if (!copied && !launched) notifyShareFailed(activity)
-            // Gated on the CLIPBOARD, not the chooser. `ACTION_SEND` reports
-            // nothing back, so a launched sheet is no evidence the report was
-            // sent -- the user can back out of it -- and consuming on that
-            // would spend a crash log on a share that never happened. The
-            // clipboard copy is the durable one.
-            //
-            // Consumes exactly the runs THIS report was built from, by the
-            // handle the read returned. That pairing is the point: two
-            // overlapping share flows cannot have the first delete a run only
-            // the second had read.
-            if (copied) collected.previousRun?.let(DiagLog::consumePreviousRun)
-            copied
+            if (outcome == ShareOutcome.FAILED) notifyShareFailed(activity)
+            // Whether anything was delivered at all — not a retention signal (see
+            // the doc). The prior run is consumed by the library on the clipboard
+            // copy alone, and that is what lowers the crash banner.
+            outcome != ShareOutcome.FAILED
         }
+    }
+
+    /**
+     * Builds the [CollectedReport] the library delivers, from [DiagLog]'s
+     * recording core and its persisted sink: the library reads and appends the
+     * previous run and later consumes exactly the runs this report carried. A
+     * test with no installed sink appends nothing, which is the right answer
+     * there. A seam so a test can build a report without touching disk.
+     */
+    private fun collectViaLibrary(buildText: () -> String): CollectedReport =
+        DebugReport.collect(
+            log = DiagLog.log,
+            sink = DiagLog.files,
+            heading = "--- Previous run (last crash, if any) ---",
+            buildPayload = buildText,
+        )
+
+    /**
+     * Hands the report and its optional screenshot to the shared library, which
+     * copies the text to the clipboard, opens the chooser, and consumes the
+     * prior run once the copy lands. The subject, chooser title and clipboard
+     * label are this app's own strings — the library takes them as arguments, so
+     * it needs no resources of its own.
+     *
+     * The share runs on the application scope, so it can outlive the screen that
+     * started it. Starting an activity from a torn-down one targets a dead
+     * token, so a finished [Activity] is swapped for the application context —
+     * the library launches the chooser with `NEW_TASK` regardless, so it still
+     * opens. [context] is the reporting [Activity] in production.
+     */
+    private fun deliverViaLibrary(context: Context, report: CollectedReport, screenshot: Uri?): ShareOutcome {
+        val launchContext =
+            (context as? Activity)?.takeUnless { it.isFinishing || it.isDestroyed }
+                ?: context.applicationContext
+        return DebugReport.deliver(
+            context = launchContext,
+            log = DiagLog.log,
+            report = report,
+            subject = "ClothesCast bug report — ${BuildConfig.VERSION_NAME}",
+            chooserTitle = "Share bug report",
+            clipboardLabel = "ClothesCast bug report",
+            screenshot = screenshot,
+        )
     }
 
     /**
@@ -269,7 +271,7 @@ object BugReport {
         }.onFailure { DiagLog.w("BugReport", it, "share-failed notice could not be shown") }
     }
 
-    private suspend fun buildPayload(context: Context, app: ClothesCastApplication): CollectedPayload {
+    private suspend fun buildPayload(context: Context, app: ClothesCastApplication): String {
         // coRunCatching, not runCatching: these reads suspend, and the stdlib
         // form would swallow a cancellation of the sharing coroutine and keep
         // building (and then sharing) a gutted report from a cancelled scope.
@@ -298,11 +300,6 @@ object BugReport {
         val nextPeriod = if (nextSnapshot != null && prefs != null) {
             coRunCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
         } else null
-        // A handle, not a string: `consumePreviousRun` takes it back after the
-        // report lands, so the runs this report contained are the runs that get
-        // cleared. A caller that got no handle deletes nothing.
-        val previousRun = DiagLog.readPreviousRun()
-        val crash = previousRun?.text
         val recent = DiagLog.snapshot()
         val now = TIMESTAMP_FORMAT.format(Instant.now())
 
@@ -340,65 +337,27 @@ object BugReport {
             appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
             appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
         }
-        return CollectedPayload(assemble(head, crash, recent), previousRun)
+        return assembleSection(head, recent)
     }
 
     /**
-     * Joins the three sections with each one bounded on its own, so no single
-     * section can crowd the others out or push the whole report past what the
-     * share can carry.
+     * Joins this app's own sections — the structured head and the recent log —
+     * each bounded on its own so a long clothes-rule list can't crowd the log
+     * out. The previous run's log is appended after this by the shared library,
+     * bounded by its own persist budget, so this app no longer bounds a crash it
+     * no longer reads itself.
      *
-     * Prefix-truncating the assembled report would drop the log — appended last —
-     * exactly when a long settings dump or a fat crash trace is what pushed it
-     * over, losing the diagnostic the report exists for. Visible for tests.
+     * Prefix-truncating the assembled section would drop the log — appended last
+     * — exactly when a long settings dump is what pushed it over, losing the
+     * diagnostic the report exists for. Visible for tests.
      */
-    internal fun assemble(head: String, crash: String?, recent: List<String>): String {
+    internal fun assembleSection(head: String, recent: List<String>): String {
         val boundedHead = if (head.length > MAX_STRUCTURED_CHARS) {
             head.take(MAX_STRUCTURED_CHARS) + "\n…(details truncated to keep the report shareable)\n"
         } else {
             head
         }
-        val crashSection = if (crash.isNullOrBlank()) {
-            ""
-        } else {
-            buildString {
-                appendLine("--- Last crash (from previous run) ---")
-                appendLine(boundCrash(crash.trim()))
-                appendLine()
-            }
-        }
-        return boundedHead + crashSection + renderRecentLog(recent)
-    }
-
-    /**
-     * Bounds `last-crash.txt` while keeping **both** halves that matter.
-     *
-     * The file is written head-first — timestamp, exception, stack — and then
-     * appends the recent log around the crash ([DiagLog.writeCrashLog]). So
-     * neither end can be dropped wholesale: a head-only cut loses the events
-     * leading up to the crash, and a tail-only cut loses the crash itself, which
-     * is the thing a post-crash report exists to carry. The stack half gets a
-     * reserved slice off the front; whatever it doesn't use goes to the newest
-     * log lines. Visible for tests.
-     */
-    internal fun boundCrash(crash: String): String {
-        val marker = "--- recent log ---"
-        val split = crash.indexOf(marker)
-        if (split < 0) {
-            // Not the shape we wrote (an older build, or a partial file): keep
-            // the newest lines, which is the safer default for a log-like blob.
-            return boundedLogTail(crash.split("\n"), MAX_CRASH_PAYLOAD_CHARS).joinToString("\n")
-        }
-        val stack = crash.take(split + marker.length)
-        val log = crash.substring(split + marker.length).removePrefix("\n")
-        val boundedStack = if (stack.length > MAX_CRASH_STACK_CHARS) {
-            stack.take(MAX_CRASH_STACK_CHARS) + "\n…(stack truncated)\n$marker"
-        } else {
-            stack
-        }
-        val remaining = MAX_CRASH_PAYLOAD_CHARS - boundedStack.length
-        if (remaining <= 0) return boundedStack
-        return boundedStack + "\n" + boundedLogTail(log.split("\n"), remaining).joinToString("\n")
+        return boundedHead + renderRecentLog(recent)
     }
 
     /**
@@ -783,55 +742,6 @@ object BugReport {
         }, handler)
     }
 
-    /** Returns whether the chooser actually launched. */
-    private fun startShare(activity: Activity, text: String, screenshotUri: Uri?): Boolean {
-        val send = Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_SUBJECT, "ClothesCast bug report — ${BuildConfig.VERSION_NAME}")
-            putExtra(Intent.EXTRA_TEXT, text)
-            if (screenshotUri != null) {
-                type = "image/png"
-                putExtra(Intent.EXTRA_STREAM, screenshotUri)
-                clipData = ClipData.newRawUri("ClothesCast screenshot", screenshotUri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            } else {
-                type = "text/plain"
-            }
-        }
-        val chooser = Intent.createChooser(send, "Share bug report")
-        if (screenshotUri != null) {
-            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        // The share runs on the application scope, so it can outlive the screen
-        // that started it. Starting an activity from a torn-down one targets a
-        // dead token, so launch from the application context with NEW_TASK
-        // instead — the chooser still opens, which is the whole point of not
-        // tying the share to the screen.
-        val launchContext: Context = if (activity.isFinishing || activity.isDestroyed) {
-            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            activity.applicationContext
-        } else {
-            activity
-        }
-        return runCatching { launchContext.startActivity(chooser); true }
-            .onFailure { DiagLog.w("BugReport", it, "share intent failed") }
-            .getOrDefault(false)
-    }
-
-    /**
-     * Returns whether the report actually landed on the clipboard — the durable
-     * retained delivery [share] reports back to its caller.
-     */
-    private fun copyToClipboard(context: Context, text: String): Boolean =
-        runCatching {
-            val cm = context.getSystemService(ClipboardManager::class.java)
-            if (cm == null) {
-                false
-            } else {
-                cm.setPrimaryClip(ClipData.newPlainText("ClothesCast bug report", text))
-                true
-            }
-        }.onFailure { DiagLog.w("BugReport", it, "clipboard copy failed") }
-            .getOrDefault(false)
 }
 
 /** Cache subdirectory holding the captures attached to bug reports. */

@@ -42,10 +42,13 @@ import kotlinx.coroutines.launch
  * user picks where it goes — nothing leaves the device automatically);
  * "Dismiss" silences the banner without sharing.
  *
- * Both buttons mark the crash as acknowledged so the banner doesn't keep
- * reappearing. A *new* crash bumps the on-disk file's mtime, which
- * [DiagLog.unacknowledgedCrash] uses as identity, so the banner surfaces
- * again next launch.
+ * Dismiss marks the crash acknowledged so the banner stops reappearing. Share
+ * doesn't acknowledge directly: the shared library consumes the previous run
+ * when the report is retained (the clipboard copy lands), which clears the
+ * crash state the same [DiagLog.unacknowledgedCrash] reads — so a share that
+ * reached nobody leaves the banner up for a retry. A *new* crash bumps the
+ * on-disk file's mtime, which that state uses as identity, so the banner
+ * surfaces again next launch.
  *
  * State comes from [DiagLog.unacknowledgedCrash] (a process-wide
  * [kotlinx.coroutines.flow.StateFlow]) so multiple banner instances —
@@ -94,12 +97,16 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
         app.applicationScope.launch {
             // No screenshot: the crash is from a previous run, so the screen
             // visible now would be misleading attached to that report.
-            val retained = BugReport.share(act, includeScreenshot = false)
-            // Acknowledge only a report the user can still get at (the clipboard
-            // copy landed). If neither route landed, the banner stays up for a
-            // retry rather than quietly dismissing itself over a share that
-            // reached nobody.
-            if (retained) DiagLog.acknowledgePersistedCrash()
+            //
+            // The banner lowers itself: the library consumes the previous run —
+            // and so clears the crash state behind [DiagLog.unacknowledgedCrash]
+            // — only when the clipboard copy lands, which is the durable "the
+            // user can still get at this" signal. A share that reached nobody
+            // leaves the run, and the banner, up for a retry. So this must not
+            // acknowledge on share()'s return: that reads true for a launched
+            // chooser even when the clipboard write failed, which would hide the
+            // banner over a report no copy of exists.
+            BugReport.share(act, includeScreenshot = false)
         }
     }
 

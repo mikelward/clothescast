@@ -100,6 +100,11 @@ class WidgetRefreshReceiverTest {
             Schedule.default().let { app.settingsRepository.setSchedule(it.time, it.days) }
             Schedule.defaultTonight().let { app.settingsRepository.setTonightSchedule(it.time, it.days) }
         }
+        // Restoring the times is itself a schedule edit when the previous test
+        // moved them, and the Application reacts to it on a background
+        // coroutine by reconciling the widget chain — a cancel, with no widget
+        // placed. Wait for it, or it can land after this test arms an alarm.
+        awaitScheduleObserver()
         // WorkManager's static instance (and its DB) survives across test
         // methods in this class, so a previous test's silent-refresh record
         // would still satisfy getWorkInfosForUniqueWork here. Cancel leaves a
@@ -263,6 +268,9 @@ class WidgetRefreshReceiverTest {
             app.settingsRepository.setSchedule(morning.time, morning.days)
             app.settingsRepository.setTonightSchedule(tonight.time, tonight.days)
         }
+        // Let the Application's reconcile of that edit finish before arming, so
+        // it can't re-arm the boundary from under the arm below.
+        awaitScheduleObserver()
         val boundaryBefore = armBoth(now.minusSeconds(600), morning, tonight)
             .getValue(WidgetRefreshKind.BOUNDARY)
 

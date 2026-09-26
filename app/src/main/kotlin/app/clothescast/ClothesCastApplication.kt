@@ -60,17 +60,21 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.lang.ref.WeakReference
+import java.time.LocalTime
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.withIndex
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
@@ -379,6 +383,22 @@ class ClothesCastApplication : Application() {
     internal var initialSchedulingJob: Job? = null
         private set
 
+    /**
+     * The morning and tonight boundary times the schedule-time observer in
+     * [onCreate] has finished handling: the value it starts from, then each
+     * edit once its widget-chain reconcile has run. Null until its first
+     * emission.
+     *
+     * Exposed so a test that edits the schedule can wait for that reconcile
+     * rather than race it. With no widget placed the reconcile *cancels* the
+     * chain, so one landing after the test has armed an alarm wipes it — and,
+     * like [initialSchedulingJob], its usual effect (cancelling what is
+     * already cancelled) leaves nothing to poll for.
+     */
+    private val _scheduleBoundariesHandled = MutableStateFlow<Pair<LocalTime, LocalTime>?>(null)
+    internal val scheduleBoundariesHandled: StateFlow<Pair<LocalTime, LocalTime>?> =
+        _scheduleBoundariesHandled.asStateFlow()
+
     // Weak handle on the currently-resumed Activity, maintained by the
     // lifecycle callbacks registered in [onCreate]. Lets long-lived lambdas
     // (e.g. ViewModel factory closures, which outlive any one Activity across
@@ -529,9 +549,11 @@ class ClothesCastApplication : Application() {
             // schedule edits only happen while the app is foregrounded.
             settingsRepository.preferences
                 .distinctUntilChangedBy { it.schedule.time to it.tonightSchedule.time }
-                .drop(1)
-                .collect { prefs ->
-                    try {
+                .withIndex()
+                .collect { (index, prefs) ->
+                    // The first value is the schedule as it stands at start,
+                    // which the initial scheduling pass below reconciles.
+                    if (index > 0) try {
                         // Whatever is armed points at the *old* boundary time,
                         // so it is replaced — unless one is genuinely in flight
                         // right now, which the reconcile measures against the
@@ -547,6 +569,7 @@ class ClothesCastApplication : Application() {
                         // on its next fire, render, or app start anyway.
                         DiagLog.w(TAG, t, "Widget refresh chain re-arm after schedule change failed")
                     }
+                    _scheduleBoundariesHandled.value = prefs.schedule.time to prefs.tonightSchedule.time
                 }
         }
         initialSchedulingJob = applicationScope.launch {

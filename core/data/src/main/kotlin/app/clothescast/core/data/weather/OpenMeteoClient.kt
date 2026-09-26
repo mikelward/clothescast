@@ -29,8 +29,8 @@ internal const val OPEN_METEO_HOST = "api.open-meteo.com"
 // Per-model map key for Google's forecast. Matches ForecastModel.GOOGLE_WEATHER's
 // openMeteoId so the chart's MODEL_DRAW_ORDER, the palette, and the legend all
 // reach it like any other forecaster. Distinct from every Open-Meteo id and from
-// best_match, so it's one more equal-weight vote in [blendConsensusHourly] and a
-// regular entry for ConfidenceInfo.computeFrom / ModelDivergenceSummary.
+// best_match, so it's one more vote in [blendConsensusHourly] (a double vote for
+// temperature and feels-like — see temperatureWeightFor) and a regular entry for ConfidenceInfo.computeFrom / ModelDivergenceSummary.
 internal const val GOOGLE_MODEL_ID = "google"
 
 /**
@@ -126,8 +126,8 @@ class OpenMeteoClient(
 
         // Replace today's hourly + the derived daily extremes with the
         // consensus mean across the per-model series (ECMWF / GFS / ICON
-        // plus best_match itself, all weighted equally — see
-        // [blendConsensusHourly]). The previous behaviour piped
+        // plus best_match itself, weighted equally except Google's temperature,
+        // which counts double — see [blendConsensusHourly]). The previous behaviour piped
         // best_match straight through; on the diverging days the user
         // keeps catching, that single auto-selected line was the wrong
         // call. Falling back to best_match per-hour when fewer than two

@@ -23,6 +23,9 @@ package app.clothescast.core.domain.model
  *     effectively double-weighted in the mean. We accept that as the
  *     price of letting the consulted models still outvote best_match
  *     when they aggressively agree against it.
+ *   - Temperature and feels-like are a weighted mean: Google's forecast
+ *     counts double (see [temperatureWeightFor]); every other field is
+ *     one-model-one-vote.
  *   - When two or more models reported an entry at hour t, replace
  *     best_match's value with their mean. With fewer than two, keep
  *     best_match — a one-model "consensus" isn't a consensus.
@@ -59,7 +62,12 @@ fun blendConsensusHourly(
     // hourly only, indexed by LocalTime — pair it against the matching
     // calendar day before looking up consensus candidates.
     val byHour = mutableMapOf<java.time.LocalDateTime, MutableList<PerModelHour>>()
-    for (entries in models.values) {
+    // Temperature weight per candidate (see [temperatureWeightFor]), keyed by
+    // identity so it follows the model that produced the entry — including the
+    // averaged entry [collapseDuplicateHours] builds on the DST fall-back day.
+    val temperatureWeight = java.util.IdentityHashMap<PerModelHour, Double>()
+    for ((modelId, entries) in models) {
+        val weight = temperatureWeightFor(modelId)
         // On the DST fall-back day Open-Meteo's local-time array repeats a
         // wall-clock hour, so one model can carry two physical entries at the
         // same LocalDateTime. Collapse those to one averaged entry per model
@@ -69,7 +77,12 @@ fun blendConsensusHourly(
         // [consensusPerModelAverage] documents for the same day.
         for (entry in collapseDuplicateHours(entries)) {
             byHour.getOrPut(entry.time) { mutableListOf() }.add(entry)
+            temperatureWeight[entry] = weight
         }
+    }
+    fun List<PerModelHour>.weightedMean(select: (PerModelHour) -> Double): Double {
+        val totalWeight = sumOf { temperatureWeight.getValue(it) }
+        return sumOf { select(it) * temperatureWeight.getValue(it) } / totalWeight
     }
 
     var anyBlended = false
@@ -112,8 +125,8 @@ fun blendConsensusHourly(
             val mmCandidates = candidates.mapNotNull { it.precipitationMm }
             val blendedMm = if (mmCandidates.isEmpty()) hour.precipitationMm else mmCandidates.average()
             hour.copy(
-                temperatureC = candidates.map { it.temperatureC }.average(),
-                feelsLikeC = candidates.map { it.apparentTemperatureC }.average(),
+                temperatureC = candidates.weightedMean { it.temperatureC },
+                feelsLikeC = candidates.weightedMean { it.apparentTemperatureC },
                 precipitationProbabilityPct = blendedPrecip,
                 precipitationMm = blendedMm,
                 windSpeedKmh = blendedWind,
@@ -141,8 +154,8 @@ fun blendConsensusHourly(
         .map { (t, candidates) ->
             HourlyForecast(
                 time = t.toLocalTime(),
-                temperatureC = candidates.map { it.temperatureC }.average(),
-                feelsLikeC = candidates.map { it.apparentTemperatureC }.average(),
+                temperatureC = candidates.weightedMean { it.temperatureC },
+                feelsLikeC = candidates.weightedMean { it.apparentTemperatureC },
                 precipitationProbabilityPct = candidates.mapNotNull { it.precipitationProbabilityPct }
                     .takeIf { it.isNotEmpty() }?.average() ?: 0.0,
                 condition = consensusCondition(
@@ -163,6 +176,20 @@ fun blendConsensusHourly(
     // two adjacent entries in their original order.
     return (replaced + synthesized).sortedBy { it.time }
 }
+
+/**
+ * How many votes a model's temperature and feels-like carry in
+ * [blendConsensusHourly]'s per-hour mean. Google's forecast has tracked the
+ * actual temperature noticeably better than the Open-Meteo models in practice,
+ * so it counts double; every other model (best_match included) counts once.
+ * Only the temperature pair is weighted — precipitation, wind, UV and the
+ * condition stay one-model-one-vote, and the ≥2-models bar still counts
+ * models, not weight, so Google alone never makes a consensus.
+ */
+internal fun temperatureWeightFor(modelId: String): Double =
+    if (modelId == ForecastModel.GOOGLE_WEATHER.openMeteoId) GOOGLE_TEMPERATURE_WEIGHT else 1.0
+
+internal const val GOOGLE_TEMPERATURE_WEIGHT = 2.0
 
 /**
  * One entry per wall-clock timestamp for a single model's series. The DST

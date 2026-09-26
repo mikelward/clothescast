@@ -159,6 +159,58 @@ class ConsensusBlendTest {
     }
 
     @Test
+    fun `google's temperature counts double in the consensus mean`() {
+        // ECMWF 10 / GFS 16 / Google 13 → (10 + 16 + 2×13) / 4 = 13.0 for air;
+        // feels-like 8 / 14 / 20 → (8 + 14 + 2×20) / 4 = 15.5. An equal-weight
+        // mean would give 13.0 and 14.0 — the feels-like pins the weighting.
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(perModel(12, apparent = 8.0, air = 10.0, precip = 0.0)),
+                "gfs_seamless" to listOf(perModel(12, apparent = 14.0, air = 16.0, precip = 0.0)),
+                ForecastModel.GOOGLE_WEATHER.openMeteoId to
+                    listOf(perModel(12, apparent = 20.0, air = 13.0, precip = 90.0)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, listOf(hour(12, temp = 0.0)), perModel).shouldNotBeNull()
+
+        blended.single().temperatureC shouldBe (13.0 plusOrMinus 1e-9)
+        blended.single().feelsLikeC shouldBe (15.5 plusOrMinus 1e-9)
+        // Precipitation stays one-model-one-vote: (0 + 0 + 90) / 3.
+        blended.single().precipitationProbabilityPct shouldBe (30.0 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `google's temperature weight also applies to a synthesized hour`() {
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(perModel(13, apparent = 9.0, air = 10.0)),
+                ForecastModel.GOOGLE_WEATHER.openMeteoId to listOf(perModel(13, apparent = 12.0, air = 13.0)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, listOf(hour(12, temp = 5.0)), perModel).shouldNotBeNull()
+
+        // (10 + 2×13) / 3 = 12.0; (9 + 2×12) / 3 = 11.0.
+        val synthesized = blended.single { it.time == LocalTime.of(13, 0) }
+        synthesized.temperatureC shouldBe (12.0 plusOrMinus 1e-9)
+        synthesized.feelsLikeC shouldBe (11.0 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `google alone is still not a consensus`() {
+        // Its double weight must not clear the two-model bar on its own.
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(perModel(11, apparent = 9.0, air = 10.0)),
+                ForecastModel.GOOGLE_WEATHER.openMeteoId to listOf(perModel(12, apparent = 20.0, air = 21.0)),
+            ),
+        )
+
+        blendConsensusHourly(today, listOf(hour(12, temp = 5.0)), perModel).shouldBeNull()
+    }
+
+    @Test
     fun `averages all models when two or more report a given hour`() {
         // Today's pattern: best_match predicts 30% rain at 12:00 but two
         // consulted models both predict 80%+. The consensus should beat the

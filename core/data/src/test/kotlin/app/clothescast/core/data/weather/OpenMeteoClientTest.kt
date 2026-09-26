@@ -338,8 +338,9 @@ class OpenMeteoClientTest {
 
         val bundle = client.fetchForecast(london)
 
-        // Four equal-weight votes: best_match 20, ECMWF 21, ICON 23, Google 27.
-        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0 + 27.0) / 4 plusOrMinus 1e-6)
+        // best_match 20, ECMWF 21, ICON 23, and Google 27 counted twice for
+        // temperature; rain chance stays one vote each.
+        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0 + 2 * 27.0) / 5 plusOrMinus 1e-6)
         bundle.today.hourly[0].precipitationProbabilityPct shouldBe ((40.0 + 50.0 + 70.0 + 90.0) / 4 plusOrMinus 1e-6)
 
         // Google sits in the stored per-model series alongside the source models
@@ -418,8 +419,8 @@ class OpenMeteoClientTest {
 
         val bundle = client.fetchForecast(london)
 
-        // best_match 20 + Google 26 → 23.0.
-        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 26.0) / 2 plusOrMinus 1e-6)
+        // best_match 20 + Google 26 (counted twice for temperature) → 24.0.
+        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 2 * 26.0) / 3 plusOrMinus 1e-6)
         // The side-band failed, so the stored map is just best_match + Google.
         val byModel = checkNotNull(bundle.perModelHourly).byModel
         byModel.keys shouldContainExactlyInAnyOrder listOf(PerModelHourly.BEST_MATCH_MODEL_ID, GOOGLE_MODEL_ID)

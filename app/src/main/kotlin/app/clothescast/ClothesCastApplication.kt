@@ -17,10 +17,10 @@ import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.GoogleWeatherModelClient
 import app.clothescast.core.data.weather.OpenMeteoClient
+import app.clothescast.core.data.weather.ZonedHourlySeries
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Location
-import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.defaultsFor
 import app.clothescast.core.domain.repository.CachingWeatherRepository
 import app.clothescast.core.domain.repository.CalendarEventReader
@@ -432,7 +432,7 @@ class ClothesCastApplication : Application() {
         location: Location,
         apiKey: String,
         fingerprint: Int?,
-    ): List<PerModelHour>? {
+    ): ZonedHourlySeries? {
         // [fingerprint] is read atomically with [apiKey] by the caller and keys
         // the cache the same way the outer freshness key does, so a swap to a key
         // that 403s the Weather API drops the old key's series rather than serving
@@ -445,7 +445,7 @@ class ClothesCastApplication : Application() {
             // that into the 12 h cache would keep week-ahead Google missing for the
             // whole TTL. The partial still feeds *this* blend; the next refresh
             // retries the full walk.
-            if (series.size >= MIN_CACHEABLE_EXTENDED_HOURS) {
+            if (series.hours.size >= MIN_CACHEABLE_EXTENDED_HOURS) {
                 googleForecastCache.put(location, fingerprint, series)
             }
         }

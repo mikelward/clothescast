@@ -118,7 +118,7 @@ class GoogleWeatherModelClientTest {
 
     @Test
     fun `maps the forecast hours into per-model hours`() = runTest {
-        val result = checkNotNull(client().fetchHourly(london, "AIza-test-key"))
+        val result = checkNotNull(client().fetchHourly(london, "AIza-test-key")).hours
 
         result.size shouldBe 2
 
@@ -136,8 +136,21 @@ class GoogleWeatherModelClientTest {
     }
 
     @Test
+    fun `reports the time zone Google gives for the series`() = runTest {
+        checkNotNull(client().fetchHourly(london, "AIza-test-key")).zoneId shouldBe "Europe/London"
+    }
+
+    @Test
+    fun `a response without a time zone leaves the zone unknown`() = runTest {
+        // page() carries no timeZone, as a response that omitted it would.
+        checkNotNull(pagingClient(pages = listOf(page(hour = 11))).fetchHourly(london, "AIza-test-key"))
+            .zoneId
+            .shouldBeNull()
+    }
+
+    @Test
     fun `feels-like falls back to air temp and absent fields stay null`() = runTest {
-        val result = checkNotNull(client().fetchHourly(london, "AIza-test-key"))
+        val result = checkNotNull(client().fetchHourly(london, "AIza-test-key")).hours
 
         val second = result[1]
         second.apparentTemperatureC shouldBe 18.0
@@ -178,7 +191,7 @@ class GoogleWeatherModelClientTest {
                 pages = listOf(page(hour = 11, nextPageToken = "p2"), page(hour = 12, nextPageToken = "p3"), page(hour = 13)),
                 captured = captured,
             ).fetchHourly(london, "AIza-test-key"),
-        )
+        ).hours
 
         // One PerModelHour per page, in order.
         result.map { it.time.hour } shouldBe listOf(11, 12, 13)
@@ -198,7 +211,7 @@ class GoogleWeatherModelClientTest {
                 captured = captured,
                 failOnRequest = 2,
             ).fetchHourly(london, "AIza-test-key"),
-        )
+        ).hours
 
         result.map { it.time.hour } shouldBe listOf(11)
         captured.size shouldBe 2
@@ -219,7 +232,7 @@ class GoogleWeatherModelClientTest {
         val result = checkNotNull(
             pagingClient(pages = listOf(page(hour = 11, nextPageToken = "loop")), captured = captured)
                 .fetchHourly(london, "AIza-test-key"),
-        )
+        ).hours
 
         // 240 hours / 24 per page = 10 pages, and no more.
         captured.size shouldBe 10

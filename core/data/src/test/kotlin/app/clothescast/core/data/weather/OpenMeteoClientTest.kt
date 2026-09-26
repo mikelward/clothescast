@@ -8,6 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import io.ktor.client.HttpClient
@@ -324,14 +325,17 @@ class OpenMeteoClientTest {
                 }
             },
             extraModelHourly = {
-                listOf(
-                    PerModelHour(
-                        time = LocalDateTime.of(2026, 4, 25, 12, 0),
-                        apparentTemperatureC = 27.0,
-                        temperatureC = 27.0,
-                        precipitationProbabilityPct = 90.0,
-                        condition = WeatherCondition.RAIN,
+                ZonedHourlySeries(
+                    listOf(
+                        PerModelHour(
+                            time = LocalDateTime.of(2026, 4, 25, 12, 0),
+                            apparentTemperatureC = 27.0,
+                            temperatureC = 27.0,
+                            precipitationProbabilityPct = 90.0,
+                            condition = WeatherCondition.RAIN,
+                        ),
                     ),
+                    zoneId = "Europe/London",
                 )
             },
         )
@@ -358,6 +362,38 @@ class OpenMeteoClientTest {
         // models — normally best_match alone can't blend (one model isn't a
         // consensus). With Google present, best_match + Google clear the
         // two-model bar and the blend still applies.
+        val bundle = sideBandDownClient(googleZoneId = "Europe/London").fetchForecast(london)
+
+        // best_match 20 + Google 26 (counted twice for temperature) → 24.0.
+        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 2 * 26.0) / 3 plusOrMinus 1e-6)
+        // The side-band failed, so the stored map is just best_match + Google.
+        val byModel = checkNotNull(bundle.perModelHourly).byModel
+        byModel.keys shouldContainExactlyInAnyOrder listOf(PerModelHourly.BEST_MATCH_MODEL_ID, GOOGLE_MODEL_ID)
+    }
+
+    @Test
+    fun `a Google series without a reported zone still joins the blend`() = runTest {
+        val bundle = sideBandDownClient(googleZoneId = null).fetchForecast(london)
+
+        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 2 * 26.0) / 3 plusOrMinus 1e-6)
+    }
+
+    @Test
+    fun `a Google series from another time zone is left out of the blend`() = runTest {
+        // Google's hours are local wall-clock times: one reported in a zone the
+        // forecast isn't in would pair every hour with the wrong Open-Meteo hour.
+        val bundle = sideBandDownClient(googleZoneId = "Europe/Paris").fetchForecast(london)
+
+        // best_match alone can't form a consensus, so its own value stands.
+        bundle.today.hourly[0].temperatureC shouldBe 20.0
+        bundle.perModelHourly?.byModel?.keys.orEmpty() shouldNotContain GOOGLE_MODEL_ID
+    }
+
+    /**
+     * A client whose multi-model side-band 500s, leaving best_match (a 20° hour
+     * in Europe/London) plus a Google series (26°) reported in [googleZoneId].
+     */
+    private fun sideBandDownClient(googleZoneId: String?): OpenMeteoClient {
         val primaryJson = """
             {
               "timezone": "Europe/London",
@@ -398,32 +434,27 @@ class OpenMeteoClientTest {
                 )
             }
         }
-        val client = OpenMeteoClient(
+        return OpenMeteoClient(
             HttpClient(engine) {
                 install(ContentNegotiation) {
                     json(Json { ignoreUnknownKeys = true })
                 }
             },
             extraModelHourly = {
-                listOf(
-                    PerModelHour(
-                        time = LocalDateTime.of(2026, 4, 25, 12, 0),
-                        apparentTemperatureC = 26.0,
-                        temperatureC = 26.0,
-                        precipitationProbabilityPct = 80.0,
-                        condition = WeatherCondition.RAIN,
+                ZonedHourlySeries(
+                    listOf(
+                        PerModelHour(
+                            time = LocalDateTime.of(2026, 4, 25, 12, 0),
+                            apparentTemperatureC = 26.0,
+                            temperatureC = 26.0,
+                            precipitationProbabilityPct = 80.0,
+                            condition = WeatherCondition.RAIN,
+                        ),
                     ),
+                    zoneId = googleZoneId,
                 )
             },
         )
-
-        val bundle = client.fetchForecast(london)
-
-        // best_match 20 + Google 26 (counted twice for temperature) → 24.0.
-        bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 2 * 26.0) / 3 plusOrMinus 1e-6)
-        // The side-band failed, so the stored map is just best_match + Google.
-        val byModel = checkNotNull(bundle.perModelHourly).byModel
-        byModel.keys shouldContainExactlyInAnyOrder listOf(PerModelHourly.BEST_MATCH_MODEL_ID, GOOGLE_MODEL_ID)
     }
 
     @Test

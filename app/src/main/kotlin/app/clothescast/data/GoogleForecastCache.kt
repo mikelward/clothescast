@@ -6,9 +6,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.clothescast.core.data.weather.ZonedHourlySeries
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.WeatherCondition
+import app.clothescast.core.domain.util.isWithin
 import app.clothescast.diag.DiagLog
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
@@ -37,13 +39,30 @@ import kotlin.math.roundToLong
  * twice a day"). [ClothesCastApplication] reads [fresh] first and only walks the
  * full horizon (then [put]s it) on a foreground miss.
  *
- * Single entry, keyed by location rounded to ~1 km — the same grid
- * [app.clothescast.core.domain.repository.CachingWeatherRepository] uses, so the
- * two caches move together — and by the Google key's fingerprint, so swapping a
- * working key for one that 403s the Weather API drops the stale series instead
- * of keeping Google in the blend for the rest of the TTL. Persisted across
- * process death via DataStore; a deserialization failure drops the entry and
- * re-fetches, the same posture as [InsightCache].
+ * Single entry, stored against the location rounded to ~1 km — the same grid
+ * [app.clothescast.core.domain.repository.CachingWeatherRepository] uses — and
+ * the Google key's fingerprint, so swapping a working key for one that 403s the
+ * Weather API drops the stale series instead of keeping Google in the blend for
+ * the rest of the TTL.
+ *
+ * A lookup matches any entry whose cell lies within [matchRadiusKm] (5 km)
+ * rather than only the exact cell. A 0.01° cell is ~1.1 km tall but only
+ * ~0.7 km wide at London's latitude, so walking a few hundred meters from home
+ * could cross into the next cell, miss, re-walk the whole billed horizon, and —
+ * because the retained-morning merge in [put] required the same cell — drop
+ * every hour of today that had already passed. Forecasts barely differ across a
+ * few kilometers; the cost of a miss is ten billed calls and a gap in the chart.
+ *
+ * Google reports its hours as local wall-clock times, so reusing a series
+ * across a time-zone border would shift every hour. The entry therefore keeps
+ * the IANA zone Google reported for it and hands it back with the hours;
+ * [app.clothescast.core.data.weather.OpenMeteoClient] compares that zone with
+ * the one Open-Meteo reports for the current location and leaves Google out on
+ * a mismatch. An entry with no known zone (older builds, or a response that
+ * omitted it) only matches its own cell, where a border can't be in play.
+ *
+ * Persisted across process death via DataStore; a deserialization failure
+ * drops the entry and re-fetches, the same posture as [InsightCache].
  *
  * Privacy: stores only the forecast numbers Google returns for the location,
  * keyed by a coarse (~1 km) lat/lon bucket and a non-reversible 32-bit hash of
@@ -55,19 +74,23 @@ class GoogleForecastCache(
     private val clock: Clock = Clock.systemUTC(),
     private val json: Json = Json { ignoreUnknownKeys = true },
     private val locationGridDegrees: Double = 0.01,
+    private val matchRadiusKm: Double = DEFAULT_MATCH_RADIUS_KM,
 ) {
     /**
-     * The cached extended series if one is stored for [location] (same ~1 km
-     * grid cell), was fetched with the same key ([apiKeyFingerprint]), and is
-     * younger than [maxAge], else null. Returns null — never throws — on a decode
+     * The cached extended series, with the zone Google reported for it, if one
+     * is stored near [location] (see the class doc), was fetched with the same
+     * key ([apiKeyFingerprint]), and is younger than [maxAge], else null. Returns null — never throws — on a decode
      * failure, dropping the corrupt entry so the caller re-fetches.
      */
     suspend fun fresh(
         location: Location,
         apiKeyFingerprint: Int?,
         maxAge: Duration = defaultTtl,
-    ): List<PerModelHour>? {
-        val raw = readRaw() ?: return null
+    ): ZonedHourlySeries? {
+        val raw = readRaw() ?: run {
+            DiagLog.i(TAG, "Google forecast cache miss: nothing stored")
+            return null
+        }
         val entry = decode(raw) ?: run {
             // Corrupt entry — drop it so the next fetch re-populates.
             clear()
@@ -75,18 +98,32 @@ class GoogleForecastCache(
         }
         // Key change (e.g. a working key swapped for one that 403s) → treat the
         // old key's series as stale so Google re-fetches under the current key.
-        if (entry.apiKeyFingerprint != apiKeyFingerprint) return null
-        val key = keyOf(location)
-        if (entry.latBucket != key.first || entry.lonBucket != key.second) return null
+        if (entry.apiKeyFingerprint != apiKeyFingerprint) {
+            DiagLog.i(TAG, "Google forecast cache miss: fetched under a different key")
+            return null
+        }
+        if (!isNear(entry, keyOf(location))) {
+            DiagLog.i(TAG, "Google forecast cache miss: not stored nearby (within %s km)", matchRadiusKm)
+            return null
+        }
         val age = Duration.between(Instant.ofEpochMilli(entry.fetchedAtMs), clock.instant())
         // A negative age (clock moved backwards / stored on a different device
         // time) is treated as fresh — the data is still the latest we fetched.
-        if (age >= maxAge) return null
-        return entry.hours.mapNotNull { it.toDomain() }.ifEmpty { null }
+        if (age >= maxAge) {
+            DiagLog.i(
+                TAG,
+                "Google forecast cache miss: %d min old, past the %d min limit",
+                age.toMinutes(),
+                maxAge.toMinutes(),
+            )
+            return null
+        }
+        val hours = entry.hours.mapNotNull { it.toDomain() }.ifEmpty { return null }
+        return ZonedHourlySeries(hours, entry.zoneId)
     }
 
     /**
-     * Stores [hours] as the extended series for [location], stamped now. A
+     * Stores [series] as the extended series for [location], stamped now. A
      * persistence failure is logged and swallowed — the caller already has the
      * series in hand for this fetch, and the next foreground walk re-stamps it.
      *
@@ -103,8 +140,8 @@ class GoogleForecastCache(
      * forecast always wins from its first hour on; only strictly-earlier hours
      * of the same local day are retained.
      */
-    suspend fun put(location: Location, apiKeyFingerprint: Int?, hours: List<PerModelHour>) {
-        if (hours.isEmpty()) return
+    suspend fun put(location: Location, apiKeyFingerprint: Int?, series: ZonedHourlySeries) {
+        if (series.hours.isEmpty()) return
         val key = keyOf(location)
         try {
             // Read-merge-write inside one edit transaction (the same shape
@@ -114,13 +151,14 @@ class GoogleForecastCache(
             // second write silently drop the first's retained morning hours
             // — exactly the front-truncation the merge exists to prevent.
             dataStore.edit { prefs ->
-                val merged = mergeRetainingEarlierToday(prefs[ENTRY_KEY], key, apiKeyFingerprint, hours)
+                val merged = mergeRetainingEarlierToday(prefs[ENTRY_KEY], key, apiKeyFingerprint, series)
                 val entry = Entry(
                     latBucket = key.first,
                     lonBucket = key.second,
                     apiKeyFingerprint = apiKeyFingerprint,
                     fetchedAtMs = clock.instant().toEpochMilli(),
                     hours = merged.map { it.toDto() },
+                    zoneId = series.zoneId,
                 )
                 prefs[ENTRY_KEY] = json.encodeToString(entry)
             }
@@ -138,8 +176,8 @@ class GoogleForecastCache(
      * Merges [fresh] over the prior cached entry, carrying forward only the
      * already-elapsed hours of the current local day so the stored series still
      * spans the whole period (see [put]). Returns [fresh] unchanged when there's
-     * no usable prior entry, it's for a different location / key, or it holds no
-     * earlier same-day hour to keep.
+     * no usable prior entry, it's for a different location / key / time zone,
+     * or it holds no earlier same-day hour to keep.
      *
      * "Current day" is read off the fresh series' own earliest timestamp (which
      * is ~now in the location's local wall-clock) rather than [clock], so it
@@ -155,16 +193,32 @@ class GoogleForecastCache(
         priorRaw: String?,
         key: Pair<Long, Long>,
         apiKeyFingerprint: Int?,
-        fresh: List<PerModelHour>,
+        series: ZonedHourlySeries,
     ): List<PerModelHour> {
+        val fresh = series.hours
         val newFirst = fresh.minByOrNull { it.time }?.time ?: return fresh
         val prior = priorRaw?.let { decode(it) } ?: return fresh
-        // Only carry hours from an entry for the same location + key; a
-        // different bucket or a swapped key is unrelated data.
-        if (prior.apiKeyFingerprint != apiKeyFingerprint ||
-            prior.latBucket != key.first ||
-            prior.lonBucket != key.second
-        ) {
+        // Only carry hours from an entry for a nearby location and the same
+        // key; a distant place or a swapped key is unrelated data.
+        if (prior.apiKeyFingerprint != apiKeyFingerprint) {
+            DiagLog.i(TAG, "Not carrying earlier Google hours forward: fetched under a different key")
+            return fresh
+        }
+        if (!isNear(prior, key)) {
+            DiagLog.i(TAG, "Not carrying earlier Google hours forward: not stored nearby (within %s km)", matchRadiusKm)
+            return fresh
+        }
+        // Local wall-clock hours from another zone would land at the wrong
+        // times. A nearby cell needs a known, matching zone; the same cell
+        // only refuses when both zones are known and differ.
+        val sameCell = prior.latBucket == key.first && prior.lonBucket == key.second
+        val zonesAgree = if (sameCell) {
+            prior.zoneId == null || series.zoneId == null || prior.zoneId == series.zoneId
+        } else {
+            prior.zoneId != null && prior.zoneId == series.zoneId
+        }
+        if (!zonesAgree) {
+            DiagLog.i(TAG, "Not carrying earlier Google hours forward: stored in a different time zone")
             return fresh
         }
         val today = newFirst.toLocalDate()
@@ -204,6 +258,26 @@ class GoogleForecastCache(
         }
     }
 
+    /**
+     * Whether [entry]'s grid cell is [key], or lies within [matchRadiusKm] of
+     * it and carries a known time zone (which the blend checks; see the class
+     * doc).
+     * Measured between cell centers, so it works from the stored buckets alone
+     * and never needs a precise position kept on disk; rounding shifts either
+     * end by at most half a cell (~0.7 km), which is noise against 5 km.
+     */
+    private fun isNear(entry: Entry, key: Pair<Long, Long>): Boolean {
+        if (entry.latBucket == key.first && entry.lonBucket == key.second) return true
+        if (entry.zoneId == null) return false
+        return cellCenter(entry.latBucket, entry.lonBucket)
+            .isWithin(matchRadiusKm * 1000, of = cellCenter(key.first, key.second))
+    }
+
+    private fun cellCenter(latBucket: Long, lonBucket: Long) = Location(
+        latitude = latBucket * locationGridDegrees,
+        longitude = lonBucket * locationGridDegrees,
+    )
+
     private fun keyOf(location: Location): Pair<Long, Long> =
         (location.latitude / locationGridDegrees).roundToLong() to
             (location.longitude / locationGridDegrees).roundToLong()
@@ -218,6 +292,9 @@ class GoogleForecastCache(
         val apiKeyFingerprint: Int? = null,
         val fetchedAtMs: Long,
         val hours: List<HourDto>,
+        // IANA zone Google reported for the series; null on entries written
+        // before it was stored, or when the response omitted it.
+        val zoneId: String? = null,
     )
 
     // Mirrors InsightCache.PerModelHourDto's date split (epoch-day + second-of-day)
@@ -276,6 +353,9 @@ class GoogleForecastCache(
         val defaultTtl: Duration = Duration.ofHours(12)
 
         private const val TAG = "GoogleForecast"
+
+        // How far a lookup reaches for a stored series (see the class doc).
+        const val DEFAULT_MATCH_RADIUS_KM = 5.0
         private val ENTRY_KEY = stringPreferencesKey("extended_series_v1")
 
         fun create(context: Context): GoogleForecastCache =

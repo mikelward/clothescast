@@ -56,7 +56,7 @@ internal const val GOOGLE_MODEL_ID = "google"
  */
 class OpenMeteoClient(
     private val httpClient: HttpClient,
-    confidenceLogger: ConfidenceFetchLogger = NoOpConfidenceFetchLogger,
+    private val confidenceLogger: ConfidenceFetchLogger = NoOpConfidenceFetchLogger,
     private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
     /**
      * Snapshot of which Open-Meteo model IDs the multi-model confidence
@@ -89,13 +89,19 @@ class OpenMeteoClient(
      * failed). Defaults to null so tests and any caller without it behave exactly
      * as before.
      *
+     * The series carries the zone its local times are in ([ZonedHourlySeries]).
+     * When that differs from this bundle's own zone — possible when the series
+     * was served from a cache stored for a nearby place across a border — its
+     * hours would sit an hour (or a date) off every other model, so it sits out
+     * of this bundle and the reason is logged.
+     *
      * The returned series is stored under the "google" id in
      * [ForecastBundle.perModelHourly], so it's a full peer everywhere downstream:
      * it draws on the charts, votes in the confidence chip + divergence hint
      * (via ConfidenceInfo.computeFrom / ModelDivergenceSummary), and votes in the
      * consensus blend.
      */
-    private val extraModelHourly: (suspend (Location) -> List<PerModelHour>?)? = null,
+    private val extraModelHourly: (suspend (Location) -> ZonedHourlySeries?)? = null,
 ) : WeatherRepository {
 
     // Constructed once per client. Exposing it on the public constructor would
@@ -122,7 +128,18 @@ class OpenMeteoClient(
         val response = primary.await()
         val bundle = OpenMeteoMapper.toBundle(response)
         val multi = multiModel.await()
-        val googleHours = googleModel?.await()
+        val googleHours = googleModel?.await()?.let { google ->
+            if (google.zoneId != null && google.zoneId != response.timezone) {
+                // The zones themselves stay out of the log: they name a region.
+                confidenceLogger.log(
+                    "Google series is in a different time zone from this forecast; " +
+                        "leaving Google out of this blend",
+                )
+                null
+            } else {
+                google.hours
+            }
+        }
 
         // Replace today's hourly + the derived daily extremes with the
         // consensus mean across the per-model series (ECMWF / GFS / ICON

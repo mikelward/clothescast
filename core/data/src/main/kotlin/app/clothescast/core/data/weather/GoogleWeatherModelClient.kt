@@ -99,9 +99,9 @@ class GoogleWeatherModelClient(
      * which is why every caller can ask for the whole horizon here without a
      * cheaper "near" variant.
      */
-    suspend fun fetchHourly(location: Location, apiKey: String): List<PerModelHour>? {
+    suspend fun fetchHourly(location: Location, apiKey: String): ZonedHourlySeries? {
         if (apiKey.isBlank()) return null
-        val hours = try {
+        val (hours, zoneId) = try {
             requestAllPages(location, apiKey)
         } catch (ce: CancellationException) {
             // Narrow the catch and rethrow cancellation so a cancelled fetch
@@ -112,7 +112,7 @@ class GoogleWeatherModelClient(
             logger.log("Google Weather fetch failed; dropping Google from the blend", t)
             return null
         }
-        return parse(hours)
+        return parse(hours)?.let { ZonedHourlySeries(it, zoneId) }
     }
 
     /**
@@ -170,8 +170,11 @@ class GoogleWeatherModelClient(
     private suspend fun requestAllPages(
         location: Location,
         apiKey: String,
-    ): List<GoogleForecastHour> {
+    ): Pair<List<GoogleForecastHour>, String?> {
         val all = mutableListOf<GoogleForecastHour>()
+        // The zone Google reports for the location; the hours' display times
+        // are in it. Taken from the first page that carries it.
+        var zoneId: String? = null
         var pageToken: String? = null
         var pages = 0
         do {
@@ -188,10 +191,11 @@ class GoogleWeatherModelClient(
                 }
             }
             all += response.forecastHours
+            zoneId = zoneId ?: response.timeZone?.id?.takeIf { it.isNotBlank() }
             pages++
             pageToken = response.nextPageToken?.takeIf { it.isNotBlank() }
         } while (pageToken != null && all.size < EXTENDED_HOURS && pages < MAX_PAGES)
-        return all
+        return all to zoneId
     }
 
     private suspend fun request(
@@ -292,6 +296,12 @@ class GoogleWeatherModelClient(
 private data class GoogleHourlyResponse(
     val forecastHours: List<GoogleForecastHour> = emptyList(),
     val nextPageToken: String? = null,
+    val timeZone: GoogleTimeZone? = null,
+)
+
+@Serializable
+private data class GoogleTimeZone(
+    val id: String? = null,
 )
 
 @Serializable

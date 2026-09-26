@@ -46,3 +46,11 @@ hs_err_pid*
 # from its published Maven repository — but `-PandroidlogLocal` still picks a
 # checkout up from here, so an optional one must not be committable.
 /.androidlog/
+
+# scripts/feels-like-study.py logs hourly forecasts for the user's own location;
+# the raw CSV stays on their machine.
+feels-like-study*.csv
+
+# Python bytecode from running the scripts/ tools.
+__pycache__/
+*.pyc

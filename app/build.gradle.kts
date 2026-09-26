@@ -419,6 +419,10 @@ android {
             // mature, switch to verifyRoborazzi* on stable surfaces for a
             // hard-fail regression gate.
             it.systemProperty("roborazzi.test.record", "true")
+            // Robolectric 4.17's SDK 36 sandbox reads FileDescriptor internals through
+            // jdk.internal.access.SharedSecrets, which java.base doesn't export; without
+            // this every Robolectric test fails in setup with IllegalAccessException.
+            it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
         }
         // Required because kotlinx-coroutines-android is on the unit-test classpath
         // (transitively via androidx.lifecycle). Without this, AndroidDispatcherFactory

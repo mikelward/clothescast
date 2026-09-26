@@ -604,20 +604,22 @@ tasks.register("exportBundledLicenses") {
         // release classpath and survive the bundled-artifact filter above --
         // rendering a second, identical row per component on the Licenses
         // page. Drop a redirect only when the artifact it aliases is itself
-        // kept, matched on artifact name + version: a redirect with no
-        // androidx counterpart (ui-backhandler-android) is a real attribution
-        // and has to stay. Matching on the coordinate rather than the display
-        // name also leaves genuinely distinct artifacts that happen to share a
-        // POM name alone (vico:compose-android vs vico:compose-m3-android).
+        // kept, matched on artifact name: a redirect with no androidx
+        // counterpart (ui-backhandler-android) is a real attribution and has
+        // to stay. Not on version too: a Compose BOM routinely moves androidx a
+        // patch ahead of the redirects (1.12.1 vs 1.12.0), and a version match
+        // then let every redirect through as a duplicate row. Matching on the
+        // coordinate rather than the display name also leaves genuinely
+        // distinct artifacts that happen to share a POM name alone
+        // (vico:compose-android vs vico:compose-m3-android).
         val artifactOf = { id: String -> id.substringAfter(':') }
         val aliased = kept
             .filterNot { (it["uniqueId"] as String).startsWith("org.jetbrains.compose") }
-            .map { artifactOf(it["uniqueId"] as String) to it["artifactVersion"] }
+            .map { artifactOf(it["uniqueId"] as String) }
             .toSet()
         val bundledOnly = kept.filterNot { library ->
             val id = library["uniqueId"] as String
-            id.startsWith("org.jetbrains.compose") &&
-                (artifactOf(id) to library["artifactVersion"]) in aliased
+            id.startsWith("org.jetbrains.compose") && artifactOf(id) in aliased
         }
         root["libraries"] = bundledOnly
         // Prune any license no longer referenced by a kept library.

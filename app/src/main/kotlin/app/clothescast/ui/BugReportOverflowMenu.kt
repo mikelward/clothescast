@@ -1,5 +1,6 @@
 package app.clothescast.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -62,58 +63,62 @@ internal fun BugReportOverflowMenu(
     var expanded by remember { mutableStateOf(false) }
     var consentVisible by remember { mutableStateOf(false) }
 
-    IconButton(onClick = { expanded = true }, modifier = modifier) {
-        Icon(
-            imageVector = Icons.Default.MoreVert,
-            contentDescription = stringResource(R.string.today_more_options),
-        )
-    }
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        shape = AppMenuShape,
-    ) {
-        DropdownMenuItem(
-            text = {
-                Text(
-                    stringResource(R.string.today_report_a_bug),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
-            onClick = {
-                expanded = false
-                val act = activity
-                val repo = app?.settingsRepository
-                if (act != null && repo != null) {
-                    // Split by what each branch owns. The consent read stays on
-                    // the composition, because its only outcome is composition
-                    // state — a dialog that a torn-down screen can't show
-                    // anyway. The share hops to the application scope, because
-                    // it must outlive the screen: the menu closes on tap and the
-                    // sheet takes the foreground while the hand-off is still
-                    // suspended.
-                    coroutineScope.launch {
-                        if (repo.bugReportConsentAcknowledged.first()) {
-                            app.applicationScope.launch { BugReport.share(act) }
-                        } else {
-                            consentVisible = true
+    // Button and menu in one Box, so the menu anchors to the ⋮ and drops from it at the top right: as
+    // bare siblings in the app bar's actions row, the menu anchored to the row slot instead.
+    Box(modifier = modifier) {
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(R.string.today_more_options),
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            shape = AppMenuShape,
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        stringResource(R.string.today_report_a_bug),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                },
+                onClick = {
+                    expanded = false
+                    val act = activity
+                    val repo = app?.settingsRepository
+                    if (act != null && repo != null) {
+                        // Split by what each branch owns. The consent read stays on
+                        // the composition, because its only outcome is composition
+                        // state — a dialog that a torn-down screen can't show
+                        // anyway. The share hops to the application scope, because
+                        // it must outlive the screen: the menu closes on tap and the
+                        // sheet takes the foreground while the hand-off is still
+                        // suspended.
+                        coroutineScope.launch {
+                            if (repo.bugReportConsentAcknowledged.first()) {
+                                app.applicationScope.launch { BugReport.share(act) }
+                            } else {
+                                consentVisible = true
+                            }
                         }
                     }
-                }
-            },
-        )
-        DropdownMenuItem(
-            text = {
-                Text(
-                    stringResource(R.string.settings_root_about),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            },
-            onClick = {
-                expanded = false
-                onNavigateToAbout()
-            },
-        )
+                },
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        stringResource(R.string.settings_root_about),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                },
+                onClick = {
+                    expanded = false
+                    onNavigateToAbout()
+                },
+            )
+        }
     }
 
     if (consentVisible) {

@@ -206,8 +206,10 @@ future task; the incident narrative belongs in the commit message.
   force-push it, and never drop commits already on it.
 - **Merge cue (`merged` / `I merged` / `landed` / merge webhook) runs
   hygiene *before* engaging with the rest of the message:** `git fetch
-  origin main`, cut a fresh `<agent>/<short-topic>` branch off
-  `origin/main`, announce the switch. Where the sandbox has no remote, the
+  origin +refs/heads/main:refs/remotes/origin/main` (`git fetch origin
+  main` alone leaves `origin/main` stale in a single-branch clone), cut a
+  fresh `<agent>/<short-topic>` branch off `origin/main`, announce the
+  switch. Where the sandbox has no remote, the
   cue can't be honored as written — a fresh branch needs a base that
   contains the merge, and an offline checkout can't fetch one; say so and
   ask for a synced checkout rather than branching off a stale `main`. The

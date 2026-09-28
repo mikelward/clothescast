@@ -205,19 +205,21 @@ future task; the incident narrative belongs in the commit message.
   commit, most often here). The only protected ref is `main`: never
   force-push it, and never drop commits already on it.
 - **Merge cue (`merged` / `I merged` / `landed` / merge webhook) runs
-  hygiene *before* engaging with the rest of the message:** `git fetch
-  origin main`, cut a fresh `<agent>/<short-topic>` branch off
-  `origin/main`, announce the switch. Where the sandbox has no remote, the
-  cue can't be honored as written — a fresh branch needs a base that
-  contains the merge, and an offline checkout can't fetch one; say so and
-  ask for a synced checkout rather than branching off a stale `main`. The
-  cue is about the branch that merged: when a lower PR in a stack merges
-  while an upper one is still open, rebase the upper branch with `git
-  rebase --onto origin/main <lower-branch>` — onto `origin/main`, not
-  local `main`, which the fetch does not advance, and naming the lower
-  branch as the upstream boundary so a squash merge doesn't replay the
-  lower commits too. Carry on there — don't abandon it for a new topic
-  branch.
+  hygiene *before* engaging with the rest of the message:** fetch main if
+  the sandbox can (`git fetch origin
+  +refs/heads/main:refs/remotes/origin/main`; `git fetch origin main` alone
+  leaves `origin/main` stale in a single-branch clone), cut a fresh
+  `<agent>/<short-topic>` branch off `origin/main`, announce the switch.
+  Where the sandbox has no remote, the cue can't be honored as written — a
+  fresh branch needs a base that contains the merge, and an offline checkout
+  can't fetch one; say so and ask for a synced checkout rather than
+  branching off a stale `main`. The cue is about the branch that merged:
+  when a lower PR in a stack merges while an upper one is still open, rebase
+  the upper branch with `git rebase --onto origin/main <lower-branch>` —
+  onto `origin/main`, not local `main`, which the fetch does not advance,
+  and naming the lower branch as the upstream boundary so a squash merge
+  doesn't replay the lower commits too. Carry on there — don't abandon it
+  for a new topic branch.
 - **After a merge, take a fresh `<agent>/<short-topic>`** — don't reset
   the merged name onto the new base. Its remote ref still points at the
   pre-merge tip, so `origin/<branch>..HEAD` keeps spanning the merged

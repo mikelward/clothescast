@@ -576,17 +576,20 @@ future task; the incident narrative belongs in the commit message.
   before + after labelled by SHA for modified files, just the new image
   for added ones.
 - **Report Android versionCode after every merge to `main`.** When a PR
-  merges, fetch `main` and run `git rev-list --count origin/main` to get
-  the versionCode (`app/build.gradle.kts` derives it from this count).
+  merges, fetch `main` by refspec (`git fetch origin
+  +refs/heads/main:refs/remotes/origin/main`; `git fetch origin main` alone
+  leaves `origin/main` stale in a single-branch clone) and run `git rev-list
+  --count origin/main` to get the versionCode (`app/build.gradle.kts` derives
+  it from this count).
   Report it as e.g. `Need versionCode 72 (b81c23d) or higher to test PR
   #52's HTTP-error surfacing` — number, short SHA, and a one-clause
   summary of what the change gates. The user uses this to know which
   Firebase / locally-built APK contains their fix.
   **Sandbox clones are usually shallow** (`git rev-parse --is-shallow-repository`
   returns `true`), which silently truncates `rev-list --count` and makes the
-  reported number lower than the real APK's. Run `git fetch --unshallow origin
-  main` once at the start of any session that will report versionCodes — the
-  user has been bitten by an under-by-15 count.
+  reported number lower than the real APK's. While the clone is shallow, add
+  `--unshallow` to that fetch (it fails on a complete repository) — the user
+  has been bitten by an under-by-15 count.
   **Exception:** Sandboxes without remote Git support, such as Codex cloud, may
   continue without fetching `origin`; state that the versionCode could not be
   verified from the full history.

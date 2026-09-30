@@ -632,6 +632,14 @@ Open work:
         first run after the migration rather than read: the reduced rendering
         is not retroactive, so removing them is the only way lines written
         under the old full rendering stop being readable.
+      - **Done: the process-exit record.** `ProcessExitReasons.kt` is now a
+        call to the library's `ProcessExits`, which was extracted from Type
+        Launcher's copy that this one was ported from, so the apps' logs read
+        alike again. Its lines are pinned, so `BugReport` reads the log through
+        `reportLogLines()`, which reserves room for them ahead of the tail; a
+        busy run no longer evicts them before a report is shared. The report's
+        log is now bounded by 16,000 characters rather than 100 lines, in one
+        read (Codex, PR #1244).
       - **The licenses screen now lists androidlog, with a blank license.**
         A composite build contributed *project* dependencies, which
         AboutLibraries does not treat as bundled libraries; a resolved

@@ -4,6 +4,8 @@ import android.app.ActivityManager
 import android.app.ApplicationExitInfo
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.mikelward.androidlog.DebugLog
+import com.mikelward.androidlog.android.ProcessExits
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,83 +14,50 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowActivityManager
 
 /**
- * The exit reason is the whole diagnostic value here: it separates a failure of
- * ours from the system reclaiming the process, and a mapping that mislabels one
- * as the other makes the log confidently wrong rather than merely unhelpful.
+ * The start-up record of why earlier processes ended, driven through the real
+ * platform query (Robolectric's `ActivityManager`) into a fresh [DebugLog], and
+ * the bug report's read of it once a busy run has pushed it out of the ring.
+ *
+ * The reason and importance names are the shared library's, and its own suite
+ * pins them; what this app owns is that the query runs, lands in the log the
+ * report reads, and survives until the report is shared.
  */
 @RunWith(RobolectricTestRunner::class)
 class ProcessExitReasonsTest {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
-    private fun seedExit(
-        reason: Int,
-        importance: Int = ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND,
-    ) {
+    private fun seedExit(reason: Int, description: String = "stopped by the installer") {
         val exitInfo = ShadowActivityManager.ApplicationExitInfoBuilder.newBuilder()
             .setReason(reason)
-            .setImportance(importance)
+            .setImportance(ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND)
             .setTimestamp(1_700_000_000_000L)
-            .setDescription("stopped by the installer")
+            .setDescription(description)
             .build()
         shadowOf(context.getSystemService(ActivityManager::class.java))
             .addApplicationExitInfo(exitInfo)
     }
 
     @Test
-    fun namesTheReasonsThatSeparateOurFailuresFromThePlatformKillingUs() {
-        // Ours to fix.
-        exitReasonName(ApplicationExitInfo.REASON_CRASH) shouldBe "crash"
-        exitReasonName(ApplicationExitInfo.REASON_CRASH_NATIVE) shouldBe "crashNative"
-        exitReasonName(ApplicationExitInfo.REASON_ANR) shouldBe "anr"
-        // Not ours — the system reclaiming or replacing the process. These are
-        // the ones no in-process signal can see, which is why this exists.
-        exitReasonName(ApplicationExitInfo.REASON_LOW_MEMORY) shouldBe "lowMemory"
-        exitReasonName(ApplicationExitInfo.REASON_PACKAGE_UPDATED) shouldBe "packageUpdated"
-        exitReasonName(ApplicationExitInfo.REASON_PACKAGE_STATE_CHANGE) shouldBe "packageStateChange"
-        exitReasonName(ApplicationExitInfo.REASON_USER_REQUESTED) shouldBe "userRequested"
-    }
-
-    @Test
-    fun keepsTheNumberOfAReasonItDoesNotRecognize() {
-        // A platform addition should degrade to something still diagnosable
-        // rather than collapsing into an indistinguishable "unknown", which the
-        // platform already uses for a reason of its own.
-        exitReasonName(9999) shouldBe "unrecognized(9999)"
-        exitReasonName(ApplicationExitInfo.REASON_UNKNOWN) shouldBe "unknown"
-    }
-
-    @Test
-    fun namesThePriorityAndroidAssignedTheProcess() {
-        // A background reclaim is routine; foreground importance means the
-        // system counted the process as user-aware work. Not proof of a
-        // visible screen — the alarm receiver and the widget update both
-        // reach it with nothing on screen, and on this app those are most of
-        // what runs.
-        val foreground = ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
-        processImportanceName(foreground) shouldBe "foreground"
-        processImportanceName(ActivityManager.RunningAppProcessInfo.IMPORTANCE_CACHED) shouldBe "cached"
-        processImportanceName(ActivityManager.RunningAppProcessInfo.IMPORTANCE_GONE) shouldBe "gone"
-        processImportanceName(7) shouldBe "unrecognized(7)"
-    }
-
-    @Test
-    fun recordsEachRecentExitWithItsReasonNamed() {
-        // The mapping tests above prove the names are right; this proves the
-        // query actually runs and its answers reach the log. Without it the
-        // suite stays green if the collection is deleted, asks for the wrong
-        // package, or drops its results on the floor — which is the feature.
-        DiagLog.install(context)
+    fun recordsEachRecentExitPinnedWithItsReasonNamed() {
+        // Without this the suite stays green if the collection is deleted, asks
+        // for the wrong package, or drops its results on the floor — which is
+        // the feature.
         seedExit(ApplicationExitInfo.REASON_CRASH)
         seedExit(ApplicationExitInfo.REASON_PACKAGE_UPDATED)
+        val log = DebugLog()
 
-        logRecentProcessExits(context)
+        logRecentProcessExits(context, log)
 
-        val lines = DiagLog.snapshot().filter { it.contains("processExit ") }
-        lines.count() shouldBe 2
-        lines.any { it.contains("reason=crash") } shouldBe true
-        lines.any { it.contains("reason=packageUpdated") } shouldBe true
-        lines.all { it.contains("importance=foreground") } shouldBe true
+        val pinned = log.pinnedSnapshot()
+        val exits = pinned.filter { it.contains("processExit ") }
+        exits.size shouldBe 2
+        exits.any { it.contains("reason=crash ") } shouldBe true
+        exits.any { it.contains("reason=packageUpdated") } shouldBe true
+        exits.all { it.contains("importance=foreground") } shouldBe true
+        // Kept on purpose: it can name the installer that stopped us.
+        exits.all { it.contains("stopped by the installer") } shouldBe true
+        pinned.any { it.contains("ownPackage lastUpdateTime=") } shouldBe true
     }
 
     @Test
@@ -96,10 +65,38 @@ class ProcessExitReasonsTest {
         // A fresh install, or a device that has pruned its records. The line
         // matters because its absence would otherwise be ambiguous with the
         // query having failed or never run.
-        DiagLog.install(context)
+        val log = DebugLog()
 
-        logRecentProcessExits(context)
+        logRecentProcessExits(context, log)
 
-        DiagLog.snapshot().any { it.contains("processExits none") } shouldBe true
+        log.pinnedSnapshot().any { it.contains("processExits none") } shouldBe true
+    }
+
+    @Test
+    fun aFullBatchReachesTheReportAfterABusyRunHasPushedItOutOfTheRing() {
+        repeat(ProcessExits.DEFAULT_MAX_RECORDS) {
+            seedExit(ApplicationExitInfo.REASON_ANR, description = "x".repeat(1_000))
+        }
+        val log = DebugLog()
+        logRecentProcessExits(context, log)
+        repeat(DebugLog.DEFAULT_MAX_ENTRIES + 50) { log.event("busy %s", it) }
+        // Only the pinned copy carries them now, so reading the ring alone loses them.
+        log.snapshot().none { it.contains("processExit ") } shouldBe true
+
+        val report = BugReport.reportLogLines(log)
+
+        report.count { it.contains("processExit reason=anr") } shouldBe ProcessExits.DEFAULT_MAX_RECORDS
+        report.any { it.contains("ownPackage lastUpdateTime=") } shouldBe true
+        // Ahead of the recent lines, newest last.
+        (report.indexOfLast { it.contains("processExit ") } <
+            report.indexOfFirst { it.contains("busy ") }) shouldBe true
+        report.last().endsWith("busy ${DebugLog.DEFAULT_MAX_ENTRIES + 49}") shouldBe true
+    }
+
+    @Test
+    fun theReportReservesRoomForAWholeBatch() {
+        // A constant so the fallback report doesn't load ProcessExits; it has
+        // to keep up with the batch the library can write.
+        (BugReport.MAX_PINNED_PAYLOAD_CHARS >= ProcessExits.maxBatchChars()) shouldBe true
     }
 }

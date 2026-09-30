@@ -121,9 +121,6 @@ object DiagLog {
     /** Two source literals, joined — see the class comment for why that is safe. */
     private fun tagged(tag: String, format: String): String = "$tag: $format"
 
-    /** The recent log, oldest first, as the bug report and the crash record show it. */
-    fun snapshot(): List<String> = log.snapshot()
-
     /**
      * Wires logcat and the persisted mirror. Call once from
      * [android.app.Application.onCreate].

@@ -57,19 +57,6 @@ object BugReport {
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z").withZone(ZoneId.systemDefault())
 
     /**
-     * How many trailing log lines the report carries. The text rides along as
-     * the share intent's `EXTRA_TEXT`, which many targets (messengers
-     * especially) treat as a caption with a hard character cap that silently
-     * truncates a long report mid-line — doubly so once a screenshot flips the
-     * intent's MIME type to `image/png` and the chooser surfaces image-share
-     * targets. Capping the log tail keeps the caption small enough to survive
-     * those targets intact. The header runs ~3-4 KB, so 100 lines leaves
-     * comfortable headroom under a ~20 KB budget. [DiagLog] still retains its
-     * full 300-line buffer; this only trims what the share carries.
-     */
-    private const val MAX_LOG_LINES = 100
-
-    /**
      * Ceiling for the structured section (build, device, settings, ClothesCasts),
      * bounded separately from the log so a long clothes-rule list can't crowd the
      * log out. It degrades most gracefully — a settings dump reads fine
@@ -82,8 +69,36 @@ object BugReport {
     /** Cap for an exception message quoted into the collection-failure fallback. */
     private const val MAX_FAILURE_MESSAGE_CHARS = 300
 
-    /** Ceiling for the recent-log section, on top of the [MAX_LOG_LINES] cap. */
-    private const val MAX_LOG_PAYLOAD_CHARS = 20_000
+    /**
+     * Ceiling for the recent-log section, pinned lines included. The text rides
+     * along as the share intent's `EXTRA_TEXT`, which many targets (messengers
+     * especially) treat as a caption with a hard character cap that silently
+     * truncates a long report mid-line — doubly so once a screenshot flips the
+     * intent's MIME type to `image/png` and the chooser surfaces image-share
+     * targets. The header runs ~3-4 KB, so this keeps the report around the
+     * ~20 KB that survives those targets intact. [DiagLog] still retains its
+     * full 300-line buffer; this only trims what the share carries.
+     *
+     * Characters, not lines: this used to be a 100-line cap with a character
+     * ceiling on top, but the library bounds a read by characters, and a line
+     * cap derived from a second read could be overrun by a line logged in
+     * between (Codex, PR #1244). Characters are also what the caption limit
+     * counts.
+     */
+    private const val MAX_LOG_PAYLOAD_CHARS = 16_000
+
+    /**
+     * The part of [MAX_LOG_PAYLOAD_CHARS] held for the pinned lines the ring no
+     * longer carries: the start-up record of why earlier processes ended.
+     *
+     * It must hold a whole process-exit batch (`ProcessExits.maxBatchChars()`,
+     * about 2,850; a test holds it to that), since the section is trimmed from
+     * its head and a smaller budget would drop the oldest exits. A constant
+     * rather than that call, so the collection-failure fallback reads the log
+     * without loading `ProcessExits`, which is exactly the kind of failure the
+     * fallback exists to report.
+     */
+    internal const val MAX_PINNED_PAYLOAD_CHARS = 3_000
 
     /**
      * Captures the screen, builds the text payload, and hands both to the shared
@@ -91,9 +106,9 @@ object BugReport {
      * chooser. When [includeScreenshot] is true (the default) the current window
      * is grabbed and passed as a PNG `content://` URI so the report shows what
      * the user was looking at; when it's false (or the capture fails) the report
-     * shares text-only. The text payload is capped to [MAX_LOG_LINES] log lines
-     * so the `EXTRA_TEXT` caption stays under the length limits image-share
-     * targets impose.
+     * shares text-only. The log is capped to [MAX_LOG_PAYLOAD_CHARS] so the
+     * `EXTRA_TEXT` caption stays under the length limits image-share targets
+     * impose.
      *
      * The library reads and appends the previous run's log to the report and
      * consumes it only once the report is *retained* somewhere the user can
@@ -244,7 +259,7 @@ object BugReport {
         // to the empty-log sentinel would tell the reader "nothing was logged"
         // when the truth is "the log couldn't be read," and lose the second
         // failure entirely.
-        val recent = runCatching { DiagLog.snapshot() }
+        val recent = runCatching { reportLogLines() }
             .onFailure {
                 DiagLog.w("BugReport", it, "log snapshot failed while building the fallback report")
                 appendLine("Recent log unavailable: ${it.javaClass.name}")
@@ -292,7 +307,7 @@ object BugReport {
         val nextPeriod = if (nextSnapshot != null && prefs != null) {
             coRunCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
         } else null
-        val recent = DiagLog.snapshot()
+        val recent = reportLogLines()
         val now = TIMESTAMP_FORMAT.format(Instant.now())
 
         val head = buildString {
@@ -353,21 +368,33 @@ object BugReport {
     }
 
     /**
-     * The "Recent log" section — the newest [MAX_LOG_LINES] lines, further
-     * bounded by [MAX_LOG_PAYLOAD_CHARS] so a handful of fat entries can't blow
-     * the budget on line count alone. Shared with the collection-failure
-     * fallback, which needs it most.
+     * This run's log as both report paths read it, in one read: the ring's
+     * newest lines, preceded by the pinned lines they no longer carry, within
+     * [MAX_LOG_PAYLOAD_CHARS] together.
+     *
+     * The pinned lines are the start-up record of why earlier processes ended
+     * ([logRecentProcessExits]). They are written once, so a busy run evicts
+     * them from the ring long before the user shares a report; reading the ring
+     * alone would lose exactly the lines written to explain a death.
+     */
+    internal fun reportLogLines(log: DebugLog = DiagLog.log): List<String> = log.boundedSnapshot(
+        pinnedBudgetChars = MAX_PINNED_PAYLOAD_CHARS,
+        recentBudgetChars = MAX_LOG_PAYLOAD_CHARS - MAX_PINNED_PAYLOAD_CHARS,
+    )
+
+    /**
+     * The "Recent log" section, from lines [reportLogLines] has already
+     * bounded. Shared with the collection-failure fallback, which needs it most.
      */
     private fun renderRecentLog(recent: List<String>): String = buildString {
-        val byLine = recent.takeLast(MAX_LOG_LINES)
-        val kept = boundedLogTail(byLine, MAX_LOG_PAYLOAD_CHARS)
-        val dropped = recent.size - kept.size
-        appendLine("--- Recent log (newest last, ${kept.size} of ${recent.size} shown, max $MAX_LOG_LINES) ---")
+        appendLine(
+            "--- Recent log (${recent.size} lines, newest last; older lines are dropped " +
+                "to keep the report shareable) ---",
+        )
         if (recent.isEmpty()) {
             appendLine("(no captured log lines)")
         } else {
-            if (dropped > 0) appendLine("($dropped older line(s) omitted to keep the report shareable)")
-            kept.forEach { appendLine(it) }
+            recent.forEach { appendLine(it) }
         }
     }
 
@@ -649,38 +676,6 @@ object BugReport {
 
 /** Cache subdirectory holding the captures attached to bug reports; see `@xml/file_paths`. */
 private const val SCREENSHOT_DIR_NAME = "bug-reports"
-
-/**
- * The newest lines of [lines] (oldest-first) whose combined length fits
- * [budgetChars], returned oldest-first. Keeps the freshest context — a crash
- * entry and the events around it sit at the *end* of a log, so a head-first
- * truncation would drop exactly what the reader needs.
- *
- * A single newest line that alone exceeds the budget is kept **clamped to it**
- * rather than whole: returning nothing would drop the freshest context
- * entirely, but returning it whole would blow the very ceiling this exists to
- * enforce. `last-crash.txt` is the case that can reach that size — it is
- * written in one go and `cacheDir` survives app upgrades, so a file from an
- * older build is read back into the report unchanged.
- */
-internal fun boundedLogTail(lines: List<String>, budgetChars: Int): List<String> {
-    val kept = ArrayDeque<String>()
-    var used = 0
-    for (line in lines.asReversed()) {
-        val cost = line.length + 1 // + the newline appendLine adds
-        if (used + cost > budgetChars) {
-            if (kept.isNotEmpty()) break
-            kept.addFirst(line.take((budgetChars - LOG_TRUNCATION_MARKER.length).coerceAtLeast(0)) + LOG_TRUNCATION_MARKER)
-            break
-        }
-        kept.addFirst(line)
-        used += cost
-    }
-    return kept
-}
-
-/** Marks a log line cut short so a reader can tell it was clamped, not written that way. */
-private const val LOG_TRUNCATION_MARKER = "…(truncated)"
 
 /** Walks the [ContextWrapper] chain to find the host [Activity], or returns null. */
 fun Context.findActivity(): Activity? {

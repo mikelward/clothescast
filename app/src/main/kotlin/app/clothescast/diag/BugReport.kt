@@ -56,16 +56,6 @@ object BugReport {
     private val TIMESTAMP_FORMAT: DateTimeFormatter =
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss Z").withZone(ZoneId.systemDefault())
 
-    /**
-     * Ceiling for the structured section (build, device, settings, ClothesCasts),
-     * bounded separately from the log so a long clothes-rule list can't crowd the
-     * log out. It degrades most gracefully — a settings dump reads fine
-     * truncated, a truncated log tail loses events. The previous run the library
-     * appends after this section is bounded on its own, by the library's persist
-     * budget, so a fat crash cannot crowd this app's own state out either.
-     */
-    private const val MAX_STRUCTURED_CHARS = 24_000
-
     /** Cap for an exception message quoted into the collection-failure fallback. */
     private const val MAX_FAILURE_MESSAGE_CHARS = 300
 
@@ -75,8 +65,10 @@ object BugReport {
      * especially) treat as a caption with a hard character cap that silently
      * truncates a long report mid-line — doubly so once a screenshot flips the
      * intent's MIME type to `image/png` and the chooser surfaces image-share
-     * targets. The header runs ~3-4 KB, so this keeps the report around the
-     * ~20 KB that survives those targets intact. [DiagLog] still retains its
+     * targets. The header runs ~3-4 KB, so this keeps a report with no earlier
+     * run beside it around the ~20 KB that survives those targets intact; the
+     * library adds at most [DebugReport.MAX_EARLIER_RUNS_CHARS] when there is
+     * one. [DiagLog] still retains its
      * full 300-line buffer; this only trims what the share carries.
      *
      * Characters, not lines: this used to be a 100-line cap with a character
@@ -86,6 +78,22 @@ object BugReport {
      * counts.
      */
     private const val MAX_LOG_PAYLOAD_CHARS = 16_000
+
+    /**
+     * Ceiling for the structured section (build, device, settings, ClothesCasts),
+     * bounded separately from the log so a long clothes-rule list can't crowd the
+     * log out. It degrades most gracefully — a settings dump reads fine
+     * truncated, a truncated log tail loses events.
+     *
+     * Whatever the log leaves of this app's share of the report. The library
+     * holds a whole report to [DebugReport.MAX_REPORT_CHARS] and gives the
+     * previous run its own [DebugReport.MAX_EARLIER_RUNS_CHARS] of that; a
+     * section within the rest arrives whole, and one past it is cut from the
+     * middle — which here would be the end of the settings and the start of the
+     * log. The allowance covers the headings and the truncation line.
+     */
+    private const val MAX_STRUCTURED_CHARS =
+        DebugReport.MAX_REPORT_CHARS - DebugReport.MAX_EARLIER_RUNS_CHARS - MAX_LOG_PAYLOAD_CHARS - 1_000
 
     /**
      * The part of [MAX_LOG_PAYLOAD_CHARS] held for the pinned lines the ring no
@@ -351,8 +359,8 @@ object BugReport {
      * Joins this app's own sections — the structured head and the recent log —
      * each bounded on its own so a long clothes-rule list can't crowd the log
      * out. The previous run's log is appended after this by the shared library,
-     * bounded by its own persist budget, so this app no longer bounds a crash it
-     * no longer reads itself.
+     * inside its own share of the report, so this app no longer bounds a crash
+     * it no longer reads itself.
      *
      * Prefix-truncating the assembled section would drop the log — appended last
      * — exactly when a long settings dump is what pushed it over, losing the

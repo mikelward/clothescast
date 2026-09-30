@@ -600,9 +600,9 @@ future task; the incident narrative belongs in the commit message.
   user sees. Fetch `main` as above first. Offline, use local `main` only if
   its history is complete, saying the notes may be behind; a shallow one
   miscounts, so say the notes can't be derived instead.
-  - Skip what isn't user visible: the filtered prefixes, docs and CI.
-    Skip dependency bumps too, unless they are the range's only changes —
-    then one bullet says the app's libraries were updated.
+  - Skip what isn't user visible: the filtered prefixes, docs and CI. Skip
+    dependency bumps too, unless nothing else user visible is left — then one
+    bullet says the app's libraries were updated.
   - Skip what didn't survive the range: a change added then removed or
     reverted, a fix for a bug the range itself introduced. A feature reworked
     within the range is described by its final state.

@@ -594,8 +594,8 @@ future task; the incident narrative belongs in the commit message.
   continue without fetching `origin`; state that the versionCode could not be
   verified from the full history.
 - **"Release notes since N" means the top user-visible changes after
-  versionCode N** — the build the user already has. Read the commits after
-  the Nth commit on `main` (history is linear, so the Nth is versionCode N)
+  versionCode N** — the build the user already has. Read the commits after the
+  Nth commit on `origin/main` (history is linear, so the Nth is versionCode N)
   through its tip, bodies included where a subject alone doesn't say what the
   user sees. Fetch `main` as above first. Offline, use local `main` only if
   its history is complete, saying the notes may be behind; a shallow one

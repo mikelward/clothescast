@@ -593,6 +593,26 @@ future task; the incident narrative belongs in the commit message.
   **Exception:** Sandboxes without remote Git support, such as Codex cloud, may
   continue without fetching `origin`; state that the versionCode could not be
   verified from the full history.
+- **"Release notes since N" means the top user-visible changes after
+  versionCode N** — the build the user already has. Read the commits after
+  the Nth commit on `main` (history is linear, so the Nth is versionCode N)
+  through its tip, bodies included where a subject alone doesn't say what the
+  user sees. Fetch `main` as above first. Offline, use local `main` only if
+  its history is complete, saying the notes may be behind; a shallow one
+  miscounts, so say the notes can't be derived instead.
+  - Skip what isn't user visible: the filtered prefixes, docs and CI.
+    Skip dependency bumps too, unless they are the range's only changes —
+    then one bullet says the app's libraries were updated.
+  - Skip what didn't survive the range: a change added then removed or
+    reverted, a fix for a bug the range itself introduced. A feature reworked
+    within the range is described by its final state.
+  - At most five, ranked by what a user would notice most. Commits to the
+    same feature share a bullet; unrelated changes never do, even to fit
+    more in.
+  - Write each as end-user copy (the commit-subject rules above) with the
+    Play notes' `• ` bullet, all in one code block for copying. Above it
+    say the range (N+1 to the tip's count); below it, one line naming what
+    was left out.
 ## CI
 
 - Four heavy jobs: `JVM unit tests` runs `:core:*:test` +

@@ -33,9 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.liveRegion
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
@@ -319,7 +316,7 @@ internal fun VoiceContent(
                         ) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
-                        TtsErrorText(previewError)
+                        InlineErrorText(previewError)
                         // Debug builds: surface the Firebase App Check
                         // debug token with a copy button so testers can
                         // register it in Firebase Console without
@@ -353,7 +350,7 @@ internal fun VoiceContent(
                         TestVoiceButton(isPreviewing = isPreviewing, onStop = ::stopPreview) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
-                        TtsErrorText(previewError)
+                        InlineErrorText(previewError)
                     }
                 }
             }
@@ -704,7 +701,7 @@ private fun TestVoiceButton(
  *
  * Errors are handed to [onError] on the main thread so the caller can show
  * *why* the voice failed (most often: missing or wrong API key for the chosen
- * provider) — see [TtsErrorText]. Not a Toast: Android 12+ clips text
+ * provider) — see [InlineErrorText]. Not a Toast: Android 12+ clips text
  * toasts to two lines, which cut provider errors off mid-sentence.
  */
 internal suspend fun runTtsPreview(
@@ -778,25 +775,6 @@ internal suspend fun runTtsPreview(
             }
         }
     }
-}
-
-/**
- * Inline error under a voice-test button, shown when the last preview failed.
- * Inline rather than a Toast so long provider messages (e.g. a 403 explaining
- * which API the key is blocked from) aren't clipped — same treatment as the
- * Google Weather key check.
- */
-@Composable
-internal fun TtsErrorText(message: String?) {
-    if (message == null) return
-    Text(
-        text = message,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.error,
-        // Focus stays on the test button, so announce the failure the way the
-        // Toast this replaced was announced.
-        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
-    )
 }
 
 internal fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {

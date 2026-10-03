@@ -19,7 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -185,4 +188,22 @@ internal fun openAppDetails(context: android.content.Context) {
         android.net.Uri.fromParts("package", context.packageName, null),
     ).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
     runCatching { context.startActivity(intent) }
+}
+
+/**
+ * Error text shown inline under the control that produced it, when [message]
+ * is non-null. Inline rather than a Toast so long messages aren't clipped
+ * (Android 12+ cuts text toasts to two lines). Focus stays on the control
+ * the user just tapped, so the text is a polite live region and gets
+ * announced the way a Toast would be.
+ */
+@Composable
+internal fun InlineErrorText(message: String?) {
+    if (message == null) return
+    Text(
+        text = message,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.error,
+        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+    )
 }

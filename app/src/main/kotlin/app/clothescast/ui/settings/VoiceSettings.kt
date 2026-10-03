@@ -33,6 +33,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.BandClause
@@ -133,6 +136,7 @@ internal fun VoiceContent(
     // atomic with respect to other UI events.
     var isPreviewing by remember { mutableStateOf(false) }
     var previewJob by remember { mutableStateOf<Job?>(null) }
+    var previewError by remember { mutableStateOf<String?>(null) }
 
     fun stopPreview() {
         // Cancelling the job propagates down through speak() into
@@ -158,6 +162,10 @@ internal fun VoiceContent(
         locale: VoiceLocale,
     ) {
         if (isPreviewing) return
+        // Clear before the canPreview guard: every engine switch routes through
+        // here, and a rejected Gemini preview must not leave the last Device
+        // error showing under the Gemini button as if it were Gemini's.
+        previewError = null
         if (!canPreview(engine)) return
         isPreviewing = true
         previewJob = coroutineScope.launch {
@@ -178,6 +186,7 @@ internal fun VoiceContent(
                     periodPreamble = periodPreamble,
                     wearPreamble = wearPreamble,
                     summary = currentInsight,
+                    onError = { previewError = it },
                 )
             } finally {
                 isPreviewing = false
@@ -250,8 +259,21 @@ internal fun VoiceContent(
                             saveLabel = stringResource(R.string.settings_api_key_save),
                             replaceLabel = stringResource(R.string.settings_api_key_replace),
                             clearLabel = stringResource(R.string.settings_api_key_clear),
-                            onSave = onSetGeminiKey,
-                            onClear = onClearGeminiKey,
+                            // A key change invalidates the last preview's error
+                            // just as an engine / voice / locale change does;
+                            // those all route through preview(), these don't.
+                            onSave = { key ->
+                                previewError = null
+                                onSetGeminiKey(key)
+                            },
+                            onClear = {
+                                previewError = null
+                                onClearGeminiKey()
+                            },
+                            // Part of the preview lock: a key change mid-preview
+                            // would let the in-flight request's error (made with
+                            // the old key) land after the clear above.
+                            enabled = !isPreviewing,
                         )
                         // Entering a long API key with a remote is painful, so
                         // offer the same phone-pairing handoff (QR + local web
@@ -262,6 +284,7 @@ internal fun VoiceContent(
                         if (showPairFromPhone) {
                             TextButton(
                                 onClick = onPairFromPhone,
+                                enabled = !isPreviewing,
                                 modifier = Modifier.fillMaxWidth(),
                             ) { Text(stringResource(R.string.onboarding_pair_from_phone)) }
                         }
@@ -296,6 +319,7 @@ internal fun VoiceContent(
                         ) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
+                        TtsErrorText(previewError)
                         // Debug builds: surface the Firebase App Check
                         // debug token with a copy button so testers can
                         // register it in Firebase Console without
@@ -329,6 +353,7 @@ internal fun VoiceContent(
                         TestVoiceButton(isPreviewing = isPreviewing, onStop = ::stopPreview) {
                             preview(selected, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
                         }
+                        TtsErrorText(previewError)
                     }
                 }
             }
@@ -677,8 +702,10 @@ private fun TestVoiceButton(
  * UI locale. Brand-prefix framing ("Today's ClothesCast: …") is omitted
  * for now — see TODO(brand-intro) in [FetchAndNotifyWorker.formatProse].
  *
- * Errors are surfaced as a Toast so the user can see *why* the voice failed
- * (most often: missing or wrong API key for the chosen provider).
+ * Errors are handed to [onError] on the main thread so the caller can show
+ * *why* the voice failed (most often: missing or wrong API key for the chosen
+ * provider) — see [TtsErrorText]. Not a Toast: Android 12+ clips text
+ * toasts to two lines, which cut provider errors off mid-sentence.
  */
 internal suspend fun runTtsPreview(
     context: android.content.Context,
@@ -696,6 +723,7 @@ internal suspend fun runTtsPreview(
     periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     summary: InsightSummary? = null,
+    onError: (String) -> Unit,
 ) {
     val app = context.applicationContext as app.clothescast.ClothesCastApplication
     // Network synthesis and AudioTrack write are both blocking-ish work — Ktor
@@ -734,11 +762,8 @@ internal suspend fun runTtsPreview(
                 // (e.g. "Gemini TTS HTTP 400: …"); don't double that up.
                 val message = t.message?.takeIf { it.isNotBlank() } ?: t.javaClass.simpleName
                 DiagLog.w("VoiceSettings", t, "TTS preview failed for %s", engine)
-                // Toast.show() posts internally, but Toast.makeText()'s constructor needs
-                // a Looper on the calling thread — Dispatchers.IO has none, so hop to Main.
-                withContext(Dispatchers.Main) {
-                    android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()
-                }
+                // Callers write Compose state from onError; hop off Dispatchers.IO first.
+                withContext(Dispatchers.Main) { onError(message) }
                 // Fall back to the on-device engine so the user still hears the preview
                 // and can confirm audio output is working — mirrors FetchAndNotifyWorker.
                 if (engine != TtsEngine.DEVICE) {
@@ -753,6 +778,25 @@ internal suspend fun runTtsPreview(
             }
         }
     }
+}
+
+/**
+ * Inline error under a voice-test button, shown when the last preview failed.
+ * Inline rather than a Toast so long provider messages (e.g. a 403 explaining
+ * which API the key is blocked from) aren't clipped — same treatment as the
+ * Google Weather key check.
+ */
+@Composable
+internal fun TtsErrorText(message: String?) {
+    if (message == null) return
+    Text(
+        text = message,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.error,
+        // Focus stays on the test button, so announce the failure the way the
+        // Toast this replaced was announced.
+        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+    )
 }
 
 internal fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {

@@ -96,6 +96,7 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     // cloud TTS is billable and cancellation isn't a reliable cost control,
     // so an in-flight guard stops rapid taps queuing duplicate paid requests.
     var isSpeaking by remember { mutableStateOf(false) }
+    var speakError by remember { mutableStateOf<String?>(null) }
     SettingsScaffold(R.string.settings_page_developer, onBack) { padding ->
         DeveloperContent(
             region = state.region,
@@ -107,6 +108,7 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             loadEventsForDay = viewModel::calendarEventsForDay,
             padding = padding,
             speaking = isSpeaking,
+            speakError = speakError,
             onResolveCoords = { lat, lon ->
                 (context.applicationContext as ClothesCastApplication)
                     .reverseGeocoder.resolveDiagnostic(lat, lon)
@@ -114,6 +116,7 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
             onSpeak = onSpeak@{ holidayId ->
                 if (isSpeaking) return@onSpeak
                 isSpeaking = true
+                speakError = null
                 // Speak the picked day in its holiday voice so the preview
                 // demonstrates the auto-selected persona, not just the
                 // user's default voice. Resolve against the everyday
@@ -135,6 +138,7 @@ internal fun DeveloperPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
                             deviceVoice = state.deviceVoice,
                             voiceLocale = state.voiceLocale,
                             region = state.region,
+                            onError = { speakError = it },
                         )
                     } finally {
                         isSpeaking = false
@@ -158,6 +162,7 @@ internal fun DeveloperContent(
     themeFromCalendarBirthdays: Boolean = false,
     loadEventsForDay: suspend (LocalDate) -> List<CalendarEvent> = { emptyList() },
     speaking: Boolean = false,
+    speakError: String? = null,
     initialDate: LocalDate = LocalDate.now(),
     onResolveCoords: suspend (Double, Double) -> ReverseGeocoder.DiagnosticResult =
         { _, _ -> ReverseGeocoder.DiagnosticResult.EMPTY },
@@ -278,6 +283,7 @@ internal fun DeveloperContent(
         ) {
             Text(stringResource(R.string.settings_developer_speak))
         }
+        TtsErrorText(speakError)
 
         ReverseGeocodeTesterCard(onResolve = onResolveCoords)
     }

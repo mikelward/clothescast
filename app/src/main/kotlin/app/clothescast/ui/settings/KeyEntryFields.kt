@@ -43,6 +43,9 @@ internal fun KeyEntryFields(
     clearLabel: String,
     onSave: (String) -> Unit,
     onClear: () -> Unit,
+    // Gates Save and Clear only; typing and Replace (which just reveals the
+    // field) don't change the stored key.
+    enabled: Boolean = true,
 ) {
     // Match the muted color of the surrounding body paragraphs (engine
     // description, per-engine header) so the status line doesn't read
@@ -86,12 +89,12 @@ internal fun KeyEntryFields(
                         if (configured) showInput = false
                     }
                 },
-                enabled = input.isNotBlank(),
+                enabled = enabled && input.isNotBlank(),
                 modifier = Modifier.fillMaxWidth(),
             ) { Text(saveLabel) }
 
             if (configured) {
-                TextButton(onClick = onClear, modifier = Modifier.fillMaxWidth()) {
+                TextButton(onClick = onClear, enabled = enabled, modifier = Modifier.fillMaxWidth()) {
                     Text(clearLabel)
                 }
             }
@@ -102,7 +105,7 @@ internal fun KeyEntryFields(
                 onClick = { showInput = true },
                 modifier = Modifier.fillMaxWidth(),
             ) { Text(replaceLabel) }
-            TextButton(onClick = onClear, modifier = Modifier.fillMaxWidth()) {
+            TextButton(onClick = onClear, enabled = enabled, modifier = Modifier.fillMaxWidth()) {
                 Text(clearLabel)
             }
         }

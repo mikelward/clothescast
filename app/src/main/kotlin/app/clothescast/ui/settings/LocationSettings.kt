@@ -542,11 +542,7 @@ internal fun LocationSearchDialog(
 
                 when {
                     inFlight -> Text(stringResource(R.string.settings_location_searching))
-                    error != null -> Text(
-                        text = error!!,
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
+                    error != null -> InlineErrorText(error)
                     results.isEmpty() && query.isNotBlank() ->
                         Text(stringResource(R.string.settings_location_no_results))
                     else -> results.forEach { result ->

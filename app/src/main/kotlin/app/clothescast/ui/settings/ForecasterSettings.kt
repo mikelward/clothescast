@@ -26,7 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.data.weather.GoogleWeatherProbe
@@ -348,6 +351,9 @@ private fun GoogleProbeStatus(
             style = MaterialTheme.typography.bodySmall,
             color = if (isError) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.primary,
+            // Lands after a key save or "Check again" while focus stays on
+            // that control; announce it so screen-reader users hear the result.
+            modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
         )
         TextButton(
             onClick = onCheckAgain,

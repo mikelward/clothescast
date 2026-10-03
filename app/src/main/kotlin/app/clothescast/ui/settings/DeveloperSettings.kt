@@ -283,7 +283,7 @@ internal fun DeveloperContent(
         ) {
             Text(stringResource(R.string.settings_developer_speak))
         }
-        TtsErrorText(speakError)
+        InlineErrorText(speakError)
 
         ReverseGeocodeTesterCard(onResolve = onResolveCoords)
     }
@@ -486,9 +486,7 @@ private fun ReverseGeocodeTesterCard(
             ) {
                 Text(if (loading) "Resolving…" else "Resolve")
             }
-            inputError?.let { msg ->
-                Text(msg, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
-            }
+            InlineErrorText(inputError)
             result?.let { r ->
                 Text(
                     "addressLines (${r.addressLines.size}):",

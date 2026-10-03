@@ -339,11 +339,7 @@ internal fun CalendarContent(
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.settings_privacy_open_policy)) }
                 if (permanentlyDenied && !permissionGranted) {
-                    Text(
-                        text = stringResource(R.string.settings_calendar_open_settings),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                    )
+                    InlineErrorText(stringResource(R.string.settings_calendar_open_settings))
                     TextButton(
                         onClick = { openAppDetails(context) },
                         modifier = Modifier.fillMaxWidth(),

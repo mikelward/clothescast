@@ -1,3 +1,9 @@
+---
+trigger: always_on
+alwaysApply: true
+last_modified: 2026-10-04
+---
+
 # Agent guide for clothescast
 
 Rules and gotchas for AI coding agents (Claude Code, Codex, etc.) working in
@@ -5,6 +11,11 @@ this repo. Keep this file short and concrete — one-liners over essays. Add a
 new rule the first time something bites you, not the third. Every rule here
 loads into every agent's context each session, so verbosity taxes every
 future task; the incident narrative belongs in the commit message.
+
+**At the start of every session, print the path of the `AGENTS.md` you loaded
+and its `last_modified` date** (front matter), so a stale or wrong copy is
+caught before it steers the work. Bump `last_modified` whenever you edit this
+file.
 
 ## Talking to the user
 

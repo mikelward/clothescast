@@ -598,9 +598,10 @@ whenever you edit this file.
   #52's HTTP-error surfacing` — number, short SHA, and a one-clause
   summary of what the change gates. The user uses this to know which
   Firebase / locally-built APK contains their fix.
-  **Sandbox clones are usually shallow** (`git rev-parse --is-shallow-repository`
-  returns `true`), which silently truncates `rev-list --count` and makes the
-  reported number lower than the real APK's. While the clone is shallow, add
+  **Sandbox clones start shallow** (`git rev-parse --is-shallow-repository`
+  returns `true`) until the best-effort session-start hook deepens them with
+  `scripts/unshallow.sh`; a shallow clone silently truncates `rev-list --count`
+  and makes the reported number lower than the real APK's. While it is, add
   `--unshallow` to that fetch (it fails on a complete repository) — the user
   has been bitten by an under-by-15 count.
   **Exception:** Sandboxes without remote Git support, such as Codex cloud, may

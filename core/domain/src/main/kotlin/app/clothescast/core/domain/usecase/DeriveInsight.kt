@@ -588,10 +588,11 @@ internal fun tonightWindow(
  * Dates a wall-clock [time] inside the tonight window: times at/after
  * [tonightStart] belong to [todayDate], earlier times to the next day. The
  * single source of truth for the tonight wrap convention — [tonightWindow]
- * (per-model slicing) and [RenderInsightSummary] (dating the precip peak
- * against calendar events) both go through it, so they can't drift apart.
+ * (per-model slicing), [RenderInsightSummary] (dating the precip peak
+ * against calendar events) and the app's outfit-card window all go through
+ * it, so they can't drift apart.
  */
-internal fun tonightDateTime(
+fun tonightDateTime(
     todayDate: LocalDate,
     tonightStart: LocalTime,
     time: LocalTime,

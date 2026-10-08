@@ -33,6 +33,7 @@ import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
 import app.clothescast.ui.LocalNavigateToAbout
 import app.clothescast.ui.garment.outfitCardInfoLines
+import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.ui.pairing.PairingScreen
 import app.clothescast.ui.pairing.PairingViewModel
@@ -422,6 +423,14 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                         outerColors = outerColors,
                         topStrokes = topStrokes,
                         bottomStrokes = bottomStrokes,
+                        window = outfitCardWindow(
+                            formatter.locale,
+                            insight.forDate,
+                            insight.period,
+                            prefs.tonightSchedule.time,
+                            insight.hourly,
+                            prefs.timeFormat,
+                        ),
                     )
                 }.getOrNull()
             }

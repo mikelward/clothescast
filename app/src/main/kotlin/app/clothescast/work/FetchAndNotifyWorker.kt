@@ -67,6 +67,7 @@ import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.ui.today.toLite
 import app.clothescast.R
 import app.clothescast.ui.garment.outfitCardInfoLines
+import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.widget.updateAllClothesCastWidgets
 import io.ktor.client.call.NoTransformationFoundException
@@ -1588,6 +1589,14 @@ class FetchAndNotifyWorker(
                 outerColors = outerColors,
                 topStrokes = topStrokes,
                 bottomStrokes = bottomStrokes,
+                window = outfitCardWindow(
+                    formatter.locale,
+                    insight.forDate,
+                    insight.period,
+                    prefs.tonightSchedule.time,
+                    insight.hourly,
+                    prefs.timeFormat,
+                ),
             )
         }
             .onFailure { t ->

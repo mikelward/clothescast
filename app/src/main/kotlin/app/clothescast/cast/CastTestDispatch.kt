@@ -10,6 +10,7 @@ import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.ui.garment.outfitCardInfoLines
+import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -125,6 +126,14 @@ internal suspend fun castCurrentInsight(
             outerColors = outerColors,
             topStrokes = topStrokes,
             bottomStrokes = bottomStrokes,
+            window = outfitCardWindow(
+                formatter.locale,
+                insight.forDate,
+                insight.period,
+                prefs.tonightSchedule.time,
+                insight.hourly,
+                prefs.timeFormat,
+            ),
         )
     }
 

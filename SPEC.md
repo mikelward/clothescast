@@ -73,6 +73,8 @@ I put on before I leave?" instead of a full weather-office report.
 - **Smart-home outputs.** MQTT publishes text, image, audio, timestamp, and
   combined media topics when configured. Cast sends the rendered outfit card and,
   when Gemini PCM exists, spoken audio to a selected receiver.
+  The outfit card ends with the forecast window it covers ("Mon 4 Oct 07:00 –
+  Mon 4 Oct 19:00"), so a card left up on a display shows when it went stale.
 - **TV / leanback.** The manifest opts into Android TV / leanback launchability
   while keeping touchscreen optional, so the same app can appear on supported TV
   homes without filtering out phones.

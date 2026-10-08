@@ -342,6 +342,10 @@ card is 800 × 480 px (Nest Hub 7" native resolution) and shows:
 - Period label ("TODAY" / "TONIGHT") in Roboto Bold at the top
 - Top and bottom garment icons stacked in the left column
 - The full insight prose sentence wrapped in Roboto Regular on the right
+- The conditions strip (feels-like range, plus rain, wind and UV when notable)
+- The forecast window the card covers, e.g. "Mon 4 Oct 07:00 – Mon 4 Oct
+  19:00", in small gray text under the strip — so a card left on the Hub
+  shows when it went stale
 
 HA's `camera.mqtt` integration turns the retained binary payload into a
 `camera.*` entity; a one-line automation then pushes it to the Nest Hub

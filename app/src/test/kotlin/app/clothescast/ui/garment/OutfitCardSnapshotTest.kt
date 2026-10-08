@@ -2,9 +2,11 @@ package app.clothescast.ui.garment
 
 import androidx.test.core.app.ApplicationProvider
 import android.content.Context
+import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureUnit
+import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.insight.InsightFormatter
 import org.junit.Rule
@@ -16,6 +18,9 @@ import org.robolectric.annotation.GraphicsMode
 import org.robolectric.annotation.GraphicsMode.Mode.NATIVE
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.io.File
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.Locale
 
 /**
  * Pixel snapshots for [renderOutfitCard]. The function returns raw PNG bytes
@@ -301,6 +306,95 @@ class OutfitCardSnapshotTest {
                 ),
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
+            ),
+        )
+    }
+
+    @Test
+    fun outfit_card_with_window_today() {
+        // Forecast window under the conditions row; the row lifts to make room.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+                header = "Today's ClothesCast",
+                prose = "A hot, breezy one. Wear a t-shirt and shorts, and watch the sun.",
+                info = OutfitCardInfoLines(
+                    tempLine = "18–34°C",
+                    tempFillFraction = thermometerFillFractionFor(34.0),
+                    rainFillFraction = 0.40f,
+                    rainLineShort = "40%",
+                    windLabel = "45 km/h",
+                    windMaxKmh = 45.0,
+                    uvLabel = "UV 9",
+                    uvMax = 9.0,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+                window = "Mon 5 Oct 07:00 – Mon 5 Oct 19:00",
+            ),
+        )
+    }
+
+    @Test
+    fun outfit_card_with_window_tonight() {
+        // Overnight window: the end carries the next day's date.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+                header = "Tonight's ClothesCast",
+                prose = "Tonight, it will be cool. Wear a sweater and long pants.",
+                info = OutfitCardInfoLines(
+                    tempLine = "11–18°C",
+                    tempFillFraction = thermometerFillFractionFor(18.0),
+                    rainFillFraction = null,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+                window = "Mon 5 Oct 19:00 – Tue 6 Oct 07:00",
+            ),
+        )
+    }
+
+    @Test
+    @Config(sdk = [33], qualifiers = "iw")
+    fun outfit_card_with_window_rtl() {
+        // A Hebrew window from the real formatter: RTL date text around LTR
+        // digits and the dash must keep their visual order on the card.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val hours = (19..23).toList() + (0..6).toList()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+                header = "Tonight's ClothesCast",
+                prose = "Tonight, it will be cool. Wear a sweater and long pants.",
+                info = OutfitCardInfoLines(
+                    tempLine = "11–18°C",
+                    tempFillFraction = thermometerFillFractionFor(18.0),
+                    rainFillFraction = null,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+                window = outfitCardWindow(
+                    locale = Locale.forLanguageTag("he"),
+                    forDate = LocalDate.of(2026, 10, 5),
+                    period = ForecastPeriod.TONIGHT,
+                    tonightStart = LocalTime.of(19, 0),
+                    hourly = hours.map {
+                        HourlyForecast(
+                            time = LocalTime.of(it, 0),
+                            temperatureC = 15.0,
+                            feelsLikeC = 15.0,
+                            precipitationProbabilityPct = 0.0,
+                            condition = WeatherCondition.CLEAR,
+                        )
+                    },
+                    timeFormat = TimeFormat.TWENTY_FOUR_HOUR,
+                ),
             ),
         )
     }

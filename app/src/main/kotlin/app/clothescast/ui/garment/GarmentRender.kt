@@ -12,6 +12,7 @@ import androidx.core.graphics.PathParser as AndroidPathParser
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withTranslation
 import app.clothescast.R
+import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureBand
@@ -22,7 +23,16 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.insight.InsightFormatter
+import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.formatHourMinute
+import app.clothescast.core.domain.usecase.tonightDateTime
 import java.io.ByteArrayOutputStream
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DecimalStyle
+import java.util.Locale
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import androidx.annotation.DrawableRes
@@ -498,13 +508,17 @@ internal fun renderCarriedFigureBitmap(
  * │  [        ]                               │
  * │              🌡 18–28°C   🌬 35 km/h      │  ← feels-like low/high · wind
  * │              💧 60% at 3pm  ☀ UV 8        │  ← rain ≥ 20% or coded · UV ≥ 6
+ * │              Mon 4 Oct 07:00 – Mon 4 Oct… │  ← forecast window, when given
  * └──────────────────────────────────────────┘
  * ```
  * [header] is the localised, mixed-case "Today's ClothesCast" string from
  * resources — the renderer uppercases it. [info] carries the pre-formatted
  * temperature / rain / wind / UV lines and fill levels (from
  * [outfitCardInfoLines]); the rain row is hidden when `rainLine` is null and
- * the wind / UV second column appears only when those are notable.
+ * the wind / UV second column appears only when those are notable. [window]
+ * (from [outfitCardWindow]) is the span the forecast covers, so a card left up
+ * on a display shows when it went stale; the conditions row moves up to make
+ * room for it, and nothing moves when it is null.
  */
 internal fun renderOutfitCard(
     context: Context,
@@ -522,6 +536,7 @@ internal fun renderOutfitCard(
     carriedStrokes: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     outerStrokes: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
+    window: String? = null,
 ): ByteArray {
     val bmp = createBitmap(CARD_W, CARD_H)
     val canvas = Canvas(bmp)
@@ -612,12 +627,40 @@ internal fun renderOutfitCard(
         textSize = INFO_PX
         color = 0xFF1A1A1A.toInt()
     }
-    val rowCenterY = (CARD_H - INFO_BOTTOM_PAD - INFO_ICON_PX / 2).toFloat()
+    // The forecast window sits under the conditions row, its bottom on the
+    // row's old bezel-safe line, and lifts the row by its own height so the
+    // two never overlap. Shrinks, then ellipsizes, to fit the column. Laid out
+    // through StaticLayout like the prose, not drawText, so an RTL locale's
+    // date, digits and dash come out in the right visual order.
+    val columnWidth = (CARD_W - proseX - CARD_PAD).toFloat()
+    val windowLayout = window?.takeIf { it.isNotBlank() }?.let { text ->
+        val windowPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            typeface = Typeface.DEFAULT
+            textSize = WINDOW_PX
+            color = WINDOW_ARGB
+        }
+        while (windowPaint.measureText(text) > columnWidth && windowPaint.textSize > WINDOW_MIN_PX) {
+            windowPaint.textSize -= 1f
+        }
+        StaticLayout.Builder
+            .obtain(text, 0, text.length, windowPaint, columnWidth.toInt())
+            .setMaxLines(1)
+            .setEllipsize(TextUtils.TruncateAt.END)
+            .setIncludePad(false)
+            .build()
+    }
+    val windowLift = windowLayout?.let { it.height + WINDOW_GAP_PX } ?: 0
+    val rowCenterY = (CARD_H - INFO_BOTTOM_PAD - INFO_ICON_PX / 2 - windowLift).toFloat()
+    windowLayout?.let { layout ->
+        canvas.withTranslation(proseX.toFloat(), (CARD_H - INFO_BOTTOM_PAD - layout.height).toFloat()) {
+            layout.draw(this)
+        }
+    }
     drawConditionsRow(
         canvas = canvas,
         cells = conditionsCells(info),
         areaX = proseX.toFloat(),
-        areaWidth = (CARD_W - proseX - CARD_PAD).toFloat(),
+        areaWidth = columnWidth,
         centerY = rowCenterY,
         baseIconPx = INFO_ICON_PX,
         textPaint = infoPaint,
@@ -881,6 +924,62 @@ internal data class OutfitCardInfoLines(
     val uvLabel: String? = null,
     val uvMax: Double? = null,
 )
+
+/**
+ * The first hour of [hourly] to the end of its last hour. [forDate] is the
+ * period's own date: a TODAY window sits wholly on it, and a TONIGHT window
+ * dates each hour through [tonightDateTime] (at/after [tonightStart] that
+ * night, earlier the next morning), the same rule the insight itself uses.
+ * Deriving it from the period rather than from the surviving endpoints keeps
+ * a sparse overnight, say one left with only its pre-dawn hours, on the right
+ * day. Null when there are no hours to cover.
+ */
+internal fun outfitCardWindowRange(
+    forDate: LocalDate,
+    period: ForecastPeriod,
+    tonightStart: LocalTime,
+    hourly: List<HourlyForecast>,
+): Pair<LocalDateTime, LocalDateTime>? {
+    if (hourly.isEmpty()) return null
+    val times = hourly.map {
+        when (period) {
+            ForecastPeriod.TODAY -> LocalDateTime.of(forDate, it.time)
+            ForecastPeriod.TONIGHT -> tonightDateTime(forDate, tonightStart, it.time)
+        }
+    }
+    return times.min() to times.max().plusHours(1)
+}
+
+/**
+ * The outfit card's forecast window, "Mon 4 Oct 07:00 – Mon 4 Oct 19:00", so a
+ * card left on a smart display reads as stale once it is. Both ends carry a
+ * weekday + day + short month in [locale] (the region the prose is written in,
+ * from [InsightFormatter.locale]); times follow the user's 12h / 24h setting like every other clock reading in the app. Null when the
+ * insight has no hours to cover, and the card then draws no window line.
+ */
+internal fun outfitCardWindow(
+    locale: Locale,
+    forDate: LocalDate,
+    period: ForecastPeriod,
+    tonightStart: LocalTime,
+    hourly: List<HourlyForecast>,
+    timeFormat: TimeFormat,
+): String? {
+    val (start, end) = outfitCardWindowRange(forDate, period, tonightStart, hourly) ?: return null
+    // Locale ordering, minus the comma many locales put after the weekday
+    // ("Mon, 4 Oct"): the line reads as a plain span, not a sentence.
+    val datePattern = android.text.format.DateFormat.getBestDateTimePattern(locale, "EEEdMMM")
+        .replace(",", "")
+        .replace(Regex(" {2,}"), " ")
+        .trim()
+    // The locale's own digits, as formatHourMinute uses for the times, so a
+    // Persian or Bengali line doesn't mix numbering systems.
+    val dateFormatter = DateTimeFormatter.ofPattern(datePattern, locale)
+        .withDecimalStyle(DecimalStyle.of(locale))
+    fun format(t: LocalDateTime) =
+        "${dateFormatter.format(t)} ${timeFormat.formatHourMinute(t.toLocalTime(), locale)}"
+    return "${format(start)} – ${format(end)}"
+}
 
 internal fun outfitCardInfoLines(
     context: Context,
@@ -1268,6 +1367,12 @@ private const val INFO_ICON_PX = 36
 // Bottom-of-card padding for the info row — larger than CARD_PAD so the
 // conditions row clears the Nest Hub's bezel + bottom status overlay.
 private const val INFO_BOTTOM_PAD = 60
+// Forecast-window line under the conditions row: small and gray so it reads
+// as a footnote, never smaller than WINDOW_MIN_PX when shrinking to fit.
+private const val WINDOW_PX = 16f
+private const val WINDOW_MIN_PX = 12f
+private const val WINDOW_GAP_PX = 8
+private const val WINDOW_ARGB = 0xFF888888.toInt()
 
 /**
  * LRU-ish bitmap cache. Most users have ≤2 widget cells × ≤4 garment slots ×

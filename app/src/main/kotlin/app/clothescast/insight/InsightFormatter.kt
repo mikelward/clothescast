@@ -68,7 +68,8 @@ enum class InsightSurface { SPEECH, VISUAL, SETTINGS_PREVIEW }
  */
 class InsightFormatter(
     private val resources: Resources,
-    private val locale: Locale = Locale.getDefault(),
+    /** The language and regional conventions this formatter renders in. */
+    val locale: Locale = Locale.getDefault(),
     private val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     /**
      * How the temperature-range sentence is rendered:

@@ -33,6 +33,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DecimalStyle
 import java.util.Locale
+import kotlin.math.ceil
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import androidx.annotation.DrawableRes
@@ -508,7 +509,7 @@ internal fun renderCarriedFigureBitmap(
  * │  [        ]                               │
  * │              🌡 18–28°C   🌬 35 km/h      │  ← feels-like low/high · wind
  * │              💧 60% at 3pm  ☀ UV 8        │  ← rain ≥ 20% or coded · UV ≥ 6
- * │              Mon 4 Oct 07:00 – Mon 4 Oct… │  ← forecast window, when given
+ * │                Mon 4 Oct 07:00 – Mon 4 Oct │  ← forecast window, centered on the row
  * └──────────────────────────────────────────┘
  * ```
  * [header] is the localised, mixed-case "Today's ClothesCast" string from
@@ -631,7 +632,8 @@ internal fun renderOutfitCard(
     // row's old bezel-safe line, and lifts the row by its own height so the
     // two never overlap. Shrinks, then ellipsizes, to fit the column. Laid out
     // through StaticLayout like the prose, not drawText, so an RTL locale's
-    // date, digits and dash come out in the right visual order.
+    // date, digits and dash come out in the right visual order. The layout is
+    // only as wide as its text, so it can be centered on the strip below.
     val columnWidth = (CARD_W - proseX - CARD_PAD).toFloat()
     val windowLayout = window?.takeIf { it.isNotBlank() }?.let { text ->
         val windowPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -642,8 +644,9 @@ internal fun renderOutfitCard(
         while (windowPaint.measureText(text) > columnWidth && windowPaint.textSize > WINDOW_MIN_PX) {
             windowPaint.textSize -= 1f
         }
+        val width = minOf(ceil(StaticLayout.getDesiredWidth(text, windowPaint)), columnWidth).toInt()
         StaticLayout.Builder
-            .obtain(text, 0, text.length, windowPaint, columnWidth.toInt())
+            .obtain(text, 0, text.length, windowPaint, width)
             .setMaxLines(1)
             .setEllipsize(TextUtils.TruncateAt.END)
             .setIncludePad(false)
@@ -651,12 +654,7 @@ internal fun renderOutfitCard(
     }
     val windowLift = windowLayout?.let { it.height + WINDOW_GAP_PX } ?: 0
     val rowCenterY = (CARD_H - INFO_BOTTOM_PAD - INFO_ICON_PX / 2 - windowLift).toFloat()
-    windowLayout?.let { layout ->
-        canvas.withTranslation(proseX.toFloat(), (CARD_H - INFO_BOTTOM_PAD - layout.height).toFloat()) {
-            layout.draw(this)
-        }
-    }
-    drawConditionsRow(
+    val stripSpan = drawConditionsRow(
         canvas = canvas,
         cells = conditionsCells(info),
         areaX = proseX.toFloat(),
@@ -668,6 +666,19 @@ internal fun renderOutfitCard(
         outlineArgb = INFO_ICON_OUTLINE_ARGB,
         center = false,
     )
+    // Centered on the strip as drawn, then kept inside the text column: under a
+    // short strip (just the temperature, say) the line is the wider of the two,
+    // and centering would push it into the icon column, so it settles left.
+    windowLayout?.let { layout ->
+        val columnStart = proseX.toFloat()
+        val left = stripSpan
+            ?.let { (it.start + it.endInclusive) / 2f - layout.width / 2f }
+            ?.coerceIn(columnStart, columnStart + columnWidth - layout.width)
+            ?: columnStart
+        canvas.withTranslation(left, (CARD_H - INFO_BOTTOM_PAD - layout.height).toFloat()) {
+            layout.draw(this)
+        }
+    }
 
     val out = ByteArrayOutputStream()
     bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
@@ -1164,6 +1175,8 @@ internal fun conditionsCells(info: OutfitCardInfoLines): List<ConditionsCell> = 
  * colour and is scaled in place. Solid wind / UV glyphs use [ConditionsCell.tintArgb];
  * thermometer / droplet fill against [interiorArgb] with an [outlineArgb] edge.
  * The single source of truth for the strip's look across every surface.
+ * Returns the horizontal span the row occupies (first glyph box to last label's
+ * end), or null when there were no cells to draw.
  */
 private fun drawConditionsRow(
     canvas: Canvas,
@@ -1176,8 +1189,8 @@ private fun drawConditionsRow(
     interiorArgb: Int,
     outlineArgb: Int,
     center: Boolean,
-) {
-    if (cells.isEmpty()) return
+): ClosedFloatingPointRange<Float>? {
+    if (cells.isEmpty()) return null
     var iconPx = baseIconPx
     var iconGap = iconPx * STRIP_ICON_TEXT_GAP_FRACTION
     var sectionGap = iconPx * STRIP_SECTION_GAP_FRACTION
@@ -1198,6 +1211,7 @@ private fun drawConditionsRow(
     val totalWidth = cellWidths.sum() + sectionGap * (cells.size - 1)
     var x = if (center) areaX + (areaWidth - totalWidth) / 2f else areaX
     x = x.coerceAtLeast(areaX)
+    val rowStart = x
     val iconTop = (centerY - iconPx / 2f).roundToInt()
     val baseline = centerY - (textPaint.fontMetrics.ascent + textPaint.fontMetrics.descent) / 2f
 
@@ -1222,6 +1236,7 @@ private fun drawConditionsRow(
         canvas.drawText(cell.label, ix + iconPx + iconGap, baseline, textPaint)
         x += cellWidths[i] + sectionGap
     }
+    return rowStart..(rowStart + totalWidth)
 }
 
 private data class ConditionsStripCacheKey(

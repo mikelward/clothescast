@@ -803,10 +803,10 @@
         },
         {
             "uniqueId": "androidx.core:core",
-            "artifactVersion": "1.19.0",
+            "artifactVersion": "1.19.1",
             "name": "Core",
             "description": "Provides backward-compatible implementations of Android platform APIs and features.",
-            "website": "https://developer.android.com/jetpack/androidx/releases/core#1.19.0",
+            "website": "https://developer.android.com/jetpack/androidx/releases/core#1.19.1",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -828,10 +828,10 @@
         },
         {
             "uniqueId": "androidx.core:core-ktx",
-            "artifactVersion": "1.19.0",
+            "artifactVersion": "1.19.1",
             "name": "Core Kotlin Extensions",
             "description": "Kotlin extensions for 'core' artifact",
-            "website": "https://developer.android.com/jetpack/androidx/releases/core#1.19.0",
+            "website": "https://developer.android.com/jetpack/androidx/releases/core#1.19.1",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1942,10 +1942,10 @@
         },
         {
             "uniqueId": "androidx.navigation:navigation-common-android",
-            "artifactVersion": "2.10.1",
+            "artifactVersion": "2.10.2",
             "name": "Navigation Common",
             "description": "Android Navigation-Common",
-            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.2",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1967,10 +1967,10 @@
         },
         {
             "uniqueId": "androidx.navigation:navigation-compose-android",
-            "artifactVersion": "2.10.1",
+            "artifactVersion": "2.10.2",
             "name": "Compose Navigation",
             "description": "Compose integration with Navigation",
-            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.2",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1992,10 +1992,10 @@
         },
         {
             "uniqueId": "androidx.navigation:navigation-runtime-android",
-            "artifactVersion": "2.10.1",
+            "artifactVersion": "2.10.2",
             "name": "Navigation Runtime",
             "description": "Android Navigation-Runtime",
-            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.1",
+            "website": "https://developer.android.com/jetpack/androidx/releases/navigation#2.10.2",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -2587,10 +2587,10 @@
         },
         {
             "uniqueId": "androidx.work:work-runtime",
-            "artifactVersion": "2.11.2",
+            "artifactVersion": "2.12.0",
             "name": "WorkManager Runtime",
             "description": "Android WorkManager runtime library",
-            "website": "https://developer.android.com/jetpack/androidx/releases/work#2.11.2",
+            "website": "https://developer.android.com/jetpack/androidx/releases/work#2.12.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -2612,10 +2612,10 @@
         },
         {
             "uniqueId": "androidx.work:work-runtime-ktx",
-            "artifactVersion": "2.11.2",
+            "artifactVersion": "2.12.0",
             "name": "WorkManager Kotlin Extensions",
             "description": "Android WorkManager Kotlin Extensions",
-            "website": "https://developer.android.com/jetpack/androidx/releases/work#2.11.2",
+            "website": "https://developer.android.com/jetpack/androidx/releases/work#2.12.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -3666,7 +3666,7 @@
         },
         {
             "uniqueId": "com.mikelward.androidlog:logging-android",
-            "artifactVersion": "3.0.73",
+            "artifactVersion": "3.1.74",
             "name": "androidlog logging-android",
             "description": "The Android sinks and bug-report transport for androidlog.",
             "website": "https://github.com/mikelward/androidlog",
@@ -3684,7 +3684,7 @@
         },
         {
             "uniqueId": "com.mikelward.androidlog:logging-core",
-            "artifactVersion": "3.0.73",
+            "artifactVersion": "3.1.74",
             "name": "androidlog logging-core",
             "description": "The privacy floor and ring buffer, testable without Android.",
             "website": "https://github.com/mikelward/androidlog",

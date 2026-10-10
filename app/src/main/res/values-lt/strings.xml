@@ -156,6 +156,7 @@ What is NOT overridden, by design:
     <string name="feels_like_week_widget_label">Juntama temperatūra (7 dienos)</string>
     <string name="feels_like_week_widget_description">Juntama temperatūra artimiausias 7 dienas.</string>
     <string name="feels_like_widget_empty_title">Prognozės dar nėra</string>
+    <string name="rain_widget_description">Lietaus tikimybė dabartiniam laikotarpiui.</string>
     <string name="conditions_widget_label">Sąlygos</string>
     <string name="conditions_widget_description">Temperatūra, lietus, vėjas ir UV vienu žvilgsniu.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -175,6 +176,7 @@ What is NOT overridden, by design:
     <string name="today_precipitation_peak_day">Pikas %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Šiandien lietaus nesitikima</string>
     <string name="today_precipitation_dry_week">Lietaus nesitikima</string>
+    <string name="today_precipitation_dry_overnight">Naktį lietaus nesitikima</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeliai:</string>

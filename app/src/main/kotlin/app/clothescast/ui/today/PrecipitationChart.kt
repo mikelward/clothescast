@@ -1,6 +1,7 @@
 package app.clothescast.ui.today
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +53,9 @@ fun PrecipitationChart(
     // The y-axis is pinned 0..100 regardless, so this only affects which
     // series are emitted.
     showModelSpread: Boolean = false,
+    // When true the chart fills the height it's given instead of its fixed
+    // 140.dp — the home-screen widget's bitmap is sized to the cell.
+    fillHeight: Boolean = false,
 ) {
     if (hourly.isEmpty()) return
 
@@ -189,7 +193,7 @@ fun PrecipitationChart(
             // Shorter than ForecastCard's 180.dp temperature chart — probability
             // is bounded 0–100 and doesn't need as much vertical room for the
             // line to be readable.
-            .height(140.dp)
+            .let { if (fillHeight) it.fillMaxHeight() else it.height(140.dp) }
             .let { mod ->
                 if (scrubController != null) {
                     mod.chartScrub(scrubController, scrubBounds, hourly, startDate)

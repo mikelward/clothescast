@@ -154,6 +154,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="feels_like_week_widget_label">Suhu terasa (7 hari)</string>
     <string name="feels_like_week_widget_description">Suhu terasa untuk 7 hari akan datang.</string>
     <string name="feels_like_widget_empty_title">Tiada ramalan lagi</string>
+    <string name="rain_widget_description">Kebarangkalian hujan untuk tempoh semasa.</string>
     <string name="conditions_widget_label">Keadaan</string>
     <string name="conditions_widget_description">Suhu, hujan, angin dan UV sepintas lalu.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -173,6 +174,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_precipitation_peak_day">Puncak %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Tiada hujan dijangka hari ini</string>
     <string name="today_precipitation_dry_week">Tiada hujan dijangka</string>
+    <string name="today_precipitation_dry_overnight">Tiada hujan dijangka semalaman</string>
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Model:</string>

@@ -156,6 +156,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="feels_like_week_widget_label">Temperatură resimțită (7 zile)</string>
     <string name="feels_like_week_widget_description">Temperatura resimțită pentru următoarele 7 zile.</string>
     <string name="feels_like_widget_empty_title">Nicio prognoză încă</string>
+    <string name="rain_widget_description">Probabilitatea de ploaie pentru perioada curentă.</string>
     <string name="conditions_widget_label">Condiții</string>
     <string name="conditions_widget_description">Temperatură, ploaie, vânt și UV dintr-o privire.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -175,6 +176,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_precipitation_peak_day">Vârf %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Nu se prevede ploaie astăzi</string>
     <string name="today_precipitation_dry_week">Nu se prevede ploaie</string>
+    <string name="today_precipitation_dry_overnight">Nu se prevede ploaie peste noapte</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modele:</string>

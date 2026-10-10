@@ -389,6 +389,7 @@ displayed label localizes.
     <string name="feels_like_week_widget_label">체감 온도 (7일)</string>
     <string name="feels_like_week_widget_description">앞으로 7일간의 체감 온도입니다.</string>
     <string name="feels_like_widget_empty_title">아직 예보가 없어요</string>
+    <string name="rain_widget_description">현재 시간대의 강수 확률입니다.</string>
     <string name="conditions_widget_label">날씨 상태</string>
     <string name="conditions_widget_description">온도, 비, 바람, UV를 한눈에.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -600,6 +601,7 @@ displayed label localizes.
     <string name="today_precipitation_peak_day">최고 %1$d%% %2$s</string>
     <string name="today_precipitation_dry">오늘은 비 예보 없음</string>
     <string name="today_precipitation_dry_week">비 예보 없음</string>
+    <string name="today_precipitation_dry_overnight">밤사이 비 예보 없음</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">모델:</string>

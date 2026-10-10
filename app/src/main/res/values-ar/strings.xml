@@ -159,6 +159,7 @@ they work correctly in both the single-band and range templates.
     <string name="feels_like_week_widget_label">درجة الحرارة المحسوسة (7 أيام)</string>
     <string name="feels_like_week_widget_description">درجة الحرارة المحسوسة خلال الأيام السبعة القادمة.</string>
     <string name="feels_like_widget_empty_title">لا توجد توقعات بعد</string>
+    <string name="rain_widget_description">احتمالية الأمطار للفترة الحالية.</string>
     <string name="conditions_widget_label">الأحوال الجوية</string>
     <string name="conditions_widget_description">درجة الحرارة والمطر والرياح وUV في لمحة.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -178,6 +179,7 @@ they work correctly in both the single-band and range templates.
     <string name="today_precipitation_peak_day">الذروة %1$d%% %2$s</string>
     <string name="today_precipitation_dry">لا أمطار متوقعة اليوم</string>
     <string name="today_precipitation_dry_week">لا أمطار متوقعة</string>
+    <string name="today_precipitation_dry_overnight">لا أمطار متوقعة طوال الليل</string>
 
     <!-- Today — model/chart -->
     <string name="today_chart_model_legend_label">النماذج:</string>

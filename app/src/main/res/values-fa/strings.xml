@@ -160,6 +160,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="feels_like_week_widget_label">دمای احساس‌شده (7 روز)</string>
     <string name="feels_like_week_widget_description">دمای احساس‌شده طی 7 روز آینده.</string>
     <string name="feels_like_widget_empty_title">هنوز پیش‌بینی‌ای نیست</string>
+    <string name="rain_widget_description">احتمال بارندگی برای بازه فعلی.</string>
     <string name="conditions_widget_label">شرایط</string>
     <string name="conditions_widget_description">دما، باران، باد و UV در یک نگاه.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -177,6 +178,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_precipitation_peak_day">اوج %1$d%% %2$s</string>
     <string name="today_precipitation_dry">امروز بارندگی انتظار نمی‌رود</string>
     <string name="today_precipitation_dry_week">بارندگی انتظار نمی‌رود</string>
+    <string name="today_precipitation_dry_overnight">در طول شب بارندگی انتظار نمی‌رود</string>
     <string name="today_chart_model_legend_label">مدل‌ها:</string>
     <string name="today_chart_main_line_label">میانگین</string>
     <string name="today_wind_title">سرعت باد</string>

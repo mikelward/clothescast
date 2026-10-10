@@ -158,6 +158,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="feels_like_week_widget_label">Sajustā temperatūra (7 dienas)</string>
     <string name="feels_like_week_widget_description">Sajustā temperatūra nākamajās 7 dienās.</string>
     <string name="feels_like_widget_empty_title">Prognozes vēl nav</string>
+    <string name="rain_widget_description">Lietus iespējamība pašreizējam periodam.</string>
     <string name="conditions_widget_label">Apstākļi</string>
     <string name="conditions_widget_description">Temperatūra, lietus, vējš un UV vienā mirklī.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -175,6 +176,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_precipitation_peak_day">Maksimums %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Šodien lietus nav paredzams</string>
     <string name="today_precipitation_dry_week">Lietus nav paredzams</string>
+    <string name="today_precipitation_dry_overnight">Naktī lietus nav paredzams</string>
     <string name="today_chart_model_legend_label">Modeļi:</string>
     <string name="today_chart_main_line_label">Vidējais</string>
     <string name="today_wind_title">Vēja ātrums</string>

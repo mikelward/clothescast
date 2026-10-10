@@ -160,6 +160,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="feels_like_week_widget_label">อุณหภูมิที่รู้สึก (7 วัน)</string>
     <string name="feels_like_week_widget_description">อุณหภูมิที่รู้สึกในช่วง 7 วันข้างหน้า</string>
     <string name="feels_like_widget_empty_title">ยังไม่มีพยากรณ์</string>
+    <string name="rain_widget_description">โอกาสฝนตกสำหรับช่วงเวลาปัจจุบัน</string>
     <string name="conditions_widget_label">สภาพอากาศ</string>
     <string name="conditions_widget_description">อุณหภูมิ ฝน ลม และ UV ในพริบตา</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -179,6 +180,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak_day">สูงสุด %1$d%% %2$s</string>
     <string name="today_precipitation_dry">ไม่คาดว่าจะมีฝนวันนี้</string>
     <string name="today_precipitation_dry_week">ไม่คาดว่าจะมีฝน</string>
+    <string name="today_precipitation_dry_overnight">ไม่คาดว่าจะมีฝนตลอดทั้งคืน</string>
 
     <!-- Model spread / chart labels -->
     <string name="today_chart_model_legend_label">แบบจำลอง:</string>

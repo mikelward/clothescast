@@ -342,6 +342,7 @@ is unchanged; only the displayed label localizes.
     <string name="feels_like_week_widget_label">Odczuwalna (7 dni)</string>
     <string name="feels_like_week_widget_description">Temperatura odczuwalna na najbliższe 7 dni.</string>
     <string name="feels_like_widget_empty_title">Brak prognozy</string>
+    <string name="rain_widget_description">Prawdopodobieństwo opadów dla bieżącej pory.</string>
     <string name="conditions_widget_label">Warunki</string>
     <string name="conditions_widget_description">Temperatura, deszcz, wiatr i UV w skrócie.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -541,6 +542,7 @@ is unchanged; only the displayed label localizes.
     <string name="today_precipitation_peak_day">Szczyt %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Dziś nie spodziewamy się deszczu</string>
     <string name="today_precipitation_dry_week">Nie spodziewamy się deszczu</string>
+    <string name="today_precipitation_dry_overnight">W nocy nie spodziewamy się deszczu</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modele:</string>

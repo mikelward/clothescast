@@ -60,6 +60,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="feels_like_week_widget_label">Sensació (7 dies)</string>
     <string name="feels_like_week_widget_description">La temperatura percebuda durant els pròxims 7 dies.</string>
     <string name="feels_like_widget_empty_title">Encara no hi ha previsió</string>
+    <string name="rain_widget_description">La probabilitat de pluja per al període actual.</string>
     <string name="conditions_widget_label">Condicions</string>
     <string name="conditions_widget_description">Temperatura, pluja, vent i UV d\'un cop d\'ull.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -77,6 +78,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_precipitation_peak_day">Màxim %1$d%% %2$s</string>
     <string name="today_precipitation_dry">No s\'espera pluja avui</string>
     <string name="today_precipitation_dry_week">No s\'espera pluja</string>
+    <string name="today_precipitation_dry_overnight">No s\'espera pluja durant la nit</string>
 
     <string name="today_chart_model_legend_label">Models:</string>
     <string name="today_chart_main_line_label">Mitjana</string>

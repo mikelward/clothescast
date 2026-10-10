@@ -418,6 +418,7 @@ What is NOT overridden, by design:
     <string name="today_precipitation_peak_day">Vrchol %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Dnes sa zrážky neočakávajú</string>
     <string name="today_precipitation_dry_week">Zrážky sa neočakávajú</string>
+    <string name="today_precipitation_dry_overnight">V noci sa zrážky neočakávajú</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modely:</string>
@@ -463,6 +464,7 @@ What is NOT overridden, by design:
     <string name="feels_like_week_widget_label">Pocitová (7 dní)</string>
     <string name="feels_like_week_widget_description">Pocitová teplota na nasledujúcich 7 dní.</string>
     <string name="feels_like_widget_empty_title">Zatiaľ žiadna predpoveď</string>
+    <string name="rain_widget_description">Pravdepodobnosť zrážok pre aktuálne obdobie.</string>
     <string name="conditions_widget_label">Podmienky</string>
     <string name="conditions_widget_description">Teplota, dážď, vietor a UV na prvý pohľad.</string>
     <string name="conditions_rain_pct">%1$d%%</string>

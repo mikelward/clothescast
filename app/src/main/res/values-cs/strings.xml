@@ -406,6 +406,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_precipitation_peak_day">Vrchol %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Dnes se srážky neočekávají</string>
     <string name="today_precipitation_dry_week">Srážky se neočekávají</string>
+    <string name="today_precipitation_dry_overnight">V noci se srážky neočekávají</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modely:</string>
@@ -451,6 +452,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="feels_like_week_widget_label">Pocitová (7 dní)</string>
     <string name="feels_like_week_widget_description">Pocitová teplota na příštích 7 dní.</string>
     <string name="feels_like_widget_empty_title">Zatím žádná předpověď</string>
+    <string name="rain_widget_description">Pravděpodobnost srážek pro aktuální období.</string>
     <string name="conditions_widget_label">Podmínky</string>
     <string name="conditions_widget_description">Teplota, déšť, vítr a UV na první pohled.</string>
     <string name="conditions_rain_pct">%1$d%%</string>

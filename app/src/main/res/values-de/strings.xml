@@ -380,6 +380,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="feels_like_week_widget_label">Gefühlte Temperatur (7 Tage)</string>
     <string name="feels_like_week_widget_description">Die gefühlte Temperatur für die nächsten 7 Tage.</string>
     <string name="feels_like_widget_empty_title">Noch keine Vorhersage</string>
+    <string name="rain_widget_description">Die Regenwahrscheinlichkeit für den aktuellen Zeitraum.</string>
     <string name="conditions_widget_label">Bedingungen</string>
     <string name="conditions_widget_description">Temperatur, Regen, Wind und UV auf einen Blick.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -619,6 +620,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_peak_day">Spitze %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Heute kein Regen erwartet</string>
     <string name="today_precipitation_dry_week">Kein Regen erwartet</string>
+    <string name="today_precipitation_dry_overnight">Über Nacht kein Regen erwartet</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modelle:</string>

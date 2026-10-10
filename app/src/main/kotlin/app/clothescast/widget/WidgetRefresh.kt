@@ -27,6 +27,7 @@ import app.clothescast.core.domain.model.WindSpeedUnit
  *    [windSpeedUnit].
  *  - [FeelsLikeWidget]: [temperatureUnit], [timeFormat], [colorPalette],
  *    [themeMode].
+ *  - [ChanceOfRainWidget]: [timeFormat], [colorPalette], [themeMode].
  *  - The outfit icon ([OutfitWidget]): [clothesRules], [defaultTop] /
  *    [defaultBottom], and the per-tier colour overrides.
  *
@@ -55,7 +56,7 @@ data class WidgetInputs(
 )
 
 /**
- * True when at least one ClothesCast widget (any of the four providers) is
+ * True when at least one ClothesCast widget (any of the five providers) is
  * currently placed on a launcher. Gates the widget-only refresh alarm chain
  * (see [app.clothescast.alarm.WidgetRefreshScheduler]): armed while this is
  * true, cancelled once the last widget is removed.
@@ -67,6 +68,7 @@ internal fun hasPlacedClothesCastWidgets(context: Context): Boolean {
         FeelsLikeWidgetReceiver::class.java,
         SevenDayFeelsLikeWidgetReceiver::class.java,
         ConditionsWidgetReceiver::class.java,
+        ChanceOfRainWidgetReceiver::class.java,
     ).any { manager.getAppWidgetIds(ComponentName(context, it)).isNotEmpty() }
 }
 

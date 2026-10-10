@@ -342,6 +342,7 @@ the displayed label localizes.
     <string name="feels_like_week_widget_label">Gevoelstemperatuur (7 dagen)</string>
     <string name="feels_like_week_widget_description">De gevoelstemperatuur voor de komende 7 dagen.</string>
     <string name="feels_like_widget_empty_title">Nog geen voorspelling</string>
+    <string name="rain_widget_description">De kans op regen voor de huidige periode.</string>
     <string name="conditions_widget_label">Omstandigheden</string>
     <string name="conditions_widget_description">Temperatuur, regen, wind en UV in één oogopslag.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -543,6 +544,7 @@ the displayed label localizes.
     <string name="today_precipitation_peak_day">Piek %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Geen regen verwacht vandaag</string>
     <string name="today_precipitation_dry_week">Geen regen verwacht</string>
+    <string name="today_precipitation_dry_overnight">Vannacht geen regen verwacht</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modellen:</string>

@@ -302,6 +302,7 @@ displayed label localizes.
     <string name="feels_like_week_widget_label">Tuntuva lämpötila (7 päivää)</string>
     <string name="feels_like_week_widget_description">Tuntuva lämpötila seuraavan 7 päivän ajalle.</string>
     <string name="feels_like_widget_empty_title">Ei ennustetta vielä</string>
+    <string name="rain_widget_description">Sateen todennäköisyys tälle ajanjaksolle.</string>
     <string name="conditions_widget_label">Olosuhteet</string>
     <string name="conditions_widget_description">Lämpötila, sade, tuuli ja UV yhdellä silmäyksellä.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -487,6 +488,7 @@ displayed label localizes.
     <string name="today_precipitation_peak_day">Huippu %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Ei sadetta odotettavissa tänään</string>
     <string name="today_precipitation_dry_week">Ei sadetta odotettavissa</string>
+    <string name="today_precipitation_dry_overnight">Ei sadetta odotettavissa yön aikana</string>
 
     <string name="today_chart_model_legend_label">Mallit:</string>
     <string name="today_chart_main_line_label">Ka.</string>

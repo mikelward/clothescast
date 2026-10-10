@@ -302,6 +302,7 @@ displayed label localizes.
     <string name="feels_like_week_widget_label">Hissedilen sıcaklık (7 gün)</string>
     <string name="feels_like_week_widget_description">Önümüzdeki 7 gün boyunca hissedilen sıcaklık.</string>
     <string name="feels_like_widget_empty_title">Henüz tahmin yok</string>
+    <string name="rain_widget_description">Mevcut dönem için yağış ihtimali.</string>
     <string name="conditions_widget_label">Koşullar</string>
     <string name="conditions_widget_description">Sıcaklık, yağmur, rüzgar ve UV bir bakışta.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -486,6 +487,7 @@ displayed label localizes.
     <string name="today_precipitation_peak_day">Zirve %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Bugün yağış beklenmez</string>
     <string name="today_precipitation_dry_week">Yağış beklenmez</string>
+    <string name="today_precipitation_dry_overnight">Gece boyunca yağış beklenmez</string>
 
     <string name="today_chart_model_legend_label">Modeller:</string>
     <string name="today_chart_main_line_label">Ortalama</string>

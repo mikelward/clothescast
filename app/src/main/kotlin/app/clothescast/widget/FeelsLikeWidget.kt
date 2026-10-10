@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -77,7 +78,7 @@ class FeelsLikeWidget : GlanceAppWidget() {
         val bitmap = buildChartBitmap(context, id, weekly = false)
         provideContent {
             GlanceTheme {
-                FeelsLikeChartContent(bitmap = bitmap, page = THIS_PERIOD_PAGE)
+                ChartWidgetContent(bitmap = bitmap, page = THIS_PERIOD_PAGE, labelRes = R.string.feels_like_widget_label)
             }
         }
     }
@@ -91,14 +92,14 @@ class SevenDayFeelsLikeWidget : GlanceAppWidget() {
         val bitmap = buildChartBitmap(context, id, weekly = true)
         provideContent {
             GlanceTheme {
-                FeelsLikeChartContent(bitmap = bitmap, page = WEEK_PAGE)
+                ChartWidgetContent(bitmap = bitmap, page = WEEK_PAGE, labelRes = R.string.feels_like_week_widget_label)
             }
         }
     }
 }
 
 /** Pager pages the tap intents deep-link to — page 0 is the current period, page 2 the 7-day deck. */
-private const val THIS_PERIOD_PAGE = 0
+internal const val THIS_PERIOD_PAGE = 0
 private const val WEEK_PAGE = 2
 
 // Fallback render size for the off-screen chart bitmap (3:1, mid-range). Used
@@ -126,15 +127,26 @@ private const val MAX_ASPECT_RATIO = 4f
 // Upper bound on how long the off-screen compose+settle may take before we give
 // up and show the empty state. Generous — a widget refresh is infrequent — but
 // bounded so a composable that never settles can't wedge the worker.
-private const val RENDER_TIMEOUT_MS = 4000L
+internal const val RENDER_TIMEOUT_MS = 4000L
 
+/**
+ * Shared Glance shell for the chart widgets (feels-like and chance of rain):
+ * the rasterised chart [bitmap], or the "no forecast yet" empty state when
+ * it's null. Tapping opens Today on [page].
+ *
+ * The shell paints a background only for the empty state. With a chart, the
+ * bitmap's own card is the widget's surface: it's themed from the in-app
+ * theme setting, while GlanceTheme follows the system, so a shell background
+ * behind it showed as a mismatched border (a light frame round a dark chart)
+ * whenever the two disagreed.
+ */
 @Composable
-private fun FeelsLikeChartContent(bitmap: Bitmap?, page: Int) {
+internal fun ChartWidgetContent(bitmap: Bitmap?, page: Int, @StringRes labelRes: Int) {
     val context = LocalContext.current
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
-            .background(GlanceTheme.colors.widgetBackground)
+            .let { if (bitmap == null) it.background(GlanceTheme.colors.widgetBackground) else it }
             .cornerRadius(16.dp)
             .clickable(actionStartActivity(chartTapIntent(context, page))),
         contentAlignment = Alignment.Center,
@@ -144,10 +156,7 @@ private fun FeelsLikeChartContent(bitmap: Bitmap?, page: Int) {
         } else {
             Image(
                 provider = ImageProvider(bitmap),
-                contentDescription = context.getString(
-                    if (page == WEEK_PAGE) R.string.feels_like_week_widget_label
-                    else R.string.feels_like_widget_label,
-                ),
+                contentDescription = context.getString(labelRes),
                 contentScale = ContentScale.Fit,
                 modifier = GlanceModifier.fillMaxSize().padding(4.dp),
             )
@@ -263,7 +272,7 @@ private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boo
 // Resizing the widget triggers an options-changed update, which re-runs
 // provideGlance and re-renders at the new size. Falls back to a mid-range 3:1
 // aspect when no size is reported yet (e.g. the picker preview).
-private fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
+internal fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
     val fallback = RENDER_WIDTH_PX to RENDER_HEIGHT_PX
     val options = runCatching {
         val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
@@ -337,6 +346,7 @@ internal suspend fun updateAllClothesCastWidgets(context: Context) {
     guarded("Outfit") { OutfitWidget().updateAll(context) }
     guarded("Feels-like") { FeelsLikeWidget().updateAll(context) }
     guarded("7-day feels-like") { SevenDayFeelsLikeWidget().updateAll(context) }
+    guarded("Chance of rain") { ChanceOfRainWidget().updateAll(context) }
     guarded("Conditions") { ConditionsWidget().updateAll(context) }
 }
 

@@ -150,6 +150,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="feels_like_week_widget_label">Joto linalohisi (siku 7)</string>
     <string name="feels_like_week_widget_description">Joto linalohisi kwa siku 7 zijazo.</string>
     <string name="feels_like_widget_empty_title">Hakuna utabiri bado</string>
+    <string name="rain_widget_description">Uwezekano wa mvua kwa kipindi cha sasa.</string>
     <string name="conditions_widget_label">Hali</string>
     <string name="conditions_widget_description">Halijoto, mvua, upepo na UV kwa mtazamo mmoja.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -167,6 +168,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak_day">Kilele %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Hakuna mvua inayotarajiwa leo</string>
     <string name="today_precipitation_dry_week">Hakuna mvua inayotarajiwa</string>
+    <string name="today_precipitation_dry_overnight">Hakuna mvua inayotarajiwa usiku</string>
     <string name="today_chart_model_legend_label">Mifano:</string>
     <string name="today_chart_main_line_label">Wastani</string>
     <string name="today_wind_title">Kasi ya upepo</string>

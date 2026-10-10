@@ -370,6 +370,7 @@ label localizes.
     <string name="feels_like_week_widget_label">体感温度（7 天）</string>
     <string name="feels_like_week_widget_description">未来 7 天的体感温度。</string>
     <string name="feels_like_widget_empty_title">还没有预报</string>
+    <string name="rain_widget_description">当前时段的降雨概率。</string>
     <string name="conditions_widget_label">天气状况</string>
     <string name="conditions_widget_description">温度、降雨、风力和 UV 一目了然。</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -589,6 +590,7 @@ label localizes.
     <string name="today_precipitation_peak_day">峰值 %1$d%% %2$s</string>
     <string name="today_precipitation_dry">今日预计无雨</string>
     <string name="today_precipitation_dry_week">预计无雨</string>
+    <string name="today_precipitation_dry_overnight">今夜预计无雨</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">模型：</string>

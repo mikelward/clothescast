@@ -421,6 +421,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="feels_like_week_widget_label">Αισθητή θερμοκρασία (7 ημέρες)</string>
     <string name="feels_like_week_widget_description">Η αισθητή θερμοκρασία για τις επόμενες 7 ημέρες.</string>
     <string name="feels_like_widget_empty_title">Δεν υπάρχει ακόμη πρόβλεψη</string>
+    <string name="rain_widget_description">Η πιθανότητα βροχής για την τρέχουσα περίοδο.</string>
     <string name="conditions_widget_label">Συνθήκες</string>
     <string name="conditions_widget_description">Θερμοκρασία, βροχή, άνεμος και UV με μια ματιά.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -571,6 +572,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_peak_day">Αιχμή %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Δεν αναμένεται βροχή σήμερα</string>
     <string name="today_precipitation_dry_week">Δεν αναμένεται βροχή</string>
+    <string name="today_precipitation_dry_overnight">Δεν αναμένεται βροχή τη νύχτα</string>
 
     <!-- Model spread / chart strings. -->
     <string name="today_chart_model_legend_label">Μοντέλα:</string>

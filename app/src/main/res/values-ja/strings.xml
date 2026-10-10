@@ -377,6 +377,7 @@ the displayed label localizes.
     <string name="feels_like_week_widget_label">体感温度（7日間）</string>
     <string name="feels_like_week_widget_description">今後7日間の体感温度です。</string>
     <string name="feels_like_widget_empty_title">まだ予報がありません</string>
+    <string name="rain_widget_description">現在の時間帯の降水確率です。</string>
     <string name="conditions_widget_label">コンディション</string>
     <string name="conditions_widget_description">気温、雨、風、UVをひと目で。</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -596,6 +597,7 @@ the displayed label localizes.
     <string name="today_precipitation_peak_day">ピーク %1$d%% %2$s</string>
     <string name="today_precipitation_dry">今日は雨の予報なし</string>
     <string name="today_precipitation_dry_week">雨の予報なし</string>
+    <string name="today_precipitation_dry_overnight">夜間は雨の予報なし</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">モデル:</string>

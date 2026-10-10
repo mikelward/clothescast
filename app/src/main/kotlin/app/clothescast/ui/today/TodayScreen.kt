@@ -2828,16 +2828,14 @@ internal fun ForecastCard(
                 ChartSubtitleRow(
                     subtitle = subtitleText,
                     readout = readout,
-                    leadingIcon = if (showHeader) {
-                        null
-                    } else {
-                        {
-                            FillGlyphIcon(
-                                glyph = FillGlyph.THERMOMETER,
-                                fillFraction = thermometerFill,
-                                modifier = Modifier.size(WIDGET_SUBTITLE_ICON_SIZE),
-                            )
-                        }
+                    // The strip's thermometer leads the line in the app and the
+                    // widget alike; only the widget drops the words beside it.
+                    leadingIcon = {
+                        FillGlyphIcon(
+                            glyph = FillGlyph.THERMOMETER,
+                            fillFraction = thermometerFill,
+                            modifier = Modifier.size(SUBTITLE_ICON_SIZE),
+                        )
                     },
                 )
                 ForecastChart(
@@ -3462,26 +3460,22 @@ internal fun PrecipitationCard(
                         style = MaterialTheme.typography.titleSmall,
                     )
                 }
-                // Without the card title (the widget), the strip's rain droplet,
-                // filled to the peak chance, says what the line measures. A long
-                // translation may take two lines on a narrow cell, but no more:
-                // the chart needs the rest.
+                // The strip's rain droplet, filled to the peak chance, leads the
+                // line; without the card title (the widget) it is what says what
+                // the line measures. A long translation may take two lines on a
+                // narrow widget cell, but no more: the chart needs the rest.
                 ChartSubtitleRow(
                     subtitle = subtitleText,
                     readout = readout,
                     maxLines = if (showHeader) Int.MAX_VALUE else WIDGET_SUBTITLE_MAX_LINES,
-                    leadingIcon = if (showHeader) {
-                        null
-                    } else {
-                        {
-                            FillGlyphIcon(
-                                glyph = FillGlyph.DROPLET,
-                                fillFraction = peakIdx?.let {
-                                    (hourly[it].precipitationProbabilityPct / 100.0).toFloat()
-                                } ?: 0f,
-                                modifier = Modifier.size(WIDGET_SUBTITLE_ICON_SIZE),
-                            )
-                        }
+                    leadingIcon = {
+                        FillGlyphIcon(
+                            glyph = FillGlyph.DROPLET,
+                            fillFraction = peakIdx?.let {
+                                (hourly[it].precipitationProbabilityPct / 100.0).toFloat()
+                            } ?: 0f,
+                            modifier = Modifier.size(SUBTITLE_ICON_SIZE),
+                        )
                     },
                 )
                 PrecipitationChart(
@@ -3821,7 +3815,7 @@ private const val WIDGET_SUBTITLE_MAX_LINES = 2
 
 // Matches bodyMedium's line height, so the icon sits in the line without
 // growing it.
-private val WIDGET_SUBTITLE_ICON_SIZE = 20.dp
+private val SUBTITLE_ICON_SIZE = 20.dp
 
 // Dry threshold for the hourly-rainfall card, applied to the day's
 // cumulative total (mm). 0.1 mm is the typical "trace" tick across weather

@@ -134,6 +134,7 @@ internal suspend fun castCurrentInsight(
                 insight.hourly,
                 prefs.timeFormat,
             ),
+            darkTheme = insight.period != ForecastPeriod.TODAY,
         )
     }
 

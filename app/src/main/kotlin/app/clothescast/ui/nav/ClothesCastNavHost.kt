@@ -431,6 +431,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                             insight.hourly,
                             prefs.timeFormat,
                         ),
+                        darkTheme = insight.period != ForecastPeriod.TODAY,
                     )
                 }.getOrNull()
             }

@@ -519,7 +519,9 @@ internal fun renderCarriedFigureBitmap(
  * the wind / UV second column appears only when those are notable. [window]
  * (from [outfitCardWindow]) is the span the forecast covers, so a card left up
  * on a display shows when it went stale; the conditions row moves up to make
- * room for it, and nothing moves when it is null.
+ * room for it, and nothing moves when it is null. [darkTheme] swaps the white
+ * card for the dark strip palette — the tonight card is shown in the evening on
+ * a display in a dimmed room, where a white screen glares.
  */
 internal fun renderOutfitCard(
     context: Context,
@@ -538,12 +540,30 @@ internal fun renderOutfitCard(
     outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     outerStrokes: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     window: String? = null,
+    darkTheme: Boolean = false,
 ): ByteArray {
+    val palette = if (darkTheme) DARK_CARD_PALETTE else LIGHT_CARD_PALETTE
     val bmp = createBitmap(CARD_W, CARD_H)
     val canvas = Canvas(bmp)
-    canvas.drawColor(android.graphics.Color.WHITE)
+    canvas.drawColor(palette.background)
 
     val proseX = CARD_PAD + ICON_PX + ICON_H_GAP
+
+    // Garment artwork and the user's color picks are tuned for a white card,
+    // so a dark card gives the icon column a white tile to sit on rather than
+    // letting navy or charcoal garments sink into the background.
+    palette.iconTile?.let { tileArgb ->
+        val tilePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = tileArgb }
+        canvas.drawRoundRect(
+            (CARD_PAD - ICON_TILE_PAD).toFloat(),
+            (CARD_PAD - ICON_TILE_PAD).toFloat(),
+            (CARD_PAD + ICON_PX + ICON_TILE_PAD).toFloat(),
+            (CARD_PAD + 2 * ICON_PX + ICON_V_GAP + ICON_TILE_PAD).toFloat(),
+            ICON_TILE_RADIUS,
+            ICON_TILE_RADIUS,
+            tilePaint,
+        )
+    }
 
     // Icons go in the left column from the top, independent of the header
     // which lives above the prose on the right. The top icon carries the
@@ -595,7 +615,7 @@ internal fun renderOutfitCard(
     val headerPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textSize = HEADER_PX
-        color = android.graphics.Color.BLACK
+        color = palette.header
     }
     val headerBaseline = CARD_PAD - headerPaint.fontMetrics.ascent
     canvas.drawText(header.uppercase(), proseX.toFloat(), headerBaseline, headerPaint)
@@ -606,7 +626,7 @@ internal fun renderOutfitCard(
         val prosePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = Typeface.DEFAULT
             textSize = PROSE_PX
-            color = 0xFF444444.toInt()
+            color = palette.prose
         }
         val layout = StaticLayout.Builder
             .obtain(prose, 0, prose.length, prosePaint, CARD_W - proseX - CARD_PAD)
@@ -626,7 +646,7 @@ internal fun renderOutfitCard(
     val infoPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         typeface = Typeface.DEFAULT_BOLD
         textSize = INFO_PX
-        color = 0xFF1A1A1A.toInt()
+        color = palette.info
     }
     // The forecast window sits under the conditions row, its bottom on the
     // row's old bezel-safe line, and lifts the row by its own height so the
@@ -639,7 +659,7 @@ internal fun renderOutfitCard(
         val windowPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = Typeface.DEFAULT
             textSize = WINDOW_PX
-            color = WINDOW_ARGB
+            color = palette.window
         }
         while (windowPaint.measureText(text) > columnWidth && windowPaint.textSize > WINDOW_MIN_PX) {
             windowPaint.textSize -= 1f
@@ -662,8 +682,8 @@ internal fun renderOutfitCard(
         centerY = rowCenterY,
         baseIconPx = INFO_ICON_PX,
         textPaint = infoPaint,
-        interiorArgb = android.graphics.Color.WHITE,
-        outlineArgb = INFO_ICON_OUTLINE_ARGB,
+        interiorArgb = palette.iconInterior,
+        outlineArgb = palette.iconOutline,
         center = false,
     )
     // Centered on the strip as drawn, then kept inside the text column: under a
@@ -1388,6 +1408,48 @@ private const val WINDOW_PX = 16f
 private const val WINDOW_MIN_PX = 12f
 private const val WINDOW_GAP_PX = 8
 private const val WINDOW_ARGB = 0xFF888888.toInt()
+// Dark card's garment tile: 12dp past the icons on every side, inside CARD_PAD.
+private const val ICON_TILE_PAD = 12
+private const val ICON_TILE_RADIUS = 16f
+
+/** Colors for one theme of [renderOutfitCard]. */
+internal data class OutfitCardPalette(
+    val background: Int,
+    val header: Int,
+    val prose: Int,
+    val info: Int,
+    val window: Int,
+    val iconInterior: Int,
+    val iconOutline: Int,
+    /** Backing behind the garment column, or null to draw on the card itself. */
+    val iconTile: Int? = null,
+)
+
+private val LIGHT_CARD_PALETTE = OutfitCardPalette(
+    background = android.graphics.Color.WHITE,
+    header = android.graphics.Color.BLACK,
+    prose = 0xFF444444.toInt(),
+    info = STRIP_LIGHT_TEXT_ARGB,
+    window = WINDOW_ARGB,
+    iconInterior = android.graphics.Color.WHITE,
+    iconOutline = INFO_ICON_OUTLINE_ARGB,
+)
+
+// The dark card reuses the conditions widget's dark surface and glyph palette,
+// so the strip reads the same on the card as on a dark home screen. The icon
+// interior matches the card background, as the light card's white does.
+internal val DARK_CARD_PALETTE = OutfitCardPalette(
+    background = STRIP_SURFACE_DARK_ARGB,
+    header = STRIP_DARK_TEXT_ARGB,
+    prose = 0xFFC8C8C8.toInt(),
+    info = STRIP_DARK_TEXT_ARGB,
+    window = 0xFF9A9A9A.toInt(),
+    iconInterior = STRIP_SURFACE_DARK_ARGB,
+    iconOutline = STRIP_DARK_OUTLINE_ARGB,
+    // Pure white, not an off-white: the garments then sit on exactly the card
+    // they were designed for, so neither light nor dark ones lose contrast.
+    iconTile = android.graphics.Color.WHITE,
+)
 
 /**
  * LRU-ish bitmap cache. Most users have ≤2 widget cells × ≤4 garment slots ×

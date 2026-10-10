@@ -1597,6 +1597,7 @@ class FetchAndNotifyWorker(
                     insight.hourly,
                     prefs.timeFormat,
                 ),
+                darkTheme = insight.period != ForecastPeriod.TODAY,
             )
         }
             .onFailure { t ->

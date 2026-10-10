@@ -75,6 +75,8 @@ I put on before I leave?" instead of a full weather-office report.
   when Gemini PCM exists, spoken audio to a selected receiver.
   The outfit card ends with the forecast window it covers ("Mon 4 Oct 07:00 –
   Mon 4 Oct 19:00"), so a card left up on a display shows when it went stale.
+  The day card is light and the tonight card dark, since the tonight card is
+  shown in the evening and a white screen glares in a dimmed room.
 - **TV / leanback.** The manifest opts into Android TV / leanback launchability
   while keeping touchscreen optional, so the same app can appear on supported TV
   homes without filtering out phones.

@@ -2759,6 +2759,7 @@ internal fun ForecastCard(
     // bitmap is sized to the cell; the in-app cards leave it false (fixed
     // height inside a scrolling column).
     fillHeight: Boolean = false,
+    showYAxis: Boolean = true,
 ) {
     val symbol = temperatureUnit.symbol()
     val feelsLikeMinMax = remember(hourly, temperatureUnit) {
@@ -2777,8 +2778,10 @@ internal fun ForecastCard(
     Card(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier.fillMaxWidth()) {
         Box(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier) {
             Column(
+                // The widget cell is short, so it trades the in-app 20.dp
+                // inset for 12.dp to give the plot the height back.
                 modifier = if (fillHeight) {
-                    Modifier.fillMaxSize().padding(20.dp)
+                    Modifier.fillMaxSize().padding(12.dp)
                 } else {
                     Modifier.padding(20.dp)
                 },
@@ -2800,6 +2803,7 @@ internal fun ForecastCard(
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
                     fillHeight = fillHeight,
+                    showYAxis = showYAxis,
                 )
                 if (showLegend) {
                     Text(
@@ -3350,6 +3354,7 @@ internal fun PrecipitationCard(
     // Which window [hourly] covers, for the dry-day subtitle: "today" would be
     // wrong over a tonight window that runs past midnight.
     period: ForecastPeriod = ForecastPeriod.TODAY,
+    showYAxis: Boolean = true,
 ) {
     // Always render the chart, even on dry days — keeps the card height stable
     // across days so the cards below don't shift, and the flat baseline is its
@@ -3391,8 +3396,10 @@ internal fun PrecipitationCard(
     Card(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier.fillMaxWidth()) {
         Box(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier) {
             Column(
+                // The widget cell is short, so it trades the in-app 20.dp
+                // inset for 12.dp to give the plot the height back.
                 modifier = if (fillHeight) {
-                    Modifier.fillMaxSize().padding(20.dp)
+                    Modifier.fillMaxSize().padding(12.dp)
                 } else {
                     Modifier.padding(20.dp)
                 },
@@ -3412,6 +3419,7 @@ internal fun PrecipitationCard(
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
                     fillHeight = fillHeight,
+                    showYAxis = showYAxis,
                 )
                 if (perModelHourly != null) {
                     // Same visibility filter the chart applies (see

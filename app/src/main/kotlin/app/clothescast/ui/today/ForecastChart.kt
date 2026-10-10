@@ -92,6 +92,11 @@ internal val MODEL_DRAW_ORDER: List<String> =
 // middle 40% of the chart.
 private const val MIN_Y_SPAN = 4.0
 
+// Smallest y-span the axis-less widget chart draws, in the display unit: a
+// 1-degree drift across the period stays a gentle slope rather than filling
+// the cell top to bottom.
+private const val WIDGET_MIN_Y_SPAN = 2.0
+
 /**
  * Renders today's hourly temperature as a single line — feels-like or raw 2 m
  * air, controlled by [showFeelsLike]. Defaults to feels-like because that's
@@ -143,6 +148,12 @@ fun ForecastChart(
     // — letting the chart scale with the available space rather than pinning a
     // height that would letterbox or clip inside the cell.
     fillHeight: Boolean = false,
+    // The home-screen widget drops the y-axis: in a short cell Vico has room
+    // for one tick label at most, which reads as noise, and the card's
+    // min–max subtitle already gives the numbers. Without an axis there are
+    // no ticks to align to, so the range hugs the line ([tightBounds]) and
+    // the curve uses the full plot height.
+    showYAxis: Boolean = true,
 ) {
     if (hourly.isEmpty()) return
 
@@ -232,7 +243,13 @@ fun ForecastChart(
     // day with a 1-degree variation doesn't get amplified into a noisy zigzag.
     // Then snap to [niceStep] multiples and pin the placer to that step, so a
     // 10.3°C peak reads as "…10, 12" not "…12, 14".
-    val yBounds = remember(hourly, temperatureUnit, overlays) {
+    val yBounds = remember(hourly, temperatureUnit, overlays, showYAxis, showFeelsLike) {
+        if (!showYAxis) {
+            return@remember tightBounds(
+                hourly.map { pickHourly(it).toUnit(temperatureUnit) },
+                minSpan = WIDGET_MIN_Y_SPAN,
+            )
+        }
         val main = hourly.flatMap {
             listOf(it.feelsLikeC.toUnit(temperatureUnit), it.temperatureC.toUnit(temperatureUnit))
         }
@@ -318,11 +335,15 @@ fun ForecastChart(
                     lineProvider = lineProvider,
                     rangeProvider = rangeProvider,
                 ),
-                startAxis = VerticalAxis.rememberStart(
-                    label = axisLabel,
-                    itemPlacer = yItemPlacer,
-                    valueFormatter = startFormatter,
-                ),
+                startAxis = if (showYAxis) {
+                    VerticalAxis.rememberStart(
+                        label = axisLabel,
+                        itemPlacer = yItemPlacer,
+                        valueFormatter = startFormatter,
+                    )
+                } else {
+                    null
+                },
                 bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
                     HorizontalAxis.rememberBottom(
                         label = axisLabel,

@@ -55,7 +55,7 @@ class ChanceOfRainWidget : GlanceAppWidget() {
 }
 
 /**
- * The in-app chance-of-rain card without its title, for the widget — the
+ * The in-app chance-of-rain card without its title or y-axis, for the widget — the
  * "Peak 60% at 15:00" / "No rain expected today" line and the % axis already
  * say what it is. Rendered for real rather than redrawn, as with
  * [WidgetForecastChart], so the widget can't drift from the screen.
@@ -88,6 +88,7 @@ internal fun WidgetRainChart(
                 showHeader = false,
                 fillHeight = fillHeight,
                 period = period,
+                showYAxis = false,
             )
         }
     }

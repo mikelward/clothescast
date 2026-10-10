@@ -28,8 +28,8 @@ import java.util.Locale
 /**
  * The in-app feels-like chart card ([ForecastCard]), reused verbatim for the
  * home-screen widgets — same `ForecastChart`, same "Feels like temperature"
- * title, min–max subhead and current-time readout — with the legend dropped
- * (`showLegend = false`). Rendering the *real* composable rather than a
+ * title, min–max subhead and current-time readout — with the legend and the
+ * y-axis dropped (`showLegend = false`, `showYAxis = false`). Rendering the *real* composable rather than a
  * hand-drawn lookalike is what keeps the widget's colours, font sizes, tick
  * spacing and line shape identical to the screen (the whole reason a replica
  * kept reading as "off-brand").
@@ -92,6 +92,7 @@ internal fun WidgetForecastChart(
                 showHeader = false,
                 showLegend = false,
                 fillHeight = fillHeight,
+                showYAxis = false,
             )
         }
     }

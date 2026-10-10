@@ -1,5 +1,6 @@
 package app.clothescast.ui.today
 
+import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
@@ -89,5 +90,19 @@ class ChartAxisTest {
         val bounds = alignToStep(rawMin = -3.5, rawMax = 6.0, step = 2.0)
         bounds.min shouldBe -4.0
         bounds.max shouldBe 6.0
+    }
+
+    @Test
+    fun `tightBounds hugs the data with a small margin`() {
+        val b = tightBounds(listOf(6.0, 8.0, 10.0), minSpan = 2.0, padFraction = 0.1)
+        b.min shouldBe (5.6 plusOrMinus 1e-9)
+        b.max shouldBe (10.4 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `tightBounds widens a near-flat series to the minimum span around its middle`() {
+        val b = tightBounds(listOf(9.0, 9.5), minSpan = 2.0, padFraction = 0.0)
+        b.min shouldBe (8.25 plusOrMinus 1e-9)
+        b.max shouldBe (10.25 plusOrMinus 1e-9)
     }
 }

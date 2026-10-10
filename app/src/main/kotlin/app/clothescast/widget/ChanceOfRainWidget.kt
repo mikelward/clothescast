@@ -1,7 +1,6 @@
 package app.clothescast.widget
 
 import android.content.Context
-import android.graphics.Bitmap
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -38,14 +37,14 @@ import java.time.ZoneId
  */
 class ChanceOfRainWidget : GlanceAppWidget() {
 
-    override val sizeMode: SizeMode = SizeMode.Single
+    override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val bitmap = buildRainChartBitmap(context, id)
+        val charts = buildRainCharts(context, id)
         provideContent {
             GlanceTheme {
                 ChartWidgetContent(
-                    bitmap = bitmap,
+                    charts = charts,
                     page = THIS_PERIOD_PAGE,
                     labelRes = R.string.today_precipitation_title,
                 )
@@ -94,38 +93,39 @@ internal fun WidgetRainChart(
     }
 }
 
-// Null (→ empty state) when there's no current cached forecast or the render
-// fails / times out, so a flaky render degrades to "tap to open".
-private suspend fun buildRainChartBitmap(context: Context, id: GlanceId): Bitmap? {
-    val (insight, prefs) = loadCurrentInsight(context) ?: return null
-    if (insight.hourly.size < 2) return null
+// Empty (→ empty state) when there's no current cached forecast or every
+// render fails / times out, so a flaky render degrades to "tap to open".
+private suspend fun buildRainCharts(context: Context, id: GlanceId): List<SizedChart> {
+    val (insight, prefs) = loadCurrentInsight(context) ?: return emptyList()
+    if (insight.hourly.size < 2) return emptyList()
 
     val zone = insight.forecastZone ?: ZoneId.systemDefault()
     val now = LocalDateTime.now(zone)
     val darkTheme = resolveDarkTheme(context, prefs.themeMode)
-    val (widthPx, heightPx) = chartRenderSizePx(context, id)
-    val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
-        renderComposableToBitmap(context, widthPx, heightPx) {
-            ClothesCastTheme(darkTheme = darkTheme, colorPalette = prefs.colorPalette) {
-                WidgetRainChart(
-                    hourly = insight.hourly,
-                    timeFormat = prefs.timeFormat,
-                    startDate = insight.forDate,
-                    now = now,
-                    fillHeight = true,
-                    period = insight.period,
-                )
+    return renderForCells(context, id) { widthPx, heightPx ->
+        val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
+            renderComposableToBitmap(context, widthPx, heightPx) {
+                ClothesCastTheme(darkTheme = darkTheme, colorPalette = prefs.colorPalette) {
+                    WidgetRainChart(
+                        hourly = insight.hourly,
+                        timeFormat = prefs.timeFormat,
+                        startDate = insight.forDate,
+                        now = now,
+                        fillHeight = true,
+                        period = insight.period,
+                    )
+                }
             }
         }
+        if (bitmap == null) {
+            DiagLog.w(
+                TAG,
+                "Rain chart bitmap null (%s hourly pts) — render failed/blank/timeout; showing empty state",
+                insight.hourly.size,
+            )
+        }
+        bitmap
     }
-    if (bitmap == null) {
-        DiagLog.w(
-            TAG,
-            "Rain chart bitmap null (%s hourly pts) — render failed/blank/timeout; showing empty state",
-            insight.hourly.size,
-        )
-    }
-    return bitmap
 }
 
 private const val TAG = "Widget"

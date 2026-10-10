@@ -171,7 +171,7 @@ private val STRIP_PADDING = 8.dp
 // the render height so the bitmap never falls below [MIN_STRIP_ASPECT] wide:tall,
 // so ContentScale.Fit centers a proportioned strip in a tall cell instead of
 // ballooning it. A cell already wider than that (the 3x1 default is ~4.5:1) is
-// left untouched. Mirrors FeelsLikeWidget.chartRenderSizePx' aspect clamp.
+// left untouched.
 internal fun conditionsStripRenderSize(widthPx: Int, heightPx: Int): Pair<Int, Int> {
     val w = widthPx.coerceAtLeast(1)
     val maxHeight = (w / MIN_STRIP_ASPECT).roundToInt().coerceAtLeast(1)

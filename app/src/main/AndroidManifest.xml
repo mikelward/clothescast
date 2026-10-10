@@ -273,6 +273,19 @@
                 android:resource="@xml/conditions_widget_info" />
         </receiver>
 
+        <!-- Home-screen App Widget: the current period's chance-of-rain chart. -->
+        <receiver
+            android:name=".widget.ChanceOfRainWidgetReceiver"
+            android:label="@string/today_precipitation_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/rain_widget_info" />
+        </receiver>
+
         <!-- WorkManager hosts foreground workers in its own SystemForegroundService.
              API 34+ requires the service to declare every foregroundServiceType it
              runs with; merge the media-playback type onto WorkManager's declaration

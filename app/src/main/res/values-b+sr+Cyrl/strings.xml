@@ -437,6 +437,7 @@ surfaces.
     <string name="feels_like_week_widget_label">Осећајна (7 дана)</string>
     <string name="feels_like_week_widget_description">Осећајна температура за наредних 7 дана.</string>
     <string name="feels_like_widget_empty_title">Још нема прогнозе</string>
+    <string name="rain_widget_description">Вероватноћа кише за тренутни период.</string>
     <string name="conditions_widget_label">Услови</string>
     <string name="conditions_widget_description">Температура, киша, ветар и УВ на први поглед.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -456,6 +457,7 @@ surfaces.
     <string name="today_precipitation_peak_day">Врхунац %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Данас се не очекује киша</string>
     <string name="today_precipitation_dry_week">Не очекује се киша</string>
+    <string name="today_precipitation_dry_overnight">Током ноћи се не очекује киша</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Модели:</string>

@@ -709,3 +709,96 @@ internal fun FeelsLikeWidgetNoCurrentTimePreview() {
         )
     }
 }
+
+//
+// Chance-of-rain chart widget previews. Like the feels-like ones, these render
+// the real [WidgetRainChart] (the in-app PrecipitationCard), so the snapshots
+// are the reference rather than a mock to keep in sync.
+//
+
+// A dry morning building to an afternoon shower, so the chart has a peak and
+// the subtitle reads "Peak … at …" rather than the dry message.
+private val SAMPLE_RAIN_DAY: List<HourlyForecast> = run {
+    val pct = listOf(
+        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, // 00–05
+        0.0, 5.0, 5.0, 10.0, 15.0, 25.0, // 06–11
+        40.0, 55.0, 65.0, 60.0, 40.0, 20.0, // 12–17
+        10.0, 5.0, 0.0, 0.0, 0.0, 0.0, // 18–23
+    )
+    SAMPLE_FEELS_DAY.mapIndexed { hour, h -> h.copy(precipitationProbabilityPct = pct[hour]) }
+}
+
+@Preview(name = "Chance-of-rain widget · today", widthDp = 360)
+@Composable
+internal fun RainWidgetTodayPreview() {
+    WidgetFrame {
+        WidgetRainChart(
+            hourly = SAMPLE_RAIN_DAY.subList(7, 19), // 07–18 daytime slice
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = SAMPLE_START_DATE,
+            now = SAMPLE_NOW,
+        )
+    }
+}
+
+@Preview(name = "Chance-of-rain widget · today (dark)", widthDp = 360)
+@Composable
+internal fun RainWidgetTodayDarkPreview() {
+    WidgetFrame(darkTheme = true) {
+        WidgetRainChart(
+            hourly = SAMPLE_RAIN_DAY.subList(7, 19),
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = SAMPLE_START_DATE,
+            now = SAMPLE_NOW,
+        )
+    }
+}
+
+@Preview(name = "Chance-of-rain widget · dry", widthDp = 360)
+@Composable
+internal fun RainWidgetDryPreview() {
+    WidgetFrame {
+        WidgetRainChart(
+            hourly = SAMPLE_FEELS_DAY.subList(7, 19), // all 0%
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = SAMPLE_START_DATE,
+            now = SAMPLE_NOW,
+        )
+    }
+}
+
+// A dry tonight window reads "No rain expected overnight", not "…today".
+@Preview(name = "Chance-of-rain widget · dry tonight", widthDp = 360)
+@Composable
+internal fun RainWidgetDryTonightPreview() {
+    WidgetFrame(darkTheme = true) {
+        WidgetRainChart(
+            hourly = SAMPLE_FEELS_DAY.subList(19, 24), // all 0%
+            timeFormat = TimeFormat.TWELVE_HOUR,
+            startDate = SAMPLE_START_DATE,
+            now = null,
+            period = ForecastPeriod.TONIGHT,
+        )
+    }
+}
+
+// Runtime path: fillHeight = true in a wide ~3:1 cell, as FeelsLikeWidgetWidePreview.
+@Preview(name = "Chance-of-rain widget · wide (3:1)", widthDp = 572, heightDp = 212)
+@Composable
+internal fun RainWidgetWidePreview() {
+    WidgetFrame {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier.size(width = 540.dp, height = 180.dp),
+        ) {
+            WidgetRainChart(
+                hourly = SAMPLE_RAIN_DAY.subList(7, 19),
+                timeFormat = TimeFormat.TWELVE_HOUR,
+                startDate = SAMPLE_START_DATE,
+                now = SAMPLE_NOW,
+                fillHeight = true,
+            )
+        }
+    }
+}

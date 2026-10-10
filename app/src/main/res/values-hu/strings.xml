@@ -408,6 +408,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_precipitation_peak_day">Csúcs %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Ma nem várható csapadék</string>
     <string name="today_precipitation_dry_week">Nem várható csapadék</string>
+    <string name="today_precipitation_dry_overnight">Éjszaka nem várható csapadék</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modellek:</string>
@@ -453,6 +454,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="feels_like_week_widget_label">Hőérzet (7 nap)</string>
     <string name="feels_like_week_widget_description">A hőérzet a következő 7 napra.</string>
     <string name="feels_like_widget_empty_title">Még nincs előrejelzés</string>
+    <string name="rain_widget_description">A csapadék valószínűsége az aktuális időszakra.</string>
     <string name="conditions_widget_label">Körülmények</string>
     <string name="conditions_widget_description">Hőmérséklet, eső, szél és UV egy pillantással.</string>
     <string name="conditions_rain_pct">%1$d%%</string>

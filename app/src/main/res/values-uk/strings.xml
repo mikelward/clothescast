@@ -398,6 +398,7 @@ only the displayed label localizes.
     <string name="feels_like_week_widget_label">Відчувана температура (7 днів)</string>
     <string name="feels_like_week_widget_description">Відчувана температура на наступні 7 днів.</string>
     <string name="feels_like_widget_empty_title">Прогнозу ще немає</string>
+    <string name="rain_widget_description">Ймовірність дощу для поточного періоду.</string>
     <string name="conditions_widget_label">Умови</string>
     <string name="conditions_widget_description">Температура, дощ, вітер і UV з першого погляду.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -422,6 +423,7 @@ only the displayed label localizes.
     <string name="today_precipitation_peak_day">Пік %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Дощу сьогодні не очікується</string>
     <string name="today_precipitation_dry_week">Дощу не очікується</string>
+    <string name="today_precipitation_dry_overnight">Вночі дощу не очікується</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Моделі:</string>

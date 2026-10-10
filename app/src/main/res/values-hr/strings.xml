@@ -348,6 +348,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="feels_like_week_widget_label">Osjećajna (7 dana)</string>
     <string name="feels_like_week_widget_description">Osjećajna temperatura za sljedećih 7 dana.</string>
     <string name="feels_like_widget_empty_title">Još nema prognoze</string>
+    <string name="rain_widget_description">Vjerojatnost kiše za trenutni period.</string>
     <string name="conditions_widget_label">Uvjeti</string>
     <string name="conditions_widget_description">Temperatura, kiša, vjetar i UV na prvi pogled.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -555,6 +556,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_precipitation_peak_day">Vrh %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Danas se ne očekuje kiša</string>
     <string name="today_precipitation_dry_week">Ne očekuje se kiša</string>
+    <string name="today_precipitation_dry_overnight">Noću se ne očekuje kiša</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>

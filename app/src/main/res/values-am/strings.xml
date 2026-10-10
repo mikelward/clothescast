@@ -103,6 +103,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak_day">ከፍተኛ %1$d%% %2$s</string>
     <string name="today_precipitation_dry">ዛሬ ዝናብ አይጠበቅም</string>
     <string name="today_precipitation_dry_week">ዝናብ አይጠበቅም</string>
+    <string name="today_precipitation_dry_overnight">ሌሊት ዝናብ አይጠበቅም</string>
     <string name="today_chart_model_legend_label">ሞዴሎች:</string>
     <string name="today_chart_main_line_label">አማካይ</string>
     <string name="today_wind_title">የንፋስ ፍጥነት</string>
@@ -157,6 +158,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="feels_like_week_widget_label">የሚሰማ ሙቀት (7 ቀናት)</string>
     <string name="feels_like_week_widget_description">በሚቀጥሉት 7 ቀናት ውስጥ የሚሰማ ሙቀት።</string>
     <string name="feels_like_widget_empty_title">እስካሁን ትንበያ የለም</string>
+    <string name="rain_widget_description">የአሁኑ ወቅት የዝናብ ዕድል።</string>
     <string name="conditions_widget_label">ሁኔታዎች</string>
     <string name="conditions_widget_description">የሙቀት፣ ዝናብ፣ ነፋስ እና UV በጨረፍታ።</string>
     <string name="conditions_rain_pct">%1$d%%</string>

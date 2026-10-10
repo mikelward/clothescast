@@ -158,6 +158,7 @@ standard in Israeli digital communication.
     <string name="feels_like_week_widget_label">טמפרטורה מורגשת (7 ימים)</string>
     <string name="feels_like_week_widget_description">הטמפרטורה המורגשת ב-7 הימים הקרובים.</string>
     <string name="feels_like_widget_empty_title">אין עדיין תחזית</string>
+    <string name="rain_widget_description">הסיכוי לגשם לתקופה הנוכחית.</string>
     <string name="conditions_widget_label">תנאים</string>
     <string name="conditions_widget_description">טמפרטורה, גשם, רוח ו-UV במבט אחד.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -177,6 +178,7 @@ standard in Israeli digital communication.
     <string name="today_precipitation_peak_day">שיא %1$d%% %2$s</string>
     <string name="today_precipitation_dry">לא צפוי גשם היום</string>
     <string name="today_precipitation_dry_week">לא צפוי גשם</string>
+    <string name="today_precipitation_dry_overnight">לא צפוי גשם בלילה</string>
 
     <!-- Today — model divergence / confidence -->
     <string name="today_chart_model_legend_label">מודלים:</string>

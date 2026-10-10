@@ -68,8 +68,9 @@ I put on before I leave?" instead of a full weather-office report.
   build rather than by hand.
 - **Notifications.** Separate Today and Tonight notifications;
   tapping insight notifications returns to Today.
-- **Widgets.** Glance widgets expose outfit and feels-like chart summaries on the
-  launcher.
+- **Widgets.** Glance widgets expose outfit, conditions, feels-like chart and
+  chance-of-rain chart summaries on the launcher. The chart widgets render the
+  Today screen's own cards, so a widget and the screen never disagree.
 - **Smart-home outputs.** MQTT publishes text, image, audio, timestamp, and
   combined media topics when configured. Cast sends the rendered outfit card and,
   when Gemini PCM exists, spoken audio to a selected receiver.

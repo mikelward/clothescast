@@ -60,6 +60,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="feels_like_week_widget_label">Tunnetatav temperatuur (7 päeva)</string>
     <string name="feels_like_week_widget_description">Tunnetatav temperatuur järgmise 7 päeva jooksul.</string>
     <string name="feels_like_widget_empty_title">Prognoosi veel pole</string>
+    <string name="rain_widget_description">Vihma tõenäosus praeguseks perioodiks.</string>
     <string name="conditions_widget_label">Tingimused</string>
     <string name="conditions_widget_description">Temperatuur, vihm, tuul ja UV ühe pilguga.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -77,6 +78,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_precipitation_peak_day">Tipp %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Täna vihma ei oodata</string>
     <string name="today_precipitation_dry_week">Vihma ei oodata</string>
+    <string name="today_precipitation_dry_overnight">Öö jooksul vihma ei oodata</string>
 
     <string name="today_chart_model_legend_label">Mudelid:</string>
     <string name="today_chart_main_line_label">Keskmine</string>

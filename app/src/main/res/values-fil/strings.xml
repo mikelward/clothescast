@@ -153,6 +153,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="feels_like_week_widget_label">Nararamdamang temperatura (7 araw)</string>
     <string name="feels_like_week_widget_description">Ang nararamdamang temperatura sa susunod na 7 araw.</string>
     <string name="feels_like_widget_empty_title">Wala pang forecast</string>
+    <string name="rain_widget_description">Ang tsansa ng ulan para sa kasalukuyang panahon.</string>
     <string name="conditions_widget_label">Mga kondisyon</string>
     <string name="conditions_widget_description">Temperatura, ulan, hangin at UV sa isang sulyap.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -172,6 +173,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_peak_day">Pinakamataas na %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Walang inaasahang ulan ngayon</string>
     <string name="today_precipitation_dry_week">Walang inaasahang ulan</string>
+    <string name="today_precipitation_dry_overnight">Walang inaasahang ulan buong gabi</string>
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Mga modelo:</string>

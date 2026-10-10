@@ -396,6 +396,7 @@ Not overridden by design:
     <string name="feels_like_week_widget_label">महसूस तापमान (7 दिन)</string>
     <string name="feels_like_week_widget_description">अगले 7 दिनों का महसूस तापमान।</string>
     <string name="feels_like_widget_empty_title">अभी कोई पूर्वानुमान नहीं</string>
+    <string name="rain_widget_description">मौजूदा समय में बारिश की संभावना।</string>
     <string name="conditions_widget_label">स्थितियाँ</string>
     <string name="conditions_widget_description">तापमान, बारिश, हवा और UV एक नज़र में।</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -489,6 +490,7 @@ Not overridden by design:
     <string name="today_precipitation_peak_day">सर्वोच्च %1$d%% %2$s</string>
     <string name="today_precipitation_dry">आज बारिश की उम्मीद नहीं</string>
     <string name="today_precipitation_dry_week">बारिश की उम्मीद नहीं</string>
+    <string name="today_precipitation_dry_overnight">रात भर बारिश की उम्मीद नहीं</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">मॉडल:</string>

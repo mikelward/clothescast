@@ -494,6 +494,7 @@ val widgetPreviewMapping = mapOf(
     "widget_preview_outfit" to "widget_today_tshirt_shorts",
     "widget_preview_feels_like" to "feels_like_widget_today",
     "widget_preview_feels_like_week" to "feels_like_widget_week",
+    "widget_preview_rain" to "rain_widget_today",
     // All-indicators strip (temperature / humidity / wind / UV) so the
     // conditions widget's picker preview shows its full range of icons.
     "widget_preview_conditions" to "conditions_strip_all_indicators_light",

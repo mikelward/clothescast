@@ -158,6 +158,7 @@ to values/strings.xml (English).
     <string name="feels_like_week_widget_label">Suhu terasa (7 hari)</string>
     <string name="feels_like_week_widget_description">Suhu terasa selama 7 hari ke depan.</string>
     <string name="feels_like_widget_empty_title">Belum ada prakiraan</string>
+    <string name="rain_widget_description">Kemungkinan hujan untuk periode saat ini.</string>
     <string name="conditions_widget_label">Kondisi</string>
     <string name="conditions_widget_description">Suhu, hujan, angin, dan UV sekilas.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -175,6 +176,7 @@ to values/strings.xml (English).
     <string name="today_precipitation_peak_day">Puncak %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Tidak ada hujan hari ini</string>
     <string name="today_precipitation_dry_week">Tidak ada hujan</string>
+    <string name="today_precipitation_dry_overnight">Tidak ada hujan malam ini</string>
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Model:</string>

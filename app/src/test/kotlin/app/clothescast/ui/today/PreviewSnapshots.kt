@@ -71,6 +71,11 @@ import app.clothescast.widget.FeelsLikeWidgetTodayDarkPreview
 import app.clothescast.widget.FeelsLikeWidgetTodayPreview
 import app.clothescast.widget.FeelsLikeWidgetWeekPreview
 import app.clothescast.widget.FeelsLikeWidgetWidePreview
+import app.clothescast.widget.RainWidgetDryPreview
+import app.clothescast.widget.RainWidgetDryTonightPreview
+import app.clothescast.widget.RainWidgetTodayDarkPreview
+import app.clothescast.widget.RainWidgetTodayPreview
+import app.clothescast.widget.RainWidgetWidePreview
 import app.clothescast.widget.WidgetEmptyPreview
 import app.clothescast.widget.WidgetTodayCoatPantsGlovesPreview
 import app.clothescast.widget.WidgetTodayCoatGlovesUmbrellaPreview
@@ -658,6 +663,15 @@ class PreviewSnapshots {
     @Config(qualifiers = "w600dp-h360dp-xhdpi")
     fun feels_like_widget_wide() = capture { FeelsLikeWidgetWidePreview() }
     @Test fun feels_like_widget_no_current_time() = capture { FeelsLikeWidgetNoCurrentTimePreview() }
+
+    @Test fun rain_widget_today() = capture { RainWidgetTodayPreview() }
+    @Test fun rain_widget_today_dark() = capture { RainWidgetTodayDarkPreview() }
+    @Test fun rain_widget_dry() = capture { RainWidgetDryPreview() }
+    @Test fun rain_widget_dry_tonight() = capture { RainWidgetDryTonightPreview() }
+
+    @Test
+    @Config(qualifiers = "w600dp-h360dp-xhdpi")
+    fun rain_widget_wide() = capture { RainWidgetWidePreview() }
 
     // 480dp-tall preview overflows the class-level 640dp viewport; widen it
     // so the bottom of the column doesn't get clipped.

@@ -85,6 +85,7 @@
     <string name="today_precipitation_peak_day">Kulmi %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Nuk pritet shi sot</string>
     <string name="today_precipitation_dry_week">Nuk pritet shi</string>
+    <string name="today_precipitation_dry_overnight">Nuk pritet shi gjatë natës</string>
     <string name="today_precipitation_amount_title">Reshje</string>
     <string name="today_precipitation_amount_peak_day">Kulmi %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s shi sot</string>
@@ -326,6 +327,7 @@
     <string name="feels_like_week_widget_label">E ndjeshme (7 ditë)</string>
     <string name="feels_like_week_widget_description">Temperatura e ndjeshme gjatë 7 ditëve të ardhshme.</string>
     <string name="feels_like_widget_empty_title">Ende nuk ka parashikim</string>
+    <string name="rain_widget_description">Mundësia e shiut për periudhën aktuale.</string>
     <string name="conditions_widget_label">Kushtet</string>
     <string name="conditions_widget_description">Temperatura, shiu, era dhe UV me një shikim.</string>
     <string name="conditions_rain_pct">%1$d%%</string>

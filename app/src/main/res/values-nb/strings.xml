@@ -421,6 +421,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_precipitation_peak_day">Topp %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Ingen regn forventet i dag</string>
     <string name="today_precipitation_dry_week">Ingen regn forventet</string>
+    <string name="today_precipitation_dry_overnight">Ingen regn forventet i natt</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeller:</string>
@@ -452,6 +453,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="feels_like_week_widget_label">Følt temperatur (7 dager)</string>
     <string name="feels_like_week_widget_description">Den følte temperaturen de neste 7 dagene.</string>
     <string name="feels_like_widget_empty_title">Ingen prognose ennå</string>
+    <string name="rain_widget_description">Regnsannsynligheten for den gjeldende perioden.</string>
     <string name="conditions_widget_label">Forhold</string>
     <string name="conditions_widget_description">Temperatur, regn, vind og UV med et øyekast.</string>
     <string name="conditions_rain_pct">%1$d%%</string>

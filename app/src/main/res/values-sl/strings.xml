@@ -164,6 +164,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="feels_like_week_widget_label">Občutena (7 dni)</string>
     <string name="feels_like_week_widget_description">Občutena temperatura za naslednjih 7 dni.</string>
     <string name="feels_like_widget_empty_title">Še ni napovedi</string>
+    <string name="rain_widget_description">Verjetnost dežja za trenutno obdobje.</string>
     <string name="conditions_widget_label">Pogoji</string>
     <string name="conditions_widget_description">Temperatura, dež, veter in UV na prvi pogled.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -183,6 +184,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_precipitation_peak_day">Vrh %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Danes dežja ni pričakovati</string>
     <string name="today_precipitation_dry_week">Dežja ni pričakovati</string>
+    <string name="today_precipitation_dry_overnight">Čez noč dežja ni pričakovati</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>

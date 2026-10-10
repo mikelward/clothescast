@@ -96,6 +96,9 @@
     <string name="feels_like_week_widget_label">Feels-like (7 days)</string>
     <string name="feels_like_week_widget_description">The feels-like temperature over the next 7 days.</string>
     <string name="feels_like_widget_empty_title">No forecast yet</string>
+    <!-- Chance-of-rain chart widget. Its picker label reuses
+         today_precipitation_title ("Chance of rain"). -->
+    <string name="rain_widget_description">The chance of rain for the current period.</string>
 
     <!-- At-a-glance conditions widget (thermometer + rain). -->
     <string name="conditions_widget_label">Conditions</string>
@@ -131,6 +134,9 @@
          doesn't apply; the qualifier is dropped rather than guessing
          "this week" (the deck also serves the days-8–14 page). -->
     <string name="today_precipitation_dry_week">No rain expected</string>
+    <!-- Dry subtitle for the tonight window (evening into the small hours),
+         where "today" would be wrong. -->
+    <string name="today_precipitation_dry_overnight">No rain expected overnight</string>
 
     <!-- Hourly precipitation amount card, rendered immediately below the
          chance-of-rain card. The chart plots mm per hour over the current

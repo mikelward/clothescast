@@ -445,6 +445,7 @@ only the displayed label localizes.
     <string name="today_precipitation_peak_day">Пик %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Дождя сегодня не ожидается</string>
     <string name="today_precipitation_dry_week">Дождя не ожидается</string>
+    <string name="today_precipitation_dry_overnight">Ночью дождя не ожидается</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Модели:</string>
@@ -527,6 +528,7 @@ only the displayed label localizes.
     <string name="feels_like_week_widget_label">Ощущаемая температура (7 дней)</string>
     <string name="feels_like_week_widget_description">Ощущаемая температура на ближайшие 7 дней.</string>
     <string name="feels_like_widget_empty_title">Прогноза пока нет</string>
+    <string name="rain_widget_description">Вероятность дождя для текущего периода.</string>
     <string name="conditions_widget_label">Условия</string>
     <string name="conditions_widget_description">Температура, дождь, ветер и UV с первого взгляда.</string>
     <string name="conditions_rain_pct">%1$d%%</string>

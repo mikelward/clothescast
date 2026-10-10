@@ -159,6 +159,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="feels_like_week_widget_label">Cảm giác (7 ngày)</string>
     <string name="feels_like_week_widget_description">Nhiệt độ cảm nhận trong 7 ngày tới.</string>
     <string name="feels_like_widget_empty_title">Chưa có dự báo</string>
+    <string name="rain_widget_description">Khả năng mưa cho giai đoạn hiện tại.</string>
     <string name="conditions_widget_label">Điều kiện</string>
     <string name="conditions_widget_description">Nhiệt độ, mưa, gió và UV trong nháy mắt.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -178,6 +179,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_precipitation_peak_day">Đỉnh %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Hôm nay không có mưa</string>
     <string name="today_precipitation_dry_week">Không có mưa</string>
+    <string name="today_precipitation_dry_overnight">Không có mưa suốt đêm</string>
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Mô hình:</string>

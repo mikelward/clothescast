@@ -166,6 +166,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_precipitation_peak_day">সর্বোচ্চ %1$d%% %2$s</string>
     <string name="today_precipitation_dry">আজ বৃষ্টির সম্ভাবনা নেই</string>
     <string name="today_precipitation_dry_week">বৃষ্টির সম্ভাবনা নেই</string>
+    <string name="today_precipitation_dry_overnight">সারারাত বৃষ্টির সম্ভাবনা নেই</string>
 
     <!-- Model spread / charts -->
     <string name="today_chart_model_legend_label">মডেল:</string>
@@ -236,6 +237,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="feels_like_week_widget_label">অনুভূত তাপমাত্রা (৭ দিন)</string>
     <string name="feels_like_week_widget_description">আগামী ৭ দিনের অনুভূত তাপমাত্রা।</string>
     <string name="feels_like_widget_empty_title">এখনো কোনো পূর্বাভাস নেই</string>
+    <string name="rain_widget_description">বর্তমান সময়কালের বৃষ্টির সম্ভাবনা।</string>
     <string name="conditions_widget_label">অবস্থা</string>
     <string name="conditions_widget_description">তাপমাত্রা, বৃষ্টি, বাতাস ও UV এক নজরে।</string>
     <string name="conditions_rain_pct">%1$d%%</string>

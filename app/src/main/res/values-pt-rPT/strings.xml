@@ -400,6 +400,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="feels_like_week_widget_label">Sensação térmica (7 dias)</string>
     <string name="feels_like_week_widget_description">A sensação térmica ao longo dos próximos 7 dias.</string>
     <string name="feels_like_widget_empty_title">Ainda sem previsão</string>
+    <string name="rain_widget_description">A possibilidade de chuva do período atual.</string>
     <string name="conditions_widget_label">Condições</string>
     <string name="conditions_widget_description">Temperatura, chuva, vento e UV num relance.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
@@ -632,6 +633,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_precipitation_peak_day">Pico de %1$d%% %2$s</string>
     <string name="today_precipitation_dry">Sem chuva prevista hoje</string>
     <string name="today_precipitation_dry_week">Sem chuva prevista</string>
+    <string name="today_precipitation_dry_overnight">Sem chuva prevista durante a noite</string>
 
     <string name="today_chart_model_legend_label">Modelos:</string>
     <string name="today_chart_main_line_label">Média</string>

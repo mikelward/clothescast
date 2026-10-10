@@ -1467,6 +1467,7 @@ private fun TodayPage(
                     startDate = insight.forDate,
                     perModelHourly = perModelData,
                     showModelSpread = state.showModelSpread,
+                    period = insight.period,
                 )
                 PrecipitationAmountCard(
                     hourly = insight.hourly,
@@ -3341,6 +3342,14 @@ internal fun PrecipitationCard(
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     perModelHourly: PerModelHourly? = null,
     showModelSpread: Boolean = false,
+    // The home-screen chance-of-rain widget reuses this card without its title
+    // and filling the bitmap it's rendered into — see [ForecastCard]'s
+    // matching parameters. Defaults keep the in-app card unchanged.
+    showHeader: Boolean = true,
+    fillHeight: Boolean = false,
+    // Which window [hourly] covers, for the dry-day subtitle: "today" would be
+    // wrong over a tonight window that runs past midnight.
+    period: ForecastPeriod = ForecastPeriod.TODAY,
 ) {
     // Always render the chart, even on dry days — keeps the card height stable
     // across days so the cards below don't shift, and the flat baseline is its
@@ -3355,8 +3364,11 @@ internal fun PrecipitationCard(
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry || peakIdx == null) {
         stringResource(
-            if (isWeekView()) R.string.today_precipitation_dry_week
-            else R.string.today_precipitation_dry,
+            when {
+                isWeekView() -> R.string.today_precipitation_dry_week
+                period == ForecastPeriod.TONIGHT -> R.string.today_precipitation_dry_overnight
+                else -> R.string.today_precipitation_dry
+            },
         )
     } else {
         peakSubtitle(
@@ -3376,22 +3388,30 @@ internal fun PrecipitationCard(
             formatScrubMoment(moment),
         )
     }
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Box {
+    Card(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier.fillMaxWidth()) {
+        Box(modifier = if (fillHeight) Modifier.fillMaxSize() else Modifier) {
             Column(
-                modifier = Modifier.padding(20.dp),
+                modifier = if (fillHeight) {
+                    Modifier.fillMaxSize().padding(20.dp)
+                } else {
+                    Modifier.padding(20.dp)
+                },
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.today_precipitation_title),
-                    style = MaterialTheme.typography.titleSmall,
-                )
+                if (showHeader) {
+                    Text(
+                        text = stringResource(R.string.today_precipitation_title),
+                        style = MaterialTheme.typography.titleSmall,
+                    )
+                }
                 ChartSubtitleRow(subtitle = subtitleText, readout = readout)
                 PrecipitationChart(
                     hourly = hourly,
                     startDate = startDate,
+                    modifier = if (fillHeight) Modifier.weight(1f) else Modifier,
                     perModelHourly = perModelHourly,
                     showModelSpread = showModelSpread,
+                    fillHeight = fillHeight,
                 )
                 if (perModelHourly != null) {
                     // Same visibility filter the chart applies (see

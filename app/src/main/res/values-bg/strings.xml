@@ -1178,6 +1178,12 @@ What is NOT overridden, by design:
     <string name="today_precipitation_amount_dry_tonight">Тази вечер не се очаква дъжд</string>
     <string name="today_precipitation_amount_dry_week">Не се очаква дъжд</string>
     <string name="today_precipitation_amount_total_week">%1$s дъжд</string>
+    <string name="today_precipitation_title_snow">Шанс за сняг</string>
+    <string name="today_precipitation_title_mixed">Шанс за дъжд или сняг</string>
+    <string name="today_precipitation_amount_title_any">Валежи</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s валежи днес</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s валежи тази вечер</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s валежи</string>
     <string name="today_precipitation_amount_title">Валежи</string>
     <string name="today_precipitation_amount_peak_day">Пик %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s дъжд днес</string>

@@ -118,6 +118,8 @@ import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
 import app.clothescast.core.domain.model.PerModelHour
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.PrecipitationKind
+import app.clothescast.core.domain.model.precipitationKind
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
 import app.clothescast.core.domain.model.AccessoriesFormat
@@ -3366,6 +3368,11 @@ internal fun PrecipitationCard(
     }
     val isDry = peakIdx == null ||
         hourly[peakIdx].precipitationProbabilityPct < DRY_THRESHOLD_PCT
+    // Labelled by the same hours the chart treats as wet, so the title never
+    // names snow the probability line doesn't show.
+    val kind = remember(hourly) {
+        precipitationKind(hourly) { it.precipitationProbabilityPct >= DRY_THRESHOLD_PCT }
+    }
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry || peakIdx == null) {
         stringResource(
@@ -3407,7 +3414,7 @@ internal fun PrecipitationCard(
             ) {
                 if (showHeader) {
                     Text(
-                        text = stringResource(R.string.today_precipitation_title),
+                        text = stringResource(precipitationTitleRes(kind)),
                         style = MaterialTheme.typography.titleSmall,
                     )
                 }
@@ -3492,6 +3499,18 @@ internal fun PrecipitationAmountCard(
     val totalMm = remember(mainLine) { mainLine.sum() }
     val rainPeakIdx = remember(mainLine) { mainLine.indices.maxByOrNull { mainLine[it] } }
     val isDry = totalMm < DRY_TOTAL_THRESHOLD_MM
+    // Open-Meteo's amount already includes snow (as melted depth), so a snowy
+    // window keeps the one combined series and only swaps "rain" for
+    // "precipitation" in the title and total.
+    // Wet hours are read off [mainLine], the series the chart and total plot,
+    // so a consensus amount the raw best-match hour lacks still counts.
+    val kind = remember(hourly, mainLine, isDry) {
+        if (isDry) {
+            PrecipitationKind.RAIN
+        } else {
+            precipitationKind(hourly.filterIndexed { i, _ -> (mainLine.getOrNull(i) ?: 0.0) > 0.0 }) { true }
+        }
+    }
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry) {
         stringResource(
@@ -3520,6 +3539,11 @@ internal fun PrecipitationAmountCard(
     } else {
         stringResource(
             when {
+                kind != PrecipitationKind.RAIN -> when {
+                    isWeekView() -> R.string.today_precipitation_amount_total_week_any
+                    period == ForecastPeriod.TODAY -> R.string.today_precipitation_amount_total_today_any
+                    else -> R.string.today_precipitation_amount_total_tonight_any
+                }
                 isWeekView() -> R.string.today_precipitation_amount_total_week
                 period == ForecastPeriod.TODAY -> R.string.today_precipitation_amount_total_today
                 else -> R.string.today_precipitation_amount_total_tonight
@@ -3542,7 +3566,13 @@ internal fun PrecipitationAmountCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.today_precipitation_amount_title),
+                    text = stringResource(
+                        if (kind == PrecipitationKind.RAIN) {
+                            R.string.today_precipitation_amount_title
+                        } else {
+                            R.string.today_precipitation_amount_title_any
+                        },
+                    ),
                     style = MaterialTheme.typography.titleSmall,
                 )
                 ChartSubtitleRow(subtitle = subtitleText, readout = readout)
@@ -3712,6 +3742,14 @@ private fun compactMainLabel(label: String): String =
 // objectively dry days; treating anything under 5% as "no rain" suppresses
 // the misleading "Peak 2% at 03:00" callout while still surfacing genuine
 // drizzle-grade chances at 5%+.
+/** The probability card's title for what the window's wet hours carry. */
+@androidx.annotation.StringRes
+internal fun precipitationTitleRes(kind: PrecipitationKind): Int = when (kind) {
+    PrecipitationKind.RAIN -> R.string.today_precipitation_title
+    PrecipitationKind.SNOW -> R.string.today_precipitation_title_snow
+    PrecipitationKind.MIXED -> R.string.today_precipitation_title_mixed
+}
+
 private const val DRY_THRESHOLD_PCT = 5.0
 
 // Dry threshold for the hourly-rainfall card, applied to the day's

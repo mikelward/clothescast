@@ -1339,6 +1339,12 @@ the displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">今夜は降雨予報なし</string>
     <string name="today_precipitation_amount_dry_week">降雨予報なし</string>
     <string name="today_precipitation_amount_total_week">%1$sの雨</string>
+    <string name="today_precipitation_title_snow">降雪確率</string>
+    <string name="today_precipitation_title_mixed">雨または雪の確率</string>
+    <string name="today_precipitation_amount_title_any">降水量</string>
+    <string name="today_precipitation_amount_total_today_any">今日は%1$sの降水</string>
+    <string name="today_precipitation_amount_total_tonight_any">今夜は%1$sの降水</string>
+    <string name="today_precipitation_amount_total_week_any">%1$sの降水</string>
     <string name="today_precipitation_amount_title">降水量</string>
     <string name="today_precipitation_amount_peak_day">ピーク %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">今日は%1$sの雨</string>

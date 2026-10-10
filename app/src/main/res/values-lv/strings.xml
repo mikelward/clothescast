@@ -1133,6 +1133,12 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_precipitation_amount_dry_tonight">Šovakar lietus nav gaidāms</string>
     <string name="today_precipitation_amount_dry_week">Lietus nav gaidāms</string>
     <string name="today_precipitation_amount_total_week">%1$s lietus</string>
+    <string name="today_precipitation_title_snow">Sniega iespējamība</string>
+    <string name="today_precipitation_title_mixed">Lietus vai sniega iespējamība</string>
+    <string name="today_precipitation_amount_title_any">Nokrišņi</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s nokrišņu šodien</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s nokrišņu šovakar</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s nokrišņu</string>
     <string name="today_precipitation_amount_title">Nokrišņi</string>
     <string name="today_precipitation_amount_peak_day">Maksimums %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s lietus šodien</string>

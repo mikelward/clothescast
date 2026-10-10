@@ -1567,6 +1567,28 @@ internal fun PrecipitationCardDarkPreview() {
     Frame(darkTheme = true) { PrecipitationCard(hourly = SAMPLE_HOURLY_RAINY) }
 }
 
+// The rainy sample with every wet hour turned to snow: same combined series,
+// snow-aware titles and total.
+private val SAMPLE_HOURLY_SNOWY: List<HourlyForecast> = SAMPLE_HOURLY_RAINY.map {
+    if (it.precipitationProbabilityPct >= 10.0 || it.precipitationMm > 0.0) {
+        it.copy(condition = WeatherCondition.SNOW, temperatureC = -1.0, feelsLikeC = -5.0)
+    } else {
+        it
+    }
+}
+
+@Preview(name = "Precipitation card · snowy", widthDp = 360)
+@Composable
+internal fun PrecipitationCardSnowPreview() {
+    Frame { PrecipitationCard(hourly = SAMPLE_HOURLY_SNOWY) }
+}
+
+@Preview(name = "Precipitation amount card · snowy", widthDp = 360)
+@Composable
+internal fun PrecipitationAmountCardSnowPreview() {
+    Frame { PrecipitationAmountCard(hourly = SAMPLE_HOURLY_SNOWY) }
+}
+
 @Preview(name = "Precipitation amount card · rainy", widthDp = 360)
 @Composable
 internal fun PrecipitationAmountCardPreview() {

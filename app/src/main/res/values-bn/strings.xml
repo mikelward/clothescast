@@ -1263,6 +1263,12 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_precipitation_amount_dry_tonight">আজ রাতে বৃষ্টির সম্ভাবনা নেই</string>
     <string name="today_precipitation_amount_dry_week">বৃষ্টির সম্ভাবনা নেই</string>
     <string name="today_precipitation_amount_total_week">%1$s বৃষ্টি</string>
+    <string name="today_precipitation_title_snow">তুষারপাতের সম্ভাবনা</string>
+    <string name="today_precipitation_title_mixed">বৃষ্টি বা তুষারপাতের সম্ভাবনা</string>
+    <string name="today_precipitation_amount_title_any">বৃষ্টিপাত</string>
+    <string name="today_precipitation_amount_total_today_any">আজ %1$s বৃষ্টিপাত</string>
+    <string name="today_precipitation_amount_total_tonight_any">আজ রাতে %1$s বৃষ্টিপাত</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s বৃষ্টিপাত</string>
     <string name="today_precipitation_amount_title">বৃষ্টিপাত</string>
     <string name="today_precipitation_amount_peak_day">সর্বোচ্চ %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">আজ %1$s বৃষ্টি</string>

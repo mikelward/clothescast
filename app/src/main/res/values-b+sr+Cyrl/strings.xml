@@ -1169,6 +1169,12 @@ surfaces.
     <string name="today_precipitation_amount_dry_tonight">Вечерас се не очекује киша</string>
     <string name="today_precipitation_amount_dry_week">Не очекује се киша</string>
     <string name="today_precipitation_amount_total_week">%1$s кише</string>
+    <string name="today_precipitation_title_snow">Вероватноћа снега</string>
+    <string name="today_precipitation_title_mixed">Вероватноћа кише или снега</string>
+    <string name="today_precipitation_amount_title_any">Падавине</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s падавина данас</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s падавина вечерас</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s падавина</string>
     <string name="today_precipitation_amount_title">Падавине</string>
     <string name="today_precipitation_amount_peak_day">Врхунац %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s кише данас</string>

@@ -164,6 +164,12 @@
          single hour rounds to a non-zero peak. -->
     <string name="today_precipitation_amount_dry_week">No rainfall expected</string>
     <string name="today_precipitation_amount_total_week">%1$s of rain</string>
+    <string name="today_precipitation_title_snow">Chance of snow</string>
+    <string name="today_precipitation_title_mixed">Chance of rain or snow</string>
+    <string name="today_precipitation_amount_title_any">Precipitation</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s of precipitation today</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s of precipitation tonight</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s of precipitation</string>
 
     <!-- Low–high feels-like temperature row shown on the Nest-Hub outfit card.
          %1$d = rounded low, %2$d = rounded high, %3$s = unit symbol (e.g. °C). -->

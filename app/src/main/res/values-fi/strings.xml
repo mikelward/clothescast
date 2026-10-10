@@ -1198,6 +1198,12 @@ displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">Illalle ei odoteta sadetta</string>
     <string name="today_precipitation_amount_dry_week">Ei odoteta sadetta</string>
     <string name="today_precipitation_amount_total_week">Sadetta %1$s</string>
+    <string name="today_precipitation_title_snow">Lumisateen todennäköisyys</string>
+    <string name="today_precipitation_title_mixed">Vesi- tai lumisateen todennäköisyys</string>
+    <string name="today_precipitation_amount_title_any">Sade</string>
+    <string name="today_precipitation_amount_total_today_any">Sadetta tänään %1$s</string>
+    <string name="today_precipitation_amount_total_tonight_any">Sadetta illalla %1$s</string>
+    <string name="today_precipitation_amount_total_week_any">Sadetta %1$s</string>
     <string name="today_precipitation_amount_title">Sade</string>
     <string name="today_precipitation_amount_peak_day">Huippu %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">Sadetta tänään %1$s</string>

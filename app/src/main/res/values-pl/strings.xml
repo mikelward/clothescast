@@ -1239,6 +1239,12 @@ is unchanged; only the displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">W nocy bez deszczu</string>
     <string name="today_precipitation_amount_dry_week">Bez deszczu</string>
     <string name="today_precipitation_amount_total_week">%1$s deszczu</string>
+    <string name="today_precipitation_title_snow">Prawdopodobieństwo śniegu</string>
+    <string name="today_precipitation_title_mixed">Prawdopodobieństwo deszczu lub śniegu</string>
+    <string name="today_precipitation_amount_title_any">Opady</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s opadów dziś</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s opadów w nocy</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s opadów</string>
     <string name="today_precipitation_amount_title">Opady</string>
     <string name="today_precipitation_amount_peak_day">Szczyt %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s deszczu dziś</string>

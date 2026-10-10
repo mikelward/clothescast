@@ -1184,6 +1184,12 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_precipitation_amount_dry_tonight">Estére nem várható eső</string>
     <string name="today_precipitation_amount_dry_week">Nem várható eső</string>
     <string name="today_precipitation_amount_total_week">%1$s eső</string>
+    <string name="today_precipitation_title_snow">Havazás valószínűsége</string>
+    <string name="today_precipitation_title_mixed">Eső vagy havazás valószínűsége</string>
+    <string name="today_precipitation_amount_title_any">Csapadék</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s csapadék ma</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s csapadék este</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s csapadék</string>
     <string name="today_precipitation_amount_title">Csapadék</string>
     <string name="today_precipitation_amount_peak_day">Csúcs %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s eső ma</string>

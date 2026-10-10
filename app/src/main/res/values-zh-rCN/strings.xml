@@ -1338,6 +1338,12 @@ label localizes.
     <string name="today_precipitation_amount_dry_tonight">今晚预计无降雨</string>
     <string name="today_precipitation_amount_dry_week">预计无降雨</string>
     <string name="today_precipitation_amount_total_week">降雨 %1$s</string>
+    <string name="today_precipitation_title_snow">降雪概率</string>
+    <string name="today_precipitation_title_mixed">雨雪概率</string>
+    <string name="today_precipitation_amount_title_any">降水</string>
+    <string name="today_precipitation_amount_total_today_any">今天降水 %1$s</string>
+    <string name="today_precipitation_amount_total_tonight_any">今晚降水 %1$s</string>
+    <string name="today_precipitation_amount_total_week_any">降水 %1$s</string>
     <string name="today_precipitation_amount_title">降水</string>
     <string name="today_precipitation_amount_peak_day">峰值 %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">今天降雨 %1$s</string>

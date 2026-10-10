@@ -1132,6 +1132,12 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_precipitation_amount_dry_tonight">No s\'espera pluja aquesta nit</string>
     <string name="today_precipitation_amount_dry_week">No s\'espera pluja</string>
     <string name="today_precipitation_amount_total_week">%1$s de pluja</string>
+    <string name="today_precipitation_title_snow">Probabilitat de neu</string>
+    <string name="today_precipitation_title_mixed">Probabilitat de pluja o neu</string>
+    <string name="today_precipitation_amount_title_any">Precipitació</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s de precipitació avui</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s de precipitació aquesta nit</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s de precipitació</string>
     <string name="today_precipitation_amount_title">Pluja</string>
     <string name="today_precipitation_amount_peak_day">Màxim %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s de pluja avui</string>

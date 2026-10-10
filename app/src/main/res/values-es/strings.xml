@@ -1319,6 +1319,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">No se espera lluvia esta noche</string>
     <string name="today_precipitation_amount_dry_week">No se espera lluvia</string>
     <string name="today_precipitation_amount_total_week">%1$s de lluvia</string>
+    <string name="today_precipitation_title_snow">Probabilidad de nieve</string>
+    <string name="today_precipitation_title_mixed">Probabilidad de lluvia o nieve</string>
+    <string name="today_precipitation_amount_title_any">Precipitación</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s de precipitación hoy</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s de precipitación esta noche</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s de precipitación</string>
     <string name="today_precipitation_amount_title">Lluvia</string>
     <string name="today_precipitation_amount_peak_day">Pico %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s de lluvia hoy</string>

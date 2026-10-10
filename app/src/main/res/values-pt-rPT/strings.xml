@@ -1320,6 +1320,12 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_precipitation_amount_dry_tonight">Sem chuva prevista esta noite</string>
     <string name="today_precipitation_amount_dry_week">Sem chuva prevista</string>
     <string name="today_precipitation_amount_total_week">%1$s de chuva</string>
+    <string name="today_precipitation_title_snow">Possibilidade de neve</string>
+    <string name="today_precipitation_title_mixed">Possibilidade de chuva ou neve</string>
+    <string name="today_precipitation_amount_title_any">Precipitação</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s de precipitação hoje</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s de precipitação esta noite</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s de precipitação</string>
     <string name="today_precipitation_amount_title">Chuva</string>
     <string name="today_precipitation_amount_peak_day">Pico de %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s de chuva hoje</string>

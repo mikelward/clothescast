@@ -1239,6 +1239,12 @@ the displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">Geen regen verwacht vanavond</string>
     <string name="today_precipitation_amount_dry_week">Geen regen verwacht</string>
     <string name="today_precipitation_amount_total_week">%1$s regen</string>
+    <string name="today_precipitation_title_snow">Kans op sneeuw</string>
+    <string name="today_precipitation_title_mixed">Kans op regen of sneeuw</string>
+    <string name="today_precipitation_amount_title_any">Neerslag</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s neerslag vandaag</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s neerslag vanavond</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s neerslag</string>
     <string name="today_precipitation_amount_title">Regenval</string>
     <string name="today_precipitation_amount_peak_day">Piek %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s regen vandaag</string>

@@ -1343,6 +1343,12 @@ displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">오늘 밤은 비 예보 없음</string>
     <string name="today_precipitation_amount_dry_week">비 예보 없음</string>
     <string name="today_precipitation_amount_total_week">비 %1$s</string>
+    <string name="today_precipitation_title_snow">강설 확률</string>
+    <string name="today_precipitation_title_mixed">비 또는 눈 확률</string>
+    <string name="today_precipitation_amount_title_any">강수량</string>
+    <string name="today_precipitation_amount_total_today_any">오늘 강수 %1$s</string>
+    <string name="today_precipitation_amount_total_tonight_any">오늘 밤 강수 %1$s</string>
+    <string name="today_precipitation_amount_total_week_any">강수 %1$s</string>
     <string name="today_precipitation_amount_title">강우량</string>
     <string name="today_precipitation_amount_peak_day">최고 %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">오늘 비 %1$s</string>

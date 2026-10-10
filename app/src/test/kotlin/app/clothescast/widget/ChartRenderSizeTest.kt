@@ -36,4 +36,32 @@ class ChartRenderSizeTest {
         // 7200px, so the cap wins: 1600 wide, height scaled by the same factor.
         scaleRenderSize(1500, 50) shouldBe (1600 to 53)
     }
+
+    @Test
+    fun `each orientation's cell picks the bitmap rendered for it`() {
+        // A launcher listing a short-wide landscape cell and a tall portrait
+        // one: the portrait composition must get the tall bitmap, not the
+        // letterboxed wide one.
+        val sizes = listOf(356f to 55f, 300f to 220f)
+        closestSizeIndex(sizes, 300f, 220f) shouldBe 1
+        closestSizeIndex(sizes, 356f, 55f) shouldBe 0
+    }
+
+    @Test
+    fun `a cell slightly off a listed size picks the nearest`() {
+        val sizes = listOf(400f to 120f, 260f to 300f)
+        closestSizeIndex(sizes, 262f, 296f) shouldBe 1
+    }
+
+    @Test
+    fun `no rendered sizes picks nothing`() {
+        closestSizeIndex(emptyList(), 300f, 200f) shouldBe -1
+    }
+
+    @Test
+    fun `cell sizes drop non-positive and duplicate entries and cap the count`() {
+        distinctCellSizes(
+            listOf(0f to 100f, 300f to 200f, 300.2f to 199.8f, 100f to -1f, 1f to 1f, 2f to 2f, 3f to 3f, 4f to 4f),
+        ) shouldBe listOf(300f to 200f, 1f to 1f, 2f to 2f, 3f to 3f)
+    }
 }

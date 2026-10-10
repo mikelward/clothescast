@@ -8,13 +8,16 @@ import android.graphics.Bitmap
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import android.util.SizeF
 import androidx.core.net.toUri
+import androidx.core.os.BundleCompat
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
+import androidx.glance.LocalSize
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
@@ -47,6 +50,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
@@ -72,13 +76,13 @@ import kotlin.math.roundToInt
  */
 class FeelsLikeWidget : GlanceAppWidget() {
 
-    override val sizeMode: SizeMode = SizeMode.Single
+    override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val bitmap = buildChartBitmap(context, id, weekly = false)
+        val charts = buildCharts(context, id, weekly = false)
         provideContent {
             GlanceTheme {
-                ChartWidgetContent(bitmap = bitmap, page = THIS_PERIOD_PAGE, labelRes = R.string.feels_like_widget_label)
+                ChartWidgetContent(charts = charts, page = THIS_PERIOD_PAGE, labelRes = R.string.feels_like_widget_label)
             }
         }
     }
@@ -86,13 +90,13 @@ class FeelsLikeWidget : GlanceAppWidget() {
 
 class SevenDayFeelsLikeWidget : GlanceAppWidget() {
 
-    override val sizeMode: SizeMode = SizeMode.Single
+    override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val bitmap = buildChartBitmap(context, id, weekly = true)
+        val charts = buildCharts(context, id, weekly = true)
         provideContent {
             GlanceTheme {
-                ChartWidgetContent(bitmap = bitmap, page = WEEK_PAGE, labelRes = R.string.feels_like_week_widget_label)
+                ChartWidgetContent(charts = charts, page = WEEK_PAGE, labelRes = R.string.feels_like_week_widget_label)
             }
         }
     }
@@ -104,7 +108,7 @@ private const val WEEK_PAGE = 2
 
 // Fallback render size for the off-screen chart bitmap (3:1, mid-range). Used
 // only when the launcher hasn't reported the widget's cell size yet (e.g. the
-// picker preview); once it has, [chartRenderSizePx] renders at the cell's own
+// picker preview); once it has, [renderForCells] renders at each cell's own
 // shape so the chart fills the space the user gave it.
 private const val RENDER_WIDTH_PX = 720
 private const val RENDER_HEIGHT_PX = 240
@@ -122,8 +126,9 @@ internal const val RENDER_TIMEOUT_MS = 4000L
 
 /**
  * Shared Glance shell for the chart widgets (feels-like and chance of rain):
- * the rasterised chart [bitmap], or the "no forecast yet" empty state when
- * it's null. Tapping opens Today on [page].
+ * the rasterised chart in [charts] rendered for the cell being composed (the
+ * widgets use SizeMode.Exact, so this runs once per cell size), or the "no
+ * forecast yet" empty state when there's none. Tapping opens Today on [page].
  *
  * The shell paints a background only for the empty state. With a chart, the
  * bitmap's own card is the widget's surface: it's themed from the in-app
@@ -132,8 +137,11 @@ internal const val RENDER_TIMEOUT_MS = 4000L
  * whenever the two disagreed.
  */
 @Composable
-internal fun ChartWidgetContent(bitmap: Bitmap?, page: Int, @StringRes labelRes: Int) {
+internal fun ChartWidgetContent(charts: List<SizedChart>, page: Int, @StringRes labelRes: Int) {
     val context = LocalContext.current
+    val size = LocalSize.current
+    val bitmap = closestSizeIndex(charts.map { it.widthDp to it.heightDp }, size.width.value, size.height.value)
+        .let { charts.getOrNull(it)?.bitmap }
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
@@ -190,11 +198,12 @@ private fun chartTapIntent(context: Context, page: Int): Intent =
         }
 
 // Loads the cached insight, derives the chart inputs, and rasterises the real
-// WidgetForecastChart off-screen. Returns null (→ empty state) when there's no
-// cached forecast yet or the render fails / times out, so a flaky render
-// degrades to "tap to open" rather than crashing the launcher.
-private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boolean): Bitmap? {
-    val (insight, prefs) = loadCurrentInsight(context) ?: return null
+// WidgetForecastChart off-screen, once per cell size. Returns empty (→ empty
+// state) when there's no cached forecast yet or every render fails / times
+// out, so a flaky render degrades to "tap to open" rather than crashing the
+// launcher.
+private suspend fun buildCharts(context: Context, id: GlanceId, weekly: Boolean): List<SizedChart> {
+    val (insight, prefs) = loadCurrentInsight(context) ?: return emptyList()
 
     val hourly: List<HourlyForecast>
     val days: List<DailyForecast>?
@@ -204,14 +213,14 @@ private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boo
         // the Today screen's second week page; the widget's weekly chart stays a
         // 7-day view, so cap to today + the next six days.
         val weekDays = listOfNotNull(insight.currentDay) + insight.upcomingDays.take(6)
-        if (weekDays.size < 2) return null
+        if (weekDays.size < 2) return emptyList()
         val flat = weekDays.flatMap { it.hourly }
-        if (flat.size < 2) return null
+        if (flat.size < 2) return emptyList()
         hourly = flat
         days = weekDays
         startDate = weekDays.first().date
     } else {
-        if (insight.hourly.size < 2) return null
+        if (insight.hourly.size < 2) return emptyList()
         hourly = insight.hourly
         days = null
         startDate = insight.forDate
@@ -222,69 +231,128 @@ private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boo
     val darkTheme = resolveDarkTheme(context, prefs.themeMode)
     val palette = prefs.colorPalette
 
-    val (widthPx, heightPx) = chartRenderSizePx(context, id)
-    val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
-        renderComposableToBitmap(context, widthPx, heightPx) {
-            ClothesCastTheme(darkTheme = darkTheme, colorPalette = palette) {
-                WidgetForecastChart(
-                    hourly = hourly,
-                    days = days,
-                    temperatureUnit = prefs.temperatureUnit,
-                    timeFormat = prefs.timeFormat,
-                    startDate = startDate,
-                    now = now,
-                    // Fill the bitmap we sized to the cell, so the chart scales
-                    // with the available space rather than wrapping a fixed height.
-                    fillHeight = true,
-                )
+    return renderForCells(context, id) { widthPx, heightPx ->
+        val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
+            renderComposableToBitmap(context, widthPx, heightPx) {
+                ClothesCastTheme(darkTheme = darkTheme, colorPalette = palette) {
+                    WidgetForecastChart(
+                        hourly = hourly,
+                        days = days,
+                        temperatureUnit = prefs.temperatureUnit,
+                        timeFormat = prefs.timeFormat,
+                        startDate = startDate,
+                        now = now,
+                        // Fill the bitmap we sized to the cell, so the chart scales
+                        // with the available space rather than wrapping a fixed height.
+                        fillHeight = true,
+                    )
+                }
             }
         }
+        if (bitmap == null) {
+            DiagLog.w(
+                TAG,
+                "Chart bitmap null for %s widget (%s hourly pts) — render failed/blank/timeout; showing empty state",
+                if (weekly) "7-day" else "period",
+                hourly.size,
+            )
+        }
+        bitmap
     }
-    if (bitmap == null) {
-        DiagLog.w(
-            TAG,
-            "Chart bitmap null for %s widget (%s hourly pts) — render failed/blank/timeout; showing empty state",
-            if (weekly) "7-day" else "period",
-            hourly.size,
-        )
-    }
-    return bitmap
 }
 
-// Derives the off-screen bitmap size from the widget's actual cell, so the chart
-// fills the space the user gave it. The launcher reports the cell extent (in
-// dp) via the AppWidget options bundle: the portrait cell is MIN width × MAX
-// height and the landscape cell is MAX width × MIN height (the AppWidget
-// contract — portrait launchers are taller and narrower). The bitmap takes the
-// cell's own aspect, whatever it is: an earlier clamp to 2:1–4:1 kept the chart
-// "comfortably wide" but letterboxed it in any cell outside that band, leaving
-// empty bands above and below a squashed plot. Resizing the widget triggers an
-// options-changed update, which re-runs provideGlance at the new size. Falls
-// back to a mid-range 3:1 when no size is reported yet (e.g. the picker
-// preview).
-internal fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
-    val fallback = RENDER_WIDTH_PX to RENDER_HEIGHT_PX
+/** A chart bitmap rendered for one cell size the launcher reported, in dp. */
+internal class SizedChart(val widthDp: Float, val heightDp: Float, val bitmap: Bitmap)
+
+// The cell sizes the widget can be shown at, in dp. On API 31+ (our minSdk) the
+// launcher lists the real sizes in OPTION_APPWIDGET_SIZES — usually one per
+// orientation — and Glance's SizeMode.Exact composes once for each of them, so
+// rendering a bitmap per listed size lets the shown image match its cell
+// exactly. The older MIN/MAX width/height pair is only a range, and reading the
+// "portrait" corner of it guessed wrong on some launchers: a tablet reported a
+// 356x55 dp cell for a much taller widget, so the chart was drawn short and
+// letterboxed. That pair is now just the fallback for a launcher that lists no
+// sizes, rendered for both orientations. Empty when nothing is reported yet
+// (e.g. the picker preview).
+internal fun chartCellSizesDp(context: Context, id: GlanceId): List<Pair<Float, Float>> {
     val options = runCatching {
         val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
         AppWidgetManager.getInstance(context).getAppWidgetOptions(appWidgetId)
     }.onFailure { DiagLog.w(TAG, it, "Widget: reading cell size failed; using default aspect") }
-        .getOrNull() ?: return fallback
+        .getOrNull() ?: return emptyList()
 
-    val portrait = context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-    val widthDp = options.getInt(
-        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH
-        else AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
+    val listed = BundleCompat.getParcelableArrayList(options, AppWidgetManager.OPTION_APPWIDGET_SIZES, SizeF::class.java)
+        .orEmpty()
+        .map { it.width to it.height }
+    val sizes = listed.ifEmpty {
+        // Without a listed size, Glance's Exact mode composes for both
+        // orientations' estimates from the MIN/MAX pair — portrait is
+        // MIN width x MAX height, landscape MAX width x MIN height — so render
+        // both, letting each composition find its own shape.
+        val minW = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH).toFloat()
+        val maxW = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH).toFloat()
+        val minH = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT).toFloat()
+        val maxH = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT).toFloat()
+        listOf(minW to maxH, maxW to minH)
+    }
+    val usable = distinctCellSizes(sizes)
+    DiagLog.i(
+        TAG,
+        "Widget: chart cells %s dp (%s)",
+        usable.joinToString { "%.0fx%.0f".format(java.util.Locale.ROOT, it.first, it.second) },
+        if (listed.isEmpty()) "min/max fallback" else "listed",
     )
-    val heightDp = options.getInt(
-        if (portrait) AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT
-        else AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-    )
-    DiagLog.i(TAG, "Widget: chart cell %sx%s dp (%s)", widthDp, heightDp, if (portrait) "portrait" else "landscape")
-    if (widthDp <= 0 || heightDp <= 0) return fallback
-
-    val density = context.resources.displayMetrics.density
-    return scaleRenderSize((widthDp * density).roundToInt(), (heightDp * density).roundToInt())
+    return usable
 }
+
+// Drops non-positive and duplicate sizes (to the whole dp), and caps the count
+// so a launcher listing many sizes can't multiply the render work and the
+// bitmap memory every RemoteViews update carries.
+internal fun distinctCellSizes(sizes: List<Pair<Float, Float>>): List<Pair<Float, Float>> =
+    sizes.filter { it.first > 0f && it.second > 0f }
+        .distinctBy { it.first.roundToInt() to it.second.roundToInt() }
+        .take(MAX_CELL_SIZES)
+
+private const val MAX_CELL_SIZES = 4
+
+/**
+ * Renders [render] once per cell size the widget can show at, each bitmap at
+ * that cell's own shape, so the chart fills whichever cell is on screen. Falls
+ * back to one mid-range 3:1 bitmap when no size is reported yet. Sizes whose
+ * render fails are dropped; an empty result means the empty state.
+ */
+internal suspend fun renderForCells(
+    context: Context,
+    id: GlanceId,
+    render: suspend (widthPx: Int, heightPx: Int) -> Bitmap?,
+): List<SizedChart> {
+    val cells = chartCellSizesDp(context, id)
+    if (cells.isEmpty()) {
+        val density = context.resources.displayMetrics.density
+        return listOfNotNull(
+            render(RENDER_WIDTH_PX, RENDER_HEIGHT_PX)?.let {
+                SizedChart(RENDER_WIDTH_PX / density, RENDER_HEIGHT_PX / density, it)
+            },
+        )
+    }
+    val density = context.resources.displayMetrics.density
+    return cells.mapNotNull { (widthDp, heightDp) ->
+        val (widthPx, heightPx) = scaleRenderSize((widthDp * density).roundToInt(), (heightDp * density).roundToInt())
+        render(widthPx, heightPx)?.let { SizedChart(widthDp, heightDp, it) }
+    }
+}
+
+/**
+ * The index of the size in [sizes] closest to the cell Glance is composing for
+ * ([widthDp] x [heightDp]): an exact match when the launcher's listed size is
+ * the one shown, otherwise the nearest, so a launcher that reports slightly
+ * different numbers still gets the right orientation's bitmap.
+ */
+internal fun closestSizeIndex(sizes: List<Pair<Float, Float>>, widthDp: Float, heightDp: Float): Int =
+    sizes.indices.minByOrNull { i ->
+        val (w, h) = sizes[i]
+        abs(w - widthDp) + abs(h - heightDp)
+    } ?: -1
 
 /**
  * Keeps a [widthPx]×[heightPx] bitmap within [MIN_RENDER_PX]..[MAX_RENDER_PX]

@@ -148,8 +148,11 @@ import app.clothescast.ui.garment.GarmentOuterIcon
 import app.clothescast.ui.garment.GarmentHandsIcon
 import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.ui.garment.OutfitCardInfoLines
+import app.clothescast.ui.garment.FillGlyph
+import app.clothescast.ui.garment.FillGlyphIcon
 import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.outfitCardInfoLines
+import app.clothescast.ui.garment.thermometerFillFractionFor
 import app.clothescast.ui.garment.outfitGarmentCaption
 import app.clothescast.ui.garment.renderConditionsStripBitmap
 import app.clothescast.diag.DiagLog
@@ -2785,8 +2788,18 @@ internal fun ForecastCard(
         formatMinMax(hourly.map { it.feelsLikeC }, temperatureUnit)
     }
     val scrubController = LocalChartScrub.current
+    // Without the card title (the widget), the strip's thermometer stands in
+    // for "Feels like", so the line carries just the range.
     val subtitleText = feelsLikeMinMax?.let {
-        stringResource(R.string.today_forecast_min_max, it.first, it.second, symbol)
+        stringResource(
+            if (showHeader) R.string.today_forecast_min_max else R.string.outfit_card_temperature_range,
+            it.first,
+            it.second,
+            symbol,
+        )
+    }
+    val thermometerFill = remember(hourly) {
+        hourly.maxOfOrNull { it.feelsLikeC }?.let { thermometerFillFractionFor(it) } ?: 0f
     }
     val readout = rememberChartReadout(hourly, startDate) { idx, moment ->
         val entry = hourly[idx]
@@ -2812,7 +2825,21 @@ internal fun ForecastCard(
                         style = MaterialTheme.typography.titleSmall,
                     )
                 }
-                ChartSubtitleRow(subtitle = subtitleText, readout = readout)
+                ChartSubtitleRow(
+                    subtitle = subtitleText,
+                    readout = readout,
+                    leadingIcon = if (showHeader) {
+                        null
+                    } else {
+                        {
+                            FillGlyphIcon(
+                                glyph = FillGlyph.THERMOMETER,
+                                fillFraction = thermometerFill,
+                                modifier = Modifier.size(WIDGET_SUBTITLE_ICON_SIZE),
+                            )
+                        }
+                    },
+                )
                 ForecastChart(
                     hourly = hourly,
                     temperatureUnit = temperatureUnit,
@@ -3435,7 +3462,28 @@ internal fun PrecipitationCard(
                         style = MaterialTheme.typography.titleSmall,
                     )
                 }
-                ChartSubtitleRow(subtitle = subtitleText, readout = readout)
+                // Without the card title (the widget), the strip's rain droplet,
+                // filled to the peak chance, says what the line measures. A long
+                // translation may take two lines on a narrow cell, but no more:
+                // the chart needs the rest.
+                ChartSubtitleRow(
+                    subtitle = subtitleText,
+                    readout = readout,
+                    maxLines = if (showHeader) Int.MAX_VALUE else WIDGET_SUBTITLE_MAX_LINES,
+                    leadingIcon = if (showHeader) {
+                        null
+                    } else {
+                        {
+                            FillGlyphIcon(
+                                glyph = FillGlyph.DROPLET,
+                                fillFraction = peakIdx?.let {
+                                    (hourly[it].precipitationProbabilityPct / 100.0).toFloat()
+                                } ?: 0f,
+                                modifier = Modifier.size(WIDGET_SUBTITLE_ICON_SIZE),
+                            )
+                        }
+                    },
+                )
                 PrecipitationChart(
                     hourly = hourly,
                     startDate = startDate,
@@ -3768,6 +3816,12 @@ internal fun precipitationTitleRes(kind: PrecipitationKind): Int = when (kind) {
 }
 
 private const val DRY_THRESHOLD_PCT = 5.0
+
+private const val WIDGET_SUBTITLE_MAX_LINES = 2
+
+// Matches bodyMedium's line height, so the icon sits in the line without
+// growing it.
+private val WIDGET_SUBTITLE_ICON_SIZE = 20.dp
 
 // Dry threshold for the hourly-rainfall card, applied to the day's
 // cumulative total (mm). 0.1 mm is the typical "trace" tick across weather

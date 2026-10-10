@@ -49,7 +49,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.platform.LocalContext
@@ -938,6 +941,37 @@ private fun drawRainDropletIcon(
         interiorArgb = interiorArgb,
         outlineArgb = outlineArgb,
     )
+}
+
+/** The partial-fill glyphs the conditions strip draws, for reuse elsewhere. */
+internal enum class FillGlyph { THERMOMETER, DROPLET }
+
+/**
+ * The conditions strip's [glyph] as a composable, filled to [fillFraction] the
+ * same way the strip fills it, so the chart widgets can label a line with the
+ * strip's own icon rather than words. Light or dark interior follows the
+ * surrounding Material surface, matching the strip's light / dark palette.
+ */
+@Composable
+internal fun FillGlyphIcon(
+    glyph: FillGlyph,
+    fillFraction: Float,
+    modifier: Modifier = Modifier,
+) {
+    val dark = androidx.compose.material3.MaterialTheme.colorScheme.surface.luminance() < 0.5f
+    val interiorArgb = if (dark) STRIP_DARK_INTERIOR_ARGB else android.graphics.Color.WHITE
+    val outlineArgb = if (dark) STRIP_DARK_OUTLINE_ARGB else INFO_ICON_OUTLINE_ARGB
+    ComposeCanvas(modifier = modifier.aspectRatio(1f)) {
+        val px = size.minDimension.roundToInt()
+        drawIntoCanvas { canvas ->
+            when (glyph) {
+                FillGlyph.THERMOMETER ->
+                    drawThermometerIcon(canvas.nativeCanvas, 0, 0, px, fillFraction, interiorArgb, outlineArgb)
+                FillGlyph.DROPLET ->
+                    drawRainDropletIcon(canvas.nativeCanvas, 0, 0, px, fillFraction, interiorArgb, outlineArgb)
+            }
+        }
+    }
 }
 
 /**

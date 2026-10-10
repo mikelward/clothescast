@@ -747,9 +747,7 @@ displayed label localizes.
     <!-- API key -->
     <string name="settings_api_key_replace">Vaihda Gemini-avain</string>
 
-    <!-- Outfit card headers -->
-    <string name="outfit_card_header_today">Tämän päivän ClothesCast</string>
-    <string name="outfit_card_header_tonight">Tänä iltana ClothesCast</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Today screen -->

@@ -780,9 +780,7 @@ to values/strings.xml (English).
     <string name="holiday_banner_waitangi_day">Selamat Hari Waitangi</string>
     <string name="holiday_name_us_presidents_day">Hari Presiden</string>
 
-    <!-- Outfit card headers -->
-    <string name="outfit_card_header_today">ClothesCast Hari Ini</string>
-    <string name="outfit_card_header_tonight">ClothesCast Malam Ini</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- API key -->

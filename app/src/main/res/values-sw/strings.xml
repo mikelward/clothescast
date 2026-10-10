@@ -725,8 +725,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_name_waitangi_day">Siku ya Waitangi</string>
 
     <!-- Outfit card -->
-    <string name="outfit_card_header_today">ClothesCast ya Leo</string>
-    <string name="outfit_card_header_tonight">ClothesCast ya Usiku Huu</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- API key -->

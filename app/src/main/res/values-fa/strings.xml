@@ -740,9 +740,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="holiday_name_valentines_day">روز ولنتاین</string>
     <string name="holiday_name_waitangi_day">روز وایتانگی</string>
 
-    <!-- Outfit card headers and temperature range -->
-    <string name="outfit_card_header_today">ClothesCast امروز</string>
-    <string name="outfit_card_header_tonight">ClothesCast امشب</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Settings — API key replace -->

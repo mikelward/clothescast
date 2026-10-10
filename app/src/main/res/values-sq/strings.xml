@@ -342,8 +342,6 @@
     <string name="conditions_wind">%1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">ClothesCast-i i sotëm</string>
-    <string name="outfit_card_header_tonight">ClothesCast-i i sotëm i natës</string>
     <string name="today_confidence_precip_spread">Modelet nuk pajtohen për shiun (Δ %1$.0f%% në %2$d modele)</string>
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm me diell sot</string>
     <string name="today_sunshine_total_hours_only">%1$dh me diell sot</string>

@@ -748,8 +748,6 @@ What is NOT overridden, by design:
     <string name="holiday_banner_boxing_day">Linksmų Kalėdų</string>
     <string name="today_rationale_open_clothes_settings">Drabužių nustatymai</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">Šiandienos ClothesCast</string>
-    <string name="outfit_card_header_tonight">Vakaro ClothesCast</string>
     <string name="today_celebration_card_title">Šventinės temos</string>
     <string name="today_celebration_card_body">Įjunk specialias spalvas ir žinutes švenčių ir gimtadienių proga.</string>
     <string name="today_celebration_card_cta">Kalendoriaus nustatymai</string>

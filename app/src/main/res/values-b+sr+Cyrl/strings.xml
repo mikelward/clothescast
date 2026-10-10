@@ -780,8 +780,6 @@ surfaces.
     <string name="settings_root_smart_home">Паметни дом</string>
     <string name="settings_root_smart_home_subtitle">Паметни дисплеј и кућна аутоматизација</string>
     <string name="settings_api_key_replace">Замени Gemini кључ</string>
-    <string name="outfit_card_header_today">Данашњи ClothesCast</string>
-    <string name="outfit_card_header_tonight">Вечерњи ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Подешавања одеће</string>
     <string name="today_celebration_card_title">Празничне теме</string>

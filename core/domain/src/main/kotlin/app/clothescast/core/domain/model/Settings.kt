@@ -997,7 +997,19 @@ data class UserPreferences(
     val mqttPort: Int = DEFAULT_MQTT_PORT,
     val mqttUseTls: Boolean = false,
     val mqttUsername: String? = null,
+    /**
+     * The EFFECTIVE base topic every publish uses: [mqttTopicOverride] when the
+     * user typed one, else the topic [customName] implies
+     * ([mqttTopicForName] — [DEFAULT_MQTT_TOPIC] with no name). The repository
+     * derives it on read; nothing stores it directly.
+     */
     val mqttTopic: String = DEFAULT_MQTT_TOPIC,
+    /**
+     * The topic the user typed into Settings → Smart Home, or null when the
+     * field is empty and the topic follows [customName]. A typed topic is the
+     * user's own: a Name edit never changes it.
+     */
+    val mqttTopicOverride: String? = null,
     /**
      * When on (default), suppresses the phone speaker when an MQTT publish
      * actually shipped audio for this period. The mirror of
@@ -1061,6 +1073,22 @@ data class UserPreferences(
      * the cast is playing.
      */
     val castSkipPhoneSpeech: Boolean = true,
+    /**
+     * Optional name set on Settings → Smart Home, e.g. "Alex's". Null when
+     * unset (a blank entry is stored as null). When set it heads the outfit
+     * card ("Alex's 7am ClothesCast"), names the Home Assistant device
+     * ("Alex's ClothesCast"), and derives [mqttTopic] via [mqttTopicForName]
+     * while [mqttTopicOverride] is null.
+     */
+    val customName: String? = null,
+    /**
+     * Base topics whose Home Assistant discovery configs may still be retained
+     * on the broker and should be cleared: each effective topic the user moved
+     * away from (by a Name or topic edit) is added, and the next publish clears
+     * its configs and drops it from the set once every clear landed. Never
+     * holds the current [mqttTopic] after a successful publish.
+     */
+    val mqttDiscoveryTopics: Set<String> = emptySet(),
 ) {
     /**
      * Effective per-feature flags: a feature reads the calendar only when the
@@ -1077,7 +1105,32 @@ data class UserPreferences(
         const val DEFAULT_MQTT_PORT = 1883
         const val DEFAULT_MQTT_TLS_PORT = 8883
         const val DEFAULT_MQTT_TOPIC = "clothescast/default"
+
+        /**
+         * The MQTT topic a [customName] implies: `clothescast/<slug>`, or
+         * [DEFAULT_MQTT_TOPIC] when the name is unset or slugs to nothing.
+         */
+        fun mqttTopicForName(name: String?): String {
+            val slug = mqttTopicSlug(name)
+            return if (slug.isEmpty()) DEFAULT_MQTT_TOPIC else "clothescast/$slug"
+        }
     }
+}
+
+/**
+ * A topic-safe slug of a user-typed name: lowercased, punctuation removed
+ * (not replaced, so "Alex's" → "alexs"), whitespace runs → "_", anything
+ * outside ASCII `[a-z0-9_]` dropped, and leading / trailing "_" trimmed.
+ * "Mary Jo" → "mary_jo". Empty for a null, blank or all-non-ASCII name.
+ */
+fun mqttTopicSlug(name: String?): String {
+    if (name.isNullOrBlank()) return ""
+    return name.trim()
+        .lowercase()
+        .replace(Regex("\\s+"), "_")
+        .replace(Regex("[^a-z0-9_]"), "")
+        .replace(Regex("_+"), "_")
+        .trim('_')
 }
 
 /**

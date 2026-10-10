@@ -24,6 +24,7 @@ import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.formatHourMinute
 import app.clothescast.core.domain.usecase.tonightDateTime
 import java.io.ByteArrayOutputStream
@@ -708,14 +709,24 @@ internal fun renderOutfitCard(
     // Period-aware header along the top of the right column — sits over
     // the prose rather than the icons. Fixed at proseX so it left-aligns
     // with the prose underneath.
+    // A long user-set name shrinks the header to fit the column, then
+    // ellipsizes below HEADER_MIN_PX, like the window line. The baseline and
+    // the prose below stay where the full-size header puts them, so a shrunk
+    // header doesn't shift the rest of the card.
     val headerPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textSize = HEADER_PX
         color = palette.header
     }
     val headerBaseline = CARD_PAD - headerPaint.fontMetrics.ascent
-    canvas.drawText(header.uppercase(), proseX.toFloat(), headerBaseline, headerPaint)
     val proseTop = (headerBaseline + headerPaint.fontMetrics.descent + HEADER_GAP_PX).toInt()
+    val headerText = header.uppercase()
+    val headerWidth = (CARD_W - proseX - CARD_PAD).toFloat()
+    while (headerPaint.measureText(headerText) > headerWidth && headerPaint.textSize > HEADER_MIN_PX) {
+        headerPaint.textSize -= 1f
+    }
+    val fittedHeader = TextUtils.ellipsize(headerText, headerPaint, headerWidth, TextUtils.TruncateAt.END)
+    canvas.drawText(fittedHeader, 0, fittedHeader.length, proseX.toFloat(), headerBaseline, headerPaint)
 
     // Prose wraps in the column to the right of the icon stack.
     if (prose.isNotBlank()) {
@@ -1139,6 +1150,34 @@ internal fun outfitCardWindow(
     return "${format(start)} – ${format(end)}"
 }
 
+/**
+ * The outfit card's header: "7am ClothesCast", or "Alex's 7am ClothesCast"
+ * once the user has set [UserPreferences.customName]. The time is the
+ * period's scheduled delivery time (the morning schedule for TODAY, the
+ * tonight schedule for TONIGHT) in the user's 12h / 24h setting, formatted
+ * in [locale] — pass the same locale the card's window line uses. The one
+ * place the header is built, so the worker, the Today share and the
+ * Cast-now test all title the card identically.
+ */
+internal fun outfitCardHeader(
+    context: Context,
+    period: ForecastPeriod,
+    prefs: UserPreferences,
+    locale: Locale,
+): String {
+    val time = when (period) {
+        ForecastPeriod.TODAY -> prefs.schedule.time
+        ForecastPeriod.TONIGHT -> prefs.tonightSchedule.time
+    }
+    val formattedTime = prefs.timeFormat.formatHourMinute(time, locale)
+    val name = prefs.customName?.trim()?.takeIf { it.isNotEmpty() }
+    return if (name == null) {
+        context.getString(R.string.outfit_card_header, formattedTime)
+    } else {
+        context.getString(R.string.outfit_card_header_named, name, formattedTime)
+    }
+}
+
 internal fun outfitCardInfoLines(
     context: Context,
     formatter: InsightFormatter,
@@ -1518,6 +1557,7 @@ private const val CARD_W = 800
 private const val CARD_H = 480
 private const val CARD_PAD = 36
 private const val HEADER_PX = 38f
+private const val HEADER_MIN_PX = 24f  // floor when a long name shrinks the header
 private const val HEADER_GAP_PX = 28   // gap between header bottom and prose top
 private const val ICON_PX = 160
 private const val ICON_V_GAP = 8       // vertical gap between top and bottom icon

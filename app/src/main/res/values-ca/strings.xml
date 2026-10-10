@@ -699,8 +699,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_boxing_day">Bon Sant Esteve</string>
     <string name="today_rationale_open_clothes_settings">Configuració de la roba</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">ClothesCast d\'avui</string>
-    <string name="outfit_card_header_tonight">ClothesCast d\'aquesta nit</string>
     <string name="today_celebration_card_title">Temes festius</string>
     <string name="today_celebration_card_body">Activa colors i missatges especials per a festes i aniversaris.</string>
     <string name="today_celebration_card_cta">Configuració del calendari</string>

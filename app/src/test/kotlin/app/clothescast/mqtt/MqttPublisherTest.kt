@@ -760,6 +760,413 @@ class MqttPublisherTest {
     }
 
     @Test
+    fun `Home Assistant device is named after the Smart Home name when set`() {
+        fun deviceName(name: String?): String {
+            val entry = MqttPublisher.homeAssistantDiscoveryEntries("clothescast/alexs", name).first()
+            return Json.parseToJsonElement(entry.payload).jsonObject["device"]!!
+                .jsonObject["name"]!!.jsonPrimitive.content
+        }
+        deviceName("Alex's") shouldBe "Alex's ClothesCast"
+        deviceName(null) shouldBe "ClothesCast"
+        deviceName("   ") shouldBe "ClothesCast"
+    }
+
+    @Test
+    fun `publish names the Home Assistant device from preferences`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "clothescast/sams",
+                    customName = "Sam's",
+                ),
+            ),
+            passwordProvider = { null },
+            publish = capturing(captured),
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        val day = discoveryPayload(captured, "homeassistant/sensor/clothescast_clothescast_sams_day/config")
+        day["device"]!!.jsonObject["name"]!!.jsonPrimitive.content shouldBe "Sam's ClothesCast"
+    }
+
+    private fun discoveryConfigsOf(baseTopic: String): List<String> =
+        (
+            MqttPublisher.homeAssistantDiscoveryEntries(baseTopic).map { it.configTopic } +
+                MqttPublisher.homeAssistantDiscoveryTombstones(baseTopic)
+            ).distinct()
+
+    private fun publisherWithCleanup(
+        current: String,
+        toClear: Set<String>,
+        captured: MutableList<PublishCall>,
+        removed: MutableList<Set<String>>,
+        fail: (String) -> Boolean = { false },
+        added: MutableList<String> = mutableListOf(),
+    ) = MqttPublisher(
+        preferences = flowOf(
+            basePrefs.copy(
+                mqttBridgeEnabled = true,
+                mqttHost = "broker.local",
+                mqttTopic = current,
+                mqttDiscoveryTopics = toClear,
+            ),
+        ),
+        passwordProvider = { null },
+        publish = { config, topic, payload ->
+            captured.add(PublishCall(config, topic, payload))
+            if (fail(topic)) error("ACL denied")
+        },
+        retryDelayMs = 1L,
+        onDiscoveryTopicsChanged = { add, remove, _, _ ->
+            if (add != null) added += add
+            if (remove.isNotEmpty()) removed += remove
+            true
+        },
+    )
+
+    @Test
+    fun `clears every queued old topic's discovery configs and reports them removed`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val removed = mutableListOf<Set<String>>()
+        val subject = publisherWithCleanup(
+            current = "clothescast/alexs",
+            toClear = setOf(UserPreferences.DEFAULT_MQTT_TOPIC),
+            captured = captured,
+            removed = removed,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        val oldConfigs = discoveryConfigsOf(UserPreferences.DEFAULT_MQTT_TOPIC)
+        oldConfigs.shouldNotBeEmpty()
+        oldConfigs.forEach { topic ->
+            val call = captured.firstOrNull { it.topic == topic }
+            (call != null).shouldBeTrue()
+            call!!.payload.size shouldBe 0
+        }
+        // The new device's configs are real payloads, not clears.
+        captured.first { it.topic == "homeassistant/sensor/clothescast_clothescast_alexs_day/config" }
+            .payload.size shouldBeGreaterThan 0
+        removed shouldBe listOf(setOf(UserPreferences.DEFAULT_MQTT_TOPIC))
+    }
+
+    @Test
+    fun `a failed clear keeps that topic queued while the others are removed`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val removed = mutableListOf<Set<String>>()
+        val oldDay = MqttPublisher.homeAssistantDiscoveryEntries("clothescast/sams").first().configTopic
+        val subject = publisherWithCleanup(
+            current = "clothescast/alexs",
+            toClear = setOf(UserPreferences.DEFAULT_MQTT_TOPIC, "clothescast/sams"),
+            captured = captured,
+            removed = removed,
+            fail = { it == oldDay },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        captured.any { it.topic == "homeassistant/sensor/clothescast_clothescast_alexs_day/config" }.shouldBeTrue()
+        removed shouldBe listOf(setOf(UserPreferences.DEFAULT_MQTT_TOPIC))
+    }
+
+    @Test
+    fun `the current topic in the set stays recorded without clearing its own configs`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val removed = mutableListOf<Set<String>>()
+        val subject = publisherWithCleanup(
+            current = "clothescast/alexs",
+            // Moved away and back again, with a trailing slash for good measure.
+            toClear = setOf("clothescast/alexs/"),
+            captured = captured,
+            removed = removed,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        val currentConfigs = MqttPublisher.homeAssistantDiscoveryEntries("clothescast/alexs").map { it.configTopic }
+        captured.filter { it.topic in currentConfigs }.none { it.payload.isEmpty() }.shouldBeTrue()
+        // Only the pre-rename tombstones are empty.
+        captured.filter { isDiscoveryTopic(it.topic) && it.payload.isEmpty() }.map { it.topic } shouldBe
+            MqttPublisher.homeAssistantDiscoveryTombstones("clothescast/alexs")
+        removed shouldBe listOf(setOf("clothescast/alexs/"))
+    }
+
+    @Test
+    fun `moving A then B then C clears both A and B`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val removed = mutableListOf<Set<String>>()
+        val subject = publisherWithCleanup(
+            current = "clothescast/sams",
+            toClear = setOf(UserPreferences.DEFAULT_MQTT_TOPIC, "clothescast/alexs"),
+            captured = captured,
+            removed = removed,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        (discoveryConfigsOf(UserPreferences.DEFAULT_MQTT_TOPIC) + discoveryConfigsOf("clothescast/alexs"))
+            .forEach { topic -> captured.first { it.topic == topic }.payload.size shouldBe 0 }
+        removed shouldBe listOf(setOf(UserPreferences.DEFAULT_MQTT_TOPIC, "clothescast/alexs"))
+    }
+
+    @Test
+    fun `a config the current topic shares with an old one is not cleared`() = runTest {
+        // "a/b" and "a_b" map to the same discovery ids.
+        val captured = mutableListOf<PublishCall>()
+        val removed = mutableListOf<Set<String>>()
+        val subject = publisherWithCleanup(
+            current = "a_b",
+            toClear = setOf("a/b"),
+            captured = captured,
+            removed = removed,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        val currentConfigs = MqttPublisher.homeAssistantDiscoveryEntries("a_b").map { it.configTopic }
+        discoveryConfigsOf("a/b").filter { it in currentConfigs }.shouldNotBeEmpty()
+        captured.filter { it.topic in currentConfigs }.none { it.payload.isEmpty() }.shouldBeTrue()
+        removed shouldBe listOf(setOf("a/b"))
+    }
+
+    @Test
+    fun `a first publish records its topic and clears nothing`() = runTest {
+        val removed = mutableListOf<Set<String>>()
+        val added = mutableListOf<String>()
+        val subject = publisherWithCleanup(
+            current = UserPreferences.DEFAULT_MQTT_TOPIC,
+            toClear = emptySet(),
+            captured = mutableListOf(),
+            removed = removed,
+            added = added,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        removed shouldBe emptyList()
+        added shouldBe listOf(UserPreferences.DEFAULT_MQTT_TOPIC)
+    }
+
+    @Test
+    fun `an already recorded current topic reports no change`() = runTest {
+        val removed = mutableListOf<Set<String>>()
+        val added = mutableListOf<String>()
+        val subject = publisherWithCleanup(
+            current = "clothescast/alexs",
+            toClear = setOf("clothescast/alexs"),
+            captured = mutableListOf(),
+            removed = removed,
+            added = added,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        removed shouldBe emptyList()
+        added shouldBe emptyList()
+    }
+
+    @Test
+    fun `a publish after moving records the new topic as it clears the old`() = runTest {
+        val removed = mutableListOf<Set<String>>()
+        val added = mutableListOf<String>()
+        val subject = publisherWithCleanup(
+            current = "clothescast/alexs",
+            toClear = setOf(UserPreferences.DEFAULT_MQTT_TOPIC),
+            captured = mutableListOf(),
+            removed = removed,
+            added = added,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        added shouldBe listOf("clothescast/alexs")
+        removed shouldBe listOf(setOf(UserPreferences.DEFAULT_MQTT_TOPIC))
+    }
+
+    @Test
+    fun `the new topic is recorded before any of its discovery configs are published`() = runTest {
+        val events = mutableListOf<String>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "clothescast/alexs",
+                    mqttDiscoveryTopics = setOf(UserPreferences.DEFAULT_MQTT_TOPIC),
+                ),
+            ),
+            passwordProvider = { null },
+            publish = { _, topic, _ -> if (isDiscoveryTopic(topic)) events += "publish" },
+            retryDelayMs = 1L,
+            onDiscoveryTopicsChanged = { add, _, _, _ -> if (add != null) events += "record $add"; true },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        events.first() shouldBe "record clothescast/alexs"
+    }
+
+    @Test
+    fun `a publish whose topic changed mid-flight skips discovery`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val recorded = mutableListOf<String>()
+        val before = basePrefs.copy(
+            mqttBridgeEnabled = true,
+            mqttHost = "broker.local",
+            mqttTopic = UserPreferences.DEFAULT_MQTT_TOPIC,
+            mqttDiscoveryTopics = setOf(UserPreferences.DEFAULT_MQTT_TOPIC),
+        )
+        // The first read prepares the publish; later reads see the user's
+        // move to a new topic, as a concurrent "Publish now" would.
+        var reads = 0
+        val subject = MqttPublisher(
+            preferences = flow { emit(if (reads++ == 0) before else before.copy(mqttTopic = "clothescast/alexs")) },
+            passwordProvider = { null },
+            publish = { config, topic, payload -> captured.add(PublishCall(config, topic, payload)) },
+            retryDelayMs = 1L,
+            onDiscoveryTopicsChanged = { add, _, _, _ -> if (add != null) recorded += add; true },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        captured.any { !isDiscoveryTopic(it.topic) }.shouldBeTrue()
+        captured.none { isDiscoveryTopic(it.topic) }.shouldBeTrue()
+        recorded shouldBe emptyList()
+    }
+
+    @Test
+    fun `a publish whose broker changed mid-flight skips discovery`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val recorded = mutableListOf<String>()
+        val before = basePrefs.copy(
+            mqttBridgeEnabled = true,
+            mqttHost = "broker.local",
+            mqttTopic = UserPreferences.DEFAULT_MQTT_TOPIC,
+            mqttDiscoveryTopics = setOf(UserPreferences.DEFAULT_MQTT_TOPIC),
+        )
+        // Same topic, but the user saved a different broker after this
+        // publish was prepared.
+        var reads = 0
+        val subject = MqttPublisher(
+            preferences = flow {
+                emit(if (reads++ == 0) before else before.copy(mqttHost = "other.local", mqttDiscoveryTopics = emptySet()))
+            },
+            passwordProvider = { null },
+            publish = { config, topic, payload -> captured.add(PublishCall(config, topic, payload)) },
+            retryDelayMs = 1L,
+            onDiscoveryTopicsChanged = { add, _, _, _ -> if (add != null) recorded += add; true },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        captured.any { !isDiscoveryTopic(it.topic) }.shouldBeTrue()
+        captured.none { isDiscoveryTopic(it.topic) }.shouldBeTrue()
+        recorded shouldBe emptyList()
+    }
+
+    @Test
+    fun `a recording refused because the broker changed skips discovery`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        var askedFor: Pair<String, Int>? = null
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "clothescast/alexs",
+                    mqttDiscoveryTopics = setOf(UserPreferences.DEFAULT_MQTT_TOPIC),
+                ),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload -> captured.add(PublishCall(config, topic, payload)) },
+            retryDelayMs = 1L,
+            // The repository found another broker stored by the time it wrote.
+            onDiscoveryTopicsChanged = { _, _, host, port -> askedFor = host to port; false },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        askedFor shouldBe ("broker.local" to basePrefs.mqttPort)
+        captured.any { !isDiscoveryTopic(it.topic) }.shouldBeTrue()
+        captured.none { isDiscoveryTopic(it.topic) }.shouldBeTrue()
+    }
+
+    @Test
+    fun `discovery uses the name as it is when the configs go out`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val before = basePrefs.copy(
+            mqttBridgeEnabled = true,
+            mqttHost = "broker.local",
+            mqttTopic = "home/clothes",
+            mqttTopicOverride = "home/clothes",
+            customName = "Sam's",
+        )
+        // The name changes after the publish was prepared; the topic doesn't.
+        var reads = 0
+        val subject = MqttPublisher(
+            preferences = flow { emit(if (reads++ == 0) before else before.copy(customName = "Alex's")) },
+            passwordProvider = { null },
+            publish = { config, topic, payload -> captured.add(PublishCall(config, topic, payload)) },
+            retryDelayMs = 1L,
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        val configs = captured.filter { isDiscoveryTopic(it.topic) && it.payload.isNotEmpty() }
+        configs.shouldNotBeEmpty()
+        configs.forEach { String(it.payload, Charsets.UTF_8).contains("Alex's ClothesCast").shouldBeTrue() }
+    }
+
+    @Test
+    fun `a failed recording of the new topic skips its discovery publish`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val subject = MqttPublisher(
+            preferences = flowOf(
+                basePrefs.copy(
+                    mqttBridgeEnabled = true,
+                    mqttHost = "broker.local",
+                    mqttTopic = "clothescast/alexs",
+                    mqttDiscoveryTopics = setOf(UserPreferences.DEFAULT_MQTT_TOPIC),
+                ),
+            ),
+            passwordProvider = { null },
+            publish = { config, topic, payload -> captured.add(PublishCall(config, topic, payload)) },
+            retryDelayMs = 1L,
+            onDiscoveryTopicsChanged = { _, _, _, _ -> error("disk full") },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        // The forecast still goes out; only Home Assistant discovery waits.
+        captured.any { !isDiscoveryTopic(it.topic) }.shouldBeTrue()
+        captured.none { isDiscoveryTopic(it.topic) }.shouldBeTrue()
+    }
+
+    @Test
+    fun `old topics stay queued when every current discovery config fails`() = runTest {
+        val captured = mutableListOf<PublishCall>()
+        val removed = mutableListOf<Set<String>>()
+        val subject = publisherWithCleanup(
+            current = "clothescast/alexs",
+            toClear = setOf(UserPreferences.DEFAULT_MQTT_TOPIC, "clothescast/alexs"),
+            captured = captured,
+            removed = removed,
+            fail = { it.startsWith("homeassistant/") },
+        )
+
+        subject.publishIfEnabled(ForecastPeriod.TODAY, "prose")
+
+        // Without a new device in HA the old one isn't cleared, and nothing is dropped.
+        val oldConfigs = discoveryConfigsOf(UserPreferences.DEFAULT_MQTT_TOPIC)
+        captured.none { it.topic in oldConfigs }.shouldBeTrue()
+        removed shouldBe emptyList()
+    }
+
+    @Test
     fun `Home Assistant discovery failure does not block forecast publish outcome`() = runTest {
         val captured = mutableListOf<PublishCall>()
         val subject = MqttPublisher(

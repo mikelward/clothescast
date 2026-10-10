@@ -190,6 +190,9 @@ class ClothesCastApplication : Application() {
         MqttPublisher(
             preferences = settingsRepository.preferences,
             passwordProvider = { secureKeyStore.getMqttPassword() },
+            onDiscoveryTopicsChanged = { add, remove, host, port ->
+                settingsRepository.updateMqttDiscoveryTopics(add = add, remove = remove, host = host, port = port)
+            },
         )
     }
 

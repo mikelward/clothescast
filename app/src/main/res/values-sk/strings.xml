@@ -764,9 +764,7 @@ What is NOT overridden, by design:
     <string name="settings_root_smart_home_subtitle">Inteligentné displeje a domáca automatizácia</string>
     <string name="settings_api_key_replace">Nahradiť kľúč Gemini</string>
 
-    <!-- Outfit card headers. -->
-    <string name="outfit_card_header_today">Dnešný ClothesCast</string>
-    <string name="outfit_card_header_tonight">Večerný ClothesCast</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Today screen. -->

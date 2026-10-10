@@ -887,8 +887,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 
     <string name="today_rationale_open_clothes_settings">Definições de roupa</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">ClothesCast de hoje</string>
-    <string name="outfit_card_header_tonight">ClothesCast desta noite</string>
     <string name="today_celebration_card_title">Temas festivos</string>
     <string name="today_celebration_card_body">Ativa cores e mensagens especiais para feriados e aniversários.</string>
     <string name="today_celebration_card_cta">Definições de calendário</string>

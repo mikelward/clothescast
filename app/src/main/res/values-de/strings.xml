@@ -901,9 +901,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- API key — replace button (replaces save when a key is already stored). -->
     <string name="settings_api_key_replace">Gemini-Schlüssel ersetzen</string>
 
-    <!-- Outfit card headers — rendered on the Nest-Hub outfit image (all-caps via renderer). -->
-    <string name="outfit_card_header_today">Heutiger ClothesCast</string>
-    <string name="outfit_card_header_tonight">Abend-ClothesCast</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Today screen — outfit rationale dialog: "Clothes settings" button. -->

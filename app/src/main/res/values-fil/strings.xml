@@ -831,9 +831,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_waitangi_day">Maligayang Araw ng Waitangi</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
-    <!-- Outfit card headers -->
-    <string name="outfit_card_header_today">ClothesCast Ngayon</string>
-    <string name="outfit_card_header_tonight">ClothesCast Ngayong Gabi</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- API key -->

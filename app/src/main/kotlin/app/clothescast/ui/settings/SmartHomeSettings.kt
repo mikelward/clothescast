@@ -27,6 +27,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -69,7 +71,9 @@ internal fun SmartHomeContent(
     port: Int,
     useTls: Boolean,
     username: String,
-    topic: String,
+    /** The typed topic, or null when the field is empty and follows the Name. */
+    topicOverride: String?,
+    customName: String?,
     passwordSet: Boolean,
     lastError: String?,
     lastErrorAt: Long,
@@ -112,6 +116,7 @@ internal fun SmartHomeContent(
     onSetCastTonight: (Boolean) -> Unit,
     onSetCastSkipPhoneSpeech: (Boolean) -> Unit,
     onSetMqttSkipPhoneSpeech: (Boolean) -> Unit,
+    onSetCustomName: (String) -> Unit,
     // Enabling Cast / MQTT spoken delivery jumps to the full Voice settings page
     // (which returns here via its "Done" button) to set the Gemini engine + key —
     // smart-home audio synthesizes through Gemini only. See onEnableDelivery.
@@ -178,6 +183,9 @@ internal fun SmartHomeContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            // First, since it feeds both destinations below: the cast card's
+            // title and the MQTT topic / Home Assistant device name.
+            CustomNameField(name = customName, onNameChange = onSetCustomName)
             if (castAvailable) {
                 CastDestinationCard(
                     routeName = castRouteName,
@@ -209,7 +217,8 @@ internal fun SmartHomeContent(
                 port = port,
                 useTls = useTls,
                 username = username,
-                topic = topic,
+                topicOverride = topicOverride,
+                customName = customName,
                 passwordSet = passwordSet,
                 lastError = lastError,
                 lastErrorAt = lastErrorAt,
@@ -231,6 +240,39 @@ internal fun SmartHomeContent(
     }
 }
 
+/**
+ * The optional name that heads the outfit card ("Alex's 7am ClothesCast").
+ * Persisted on every change; the VM launches the write. The field keeps its
+ * own text so a trailing space survives typing (the stored value is trimmed),
+ * and takes the stored name only until the user first edits it — prefs can
+ * load after first composition, but once typing starts the stored value lags
+ * the keystrokes and re-seeding from it would undo what was just typed.
+ */
+@Composable
+private fun CustomNameField(
+    name: String?,
+    onNameChange: (String) -> Unit,
+) {
+    var nameField by rememberSaveable { mutableStateOf(name.orEmpty()) }
+    var edited by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(name) {
+        if (!edited) nameField = name.orEmpty()
+    }
+    OutlinedTextField(
+        value = nameField,
+        onValueChange = {
+            edited = true
+            nameField = it
+            onNameChange(it)
+        },
+        label = { Text(stringResource(R.string.settings_smart_home_name)) },
+        placeholder = { Text(stringResource(R.string.settings_smart_home_name_hint)) },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
 @Composable
 private fun MqttBridgeCard(
     enabled: Boolean,
@@ -238,7 +280,8 @@ private fun MqttBridgeCard(
     port: Int,
     useTls: Boolean,
     username: String,
-    topic: String,
+    topicOverride: String?,
+    customName: String?,
     passwordSet: Boolean,
     lastError: String?,
     lastErrorAt: Long,
@@ -265,7 +308,9 @@ private fun MqttBridgeCard(
     var portField by rememberSaveable(port) { mutableStateOf(port.toString()) }
     var tlsField by rememberSaveable(useTls) { mutableStateOf(useTls) }
     var userField by rememberSaveable(username) { mutableStateOf(username) }
-    var topicField by rememberSaveable(topic) { mutableStateOf(topic) }
+    // Empty = no override: the topic follows the Name, shown as the placeholder.
+    var topicField by rememberSaveable(topicOverride) { mutableStateOf(topicOverride.orEmpty()) }
+    val derivedTopic = UserPreferences.mqttTopicForName(customName)
     var passwordField by rememberSaveable { mutableStateOf("") }
     // Default the password input to hidden when one is already saved; re-key on
     // `passwordSet` so a Clear (true → false) re-expands and a first-time Save
@@ -273,8 +318,7 @@ private fun MqttBridgeCard(
     var showPasswordField by rememberSaveable(passwordSet) { mutableStateOf(!passwordSet) }
 
     val parsedPort = remember(portField) { portField.toIntOrNull() }
-    val canSave = hostField.isNotBlank() && parsedPort != null && parsedPort in 1..65535 &&
-        topicField.isNotBlank()
+    val canSave = hostField.isNotBlank() && parsedPort != null && parsedPort in 1..65535
 
     SectionCard(title = stringResource(R.string.settings_smart_home_mqtt_title)) {
         Row(
@@ -392,11 +436,12 @@ private fun MqttBridgeCard(
                 value = topicField,
                 onValueChange = { topicField = it.trim() },
                 label = { Text(stringResource(R.string.settings_smart_home_mqtt_topic)) },
+                placeholder = { Text(derivedTopic) },
                 supportingText = {
                     Text(
                         stringResource(
                             R.string.settings_smart_home_mqtt_topic_hint,
-                            topicField.ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC },
+                            topicField.ifBlank { derivedTopic },
                         ),
                     )
                 },

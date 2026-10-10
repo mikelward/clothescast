@@ -923,8 +923,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_smart_home">Έξυπνο σπίτι</string>
     <string name="settings_root_smart_home_subtitle">Έξυπνες οθόνες και οικιακή αυτοματοποίηση</string>
     <string name="settings_api_key_replace">Αντικατάσταση κλειδιού Gemini</string>
-    <string name="outfit_card_header_today">ClothesCast σήμερα</string>
-    <string name="outfit_card_header_tonight">ClothesCast απόψε</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Ρυθμίσεις ρούχων</string>
     <string name="today_celebration_card_title">Εορταστικά θέματα</string>

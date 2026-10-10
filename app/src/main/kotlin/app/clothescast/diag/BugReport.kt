@@ -448,6 +448,19 @@ object BugReport {
         appendCastSettings(prefs, castStatus)
     }
 
+    /**
+     * The effective topic and where it comes from: a typed override (no
+     * suffix), the Smart Home name, or the default when neither is set.
+     */
+    internal fun mqttTopicLine(prefs: UserPreferences): String {
+        val source = when {
+            prefs.mqttTopicOverride != null -> ""
+            prefs.customName != null -> " (from name)"
+            else -> " (default)"
+        }
+        return "MQTT topic: ${prefs.mqttTopic}$source"
+    }
+
     private fun StringBuilder.appendMqttSettings(
         prefs: UserPreferences,
         mqttPasswordConfigured: Boolean,
@@ -459,7 +472,7 @@ object BugReport {
             ?: "(unset)"
         appendLine("MQTT broker: $hostLine")
         appendLine("MQTT TLS: ${prefs.mqttUseTls}")
-        appendLine("MQTT topic: ${prefs.mqttTopic}")
+        appendLine(mqttTopicLine(prefs))
         appendLine("MQTT username: ${if (!prefs.mqttUsername.isNullOrBlank()) "set" else "unset"}")
         appendLine("MQTT password: ${if (mqttPasswordConfigured) "set" else "unset"}")
         val statusLine = when {

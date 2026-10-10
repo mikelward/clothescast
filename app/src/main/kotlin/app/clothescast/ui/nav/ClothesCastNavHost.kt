@@ -21,7 +21,6 @@ import androidx.navigation.toRoute
 import androidx.work.WorkManager
 import app.clothescast.ClothesCastApplication
 import app.clothescast.MainActivity
-import app.clothescast.R
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.castCurrentInsight
 import app.clothescast.core.data.weather.GoogleWeatherProbe
@@ -32,6 +31,7 @@ import app.clothescast.insight.InsightFormatter
 import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
 import app.clothescast.ui.LocalNavigateToAbout
+import app.clothescast.ui.garment.outfitCardHeader
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
@@ -394,10 +394,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                         temperatureUnit = prefs.temperatureUnit,
                         windSpeedUnit = prefs.windSpeedUnit,
                     )
-                    val header = app.getString(
-                        if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
-                        else R.string.outfit_card_header_tonight
-                    )
+                    val header = outfitCardHeader(app, insight.period, prefs, formatter.locale)
                     val theme = resolveHolidayTheme(prefs, app.calendarEventReader)
                     val topColors: Map<OutfitSuggestion.Top, Long> =
                         prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())

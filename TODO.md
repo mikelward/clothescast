@@ -280,6 +280,14 @@ Open:
       deliberately-silent (event-free, `tonightNotifyOnlyOnEvents`) evening from
       an outage without parsing prose. `event_count` wasn't included — a boolean
       covered the use case; revisit if a count is ever needed.
+- [ ] **Translate the Smart Home Name and card-title strings.** The
+      maintainer-approved English `settings_smart_home_name`,
+      `settings_smart_home_name_hint`, `outfit_card_header` and
+      `outfit_card_header_named` shipped with `<!-- TODO: translate -->` and
+      per-string `tools:ignore="MissingTranslation"`; fan them out to every
+      `values-*` locale (the old `outfit_card_header_today` / `_tonight`
+      translations were removed with the new title format) and drop both
+      markers.
 - [ ] **Music Assistant `mass.announce` quick-start in the setup
       guide.** docs/smart-home.md now describes the three speaking
       options at a high level, but for users picking Option B the
@@ -844,6 +852,8 @@ Open work:
       `MONETIZATION.md`; independent of monetization and worth doing regardless.
 
 ## Decisions needing review
+
+- [ ] **Smart Home: a broker change forgets the Home Assistant cleanup list** (autopilot, PR #1261). Saving MQTT settings with a different host or port empties the list of old topics to clear, so tombstones never go to a broker that didn't publish them (and can't delete another phone's configs there). The old broker keeps its device, as switching brokers always has. Alternative: record the broker with each topic and clear only there, which costs a storage format and still can't reach a broker you've left. Reversible: the set is a single preference, and recording brokers later only adds to it.
 - [ ] **Decide whether "we don't hold a user's data captive" belongs in this
       file's quality bar, not only in `MONETIZATION.md`.** Recorded 2026-09-03
       as the reason backup and restore of a user's own data is never paywalled —

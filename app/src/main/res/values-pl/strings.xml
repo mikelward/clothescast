@@ -805,8 +805,6 @@ is unchanged; only the displayed label localizes.
     <string name="settings_root_smart_home">Inteligentny dom</string>
     <string name="settings_root_smart_home_subtitle">Inteligentne wyświetlacze i automatyka domowa</string>
     <string name="settings_api_key_replace">Zastąp klucz Gemini</string>
-    <string name="outfit_card_header_today">Dzisiejszy ClothesCast</string>
-    <string name="outfit_card_header_tonight">Wieczorny ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Ustawienia odzieży</string>
     <string name="today_celebration_card_title">Motywy świąteczne</string>

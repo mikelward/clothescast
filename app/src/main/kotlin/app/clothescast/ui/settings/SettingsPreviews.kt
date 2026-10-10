@@ -893,7 +893,8 @@ internal fun SettingsSmartHomePreview() {
             port = 1883,
             useTls = false,
             username = "clothescast",
-            topic = UserPreferences.DEFAULT_MQTT_TOPIC,
+            topicOverride = null,
+            customName = "Alex's",
             passwordSet = true,
             lastError = null,
             lastErrorAt = 0L,
@@ -949,6 +950,7 @@ internal fun SettingsSmartHomePreview() {
             onSetCastTonight = {},
             onSetCastSkipPhoneSpeech = {},
             onSetMqttSkipPhoneSpeech = {},
+            onSetCustomName = {},
             onSetUpSpeech = {},
         )
     }

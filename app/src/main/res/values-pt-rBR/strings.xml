@@ -845,8 +845,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_boxing_day">Feliz Dia de São Estêvão</string>
     <string name="today_rationale_open_clothes_settings">Configurações de roupa</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">ClothesCast de hoje</string>
-    <string name="outfit_card_header_tonight">ClothesCast desta noite</string>
     <string name="today_celebration_card_title">Temas festivos</string>
     <string name="today_celebration_card_body">Ativa cores e mensagens especiais para feriados e aniversários.</string>
     <string name="today_celebration_card_cta">Configurações de calendário</string>

@@ -807,8 +807,6 @@ the displayed label localizes.
     <string name="settings_root_smart_home">Slim thuis</string>
     <string name="settings_root_smart_home_subtitle">Slimme schermen en huisautomatisering</string>
     <string name="settings_api_key_replace">Gemini-sleutel vervangen</string>
-    <string name="outfit_card_header_today">Huidig ClothesCast</string>
-    <string name="outfit_card_header_tonight">Avond-ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Kledinginstellingen</string>
     <string name="today_celebration_card_title">Festieve thema\'s</string>

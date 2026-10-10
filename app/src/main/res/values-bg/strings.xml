@@ -790,8 +790,6 @@ What is NOT overridden, by design:
     <string name="settings_root_smart_home">Умен дом</string>
     <string name="settings_root_smart_home_subtitle">Умни дисплеи и домашна автоматизация</string>
     <string name="settings_api_key_replace">Смени ключа за Gemini</string>
-    <string name="outfit_card_header_today">Днешният ClothesCast</string>
-    <string name="outfit_card_header_tonight">Вечерният ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Настройки за облекло</string>
     <string name="today_celebration_card_title">Празнични теми</string>

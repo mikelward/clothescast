@@ -268,7 +268,12 @@ data class SettingsState(
     val mqttPort: Int = UserPreferences.DEFAULT_MQTT_PORT,
     val mqttUseTls: Boolean = false,
     val mqttUsername: String = "",
+    /** The effective topic publishes use (override, else the Name's topic). */
     val mqttTopic: String = UserPreferences.DEFAULT_MQTT_TOPIC,
+    /** The user's typed topic, or null when the field is empty and follows the Name. */
+    val mqttTopicOverride: String? = null,
+    /** Optional Smart Home name ("Alex's"); null when unset. */
+    val customName: String? = null,
     val mqttPasswordSet: Boolean = false,
     /**
      * Error message from the last MQTT publish attempt, or null if the last

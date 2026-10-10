@@ -788,8 +788,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_root_smart_home">Pametni dom</string>
     <string name="settings_root_smart_home_subtitle">Pametni zasloni in domača avtomatizacija</string>
     <string name="settings_api_key_replace">Zamenjaj ključ Gemini</string>
-    <string name="outfit_card_header_today">Današnji ClothesCast</string>
-    <string name="outfit_card_header_tonight">Večerni ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Nastavitve oblačil</string>
     <string name="today_celebration_card_title">Praznične teme</string>

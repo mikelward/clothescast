@@ -66,6 +66,7 @@ import app.clothescast.tts.resolveHolidayVoice
 import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.ui.today.toLite
 import app.clothescast.R
+import app.clothescast.ui.garment.outfitCardHeader
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
@@ -1577,10 +1578,7 @@ class FetchAndNotifyWorker(
                 temperatureUnit = prefs.temperatureUnit,
                 windSpeedUnit = prefs.windSpeedUnit,
             )
-            val header = applicationContext.getString(
-                if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
-                else R.string.outfit_card_header_tonight,
-            )
+            val header = outfitCardHeader(applicationContext, insight.period, prefs, formatter.locale)
             renderOutfitCard(
                 context = applicationContext,
                 outfit = outfit,

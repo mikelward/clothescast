@@ -748,9 +748,7 @@ they work correctly in both the single-band and range templates.
     <string name="holiday_name_valentines_day">عيد الحب</string>
     <string name="holiday_name_waitangi_day">يوم وايتانجي</string>
 
-    <!-- Outfit card headers and temperature range -->
-    <string name="outfit_card_header_today">ClothesCast اليوم</string>
-    <string name="outfit_card_header_tonight">ClothesCast الليلة</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Settings — API key replace -->

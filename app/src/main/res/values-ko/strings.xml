@@ -928,8 +928,6 @@ displayed label localizes.
     <string name="holiday_name_us_presidents_day">대통령의 날</string>
 
     <!-- Outfit card — header labels and temperature range. -->
-    <string name="outfit_card_header_today">오늘의 ClothesCast</string>
-    <string name="outfit_card_header_tonight">오늘 밤의 ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- API keys screen — replace key action. -->

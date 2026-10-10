@@ -843,8 +843,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_name_us_presidents_day">Ngày Tổng thống</string>
 
     <!-- Outfit card -->
-    <string name="outfit_card_header_today">ClothesCast Hôm nay</string>
-    <string name="outfit_card_header_tonight">ClothesCast Tối nay</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Settings — API key -->

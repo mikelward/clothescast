@@ -757,8 +757,6 @@ displayed label localizes.
     <string name="holiday_name_waitangi_day">Waitangi Günü</string>
 
     <!-- Outfit card -->
-    <string name="outfit_card_header_today">Bugünün ClothesCast\'ı</string>
-    <string name="outfit_card_header_tonight">Bu akşamın ClothesCast\'ı</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- API key -->

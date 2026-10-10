@@ -315,6 +315,11 @@ Open:
       locale (knots & m/s are opt-in, never an auto default). Replaced the old
       distance-unit setting, which only ever drove the wind unit.
 - [ ] **Multiple schedule profiles** — weekday vs weekend.
+- [ ] **Strip icons on the Today cards** — the chart widgets label their
+      subtitle with the conditions strip's filled thermometer and rain
+      droplet instead of "Feels like" / the "Chance of rain" title. Consider
+      the same on the in-app Today feels-like and chance-of-rain cards
+      (`FillGlyphIcon` via `ChartSubtitleRow(leadingIcon = …)`).
 - [x] **Gemini model picker** — Flash Lite (cheapest), Flash (default), Pro
       (highest quality, slowest, costliest). User picks from Settings; the
       Worker passes the chosen id into a per-call `DirectGeminiClient`.

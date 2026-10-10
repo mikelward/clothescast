@@ -29,6 +29,7 @@ import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.HourlyForecast
@@ -615,15 +616,27 @@ internal fun ChartSubtitleRow(
     subtitle: String?,
     readout: String?,
     modifier: Modifier = Modifier,
+    // Bounds the subtitle where height is scarce (the widgets): a long line
+    // ellipsizes rather than wrapping until it squeezes the chart away.
+    maxLines: Int = Int.MAX_VALUE,
+    // An icon naming what the subtitle measures, drawn before it — the widgets
+    // drop the card title and use this instead.
+    leadingIcon: (@Composable () -> Unit)? = null,
 ) {
     if (subtitle.isNullOrEmpty() && readout.isNullOrEmpty()) return
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (leadingIcon != null) {
+            leadingIcon()
+            Spacer(Modifier.width(4.dp))
+        }
         Text(
             text = subtitle.orEmpty(),
             style = MaterialTheme.typography.bodyMedium,
+            maxLines = maxLines,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
         if (!readout.isNullOrEmpty()) {

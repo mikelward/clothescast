@@ -193,9 +193,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_clothes_cond_type_temp_below">Když je pocitová pod</string>
     <string name="settings_clothes_cond_type_temp_above">Když je pocitová nad</string>
     <string name="settings_clothes_cond_type_precip_above">Když je pravděpodobnost deště nad</string>
+    <string name="settings_clothes_cond_type_snow_above">Když je pravděpodobnost sněžení nad</string>
     <string name="settings_clothes_cond_temp_below">když je pocitová teplota pod %1$s</string>
     <string name="settings_clothes_cond_temp_above">když je pocitová teplota nad %1$s</string>
     <string name="settings_clothes_cond_precip_above">když je pravděpodobnost deště nad %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">když je pravděpodobnost sněžení nad %.0f%%</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Denní ClothesCast</string>
@@ -1237,6 +1239,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_api_key_status_unset">4 zdarma každý den, získej klíč pro další.</string>
     <string name="settings_tts_stop">Zastavit</string>
     <string name="garment_rain_jacket">Bunda do deště</string>
+    <string name="garment_beanie">Čepice</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

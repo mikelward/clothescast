@@ -143,6 +143,7 @@ import app.clothescast.ui.formatHourMinute
 import app.clothescast.ui.formatScrubHour
 import app.clothescast.ui.garment.GarmentBottomIcon
 import app.clothescast.ui.garment.GarmentCarriedIcon
+import app.clothescast.ui.garment.GarmentHeadIcon
 import app.clothescast.ui.garment.GarmentOuterIcon
 import app.clothescast.ui.garment.GarmentHandsIcon
 import app.clothescast.ui.garment.GarmentTopIcon
@@ -1142,6 +1143,7 @@ internal fun HomePageScaffold(
                                 outfitHandsColors = state.outfitHandsColors,
                                 outfitCarriedColors = state.outfitCarriedColors,
                                 outfitOuterColors = state.outfitOuterColors,
+                                outfitHeadColors = state.outfitHeadColors,
                                 outfitTopStrokes = state.outfitTopStrokes,
                                 outfitBottomStrokes = state.outfitBottomStrokes,
                                 onNavigateToClothes = onNavigateToClothes,
@@ -2013,6 +2015,7 @@ internal fun OutfitPreviewRow(
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     outfitOuterColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
+    outfitHeadColors: Map<OutfitSuggestion.Head, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -2039,6 +2042,7 @@ internal fun OutfitPreviewRow(
             outfitHandsColors = outfitHandsColors,
             outfitCarriedColors = outfitCarriedColors,
             outfitOuterColors = outfitOuterColors,
+            outfitHeadColors = outfitHeadColors,
             outfitTopStrokes = outfitTopStrokes,
             outfitBottomStrokes = outfitBottomStrokes,
             onNavigateToClothes = onNavigateToClothes,
@@ -2056,6 +2060,7 @@ internal fun OutfitPreviewRow(
                 outfitHandsColors = outfitHandsColors,
                 outfitCarriedColors = outfitCarriedColors,
                 outfitOuterColors = outfitOuterColors,
+                outfitHeadColors = outfitHeadColors,
                 outfitTopStrokes = outfitTopStrokes,
                 outfitBottomStrokes = outfitBottomStrokes,
                 onNavigateToClothes = onNavigateToClothes,
@@ -2120,6 +2125,7 @@ internal fun OutfitPreviewCard(
     outfitHandsColors: Map<OutfitSuggestion.Hands, Long> = emptyMap(),
     outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     outfitOuterColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
+    outfitHeadColors: Map<OutfitSuggestion.Head, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
@@ -2214,6 +2220,17 @@ internal fun OutfitPreviewCard(
                         carried = carried,
                         customFill = outfitCarriedColors[carried]?.let { Color(it.toInt()) },
                         contentDescription = stringResource(R.string.garment_umbrella),
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+                // The beanie hangs from the free left hand — the same 96×192
+                // full-figure overlay as the umbrella, on the other side. Only
+                // when a head (beanie) rule fired.
+                outfit.head?.let { head ->
+                    GarmentHeadIcon(
+                        head = head,
+                        customFill = outfitHeadColors[head]?.let { Color(it.toInt()) },
+                        contentDescription = stringResource(R.string.garment_beanie),
                         modifier = Modifier.fillMaxSize(),
                     )
                 }

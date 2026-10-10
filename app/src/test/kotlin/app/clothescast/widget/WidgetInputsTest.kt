@@ -63,6 +63,9 @@ class WidgetInputsTest {
         baseInputs shouldNotBe base.copy(
             outfitOuterColors = mapOf(OutfitSuggestion.Outer.RAIN_JACKET to 1L),
         ).toWidgetInputs()
+        baseInputs shouldNotBe base.copy(
+            outfitHeadColors = mapOf(OutfitSuggestion.Head.BEANIE to 1L),
+        ).toWidgetInputs()
     }
 
     @Test

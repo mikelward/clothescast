@@ -74,11 +74,20 @@ data class ClothesRulesSnapshot(
                     else -> deltaBucket(userRule, defaultRule)
                 }
             }
+            // A trigger swapped for another kind at the same gate (the beanie's
+            // snow chance moved to a rain chance, say) buckets to "0" but fires
+            // on different days, so it counts as customised too. Only the
+            // count / category list reflect it; no new delta value is sent.
+            val kindChanged = defaults.filter { (item, defaultRule) ->
+                val userRule = byItem[item] ?: return@filter false
+                userRule.condition::class != defaultRule.condition::class
+            }.keys
             val customisedKeys = perCategory.entries
                 // A category counts as customised when its bucketed delta moved
-                // off "0" (or is MISSING). For a rain-gear rule that's the
-                // probability-gate delta; no weather-code value is sent.
-                .filter { (_, value) -> value != "0" }
+                // off "0" (or is MISSING), or its trigger kind changed. For a
+                // rain-gear rule that's the probability-gate delta; no
+                // weather-code value is sent.
+                .filter { (key, value) -> value != "0" || key in kindChanged }
                 .map { it.key }
                 .sorted()
             val extras = rules.count { it.item.itemKey !in defaults }
@@ -100,10 +109,16 @@ data class ClothesRulesSnapshot(
         /**
          * The probability gate (rain-percent) of a precip-keyed condition, or
          * `null` for anything without one. Used both to detect a precip-keyed
-         * default (the umbrella / rain jacket) and to compute its delta.
+         * default (the umbrella / rain jacket / snow-keyed beanie) and to compute
+         * its delta.
          */
-        private fun ClothesRule.Condition.probabilityGatePercent(): Double? =
-            (this as? ClothesRule.PrecipitationProbabilityAbove)?.percent
+        private fun ClothesRule.Condition.probabilityGatePercent(): Double? = when (this) {
+            is ClothesRule.PrecipitationProbabilityAbove -> percent
+            // The beanie's snow gate is a probability gate too; bucket it the
+            // same way so a retuned beanie counts as customised.
+            is ClothesRule.SnowProbabilityAbove -> percent
+            is ClothesRule.TemperatureBelow, is ClothesRule.TemperatureAbove -> null
+        }
 
         /**
          * Integer °C delta of [userRule] from [defaultRule], formatted as a signed

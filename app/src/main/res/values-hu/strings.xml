@@ -195,9 +195,11 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_clothes_cond_type_temp_below">Ha hidegebbnek érződik mint</string>
     <string name="settings_clothes_cond_type_temp_above">Ha melegebbnek érződik mint</string>
     <string name="settings_clothes_cond_type_precip_above">Ha az eső valószínűsége nagyobb mint</string>
+    <string name="settings_clothes_cond_type_snow_above">Ha a havazás valószínűsége nagyobb mint</string>
     <string name="settings_clothes_cond_temp_below">ha a hőérzet %1$s alatt van</string>
     <string name="settings_clothes_cond_temp_above">ha a hőérzet %1$s felett van</string>
     <string name="settings_clothes_cond_precip_above">ha az eső valószínűsége meghaladja a %.0f%%-ot</string>
+    <string name="settings_clothes_cond_snow_above">ha a havazás valószínűsége meghaladja a %.0f%%-ot</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Napi ClothesCast</string>
@@ -1220,6 +1222,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_api_key_status_unset">Naponta 4 ingyenes, szerezz kulcsot többhöz.</string>
     <string name="settings_tts_stop">Leállítás</string>
     <string name="garment_rain_jacket">Esőkabát</string>
+    <string name="garment_beanie">Sapka</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

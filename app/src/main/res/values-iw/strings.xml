@@ -41,9 +41,11 @@ standard in Israeli digital communication.
     <string name="settings_clothes_cond_type_temp_below">כאשר הטמפרטורה המורגשת נמוכה מ</string>
     <string name="settings_clothes_cond_type_temp_above">כאשר הטמפרטורה המורגשת גבוהה מ</string>
     <string name="settings_clothes_cond_type_precip_above">כאשר הסיכוי לגשם גבוה מ</string>
+    <string name="settings_clothes_cond_type_snow_above">כאשר הסיכוי לשלג גבוה מ</string>
     <string name="settings_clothes_cond_temp_below">כשהטמפ׳ המורגשת המינימלית מתחת ל-%1$s</string>
     <string name="settings_clothes_cond_temp_above">כשהטמפ׳ המורגשת המקסימלית מעל %1$s</string>
     <string name="settings_clothes_cond_precip_above">כשסיכוי הגשם מעל %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">כשסיכוי השלג מעל %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">חולצת טי</string>
     <string name="today_outfit_top_sweater">סוודר</string>
@@ -1222,6 +1224,7 @@ standard in Israeli digital communication.
     <string name="settings_api_key_status_unset">4 בחינם בכל יום, קבלו מפתח לעוד.</string>
     <string name="settings_tts_stop">עצירה</string>
     <string name="garment_rain_jacket">מעיל גשם</string>
+    <string name="garment_beanie">כובע גרב</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

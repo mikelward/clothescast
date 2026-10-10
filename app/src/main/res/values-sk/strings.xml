@@ -196,9 +196,11 @@ What is NOT overridden, by design:
     <string name="settings_clothes_cond_type_temp_below">Keď je pocitová pod</string>
     <string name="settings_clothes_cond_type_temp_above">Keď je pocitová nad</string>
     <string name="settings_clothes_cond_type_precip_above">Keď je pravdepodobnosť dažďa nad</string>
+    <string name="settings_clothes_cond_type_snow_above">Keď je pravdepodobnosť sneženia nad</string>
     <string name="settings_clothes_cond_temp_below">keď je pocitová teplota pod %1$s</string>
     <string name="settings_clothes_cond_temp_above">keď je pocitová teplota nad %1$s</string>
     <string name="settings_clothes_cond_precip_above">keď je pravdepodobnosť dažďa nad %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">keď je pravdepodobnosť sneženia nad %.0f%%</string>
 
     <!--
     Schedule screen.
@@ -1251,6 +1253,7 @@ What is NOT overridden, by design:
     <string name="settings_api_key_status_unset">4 zadarmo každý deň, získaj kľúč pre ďalšie.</string>
     <string name="settings_tts_stop">Zastaviť</string>
     <string name="garment_rain_jacket">Bunda do dažďa</string>
+    <string name="garment_beanie">Čiapka</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

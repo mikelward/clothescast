@@ -87,9 +87,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_cond_type_temp_below">Quando a sensação for menor que</string>
     <string name="settings_clothes_cond_type_temp_above">Quando a sensação for maior que</string>
     <string name="settings_clothes_cond_type_precip_above">Quando a chance de chuva superar</string>
+    <string name="settings_clothes_cond_type_snow_above">Quando a chance de neve superar</string>
     <string name="settings_clothes_cond_temp_below">quando a temperatura sentida for abaixo de %1$s</string>
     <string name="settings_clothes_cond_temp_above">quando a temperatura sentida for acima de %1$s</string>
     <string name="settings_clothes_cond_precip_above">quando a chance de chuva superar %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">quando a chance de neve superar %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery
@@ -1313,6 +1315,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_api_key_status_unset">4 grátis por dia, obtenha uma chave para mais.</string>
     <string name="settings_tts_stop">Parar</string>
     <string name="garment_rain_jacket">Jaqueta de chuva</string>
+    <string name="garment_beanie">Gorro</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -68,9 +68,11 @@ the displayed label localizes.
     <string name="settings_clothes_cond_type_temp_below">Wanneer het kouder voelt dan</string>
     <string name="settings_clothes_cond_type_temp_above">Wanneer het warmer voelt dan</string>
     <string name="settings_clothes_cond_type_precip_above">Wanneer de kans op regen groter is dan</string>
+    <string name="settings_clothes_cond_type_snow_above">Wanneer de kans op sneeuw groter is dan</string>
     <string name="settings_clothes_cond_temp_below">wanneer de gevoelstemperatuur onder %1$s ligt</string>
     <string name="settings_clothes_cond_temp_above">wanneer de gevoelstemperatuur boven %1$s ligt</string>
     <string name="settings_clothes_cond_precip_above">wanneer de kans op regen groter is dan %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">wanneer de kans op sneeuw groter is dan %.0f%%</string>
 
     <!--
     Schedule screen.
@@ -1275,6 +1277,7 @@ the displayed label localizes.
     <string name="settings_api_key_status_unset">Elke dag 4 gratis, haal een sleutel voor meer.</string>
     <string name="settings_tts_stop">Stoppen</string>
     <string name="garment_rain_jacket">Regenjas</string>
+    <string name="garment_beanie">Muts</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

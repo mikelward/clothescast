@@ -284,6 +284,7 @@ class SettingsViewModel(
                         outfitHandsColors = prefs.outfitHandsColors,
                         outfitCarriedColors = prefs.outfitCarriedColors,
                         outfitOuterColors = prefs.outfitOuterColors,
+                        outfitHeadColors = prefs.outfitHeadColors,
                         holidayCountrySelection = prefs.holidayCountrySelection,
                         holidayOverrides = prefs.holidayOverrides,
                         calendarOverrides = prefs.calendarOverrides,
@@ -648,6 +649,13 @@ class SettingsViewModel(
     fun setOutfitOuterColor(outer: OutfitSuggestion.Outer, argb: Long?) {
         viewModelScope.launch {
             settingsRepository.setOutfitOuterColor(outer, argb)
+        }
+    }
+
+    /** Sibling of [setOutfitTopColor] for the optional beanie (head) overlay. */
+    fun setOutfitHeadColor(head: OutfitSuggestion.Head, argb: Long?) {
+        viewModelScope.launch {
+            settingsRepository.setOutfitHeadColor(head, argb)
         }
     }
 

@@ -36,9 +36,11 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_clothes_cond_type_temp_below">Ko se občuti hladneje kot</string>
     <string name="settings_clothes_cond_type_temp_above">Ko se občuti topleje kot</string>
     <string name="settings_clothes_cond_type_precip_above">Ko je verjetnost dežja nad</string>
+    <string name="settings_clothes_cond_type_snow_above">Ko je verjetnost snega nad</string>
     <string name="settings_clothes_cond_temp_below">ko je občutena temperatura pod %1$s</string>
     <string name="settings_clothes_cond_temp_above">ko je občutena temperatura nad %1$s</string>
     <string name="settings_clothes_cond_precip_above">ko je verjetnost dežja nad %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">ko je verjetnost snega nad %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Majica</string>
     <string name="today_outfit_top_sweater">Pulover</string>
@@ -1214,6 +1216,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_api_key_status_unset">4 brezplačno vsak dan, pridobi ključ za več.</string>
     <string name="settings_tts_stop">Ustavi</string>
     <string name="garment_rain_jacket">Dežna jakna</string>
+    <string name="garment_beanie">Kapa</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

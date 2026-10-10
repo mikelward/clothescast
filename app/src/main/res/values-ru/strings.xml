@@ -93,9 +93,11 @@ only the displayed label localizes.
     <string name="settings_clothes_cond_type_temp_below">Когда ощущается холоднее</string>
     <string name="settings_clothes_cond_type_temp_above">Когда ощущается теплее</string>
     <string name="settings_clothes_cond_type_precip_above">Когда вероятность дождя превышает</string>
+    <string name="settings_clothes_cond_type_snow_above">Когда вероятность снега превышает</string>
     <string name="settings_clothes_cond_temp_below">когда ощущаемая температура ниже %1$s</string>
     <string name="settings_clothes_cond_temp_above">когда ощущаемая температура выше %1$s</string>
     <string name="settings_clothes_cond_precip_above">когда вероятность дождя превышает %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">когда вероятность снега превышает %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery
@@ -1282,6 +1284,7 @@ only the displayed label localizes.
     <string name="settings_api_key_status_unset">4 бесплатно каждый день, получите ключ для большего.</string>
     <string name="settings_tts_stop">Остановить</string>
     <string name="garment_rain_jacket">Дождевик</string>
+    <string name="garment_beanie">Шапка</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

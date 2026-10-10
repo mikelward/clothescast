@@ -164,3 +164,9 @@ internal fun ClothingThickJacketWithGlovesPreview() {
 internal fun ClothingUmbrellaPreview() {
     ClothingDrawableFrame(R.drawable.ic_outfit_umbrella, "umbrella")
 }
+
+@Preview(name = "Clothing · beanie", widthDp = 360)
+@Composable
+internal fun ClothingBeaniePreview() {
+    ClothingDrawableFrame(R.drawable.ic_outfit_beanie, "beanie")
+}

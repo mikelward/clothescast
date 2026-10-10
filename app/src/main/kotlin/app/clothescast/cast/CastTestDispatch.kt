@@ -124,6 +124,7 @@ internal suspend fun castCurrentInsight(
             handsColors = handsColors,
             carriedColors = carriedColors,
             outerColors = outerColors,
+            headColors = prefs.outfitHeadColors,
             topStrokes = topStrokes,
             bottomStrokes = bottomStrokes,
             window = outfitCardWindow(

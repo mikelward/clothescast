@@ -35,7 +35,12 @@ I put on before I leave?" instead of a full weather-office report.
    signals, and renders a localised prose summary.
 3. **Outfit selection.** The same triggered rule set drives both prose and the
    outfit icon. Top and bottom fallbacks keep the outfit card populated even
-   when no rule fires.
+   when no rule fires. Optional gear (gloves, a rain jacket, an umbrella, a
+   beanie) appears only when its rule fires. The beanie ships on by default
+   and is snow-keyed the way the umbrella is rain-keyed: it fires on a chance
+   of snow at the umbrella's 10% bar, on exactly the days the snow gate drops
+   the rain gear. The figure is headless, so the icon draws the beanie hanging
+   from its free left hand, mirroring the umbrella in the right.
 4. **Delivery.** A run can post a phone notification, speak on the phone, cast to
    a selected smart display, publish retained MQTT topics, update widgets, and
    cache the current and next period. Delivery channels are additive; failures

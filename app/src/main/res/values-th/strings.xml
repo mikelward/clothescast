@@ -36,9 +36,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_cond_type_temp_below">เมื่ออากาศรู้สึกหนาวกว่า</string>
     <string name="settings_clothes_cond_type_temp_above">เมื่ออากาศรู้สึกร้อนกว่า</string>
     <string name="settings_clothes_cond_type_precip_above">เมื่อโอกาสฝนตกเกิน</string>
+    <string name="settings_clothes_cond_type_snow_above">เมื่อโอกาสหิมะตกเกิน</string>
     <string name="settings_clothes_cond_temp_below">เมื่ออุณหภูมิที่รู้สึกต่ำกว่า %1$s</string>
     <string name="settings_clothes_cond_temp_above">เมื่ออุณหภูมิที่รู้สึกสูงกว่า %1$s</string>
     <string name="settings_clothes_cond_precip_above">เมื่อโอกาสฝนตกเกิน %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">เมื่อโอกาสหิมะตกเกิน %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">เสื้อยืด</string>
     <string name="today_outfit_top_sweater">เสื้อกันหนาว</string>
@@ -1227,6 +1229,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_status_unset">ฟรีวันละ 4 ครั้ง รับคีย์เพื่อใช้เพิ่ม</string>
     <string name="settings_tts_stop">หยุด</string>
     <string name="garment_rain_jacket">เสื้อกันฝน</string>
+    <string name="garment_beanie">หมวกไหมพรม</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

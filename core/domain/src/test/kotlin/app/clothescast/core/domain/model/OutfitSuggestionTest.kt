@@ -693,6 +693,59 @@ class OutfitSuggestionTest {
     }
 
     @Test
+    fun `a firing beanie rule sets the head slot alongside the other tiers`() {
+        val triggered = TriggeredOutfit(
+            rules = listOf(
+                ClothesRule(Garment.COAT, ClothesRule.TemperatureBelow(5.0)),
+                ClothesRule(Garment.GLOVES, ClothesRule.TemperatureBelow(4.0)),
+                ClothesRule(Garment.BEANIE, ClothesRule.SnowProbabilityAbove(10.0)),
+            ),
+            fallbacks = emptyList(),
+        )
+        OutfitSuggestion.fromTriggeredOutfit(triggered) shouldBe OutfitSuggestion(
+            OutfitSuggestion.Top.THICK_COAT,
+            OutfitSuggestion.Bottom.LONG_PANTS,
+            hands = OutfitSuggestion.Hands.GLOVES,
+            head = OutfitSuggestion.Head.BEANIE,
+        )
+    }
+
+    @Test
+    fun `default rules put a beanie on the icon on a snow day and none on a rain day`() {
+        val snowy = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = -2.0, feelsLikeMax = 1.0, precipMaxPct = 60.0, condition = WeatherCondition.SNOW),
+            rules,
+        )
+        snowy.head shouldBe OutfitSuggestion.Head.BEANIE
+        // The snow gate still keeps rain gear off the snowy icon.
+        snowy.carried shouldBe null
+        snowy.outer shouldBe null
+
+        val rainy = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = 3.0, feelsLikeMax = 8.0, precipMaxPct = 60.0, condition = WeatherCondition.RAIN),
+            rules,
+        )
+        rainy.head shouldBe null
+        rainy.carried shouldBe OutfitSuggestion.Carried.UMBRELLA
+    }
+
+    @Test
+    fun `head stays null when no beanie rule fires`() {
+        val outfit = OutfitSuggestion.fromForecast(
+            forecast(feelsLikeMin = -2.0, feelsLikeMax = 1.0, precipMaxPct = 60.0, condition = WeatherCondition.SNOW),
+            rules.filterNot { it.item == Garment.BEANIE },
+        )
+        outfit.head shouldBe null
+    }
+
+    @Test
+    fun `head itemKey round-trips through the garment catalog`() {
+        OutfitSuggestion.Head.entries.forEach { head ->
+            Garment.fromKey(head.itemKey())?.slot shouldBe Garment.Slot.HEAD
+        }
+    }
+
+    @Test
     fun `outer itemKey round-trips through the garment catalog`() {
         // The slot's catalog key must resolve back to the OUTER-layer TOP-slot
         // garment so prose / persistence / the rain-jacket icon all key off the

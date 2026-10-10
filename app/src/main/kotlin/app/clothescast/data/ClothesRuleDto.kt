@@ -49,7 +49,8 @@ internal data class ClothesRuleDto(
     val value: Double,
     val unit: String? = null,
     // Read-only legacy fields for the retired rain_code / any_of shapes. Never
-    // written (the current encoder emits only temp_below / temp_above / precip_above),
+    // written (the current encoder emits only temp_below / temp_above / precip_above /
+    // snow_above),
     // but kept so stored rows from before the consensus-probability collapse still
     // deserialise and can be migrated / collapsed rather than rejected wholesale.
     val codeFloor: String? = null,
@@ -78,6 +79,7 @@ internal data class ClothesRuleDto(
         TYPE_TEMP_BELOW -> ClothesRule.TemperatureBelow(value, parseUnit(unit))
         TYPE_TEMP_ABOVE -> ClothesRule.TemperatureAbove(value, parseUnit(unit))
         TYPE_PRECIP_ABOVE -> ClothesRule.PrecipitationProbabilityAbove(value)
+        TYPE_SNOW_ABOVE -> ClothesRule.SnowProbabilityAbove(value)
         // Retired shapes: collapse onto the single probability gate.
         TYPE_RAIN_CODE -> probabilityDefaultFor(garment)
         TYPE_ANY_OF -> any
@@ -91,6 +93,10 @@ internal data class ClothesRuleDto(
         const val TYPE_TEMP_BELOW = "temp_below"
         const val TYPE_TEMP_ABOVE = "temp_above"
         const val TYPE_PRECIP_ABOVE = "precip_above"
+        // The beanie's snow-probability gate. A distinct tag from the rain gate
+        // so a downgraded build that predates it drops just that row (unknown
+        // type → null) instead of misreading it as a rain rule.
+        const val TYPE_SNOW_ABOVE = "snow_above"
         // Retired condition types, still recognised for decode/migration only.
         const val TYPE_RAIN_CODE = "rain_code"
         const val TYPE_ANY_OF = "any_of"
@@ -157,4 +163,6 @@ private fun ClothesRule.Condition.toConditionDto(): ClothesConditionDto = when (
         ClothesConditionDto(ClothesRuleDto.TYPE_TEMP_ABOVE, value = value, unit = unit.name)
     is ClothesRule.PrecipitationProbabilityAbove ->
         ClothesConditionDto(ClothesRuleDto.TYPE_PRECIP_ABOVE, value = percent)
+    is ClothesRule.SnowProbabilityAbove ->
+        ClothesConditionDto(ClothesRuleDto.TYPE_SNOW_ABOVE, value = percent)
 }

@@ -421,6 +421,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                         handsColors = handsColors,
                         carriedColors = carriedColors,
                         outerColors = outerColors,
+                        headColors = prefs.outfitHeadColors,
                         topStrokes = topStrokes,
                         bottomStrokes = bottomStrokes,
                         window = outfitCardWindow(

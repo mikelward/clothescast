@@ -175,14 +175,58 @@ class EvaluateClothesRulesTest {
         // Both rain-gear defaults key off aggregate precip probability, so an 80%
         // snowy day clears their gates — but snow doesn't warrant rain gear, so
         // both precip-keyed rules are filtered out while the worn cold-weather
-        // rules still fire. Keeps the icon, recommendations, and prose consistent.
+        // rules still fire, and the snow-keyed beanie takes the umbrella's place.
+        // Keeps the icon, recommendations, and prose consistent.
         val out = subject(
             forecast(min = -2.0, max = 2.0, precip = 80.0, condition = WeatherCondition.SNOW),
             ClothesRule.DEFAULTS,
         )
-        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "coat", "gloves")
+        out.rules.map { it.item.itemKey }.shouldContainExactly("sweater", "jacket", "coat", "gloves", "beanie")
         out.items.shouldNotContain("umbrella")
         out.items.shouldNotContain("rain-jacket")
+    }
+
+    @Test
+    fun `default rules bring a beanie on a mild snow day and keep rain gear off`() {
+        // Just over the beanie's 10% chance-of-snow bar on a day too mild for the
+        // coat / gloves: the beanie still fires — it keys off the snow chance, not
+        // the temperature — and the umbrella and rain jacket stay suppressed.
+        val out = subject(
+            forecast(min = 1.0, max = 6.0, precip = 60.0, condition = WeatherCondition.SNOW),
+            ClothesRule.DEFAULTS,
+        )
+        out.items.shouldContain("beanie")
+        out.items.shouldNotContain("umbrella")
+        out.items.shouldNotContain("rain-jacket")
+    }
+
+    @Test
+    fun `default rules bring no beanie on a rainy day`() {
+        // The same chance of precipitation as rain: the umbrella and rain jacket
+        // fire, the beanie doesn't — it only answers snow.
+        val out = subject(
+            forecast(min = 1.0, max = 6.0, precip = 60.0, condition = WeatherCondition.RAIN),
+            ClothesRule.DEFAULTS,
+        )
+        out.items.shouldNotContain("beanie")
+        out.items.shouldContain("umbrella")
+        out.items.shouldContain("rain-jacket")
+    }
+
+    @Test
+    fun `snow gate never drops a beanie, whatever its trigger`() {
+        // The beanie is worn warmth gear, not rain gear: even a user's rain-gate
+        // beanie rule survives the snow gate that drops the umbrella.
+        val rules = listOf(
+            ClothesRule(Garment.BEANIE, ClothesRule.PrecipitationProbabilityAbove(10.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(10.0)),
+        )
+        val out = subject(
+            forecast(min = -2.0, max = 2.0, precip = 80.0, condition = WeatherCondition.SNOW),
+            rules,
+        )
+        out.items.shouldContain("beanie")
+        out.items.shouldNotContain("umbrella")
     }
 
     @Test

@@ -42,9 +42,11 @@ surfaces.
     <string name="settings_clothes_cond_type_temp_below">Када се осећа хладније од</string>
     <string name="settings_clothes_cond_type_temp_above">Када се осећа топлије од</string>
     <string name="settings_clothes_cond_type_precip_above">Када је вероватноћа кише већа од</string>
+    <string name="settings_clothes_cond_type_snow_above">Када је вероватноћа снега већа од</string>
     <string name="settings_clothes_cond_temp_below">када је осећајна температура испод %1$s</string>
     <string name="settings_clothes_cond_temp_above">када је осећајна температура изнад %1$s</string>
     <string name="settings_clothes_cond_precip_above">када је вероватноћа кише већа од %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">када је вероватноћа снега већа од %.0f%%</string>
 
     <!-- Clothes settings — title + description. -->
     <string name="settings_clothes_title">Правила одевања</string>
@@ -1205,6 +1207,7 @@ surfaces.
     <string name="settings_api_key_status_unset">4 бесплатно сваког дана, набави кључ за више.</string>
     <string name="settings_tts_stop">Заустави</string>
     <string name="garment_rain_jacket">Кишна јакна</string>
+    <string name="garment_beanie">Капа</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

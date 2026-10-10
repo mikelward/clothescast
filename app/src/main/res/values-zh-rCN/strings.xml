@@ -78,9 +78,11 @@ label localizes.
     <string name="settings_clothes_cond_type_temp_below">当体感温度低于</string>
     <string name="settings_clothes_cond_type_temp_above">当体感温度高于</string>
     <string name="settings_clothes_cond_type_precip_above">当降水概率超过</string>
+    <string name="settings_clothes_cond_type_snow_above">当降雪概率超过</string>
     <string name="settings_clothes_cond_temp_below">当最低体感温度低于 %1$s 时</string>
     <string name="settings_clothes_cond_temp_above">当最高体感温度高于 %1$s 时</string>
     <string name="settings_clothes_cond_precip_above">当降水概率超过 %.0f%% 时</string>
+    <string name="settings_clothes_cond_snow_above">当降雪概率超过 %.0f%% 时</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery
@@ -1374,6 +1376,7 @@ label localizes.
     <string name="settings_api_key_status_unset">每天 4 次免费，获取密钥可使用更多。</string>
     <string name="settings_tts_stop">停止</string>
     <string name="garment_rain_jacket">雨衣</string>
+    <string name="garment_beanie">毛线帽</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -48,6 +48,7 @@ import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.core.domain.model.containsTwelveHourPatternField
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.diag.ClothesRulesSnapshot
+import app.clothescast.diag.DiagLog
 import app.clothescast.diag.SettingsAnalyticsSnapshot
 import app.clothescast.diag.SettingsSnapshot
 import app.clothescast.tts.resolve
@@ -978,6 +979,15 @@ class SettingsRepository(
         }
     }
 
+    /** Sibling of [setOutfitTopColor] for the optional beanie (head) slot. */
+    suspend fun setOutfitHeadColor(head: OutfitSuggestion.Head, argb: Long?) {
+        dataStore.edit { prefs ->
+            val current = parseOutfitHeadColors(prefs[OUTFIT_HEAD_COLORS])
+            val updated = if (argb == null) current - head else current + (head to argb)
+            prefs.writeJson(OUTFIT_HEAD_COLORS, updated.mapKeys { it.key.name })
+        }
+    }
+
     /** Persists the per-holiday override (or clears it back to AUTO). */
     suspend fun setHolidayOverride(id: HolidayId, override: HolidayOverride) {
         dataStore.edit { prefs ->
@@ -1216,6 +1226,7 @@ class SettingsRepository(
         val outfitHandsColors = parseOutfitHandsColors(this[OUTFIT_HANDS_COLORS])
         val outfitCarriedColors = parseOutfitCarriedColors(this[OUTFIT_CARRIED_COLORS])
         val outfitOuterColors = parseOutfitOuterColors(this[OUTFIT_OUTER_COLORS])
+        val outfitHeadColors = parseOutfitHeadColors(this[OUTFIT_HEAD_COLORS])
         val holidayCountrySelection = HolidayCountrySelection(
             home = this[HOLIDAY_COUNTRY_HOME] != false,
             current = this[HOLIDAY_COUNTRY_CURRENT] != false,
@@ -1345,6 +1356,7 @@ class SettingsRepository(
             outfitHandsColors = outfitHandsColors,
             outfitCarriedColors = outfitCarriedColors,
             outfitOuterColors = outfitOuterColors,
+            outfitHeadColors = outfitHeadColors,
             holidayCountrySelection = holidayCountrySelection,
             holidayOverrides = holidayOverrides,
             calendarOverrides = calendarOverrides,
@@ -1545,6 +1557,9 @@ class SettingsRepository(
     private fun parseOutfitOuterColors(raw: String?): Map<OutfitSuggestion.Outer, Long> =
         parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Outer.valueOf(name) }.getOrNull() }
 
+    private fun parseOutfitHeadColors(raw: String?): Map<OutfitSuggestion.Head, Long> =
+        parseOutfitColors(raw) { name -> runCatching { OutfitSuggestion.Head.valueOf(name) }.getOrNull() }
+
     /**
      * Decodes a `Map<String, Long>` JSON blob and projects keys through
      * [resolveKey], dropping entries with unknown enum names. Tolerant of
@@ -1680,6 +1695,7 @@ class SettingsRepository(
         private val OUTFIT_HANDS_COLORS = stringPreferencesKey("outfit_hands_colors_json")
         private val OUTFIT_CARRIED_COLORS = stringPreferencesKey("outfit_carried_colors_json")
         private val OUTFIT_OUTER_COLORS = stringPreferencesKey("outfit_outer_colors_json")
+        private val OUTFIT_HEAD_COLORS = stringPreferencesKey("outfit_head_colors_json")
         private val HOLIDAY_OVERRIDES = stringSetPreferencesKey("holiday_overrides")
         private val CALENDAR_OVERRIDES = stringSetPreferencesKey("calendar_overrides")
         private val HOLIDAY_COUNTRY_HOME = booleanPreferencesKey("holiday_country_home")
@@ -1762,6 +1778,7 @@ private val Context.settingsDataStore: DataStore<Preferences> by preferencesData
             rainGearDefaultsMigration(),
             rainGearProbabilityMigration(),
             rainGearProbabilityV2Migration(),
+            beanieDefaultMigration(),
         )
     },
 )
@@ -1903,6 +1920,67 @@ internal fun glovesDefaultMigration(): DataMigration<Preferences> {
         override suspend fun cleanUp() = Unit
     }
 }
+
+/**
+ * One-time migration appending the snow-keyed beanie default to installs that
+ * already have an explicit clothes-rules list, mirroring [glovesDefaultMigration]
+ * / [umbrellaDefaultMigration]. The beanie now ships in [ClothesRule.DEFAULTS]
+ * (chance of snow ≥ 10%), so fresh and never-configured installs read it
+ * directly; only a user who ever added, edited, or deleted a rule has a
+ * persisted list that predates it. Preserves every stored rule; appends the
+ * beanie default (sourced from DEFAULTS, so it tracks the catalog gate) at the
+ * end only when the stored list decodes to at least one catalog rule and none of
+ * them is a beanie. A legacy-only list and corrupt JSON are left as-is —
+ * parseRules falls back to DEFAULTS (which include the beanie) for those at read
+ * time. A user who deletes the beanie later keeps it deleted (this runs once).
+ *
+ * Runs exactly once via the `beanie_default_migrated_v1` sentinel, after the
+ * rain-gear migrations so it sees their rewritten list. Internal for unit testing.
+ */
+internal fun beanieDefaultMigration(): DataMigration<Preferences> {
+    val migrated = booleanPreferencesKey("beanie_default_migrated_v1")
+    val clothesRules = stringPreferencesKey("clothes_rules_json")
+    val json = Json { ignoreUnknownKeys = true }
+    return object : DataMigration<Preferences> {
+        override suspend fun shouldMigrate(currentData: Preferences): Boolean =
+            currentData[migrated] != true
+
+        override suspend fun migrate(currentData: Preferences): Preferences {
+            // The returned Preferences replaces the store, so carry every
+            // existing entry forward, then add ours.
+            val result = mutablePreferencesOf()
+            currentData.asMap().forEach { (key, value) ->
+                @Suppress("UNCHECKED_CAST")
+                result[key as Preferences.Key<Any>] = value
+            }
+            val stored = currentData[clothesRules]
+            if (!stored.isNullOrBlank()) {
+                runCatching {
+                    val dtos = json.decodeFromString<List<ClothesRuleDto>>(stored)
+                    // Decide on the domain-valid rules (see glovesDefaultMigration):
+                    // a legacy-only list decodes to nothing and parseRules already
+                    // falls back to DEFAULTS for it, so appending would strip them.
+                    val domainRules = dtos.mapNotNull { it.toDomain() }
+                    if (domainRules.isNotEmpty() && domainRules.none { it.item == Garment.BEANIE }) {
+                        val beanieDto = ClothesRule.DEFAULTS.first { it.item == Garment.BEANIE }.toDto()
+                        result[clothesRules] = json.encodeToString(dtos + beanieDto)
+                    }
+                }.onFailure { e ->
+                    // Corrupt JSON: leave the stored value untouched and still set
+                    // the sentinel below — parseRules falls back to DEFAULTS (which
+                    // include the beanie) when it can't decode this value.
+                    DiagLog.w(TAG_BEANIE_MIGRATION, e, "Beanie default migration skipped: stored rules undecodable")
+                }
+            }
+            result[migrated] = true
+            return result
+        }
+
+        override suspend fun cleanUp() = Unit
+    }
+}
+
+private const val TAG_BEANIE_MIGRATION = "SettingsRepository"
 
 /**
  * One-time migration appending the umbrella precip default to installs that

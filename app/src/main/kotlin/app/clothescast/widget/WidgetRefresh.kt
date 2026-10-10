@@ -53,6 +53,7 @@ data class WidgetInputs(
     val outfitHandsColors: Map<OutfitSuggestion.Hands, Long>,
     val outfitCarriedColors: Map<OutfitSuggestion.Carried, Long>,
     val outfitOuterColors: Map<OutfitSuggestion.Outer, Long>,
+    val outfitHeadColors: Map<OutfitSuggestion.Head, Long>,
 )
 
 /**
@@ -88,4 +89,5 @@ fun UserPreferences.toWidgetInputs(): WidgetInputs = WidgetInputs(
     outfitHandsColors = outfitHandsColors,
     outfitCarriedColors = outfitCarriedColors,
     outfitOuterColors = outfitOuterColors,
+    outfitHeadColors = outfitHeadColors,
 )

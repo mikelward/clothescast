@@ -42,9 +42,11 @@ they work correctly in both the single-band and range templates.
     <string name="settings_clothes_cond_type_temp_below">عندما تكون درجة الحرارة المحسوسة أقل من</string>
     <string name="settings_clothes_cond_type_temp_above">عندما تكون درجة الحرارة المحسوسة أعلى من</string>
     <string name="settings_clothes_cond_type_precip_above">عندما تكون احتمالية الأمطار أعلى من</string>
+    <string name="settings_clothes_cond_type_snow_above">عندما تكون احتمالية الثلوج أعلى من</string>
     <string name="settings_clothes_cond_temp_below">عندما تكون درجة الحرارة المحسوسة الدنيا أقل من %1$s</string>
     <string name="settings_clothes_cond_temp_above">عندما تكون درجة الحرارة المحسوسة القصوى أعلى من %1$s</string>
     <string name="settings_clothes_cond_precip_above">عندما تكون احتمالية الأمطار أعلى من %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">عندما تكون احتمالية الثلوج أعلى من %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">تي شيرت</string>
     <string name="today_outfit_top_sweater">سترة صوفية</string>
@@ -1227,6 +1229,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_api_key_status_unset">4 مجانًا كل يوم، احصل على مفتاح للمزيد.</string>
     <string name="settings_tts_stop">إيقاف</string>
     <string name="garment_rain_jacket">سترة مطر</string>
+    <string name="garment_beanie">قبعة صوفية</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

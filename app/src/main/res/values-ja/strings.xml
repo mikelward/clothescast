@@ -80,9 +80,11 @@ the displayed label localizes.
     <string name="settings_clothes_cond_type_temp_below">体感温度が以下のとき</string>
     <string name="settings_clothes_cond_type_temp_above">体感温度が以上のとき</string>
     <string name="settings_clothes_cond_type_precip_above">降水確率が以上のとき</string>
+    <string name="settings_clothes_cond_type_snow_above">雪の確率が以上のとき</string>
     <string name="settings_clothes_cond_temp_below">最低体感温度が %1$s 未満のとき</string>
     <string name="settings_clothes_cond_temp_above">最高体感温度が %1$s を超えるとき</string>
     <string name="settings_clothes_cond_precip_above">降水確率が %.0f%% を超えるとき</string>
+    <string name="settings_clothes_cond_snow_above">雪の確率が %.0f%% を超えるとき</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery
@@ -1375,6 +1377,7 @@ the displayed label localizes.
     <string name="settings_api_key_status_unset">毎日4回無料。さらに使うにはキーを取得してください。</string>
     <string name="settings_tts_stop">停止</string>
     <string name="garment_rain_jacket">レインジャケット</string>
+    <string name="garment_beanie">ニット帽</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

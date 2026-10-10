@@ -50,6 +50,13 @@ import java.time.LocalTime
  * its crook. The [carried] and [outer] fills are user-recolorable via the same
  * per-row / GarmentColorsCard flow as the worn tiers (`outfit_carried_colors`
  * / `outfit_outer_colors`).
+ *
+ * [head] (beanie) is opt-in headwear with the same no-fallback shape as [hands].
+ * The figure is headless and the coat collar reaches the top edge, so there's no
+ * headroom to draw it worn: like the umbrella it renders as a full-figure overlay,
+ * hanging from the figure's free *left* hand (mirroring the umbrella in the
+ * right). The top-only notification large icon omits it for the same reason it
+ * omits the umbrella. Its fill is recolorable (`outfit_head_colors`).
  */
 data class OutfitSuggestion(
     val top: Top,
@@ -57,6 +64,7 @@ data class OutfitSuggestion(
     val hands: Hands? = null,
     val carried: Carried? = null,
     val outer: Outer? = null,
+    val head: Head? = null,
 ) {
     enum class Top {
         TSHIRT, POLO, SWEATER, THIN_JACKET, THICK_JACKET, THICK_COAT, PUFFER_JACKET;
@@ -142,6 +150,22 @@ data class OutfitSuggestion(
         }
     }
 
+    /**
+     * Optional headwear — today just the beanie, the `Garment.Slot.HEAD`
+     * member. Like [hands] it's a single tier with no fallback: present only
+     * when a head rule fires (the snow-keyed beanie default — see
+     * [ClothesRule.DEFAULTS]). It's worn warmth gear, not rain gear, so the
+     * snow gate never drops it.
+     */
+    enum class Head {
+        BEANIE;
+
+        /** Catalog key (matches [Garment.itemKey]) for prose / persistence. */
+        fun itemKey(): String = when (this) {
+            BEANIE -> "beanie"
+        }
+    }
+
     companion object {
         // Catalog item keys (see [Garment.itemKey]) that drive each icon tier.
         // Top tiers (coldest first): coat → THICK_COAT, puffer → PUFFER_JACKET,
@@ -183,6 +207,9 @@ data class OutfitSuggestion(
         // — uncovered stays null (off by default; the user opts in by adding
         // a rain-jacket rule).
         private val OUTER_KEYS = listOf(Garment.RAIN_JACKET)
+        // Head tier: a firing `beanie` rule lights the optional beanie, drawn
+        // hanging from the free hand. No fallback — uncovered stays null.
+        private val HEAD_KEYS = listOf(Garment.BEANIE)
 
         /**
          * Two-piece icon outfit for [forecast] given the user's [clothesRules].
@@ -271,7 +298,9 @@ data class OutfitSuggestion(
             // Outer shell (rain jacket) worn over the picked top: independent
             // of the top tier, so it adds to the stack rather than replacing it.
             val outer = if (firingRules.hasKeyIn(OUTER_KEYS)) Outer.RAIN_JACKET else null
-            return OutfitSuggestion(top, bottom, hands, carried, outer)
+            // Headwear (beanie): independent of every other tier.
+            val head = if (firingRules.hasKeyIn(HEAD_KEYS)) Head.BEANIE else null
+            return OutfitSuggestion(top, bottom, hands, carried, outer, head)
         }
 
         /** True when any rule in the list is keyed on a garment in [keys]. */

@@ -78,9 +78,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_clothes_cond_type_temp_below">Når det føles koldere end</string>
     <string name="settings_clothes_cond_type_temp_above">Når det føles varmere end</string>
     <string name="settings_clothes_cond_type_precip_above">Når regnsandsynligheden er over</string>
+    <string name="settings_clothes_cond_type_snow_above">Når snesandsynligheden er over</string>
     <string name="settings_clothes_cond_temp_below">når den følte temperatur er under %1$s</string>
     <string name="settings_clothes_cond_temp_above">når den følte temperatur er over %1$s</string>
     <string name="settings_clothes_cond_precip_above">når regnsandsynligheden er over %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">når snesandsynligheden er over %.0f%%</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">Dagligt ClothesCast</string>
@@ -1257,6 +1259,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_api_key_status_unset">4 gratis hver dag, få en nøgle til mere.</string>
     <string name="settings_tts_stop">Stop</string>
     <string name="garment_rain_jacket">Regnjakke</string>
+    <string name="garment_beanie">Hue</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

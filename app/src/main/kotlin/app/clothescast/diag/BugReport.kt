@@ -535,6 +535,7 @@ object BugReport {
         is ClothesRule.TemperatureBelow -> "feelsLikeMin < ${c.value}${c.unit.symbol()}"
         is ClothesRule.TemperatureAbove -> "feelsLikeMax > ${c.value}${c.unit.symbol()}"
         is ClothesRule.PrecipitationProbabilityAbove -> "precipMaxPct > ${c.percent}"
+        is ClothesRule.SnowProbabilityAbove -> "precipMaxPct > ${c.percent} && snow"
     }
 
     private fun StringBuilder.appendInsight(

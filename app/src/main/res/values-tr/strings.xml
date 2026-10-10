@@ -63,10 +63,12 @@ displayed label localizes.
     <string name="settings_clothes_cond_type_temp_below">Hissedilen sıcaklık şundan düşükse</string>
     <string name="settings_clothes_cond_type_temp_above">Hissedilen sıcaklık şundan yüksekse</string>
     <string name="settings_clothes_cond_type_precip_above">Yağmur ihtimali şunu aşarsa</string>
+    <string name="settings_clothes_cond_type_snow_above">Kar ihtimali şunu aşarsa</string>
 
     <string name="settings_clothes_cond_temp_below">hissedilen sıcaklık %1$s\'nin altındaysa</string>
     <string name="settings_clothes_cond_temp_above">hissedilen sıcaklık %1$s\'nin üstündeyse</string>
     <string name="settings_clothes_cond_precip_above">yağmur ihtimali %.0f%% üzerindeyse</string>
+    <string name="settings_clothes_cond_snow_above">kar ihtimali %.0f%% üzerindeyse</string>
 
     <string name="settings_schedule_title">Günlük ClothesCast</string>
     <string name="settings_schedule_time_label">Saat</string>
@@ -1227,6 +1229,7 @@ displayed label localizes.
     <string name="settings_api_key_status_unset">Her gün 4 ücretsiz, daha fazlası için anahtar al.</string>
     <string name="settings_tts_stop">Durdur</string>
     <string name="garment_rain_jacket">Yağmurluk</string>
+    <string name="garment_beanie">Bere</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

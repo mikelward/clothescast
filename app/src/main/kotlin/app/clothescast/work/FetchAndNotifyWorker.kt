@@ -1073,6 +1073,7 @@ class FetchAndNotifyWorker(
             outerColors = prefs.outfitOuterColors,
             topStrokes = theme?.topStrokeOverrides ?: emptyMap(),
             bottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap(),
+            headColors = prefs.outfitHeadColors,
         )
     }
 
@@ -1085,6 +1086,7 @@ class FetchAndNotifyWorker(
         val outerColors: Map<OutfitSuggestion.Outer, Long>,
         val topStrokes: Map<OutfitSuggestion.Top, Long>,
         val bottomStrokes: Map<OutfitSuggestion.Bottom, Long>,
+        val headColors: Map<OutfitSuggestion.Head, Long>,
     )
 
     /**
@@ -1121,6 +1123,7 @@ class FetchAndNotifyWorker(
                     outerColors = colors.outerColors,
                     topStrokes = colors.topStrokes,
                     bottomStrokes = colors.bottomStrokes,
+                    headColors = colors.headColors,
                 )
             }
             val geminiAvailable = isGeminiEngineSelected(prefs) && (
@@ -1209,7 +1212,7 @@ class FetchAndNotifyWorker(
         // identically.
         val (
             theme, topColors, bottomColors, handsColors,
-            carriedColors, outerColors, topStrokes, bottomStrokes,
+            carriedColors, outerColors, topStrokes, bottomStrokes, headColors,
         ) = resolveThemedOutfitColors(prefs)
 
         // Compute every "should this fire?" decision from one snapshot
@@ -1272,6 +1275,7 @@ class FetchAndNotifyWorker(
                     outerColors = outerColors,
                     topStrokes = topStrokes,
                     bottomStrokes = bottomStrokes,
+                    headColors = headColors,
                 )
             }
 
@@ -1561,6 +1565,7 @@ class FetchAndNotifyWorker(
         outerColors: Map<OutfitSuggestion.Outer, Long>,
         topStrokes: Map<OutfitSuggestion.Top, Long>,
         bottomStrokes: Map<OutfitSuggestion.Bottom, Long>,
+        headColors: Map<OutfitSuggestion.Head, Long>,
     ): ByteArray? {
         val outfit = insight.outfit ?: return null
         return runCatching {
@@ -1589,6 +1594,7 @@ class FetchAndNotifyWorker(
                 outerColors = outerColors,
                 topStrokes = topStrokes,
                 bottomStrokes = bottomStrokes,
+                headColors = headColors,
                 window = outfitCardWindow(
                     formatter.locale,
                     insight.forDate,

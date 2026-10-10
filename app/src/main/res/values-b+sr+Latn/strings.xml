@@ -54,9 +54,11 @@ default English (matching values-pl / values-uk).
     <string name="settings_clothes_cond_type_temp_below">Kada se oseća hladnije od</string>
     <string name="settings_clothes_cond_type_temp_above">Kada se oseća toplije od</string>
     <string name="settings_clothes_cond_type_precip_above">Kada je verovatnoća kiše veća od</string>
+    <string name="settings_clothes_cond_type_snow_above">Kada je verovatnoća snega veća od</string>
     <string name="settings_clothes_cond_temp_below">kada je osećajna temperatura ispod %1$s</string>
     <string name="settings_clothes_cond_temp_above">kada je osećajna temperatura iznad %1$s</string>
     <string name="settings_clothes_cond_precip_above">kada je verovatnoća kiše veća od %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">kada je verovatnoća snega veća od %.0f%%</string>
 
     <!-- Clothes settings — title + description. -->
     <string name="settings_clothes_title">Pravila odevanja</string>
@@ -1217,6 +1219,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_api_key_status_unset">4 besplatno svakog dana, nabavi ključ za više.</string>
     <string name="settings_tts_stop">Zaustavi</string>
     <string name="garment_rain_jacket">Kišna jakna</string>
+    <string name="garment_beanie">Kapa</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -116,6 +116,8 @@ data class SettingsState(
     val outfitCarriedColors: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the optional rain-jacket outer overlay. */
     val outfitOuterColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
+    /** Sibling of [outfitTopColors] for the optional beanie (head) overlay. */
+    val outfitHeadColors: Map<OutfitSuggestion.Head, Long> = emptyMap(),
     /**
      * Country picker: Home / Current / All bucket flags plus per-country
      * AUTO / ON / OFF overrides ([HolidayCountrySelection.countryOverrides]).

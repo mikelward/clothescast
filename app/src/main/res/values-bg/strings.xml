@@ -50,9 +50,11 @@ What is NOT overridden, by design:
     <string name="settings_clothes_cond_type_temp_below">Когато усещаната е под</string>
     <string name="settings_clothes_cond_type_temp_above">Когато усещаната е над</string>
     <string name="settings_clothes_cond_type_precip_above">Когато вероятността за дъжд е над</string>
+    <string name="settings_clothes_cond_type_snow_above">Когато вероятността за сняг е над</string>
     <string name="settings_clothes_cond_temp_below">когато усещаната температура е под %1$s</string>
     <string name="settings_clothes_cond_temp_above">когато усещаната температура е над %1$s</string>
     <string name="settings_clothes_cond_precip_above">когато вероятността за дъжд е над %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">когато вероятността за сняг е над %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Тениска</string>
     <string name="today_outfit_top_sweater">Пуловер</string>
@@ -1214,6 +1216,7 @@ What is NOT overridden, by design:
     <string name="settings_api_key_status_unset">4 безплатни всеки ден, вземи ключ за още.</string>
     <string name="settings_tts_stop">Спиране</string>
     <string name="garment_rain_jacket">Дъждобран</string>
+    <string name="garment_beanie">Шапка</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

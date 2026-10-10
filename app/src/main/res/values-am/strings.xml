@@ -42,9 +42,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_cond_type_temp_below">ከሚሰማ ቀዝቃዛ ሲሆን</string>
     <string name="settings_clothes_cond_type_temp_above">ከሚሰማ ሞቃት ሲሆን</string>
     <string name="settings_clothes_cond_type_precip_above">የዝናብ ዕድል ሲጨምር</string>
+    <string name="settings_clothes_cond_type_snow_above">የበረዶ ዕድል ሲጨምር</string>
     <string name="settings_clothes_cond_temp_below">ዝቅተኛ ሙቀት %1$s ሲቀንስ</string>
     <string name="settings_clothes_cond_temp_above">ከፍተኛ ሙቀት %1$s ሲጨምር</string>
     <string name="settings_clothes_cond_precip_above">የዝናብ ዕድል %.0f%% ሲጨምር</string>
+    <string name="settings_clothes_cond_snow_above">የበረዶ ዕድል %.0f%% ሲጨምር</string>
     <string name="settings_clothes_title">የልብስ ህጎች</string>
     <string name="settings_clothes_description">አንድ ትንበያ ከእነዚህ ደረጃዎች ካለፈ፣ ልብሱ ወደ ዕለታዊ ClothesCast ይታከላል።</string>
 
@@ -1195,6 +1197,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_status_unset">በየቀኑ 4 ነፃ፣ ለተጨማሪ ቁልፍ አግኝ።</string>
     <string name="settings_tts_stop">አቁም</string>
     <string name="garment_rain_jacket">የዝናብ ጃኬት</string>
+    <string name="garment_beanie">የሹራብ ኮፍያ</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -80,4 +80,13 @@ class OutfitRenderExhaustivenessTest {
         OutfitSuggestion.Outer.entries.filterNot { it in outfitOuterDefaults }.shouldBeEmpty()
         outfitOuterDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Outer.entries.toTypedArray())
     }
+
+    @Test
+    fun `every Head tier has a render-path defaults entry`() {
+        // The optional beanie overlay (renderHeadFigureBitmap / GarmentHeadIcon)
+        // reads outfitHeadDefaults.getValue(head), so a new Head tier without its
+        // entry blows up only when a head rule actually fires at render time.
+        OutfitSuggestion.Head.entries.filterNot { it in outfitHeadDefaults }.shouldBeEmpty()
+        outfitHeadDefaults.keys.shouldContainExactlyInAnyOrder(*OutfitSuggestion.Head.entries.toTypedArray())
+    }
 }

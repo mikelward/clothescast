@@ -1130,6 +1130,7 @@
     <string name="garment_gloves">Gloves</string>
     <string name="garment_umbrella">Umbrella</string>
     <string name="garment_rain_jacket">Rain jacket</string>
+    <string name="garment_beanie">Beanie</string>
 
     <!-- Editor strings restored from the pre-lockdown UI. Free-form
          garment-name input is gone; the user picks from the garment dropdown
@@ -1148,10 +1149,12 @@
     <string name="settings_clothes_cond_type_temp_below">When it feels colder than</string>
     <string name="settings_clothes_cond_type_temp_above">When it feels warmer than</string>
     <string name="settings_clothes_cond_type_precip_above">When chance of rain is above</string>
+    <string name="settings_clothes_cond_type_snow_above">When chance of snow is above</string>
 
     <string name="settings_clothes_cond_temp_below">when temperature is below %1$s</string>
     <string name="settings_clothes_cond_temp_above">when temperature is above %1$s</string>
     <string name="settings_clothes_cond_precip_above">when chance of rain is above %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">when chance of snow is above %.0f%%</string>
 
     <string name="notification_channel_scheduled_insight_name">Scheduled ClothesCast</string>
     <string name="notification_channel_scheduled_insight_description">Your scheduled weather summaries — morning and evening — when they\'re ready.</string>

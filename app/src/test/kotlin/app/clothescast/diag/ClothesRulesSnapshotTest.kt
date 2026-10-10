@@ -85,6 +85,26 @@ class ClothesRulesSnapshotTest {
     }
 
     @Test
+    fun `beanie snow gate customisation is bucketed like the umbrella`() {
+        // The beanie ships as a snow-probability default (≥ 10%). Raising it to
+        // 30% must register as a customised category through the same
+        // percentage-point bucket, not silently read "0" via the °C bucket.
+        val rules = ClothesRule.DEFAULTS.map { rule ->
+            if (rule.item == Garment.BEANIE) {
+                rule.copy(condition = ClothesRule.SnowProbabilityAbove(30.0))
+            } else {
+                rule
+            }
+        }
+
+        val snap = ClothesRulesSnapshot.from(rules)
+
+        snap.customisedCount shouldBe 1
+        snap.categoriesCustomised shouldBe "beanie"
+        snap.allDefaults shouldBe false
+    }
+
+    @Test
     fun `deleting the umbrella default reports it MISSING and customised`() {
         val rules = ClothesRule.DEFAULTS.filterNot { it.item == Garment.UMBRELLA }
 
@@ -207,6 +227,21 @@ class ClothesRulesSnapshotTest {
 
         snap.jacketDeltaC shouldBe "0"
         snap.customisedCount shouldBe 0
+    }
+
+    @Test
+    fun `switching the beanie from a snow to a rain trigger at the same gate counts as customised`() {
+        val rules = ClothesRule.DEFAULTS.map { rule ->
+            if (rule.item == Garment.BEANIE) {
+                ClothesRule(Garment.BEANIE, ClothesRule.PrecipitationProbabilityAbove(10.0))
+            } else {
+                rule
+            }
+        }
+        val snapshot = ClothesRulesSnapshot.from(rules)
+        snapshot.allDefaults shouldBe false
+        snapshot.customisedCount shouldBe 1
+        snapshot.categoriesCustomised shouldBe "beanie"
     }
 
     @Test

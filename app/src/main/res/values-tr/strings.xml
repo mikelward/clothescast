@@ -1191,6 +1191,12 @@ displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">Bu gece yağmur beklenmiyor</string>
     <string name="today_precipitation_amount_dry_week">Yağmur beklenmiyor</string>
     <string name="today_precipitation_amount_total_week">%1$s yağmur</string>
+    <string name="today_precipitation_title_snow">Kar ihtimali</string>
+    <string name="today_precipitation_title_mixed">Yağmur veya kar ihtimali</string>
+    <string name="today_precipitation_amount_title_any">Yağış</string>
+    <string name="today_precipitation_amount_total_today_any">Bugün %1$s yağış</string>
+    <string name="today_precipitation_amount_total_tonight_any">Bu gece %1$s yağış</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s yağış</string>
     <string name="today_precipitation_amount_title">Yağış</string>
     <string name="today_precipitation_amount_peak_day">Zirve %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">Bugün %1$s yağmur</string>

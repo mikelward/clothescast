@@ -1169,6 +1169,12 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_precipitation_amount_dry_tonight">Nu se așteaptă ploaie diseară</string>
     <string name="today_precipitation_amount_dry_week">Nu se așteaptă ploaie</string>
     <string name="today_precipitation_amount_total_week">%1$s de ploaie</string>
+    <string name="today_precipitation_title_snow">Probabilitate de ninsoare</string>
+    <string name="today_precipitation_title_mixed">Probabilitate de ploaie sau ninsoare</string>
+    <string name="today_precipitation_amount_title_any">Precipitații</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s de precipitații astăzi</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s de precipitații diseară</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s de precipitații</string>
     <string name="today_precipitation_amount_title">Precipitații</string>
     <string name="today_precipitation_amount_peak_day">Vârf %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s de ploaie astăzi</string>

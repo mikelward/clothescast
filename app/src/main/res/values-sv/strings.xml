@@ -1220,6 +1220,12 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_precipitation_amount_dry_tonight">Inget regn väntas i kväll</string>
     <string name="today_precipitation_amount_dry_week">Inget regn väntas</string>
     <string name="today_precipitation_amount_total_week">%1$s regn</string>
+    <string name="today_precipitation_title_snow">Snösannolikhet</string>
+    <string name="today_precipitation_title_mixed">Sannolikhet för regn eller snö</string>
+    <string name="today_precipitation_amount_title_any">Nederbörd</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s nederbörd i dag</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s nederbörd i kväll</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s nederbörd</string>
     <string name="today_precipitation_amount_title">Nederbörd</string>
     <string name="today_precipitation_amount_peak_day">Topp %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s regn i dag</string>

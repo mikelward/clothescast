@@ -113,6 +113,12 @@ enforced the same way, costs, and the open questions — are in
 
 ## Forecast & alerts
 
+- [ ] **Keep Google's `RAIN_AND_SNOW` as mixed.** `GoogleConditionMapper`
+      folds it into `WeatherCondition.SNOW`, so a mixed hour titles the
+      precipitation card "Chance of snow" rather than "Chance of rain or snow"
+      (`precipitationKind`). Needs a mixed/sleet condition, which touches
+      every exhaustive `when` over `WeatherCondition` plus the rain-gear snow
+      gate, so it's its own change (Codex on #1259).
 - [x] **Hourly forecast UI** on Today. Vico chart of temperature + feels-like
       across today's hours. Multi-day extension still possible.
 - [ ] **Forecast accuracy ideas** — end-of-day accuracy survey, user-flagged

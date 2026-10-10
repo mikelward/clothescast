@@ -1191,6 +1191,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_tonight">คืนนี้คาดว่าไม่มีฝน</string>
     <string name="today_precipitation_amount_dry_week">คาดว่าไม่มีฝน</string>
     <string name="today_precipitation_amount_total_week">%1$s ของฝน</string>
+    <string name="today_precipitation_title_snow">โอกาสหิมะตก</string>
+    <string name="today_precipitation_title_mixed">โอกาสฝนหรือหิมะตก</string>
+    <string name="today_precipitation_amount_title_any">ปริมาณน้ำฟ้า</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s ของน้ำฟ้าวันนี้</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s ของน้ำฟ้าคืนนี้</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s ของน้ำฟ้า</string>
     <string name="today_precipitation_amount_title">ฝน</string>
     <string name="today_precipitation_amount_peak_day">สูงสุด %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s ของฝนวันนี้</string>

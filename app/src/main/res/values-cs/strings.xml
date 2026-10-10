@@ -1201,6 +1201,12 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_precipitation_amount_dry_tonight">Dnes večer se nečeká déšť</string>
     <string name="today_precipitation_amount_dry_week">Nečeká se déšť</string>
     <string name="today_precipitation_amount_total_week">%1$s deště</string>
+    <string name="today_precipitation_title_snow">Pravděpodobnost sněžení</string>
+    <string name="today_precipitation_title_mixed">Pravděpodobnost deště nebo sněhu</string>
+    <string name="today_precipitation_amount_title_any">Srážky</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s srážek dnes</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s srážek dnes večer</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s srážek</string>
     <string name="today_precipitation_amount_title">Srážky</string>
     <string name="today_precipitation_amount_peak_day">Vrchol %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s deště dnes</string>

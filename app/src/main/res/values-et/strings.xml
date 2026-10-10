@@ -1135,6 +1135,12 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_precipitation_amount_dry_tonight">Õhtul vihma ei oodata</string>
     <string name="today_precipitation_amount_dry_week">Vihma ei oodata</string>
     <string name="today_precipitation_amount_total_week">%1$s vihma</string>
+    <string name="today_precipitation_title_snow">Lume tõenäosus</string>
+    <string name="today_precipitation_title_mixed">Vihma või lume tõenäosus</string>
+    <string name="today_precipitation_amount_title_any">Sademete hulk</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s sademeid täna</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s sademeid õhtul</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s sademeid</string>
     <string name="today_precipitation_amount_title">Sademete hulk</string>
     <string name="today_precipitation_amount_peak_day">Tipp %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s vihma täna</string>

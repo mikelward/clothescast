@@ -1179,6 +1179,12 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_precipitation_amount_dry_tonight">امشب باران پیش‌بینی نمی‌شود</string>
     <string name="today_precipitation_amount_dry_week">باران پیش‌بینی نمی‌شود</string>
     <string name="today_precipitation_amount_total_week">%1$s باران</string>
+    <string name="today_precipitation_title_snow">احتمال برف</string>
+    <string name="today_precipitation_title_mixed">احتمال باران یا برف</string>
+    <string name="today_precipitation_amount_title_any">بارش</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s بارش امروز</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s بارش امشب</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s بارش</string>
     <string name="today_precipitation_amount_title">بارش</string>
     <string name="today_precipitation_amount_peak_day">اوج %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s باران امروز</string>

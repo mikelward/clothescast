@@ -1159,6 +1159,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_tonight">ዛሬ ምሽት ዝናብ አይጠበቅም</string>
     <string name="today_precipitation_amount_dry_week">ዝናብ አይጠበቅም</string>
     <string name="today_precipitation_amount_total_week">%1$s ዝናብ</string>
+    <string name="today_precipitation_title_snow">የበረዶ ዕድል</string>
+    <string name="today_precipitation_title_mixed">የዝናብ ወይም የበረዶ ዕድል</string>
+    <string name="today_precipitation_amount_title_any">የዝናብ መጠን</string>
+    <string name="today_precipitation_amount_total_today_any">ዛሬ %1$s ዝናብ ወይም በረዶ</string>
+    <string name="today_precipitation_amount_total_tonight_any">ዛሬ ምሽት %1$s ዝናብ ወይም በረዶ</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s ዝናብ ወይም በረዶ</string>
     <string name="today_precipitation_amount_title">ዝናብ</string>
     <string name="today_precipitation_amount_peak_day">ከፍተኛ %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">ዛሬ %1$s ዝናብ</string>

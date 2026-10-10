@@ -1160,6 +1160,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_tonight">Hakuna mvua inayotarajiwa usiku huu</string>
     <string name="today_precipitation_amount_dry_week">Hakuna mvua inayotarajiwa</string>
     <string name="today_precipitation_amount_total_week">%1$s ya mvua</string>
+    <string name="today_precipitation_title_snow">Uwezekano wa theluji</string>
+    <string name="today_precipitation_title_mixed">Uwezekano wa mvua au theluji</string>
+    <string name="today_precipitation_amount_title_any">Mvua na theluji</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s ya mvua au theluji leo</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s ya mvua au theluji usiku huu</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s ya mvua au theluji</string>
     <string name="today_precipitation_amount_title">Mvua</string>
     <string name="today_precipitation_amount_peak_day">Kilele %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s ya mvua leo</string>

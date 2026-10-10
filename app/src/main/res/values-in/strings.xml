@@ -1190,6 +1190,12 @@ to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_tonight">Tidak diperkirakan hujan malam ini</string>
     <string name="today_precipitation_amount_dry_week">Tidak diperkirakan hujan</string>
     <string name="today_precipitation_amount_total_week">%1$s hujan</string>
+    <string name="today_precipitation_title_snow">Kemungkinan salju</string>
+    <string name="today_precipitation_title_mixed">Kemungkinan hujan atau salju</string>
+    <string name="today_precipitation_amount_title_any">Presipitasi</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s presipitasi hari ini</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s presipitasi malam ini</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s presipitasi</string>
     <string name="today_precipitation_amount_title">Curah hujan</string>
     <string name="today_precipitation_amount_peak_day">Puncak %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s hujan hari ini</string>

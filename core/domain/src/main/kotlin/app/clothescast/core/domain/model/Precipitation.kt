@@ -94,3 +94,42 @@ object PrecipProbability {
      */
     const val ALL_DAY_COVERAGE_FRACTION: Double = 0.6
 }
+
+/**
+ * What kind of precipitation a window's wet hours carry, for labeling the
+ * precipitation charts. Open-Meteo's probability and amount series already
+ * cover rain and snow together, so the charts plot one combined series; only
+ * the words around it ("Chance of rain" vs "Chance of snow") need to know.
+ */
+enum class PrecipitationKind { RAIN, SNOW, MIXED }
+
+/**
+ * Classifies [hourly]'s wet hours — those [isWet] accepts — by their weather
+ * condition. Snow-only wet hours read [PrecipitationKind.SNOW], snow alongside
+ * rain, drizzle or thunderstorms reads [PrecipitationKind.MIXED], and
+ * everything else, a dry window included, stays [PrecipitationKind.RAIN] so the
+ * default labels are unchanged.
+ *
+ * [isWet] is the caller's own dryness test, so the label can only name what
+ * that chart actually surfaces: the probability card counts an hour by its
+ * chance, the amount card by its millimetres.
+ */
+fun precipitationKind(
+    hourly: List<HourlyForecast>,
+    isWet: (HourlyForecast) -> Boolean,
+): PrecipitationKind {
+    var snow = false
+    var rain = false
+    for (hour in hourly) {
+        if (!isWet(hour)) continue
+        when {
+            hour.condition.isFrozenPrecipitation() -> snow = true
+            hour.condition.isPrecipitation() -> rain = true
+        }
+    }
+    return when {
+        snow && rain -> PrecipitationKind.MIXED
+        snow -> PrecipitationKind.SNOW
+        else -> PrecipitationKind.RAIN
+    }
+}

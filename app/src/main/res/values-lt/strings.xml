@@ -1181,6 +1181,12 @@ What is NOT overridden, by design:
     <string name="today_precipitation_amount_dry_tonight">Šįvakar lietaus neprognozuojama</string>
     <string name="today_precipitation_amount_dry_week">Lietaus neprognozuojama</string>
     <string name="today_precipitation_amount_total_week">%1$s lietaus</string>
+    <string name="today_precipitation_title_snow">Sniego tikimybė</string>
+    <string name="today_precipitation_title_mixed">Lietaus ar sniego tikimybė</string>
+    <string name="today_precipitation_amount_title_any">Kritulių kiekis</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s kritulių šiandien</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s kritulių šįvakar</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s kritulių</string>
     <string name="today_precipitation_amount_title">Kritulių kiekis</string>
     <string name="today_precipitation_amount_peak_day">Pikas %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s lietaus šiandien</string>

@@ -1246,6 +1246,12 @@ only the displayed label localizes.
     <string name="today_precipitation_amount_dry_tonight">Сегодня вечером без осадков</string>
     <string name="today_precipitation_amount_dry_week">Без осадков</string>
     <string name="today_precipitation_amount_total_week">Осадки: %1$s</string>
+    <string name="today_precipitation_title_snow">Вероятность снега</string>
+    <string name="today_precipitation_title_mixed">Вероятность дождя или снега</string>
+    <string name="today_precipitation_amount_title_any">Осадки</string>
+    <string name="today_precipitation_amount_total_today_any">Осадки сегодня: %1$s</string>
+    <string name="today_precipitation_amount_total_tonight_any">Осадки этой ночью: %1$s</string>
+    <string name="today_precipitation_amount_total_week_any">Осадки: %1$s</string>
     <string name="today_precipitation_amount_title">Осадки</string>
     <string name="today_precipitation_amount_peak_day">Пик %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">Осадки сегодня: %1$s</string>

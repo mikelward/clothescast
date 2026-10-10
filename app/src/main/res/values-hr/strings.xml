@@ -1260,6 +1260,12 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_precipitation_amount_dry_tonight">Večeras se ne očekuje kiša</string>
     <string name="today_precipitation_amount_dry_week">Ne očekuje se kiša</string>
     <string name="today_precipitation_amount_total_week">%1$s kiše</string>
+    <string name="today_precipitation_title_snow">Vjerojatnost snijega</string>
+    <string name="today_precipitation_title_mixed">Vjerojatnost kiše ili snijega</string>
+    <string name="today_precipitation_amount_title_any">Količina oborine</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s oborine danas</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s oborine večeras</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s oborine</string>
     <string name="today_precipitation_amount_title">Količina kiše</string>
     <string name="today_precipitation_amount_peak_day">Vrh %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s kiše danas</string>

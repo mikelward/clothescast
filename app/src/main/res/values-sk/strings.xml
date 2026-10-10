@@ -1215,6 +1215,12 @@ What is NOT overridden, by design:
     <string name="today_precipitation_amount_dry_tonight">Dnes večer sa nečaká dážď</string>
     <string name="today_precipitation_amount_dry_week">Nečaká sa dážď</string>
     <string name="today_precipitation_amount_total_week">%1$s dažďa</string>
+    <string name="today_precipitation_title_snow">Pravdepodobnosť snehu</string>
+    <string name="today_precipitation_title_mixed">Pravdepodobnosť dažďa alebo snehu</string>
+    <string name="today_precipitation_amount_title_any">Zrážky</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s zrážok dnes</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s zrážok dnes večer</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s zrážok</string>
     <string name="today_precipitation_amount_title">Zrážky</string>
     <string name="today_precipitation_amount_peak_day">Vrchol %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s dažďa dnes</string>

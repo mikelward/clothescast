@@ -94,6 +94,12 @@
     <string name="today_precipitation_amount_dry_tonight">Nuk priten reshje sonte</string>
     <string name="today_precipitation_amount_dry_week">Nuk priten reshje</string>
     <string name="today_precipitation_amount_total_week">%1$s shi</string>
+    <string name="today_precipitation_title_snow">Mundësi bore</string>
+    <string name="today_precipitation_title_mixed">Mundësi shiu ose bore</string>
+    <string name="today_precipitation_amount_title_any">Reshje</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s reshje sot</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s reshje sonte</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s reshje</string>
     <string name="today_wind_title">Shpejtësia e erës</string>
     <string name="today_wind_subtitle">Shpejtësia e erës (%1$s) sipas orës</string>
     <string name="today_wind_peak">Kulmi %1$d %2$s në %3$s</string>

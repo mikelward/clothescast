@@ -1221,6 +1221,12 @@ Not overridden by design:
     <string name="today_precipitation_amount_dry_tonight">आज रात बारिश की संभावना नहीं</string>
     <string name="today_precipitation_amount_dry_week">बारिश की संभावना नहीं</string>
     <string name="today_precipitation_amount_total_week">%1$s बारिश</string>
+    <string name="today_precipitation_title_snow">बर्फ़बारी की संभावना</string>
+    <string name="today_precipitation_title_mixed">बारिश या बर्फ़बारी की संभावना</string>
+    <string name="today_precipitation_amount_title_any">वर्षण</string>
+    <string name="today_precipitation_amount_total_today_any">आज %1$s वर्षण</string>
+    <string name="today_precipitation_amount_total_tonight_any">आज रात %1$s वर्षण</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s वर्षण</string>
     <string name="today_precipitation_amount_title">वर्षा</string>
     <string name="today_precipitation_amount_peak_day">सर्वोच्च %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">आज %1$s बारिश</string>

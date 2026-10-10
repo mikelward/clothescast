@@ -1186,6 +1186,12 @@ standard in Israeli digital communication.
     <string name="today_precipitation_amount_dry_tonight">לא צפוי גשם הלילה</string>
     <string name="today_precipitation_amount_dry_week">לא צפוי גשם</string>
     <string name="today_precipitation_amount_total_week">%1$s גשם</string>
+    <string name="today_precipitation_title_snow">סיכוי לשלג</string>
+    <string name="today_precipitation_title_mixed">סיכוי לגשם או שלג</string>
+    <string name="today_precipitation_amount_title_any">משקעים</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s משקעים היום</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s משקעים הלילה</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s משקעים</string>
     <string name="today_precipitation_amount_title">משקעים</string>
     <string name="today_precipitation_amount_peak_day">שיא %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s גשם היום</string>

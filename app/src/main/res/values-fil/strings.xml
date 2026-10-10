@@ -1242,6 +1242,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_amount_dry_tonight">Walang inaasahang ulan ngayong gabi</string>
     <string name="today_precipitation_amount_dry_week">Walang inaasahang ulan</string>
     <string name="today_precipitation_amount_total_week">%1$s ng ulan</string>
+    <string name="today_precipitation_title_snow">Tsansa ng niyebe</string>
+    <string name="today_precipitation_title_mixed">Tsansa ng ulan o niyebe</string>
+    <string name="today_precipitation_amount_title_any">Presipitasyon</string>
+    <string name="today_precipitation_amount_total_today_any">%1$s ng presipitasyon ngayong araw</string>
+    <string name="today_precipitation_amount_total_tonight_any">%1$s ng presipitasyon ngayong gabi</string>
+    <string name="today_precipitation_amount_total_week_any">%1$s ng presipitasyon</string>
     <string name="today_precipitation_amount_title">Ulan</string>
     <string name="today_precipitation_amount_peak_day">Pinakamataas na %1$s %2$s</string>
     <string name="today_precipitation_amount_total_today">%1$s ng ulan ngayong araw</string>

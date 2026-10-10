@@ -1,6 +1,7 @@
 package app.clothescast.widget
 
 import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -22,11 +23,11 @@ import androidx.glance.LocalSize
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.updateAll
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -430,25 +431,63 @@ internal fun resolveDarkTheme(context: Context, themeMode: ThemeMode): Boolean =
 }
 
 /**
+ * One kind of ClothesCast widget: its manifest [receiver] and a fresh instance
+ * of the [GlanceAppWidget] that draws it. [label] names it in the log.
+ */
+internal class ClothesCastWidgetKind(
+    val label: String,
+    val receiver: Class<out GlanceAppWidgetReceiver>,
+    val widget: () -> GlanceAppWidget,
+)
+
+/** Every ClothesCast widget kind, each paired with the widget its receiver hosts. */
+internal val CLOTHESCAST_WIDGET_KINDS: List<ClothesCastWidgetKind> = listOf(
+    ClothesCastWidgetKind("Outfit", OutfitWidgetReceiver::class.java) { OutfitWidget() },
+    ClothesCastWidgetKind("Feels-like", FeelsLikeWidgetReceiver::class.java) { FeelsLikeWidget() },
+    ClothesCastWidgetKind("7-day feels-like", SevenDayFeelsLikeWidgetReceiver::class.java) { SevenDayFeelsLikeWidget() },
+    ClothesCastWidgetKind("Chance of rain", ChanceOfRainWidgetReceiver::class.java) { ChanceOfRainWidget() },
+    ClothesCastWidgetKind("Conditions", ConditionsWidgetReceiver::class.java) { ConditionsWidget() },
+)
+
+/**
+ * The app widget IDs placed for [kind], asked of the platform by the kind's
+ * receiver component — whose name the manifest pins, so it is the same in
+ * every build.
+ *
+ * Not Glance's `updateAll` / `getGlanceIds`: those find a widget's IDs through
+ * a saved receiver -> widget-class-name map, written by an earlier run. R8
+ * renames the widget classes in a release build, and a build that shuffles
+ * those names leaves the saved map pointing a receiver at whichever class now
+ * has its old name. After one such update `OutfitWidget().updateAll()` drew
+ * the outfit into the feels-like and chance-of-rain widgets, and their own
+ * widgets no longer found their IDs at all.
+ */
+internal fun placedWidgetIds(context: Context, kind: ClothesCastWidgetKind): IntArray =
+    AppWidgetManager.getInstance(context)?.getAppWidgetIds(ComponentName(context, kind.receiver)) ?: IntArray(0)
+
+/**
  * Pushes a fresh render to every placed ClothesCast widget. Called after each
  * cache write (the worker) and after settings changes that affect what the
  * widgets show (temperature unit / time format / theme on the charts, outfit on
- * [OutfitWidget]). Each update is guarded independently so one widget type
- * failing to bind doesn't starve the others — but cancellation rethrows so a
- * cancelled caller unwinds instead of marching through the remaining widgets.
+ * [OutfitWidget]). Each widget kind is updated from its own receiver's IDs
+ * (see [placedWidgetIds]). Each update is guarded independently so one widget
+ * type failing to bind doesn't starve the others — but cancellation rethrows
+ * so a cancelled caller unwinds instead of marching through the remaining
+ * widgets.
  */
 internal suspend fun updateAllClothesCastWidgets(context: Context) {
-    suspend fun guarded(label: String, update: suspend () -> Unit) {
-        runCatching { update() }.onFailure {
+    val glanceManager = GlanceAppWidgetManager(context)
+    for (kind in CLOTHESCAST_WIDGET_KINDS) {
+        runCatching {
+            val ids = placedWidgetIds(context, kind)
+            if (ids.isEmpty()) return@runCatching
+            val widget = kind.widget()
+            ids.forEach { id -> widget.update(context, glanceManager.getGlanceIdBy(id)) }
+        }.onFailure {
             if (it is CancellationException) throw it
-            DiagLog.w(TAG, it, "%s widget update failed.", label)
+            DiagLog.w(TAG, it, "%s widget update failed.", kind.label)
         }
     }
-    guarded("Outfit") { OutfitWidget().updateAll(context) }
-    guarded("Feels-like") { FeelsLikeWidget().updateAll(context) }
-    guarded("7-day feels-like") { SevenDayFeelsLikeWidget().updateAll(context) }
-    guarded("Chance of rain") { ChanceOfRainWidget().updateAll(context) }
-    guarded("Conditions") { ConditionsWidget().updateAll(context) }
 }
 
 private const val TAG = "Widget"

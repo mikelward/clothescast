@@ -134,3 +134,10 @@
 -keep class io.reactivex.** { *; }
 -keepclassmembers class io.reactivex.** { *; }
 -keep class org.reactivestreams.** { *; }
+
+# Glance remembers which GlanceAppWidget class each widget receiver hosts by
+# class name. R8 renaming those classes let a release that reshuffled the
+# names point the feels-like and chance-of-rain receivers at OutfitWidget.
+# updateAllClothesCastWidgets no longer reads that map, but keep the names
+# stable so Glance's own lookups agree across releases too.
+-keepnames class * extends androidx.glance.appwidget.GlanceAppWidget

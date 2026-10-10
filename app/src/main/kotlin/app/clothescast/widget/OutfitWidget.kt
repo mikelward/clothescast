@@ -62,7 +62,7 @@ import app.clothescast.ui.garment.renderTopWithHandsBitmap
  * The widget reads the same [app.clothescast.data.InsightCache] the Today screen
  * does, so it stays in lockstep with whatever the app last computed. Refreshes
  * are pushed by [app.clothescast.work.FetchAndNotifyWorker] after each cache
- * write via OutfitWidget().updateAll(context); there's no per-widget polling.
+ * write via updateAllClothesCastWidgets(context); there's no per-widget polling.
  *
  * Sizing is adaptive ([SizeMode.Exact] — minSdk 31 makes that safe): icon and
  * text sizes scale with the widget's shortest side so a stretched widget looks

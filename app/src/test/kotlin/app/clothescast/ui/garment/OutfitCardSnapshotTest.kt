@@ -89,6 +89,8 @@ class OutfitCardSnapshotTest {
                 ),
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
+                // Tonight's card renders dark, as every caller passes for TONIGHT.
+                darkTheme = true,
             ),
         )
     }

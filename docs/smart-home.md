@@ -347,6 +347,9 @@ card is 800 × 480 px (Nest Hub 7" native resolution) and shows:
   19:00", in small gray text under the strip — so a card left on the Hub
   shows when it went stale
 
+The day card has a white background; the tonight card is dark, so it doesn't
+glare from a display in an evening room.
+
 HA's `camera.mqtt` integration turns the retained binary payload into a
 `camera.*` entity; a one-line automation then pushes it to the Nest Hub
 display via `media_player.play_media`.

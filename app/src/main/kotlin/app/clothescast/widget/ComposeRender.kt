@@ -70,6 +70,11 @@ internal suspend fun renderComposableToBitmap(
     context: Context,
     widthPx: Int,
     heightPx: Int,
+    // The density the content is laid out at. A caller rendering larger or
+    // smaller than the cell's own pixels scales this with it, so dp-sized text
+    // and padding keep their size relative to the bitmap and the image shrinks
+    // back to the cell without its contents shrinking with it.
+    densityDpi: Int = context.resources.displayMetrics.densityDpi,
     content: @Composable () -> Unit,
 ): Bitmap? = withContext(Dispatchers.Main) {
     require(widthPx > 0 && heightPx > 0) { "render size must be positive, got ${widthPx}x$heightPx" }
@@ -88,7 +93,7 @@ internal suspend fun renderComposableToBitmap(
             "clothescast-widget-chart",
             widthPx,
             heightPx,
-            context.resources.displayMetrics.densityDpi,
+            densityDpi,
             imageReader.surface,
             DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY or
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION,

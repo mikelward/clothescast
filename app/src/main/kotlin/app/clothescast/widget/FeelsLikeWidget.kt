@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import android.util.DisplayMetrics
 import android.util.SizeF
 import androidx.core.net.toUri
 import androidx.core.os.BundleCompat
@@ -231,9 +232,9 @@ private suspend fun buildCharts(context: Context, id: GlanceId, weekly: Boolean)
     val darkTheme = resolveDarkTheme(context, prefs.themeMode)
     val palette = prefs.colorPalette
 
-    return renderForCells(context, id) { widthPx, heightPx ->
+    return renderForCells(context, id) { widthPx, heightPx, densityDpi ->
         val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
-            renderComposableToBitmap(context, widthPx, heightPx) {
+            renderComposableToBitmap(context, widthPx, heightPx, densityDpi) {
                 ClothesCastTheme(darkTheme = darkTheme, colorPalette = palette) {
                     WidgetForecastChart(
                         hourly = hourly,
@@ -320,27 +321,75 @@ private const val MAX_CELL_SIZES = 4
  * that cell's own shape, so the chart fills whichever cell is on screen. Falls
  * back to one mid-range 3:1 bitmap when no size is reported yet. Sizes whose
  * render fails are dropped; an empty result means the empty state.
+ *
+ * [render] gets the bitmap size and the density to lay out at. When
+ * [scaleRenderSize] grows or shrinks a bitmap away from the cell's own pixels
+ * (a short cell is raised to the minimum render height), the density scales
+ * by the same factor, so the content still lays out at the cell's dp size
+ * (down to a minimum layout height, see [renderDensityDpi]).
+ * Rendering the bigger bitmap at the device density instead laid the chart out
+ * on a larger dp canvas, and its text and padding came out shrunk once the
+ * image was fitted back to the cell, by an amount that depended on the cell's
+ * height, so two widgets side by side looked different sizes.
  */
 internal suspend fun renderForCells(
     context: Context,
     id: GlanceId,
-    render: suspend (widthPx: Int, heightPx: Int) -> Bitmap?,
+    render: suspend (widthPx: Int, heightPx: Int, densityDpi: Int) -> Bitmap?,
 ): List<SizedChart> {
     val cells = chartCellSizesDp(context, id)
+    val metrics = context.resources.displayMetrics
     if (cells.isEmpty()) {
-        val density = context.resources.displayMetrics.density
         return listOfNotNull(
-            render(RENDER_WIDTH_PX, RENDER_HEIGHT_PX)?.let {
-                SizedChart(RENDER_WIDTH_PX / density, RENDER_HEIGHT_PX / density, it)
+            render(RENDER_WIDTH_PX, RENDER_HEIGHT_PX, metrics.densityDpi)?.let {
+                SizedChart(RENDER_WIDTH_PX / metrics.density, RENDER_HEIGHT_PX / metrics.density, it)
             },
         )
     }
-    val density = context.resources.displayMetrics.density
     return cells.mapNotNull { (widthDp, heightDp) ->
-        val (widthPx, heightPx) = scaleRenderSize((widthDp * density).roundToInt(), (heightDp * density).roundToInt())
-        render(widthPx, heightPx)?.let { SizedChart(widthDp, heightDp, it) }
+        val (widthPx, heightPx) = scaleRenderSize(
+            (widthDp * metrics.density).roundToInt(),
+            (heightDp * metrics.density).roundToInt(),
+        )
+        render(
+            widthPx,
+            heightPx,
+            renderDensityDpi(widthPx, heightPx, widthDp, context.resources.configuration.fontScale),
+        )
+            ?.let { SizedChart(widthDp, heightDp, it) }
     }
 }
+
+/**
+ * The density that lays [widthDp] of content across [widthPx] pixels, so a
+ * bitmap scaled away from the cell's own pixels keeps the cell's dp layout.
+ * [scaleRenderSize] scales both sides by one factor, so the width alone fixes it.
+ *
+ * Capped so the layout is never shorter than [minLayoutHeightDp] for the
+ * user's [fontScale]: a truly short cell laid out at its own height would leave
+ * the chart no room under the cards' fixed chrome. Below that the content
+ * shrinks with the cell instead, which is the most a cell that short can show.
+ */
+internal fun renderDensityDpi(widthPx: Int, heightPx: Int, widthDp: Float, fontScale: Float = 1f): Int {
+    val cellDpi = widthPx * DisplayMetrics.DENSITY_DEFAULT / widthDp
+    val minHeightDpi = heightPx * DisplayMetrics.DENSITY_DEFAULT / minLayoutHeightDp(fontScale)
+    return minOf(cellDpi, minHeightDpi).roundToInt().coerceAtLeast(1)
+}
+
+/**
+ * The shortest layout that still leaves the chart usable: the cards' fixed
+ * padding and spacing, a subtitle at its widget maximum of two lines (which
+ * grow with the font scale), and a minimum plot.
+ */
+internal fun minLayoutHeightDp(fontScale: Float): Float =
+    CARD_CHROME_DP + WIDGET_SUBTITLE_LINES * SUBTITLE_LINE_DP * fontScale.coerceAtLeast(1f) + MIN_PLOT_DP
+
+// 12 dp padding top and bottom plus the 8 dp gap above the chart.
+private const val CARD_CHROME_DP = 32f
+// The widget caps the subtitle at two lines of bodyMedium (20 sp line height).
+private const val WIDGET_SUBTITLE_LINES = 2
+private const val SUBTITLE_LINE_DP = 20f
+private const val MIN_PLOT_DP = 68f
 
 /**
  * The index of the size in [sizes] closest to the cell Glance is composing for

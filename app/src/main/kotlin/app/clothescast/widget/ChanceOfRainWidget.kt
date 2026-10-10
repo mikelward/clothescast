@@ -102,9 +102,9 @@ private suspend fun buildRainCharts(context: Context, id: GlanceId): List<SizedC
     val zone = insight.forecastZone ?: ZoneId.systemDefault()
     val now = LocalDateTime.now(zone)
     val darkTheme = resolveDarkTheme(context, prefs.themeMode)
-    return renderForCells(context, id) { widthPx, heightPx ->
+    return renderForCells(context, id) { widthPx, heightPx, densityDpi ->
         val bitmap = withTimeoutOrNull(RENDER_TIMEOUT_MS) {
-            renderComposableToBitmap(context, widthPx, heightPx) {
+            renderComposableToBitmap(context, widthPx, heightPx, densityDpi) {
                 ClothesCastTheme(darkTheme = darkTheme, colorPalette = prefs.colorPalette) {
                     WidgetRainChart(
                         hourly = insight.hourly,

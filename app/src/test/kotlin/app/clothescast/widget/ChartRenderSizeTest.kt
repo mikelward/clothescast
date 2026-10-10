@@ -1,5 +1,6 @@
 package app.clothescast.widget
 
+import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
@@ -63,5 +64,49 @@ class ChartRenderSizeTest {
         distinctCellSizes(
             listOf(0f to 100f, 300f to 200f, 300.2f to 199.8f, 100f to -1f, 1f to 1f, 2f to 2f, 3f to 3f, 4f to 4f),
         ) shouldBe listOf(300f to 200f, 1f to 1f, 2f to 2f, 3f to 3f)
+    }
+
+    @Test
+    fun `a cell rendered at its own pixels keeps the device density`() {
+        // 300x200 dp across 450x300 px is 1.5x, the 240 dpi bucket.
+        renderDensityDpi(widthPx = 450, heightPx = 300, widthDp = 300f) shouldBe 240
+    }
+
+    @Test
+    fun `a cell raised to the minimum render height lays out at its own dp size`() {
+        // A 380x150 dp cell at 1x is 380x150 px; the 240 px floor scales the
+        // bitmap by 1.6x. The density must scale with it, or the chart lays out
+        // on a 608x240 dp canvas and its text shrinks when fitted back.
+        val (widthPx, heightPx) = scaleRenderSize(380, 150)
+        heightPx shouldBe 240
+        val dpi = renderDensityDpi(widthPx, heightPx, widthDp = 380f)
+        (widthPx * 160f / dpi) shouldBe (380f plusOrMinus 1f)
+        (heightPx * 160f / dpi) shouldBe (150f plusOrMinus 1f)
+    }
+
+    @Test
+    fun `a cell too short for the chart keeps the minimum layout height`() {
+        // 356x55 dp: laying out at 55 dp would leave the chart no room under
+        // the subtitle, so the layout keeps the minimum height and the content
+        // shrinks with the cell instead.
+        val (widthPx, heightPx) = scaleRenderSize(534, 83)
+        val dpi = renderDensityDpi(widthPx, heightPx, widthDp = 356f)
+        (heightPx * 160f / dpi) shouldBe (minLayoutHeightDp(1f) plusOrMinus 1f)
+    }
+
+    @Test
+    fun `the minimum layout leaves a plot under a two-line subtitle at any font scale`() {
+        // Chrome 32 dp, two 20 dp subtitle lines scaled by the font, 68 dp plot.
+        minLayoutHeightDp(1f) shouldBe 140f
+        minLayoutHeightDp(2f) shouldBe 180f
+        // A font smaller than default never shrinks the reserve.
+        minLayoutHeightDp(0.85f) shouldBe 140f
+    }
+
+    @Test
+    fun `a larger font scale keeps a taller minimum layout`() {
+        val (widthPx, heightPx) = scaleRenderSize(534, 83)
+        val dpi = renderDensityDpi(widthPx, heightPx, widthDp = 356f, fontScale = 2f)
+        (heightPx * 160f / dpi) shouldBe (180f plusOrMinus 1f)
     }
 }

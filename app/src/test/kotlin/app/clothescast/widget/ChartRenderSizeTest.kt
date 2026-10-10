@@ -2,6 +2,7 @@ package app.clothescast.widget
 
 import io.kotest.matchers.floats.plusOrMinus
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.launch
 import org.junit.jupiter.api.Test
 
 /**
@@ -108,5 +109,68 @@ class ChartRenderSizeTest {
         val (widthPx, heightPx) = scaleRenderSize(534, 83)
         val dpi = renderDensityDpi(widthPx, heightPx, widthDp = 356f, fontScale = 2f)
         (heightPx * 160f / dpi) shouldBe (180f plusOrMinus 1f)
+    }
+
+    @Test
+    fun `a bitmap is reused only for the cell size it was rendered for`() {
+        renderedFor(356f, 120f, 356f, 120f) shouldBe true
+        renderedFor(356f, 120f, 356.4f, 119.6f) shouldBe true
+        // Moved from full width to half: a new render, not the old one shrunk.
+        renderedFor(356f, 120f, 178f, 150f) shouldBe false
+        renderedFor(356f, 120f, 356f, 150f) shouldBe false
+    }
+
+    @Test
+    fun `every new size renders and a size seen again is reused`() {
+        val renders = mutableListOf<String>()
+        val resized = ResizeRenders(4) { w, h -> "${w.toInt()}x${h.toInt()}".also { renders += it } }
+        kotlinx.coroutines.runBlocking {
+            // A drag back and forth: B, C, B, then more new sizes than the cache holds.
+            listOf(200f, 300f, 200f, 400f, 500f, 600f, 700f).forEach { resized.get(it, 50f) shouldBe "${it.toInt()}x50" }
+        }
+        renders shouldBe listOf("200x50", "300x50", "400x50", "500x50", "600x50", "700x50")
+    }
+
+    @Test
+    fun `a failed render is tried again next time`() {
+        var renders = 0
+        val resized = ResizeRenders<String>(4) { _, _ -> renders++; null }
+        kotlinx.coroutines.runBlocking {
+            resized.get(100f, 50f) shouldBe null
+            resized.get(100f, 50f) shouldBe null
+        }
+        renders shouldBe 2
+    }
+
+    @Test
+    fun `a canceled render isn't kept`() {
+        var renders = 0
+        val resized = ResizeRenders<String>(4) { _, _ ->
+            renders++
+            kotlinx.coroutines.awaitCancellation()
+        }
+        kotlinx.coroutines.runBlocking {
+            repeat(2) {
+                val job = launch { resized.get(100f, 50f) }
+                kotlinx.coroutines.yield()
+                job.cancel()
+                job.join()
+            }
+        }
+        renders shouldBe 2
+    }
+
+    @Test
+    fun `nothing to draw renders nothing on resize`() {
+        kotlinx.coroutines.runBlocking { WidgetCharts.EMPTY.renderResized(100f, 50f) } shouldBe null
+    }
+
+    @Test
+    fun `only a usable cell size gets its own render on resize`() {
+        val cells = distinctCellSizes(List(6) { (100f + it) to 50f })
+        isUsableCell(cells, 101f, 50f) shouldBe true
+        // Past the cap on listed sizes, a size keeps the nearest bitmap.
+        isUsableCell(cells, 105f, 50f) shouldBe false
+        isUsableCell(emptyList(), 101f, 50f) shouldBe false
     }
 }

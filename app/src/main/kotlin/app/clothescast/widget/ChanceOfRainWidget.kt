@@ -95,9 +95,9 @@ internal fun WidgetRainChart(
 
 // Empty (→ empty state) when there's no current cached forecast or every
 // render fails / times out, so a flaky render degrades to "tap to open".
-private suspend fun buildRainCharts(context: Context, id: GlanceId): List<SizedChart> {
-    val (insight, prefs) = loadCurrentInsight(context) ?: return emptyList()
-    if (insight.hourly.size < 2) return emptyList()
+private suspend fun buildRainCharts(context: Context, id: GlanceId): WidgetCharts {
+    val (insight, prefs) = loadCurrentInsight(context) ?: return WidgetCharts.EMPTY
+    if (insight.hourly.size < 2) return WidgetCharts.EMPTY
 
     val zone = insight.forecastZone ?: ZoneId.systemDefault()
     val now = LocalDateTime.now(zone)

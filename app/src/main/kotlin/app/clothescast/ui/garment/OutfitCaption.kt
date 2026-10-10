@@ -9,7 +9,7 @@ import app.clothescast.core.domain.model.OutfitSuggestion
  * card and the home-screen widget. Names *every* piece the icon shows as one
  * flowing "· "-joined run: the worn outfit (top, the rain-jacket outer shell
  * layered over it, then the bottom) followed by the optional accessories (gloves,
- * the carried umbrella) at the end. The optional tiers are listed only when they
+ * the beanie, the carried umbrella) at the end. The optional tiers are listed only when they
  * actually fired, so a plain outfit reads "Sweater · Jeans" and a cold rainy day
  * reads "Thick coat · Long pants · Gloves · Umbrella".
  *
@@ -35,6 +35,7 @@ internal fun outfitGarmentCaption(
     if (outfit.outer != null) add(context.getString(R.string.garment_rain_jacket))
     add(bottomLabel)
     if (outfit.hands != null) add(context.getString(R.string.garment_gloves))
+    if (outfit.head != null) add(context.getString(R.string.garment_beanie))
     if (outfit.carried != null) add(context.getString(R.string.garment_umbrella))
 }.joinToString(" · ")
 

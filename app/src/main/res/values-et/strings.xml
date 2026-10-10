@@ -418,9 +418,11 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_clothes_cond_type_temp_below">Kui tundub külmem kui</string>
     <string name="settings_clothes_cond_type_temp_above">Kui tundub soojem kui</string>
     <string name="settings_clothes_cond_type_precip_above">Kui vihma tõenäosus on üle</string>
+    <string name="settings_clothes_cond_type_snow_above">Kui lume tõenäosus on üle</string>
     <string name="settings_clothes_cond_temp_below">kui tunnetatav temperatuur on alla %1$s</string>
     <string name="settings_clothes_cond_temp_above">kui tunnetatav temperatuur on üle %1$s</string>
     <string name="settings_clothes_cond_precip_above">kui vihma tõenäosus on üle %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">kui lume tõenäosus on üle %.0f%%</string>
 
     <string name="notification_daily_insight_title">Tänane ClothesCast</string>
 
@@ -1171,6 +1173,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_api_key_status_unset">Iga päev 4 tasuta, rohkema jaoks hangi võti.</string>
     <string name="settings_tts_stop">Peata</string>
     <string name="garment_rain_jacket">Vihmajope</string>
+    <string name="garment_beanie">Müts</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

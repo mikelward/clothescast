@@ -40,9 +40,11 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_clothes_cond_type_temp_below">وقتی دمای احساس‌شده کمتر از</string>
     <string name="settings_clothes_cond_type_temp_above">وقتی دمای احساس‌شده بیشتر از</string>
     <string name="settings_clothes_cond_type_precip_above">وقتی احتمال بارندگی بیشتر از</string>
+    <string name="settings_clothes_cond_type_snow_above">وقتی احتمال برف بیشتر از</string>
     <string name="settings_clothes_cond_temp_below">وقتی حداقل دمای احساس‌شده کمتر از %1$s است</string>
     <string name="settings_clothes_cond_temp_above">وقتی حداکثر دمای احساس‌شده بیشتر از %1$s است</string>
     <string name="settings_clothes_cond_precip_above">وقتی احتمال بارندگی بیشتر از %.0f%% است</string>
+    <string name="settings_clothes_cond_snow_above">وقتی احتمال برف بیشتر از %.0f%% است</string>
 
     <string name="today_outfit_top_tshirt">تی‌شرت</string>
     <string name="today_outfit_top_sweater">پلیور</string>
@@ -1215,6 +1217,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_api_key_status_unset">هر روز ۴ مورد رایگان، برای بیشتر کلید بگیرید.</string>
     <string name="settings_tts_stop">توقف</string>
     <string name="garment_rain_jacket">کاپشن بارانی</string>
+    <string name="garment_beanie">کلاه بافتنی</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

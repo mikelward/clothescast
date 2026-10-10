@@ -38,9 +38,11 @@ to values/strings.xml (English).
     <string name="settings_clothes_cond_type_temp_below">Ketika terasa lebih dingin dari</string>
     <string name="settings_clothes_cond_type_temp_above">Ketika terasa lebih panas dari</string>
     <string name="settings_clothes_cond_type_precip_above">Ketika kemungkinan hujan di atas</string>
+    <string name="settings_clothes_cond_type_snow_above">Ketika kemungkinan salju di atas</string>
     <string name="settings_clothes_cond_temp_below">ketika suhu terasa di bawah %1$s</string>
     <string name="settings_clothes_cond_temp_above">ketika suhu terasa di atas %1$s</string>
     <string name="settings_clothes_cond_precip_above">ketika kemungkinan hujan di atas %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">ketika kemungkinan salju di atas %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Kaos</string>
     <string name="today_outfit_top_sweater">Sweater</string>
@@ -1226,6 +1228,7 @@ to values/strings.xml (English).
     <string name="settings_api_key_status_unset">4 gratis setiap hari, dapatkan kunci untuk lebih banyak.</string>
     <string name="settings_tts_stop">Berhenti</string>
     <string name="garment_rain_jacket">Jaket hujan</string>
+    <string name="garment_beanie">Kupluk</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

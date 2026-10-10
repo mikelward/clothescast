@@ -259,6 +259,36 @@ class OutfitCardSnapshotTest {
     }
 
     @Test
+    fun outfit_card_snowy_coat_gloves_blue_beanie() {
+        // A snowy day: the snow-keyed beanie default fires and the umbrella is
+        // gated off, so the beanie hangs alone from the free left hand. A
+        // user-picked beanie colour threads through headColors and recolours
+        // the crown, proving the head colour-picker reaches the cast card.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(
+                    OutfitSuggestion.Top.THICK_COAT,
+                    OutfitSuggestion.Bottom.LONG_PANTS,
+                    hands = OutfitSuggestion.Hands.GLOVES,
+                    head = OutfitSuggestion.Head.BEANIE,
+                ),
+                header = "Today's ClothesCast",
+                prose = "A snowy one today. Wear a coat, long pants, gloves, and a beanie.",
+                info = OutfitCardInfoLines(
+                    tempLine = "-4–1°C",
+                    tempFillFraction = thermometerFillFractionFor(1.0),
+                    rainFillFraction = null,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+                headColors = mapOf(OutfitSuggestion.Head.BEANIE to 0xFF1E88E5L), // blue beanie
+            ),
+        )
+    }
+
+    @Test
     fun outfit_card_rainy_sweater_jeans_rain_jacket() {
         // Rainy day: the rain-jacket outer shell paints over the sweater at the
         // top icon's footprint, while the sweater stays underneath in the model.

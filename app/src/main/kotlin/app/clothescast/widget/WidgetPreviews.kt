@@ -224,6 +224,15 @@ private fun SingleColumnMock(label: String, outfit: OutfitSuggestion, size: DpSi
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
+                // The beanie hangs from the free left hand — the same full-figure
+                // overlay as the umbrella (see OutfitWidget.SingleColumnContent).
+                if (outfit.head != null) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_outfit_beanie),
+                        contentDescription = stringResource(R.string.garment_beanie),
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
             }
         }
         val subtitleSp = scaledSubtitleSpMock(size)
@@ -342,6 +351,23 @@ internal fun WidgetTodayCoatGlovesUmbrellaPreview() {
                 OutfitSuggestion.Bottom.LONG_PANTS,
                 hands = OutfitSuggestion.Hands.GLOVES,
                 carried = OutfitSuggestion.Carried.UMBRELLA,
+            ),
+        )
+    }
+}
+
+@Preview(name = "Widget · today · coat + pants + gloves + umbrella + beanie", widthDp = 192, heightDp = 192)
+@Composable
+internal fun WidgetTodayCoatGlovesUmbrellaBeaniePreview() {
+    WidgetFrame {
+        OutfitWidgetMockFilled(
+            period = ForecastPeriod.TODAY,
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_COAT,
+                OutfitSuggestion.Bottom.LONG_PANTS,
+                hands = OutfitSuggestion.Hands.GLOVES,
+                carried = OutfitSuggestion.Carried.UMBRELLA,
+                head = OutfitSuggestion.Head.BEANIE,
             ),
         )
     }

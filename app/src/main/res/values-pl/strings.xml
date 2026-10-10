@@ -68,9 +68,11 @@ is unchanged; only the displayed label localizes.
     <string name="settings_clothes_cond_type_temp_below">Gdy odczuwalna temperatura spada poniżej</string>
     <string name="settings_clothes_cond_type_temp_above">Gdy odczuwalna temperatura przekracza</string>
     <string name="settings_clothes_cond_type_precip_above">Gdy prawdopodobieństwo deszczu przekracza</string>
+    <string name="settings_clothes_cond_type_snow_above">Gdy prawdopodobieństwo śniegu przekracza</string>
     <string name="settings_clothes_cond_temp_below">gdy odczuwalna temperatura spada poniżej %1$s</string>
     <string name="settings_clothes_cond_temp_above">gdy odczuwalna temperatura przekracza %1$s</string>
     <string name="settings_clothes_cond_precip_above">gdy prawdopodobieństwo deszczu przekracza %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">gdy prawdopodobieństwo śniegu przekracza %.0f%%</string>
 
     <!--
     Schedule screen.
@@ -1275,6 +1277,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_api_key_status_unset">4 bezpłatne każdego dnia, zdobądź klucz, aby mieć więcej.</string>
     <string name="settings_tts_stop">Zatrzymaj</string>
     <string name="garment_rain_jacket">Kurtka przeciwdeszczowa</string>
+    <string name="garment_beanie">Czapka</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -66,6 +66,14 @@ internal val outfitOuterDefaults: Map<OutfitSuggestion.Outer, GarmentDefaults> =
     OutfitSuggestion.Outer.RAIN_JACKET to GarmentDefaults(0xFFFFEB3B.toInt(), 0xFFF57F17.toInt()),
 )
 
+// The beanie is the only HEAD-slot tier today; the recolour primary is the
+// crown fill / stroke in ic_outfit_beanie.xml (#C62828 over #7F1D1D). The
+// lighter cuff (#E53935) and pom-pom (#EF9A9A) are accent colours that survive
+// the recolour unchanged (same as a puffer's white panels).
+internal val outfitHeadDefaults: Map<OutfitSuggestion.Head, GarmentDefaults> = mapOf(
+    OutfitSuggestion.Head.BEANIE to GarmentDefaults(0xFFC62828.toInt(), 0xFF7F1D1D.toInt()),
+)
+
 @DrawableRes
 internal fun topDrawable(top: OutfitSuggestion.Top): Int = when (top) {
     OutfitSuggestion.Top.TSHIRT -> R.drawable.ic_outfit_tshirt
@@ -109,6 +117,15 @@ internal fun carriedDrawable(carried: OutfitSuggestion.Carried): Int = when (car
 @DrawableRes
 internal fun outerDrawable(outer: OutfitSuggestion.Outer): Int = when (outer) {
     OutfitSuggestion.Outer.RAIN_JACKET -> R.drawable.ic_outfit_rain_jacket
+}
+
+// The beanie vector shares the umbrella's full-figure 96×192 viewport, hanging
+// from the figure's free left hand (the figure is headless, so there's nowhere
+// to draw it worn), so it overlays the whole top+bottom figure at matching
+// width — see renderHeadFigureBitmap / GarmentHeadIcon.
+@DrawableRes
+internal fun headDrawable(head: OutfitSuggestion.Head): Int = when (head) {
+    OutfitSuggestion.Head.BEANIE -> R.drawable.ic_outfit_beanie
 }
 
 /**

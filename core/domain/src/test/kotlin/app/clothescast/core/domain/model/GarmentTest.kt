@@ -64,6 +64,18 @@ class GarmentTest {
     }
 
     @Test
+    fun `beanie is worn head gear, not rain gear or an accessory`() {
+        // The beanie sits in its own HEAD slot, adds no torso layer, and is worn
+        // warmth gear: the snow gate must not treat it as rain gear, and the
+        // wear clause names it with "wear", not "bring".
+        Garment.fromKey("beanie") shouldBe Garment.BEANIE
+        Garment.BEANIE.slot shouldBe Garment.Slot.HEAD
+        Garment.BEANIE.layerCount shouldBe 0
+        Garment.BEANIE.isRainGear shouldBe false
+        Garment.isAccessoryKey("beanie") shouldBe false
+    }
+
+    @Test
     fun `umbrella is a carried accessory that round-trips and reads as an accessory`() {
         // The umbrella joins the catalog as carried gear: it round-trips via
         // fromKey, sits in the CARRIED slot (so it never competes with the worn

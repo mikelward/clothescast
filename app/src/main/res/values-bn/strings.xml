@@ -38,9 +38,11 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_clothes_cond_type_temp_below">যখন অনুভব হয় তার চেয়ে ঠান্ডা</string>
     <string name="settings_clothes_cond_type_temp_above">যখন অনুভব হয় তার চেয়ে গরম</string>
     <string name="settings_clothes_cond_type_precip_above">যখন বৃষ্টির সম্ভাবনা বেশি</string>
+    <string name="settings_clothes_cond_type_snow_above">যখন তুষারপাতের সম্ভাবনা বেশি</string>
     <string name="settings_clothes_cond_temp_below">যখন সর্বনিম্ন অনুভূত তাপমাত্রা %1$s-এর নিচে</string>
     <string name="settings_clothes_cond_temp_above">যখন সর্বোচ্চ অনুভূত তাপমাত্রা %1$s-এর বেশি</string>
     <string name="settings_clothes_cond_precip_above">যখন বৃষ্টির সম্ভাবনা %.0f%%-এর বেশি</string>
+    <string name="settings_clothes_cond_snow_above">যখন তুষারপাতের সম্ভাবনা %.0f%%-এর বেশি</string>
 
     <string name="today_outfit_top_tshirt">টি-শার্ট</string>
     <string name="today_outfit_top_sweater">সোয়েটার</string>
@@ -1299,6 +1301,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_api_key_status_unset">প্রতিদিন ৪টি বিনামূল্যে, আরও পেতে একটি কী নিন।</string>
     <string name="settings_tts_stop">থামান</string>
     <string name="garment_rain_jacket">রেইন জ্যাকেট</string>
+    <string name="garment_beanie">উলের টুপি</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

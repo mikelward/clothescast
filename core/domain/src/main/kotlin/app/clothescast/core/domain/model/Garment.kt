@@ -12,9 +12,9 @@ import java.util.Locale
  * The catalog is intentionally finite: free-form garment names defeat
  * translation (the German phraser can't translate arbitrary user input), so
  * the editor UI only lets the user pick from this list. Today the list covers
- * tops, bottoms, the gloves hands slot, and one carried accessory (umbrella);
- * headwear and further rain / sun gear can land in follow-ups (and will likely
- * come paired with their own outfit-card icons).
+ * tops, bottoms, the gloves hands slot, the beanie head slot, and one carried
+ * accessory (umbrella); further headwear and rain / sun gear can land in
+ * follow-ups (and will likely come paired with their own outfit-card icons).
  *
  * Stays in `:core:domain` so the rule-evaluation tests and the future
  * `ClothesRule.item` migration to a typed field can reach it without pulling
@@ -80,6 +80,13 @@ enum class Garment(
     // Gloves are the "extra cold" signal: they fire below the coat threshold
     // rather than inflating the layer count.
     GLOVES("gloves", Slot.HANDS),
+    // Headwear — worn warmth gear in its own [Slot.HEAD], so it never competes
+    // with the hands or top stack. Not rain gear (see [isRainGear]): a beanie
+    // stays on a snowy day. Its default rule is snow-keyed
+    // ([ClothesRule.SnowProbabilityAbove]), the counterpart of the rain-keyed
+    // umbrella. The outfit icon draws it hanging from the figure's free left
+    // hand, since the figure has no head.
+    BEANIE("beanie", Slot.HEAD),
 
     // Carried rain/sun gear — held, not worn. An umbrella is keyed off
     // precipitation probability rather than temperature; it claims its own
@@ -122,6 +129,8 @@ enum class Garment(
         TOP(Reduction.LAYERED),
         BOTTOM(Reduction.SUBSTITUTE),
         HANDS(Reduction.SUBSTITUTE),
+        // Worn headwear — a single beanie; you don't wear two hats.
+        HEAD(Reduction.SUBSTITUTE),
         // Carried, not worn — a single umbrella; you don't carry two.
         CARRIED(Reduction.SUBSTITUTE),
     }
@@ -247,6 +256,7 @@ enum class Garment(
             mapOf(
                 Slot.BOTTOM to BOTTOM_PRIORITY,
                 Slot.HANDS to listOf(GLOVES),
+                Slot.HEAD to listOf(BEANIE),
                 Slot.CARRIED to listOf(UMBRELLA),
             )
 

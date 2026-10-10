@@ -95,12 +95,14 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_clothes_cond_type_temp_below">Wenn es sich kälter anfühlt als</string>
     <string name="settings_clothes_cond_type_temp_above">Wenn es sich wärmer anfühlt als</string>
     <string name="settings_clothes_cond_type_precip_above">Wenn die Regenwahrscheinlichkeit über</string>
+    <string name="settings_clothes_cond_type_snow_above">Wenn die Schneewahrscheinlichkeit über</string>
 
     <!-- Row description for an existing rule. Mirrors the English templates
          in values/strings.xml. -->
     <string name="settings_clothes_cond_temp_below">wenn die gefühlte Mindesttemperatur unter %1$s liegt</string>
     <string name="settings_clothes_cond_temp_above">wenn die gefühlte Höchsttemperatur über %1$s liegt</string>
     <string name="settings_clothes_cond_precip_above">wenn die Regenwahrscheinlichkeit über %.0f%% liegt</string>
+    <string name="settings_clothes_cond_snow_above">wenn die Schneewahrscheinlichkeit über %.0f%% liegt</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery picker,

@@ -72,9 +72,11 @@ Not overridden by design:
     <string name="settings_clothes_cond_type_temp_below">जब महसूस हो उससे ठंडा</string>
     <string name="settings_clothes_cond_type_temp_above">जब महसूस हो उससे गर्म</string>
     <string name="settings_clothes_cond_type_precip_above">जब बारिश की संभावना से अधिक</string>
+    <string name="settings_clothes_cond_type_snow_above">जब बर्फ़बारी की संभावना से अधिक</string>
     <string name="settings_clothes_cond_temp_below">जब न्यूनतम महसूस तापमान %1$s से कम हो</string>
     <string name="settings_clothes_cond_temp_above">जब अधिकतम महसूस तापमान %1$s से अधिक हो</string>
     <string name="settings_clothes_cond_precip_above">जब बारिश की संभावना %.0f%% से अधिक हो</string>
+    <string name="settings_clothes_cond_snow_above">जब बर्फ़बारी की संभावना %.0f%% से अधिक हो</string>
 
     <!-- Schedule screen. -->
     <string name="settings_schedule_title">दैनिक ClothesCast</string>
@@ -1257,6 +1259,7 @@ Not overridden by design:
     <string name="settings_api_key_status_unset">हर दिन 4 मुफ़्त, और के लिए कुंजी लें।</string>
     <string name="settings_tts_stop">रोकें</string>
     <string name="garment_rain_jacket">रेन जैकेट</string>
+    <string name="garment_beanie">ऊनी टोपी</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -224,6 +224,63 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `beanie migration appends the snow-keyed beanie default to a stored list without it`() = runTest {
+        // A user with a persisted rule list that predates the beanie default gets
+        // it appended, keyed on the chance-of-snow condition.
+        val legacyJson = encodeRules(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.UMBRELLA, ClothesRule.PrecipitationProbabilityAbove(10.0)),
+        )
+        val before = mutablePreferencesOf(clothesRulesKey to legacyJson)
+
+        val result = beanieDefaultMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        rules.map { it.item } shouldBe listOf(Garment.SWEATER, Garment.UMBRELLA, Garment.BEANIE)
+        (rules.last().condition as ClothesRule.SnowProbabilityAbove).percent shouldBe 10.0
+    }
+
+    @Test
+    fun `beanie migration keeps a customised beanie rule and does not duplicate it`() = runTest {
+        val withBeanie = encodeRules(
+            ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(16.0)),
+            ClothesRule(Garment.BEANIE, ClothesRule.TemperatureBelow(2.0)),
+        )
+        val before = mutablePreferencesOf(clothesRulesKey to withBeanie)
+
+        val result = beanieDefaultMigration().migrate(before)
+
+        val rules = decodeStoredRules(result[clothesRulesKey])
+        rules.count { it.item == Garment.BEANIE } shouldBe 1
+        rules.first { it.item == Garment.BEANIE }.condition shouldBe ClothesRule.TemperatureBelow(2.0)
+    }
+
+    @Test
+    fun `beanie migration leaves fresh installs and legacy-only lists untouched`() = runTest {
+        beanieDefaultMigration().migrate(emptyPreferences())[clothesRulesKey] shouldBe null
+
+        val legacyOnlyJson = """[{"item":"poncho","type":"temp_below","value":5.0}]"""
+        val result = beanieDefaultMigration().migrate(mutablePreferencesOf(clothesRulesKey to legacyOnlyJson))
+        result[clothesRulesKey] shouldBe legacyOnlyJson
+    }
+
+    @Test
+    fun `beanie migration runs once, gated by its sentinel`() = runTest {
+        val migration = beanieDefaultMigration()
+        migration.shouldMigrate(emptyPreferences()) shouldBe true
+        migration.shouldMigrate(
+            mutablePreferencesOf(booleanPreferencesKey("beanie_default_migrated_v1") to true),
+        ) shouldBe false
+    }
+
+    @Test
+    fun `a snow-probability rule round-trips through storage under its own type tag`() = runTest {
+        val json = encodeRules(ClothesRule(Garment.BEANIE, ClothesRule.SnowProbabilityAbove(25.0)))
+        json shouldContain "\"snow_above\""
+        decodeStoredRules(json) shouldBe listOf(ClothesRule(Garment.BEANIE, ClothesRule.SnowProbabilityAbove(25.0)))
+    }
+
+    @Test
     fun `umbrella migration appends the umbrella default to a stored list without it`() = runTest {
         // A user with a persisted rule list that predates the umbrella default
         // gets it appended, keyed on a precipitation-probability condition.
@@ -966,6 +1023,16 @@ class SettingsRepositoryTest {
         prefs.outfitHandsColors shouldBe emptyMap()
         prefs.outfitCarriedColors shouldBe emptyMap()
         prefs.outfitOuterColors shouldBe emptyMap()
+        prefs.outfitHeadColors shouldBe emptyMap()
+    }
+
+    @Test
+    fun `setOutfitHeadColor round-trips a fill and clears with null`() = runTest {
+        subject.setOutfitHeadColor(OutfitSuggestion.Head.BEANIE, 0xFF1E88E5L)
+        subject.preferences.first().outfitHeadColors[OutfitSuggestion.Head.BEANIE] shouldBe 0xFF1E88E5L
+
+        subject.setOutfitHeadColor(OutfitSuggestion.Head.BEANIE, null)
+        subject.preferences.first().outfitHeadColors.containsKey(OutfitSuggestion.Head.BEANIE) shouldBe false
     }
 
     @Test

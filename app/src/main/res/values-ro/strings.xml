@@ -37,9 +37,11 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_clothes_cond_type_temp_below">Când se simte mai rece de</string>
     <string name="settings_clothes_cond_type_temp_above">Când se simte mai cald de</string>
     <string name="settings_clothes_cond_type_precip_above">Când probabilitatea de ploaie depășește</string>
+    <string name="settings_clothes_cond_type_snow_above">Când probabilitatea de ninsoare depășește</string>
     <string name="settings_clothes_cond_temp_below">când temperatura resimțită este sub %1$s</string>
     <string name="settings_clothes_cond_temp_above">când temperatura resimțită este peste %1$s</string>
     <string name="settings_clothes_cond_precip_above">când probabilitatea de ploaie depășește %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">când probabilitatea de ninsoare depășește %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Tricou</string>
     <string name="today_outfit_top_sweater">Pulover</string>
@@ -1205,6 +1207,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_api_key_status_unset">4 gratuite în fiecare zi, obține o cheie pentru mai multe.</string>
     <string name="settings_tts_stop">Oprește</string>
     <string name="garment_rain_jacket">Jachetă de ploaie</string>
+    <string name="garment_beanie">Căciulă</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

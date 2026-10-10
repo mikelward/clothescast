@@ -122,9 +122,9 @@ class InsightNotifier(private val context: Context) {
          * the same extremity gear the card and widget do on a freezing day) and
          * the optional rain-jacket outer shell when [outer] is set (it shares the
          * tops' footprint, so it paints over the top the same way). The carried
-         * umbrella is a full-figure overlay (held at the hip, hanging past the
-         * legs), so it has no place on this top-only large icon — it shows on the
-         * Today cards, widget, and cast card instead. Returns null when [top] is
+         * umbrella and the beanie are full-figure overlays (hanging from the
+         * hands past the waist), so they have no place on this top-only large
+         * icon — they show on the Today cards, widget, and cast card instead. Returns null when [top] is
          * missing (older cached payloads), letting the system fall back to no
          * large icon.
          */

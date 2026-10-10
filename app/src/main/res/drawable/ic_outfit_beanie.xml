@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="48dp" android:height="96dp" android:viewportWidth="96" android:viewportHeight="192">
+
+    <!-- Beanie as the headless avatar would carry it: hanging from the free left
+         hand by a short loop, mirroring the umbrella in the right hand (the left
+         hand/glove sits around x1-18, y73-92 on the top icon). Authored at the
+         same full-figure 96x192 viewport as the umbrella (torso 0-96, legs
+         96-192) so a same-height overlay spans both the top and bottom icons.
+         Centred at x13 rather than under the hand's x8 so the whole hat stays
+         inside the viewport — the bitmap renderers clip at its edges. -->
+
+    <!-- Strap: a short loop from the hand down to the pom-pom. Drawn first so
+         the pom-pom covers its end. -->
+    <path android:strokeColor="#7F1D1D" android:strokeWidth="1.6" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M9,88 Q13,90 13,94.5" />
+
+    <!-- Dome: the knitted crown. Its fill / stroke are the recolour primary. -->
+    <path android:fillColor="#C62828" android:strokeColor="#7F1D1D" android:strokeWidth="1.6" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M3.4,107.6 Q3.4,98 13,98 Q22.6,98 22.6,107.6 Z" />
+
+    <!-- Three vertical rib lines down the crown. -->
+    <path android:strokeColor="#7F1D1D" android:strokeWidth="1.2" android:strokeLineCap="round" android:pathData="M8.2,101.6 L8.2,107.2" />
+    <path android:strokeColor="#7F1D1D" android:strokeWidth="1.2" android:strokeLineCap="round" android:pathData="M13,99.6 L13,107.2" />
+    <path android:strokeColor="#7F1D1D" android:strokeWidth="1.2" android:strokeLineCap="round" android:pathData="M17.8,101.6 L17.8,107.2" />
+
+    <!-- Cuff: the rolled band under the crown. Same fill as the crown so a user
+         recolour (which swaps the crown fill exactly) repaints the whole hat; the
+         outline separates the parts. -->
+    <path android:fillColor="#C62828" android:strokeColor="#7F1D1D" android:strokeWidth="1.6" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M4.2,107.6 L21.8,107.6 Q23.4,107.6 23.4,109.2 L23.4,110.8 Q23.4,112.4 21.8,112.4 L4.2,112.4 Q2.6,112.4 2.6,110.8 L2.6,109.2 Q2.6,107.6 4.2,107.6 Z" />
+
+    <!-- Pom-pom on top of the crown, where the strap attaches. Crown fill too. -->
+    <path android:fillColor="#C62828" android:strokeColor="#7F1D1D" android:strokeWidth="1.6" android:strokeLineJoin="round" android:strokeLineCap="round" android:pathData="M13,94 A3.4,3.4 0 1,1 13,100.8 A3.4,3.4 0 1,1 13,94 Z" />
+
+</vector>

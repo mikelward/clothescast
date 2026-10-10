@@ -38,9 +38,11 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_clothes_cond_type_temp_below">Apabila terasa lebih sejuk daripada</string>
     <string name="settings_clothes_cond_type_temp_above">Apabila terasa lebih panas daripada</string>
     <string name="settings_clothes_cond_type_precip_above">Apabila kebarangkalian hujan melebihi</string>
+    <string name="settings_clothes_cond_type_snow_above">Apabila kebarangkalian salji melebihi</string>
     <string name="settings_clothes_cond_temp_below">apabila suhu terasa di bawah %1$s</string>
     <string name="settings_clothes_cond_temp_above">apabila suhu terasa di atas %1$s</string>
     <string name="settings_clothes_cond_precip_above">apabila kebarangkalian hujan melebihi %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">apabila kebarangkalian salji melebihi %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">Kemeja-T</string>
     <string name="today_outfit_top_sweater">Baju panas</string>
@@ -1233,6 +1235,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_api_key_status_unset">4 percuma setiap hari, dapatkan kunci untuk lebih banyak.</string>
     <string name="settings_tts_stop">Henti</string>
     <string name="garment_rain_jacket">Jaket hujan</string>
+    <string name="garment_beanie">Topi kait</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

@@ -161,6 +161,33 @@ internal fun GarmentCarriedIcon(
 }
 
 /**
+ * Renders the optional headwear icon (today only the beanie) for the
+ * [OutfitSuggestion.head] slot. Like the umbrella it's authored at the
+ * full-figure 96×192 viewport — the figure is headless, so the beanie hangs
+ * from the free left hand — and callers overlay it across the whole top+bottom
+ * figure exactly as [GarmentCarriedIcon] does; see [renderHeadFigureBitmap] for
+ * the bitmap-surface equivalent.
+ */
+@Composable
+internal fun GarmentHeadIcon(
+    head: OutfitSuggestion.Head,
+    customFill: Color?,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+    customStroke: Color? = null,
+) {
+    val defaults = outfitHeadDefaults.getValue(head)
+    GarmentIconImpl(
+        drawableRes = headDrawable(head),
+        defaults = defaults,
+        customFill = customFill,
+        customStroke = customStroke,
+        contentDescription = contentDescription,
+        modifier = modifier,
+    )
+}
+
+/**
  * Renders the optional outer-shell icon (today only the rain jacket) for the
  * [OutfitSuggestion.outer] slot. Authored at the same 96×96 viewport as the
  * tops, it's drawn at the top garment's width and overlaid on top of it, so the
@@ -468,9 +495,59 @@ internal fun renderCarriedFigureBitmap(
     customStrokeArgb: Long? = null,
 ): Bitmap {
     require(widthPx > 0 && heightPx > 0) { "carried bitmap size must be positive, got ${widthPx}×$heightPx" }
-    val vector = loadOutfitVector(context, carriedDrawable(carried))
+    return renderFigureOverlayBitmap(
+        context = context,
+        drawableRes = carriedDrawable(carried),
+        defaults = outfitCarriedDefaults.getValue(carried),
+        widthPx = widthPx,
+        heightPx = heightPx,
+        customFillArgb = customFillArgb,
+        customStrokeArgb = customStrokeArgb,
+    )
+}
+
+/**
+ * Renders the [head] (beanie) overlay as a transparent [widthPx]×[heightPx]
+ * bitmap — the head-slot sibling of [renderCarriedFigureBitmap]. The beanie
+ * shares the umbrella's full-figure 96×192 viewport (hanging from the free left
+ * hand), so callers render it at `heightPx = 2·widthPx` and draw it over the top
+ * icon's origin, spanning both icon positions.
+ */
+internal fun renderHeadFigureBitmap(
+    context: Context,
+    head: OutfitSuggestion.Head,
+    widthPx: Int,
+    heightPx: Int,
+    customFillArgb: Long? = null,
+    customStrokeArgb: Long? = null,
+): Bitmap {
+    require(widthPx > 0 && heightPx > 0) { "head bitmap size must be positive, got ${widthPx}×$heightPx" }
+    return renderFigureOverlayBitmap(
+        context = context,
+        drawableRes = headDrawable(head),
+        defaults = outfitHeadDefaults.getValue(head),
+        widthPx = widthPx,
+        heightPx = heightPx,
+        customFillArgb = customFillArgb,
+        customStrokeArgb = customStrokeArgb,
+    )
+}
+
+// Shared rasterizer for the full-figure (96×192) overlays — the umbrella and the
+// beanie. Non-square because the figure isn't; the recolour matches by original
+// colour exactly as [renderOutfitBitmap] does.
+private fun renderFigureOverlayBitmap(
+    context: Context,
+    @DrawableRes drawableRes: Int,
+    defaults: GarmentDefaults,
+    widthPx: Int,
+    heightPx: Int,
+    customFillArgb: Long?,
+    customStrokeArgb: Long?,
+): Bitmap {
+    val vector = loadOutfitVector(context, drawableRes)
     val recolor = buildRecolorMap(
-        outfitCarriedDefaults.getValue(carried),
+        defaults,
         customFillArgb?.let { Color(it.toInt()) },
         customStrokeArgb?.let { Color(it.toInt()) },
     )
@@ -539,6 +616,8 @@ internal fun renderOutfitCard(
     carriedStrokes: Map<OutfitSuggestion.Carried, Long> = emptyMap(),
     outerColors: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
     outerStrokes: Map<OutfitSuggestion.Outer, Long> = emptyMap(),
+    headColors: Map<OutfitSuggestion.Head, Long> = emptyMap(),
+    headStrokes: Map<OutfitSuggestion.Head, Long> = emptyMap(),
     window: String? = null,
     darkTheme: Boolean = false,
 ): ByteArray {
@@ -607,6 +686,20 @@ internal fun renderOutfitCard(
             customStrokeArgb = carriedStrokes[carried],
         )
         canvas.drawBitmap(carriedBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
+    }
+    // The beanie hangs from the free left hand — the same full-figure overlay
+    // shape as the umbrella, on the other side of the body. Only drawn when a
+    // head (beanie) rule fired.
+    outfit.head?.let { head ->
+        val headBmp = renderHeadFigureBitmap(
+            context = context,
+            head = head,
+            widthPx = ICON_PX,
+            heightPx = ICON_PX * 2,
+            customFillArgb = headColors[head],
+            customStrokeArgb = headStrokes[head],
+        )
+        canvas.drawBitmap(headBmp, CARD_PAD.toFloat(), CARD_PAD.toFloat(), null)
     }
 
     // Period-aware header along the top of the right column — sits over

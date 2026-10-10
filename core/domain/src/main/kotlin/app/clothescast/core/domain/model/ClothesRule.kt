@@ -77,6 +77,22 @@ data class ClothesRule(
         override fun matches(forecast: DailyForecast) = forecast.precipitationProbabilityMaxPct >= percent
     }
 
+    /**
+     * The snow counterpart of [PrecipitationProbabilityAbove]: fires when the
+     * day's chance of precipitation is at least [percent] *and* that
+     * precipitation is snow. Open-Meteo's probability of precipitation already
+     * covers snow, so the day's weather code ([WeatherCondition.SNOW], via
+     * [isFrozenPrecipitation]) is what makes it a chance of snow. It uses the
+     * same inclusive ≥ bar, so it fires on exactly the days the snow gate in
+     * [app.clothescast.core.domain.usecase.EvaluateClothesRules] suppresses the
+     * rain gear — the beanie stands in for the umbrella on a snowy day.
+     */
+    data class SnowProbabilityAbove(val percent: Double) : Condition {
+        override fun matches(forecast: DailyForecast) =
+            forecast.precipitationProbabilityMaxPct >= percent &&
+                forecast.condition.isFrozenPrecipitation()
+    }
+
     companion object {
         // Item keys are en-US-flavoured ("sweater", not "jumper") so they
         // align with the `today_outfit_top_*` labels in values/strings.xml.
@@ -93,6 +109,11 @@ data class ClothesRule(
         // gear on snow days even when snow clears the probability gate. Like every
         // default both are editable — the user can retune the percent or delete
         // the rule from the clothes-rule editor.
+        // The beanie is the snow counterpart of the umbrella: it keys off the
+        // same blended chance of precipitation at the same ≥ 10% bar, but only
+        // when that precipitation is snow ([SnowProbabilityAbove]) — so it fires
+        // on exactly the days the snow gate drops the umbrella / rain jacket. It
+        // is worn warmth gear, not rain gear, so the snow gate leaves it alone.
         // TODO(rain-accessory-variants): broaden the rain-gear rules further
         //  (hood, rain boots, …) once the resource strings and per-locale
         //  phrasers cover them.
@@ -104,6 +125,7 @@ data class ClothesRule(
             ClothesRule(Garment.SHORTS, TemperatureAbove(23.0)),
             ClothesRule(Garment.UMBRELLA, PrecipitationProbabilityAbove(10.0)),
             ClothesRule(Garment.RAIN_JACKET, PrecipitationProbabilityAbove(50.0)),
+            ClothesRule(Garment.BEANIE, SnowProbabilityAbove(10.0)),
         )
 
         /** Sanity bounds in °C for the rationale dialog's `+1°` / `−1°` taps. Wide enough
@@ -119,7 +141,8 @@ data class ClothesRule(
 /**
  * The Celsius-equivalent threshold of a temperature-keyed rule, regardless of
  * which unit the user typed it in. Returns `null` for the precip-keyed
- * [ClothesRule.PrecipitationProbabilityAbove], which carries no temperature.
+ * [ClothesRule.PrecipitationProbabilityAbove] / [ClothesRule.SnowProbabilityAbove],
+ * which carry no temperature.
  */
 fun ClothesRule.thresholdC(): Double? = when (val c = condition) {
     is ClothesRule.TemperatureBelow -> c.value.fromUnit(c.unit)
@@ -127,5 +150,6 @@ fun ClothesRule.thresholdC(): Double? = when (val c = condition) {
     // Precip-keyed conditions carry no temperature; the rationale / fallback-range
     // callers drop them (a rain probability rule has no °C cutoff to show).
     is ClothesRule.PrecipitationProbabilityAbove -> null
+    is ClothesRule.SnowProbabilityAbove -> null
 }
 

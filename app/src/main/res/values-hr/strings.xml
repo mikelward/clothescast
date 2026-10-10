@@ -52,9 +52,11 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_clothes_cond_type_temp_below">Kada se osjeća hladnije od</string>
     <string name="settings_clothes_cond_type_temp_above">Kada se osjeća toplije od</string>
     <string name="settings_clothes_cond_type_precip_above">Kada je vjerojatnost kiše veća od</string>
+    <string name="settings_clothes_cond_type_snow_above">Kada je vjerojatnost snijega veća od</string>
     <string name="settings_clothes_cond_temp_below">kada je osjećajna temperatura ispod %1$s</string>
     <string name="settings_clothes_cond_temp_above">kada je osjećajna temperatura iznad %1$s</string>
     <string name="settings_clothes_cond_precip_above">kada je vjerojatnost kiše veća od %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">kada je vjerojatnost snijega veća od %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery
@@ -1296,6 +1298,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_api_key_status_unset">4 besplatno svaki dan, nabavi ključ za više.</string>
     <string name="settings_tts_stop">Zaustavi</string>
     <string name="garment_rain_jacket">Kišna jakna</string>
+    <string name="garment_beanie">Kapa</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

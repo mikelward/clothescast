@@ -280,6 +280,25 @@ internal fun OutfitCoatPantsGlovesUmbrellaPreview() {
     }
 }
 
+// Both hands full: the beanie hangs from the free left hand while the right
+// grips the umbrella — the two full-figure overlays on opposite sides.
+@Preview(name = "Outfit · coat + pants + gloves + umbrella + beanie", widthDp = 360)
+@Composable
+internal fun OutfitCoatPantsGlovesUmbrellaBeaniePreview() {
+    Frame {
+        OutfitPreviewCard(
+            outfit = OutfitSuggestion(
+                OutfitSuggestion.Top.THICK_COAT,
+                OutfitSuggestion.Bottom.LONG_PANTS,
+                hands = OutfitSuggestion.Hands.GLOVES,
+                carried = OutfitSuggestion.Carried.UMBRELLA,
+                head = OutfitSuggestion.Head.BEANIE,
+            ),
+            label = "Today",
+        )
+    }
+}
+
 @Preview(name = "Outfit · sweater + jeans + rain jacket", widthDp = 360)
 @Composable
 internal fun OutfitSweaterJeansRainJacketPreview() {

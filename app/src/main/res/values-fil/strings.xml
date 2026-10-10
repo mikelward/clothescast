@@ -36,9 +36,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_clothes_cond_type_temp_below">Kapag malamig nang mas mababa sa</string>
     <string name="settings_clothes_cond_type_temp_above">Kapag mainit nang higit sa</string>
     <string name="settings_clothes_cond_type_precip_above">Kapag ang tsansa ng ulan ay higit sa</string>
+    <string name="settings_clothes_cond_type_snow_above">Kapag ang tsansa ng niyebe ay higit sa</string>
     <string name="settings_clothes_cond_temp_below">kapag ang nararamdamang pinakamababang temperatura ay mas mababa sa %1$s</string>
     <string name="settings_clothes_cond_temp_above">kapag ang nararamdamang pinakamataas na temperatura ay higit sa %1$s</string>
     <string name="settings_clothes_cond_precip_above">kapag ang tsansa ng ulan ay higit sa %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">kapag ang tsansa ng niyebe ay higit sa %.0f%%</string>
 
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_sweater">Sweater</string>
@@ -1278,6 +1280,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_api_key_status_unset">4 libre bawat araw, kumuha ng key para sa higit pa.</string>
     <string name="settings_tts_stop">Ihinto</string>
     <string name="garment_rain_jacket">Rain jacket</string>
+    <string name="garment_beanie">Bonete</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

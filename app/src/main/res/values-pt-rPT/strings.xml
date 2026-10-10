@@ -103,9 +103,11 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_clothes_cond_type_temp_below">Quando a sensação térmica for inferior a</string>
     <string name="settings_clothes_cond_type_temp_above">Quando a sensação térmica for superior a</string>
     <string name="settings_clothes_cond_type_precip_above">Quando a probabilidade de chuva ultrapassar</string>
+    <string name="settings_clothes_cond_type_snow_above">Quando a probabilidade de neve ultrapassar</string>
     <string name="settings_clothes_cond_temp_below">quando a temperatura sentida for inferior a %1$s</string>
     <string name="settings_clothes_cond_temp_above">quando a temperatura sentida for superior a %1$s</string>
     <string name="settings_clothes_cond_precip_above">quando a probabilidade de chuva ultrapassar %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">quando a probabilidade de neve ultrapassar %.0f%%</string>
 
     <!--
     Schedule screen — daily and nightly ClothesCast cards, delivery
@@ -1356,6 +1358,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_api_key_status_unset">4 grátis por dia, obtém uma chave para mais.</string>
     <string name="settings_tts_stop">Parar</string>
     <string name="garment_rain_jacket">Casaco impermeável</string>
+    <string name="garment_beanie">Gorro</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

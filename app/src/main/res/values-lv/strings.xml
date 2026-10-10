@@ -40,9 +40,11 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_clothes_cond_type_temp_below">Kad sajūtas vēsāks nekā</string>
     <string name="settings_clothes_cond_type_temp_above">Kad sajūtas siltāks nekā</string>
     <string name="settings_clothes_cond_type_precip_above">Kad lietus iespējamība pārsniedz</string>
+    <string name="settings_clothes_cond_type_snow_above">Kad sniega iespējamība pārsniedz</string>
     <string name="settings_clothes_cond_temp_below">kad sajustā temperatūra ir zem %1$s</string>
     <string name="settings_clothes_cond_temp_above">kad sajustā temperatūra ir virs %1$s</string>
     <string name="settings_clothes_cond_precip_above">kad lietus iespējamība pārsniedz %.0f%%</string>
+    <string name="settings_clothes_cond_snow_above">kad sniega iespējamība pārsniedz %.0f%%</string>
     <string name="settings_clothes_title">Apģērba noteikumi</string>
     <string name="settings_clothes_description">Ja prognoze pārsniedz kādu no šiem sliekšņiem, apģērbs parādās tavā ikdienas ClothesCast.</string>
 
@@ -1169,6 +1171,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_api_key_status_unset">Katru dienu 4 bez maksas, iegūsti atslēgu vairāk.</string>
     <string name="settings_tts_stop">Apturēt</string>
     <string name="garment_rain_jacket">Lietus jaka</string>
+    <string name="garment_beanie">Cepure</string>
 
     <!-- Settings sub-page titles ("… settings"); the bare menu-row
          labels that open them are settings_root_* . -->

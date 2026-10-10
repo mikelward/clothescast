@@ -30,6 +30,39 @@ class ClothesRuleTest {
     )
 
     @Test
+    fun `snow probability matches a snow day at or above the gate`() {
+        val condition = ClothesRule.SnowProbabilityAbove(10.0)
+        condition.matches(forecast(min = -2.0, max = 1.0, precip = 10.0, condition = WeatherCondition.SNOW)) shouldBe true
+        condition.matches(forecast(min = -2.0, max = 1.0, precip = 80.0, condition = WeatherCondition.SNOW)) shouldBe true
+    }
+
+    @Test
+    fun `snow probability does not match a snow day below the gate`() {
+        ClothesRule.SnowProbabilityAbove(10.0)
+            .matches(forecast(min = -2.0, max = 1.0, precip = 9.0, condition = WeatherCondition.SNOW)) shouldBe false
+    }
+
+    @Test
+    fun `snow probability does not match rain, however likely`() {
+        // Open-Meteo's probability covers all precipitation; only the snow code
+        // makes it a chance of snow, so a rainy day at the same chance is no match.
+        val condition = ClothesRule.SnowProbabilityAbove(10.0)
+        condition.matches(forecast(min = 1.0, max = 6.0, precip = 10.0, condition = WeatherCondition.RAIN)) shouldBe false
+        condition.matches(forecast(min = 1.0, max = 6.0, precip = 90.0, condition = WeatherCondition.RAIN)) shouldBe false
+    }
+
+    @Test
+    fun `snow probability carries no temperature threshold`() {
+        ClothesRule(Garment.BEANIE, ClothesRule.SnowProbabilityAbove(10.0)).thresholdC() shouldBe null
+    }
+
+    @Test
+    fun `defaults ship a snow-keyed beanie`() {
+        ClothesRule.DEFAULTS.single { it.item == Garment.BEANIE }.condition shouldBe
+            ClothesRule.SnowProbabilityAbove(10.0)
+    }
+
+    @Test
     fun `temperature below applies when feels-like min is colder`() {
         val rule = ClothesRule(Garment.SWEATER, ClothesRule.TemperatureBelow(18.0))
         rule.appliesTo(forecast(min = 14.0, max = 22.0)) shouldBe true
@@ -101,11 +134,12 @@ class ClothesRuleTest {
     }
 
     @Test
-    fun `defaults cover the temperature cases plus the precip-keyed rain gear`() {
-        // Two precip-keyed rain-gear defaults (umbrella, rain jacket) ship
-        // alongside the temperature rules covering the cold / warm cases.
+    fun `defaults cover the temperature cases plus the precip-keyed rain and snow gear`() {
+        // Two precip-keyed rain-gear defaults (umbrella, rain jacket) and the
+        // snow-keyed beanie ship alongside the temperature rules covering the
+        // cold / warm cases.
         val items = ClothesRule.DEFAULTS.map { it.item.itemKey }
-        items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts", "umbrella", "rain-jacket")
+        items shouldBe listOf("sweater", "jacket", "coat", "gloves", "shorts", "umbrella", "rain-jacket", "beanie")
     }
 
     @Test

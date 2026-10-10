@@ -56,6 +56,9 @@ fun PrecipitationChart(
     // When true the chart fills the height it's given instead of its fixed
     // 140.dp — the home-screen widget's bitmap is sized to the cell.
     fillHeight: Boolean = false,
+    // Dropped by the home-screen widget, as on [ForecastChart]. The range
+    // stays pinned 0–100 so a 20% line still reads as low.
+    showYAxis: Boolean = true,
 ) {
     if (hourly.isEmpty()) return
 
@@ -208,7 +211,11 @@ fun PrecipitationChart(
                     lineProvider = lineProvider,
                     rangeProvider = rangeProvider,
                 ),
-                startAxis = VerticalAxis.rememberStart(label = axisLabel, valueFormatter = startFormatter),
+                startAxis = if (showYAxis) {
+                    VerticalAxis.rememberStart(label = axisLabel, valueFormatter = startFormatter)
+                } else {
+                    null
+                },
                 bottomAxis = LocalChartBottomItemPlacer.current?.let { placer ->
                     HorizontalAxis.rememberBottom(
                         label = axisLabel,

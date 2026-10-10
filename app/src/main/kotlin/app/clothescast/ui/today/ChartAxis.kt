@@ -28,6 +28,25 @@ internal fun niceStep(span: Double): Double = when {
     else -> 500.0
 }
 
+/**
+ * Bounds hugging [values] for a chart drawn without a y-axis (the home-screen
+ * widgets): no ticks to land on, so no round-number widening — the line uses
+ * the full plot height. The span is floored at [minSpan] (centred on the
+ * data) so a near-flat day isn't amplified into a zigzag, and [padFraction]
+ * of the span is added each side so the stroke isn't clipped at the edges.
+ * [YAxisBounds.step] is the span, unused without an axis.
+ */
+internal fun tightBounds(values: List<Double>, minSpan: Double, padFraction: Double = 0.1): YAxisBounds {
+    val lo = values.min()
+    val hi = values.max()
+    val span = maxOf(hi - lo, minSpan)
+    val mid = (lo + hi) / 2.0
+    val pad = span * padFraction
+    val min = mid - span / 2.0 - pad
+    val max = mid + span / 2.0 + pad
+    return YAxisBounds(min = min, max = max, step = max - min)
+}
+
 internal fun alignToStep(rawMin: Double, rawMax: Double, step: Double): YAxisBounds =
     YAxisBounds(
         min = floor(rawMin / step) * step,

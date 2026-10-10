@@ -105,8 +105,7 @@ private const val WEEK_PAGE = 2
 // Fallback render size for the off-screen chart bitmap (3:1, mid-range). Used
 // only when the launcher hasn't reported the widget's cell size yet (e.g. the
 // picker preview); once it has, [chartRenderSizePx] renders at the cell's own
-// aspect (clamped to [MIN_ASPECT_RATIO]..[MAX_ASPECT_RATIO]) so the chart fills
-// the space the user gave it instead of letterboxing inside a fixed-aspect box.
+// shape so the chart fills the space the user gave it.
 private const val RENDER_WIDTH_PX = 720
 private const val RENDER_HEIGHT_PX = 240
 
@@ -115,14 +114,6 @@ private const val RENDER_HEIGHT_PX = 240
 // for a multi-megapixel bitmap on each refresh.
 private const val MIN_RENDER_PX = 240
 private const val MAX_RENDER_PX = 1600
-
-// A line chart reads best wide, so keep its width:height between these bounds
-// regardless of the cell shape. On a tall/near-square cell we pin to the min so
-// the chart stays wide; on an ultra-wide cell we pin to the max so it doesn't
-// get uncomfortably long-and-thin. The Glance Image then pads the short side
-// under ContentScale.Fit. Between the bounds we render at the cell's own aspect.
-private const val MIN_ASPECT_RATIO = 2f
-private const val MAX_ASPECT_RATIO = 4f
 
 // Upper bound on how long the off-screen compose+settle may take before we give
 // up and show the empty state. Generous — a widget refresh is infrequent — but
@@ -261,17 +252,16 @@ private suspend fun buildChartBitmap(context: Context, id: GlanceId, weekly: Boo
 }
 
 // Derives the off-screen bitmap size from the widget's actual cell, so the chart
-// scales with the space the user gave it. The launcher reports the cell extent
-// (in dp) via the AppWidget options bundle: the portrait cell is MIN width ×
-// MAX height and the landscape cell is MAX width × MIN height (the AppWidget
-// contract — portrait launchers are taller and narrower). We
-// render at the cell's own aspect (clamped to
-// [MIN_ASPECT_RATIO]..[MAX_ASPECT_RATIO]) so ContentScale.Fit fills the cell on
-// a wide placement instead of leaving side gaps, while keeping the chart
-// comfortably wider than it is tall and never uncomfortably long-and-thin.
-// Resizing the widget triggers an options-changed update, which re-runs
-// provideGlance and re-renders at the new size. Falls back to a mid-range 3:1
-// aspect when no size is reported yet (e.g. the picker preview).
+// fills the space the user gave it. The launcher reports the cell extent (in
+// dp) via the AppWidget options bundle: the portrait cell is MIN width × MAX
+// height and the landscape cell is MAX width × MIN height (the AppWidget
+// contract — portrait launchers are taller and narrower). The bitmap takes the
+// cell's own aspect, whatever it is: an earlier clamp to 2:1–4:1 kept the chart
+// "comfortably wide" but letterboxed it in any cell outside that band, leaving
+// empty bands above and below a squashed plot. Resizing the widget triggers an
+// options-changed update, which re-runs provideGlance at the new size. Falls
+// back to a mid-range 3:1 when no size is reported yet (e.g. the picker
+// preview).
 internal fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
     val fallback = RENDER_WIDTH_PX to RENDER_HEIGHT_PX
     val options = runCatching {
@@ -289,34 +279,28 @@ internal fun chartRenderSizePx(context: Context, id: GlanceId): Pair<Int, Int> {
         if (portrait) AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT
         else AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
     )
+    DiagLog.i(TAG, "Widget: chart cell %sx%s dp (%s)", widthDp, heightDp, if (portrait) "portrait" else "landscape")
     if (widthDp <= 0 || heightDp <= 0) return fallback
 
     val density = context.resources.displayMetrics.density
-    var widthPx = (widthDp * density).roundToInt()
-    var heightPx = (heightDp * density).roundToInt()
+    return scaleRenderSize((widthDp * density).roundToInt(), (heightDp * density).roundToInt())
+}
 
-    // Clamp the aspect into [MIN_ASPECT_RATIO, MAX_ASPECT_RATIO]: render at the
-    // cell's own aspect when it's already in range, otherwise pin to the nearer
-    // bound by shrinking the longer side (the Glance Image pads the short side
-    // under ContentScale.Fit), so the chart stays comfortably wide either way.
-    val aspect = widthPx.toFloat() / heightPx
-    when {
-        aspect > MAX_ASPECT_RATIO -> widthPx = (heightPx * MAX_ASPECT_RATIO).roundToInt()
-        aspect < MIN_ASPECT_RATIO -> heightPx = (widthPx / MIN_ASPECT_RATIO).roundToInt()
-    }
-
-    // Keep the bitmap within sane pixel bounds, preserving the clamped aspect:
-    // scale down if the longer side is over the cap, up if the shorter is under.
+/**
+ * Keeps a [widthPx]×[heightPx] bitmap within [MIN_RENDER_PX]..[MAX_RENDER_PX]
+ * on each side where possible, preserving its aspect: scaled down when the
+ * longer side is over the cap, up when the shorter is under the floor (the cap
+ * wins for an extreme aspect, so the bitmap never exceeds it).
+ */
+internal fun scaleRenderSize(widthPx: Int, heightPx: Int): Pair<Int, Int> {
     val longer = maxOf(widthPx, heightPx)
     val shorter = minOf(widthPx, heightPx)
     val scale = when {
         longer > MAX_RENDER_PX -> MAX_RENDER_PX.toFloat() / longer
-        shorter < MIN_RENDER_PX -> MIN_RENDER_PX.toFloat() / shorter
+        shorter < MIN_RENDER_PX -> minOf(MIN_RENDER_PX.toFloat() / shorter, MAX_RENDER_PX.toFloat() / longer)
         else -> 1f
     }
-    widthPx = (widthPx * scale).roundToInt()
-    heightPx = (heightPx * scale).roundToInt()
-    return widthPx to heightPx
+    return (widthPx * scale).roundToInt().coerceAtLeast(1) to (heightPx * scale).roundToInt().coerceAtLeast(1)
 }
 
 // Mirrors MainActivity's theme resolution so the widget's dark mode tracks the

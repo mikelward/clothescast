@@ -853,6 +853,7 @@ Open work:
 
 ## Decisions needing review
 
+- [ ] **No on-device render test for "each widget draws its own kind"** (autopilot, after PR #1265). The swapped-widgets bug was in how widget IDs were found, and `WidgetUpdateTargetsTest` now covers that: each kind is paired with its receiver's own widget and finds its IDs by receiver. A Robolectric test that places all five widgets and inspects each one's rendered RemoteViews would cover drawing too, but Glance rendering under Robolectric is heavy and brittle for what it would add. Alternative: write that render test. Reversible: it can be added at any time without changing app code.
 - [ ] **Smart Home: a broker change forgets the Home Assistant cleanup list** (autopilot, PR #1261). Saving MQTT settings with a different host or port empties the list of old topics to clear, so tombstones never go to a broker that didn't publish them (and can't delete another phone's configs there). The old broker keeps its device, as switching brokers always has. Alternative: record the broker with each topic and clear only there, which costs a storage format and still can't reach a broker you've left. Reversible: the set is a single preference, and recording brokers later only adds to it.
 - [ ] **Decide whether "we don't hold a user's data captive" belongs in this
       file's quality bar, not only in `MONETIZATION.md`.** Recorded 2026-09-03

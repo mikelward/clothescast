@@ -619,8 +619,9 @@ internal fun ChartSubtitleRow(
     // Bounds the subtitle where height is scarce (the widgets): a long line
     // ellipsizes rather than wrapping until it squeezes the chart away.
     maxLines: Int = Int.MAX_VALUE,
-    // An icon naming what the subtitle measures, drawn before it — the widgets
-    // drop the card title and use this instead.
+    // An icon naming what the subtitle measures, drawn before it: the strip's
+    // thermometer or droplet on the feels-like and chance-of-rain cards. The
+    // widgets drop the card title and let it stand in for the words.
     leadingIcon: (@Composable () -> Unit)? = null,
 ) {
     if (subtitle.isNullOrEmpty() && readout.isNullOrEmpty()) return

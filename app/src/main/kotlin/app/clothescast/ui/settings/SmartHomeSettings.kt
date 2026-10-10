@@ -274,7 +274,7 @@ private fun CustomNameField(
 }
 
 @Composable
-private fun MqttBridgeCard(
+internal fun MqttBridgeCard(
     enabled: Boolean,
     host: String,
     port: Int,

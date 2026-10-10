@@ -1859,6 +1859,17 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `the earlier default topic stored by an old build reads as no override`() = runTest {
+        // The first builds defaulted to clothescast/insight and saved it with
+        // every credentials save.
+        dataStore.edit { it[stringPreferencesKey("mqtt_topic")] = "clothescast/insight" }
+        subject.preferences.first().mqttTopicOverride shouldBe null
+        subject.preferences.first().mqttTopic shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+        // Its old device is still queued for cleanup.
+        subject.preferences.first().mqttDiscoveryTopics shouldBe setOf("clothescast/insight")
+    }
+
+    @Test
     fun `a stored blank topic reads as no override`() = runTest {
         dataStore.edit { it[stringPreferencesKey("mqtt_topic")] = "  " }
         subject.preferences.first().mqttTopicOverride shouldBe null

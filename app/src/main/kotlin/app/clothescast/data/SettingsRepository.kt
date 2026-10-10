@@ -1801,15 +1801,20 @@ class SettingsRepository(
 
         /**
          * The user's typed topic override, or null when the topic follows the
-         * Name. MQTT_TOPIC holds only the override; a stored
-         * [UserPreferences.DEFAULT_MQTT_TOPIC] (what every install had before
-         * the Name existed, unless customized) reads as no override, as does
-         * blank.
+         * Name. On the pre-Name MQTT_TOPIC key a stored default reads as no
+         * override, as does blank: that form saved whatever its prefilled
+         * topic field held, so a default there records a credentials save,
+         * not a choice. Both defaults count — [LEGACY_DEFAULT_MQTT_TOPIC] was
+         * the default before [UserPreferences.DEFAULT_MQTT_TOPIC].
          */
         private fun mqttTopicOverride(prefs: Preferences): String? =
             prefs[MQTT_TOPIC_OVERRIDE]?.trim()?.takeIf { it.isNotBlank() }
-                ?: prefs[MQTT_TOPIC]?.trim()
-                    ?.takeIf { it.isNotBlank() && it != UserPreferences.DEFAULT_MQTT_TOPIC }
+                ?: prefs[MQTT_TOPIC]?.trim()?.takeIf {
+                    it.isNotBlank() && it != UserPreferences.DEFAULT_MQTT_TOPIC && it != LEGACY_DEFAULT_MQTT_TOPIC
+                }
+
+        /** The default topic prefix before `clothescast/default` (renamed May 2026). */
+        private const val LEGACY_DEFAULT_MQTT_TOPIC = "clothescast/insight"
 
         /**
          * Topics Home Assistant discovery configs may be retained under. Never

@@ -779,8 +779,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_root_smart_home">Casă inteligentă</string>
     <string name="settings_root_smart_home_subtitle">Afișaje inteligente și automatizare acasă</string>
     <string name="settings_api_key_replace">Înlocuiește cheia Gemini</string>
-    <string name="outfit_card_header_today">ClothesCast de astăzi</string>
-    <string name="outfit_card_header_tonight">ClothesCast de diseară</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Setări îmbrăcăminte</string>
     <string name="today_celebration_card_title">Teme de sărbătoare</string>

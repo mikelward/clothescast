@@ -16,6 +16,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.serialization.json.JsonArray
@@ -60,6 +62,18 @@ class MqttPublisher(
     private val publishTimeoutMs: Long = DEFAULT_PUBLISH_TIMEOUT_MS,
     private val retryDelayMs: Long = DEFAULT_RETRY_DELAY_MS,
     private val maxAttempts: Int = DEFAULT_MAX_PUBLISH_ATTEMPTS,
+    /**
+     * Updates [UserPreferences.mqttDiscoveryTopics]
+     * (SettingsRepository.updateMqttDiscoveryTopics in production): [add] is
+     * the topic about to get discovery configs, when not yet recorded;
+     * [remove] holds the old entries whose Home Assistant configs were all
+     * cleared. The write applies only while the stored broker is still
+     * [host]:[port], checked in the same transaction, and returns false
+     * otherwise, so a broker saved mid-publish never inherits this one's
+     * topics.
+     */
+    private val onDiscoveryTopicsChanged:
+        suspend (add: String?, remove: Set<String>, host: String, port: Int) -> Boolean = { _, _, _, _ -> true },
 ) {
 
     /**
@@ -539,6 +553,8 @@ class MqttPublisher(
             scheme = if (prefs.mqttUseTls) "mqtts" else "mqtt",
             host = host,
             port = prefs.mqttPort,
+            customName = prefs.customName,
+            discoveryTopicsToClear = prefs.mqttDiscoveryTopics,
         )
     }
 
@@ -650,8 +666,62 @@ class MqttPublisher(
         )
     }
 
-    private suspend fun publishHomeAssistantDiscovery(prepared: PreparedPublish) {
-        val entries = homeAssistantDiscoveryEntries(prepared.baseTopic)
+    /**
+     * Runs one publish's discovery record / publish / cleanup at a time, on
+     * fresh settings. A scheduled publish and a Settings "Publish now" can
+     * overlap with different snapshots, so the name and cleanup set are
+     * re-read here; without this, a stale publish for an
+     * old topic could recreate its configs after a newer publish had already
+     * cleared and dropped it, leaving a device nothing records. A publish
+     * whose broker or topic changed while it ran skips discovery, so its
+     * configs and the cleanup set always name the same broker; the next
+     * publish under the new settings handles it.
+     */
+    private suspend fun publishHomeAssistantDiscovery(prepared: PreparedPublish) = DISCOVERY_LOCK.withLock {
+        val fresh = try {
+            preferences.first()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            DiagLog.w(TAG, t, "Reading settings for Home Assistant discovery failed; skipping discovery until the next publish.")
+            return@withLock
+        }
+        val brokerChanged = !fresh.mqttHost.orEmpty().trim().equals(prepared.host.trim(), ignoreCase = true) ||
+            fresh.mqttPort != prepared.port
+        if (brokerChanged || normalizedBaseTopic(fresh.mqttTopic) != normalizedBaseTopic(prepared.baseTopic)) {
+            DiagLog.i(TAG, "MQTT broker or topic changed during this publish; skipping Home Assistant discovery until the next publish.")
+            return@withLock
+        }
+        publishHomeAssistantDiscoveryLocked(
+            prepared.copy(customName = fresh.customName, discoveryTopicsToClear = fresh.mqttDiscoveryTopics),
+        )
+    }
+
+    private suspend fun publishHomeAssistantDiscoveryLocked(prepared: PreparedPublish) {
+        // Record the topic before any of its configs land, so a topic with
+        // live configs is always in the cleanup list and a later rename can
+        // clear it. If recording fails, publish nothing rather than leave
+        // configs no later publish knows to clear.
+        val current = normalizedBaseTopic(prepared.baseTopic)
+        if (current !in prepared.discoveryTopicsToClear) {
+            val recorded = try {
+                onDiscoveryTopicsChanged(current, emptySet(), prepared.host, prepared.port)
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (t: Throwable) {
+                DiagLog.w(
+                    TAG,
+                    t,
+                    "Recording the Home Assistant discovery topic failed; skipping discovery until the next publish.",
+                )
+                return
+            }
+            if (!recorded) {
+                DiagLog.i(TAG, "MQTT broker changed during this publish; skipping Home Assistant discovery until the next publish.")
+                return
+            }
+        }
+        val entries = homeAssistantDiscoveryEntries(prepared.baseTopic, prepared.customName)
         var configsPublished = 0
         entries.forEach { entry ->
             val outcome = executePublish(
@@ -698,6 +768,78 @@ class MqttPublisher(
             staleConfigsCleared,
             tombstones.size,
         )
+        // Until at least one config landed the new device may not exist in HA,
+        // so the old ones stay (and stay queued) rather than leaving nothing.
+        if (configsPublished > 0) {
+            clearStaleTopicDiscovery(prepared, entries.map { it.configTopic }.toSet() + tombstones)
+        }
+    }
+
+    /**
+     * Clears the retained configs under every other topic in
+     * [PreparedPublish.discoveryTopicsToClear] — topics an earlier publish
+     * used before the Smart Home name or topic changed — with empty payloads
+     * (HA's "remove entity"), so old devices don't linger beside the current
+     * one. Only topics a publish actually used are ever recorded, so a name
+     * typed a keystroke at a time leaves nothing to clear. Config topics the
+     * current set just wrote ([keep]) are skipped: two base topics can share a
+     * discovery id ("a/b" and "a_b"), and clearing those would delete the
+     * device that was just created. An old topic is dropped once all its
+     * clears land; one with a failed clear stays and is retried next publish.
+     */
+    private suspend fun clearStaleTopicDiscovery(prepared: PreparedPublish, keep: Set<String>) {
+        val current = normalizedBaseTopic(prepared.baseTopic)
+        val remove = mutableSetOf<String>()
+        // Group stored entries by their normalized form so "a/b/" and "a/b"
+        // are cleared once and dropped together.
+        prepared.discoveryTopicsToClear.groupBy(::normalizedBaseTopic).forEach { (stale, stored) ->
+            if (stale == current) {
+                // Live, not stale; keep only its normalized spelling.
+                remove += stored - current
+                return@forEach
+            }
+            val configTopics = (
+                homeAssistantDiscoveryEntries(stale).map { it.configTopic } +
+                    homeAssistantDiscoveryTombstones(stale)
+                ).distinct().filterNot { it in keep }
+            var cleared = 0
+            configTopics.forEach { topic ->
+                val outcome = executePublish(prepared = prepared, topic = topic, payload = ByteArray(0))
+                if (outcome is MqttPublishOutcome.Success) {
+                    cleared++
+                } else {
+                    DiagLog.w(
+                        TAG,
+                        "Clearing discovery config %s from the old topic failed (%s); retrying on the next publish.",
+                        topic,
+                        outcome,
+                    )
+                }
+            }
+            DiagLog.i(
+                TAG,
+                "Cleared %s/%s Home Assistant discovery configs of the old topic %s.",
+                cleared,
+                configTopics.size,
+                stale,
+            )
+            if (cleared == configTopics.size) remove += stored
+        }
+        // The current topic was recorded before its configs were published.
+        if (remove.isEmpty()) return
+        try {
+            // A false return means the broker changed meanwhile and its
+            // cleanup list started over; there is nothing of ours to drop.
+            onDiscoveryTopicsChanged(null, remove, prepared.host, prepared.port)
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (t: Throwable) {
+            DiagLog.w(
+                TAG,
+                t,
+                "Updating the Home Assistant discovery cleanup list failed; the next publish clears those topics again.",
+            )
+        }
     }
 
     private data class PreparedPublish(
@@ -706,10 +848,15 @@ class MqttPublisher(
         val scheme: String,
         val host: String,
         val port: Int,
+        val customName: String? = null,
+        val discoveryTopicsToClear: Set<String> = emptySet(),
     )
 
     companion object {
         private const val TAG = "MqttPublisher"
+
+        /** Process-wide: the worker and Settings each build their own publisher. */
+        private val DISCOVERY_LOCK = Mutex()
         const val DEFAULT_PUBLISH_TIMEOUT_MS = 5_000L
 
         // Two attempts caps the cost of a permanently-down broker at
@@ -782,13 +929,29 @@ class MqttPublisher(
         // retained bundle they've already acted on.
         fun nowTimestampTopicFor(baseTopic: String): String = nowTopicForKind(baseTopic, "timestamp")
 
-        internal fun homeAssistantDiscoveryEntries(baseTopic: String): List<HomeAssistantDiscoveryEntry> {
-            val base = baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+        /**
+         * The Home Assistant device name: "Alex's ClothesCast" once the user
+         * has set a Smart Home name, else "ClothesCast".
+         */
+        internal fun homeAssistantDeviceName(customName: String?): String =
+            customName?.trim()?.takeIf { it.isNotEmpty() }?.let { "$it ClothesCast" } ?: "ClothesCast"
+
+        // The base topic as every derived topic sees it — trimmed, without
+        // leading / trailing slashes, the default when blank — so "a/b/" and
+        // "a/b" compare as the same discovery topic.
+        internal fun normalizedBaseTopic(baseTopic: String): String =
+            baseTopic.trim().trim('/').ifBlank { UserPreferences.DEFAULT_MQTT_TOPIC }
+
+        internal fun homeAssistantDiscoveryEntries(
+            baseTopic: String,
+            customName: String? = null,
+        ): List<HomeAssistantDiscoveryEntry> {
+            val base = normalizedBaseTopic(baseTopic)
             val idPrefix = discoveryIdPrefix(baseTopic)
             val device = JsonObject(
                 mapOf(
                     "identifiers" to JsonArray(listOf(JsonPrimitive(idPrefix))),
-                    "name" to JsonPrimitive("ClothesCast"),
+                    "name" to JsonPrimitive(homeAssistantDeviceName(customName)),
                     "manufacturer" to JsonPrimitive("ClothesCast"),
                     "model" to JsonPrimitive("Android app"),
                 ),

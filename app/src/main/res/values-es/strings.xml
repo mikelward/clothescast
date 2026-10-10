@@ -865,9 +865,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- API key — replace button. -->
     <string name="settings_api_key_replace">Reemplazar clave Gemini</string>
 
-    <!-- Outfit card headers (TV). -->
-    <string name="outfit_card_header_today">ClothesCast de hoy</string>
-    <string name="outfit_card_header_tonight">ClothesCast de esta noche</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Rationale dialog button. -->

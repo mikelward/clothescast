@@ -809,9 +809,7 @@ Not overridden by design:
     <string name="holiday_banner_waitangi_day">वैतांगी दिवस की शुभकामनाएँ</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
-    <!-- Outfit card headers. -->
-    <string name="outfit_card_header_today">आज का ClothesCast</string>
-    <string name="outfit_card_header_tonight">आज रात का ClothesCast</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Settings — API key replace. -->

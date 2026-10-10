@@ -792,8 +792,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_root_smart_home">Pametni dom</string>
     <string name="settings_root_smart_home_subtitle">Pametni displej i kućna automatizacija</string>
     <string name="settings_api_key_replace">Zameni Gemini ključ</string>
-    <string name="outfit_card_header_today">Današnji ClothesCast</string>
-    <string name="outfit_card_header_tonight">Večernji ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Podešavanja odeće</string>
     <string name="today_celebration_card_title">Praznične teme</string>

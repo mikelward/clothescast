@@ -936,9 +936,7 @@ label localises.
     <!-- Holiday display name — US Presidents\' Day. -->
     <string name="holiday_name_us_presidents_day">總統日</string>
 
-    <!-- Outfit card headers and temperature range. -->
-    <string name="outfit_card_header_today">今天的 ClothesCast</string>
-    <string name="outfit_card_header_tonight">今晚的 ClothesCast</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- API key replace button. -->

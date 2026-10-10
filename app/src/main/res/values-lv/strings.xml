@@ -701,8 +701,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="holiday_banner_boxing_day">Priecīgus Otos Ziemassvētkus</string>
     <string name="today_rationale_open_clothes_settings">Apģērbu iestatījumi</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">Šodienas ClothesCast</string>
-    <string name="outfit_card_header_tonight">Šovakar ClothesCast</string>
     <string name="today_celebration_card_title">Svētku tēmas</string>
     <string name="today_celebration_card_body">Iespējo īpašas krāsas un ziņojumus svētkiem un dzimšanas dienām.</string>
     <string name="today_celebration_card_cta">Kalendāra iestatījumi</string>

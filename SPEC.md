@@ -79,6 +79,17 @@ I put on before I leave?" instead of a full weather-office report.
 - **Smart-home outputs.** MQTT publishes text, image, audio, timestamp, and
   combined media topics when configured. Cast sends the rendered outfit card and,
   when Gemini PCM exists, spoken audio to a selected receiver.
+  The outfit card is titled with the period's scheduled delivery time ("7am
+  ClothesCast"), led by the optional Name set on the Smart Home page when there
+  is one ("Alex's 7am ClothesCast"); a long name shrinks the title to fit, then
+  truncates it. The name also names the Home Assistant device ("Alex's
+  ClothesCast"), and while the topic field is empty the MQTT topic prefix
+  follows it (`clothescast/alexs`); a topic the user types is theirs and the
+  name never changes it. Every prefix a publish has used is remembered, and
+  each publish clears the Home Assistant discovery configs of all but the
+  current one, so HA drops every old device rather than showing two. The
+  list is per broker: switching brokers starts it over, so clears never reach
+  a broker the prefixes weren't published to.
   The outfit card ends with the forecast window it covers ("Mon 4 Oct 07:00 –
   Mon 4 Oct 19:00"), so a card left up on a display shows when it went stale.
   The day card is light and the tonight card dark, since the tonight card is

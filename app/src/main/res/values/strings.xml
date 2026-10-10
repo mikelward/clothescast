@@ -177,10 +177,14 @@
 
     <!-- Top-of-card header on the Nest-Hub outfit image. Drawn in all-caps via
          the renderer; keep the source string in the form you'd want spoken.
-         Period-specific so the user sees "TODAY\'S CLOTHESCAST" in the morning
-         and "TONIGHT\'S CLOTHESCAST" on the evening pass. -->
-    <string name="outfit_card_header_today">Today\'s ClothesCast</string>
-    <string name="outfit_card_header_tonight">Tonight\'s ClothesCast</string>
+         %1$s = the period's scheduled delivery time, in the user's 12h / 24h
+         setting ("7am", "19:00"). -->
+    <!-- TODO: translate -->
+    <string name="outfit_card_header" tools:ignore="MissingTranslation">%1$s ClothesCast</string>
+    <!-- Same header once the user has set a name on Settings → Smart Home.
+         %1$s = that name exactly as typed ("Alex\'s"), %2$s = the time as above. -->
+    <!-- TODO: translate -->
+    <string name="outfit_card_header_named" tools:ignore="MissingTranslation">%1$s %2$s ClothesCast</string>
 
     <!-- Footer label below the forecast / precipitation charts when "Show model
          spread" is enabled. Each model name is rendered alongside a coloured
@@ -756,6 +760,13 @@
     <string name="cast_error_no_route_picked">Pick a smart device first.</string>
     <string name="cast_error_no_insight_yet">No forecast available yet. Wait for the next scheduled run, or tap Refresh on the Today screen.</string>
     <string name="cast_error_unknown">Cast failed.</string>
+
+    <!-- Optional name at the top of Settings → Smart Home. It heads the outfit
+         card, names the Home Assistant device and seeds the MQTT topic. -->
+    <!-- TODO: translate -->
+    <string name="settings_smart_home_name" tools:ignore="MissingTranslation">Name</string>
+    <!-- TODO: translate -->
+    <string name="settings_smart_home_name_hint" tools:ignore="MissingTranslation">e.g. Alex\'s</string>
 
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publish to MQTT</string>

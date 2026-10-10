@@ -725,6 +725,53 @@ class SettingsRepository(
     }
 
     /**
+     * Persists the optional Smart Home name ("Alex's"), trimmed; blank clears
+     * it. The stored topic is never touched: with no topic override the
+     * effective topic simply follows the name ([UserPreferences.mqttTopicForName]).
+     * Nothing is queued for Home Assistant cleanup here: the publisher records
+     * the topics it actually publishes under, so the intermediate topics of a
+     * name being typed (one write per keystroke) never reach the broker.
+     */
+    suspend fun setCustomName(name: String?) {
+        dataStore.edit { prefs ->
+            val clean = name?.trim()?.takeIf { it.isNotBlank() }
+            if (clean == null) prefs.remove(CUSTOM_NAME) else prefs[CUSTOM_NAME] = clean
+        }
+    }
+
+    /**
+     * Applies the publisher's discovery bookkeeping in one transaction: adds
+     * [add] (the topic it just published discovery under) when non-null and
+     * drops [remove] (old topics whose configs were all cleared). Starts from
+     * [mqttDiscoveryTopics]'s seed when the set was never written.
+     */
+    /**
+     * Adds and removes discovery cleanup entries in one write. With [host] and
+     * [port], the write applies only while they are still the stored broker,
+     * judged in the same transaction as the write, and returns false
+     * otherwise: a broker saved meanwhile has started its own list, which
+     * must not pick up a topic published to the old broker.
+     */
+    suspend fun updateMqttDiscoveryTopics(
+        add: String?,
+        remove: Set<String>,
+        host: String? = null,
+        port: Int? = null,
+    ): Boolean {
+        var applied = false
+        dataStore.edit { prefs ->
+            if (host != null) {
+                val sameBroker = prefs[MQTT_HOST].orEmpty().trim().equals(host.trim(), ignoreCase = true) &&
+                    (prefs[MQTT_PORT] ?: UserPreferences.DEFAULT_MQTT_PORT) == (port ?: UserPreferences.DEFAULT_MQTT_PORT)
+                if (!sameBroker) return@edit
+            }
+            prefs[MQTT_DISCOVERY_TOPICS] = (mqttDiscoveryTopics(prefs) - remove) + listOfNotNull(add)
+            applied = true
+        }
+        return applied
+    }
+
+    /**
      * Runtime status of the last MQTT publish attempt, separate from user
      * preferences. [errorMessage] is null on success (or no record yet); non-null
      * is the human-readable failure reason. [recordedAtMs] is the epoch-ms wall
@@ -888,14 +935,27 @@ class SettingsRepository(
     ) {
         dataStore.edit { prefs ->
             val cleanHost = host?.trim()?.takeIf { it.isNotBlank() }
+            // The discovery cleanup set names topics on the broker they were
+            // published to. A different broker can't reach those, and might
+            // hold another phone's configs under the same names, so start the
+            // set over rather than clear them there. The old broker keeps its
+            // device, as it always has when switching brokers.
+            val brokerChanged = !prefs[MQTT_HOST].orEmpty().equals(cleanHost.orEmpty(), ignoreCase = true) ||
+                (prefs[MQTT_PORT] ?: UserPreferences.DEFAULT_MQTT_PORT) != port
             if (cleanHost == null) prefs.remove(MQTT_HOST) else prefs[MQTT_HOST] = cleanHost
             prefs[MQTT_PORT] = port
             prefs[MQTT_USE_TLS] = useTls
             val cleanUser = username?.trim()?.takeIf { it.isNotBlank() }
             if (cleanUser == null) prefs.remove(MQTT_USER) else prefs[MQTT_USER] = cleanUser
+            // Blank = no override: the topic follows the Name. Anything typed
+            // is the user's own, even the default or the Name-derived value —
+            // which is why it goes under its own key: the legacy key can't
+            // tell a typed default from a pre-Name install's stored one. Pin
+            // the discovery seed first, since it reads the legacy key.
+            prefs[MQTT_DISCOVERY_TOPICS] = if (brokerChanged) emptySet() else mqttDiscoveryTopics(prefs)
+            prefs.remove(MQTT_TOPIC)
             val cleanTopic = topic.trim().takeIf { it.isNotBlank() }
-                ?: UserPreferences.DEFAULT_MQTT_TOPIC
-            prefs[MQTT_TOPIC] = cleanTopic
+            if (cleanTopic == null) prefs.remove(MQTT_TOPIC_OVERRIDE) else prefs[MQTT_TOPIC_OVERRIDE] = cleanTopic
         }
     }
 
@@ -1286,9 +1346,11 @@ class SettingsRepository(
         val mqttPort = this[MQTT_PORT] ?: UserPreferences.DEFAULT_MQTT_PORT
         val mqttUseTls = this[MQTT_USE_TLS] == true
         val mqttUsername = this[MQTT_USER]?.takeIf { it.isNotBlank() }
-        val mqttTopic = this[MQTT_TOPIC]?.takeIf { it.isNotBlank() }
-            ?: UserPreferences.DEFAULT_MQTT_TOPIC
+        val mqttTopicOverride = mqttTopicOverride(this)
+        val mqttTopic = effectiveMqttTopic(this)
         val mqttSkipPhoneSpeech = this[MQTT_SKIP_PHONE_SPEECH] ?: true
+        val customName = this[CUSTOM_NAME]?.takeIf { it.isNotBlank() }
+        val mqttDiscoveryTopics = mqttDiscoveryTopics(this)
         val castRouteId = this[CAST_ROUTE_ID]?.takeIf { it.isNotBlank() }
         val castRouteName = this[CAST_ROUTE_NAME]?.takeIf { it.isNotBlank() }
         // Off by default: casting is opt-in, and turning the master switch on
@@ -1368,6 +1430,7 @@ class SettingsRepository(
             mqttUseTls = mqttUseTls,
             mqttUsername = mqttUsername,
             mqttTopic = mqttTopic,
+            mqttTopicOverride = mqttTopicOverride,
             mqttSkipPhoneSpeech = mqttSkipPhoneSpeech,
             castRouteId = castRouteId,
             castRouteName = castRouteName,
@@ -1375,6 +1438,8 @@ class SettingsRepository(
             castMorning = castMorning,
             castTonight = castTonight,
             castSkipPhoneSpeech = castSkipPhoneSpeech,
+            customName = customName,
+            mqttDiscoveryTopics = mqttDiscoveryTopics,
         )
     }
 
@@ -1726,6 +1791,42 @@ class SettingsRepository(
         // [CAST_SKIP_PHONE_SPEECH]. Default true on first read (mirrors the
         // data-class default).
         private val MQTT_SKIP_PHONE_SPEECH = booleanPreferencesKey("mqtt_skip_phone_speech")
+        // Optional Smart Home name ("Alex's"), and the base topics whose HA
+        // discovery configs are still to be cleared after a topic change.
+        private val CUSTOM_NAME = stringPreferencesKey("custom_name")
+        private val MQTT_DISCOVERY_TOPICS = stringSetPreferencesKey("mqtt_discovery_topics")
+        // The user's typed topic. MQTT_TOPIC is the pre-Name key, read only
+        // until the first topic save migrates off it.
+        private val MQTT_TOPIC_OVERRIDE = stringPreferencesKey("mqtt_topic_override")
+
+        /**
+         * The user's typed topic override, or null when the topic follows the
+         * Name. MQTT_TOPIC holds only the override; a stored
+         * [UserPreferences.DEFAULT_MQTT_TOPIC] (what every install had before
+         * the Name existed, unless customized) reads as no override, as does
+         * blank.
+         */
+        private fun mqttTopicOverride(prefs: Preferences): String? =
+            prefs[MQTT_TOPIC_OVERRIDE]?.trim()?.takeIf { it.isNotBlank() }
+                ?: prefs[MQTT_TOPIC]?.trim()
+                    ?.takeIf { it.isNotBlank() && it != UserPreferences.DEFAULT_MQTT_TOPIC }
+
+        /**
+         * Topics Home Assistant discovery configs may be retained under. Never
+         * written means this build hasn't published yet; seeded with the
+         * pre-Name topic, which an earlier build published under, so its device
+         * is cleared once the effective topic differs.
+         */
+        private fun mqttDiscoveryTopics(prefs: Preferences): Set<String> =
+            prefs[MQTT_DISCOVERY_TOPICS]
+                ?: setOf(
+                    prefs[MQTT_TOPIC]?.trim()?.takeIf { it.isNotBlank() }
+                        ?: UserPreferences.DEFAULT_MQTT_TOPIC,
+                )
+
+        /** The topic publishes use: the override, else the Name's topic. */
+        private fun effectiveMqttTopic(prefs: Preferences): String =
+            mqttTopicOverride(prefs) ?: UserPreferences.mqttTopicForName(prefs[CUSTOM_NAME])
 
         // Cast destination — the smart display the user picked in Settings.
         // routeId is the Cast SDK's stable identifier; routeName is the

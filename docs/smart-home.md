@@ -30,7 +30,12 @@ yourself; no developer-operated service ever sees the payload.
 4. Optionally enter a username + password. The password is stored
    encrypted on-device under the same Tink-AEAD slot the Gemini API
    key uses.
-5. Topic prefix defaults to `clothescast/default`. The daytime forecast
+5. Leave the topic prefix empty and it follows the **Name** at the top of
+   the Smart Home page (shown grayed out in the field): `clothescast/default`
+   with no name, otherwise the name lowercased, punctuation dropped, spaces
+   as `_` — "Alex's" gives `clothescast/alexs`, "Mary Jo" gives
+   `clothescast/mary_jo`. A prefix you type is yours and the name never
+   changes it; empty the field and Save to follow the name again. The daytime forecast
    publishes to `<prefix>/day/text`; the overnight one to
    `<prefix>/night/text`. The outfit image, the TTS audio, and a combined
    card-plus-announcement MP4 (when published) land on
@@ -99,7 +104,14 @@ ClothesCast also publishes retained Home Assistant MQTT discovery
 configs under `homeassistant/.../config`, so HA can create the text,
 timestamp, image, and has-events entities automatically. The discovery configs point
 at the normal state topics above — they replace YAML setup, not the
-forecast publishes themselves.
+forecast publishes themselves. The HA device is named "ClothesCast", or
+"Alex's ClothesCast" when a Name is set. When the topic prefix changes (a new
+Name, or a prefix you typed), the next publish clears the discovery configs
+of every prefix it published under before, with empty retained payloads, so
+HA removes the old device instead of showing two. A clear that fails is
+retried on the following publish. Moving to a different broker starts this
+over: the old broker's device stays there, since ClothesCast no longer
+connects to it.
 
 ## Broker
 
@@ -339,7 +351,10 @@ Alongside the prose sensor, ClothesCast publishes a PNG outfit card to
 `<prefix>/<period>/image` (e.g. `clothescast/default/day/image`). The
 card is 800 × 480 px (Nest Hub 7" native resolution) and shows:
 
-- Period label ("TODAY" / "TONIGHT") in Roboto Bold at the top
+- A title in Roboto Bold at the top: the period's scheduled delivery time,
+  e.g. "7AM CLOTHESCAST", led by the Smart Home Name when one is set
+  ("ALEX'S 7AM CLOTHESCAST"). A long name shrinks the title to fit the
+  column, then truncates it.
 - Top and bottom garment icons stacked in the left column
 - The full insight prose sentence wrapped in Roboto Regular on the right
 - The conditions strip (feels-like range, plus rain, wind and UV when notable)

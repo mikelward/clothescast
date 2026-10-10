@@ -818,6 +818,38 @@ class SettingsViewModelTest {
         applied.mqttPort shouldBe 9999
     }
 
+    @Test
+    fun `useDiscoveredService keeps a name-derived topic following the name`() = runTest {
+        val discovery = FakeDiscovery()
+        val vm = track(buildSubject(discovery = discovery))
+        settingsRepository.setCustomName("Alex's")
+        vm.state.first { it.mqttTopic == "clothescast/alexs" }
+
+        vm.useDiscoveredService(
+            DiscoveredService(type = ServiceType.MQTT, name = "Mosquitto", host = "broker.local", port = 1883),
+        )
+        vm.state.first { it.mqttHost == "broker.local" }
+        settingsRepository.preferences.first().mqttTopicOverride shouldBe null
+
+        // Passing the effective topic back would have frozen it into an override.
+        settingsRepository.setCustomName("Sam's")
+        settingsRepository.preferences.first().mqttTopic shouldBe "clothescast/sams"
+    }
+
+    @Test
+    fun `useDiscoveredService keeps a typed topic`() = runTest {
+        val discovery = FakeDiscovery()
+        val vm = track(buildSubject(discovery = discovery))
+        settingsRepository.setMqttConfig(host = "old", port = 1883, useTls = false, username = null, topic = "home/kitchen")
+        vm.state.first { it.mqttTopicOverride == "home/kitchen" }
+
+        vm.useDiscoveredService(
+            DiscoveredService(type = ServiceType.MQTT, name = "Mosquitto", host = "broker.local", port = 1883),
+        )
+        vm.state.first { it.mqttHost == "broker.local" }
+        settingsRepository.preferences.first().mqttTopicOverride shouldBe "home/kitchen"
+    }
+
     private fun buildSubject(discovery: HomeAssistantDiscovery): SettingsViewModel {
         val emptyGeocoding = HttpClient(
             MockEngine {

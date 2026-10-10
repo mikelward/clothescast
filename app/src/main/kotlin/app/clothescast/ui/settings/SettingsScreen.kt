@@ -453,7 +453,8 @@ internal fun SmartHomePage(
             port = state.mqttPort,
             useTls = state.mqttUseTls,
             username = state.mqttUsername,
-            topic = state.mqttTopic,
+            topicOverride = state.mqttTopicOverride,
+            customName = state.customName,
             passwordSet = state.mqttPasswordSet,
             lastError = state.mqttLastError,
             lastErrorAt = state.mqttLastErrorAt,
@@ -496,6 +497,7 @@ internal fun SmartHomePage(
             onSetCastTonight = viewModel::setCastTonight,
             onSetCastSkipPhoneSpeech = viewModel::setCastSkipPhoneSpeech,
             onSetMqttSkipPhoneSpeech = viewModel::setMqttSkipPhoneSpeech,
+            onSetCustomName = viewModel::setCustomName,
             onSetUpSpeech = onSetUpSpeech,
         )
         }

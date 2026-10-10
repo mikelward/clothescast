@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-08-28_
+_Last updated: 2026-10-10_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -263,7 +263,19 @@ The source code is at <https://github.com/mikelward/clothescast>.
   (e.g. _"Bring a jacket for your concert tonight"_) when you have the
   calendar extras enabled, because that clause is part of the rendered
   sentence. No coordinates, no API keys, no settings values, no device
-  identifiers travel with any of these messages.
+  identifiers travel with any of these messages, with one exception you
+  choose: the optional **Name** on the Smart Home page.
+- **Your name (optional):** If you type a Name on the Smart Home page
+  (e.g. "Alex's"), it is drawn into the title of the outfit-card image
+  ("Alex's 7am ClothesCast"), so it travels wherever that image goes — the
+  MQTT image topic and the combined MP4, and the smart display you cast to.
+  It also names the Home Assistant device ("Alex's ClothesCast") in the
+  retained discovery configs on your broker, and becomes the topic prefix
+  (`clothescast/alexs`) while you leave the topic field empty. Leave it blank
+  and none of this happens. It is stored on your device and goes to the
+  broker and display you configured — and, because a bug report lists your
+  MQTT topic prefix and whether it comes from the name, into any bug report
+  you choose to send while the prefix is name-derived.
 - **Authentication:** If you set a broker username, the bridge sends
   it on connect; the corresponding password is stored on your device
   encrypted at rest (same Tink-AEAD pattern as the Gemini API key
@@ -556,6 +568,11 @@ Open an issue at <https://github.com/mikelward/clothescast/issues> or
 email the address listed on the Play Store listing.
 
 ## Changelog
+
+- **2026-10-10** — Added the optional Smart Home **Name**. When set, it
+  appears in the outfit-card image title, the Home Assistant device name and
+  (while the topic field is empty) the MQTT topic prefix, and so reaches your own broker and smart
+  display. Blank by default.
 
 - **2026-08-28** — **Crash and usage reporting is now off until you turn it
   on.** It used to be on by default, with a one-time banner telling you how to

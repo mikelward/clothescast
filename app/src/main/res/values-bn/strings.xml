@@ -851,9 +851,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_waitangi_day">ওয়াইতাঙ্গি দিবসের শুভেচ্ছা</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
-    <!-- Outfit card headers. -->
-    <string name="outfit_card_header_today">আজকের ClothesCast</string>
-    <string name="outfit_card_header_tonight">আজ রাতের ClothesCast</string>
+    <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
 
     <!-- Settings — API key replace. -->

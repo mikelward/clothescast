@@ -9,6 +9,7 @@ import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
+import app.clothescast.ui.garment.outfitCardHeader
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
@@ -98,10 +99,7 @@ internal suspend fun castCurrentInsight(
         temperatureUnit = prefs.temperatureUnit,
         windSpeedUnit = prefs.windSpeedUnit,
     )
-    val header = context.getString(
-        if (insight.period == ForecastPeriod.TODAY) R.string.outfit_card_header_today
-        else R.string.outfit_card_header_tonight,
-    )
+    val header = outfitCardHeader(context, insight.period, prefs, formatter.locale)
 
     val theme = resolveHolidayTheme(prefs, calendarEventReader)
     val topColors = prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())

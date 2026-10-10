@@ -704,8 +704,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="holiday_banner_boxing_day">Häid teisejõule</string>
     <string name="today_rationale_open_clothes_settings">Riidete seaded</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">Tänane ClothesCast</string>
-    <string name="outfit_card_header_tonight">Tänane õhtune ClothesCast</string>
     <string name="today_celebration_card_title">Tähistamisteemad</string>
     <string name="today_celebration_card_body">Luba erilised värvid ja sõnumid pühade ja sünnipäevade jaoks.</string>
     <string name="today_celebration_card_cta">Kalendri seaded</string>

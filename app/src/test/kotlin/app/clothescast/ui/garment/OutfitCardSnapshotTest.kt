@@ -55,7 +55,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "Today, it will be warm. 3° warmer than yesterday. " +
                     "Wear a t-shirt and shorts. Chance of rain.",
                 info = OutfitCardInfoLines(
@@ -78,7 +78,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
-                header = "Tonight's ClothesCast",
+                header = "7pm ClothesCast",
                 prose = "Tonight, it will be cool. Wear a sweater and long pants.",
                 info = OutfitCardInfoLines(
                     tempLine = "11–18°C",
@@ -113,7 +113,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.LONG_PANTS),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "Today, mild with a chance of drizzle. Wear a t-shirt and long pants.",
                 info = outfitCardInfoLines(ctx, formatter, hourly, TemperatureUnit.CELSIUS),
                 topColors = emptyMap(),
@@ -129,7 +129,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.THIN_JACKET, OutfitSuggestion.Bottom.JEANS),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "Today, it will be cool. 2° cooler than yesterday. " +
                     "Wear a jacket and jeans.",
                 info = OutfitCardInfoLines(
@@ -157,7 +157,7 @@ class OutfitCardSnapshotTest {
                     OutfitSuggestion.Bottom.LONG_PANTS,
                     OutfitSuggestion.Hands.GLOVES,
                 ),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "A freezing one today. Wear a coat and long pants, and gloves.",
                 info = OutfitCardInfoLines(
                     tempLine = "-3–2°C",
@@ -184,7 +184,7 @@ class OutfitCardSnapshotTest {
                     OutfitSuggestion.Bottom.LONG_PANTS,
                     OutfitSuggestion.Hands.GLOVES,
                 ),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "A freezing one today. Wear a coat and long pants, and gloves.",
                 info = OutfitCardInfoLines(
                     tempLine = "-3–2°C",
@@ -212,7 +212,7 @@ class OutfitCardSnapshotTest {
                     OutfitSuggestion.Bottom.JEANS,
                     carried = OutfitSuggestion.Carried.UMBRELLA,
                 ),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "A wet one today. Wear a jacket and jeans, and bring an umbrella.",
                 info = OutfitCardInfoLines(
                     tempLine = "9–15°C",
@@ -242,7 +242,7 @@ class OutfitCardSnapshotTest {
                     hands = OutfitSuggestion.Hands.GLOVES,
                     carried = OutfitSuggestion.Carried.UMBRELLA,
                 ),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "A freezing, wet one. Wear a coat and long pants, and gloves, " +
                     "and bring an umbrella.",
                 info = OutfitCardInfoLines(
@@ -303,7 +303,7 @@ class OutfitCardSnapshotTest {
                     OutfitSuggestion.Bottom.JEANS,
                     outer = OutfitSuggestion.Outer.RAIN_JACKET,
                 ),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "A cool, wet one. Wear a sweater and jeans, and a rain jacket.",
                 info = OutfitCardInfoLines(
                     tempLine = "11–16°C",
@@ -324,7 +324,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "A hot, breezy one. Wear a t-shirt and shorts, and watch the sun.",
                 info = OutfitCardInfoLines(
                     tempLine = "18–34°C",
@@ -350,7 +350,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
-                header = "Today's ClothesCast",
+                header = "7am ClothesCast",
                 prose = "A hot, breezy one. Wear a t-shirt and shorts, and watch the sun.",
                 info = OutfitCardInfoLines(
                     tempLine = "18–34°C",
@@ -377,7 +377,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
-                header = "Tonight's ClothesCast",
+                header = "7pm ClothesCast",
                 prose = "Tonight, it will be cool. Wear a sweater and long pants.",
                 info = OutfitCardInfoLines(
                     tempLine = "11–18°C",
@@ -402,7 +402,7 @@ class OutfitCardSnapshotTest {
             renderOutfitCard(
                 context = ctx,
                 outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
-                header = "Tonight's ClothesCast",
+                header = "7pm ClothesCast",
                 prose = "Tonight, it will be cool. Wear a sweater and long pants.",
                 info = OutfitCardInfoLines(
                     tempLine = "11–18°C",
@@ -427,6 +427,28 @@ class OutfitCardSnapshotTest {
                     },
                     timeFormat = TimeFormat.TWENTY_FOUR_HOUR,
                 ),
+            ),
+        )
+    }
+    @Test
+    fun outfit_card_long_name_header_shrinks_to_fit() {
+        // A long Smart Home name: the header shrinks (then ellipsizes) to the
+        // prose column instead of running off the card's right edge.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+                header = "Alexandria-Maximilian's 10:30pm ClothesCast",
+                prose = "Tonight, it will be cool. Wear a sweater and long pants.",
+                info = OutfitCardInfoLines(
+                    tempLine = "11–18°C",
+                    tempFillFraction = thermometerFillFractionFor(18.0),
+                    rainFillFraction = null,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+                darkTheme = true,
             ),
         )
     }

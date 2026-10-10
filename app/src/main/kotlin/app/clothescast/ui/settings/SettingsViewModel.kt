@@ -312,6 +312,8 @@ class SettingsViewModel(
                         mqttUseTls = prefs.mqttUseTls,
                         mqttUsername = prefs.mqttUsername.orEmpty(),
                         mqttTopic = prefs.mqttTopic,
+                        mqttTopicOverride = prefs.mqttTopicOverride,
+                        customName = prefs.customName,
                         mqttSkipPhoneSpeech = prefs.mqttSkipPhoneSpeech,
                         castAvailable = castAvailable,
                         castRouteName = prefs.castRouteName,
@@ -1161,6 +1163,11 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setMqttSkipPhoneSpeech(enabled) }
     }
 
+    /** Persists the optional Smart Home name; blank clears it. */
+    fun setCustomName(name: String) {
+        viewModelScope.launch { settingsRepository.setCustomName(name) }
+    }
+
     /**
      * Runs the "Cast now" test. Reuses the worker's render + synth
      * pipeline so the test cast is visually identical to what the
@@ -1205,7 +1212,10 @@ class SettingsViewModel(
                 port = port,
                 useTls = current.mqttUseTls,
                 username = current.mqttUsername.orEmpty(),
-                topic = current.mqttTopic,
+                // The override, not the effective topic: passing a derived
+                // topic back would freeze it into an override and stop it
+                // following the Name.
+                topic = current.mqttTopicOverride.orEmpty(),
             )
         }
     }

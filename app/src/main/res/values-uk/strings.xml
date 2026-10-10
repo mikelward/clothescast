@@ -757,8 +757,6 @@ only the displayed label localizes.
     <string name="holiday_banner_boxing_day">З наступним різдвяним днем</string>
     <string name="today_rationale_open_clothes_settings">Налаштування одягу</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
-    <string name="outfit_card_header_today">Сьогоднішній ClothesCast</string>
-    <string name="outfit_card_header_tonight">Нічний ClothesCast</string>
     <string name="today_celebration_card_title">Святкові теми</string>
     <string name="today_celebration_card_body">Увімкніть спеціальні кольори та повідомлення для свят і днів народження.</string>
     <string name="today_celebration_card_cta">Налаштування календаря</string>

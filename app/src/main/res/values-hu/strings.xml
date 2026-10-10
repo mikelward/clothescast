@@ -796,8 +796,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_root_smart_home">Okosotthon</string>
     <string name="settings_root_smart_home_subtitle">Okos kijelzők és otthonautomatizálás</string>
     <string name="settings_api_key_replace">Gemini-kulcs cseréje</string>
-    <string name="outfit_card_header_today">Mai ClothesCast</string>
-    <string name="outfit_card_header_tonight">Esti ClothesCast</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="today_rationale_open_clothes_settings">Ruházati beállítások</string>
     <string name="today_celebration_card_title">Ünnepi témák</string>

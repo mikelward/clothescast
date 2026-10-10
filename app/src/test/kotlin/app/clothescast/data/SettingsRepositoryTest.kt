@@ -35,6 +35,7 @@ import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.core.domain.model.thresholdC
 import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.ClothesRulesSnapshot
 import app.clothescast.diag.SettingsAnalyticsSnapshot
 import io.kotest.assertions.throwables.shouldThrow
@@ -1833,5 +1834,168 @@ class SettingsRepositoryTest {
 
         migration.shouldMigrate(emptyPreferences()) shouldBe true
         migration.shouldMigrate(mutablePreferencesOf(glovesMigratedKey to true)) shouldBe false
+    }
+    @Test
+    fun `customName defaults to null and blank clears it`() = runTest {
+        subject.preferences.first().customName shouldBe null
+        subject.setCustomName("  Alex's  ")
+        subject.preferences.first().customName shouldBe "Alex's"
+        subject.setCustomName("   ")
+        subject.preferences.first().customName shouldBe null
+    }
+
+    private suspend fun saveTopic(topic: String) = subject.setMqttConfig(
+        host = "broker.example.com", port = 1883, useTls = false, username = null, topic = topic,
+    )
+
+    @Test
+    fun `a stored default topic reads as no override and follows the name`() = runTest {
+        // Every install before the Name existed stored the default topic.
+        dataStore.edit { it[stringPreferencesKey("mqtt_topic")] = UserPreferences.DEFAULT_MQTT_TOPIC }
+        subject.preferences.first().mqttTopicOverride shouldBe null
+        subject.preferences.first().mqttTopic shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+        subject.setCustomName("Alex's")
+        subject.preferences.first().mqttTopic shouldBe "clothescast/alexs"
+    }
+
+    @Test
+    fun `a stored blank topic reads as no override`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("mqtt_topic")] = "  " }
+        subject.preferences.first().mqttTopicOverride shouldBe null
+        subject.preferences.first().mqttTopic shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+    }
+
+    @Test
+    fun `a stored custom topic reads as the override`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("mqtt_topic")] = "home/kitchen" }
+        subject.setCustomName("Alex's")
+        val prefs = subject.preferences.first()
+        prefs.mqttTopicOverride shouldBe "home/kitchen"
+        prefs.mqttTopic shouldBe "home/kitchen"
+    }
+
+    @Test
+    fun `with no override the effective topic follows each name change`() = runTest {
+        subject.setCustomName("Alex's")
+        subject.preferences.first().mqttTopic shouldBe "clothescast/alexs"
+        subject.setCustomName("Mary Jo")
+        subject.preferences.first().mqttTopic shouldBe "clothescast/mary_jo"
+        subject.setCustomName("東京")
+        subject.preferences.first().mqttTopic shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+        subject.setCustomName("")
+        val prefs = subject.preferences.first()
+        prefs.mqttTopic shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+        prefs.mqttTopicOverride shouldBe null
+    }
+
+    @Test
+    fun `a typed topic is never changed by name edits`() = runTest {
+        saveTopic("home/kitchen")
+        subject.setCustomName("Alex's")
+        subject.preferences.first().mqttTopic shouldBe "home/kitchen"
+        subject.setCustomName(null)
+        subject.preferences.first().mqttTopic shouldBe "home/kitchen"
+    }
+
+    @Test
+    fun `the name's own topic typed explicitly becomes an override`() = runTest {
+        subject.setCustomName("Alex's")
+        saveTopic("clothescast/alexs")
+        subject.setCustomName("Sam's")
+        val prefs = subject.preferences.first()
+        prefs.mqttTopicOverride shouldBe "clothescast/alexs"
+        prefs.mqttTopic shouldBe "clothescast/alexs"
+    }
+
+    @Test
+    fun `the default topic typed explicitly stays the user's own`() = runTest {
+        subject.setCustomName("Alex's")
+        saveTopic(UserPreferences.DEFAULT_MQTT_TOPIC)
+        subject.setCustomName("Sam's")
+        val prefs = subject.preferences.first()
+        prefs.mqttTopicOverride shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+        prefs.mqttTopic shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+    }
+
+    @Test
+    fun `a topic save migrates off the legacy key`() = runTest {
+        dataStore.edit {
+            it[stringPreferencesKey("mqtt_host")] = "broker.example.com"
+            it[stringPreferencesKey("mqtt_topic")] = "home/kitchen"
+        }
+        saveTopic("")
+        val prefs = subject.preferences.first()
+        // The legacy custom topic no longer reads back as an override.
+        prefs.mqttTopicOverride shouldBe null
+        prefs.mqttTopic shouldBe UserPreferences.DEFAULT_MQTT_TOPIC
+        // But the device it published under is still queued for cleanup.
+        prefs.mqttDiscoveryTopics shouldBe setOf("home/kitchen")
+    }
+
+    @Test
+    fun `saving a blank topic removes the override so it follows the name again`() = runTest {
+        subject.setCustomName("Alex's")
+        saveTopic("home/kitchen")
+        saveTopic("   ")
+        val prefs = subject.preferences.first()
+        prefs.mqttTopicOverride shouldBe null
+        prefs.mqttTopic shouldBe "clothescast/alexs"
+    }
+
+    @Test
+    fun `the discovery set is seeded with the pre-Name topic`() = runTest {
+        // Never written: an earlier build published under the stored (or default) topic.
+        subject.preferences.first().mqttDiscoveryTopics shouldBe setOf(UserPreferences.DEFAULT_MQTT_TOPIC)
+        dataStore.edit { it[stringPreferencesKey("mqtt_topic")] = "home/kitchen" }
+        subject.preferences.first().mqttDiscoveryTopics shouldBe setOf("home/kitchen")
+    }
+
+    @Test
+    fun `typing a name queues nothing for cleanup`() = runTest {
+        // One write per keystroke; none of these topics was ever published.
+        listOf("A", "Al", "Ale", "Alex", "Alex's").forEach { subject.setCustomName(it) }
+        subject.preferences.first().mqttDiscoveryTopics shouldBe setOf(UserPreferences.DEFAULT_MQTT_TOPIC)
+    }
+
+    @Test
+    fun `a save on the same broker keeps the discovery set`() = runTest {
+        // The first save sets a host where there was none, which starts the set over.
+        saveTopic("")
+        subject.updateMqttDiscoveryTopics(add = "home/kitchen", remove = emptySet())
+        // Same host, differently cased, same port.
+        subject.setMqttConfig(host = "Broker.Example.com", port = 1883, useTls = true, username = "u", topic = "")
+        subject.preferences.first().mqttDiscoveryTopics shouldBe setOf("home/kitchen")
+    }
+
+    @Test
+    fun `moving to another broker starts the discovery set over`() = runTest {
+        saveTopic("")
+        subject.updateMqttDiscoveryTopics(add = "home/kitchen", remove = emptySet())
+        subject.setMqttConfig(host = "other.example.com", port = 1883, useTls = false, username = null, topic = "")
+        subject.preferences.first().mqttDiscoveryTopics shouldBe emptySet()
+
+        subject.updateMqttDiscoveryTopics(add = "home/kitchen", remove = emptySet())
+        subject.setMqttConfig(host = "other.example.com", port = 8883, useTls = true, username = null, topic = "")
+        subject.preferences.first().mqttDiscoveryTopics shouldBe emptySet()
+    }
+
+    @Test
+    fun `a discovery update for another broker is refused`() = runTest {
+        saveTopic("")
+        subject.updateMqttDiscoveryTopics(add = "home/kitchen", remove = emptySet(), host = "Broker.Example.com", port = 1883) shouldBe true
+        subject.updateMqttDiscoveryTopics(add = "home/garage", remove = emptySet(), host = "other.example.com", port = 1883) shouldBe false
+        subject.updateMqttDiscoveryTopics(add = "home/garage", remove = emptySet(), host = "broker.example.com", port = 8883) shouldBe false
+        subject.preferences.first().mqttDiscoveryTopics shouldBe setOf("home/kitchen")
+    }
+
+    @Test
+    fun `updateMqttDiscoveryTopics adds and removes in one write`() = runTest {
+        subject.updateMqttDiscoveryTopics(add = "a", remove = setOf(UserPreferences.DEFAULT_MQTT_TOPIC))
+        subject.updateMqttDiscoveryTopics(add = "b", remove = emptySet())
+        subject.updateMqttDiscoveryTopics(add = "c", remove = setOf("a", "missing"))
+        subject.preferences.first().mqttDiscoveryTopics shouldBe setOf("b", "c")
+        subject.updateMqttDiscoveryTopics(add = null, remove = setOf("b", "c"))
+        // Written empty, the set no longer falls back to its seed.
+        subject.preferences.first().mqttDiscoveryTopics shouldBe emptySet()
     }
 }

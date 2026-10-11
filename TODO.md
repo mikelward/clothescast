@@ -308,6 +308,12 @@ Open:
       "what to bring tomorrow" briefing.
 - [ ] **Notification actions** — "read aloud" / "snooze for today" buttons in
       the notification.
+- [ ] **Text size in dialogs** — the in-app text size (mikelward/androidzoom)
+      reaches every screen but not dialogs or sheets, which are windows of
+      their own and reset to the system size. Wrap their content in
+      `FontSizeWindow` (text only) or `FontSizePinchWindow` (text and pinch).
+- [ ] **Translate the text-size strings** — `settings_display_text_size_*`
+      ship in English with the deferral markers.
 - [x] **Tap-to-replay TTS** on Today — the play button replays the cached
       insight through TTS / MQTT / Cast (`TodayScreen` play action).
 - [ ] **Past 7 days history** on Today — pull from `InsightCache`, persist

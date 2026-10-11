@@ -16,6 +16,7 @@ import app.clothescast.core.domain.model.DeltaFormat
 import app.clothescast.core.domain.model.ClothesMentionMode
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ColorPalette
+import app.clothescast.core.domain.model.DEFAULT_APP_FONT_SCALE
 import app.clothescast.core.domain.model.DeliveryMode
 import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.WindSpeedUnitSetting
@@ -1347,6 +1348,20 @@ class SettingsRepositoryTest {
         // the other drives the SDK flags.
         subject.preferences.first().telemetryEnabled shouldBe false
         subject.telemetryChoice.first().enabled shouldBe false
+    }
+
+    @Test
+    fun `text size defaults to the system size with pinch on, and round-trips`() = runTest {
+        val initial = subject.preferences.first()
+        initial.fontScale shouldBe DEFAULT_APP_FONT_SCALE
+        initial.pinchFontSize shouldBe true
+
+        subject.setFontScale(1.35f)
+        subject.setPinchFontSize(false)
+
+        val stored = subject.preferences.first()
+        stored.fontScale shouldBe 1.35f
+        stored.pinchFontSize shouldBe false
     }
 
     @Test

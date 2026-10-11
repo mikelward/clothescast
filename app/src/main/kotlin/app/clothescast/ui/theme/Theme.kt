@@ -11,6 +11,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import app.clothescast.core.domain.model.ColorPalette
+import com.mikelward.androidzoom.compose.FontSizeState
+import com.mikelward.androidzoom.compose.ProvideFontSize
 
 private val LightScheme = lightColorScheme(
     primary = Color(0xFF1E6FFF),
@@ -40,6 +42,11 @@ fun ClothesCastTheme(
     // resolved from the user's selection + persisted slots. Empty falls back to
     // each model's enum-ordinal colour (see [poolModelColors]).
     colorSlots: Map<String, Int> = emptyMap(),
+    // The user's text size (mikelward/androidzoom). Null draws at the system's
+    // size with no pinch -- the widgets, previews and tests that never set
+    // one. The activity passes its state so every screen is sized by it and a
+    // two-finger pinch anywhere resizes it.
+    fontSize: FontSizeState? = null,
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -57,6 +64,8 @@ fun ClothesCastTheme(
         colorSlots = colorSlots,
     )
     MaterialTheme(colorScheme = colorScheme) {
-        CompositionLocalProvider(LocalAppPalette provides palette, content = content)
+        CompositionLocalProvider(LocalAppPalette provides palette) {
+            if (fontSize == null) content() else ProvideFontSize(fontSize, content = content)
+        }
     }
 }

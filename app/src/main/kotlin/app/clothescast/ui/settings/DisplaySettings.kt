@@ -1,6 +1,8 @@
 package app.clothescast.ui.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +20,8 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,12 +33,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.ui.EdgeFadeOverlay
+import com.mikelward.androidzoom.MAX_FONT_SCALE
+import com.mikelward.androidzoom.MIN_FONT_SCALE
+import com.mikelward.androidzoom.compose.LocalFontSizeState
+import com.mikelward.androidzoom.compose.StableInputDensity
+import com.mikelward.androidzoom.fontScalePercent
 import sh.calvin.reorderable.ReorderableColumn
 
 @Composable
@@ -60,6 +70,7 @@ internal fun DisplayContent(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            TextSizeCard()
             SectionCard(title = stringResource(R.string.settings_display_theme_title)) {
                 ThemeMode.entries.forEach { mode ->
                     RadioRow(
@@ -94,6 +105,58 @@ internal fun DisplayContent(
                     onReorder = onReorderHomeSection,
                 )
             }
+        }
+    }
+}
+
+/**
+ * The text-size slider and the pinch switch, moving the shared state the
+ * whole app is sized by (mikelward/androidzoom), so this screen is its own
+ * preview while the slider is dragged. Hidden where no state is provided --
+ * previews and tests that never set one.
+ */
+@Composable
+private fun TextSizeCard() {
+    val state = LocalFontSizeState.current ?: return
+    SectionCard(title = stringResource(R.string.settings_display_text_size_title)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Hosted at the unscaled density: the drag changes the scaled one
+            // on every frame, which would otherwise restart its own gesture.
+            Box(modifier = Modifier.weight(1f)) {
+                StableInputDensity {
+                    Slider(
+                        value = state.scale,
+                        onValueChange = state::preview,
+                        onValueChangeFinished = { state.commit(state.scale) },
+                        valueRange = MIN_FONT_SCALE..MAX_FONT_SCALE,
+                    )
+                }
+            }
+            Text(
+                text = stringResource(
+                    R.string.settings_display_text_size_value,
+                    fontScalePercent(state.scale),
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(start = 12.dp),
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .toggleable(
+                    value = state.pinchEnabled,
+                    role = Role.Switch,
+                    onValueChange = state::choosePinch,
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.settings_display_text_size_pinch),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f),
+            )
+            Switch(checked = state.pinchEnabled, onCheckedChange = null)
         }
     }
 }

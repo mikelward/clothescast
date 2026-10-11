@@ -59,6 +59,7 @@ jobs:
       # com.mikelward.androidlog at all.
       extra-repositories: |
         https://raw.githubusercontent.com/mikelward/androidlog/maven
+        https://raw.githubusercontent.com/mikelward/androidzoom/maven
       # The release-age cooldown exists so a compromised THIRD-PARTY release
       # has time to be yanked. androidlog is this owner's own repository,
       # published by its own gated workflow, so the window guards nothing and
@@ -69,6 +70,7 @@ jobs:
       # coordinate would be deferred forever rather than merely delayed.
       no-cooldown-for: |
         com.mikelward.androidlog:logging-android
+        com.mikelward.androidzoom:zoom-compose
       # The license inventory is derived from the dependency set, so the
       # batch rebuilds it and commits it alongside the catalog — without
       # this, ci.yml's drift check turns every benign bump into a manual

@@ -2655,7 +2655,10 @@ internal fun InsightCard(
             // can override (Always shows the lead here too; Never drops it
             // from the spoken briefing as well).
             text = formatter.format(insight.summary, isFutureDay = isFutureDay),
-            style = MaterialTheme.typography.headlineSmall,
+            // titleLarge rather than headlineSmall: with the app's text size
+            // starting at 115%, this lands the forecast where headlineSmall at
+            // 100% did, and still grows and shrinks with the slider.
+            style = MaterialTheme.typography.titleLarge,
             modifier = if (onNavigateToFormat != null) {
                 Modifier.clickable { onNavigateToFormat() }
             } else {

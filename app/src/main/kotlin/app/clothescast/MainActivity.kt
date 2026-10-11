@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import app.clothescast.core.domain.model.DEFAULT_APP_FONT_SCALE
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.UserPreferences
@@ -31,6 +32,8 @@ import app.clothescast.locale.AppLocale
 import app.clothescast.ui.nav.ClothesCastNavHost
 import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
+import com.mikelward.androidzoom.FontSizeSettings
+import com.mikelward.androidzoom.compose.rememberFontSizeState
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -86,6 +89,10 @@ class MainActivity : ComponentActivity() {
         // location-aware Auto default) against the persisted slot map so each
         // forecaster's overlay colour stays put across selection edits.
         val colorSlotsFlow = app.settingsRepository.preferences.map { colorSlotsOf(it) }
+        // The text size, read with the theme above so the first frame is
+        // already the user's size rather than resizing a beat later.
+        val initialFontSize = fontSizeSettingsOf(initialSnapshot)
+        val fontSizeFlow = app.settingsRepository.preferences.map { fontSizeSettingsOf(it) }
         try {
             setContent {
                 val themeMode by themeModeFlow
@@ -94,6 +101,18 @@ class MainActivity : ComponentActivity() {
                     .collectAsStateWithLifecycle(initialValue = initialPrefs.second)
                 val colorSlots by colorSlotsFlow
                     .collectAsStateWithLifecycle(initialValue = initialColorSlots)
+                val persistedFontSize by fontSizeFlow
+                    .collectAsStateWithLifecycle(initialValue = initialFontSize)
+                val fontSize = rememberFontSizeState(
+                    persisted = persistedFontSize,
+                    onScaleSettled = { scale ->
+                        app.persistFontSetting("text size") { setFontScale(scale) }
+                    },
+                    onPinchEnabledChange = { enabled ->
+                        app.persistFontSetting("pinch switch") { setPinchFontSize(enabled) }
+                    },
+                    defaultScale = DEFAULT_APP_FONT_SCALE,
+                )
                 val darkTheme = when (themeMode) {
                     ThemeMode.SYSTEM -> isSystemInDarkTheme()
                     ThemeMode.LIGHT -> false
@@ -132,6 +151,7 @@ class MainActivity : ComponentActivity() {
                     darkTheme = darkTheme,
                     colorPalette = colorPalette,
                     colorSlots = colorSlots,
+                    fontSize = fontSize,
                 ) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
@@ -238,4 +258,20 @@ class MainActivity : ComponentActivity() {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
     }
+}
+
+/** The stored text size, as the shared library reads it. */
+internal fun fontSizeSettingsOf(prefs: UserPreferences): FontSizeSettings =
+    FontSizeSettings(scale = prefs.fontScale, pinchEnabled = prefs.pinchFontSize)
+
+/**
+ * Writes a text-size setting through [ClothesCastApplication.fontSizeWrites]:
+ * on the application scope, so a write a pinch starts as the activity finishes
+ * still lands, and in order, so two quick changes can't land the older one last.
+ */
+internal fun ClothesCastApplication.persistFontSetting(
+    what: String,
+    write: suspend app.clothescast.data.SettingsRepository.() -> Unit,
+) {
+    fontSizeWrites.submit(what) { settingsRepository.write() }
 }

@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -44,6 +45,7 @@ import app.clothescast.core.domain.model.TimeFormatSetting
 import app.clothescast.core.domain.model.TtsEngine
 import app.clothescast.core.domain.model.TtsStyle
 import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.core.domain.model.DEFAULT_APP_FONT_SCALE
 import app.clothescast.core.domain.model.VoiceLocale
 import app.clothescast.core.domain.model.containsTwelveHourPatternField
 import app.clothescast.core.domain.model.thresholdC
@@ -963,6 +965,15 @@ class SettingsRepository(
         dataStore.edit { it[COLOR_PALETTE] = palette.name }
     }
 
+    /** Persists the text-size multiplier a slider or a pinch settled on. */
+    suspend fun setFontScale(scale: Float) {
+        dataStore.edit { it[FONT_SCALE] = scale }
+    }
+
+    suspend fun setPinchFontSize(enabled: Boolean) {
+        dataStore.edit { it[PINCH_FONT_SIZE] = enabled }
+    }
+
     /**
      * Persists the user's [ForecastModel] selection as the stored enum names,
      * or clears the key when [models] is null — which is the "Auto, derive
@@ -1281,6 +1292,9 @@ class SettingsRepository(
         val telemetryNoticeAcked = this[TELEMETRY_NOTICE_ACKED] == true
         val colorPalette = this[COLOR_PALETTE]?.let { runCatching { ColorPalette.valueOf(it) }.getOrNull() }
             ?: ColorPalette.RAINBOW
+        // Stored as written; the range is androidzoom's, and it clamps on read.
+        val fontScale = this[FONT_SCALE] ?: DEFAULT_APP_FONT_SCALE
+        val pinchFontSize = this[PINCH_FONT_SIZE] ?: true
         val outfitTopColors = parseOutfitTopColors(this[OUTFIT_TOP_COLORS])
         val outfitBottomColors = parseOutfitBottomColors(this[OUTFIT_BOTTOM_COLORS])
         val outfitHandsColors = parseOutfitHandsColors(this[OUTFIT_HANDS_COLORS])
@@ -1413,6 +1427,8 @@ class SettingsRepository(
             telemetryEnabled = telemetryEnabled,
             telemetryNoticeAcked = telemetryNoticeAcked,
             colorPalette = colorPalette,
+            fontScale = fontScale,
+            pinchFontSize = pinchFontSize,
             outfitTopColors = outfitTopColors,
             outfitBottomColors = outfitBottomColors,
             outfitHandsColors = outfitHandsColors,
@@ -1755,6 +1771,8 @@ class SettingsRepository(
         // screenshot on their saved consent.
         private val BUG_REPORT_CONSENT_ACKED = booleanPreferencesKey("bug_report_consent_acked_v2")
         private val COLOR_PALETTE = stringPreferencesKey("color_palette")
+        private val FONT_SCALE = floatPreferencesKey("font_scale")
+        private val PINCH_FONT_SIZE = booleanPreferencesKey("pinch_font_size")
         private val OUTFIT_TOP_COLORS = stringPreferencesKey("outfit_top_colors_json")
         private val OUTFIT_BOTTOM_COLORS = stringPreferencesKey("outfit_bottom_colors_json")
         private val OUTFIT_HANDS_COLORS = stringPreferencesKey("outfit_hands_colors_json")

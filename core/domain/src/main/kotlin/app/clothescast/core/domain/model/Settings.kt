@@ -878,6 +878,15 @@ data class UserPreferences(
      */
     val colorPalette: ColorPalette = ColorPalette.RAINBOW,
     /**
+     * The app's own text size, as a multiplier on top of the system font
+     * scale: 1.0 is the system's size. Applied through mikelward/androidzoom,
+     * which owns the range and clamps whatever is stored here, so a corrupt
+     * value can't size text to nothing.
+     */
+    val fontScale: Float = DEFAULT_APP_FONT_SCALE,
+    /** Whether a two-finger pinch anywhere in the app adjusts [fontScale]. */
+    val pinchFontSize: Boolean = true,
+    /**
      * User overrides for the fill colour of each top-garment icon (the
      * shirt / sweater / jacket pictures shown on Today, the home-screen
      * widget, and notification large icons). Keyed by [OutfitSuggestion.Top]
@@ -1364,3 +1373,10 @@ enum class HomeSection {
         }
     }
 }
+
+/**
+ * The text size a new install starts at: a notch above the system's own, as in
+ * the sibling apps (maintainer, 2026-10-11). The forecast callout steps down a
+ * text style to match, so it reads at the size it had before the setting.
+ */
+const val DEFAULT_APP_FONT_SCALE = 1.15f

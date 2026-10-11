@@ -421,9 +421,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_precipitation_title">Regnsannsynlighet</string>
     <string name="today_precipitation_peak">Topp %1$d%% klokken %2$s</string>
     <string name="today_precipitation_peak_day">Topp %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Ingen regn forventet i dag</string>
-    <string name="today_precipitation_dry_week">Ingen regn forventet</string>
-    <string name="today_precipitation_dry_overnight">Ingen regn forventet i natt</string>
+    <string name="today_precipitation_dry">Ingen regn</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeller:</string>
@@ -1216,9 +1214,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_play">Spill av</string>
     <string name="today_play_toast_daily">Spiller av din daglige ClothesCast.</string>
     <string name="today_play_toast_nightly">Spiller av din kvelds-ClothesCast.</string>
-    <string name="today_precipitation_amount_dry_today">Ingen regn ventet i dag</string>
-    <string name="today_precipitation_amount_dry_tonight">Ingen regn ventet i kveld</string>
-    <string name="today_precipitation_amount_dry_week">Ingen regn ventet</string>
+    <string name="today_precipitation_amount_dry">Ingen nedbør</string>
     <string name="today_precipitation_amount_total_week">%1$s regn</string>
     <string name="today_precipitation_title_snow">Snøsannsynlighet</string>
     <string name="today_precipitation_title_mixed">Sannsynlighet for regn eller snø</string>

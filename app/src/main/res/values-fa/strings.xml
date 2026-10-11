@@ -178,9 +178,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_precipitation_title">احتمال بارندگی</string>
     <string name="today_precipitation_peak">اوج %1$d%% در ساعت %2$s</string>
     <string name="today_precipitation_peak_day">اوج %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">امروز بارندگی انتظار نمی‌رود</string>
-    <string name="today_precipitation_dry_week">بارندگی انتظار نمی‌رود</string>
-    <string name="today_precipitation_dry_overnight">در طول شب بارندگی انتظار نمی‌رود</string>
+    <string name="today_precipitation_dry">بدون باران</string>
     <string name="today_chart_model_legend_label">مدل‌ها:</string>
     <string name="today_chart_main_line_label">میانگین</string>
     <string name="today_wind_title">سرعت باد</string>
@@ -1175,9 +1173,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_play">پخش</string>
     <string name="today_play_toast_daily">در حال پخش ClothesCast روزانه‌ات.</string>
     <string name="today_play_toast_nightly">در حال پخش ClothesCast شبانه‌ات.</string>
-    <string name="today_precipitation_amount_dry_today">امروز باران پیش‌بینی نمی‌شود</string>
-    <string name="today_precipitation_amount_dry_tonight">امشب باران پیش‌بینی نمی‌شود</string>
-    <string name="today_precipitation_amount_dry_week">باران پیش‌بینی نمی‌شود</string>
+    <string name="today_precipitation_amount_dry">بدون بارش</string>
     <string name="today_precipitation_amount_total_week">%1$s باران</string>
     <string name="today_precipitation_title_snow">احتمال برف</string>
     <string name="today_precipitation_title_mixed">احتمال باران یا برف</string>

@@ -2316,7 +2316,7 @@ internal fun PrecipitationCardWithModelSpreadHighlighterPreview() {
 }
 
 // SAMPLE_HOURLY is already all-zero precipitation, so reuse it for the dry
-// variant — exercises the "No rain expected today" copy path while still
+// variant — exercises the "No rain" copy path while still
 // rendering the chart (per the always-show-chart design choice).
 @Preview(name = "Precipitation card · dry", widthDp = 360)
 @Composable

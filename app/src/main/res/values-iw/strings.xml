@@ -178,9 +178,7 @@ standard in Israeli digital communication.
     <string name="today_precipitation_title">סיכוי לגשם</string>
     <string name="today_precipitation_peak">שיא %1$d%% בשעה %2$s</string>
     <string name="today_precipitation_peak_day">שיא %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">לא צפוי גשם היום</string>
-    <string name="today_precipitation_dry_week">לא צפוי גשם</string>
-    <string name="today_precipitation_dry_overnight">לא צפוי גשם בלילה</string>
+    <string name="today_precipitation_dry">אין גשם</string>
 
     <!-- Today — model divergence / confidence -->
     <string name="today_chart_model_legend_label">מודלים:</string>
@@ -1182,9 +1180,7 @@ standard in Israeli digital communication.
     <string name="today_play">הפעל</string>
     <string name="today_play_toast_daily">מפעיל את ClothesCast היומי שלך.</string>
     <string name="today_play_toast_nightly">מפעיל את ClothesCast הלילי שלך.</string>
-    <string name="today_precipitation_amount_dry_today">לא צפוי גשם היום</string>
-    <string name="today_precipitation_amount_dry_tonight">לא צפוי גשם הלילה</string>
-    <string name="today_precipitation_amount_dry_week">לא צפוי גשם</string>
+    <string name="today_precipitation_amount_dry">אין משקעים</string>
     <string name="today_precipitation_amount_total_week">%1$s גשם</string>
     <string name="today_precipitation_title_snow">סיכוי לשלג</string>
     <string name="today_precipitation_title_mixed">סיכוי לגשם או שלג</string>

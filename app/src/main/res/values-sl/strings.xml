@@ -184,9 +184,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_precipitation_title">Verjetnost dežja</string>
     <string name="today_precipitation_peak">Vrh %1$d%% ob %2$s</string>
     <string name="today_precipitation_peak_day">Vrh %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Danes dežja ni pričakovati</string>
-    <string name="today_precipitation_dry_week">Dežja ni pričakovati</string>
-    <string name="today_precipitation_dry_overnight">Čez noč dežja ni pričakovati</string>
+    <string name="today_precipitation_dry">Brez dežja</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>
@@ -1174,9 +1172,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_play">Predvajaj</string>
     <string name="today_play_toast_daily">Predvajam tvoj jutranji ClothesCast.</string>
     <string name="today_play_toast_nightly">Predvajam tvoj večerni ClothesCast.</string>
-    <string name="today_precipitation_amount_dry_today">Danes dež ni pričakovan</string>
-    <string name="today_precipitation_amount_dry_tonight">Nocoj dež ni pričakovan</string>
-    <string name="today_precipitation_amount_dry_week">Dež ni pričakovan</string>
+    <string name="today_precipitation_amount_dry">Brez padavin</string>
     <string name="today_precipitation_amount_total_week">%1$s dežja</string>
     <string name="today_precipitation_title_snow">Verjetnost snega</string>
     <string name="today_precipitation_title_mixed">Verjetnost dežja ali snega</string>

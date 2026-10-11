@@ -76,9 +76,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_precipitation_title">Probabilitat de pluja</string>
     <string name="today_precipitation_peak">Màxim %1$d%% a les %2$s</string>
     <string name="today_precipitation_peak_day">Màxim %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">No s\'espera pluja avui</string>
-    <string name="today_precipitation_dry_week">No s\'espera pluja</string>
-    <string name="today_precipitation_dry_overnight">No s\'espera pluja durant la nit</string>
+    <string name="today_precipitation_dry">Sense pluja</string>
 
     <string name="today_chart_model_legend_label">Models:</string>
     <string name="today_chart_main_line_label">Mitjana</string>
@@ -1128,9 +1126,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_play">Reprodueix</string>
     <string name="today_play_toast_daily">Reproduint el teu ClothesCast diari.</string>
     <string name="today_play_toast_nightly">Reproduint el teu ClothesCast nocturn.</string>
-    <string name="today_precipitation_amount_dry_today">No s\'espera pluja avui</string>
-    <string name="today_precipitation_amount_dry_tonight">No s\'espera pluja aquesta nit</string>
-    <string name="today_precipitation_amount_dry_week">No s\'espera pluja</string>
+    <string name="today_precipitation_amount_dry">Sense precipitació</string>
     <string name="today_precipitation_amount_total_week">%1$s de pluja</string>
     <string name="today_precipitation_title_snow">Probabilitat de neu</string>
     <string name="today_precipitation_title_mixed">Probabilitat de pluja o neu</string>

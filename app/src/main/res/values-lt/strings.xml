@@ -176,9 +176,7 @@ What is NOT overridden, by design:
     <string name="today_precipitation_title">Lietaus tikimybė</string>
     <string name="today_precipitation_peak">Pikas %1$d%% %2$s val.</string>
     <string name="today_precipitation_peak_day">Pikas %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Šiandien lietaus nesitikima</string>
-    <string name="today_precipitation_dry_week">Lietaus nesitikima</string>
-    <string name="today_precipitation_dry_overnight">Naktį lietaus nesitikima</string>
+    <string name="today_precipitation_dry">Lietaus nėra</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeliai:</string>
@@ -1177,9 +1175,7 @@ What is NOT overridden, by design:
     <string name="today_play">Leisti</string>
     <string name="today_play_toast_daily">Leidžiu tavo dieninį ClothesCast.</string>
     <string name="today_play_toast_nightly">Leidžiu tavo vakarinį ClothesCast.</string>
-    <string name="today_precipitation_amount_dry_today">Šiandien lietaus neprognozuojama</string>
-    <string name="today_precipitation_amount_dry_tonight">Šįvakar lietaus neprognozuojama</string>
-    <string name="today_precipitation_amount_dry_week">Lietaus neprognozuojama</string>
+    <string name="today_precipitation_amount_dry">Kritulių nėra</string>
     <string name="today_precipitation_amount_total_week">%1$s lietaus</string>
     <string name="today_precipitation_title_snow">Sniego tikimybė</string>
     <string name="today_precipitation_title_mixed">Lietaus ar sniego tikimybė</string>

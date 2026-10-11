@@ -1,5 +1,5 @@
 [versions]
-androidlog = "3.0.73"
+androidlog = "5.0.80"
 androidzoom = "1.0.2"
 # AGP 9.x pairs with the Gradle 9.x wrapper (kept in lockstep in
 # gradle-wrapper.properties — currently 9.7.0; AGP 9.3 requires Gradle 9.5.0+

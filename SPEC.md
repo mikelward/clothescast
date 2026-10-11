@@ -184,9 +184,9 @@ I put on before I leave?" instead of a full weather-office report.
   share sheet, with the text copied to the clipboard as a fallback; nothing is
   transmitted automatically. The payload is size-bounded per section — settings,
   the previous run's crash, the recent log — so no one section can crowd the
-  others out and the whole report still fits a Binder transaction with room to
-  spare (it crosses once into the clipboard and again in the share intent, and an
-  over-large payload fails *both* silently). If collecting the full report fails,
+  others out, and the whole report is held to what survives being pasted on
+  whole (the shared `androidlog` library sets that size; a report was kept only
+  to about its first 20,000 characters when pasted). If collecting the full report fails,
   a minimal one still ships carrying the in-memory log, rather than the tap
   crashing the app. **Both delivery routes failing is told to the user**, since a
   tap that reaches neither the sheet nor the clipboard otherwise looks like it did
@@ -194,7 +194,10 @@ I put on before I leave?" instead of a full weather-office report.
   completion on the process-lifetime scope, so opening the sheet (or navigating
   away) can't cancel it mid-collect. The post-crash banner dismisses itself only
   once a report the user can still get at has been retained; a share that reached
-  nobody leaves the banner up for a retry.
+  nobody leaves the banner up for a retry. Sharing deletes nothing: whether a
+  report was really sent is unknowable, so earlier runs stay on the device under
+  the log's own bound (the newest five) and a later report may repeat some of
+  them.
 - **Runtime permissions:** coarse / background location, notifications,
   calendar, and exact-alarm-related platform capabilities must have explicit UX
   and fallbacks.

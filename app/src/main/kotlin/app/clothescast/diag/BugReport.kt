@@ -28,6 +28,7 @@ import app.clothescast.insight.InsightFormatter
 import com.mikelward.androidlog.DebugLog
 import com.mikelward.androidlog.android.CollectedReport
 import com.mikelward.androidlog.android.DebugReport
+import com.mikelward.androidlog.android.ProcessExits
 import com.mikelward.androidlog.android.ReportScreenshot
 import com.mikelward.androidlog.android.ShareOutcome
 import java.io.File
@@ -48,8 +49,8 @@ import kotlinx.coroutines.withContext
  * and hands it to the shared `androidlog` library's [DebugReport], which shares
  * it via the system chooser — with the current screen attached as a screenshot
  * — and copies the text to the clipboard as the paste fallback. The library
- * appends the previous run's log (the last crash, if any) and consumes it only
- * once the report has actually reached the user.
+ * appends the previous run's log (the last crash, if any), holds the whole
+ * report to a size that survives being pasted, and deletes nothing on a share.
  */
 object BugReport {
     private const val FILE_PROVIDER_AUTHORITY_SUFFIX = ".fileprovider"
@@ -59,54 +60,41 @@ object BugReport {
     /** Cap for an exception message quoted into the collection-failure fallback. */
     private const val MAX_FAILURE_MESSAGE_CHARS = 300
 
-    /**
-     * Ceiling for the recent-log section, pinned lines included. The text rides
-     * along as the share intent's `EXTRA_TEXT`, which many targets (messengers
-     * especially) treat as a caption with a hard character cap that silently
-     * truncates a long report mid-line — doubly so once a screenshot flips the
-     * intent's MIME type to `image/png` and the chooser surfaces image-share
-     * targets. The header runs ~3-4 KB, so this keeps a report with no earlier
-     * run beside it around the ~20 KB that survives those targets intact; the
-     * library adds at most [DebugReport.MAX_EARLIER_RUNS_CHARS] when there is
-     * one. [DiagLog] still retains its
-     * full 300-line buffer; this only trims what the share carries.
-     *
-     * Characters, not lines: this used to be a 100-line cap with a character
-     * ceiling on top, but the library bounds a read by characters, and a line
-     * cap derived from a second read could be overrun by a line logged in
-     * between (Codex, PR #1244). Characters are also what the caption limit
-     * counts.
-     */
-    private const val MAX_LOG_PAYLOAD_CHARS = 16_000
+    /** Room kept beside the log's lines for its heading and the truncation line. */
+    private const val SECTION_FRAMING_CHARS = 200
+
+    /** The least room the newest log lines keep beside a whole process-exit batch. */
+    private const val MIN_RECENT_LOG_CHARS = 1_000
 
     /**
      * Ceiling for the structured section (build, device, settings, ClothesCasts),
-     * bounded separately from the log so a long clothes-rule list can't crowd the
-     * log out. It degrades most gracefully — a settings dump reads fine
-     * truncated, a truncated log tail loses events.
+     * so a long clothes-rule list can't crowd the log out. It degrades most
+     * gracefully — a settings dump reads fine truncated, a truncated log tail
+     * loses events.
      *
-     * Whatever the log leaves of this app's share of the report. The library
-     * holds a whole report to [DebugReport.MAX_REPORT_CHARS] and gives the
-     * previous run its own [DebugReport.MAX_EARLIER_RUNS_CHARS] of that; a
-     * section within the rest arrives whole, and one past it is cut from the
-     * middle — which here would be the end of the settings and the start of the
-     * log. The allowance covers the headings and the truncation line.
+     * The library holds a whole report to [DebugReport.MAX_REPORT_CHARS], which
+     * is what survives being pasted, and this app's section to
+     * [DebugReport.APP_SECTION_CHARS] of it; past that the section is cut from
+     * the middle, which here would be the end of the settings and the start of
+     * the log. So the head is bounded here and the log takes the room it
+     * leaves ([assembleSection]).
+     *
+     * Derived, not fixed, so the log always holds a whole process-exit batch
+     * (`ProcessExits.maxBatchChars()`, about 8,300 once an ANR's stuck frames
+     * are pinned) and some recent lines beside it, however long the settings run
+     * (Codex, PR #1277). That leaves the head about 4,500; the usual one runs
+     * 3-4 KB, so this cuts only an outlier. Read only on the normal path, never
+     * by the collection-failure fallback.
      */
-    private const val MAX_STRUCTURED_CHARS =
-        DebugReport.MAX_REPORT_CHARS - DebugReport.MAX_EARLIER_RUNS_CHARS - MAX_LOG_PAYLOAD_CHARS - 1_000
+    private val maxStructuredChars: Int by lazy {
+        DebugReport.APP_SECTION_CHARS - SECTION_FRAMING_CHARS - ProcessExits.maxBatchChars() - MIN_RECENT_LOG_CHARS
+    }
 
     /**
-     * The part of [MAX_LOG_PAYLOAD_CHARS] held for the pinned lines the ring no
-     * longer carries: the start-up record of why earlier processes ended.
-     *
-     * It must hold a whole process-exit batch (`ProcessExits.maxBatchChars()`,
-     * about 2,850; a test holds it to that), since the section is trimmed from
-     * its head and a smaller budget would drop the oldest exits. A constant
-     * rather than that call, so the collection-failure fallback reads the log
-     * without loading `ProcessExits`, which is exactly the kind of failure the
-     * fallback exists to report.
+     * Room kept for the collection-failure fallback's own lines ahead of its
+     * log: version, Android and the clipped failure.
      */
-    internal const val MAX_PINNED_PAYLOAD_CHARS = 3_000
+    private const val FALLBACK_HEAD_CHARS = 1_000
 
     /**
      * Captures the screen, builds the text payload, and hands both to the shared
@@ -114,19 +102,17 @@ object BugReport {
      * chooser. When [includeScreenshot] is true (the default) the current window
      * is grabbed and passed as a PNG `content://` URI so the report shows what
      * the user was looking at; when it's false (or the capture fails) the report
-     * shares text-only. The log is capped to [MAX_LOG_PAYLOAD_CHARS] so the
-     * `EXTRA_TEXT` caption stays under the length limits image-share targets
-     * impose.
+     * shares text-only. The library holds the whole report to a size that
+     * survives being pasted ([assembleSection] fits this app's part of it).
      *
      * The library reads and appends the previous run's log to the report and
-     * consumes it only once the report is *retained* somewhere the user can
-     * still get it — the clipboard copy. `ACTION_SEND` gives no delivery or
-     * selection callback, so a launched chooser is no proof the report was sent
-     * (the user can back out of the sheet); the clipboard copy is the durable
-     * fallback the library gates that consumption on. That consumption is what
-     * lowers the post-crash banner (via [DiagLog.unacknowledgedCrash]), so a
-     * share that reached nobody leaves it up for a retry — the banner is driven
-     * by the library's crash state, not by this return.
+     * deletes nothing on a share: `ACTION_SEND` gives no delivery or selection
+     * callback, so whether the report was sent is unknowable, and the runs stay
+     * under the log's own retention. Once the copy lands on the clipboard, which
+     * the user can still get at, the library lowers the post-crash banner (via
+     * [DiagLog.unacknowledgedCrash]); a share that reached nobody leaves it up
+     * for a retry — the banner is driven by the library's crash state, not by
+     * this return.
      *
      * Returns whether a delivery route landed at all (`SHARED` or `COPIED_ONLY`,
      * not `FAILED`), used only to decide whether to warn the user that nothing
@@ -165,9 +151,9 @@ object BugReport {
             coRunCatching {
                 val section =
                     if (app == null) error("no ClothesCastApplication") else payloadCollect(activity, app)
-                // The library appends the prior run and pairs it with the handle
-                // it consumes, so carrying that run and clearing it cannot come
-                // apart.
+                // The library appends the prior run itself, so the report it
+                // carries and the crash banner it lowers on a landed copy cannot
+                // come apart.
                 collectReport { section }
             }.getOrElse { t ->
                 DiagLog.w("BugReport", t, "report collection failed")
@@ -195,8 +181,8 @@ object BugReport {
             // retry into the same silence. Say so instead.
             if (outcome == ShareOutcome.FAILED) notifyShareFailed(activity)
             // Whether anything was delivered at all — not a retention signal (see
-            // the doc). The prior run is consumed by the library on the clipboard
-            // copy alone, and that is what lowers the crash banner.
+            // the doc). The library lowers the crash banner on the clipboard copy
+            // alone.
             outcome != ShareOutcome.FAILED
         }
     }
@@ -204,7 +190,7 @@ object BugReport {
     /**
      * Builds the [CollectedReport] the library delivers, from [DiagLog]'s
      * recording core and its persisted sink: the library reads and appends the
-     * previous run and later consumes exactly the runs this report carried. A
+     * previous run, and lowers the crash banner once the copy lands. A
      * test with no installed sink appends nothing, which is the right answer
      * there. A seam so a test can build a report without touching disk.
      */
@@ -218,8 +204,8 @@ object BugReport {
 
     /**
      * Hands the report and its optional screenshot to the shared library, which
-     * copies the text to the clipboard, opens the chooser, and consumes the
-     * prior run once the copy lands. The subject, chooser title and clipboard
+     * copies the text to the clipboard, opens the chooser, and lowers the crash
+     * banner once the copy lands. The subject, chooser title and clipboard
      * label are this app's own strings — the library takes them as arguments, so
      * it needs no resources of its own.
      *
@@ -267,7 +253,7 @@ object BugReport {
         // to the empty-log sentinel would tell the reader "nothing was logged"
         // when the truth is "the log couldn't be read," and lose the second
         // failure entirely.
-        val recent = runCatching { reportLogLines() }
+        val recent = runCatching { reportLogLines(budgetChars = DebugReport.APP_SECTION_CHARS - FALLBACK_HEAD_CHARS) }
             .onFailure {
                 DiagLog.w("BugReport", it, "log snapshot failed while building the fallback report")
                 appendLine("Recent log unavailable: ${it.javaClass.name}")
@@ -315,7 +301,6 @@ object BugReport {
         val nextPeriod = if (nextSnapshot != null && prefs != null) {
             coRunCatching { app.deriveInsight(nextSnapshot, prefs).insight }.getOrNull()
         } else null
-        val recent = reportLogLines()
         val now = TIMESTAMP_FORMAT.format(Instant.now())
 
         val head = buildString {
@@ -352,43 +337,48 @@ object BugReport {
             appendInsight("This period", thisPeriod, thisSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
             appendInsight("Next period", nextPeriod, nextSnapshot, prefs, context, region, tempUnit, rangeFormat, clothesFormat, bottomsFormat, accessoriesFormat, periodPreamble, wearPreamble)
         }
-        return assembleSection(head, recent)
+        return assembleSection(head)
     }
 
     /**
-     * Joins this app's own sections — the structured head and the recent log —
-     * each bounded on its own so a long clothes-rule list can't crowd the log
-     * out. The previous run's log is appended after this by the shared library,
-     * inside its own share of the report, so this app no longer bounds a crash
-     * it no longer reads itself.
+     * Joins this app's own sections — the structured head, bounded to
+     * [maxStructuredChars], and then the recent log in whatever room the head
+     * left of [DebugReport.APP_SECTION_CHARS]. The previous run's log is
+     * appended after this by the shared library, inside its own share of the
+     * report.
      *
      * Prefix-truncating the assembled section would drop the log — appended last
      * — exactly when a long settings dump is what pushed it over, losing the
      * diagnostic the report exists for. Visible for tests.
      */
-    internal fun assembleSection(head: String, recent: List<String>): String {
-        val boundedHead = if (head.length > MAX_STRUCTURED_CHARS) {
-            head.take(MAX_STRUCTURED_CHARS) + "\n…(details truncated to keep the report shareable)\n"
+    internal fun assembleSection(head: String, log: DebugLog = DiagLog.log): String {
+        val boundedHead = if (head.length > maxStructuredChars) {
+            head.take(maxStructuredChars) + "\n…(details truncated to keep the report shareable)\n"
         } else {
             head
         }
-        return boundedHead + renderRecentLog(recent)
+        val logBudget = DebugReport.APP_SECTION_CHARS - boundedHead.length - SECTION_FRAMING_CHARS
+        return boundedHead + renderRecentLog(reportLogLines(log, logBudget))
     }
 
     /**
      * This run's log as both report paths read it, in one read: the ring's
      * newest lines, preceded by the pinned lines they no longer carry, within
-     * [MAX_LOG_PAYLOAD_CHARS] together.
+     * [budgetChars] together ([DebugReport.logLines]).
      *
      * The pinned lines are the start-up record of why earlier processes ended
      * ([logRecentProcessExits]). They are written once, so a busy run evicts
      * them from the ring long before the user shares a report; reading the ring
-     * alone would lose exactly the lines written to explain a death.
+     * alone would lose exactly the lines written to explain a death. The
+     * library holds room for a whole process-exit batch ahead of the recent
+     * lines; this app logs its exits with the library's defaults, so the
+     * library's own reserve is the right one (it grew past the 3,000 this app
+     * once fixed when it began pinning an ANR's stuck main-thread frames).
      */
-    internal fun reportLogLines(log: DebugLog = DiagLog.log): List<String> = log.boundedSnapshot(
-        pinnedBudgetChars = MAX_PINNED_PAYLOAD_CHARS,
-        recentBudgetChars = MAX_LOG_PAYLOAD_CHARS - MAX_PINNED_PAYLOAD_CHARS,
-    )
+    internal fun reportLogLines(
+        log: DebugLog = DiagLog.log,
+        budgetChars: Int = DebugReport.APP_SECTION_CHARS,
+    ): List<String> = DebugReport.logLines(log, budgetChars)
 
     /**
      * The "Recent log" section, from lines [reportLogLines] has already

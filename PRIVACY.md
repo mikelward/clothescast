@@ -186,12 +186,11 @@ The source code is at <https://github.com/mikelward/clothescast>.
   killed before it ran, and without this there is nothing afterwards to
   tell those apart. Android's description text is written by the system
   and can name the component that stopped the app — for an update, the
-  installer. If the app crashes, recent
-  lines plus the stack trace are also written to
-  `cacheDir/last-crash.txt`. The local bug-report payload includes the
-  most recent ~300 lines of the diag file plus your current settings
-  (schedule, units, TTS choice, clothes rules) and the most recently
-  rendered insight prose.
+  installer. If the app crashes, the stack trace is written to the
+  same on-device log. The local bug-report payload includes the newest
+  lines of that log that fit a report short enough to paste whole, plus
+  your current settings (schedule, units, TTS choice, clothes rules) and
+  the most recently rendered insight prose.
 - **Why:** So you can hand a complete diagnostic snapshot to the
   developer when something goes wrong, and so the developer can be
   alerted to crashes affecting users in the wild.
@@ -210,14 +209,14 @@ The source code is at <https://github.com/mikelward/clothescast>.
     travel separately as part of the aggregate analytics described
     below.) See "Analytics and crash reporting" below for the full
     limits.
-- **Stored on device:** The diag file (`cacheDir/diag.log` plus one
-  rotated predecessor) persists across launches and app upgrades until
-  rotated out by newer lines or cleared on uninstall / cache-clear, so
-  bug reports filed after a process restart may include lines from
-  earlier runs. A `---- process start <version> ----` marker line at
-  each launch lets readers see where the current process began. The
-  crash file persists across launches until a fresh crash overwrites
-  it, and is cleared on uninstall.
+- **Stored on device:** The diagnostic log (in the app's cache, kept for
+  the newest five runs of the app) persists across launches and app
+  upgrades until newer runs push it out or it is cleared on uninstall /
+  cache-clear, so bug reports filed after a process restart may include
+  lines from earlier runs. Sharing a report doesn't delete them, so a
+  later report may repeat some of the same lines. A
+  `---- process start <version> ----` marker line at each launch lets
+  readers see where the current process began.
 - **Retention by us:** The on-device file is yours — whatever you do
   with it is governed by the destination you share to. Anything sent
   automatically to the crash-reporting service is governed by that

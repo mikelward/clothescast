@@ -46,9 +46,8 @@ object DiagLog {
 
     /**
      * The persisted mirror, once [install] has run. Held so [BugReport] can
-     * hand it to `DebugReport.collect`, which reads the previous run and — on
-     * a delivered report — consumes exactly the runs that report was built
-     * from.
+     * hand it to `DebugReport.collect`, which reads the previous run; a
+     * delivered report lowers the crash banner and deletes nothing.
      */
     @Volatile
     internal var files: DebugFileSink? = null

@@ -92,11 +92,4 @@ class ProcessExitReasonsTest {
             report.indexOfFirst { it.contains("busy ") }) shouldBe true
         report.last().endsWith("busy ${DebugLog.DEFAULT_MAX_ENTRIES + 49}") shouldBe true
     }
-
-    @Test
-    fun theReportReservesRoomForAWholeBatch() {
-        // A constant so the fallback report doesn't load ProcessExits; it has
-        // to keep up with the batch the library can write.
-        (BugReport.MAX_PINNED_PAYLOAD_CHARS >= ProcessExits.maxBatchChars()) shouldBe true
-    }
 }

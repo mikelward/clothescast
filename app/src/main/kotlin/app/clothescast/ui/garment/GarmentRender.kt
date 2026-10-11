@@ -863,10 +863,15 @@ private const val SUN_PATH =
         "-6,6s2.69,6 6,6 6,-2.69 6,-6 -2.69,-6 -6,-6zM11,22.45h2L13,19.5h-2v2.95zM3.55,18.54" +
         "l1.41,1.41 1.79,-1.8 -1.41,-1.41 -1.79,1.8z"
 
+// The sun path's disc (centre 11.5, radius 6), the gauge the fill measures.
+private const val SUN_DISC_TOP = 5.5
+private const val SUN_DISC_BOTTOM = 17.5
+
 // Coloured icon palette for the outfit-card info rows. Outline reads as a
 // thin dark line against the white card; fill colours pop against it.
 private const val THERMOMETER_FILL_ARGB = 0xFFE53935.toInt()
 private const val DROPLET_FILL_ARGB = 0xFF1E88E5.toInt()
+private const val SUNSHINE_FILL_ARGB = 0xFFFBC02D.toInt()
 private const val INFO_ICON_OUTLINE_ARGB = 0xFF333333.toInt()
 // Outline width for the fill-metaphor glyphs (thermometer, droplet) in 24-unit
 // viewport coordinates; ≈1.5 px at INFO_ICON_PX=36. Their broad silhouettes
@@ -954,8 +959,62 @@ private fun drawRainDropletIcon(
     )
 }
 
+/**
+ * The sun, filled upward in proportion to [fillFraction] the way the droplet
+ * and thermometer fill: the Sunshine card's share of daylight that is sunny.
+ * Same thin edge as the strip's solid sun so the rays survive the outline.
+ */
+private fun drawSunFillIcon(
+    canvas: Canvas,
+    x: Int,
+    y: Int,
+    size: Int,
+    fillFraction: Float,
+    interiorArgb: Int = android.graphics.Color.WHITE,
+    outlineArgb: Int = INFO_ICON_OUTLINE_ARGB,
+) {
+    drawFillableInfoIcon(
+        canvas = canvas,
+        x = x,
+        y = y,
+        size = size,
+        pathData = SUN_PATH,
+        fillArgb = SUNSHINE_FILL_ARGB,
+        liquidTopY = sunLiquidTopY(fillFraction),
+        interiorArgb = interiorArgb,
+        outlineArgb = outlineArgb,
+        strokeWidth = THIN_GLYPH_STROKE_WIDTH,
+    )
+}
+
+/**
+ * The fill line for the sun at [fillFraction]: the disc is the gauge, so the
+ * line sits where that share of the disc's *area* lies below it (a linear
+ * height would leave a third-full sun reading barely tinted, the disc's area
+ * being mostly in its middle). The rays below the line fill with it; nothing
+ * fills at zero, and a full sun fills the top rays too.
+ */
+internal fun sunLiquidTopY(fillFraction: Float): Float {
+    val fill = fillFraction.coerceIn(0f, 1f)
+    if (fill <= 0f) return 24f
+    if (fill >= 1f) return 0f
+    // Area below a chord at height h (0 = bottom, 1 = top) of a unit-diameter
+    // disc, as a fraction of the disc; solved for h by bisection.
+    fun areaBelow(h: Double): Double {
+        val d = 1.0 - 2.0 * h // signed distance of the chord from the centre, in radii
+        return (kotlin.math.acos(d) - d * kotlin.math.sqrt(1.0 - d * d)) / Math.PI
+    }
+    var lo = 0.0
+    var hi = 1.0
+    repeat(30) {
+        val mid = (lo + hi) / 2
+        if (areaBelow(mid) < fill) lo = mid else hi = mid
+    }
+    return (SUN_DISC_BOTTOM - lo * (SUN_DISC_BOTTOM - SUN_DISC_TOP)).toFloat()
+}
+
 /** The partial-fill glyphs the conditions strip draws, for reuse elsewhere. */
-internal enum class FillGlyph { THERMOMETER, DROPLET }
+internal enum class FillGlyph { THERMOMETER, DROPLET, SUN }
 
 /**
  * The conditions strip's [glyph] as a composable, filled to [fillFraction] the
@@ -980,7 +1039,36 @@ internal fun FillGlyphIcon(
                     drawThermometerIcon(canvas.nativeCanvas, 0, 0, px, fillFraction, interiorArgb, outlineArgb)
                 FillGlyph.DROPLET ->
                     drawRainDropletIcon(canvas.nativeCanvas, 0, 0, px, fillFraction, interiorArgb, outlineArgb)
+                FillGlyph.SUN ->
+                    drawSunFillIcon(canvas.nativeCanvas, 0, 0, px, fillFraction, interiorArgb, outlineArgb)
             }
+        }
+    }
+}
+
+/** The solid scale-tinted glyphs the conditions strip draws, for reuse elsewhere. */
+internal enum class SolidGlyph { WIND, SUN }
+
+/**
+ * The conditions strip's solid [glyph] as a composable, tinted [tintArgb] with
+ * the strip's thin outline, light or dark to match the surrounding surface.
+ */
+@Composable
+internal fun SolidGlyphIcon(
+    glyph: SolidGlyph,
+    tintArgb: Int,
+    modifier: Modifier = Modifier,
+) {
+    val dark = androidx.compose.material3.MaterialTheme.colorScheme.surface.luminance() < 0.5f
+    val outlineArgb = if (dark) STRIP_DARK_OUTLINE_ARGB else INFO_ICON_OUTLINE_ARGB
+    ComposeCanvas(modifier = modifier.aspectRatio(1f)) {
+        val px = size.minDimension.roundToInt()
+        drawIntoCanvas { canvas ->
+            drawSolidGlyph(
+                canvas.nativeCanvas, 0, 0, px,
+                if (glyph == SolidGlyph.WIND) AIR_PATH else SUN_PATH,
+                tintArgb, outlineArgb, THIN_GLYPH_STROKE_WIDTH,
+            )
         }
     }
 }
@@ -1003,6 +1091,7 @@ private fun drawFillableInfoIcon(
     liquidBottomY: Float = 24f,
     interiorArgb: Int = android.graphics.Color.WHITE,
     outlineArgb: Int = INFO_ICON_OUTLINE_ARGB,
+    strokeWidth: Float = INFO_ICON_STROKE_WIDTH,
 ) {
     val path = AndroidPathParser.createPathFromPathData(pathData)
     val scale = size.toFloat() / 24f
@@ -1017,7 +1106,7 @@ private fun drawFillableInfoIcon(
     val strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = outlineArgb
-        strokeWidth = INFO_ICON_STROKE_WIDTH
+        this.strokeWidth = strokeWidth
     }
     canvas.save()
     canvas.translate(x.toFloat(), y.toFloat())

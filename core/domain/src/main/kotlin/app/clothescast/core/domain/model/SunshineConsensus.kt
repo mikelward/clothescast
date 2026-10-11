@@ -41,3 +41,26 @@ fun PerModelHourly.consensusSunshineHoursFor(date: LocalDate): Double? =
 fun PerModelHourly.consensusSunshineHours(): Double? =
     consensusPerModelAverage(dateFilter = null) { it.sunshineDurationSec }
         ?.div(3600.0)
+
+/**
+ * Share of the window's daylight that is forecast to be sunny, 0..1 — what
+ * the Sunshine card's sun glyph fills to. [sunshineHours] is the consensus
+ * total ([consensusSunshineHoursFor] / [consensusSunshineHours]) for the same
+ * window as [date] (null = every entry, as [consensusSunshineHours] does).
+ *
+ * The forecast carries no sunrise or sunset, so daylight is the hours where
+ * any model reports solar radiation (above zero all day, cloud or not) or any
+ * sunshine. Returns null when the window has no daylight hours, such as a
+ * night view after sunset, so the caller can show an empty sun.
+ */
+fun PerModelHourly.sunshineFraction(sunshineHours: Double, date: LocalDate? = null): Double? {
+    val daylightHours = byModel.values.asSequence()
+        .flatten()
+        .filter { date == null || it.time.toLocalDate() == date }
+        .filter { (it.shortwaveRadiationWm2 ?: 0.0) > 0.0 || (it.sunshineDurationSec ?: 0.0) > 0.0 }
+        .map { it.time }
+        .distinct()
+        .count()
+    if (daylightHours == 0) return null
+    return (sunshineHours / daylightHours).coerceIn(0.0, 1.0)
+}

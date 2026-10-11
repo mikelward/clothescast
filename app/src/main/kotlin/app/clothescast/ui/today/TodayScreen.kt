@@ -122,6 +122,7 @@ import app.clothescast.core.domain.model.PrecipitationKind
 import app.clothescast.core.domain.model.precipitationKind
 import app.clothescast.core.domain.model.consensusSunshineHours
 import app.clothescast.core.domain.model.consensusSunshineHoursFor
+import app.clothescast.core.domain.model.sunshineFraction
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
@@ -150,6 +151,11 @@ import app.clothescast.ui.garment.GarmentTopIcon
 import app.clothescast.ui.garment.OutfitCardInfoLines
 import app.clothescast.ui.garment.FillGlyph
 import app.clothescast.ui.garment.FillGlyphIcon
+import app.clothescast.ui.garment.SolidGlyph
+import app.clothescast.ui.garment.SolidGlyphIcon
+import app.clothescast.ui.garment.WIND_NOTABLE_KMH
+import app.clothescast.ui.garment.uvScaleColorArgb
+import app.clothescast.ui.garment.windScaleColorArgb
 import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.thermometerFillFractionFor
@@ -3119,6 +3125,16 @@ internal fun WindCard(
         // overlay payload is unchanged.
         pickerKey = windSpeedUnit,
         showOverlay = showModelSpread,
+        // The strip's wind glyph, tinted on its Beaufort scale once the peak
+        // is notable, the same threshold at which the strip shows wind.
+        leadingIcon = {
+            val peakKmh = peak?.second?.let { it / 1.0.toWindSpeedUnit(windSpeedUnit) } ?: 0.0
+            SolidGlyphIcon(
+                glyph = SolidGlyph.WIND,
+                tintArgb = if (peakKmh >= WIND_NOTABLE_KMH) windScaleColorArgb(peakKmh) else CALM_WIND_ARGB,
+                modifier = Modifier.size(SUBTITLE_ICON_SIZE),
+            )
+        },
     )
 }
 
@@ -3279,6 +3295,11 @@ internal fun SunshineCard(
             else -> perModelHourly.consensusSunshineHoursFor(forDate)
         }
     }
+    val sunFill = remember(perModelHourly, forDate, totalHours, weekView, period) {
+        val wholeWindow = weekView || period == ForecastPeriod.TONIGHT
+        totalHours?.let { perModelHourly.sunshineFraction(it, if (wholeWindow) null else forDate) }
+            ?.toFloat() ?: 0f
+    }
     val totalBlurb = if (totalHours != null) {
         formatSunshineTotal(totalHours, period, weekView)
     } else {
@@ -3295,6 +3316,15 @@ internal fun SunshineCard(
         yAxis = YAxis.AutoZeroBased(minSpan = 60.0),
         tooltipValueFormat = { "${it.roundToInt()} min" },
         showOverlay = showModelSpread,
+        // The sun fills with the share of daylight that is sunny, as the
+        // droplet fills with the chance of rain.
+        leadingIcon = {
+            FillGlyphIcon(
+                glyph = FillGlyph.SUN,
+                fillFraction = sunFill,
+                modifier = Modifier.size(SUBTITLE_ICON_SIZE),
+            )
+        },
     )
 }
 
@@ -3381,6 +3411,14 @@ internal fun UvIndexCard(
         // the metric, and the readout sits right next to that subtitle.
         tooltipValueFormat = { "${it.roundToInt()}" },
         showOverlay = showModelSpread,
+        // The strip's UV sun, tinted on the WHO UV scale from the peak.
+        leadingIcon = {
+            SolidGlyphIcon(
+                glyph = SolidGlyph.SUN,
+                tintArgb = uvScaleColorArgb(peak?.second ?: 0.0),
+                modifier = Modifier.size(SUBTITLE_ICON_SIZE),
+            )
+        },
     )
 }
 
@@ -3816,6 +3854,9 @@ private const val WIDGET_SUBTITLE_MAX_LINES = 2
 // Matches bodyMedium's line height, so the icon sits in the line without
 // growing it.
 private val SUBTITLE_ICON_SIZE = 20.dp
+// Below the strip's notable-wind threshold the wind glyph stays a neutral
+// gray; the Beaufort tints start at amber, which would overstate a calm day.
+private const val CALM_WIND_ARGB = 0xFF9E9E9E.toInt()
 
 // Dry threshold for the hourly-rainfall card, applied to the day's
 // cumulative total (mm). 0.1 mm is the typical "trace" tick across weather

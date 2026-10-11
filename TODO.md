@@ -327,7 +327,10 @@ Open:
       chance-of-rain cards lead their subtitle with the conditions strip's
       filled thermometer and rain droplet, as the chart widgets do. The
       in-app cards keep their titles and words; only the widgets let the
-      icon stand in for them.
+      icon stand in for them. The UV, wind and sunshine cards follow: the
+      UV sun tinted on the WHO scale, the wind glyph tinted on the strip's
+      Beaufort scale once notable (gray below), and a sun that fills with
+      the share of daylight that is sunny.
 - [x] **Gemini model picker** — Flash Lite (cheapest), Flash (default), Pro
       (highest quality, slowest, costliest). User picks from Settings; the
       Worker passes the chosen id into a per-call `DirectGeminiClient`.

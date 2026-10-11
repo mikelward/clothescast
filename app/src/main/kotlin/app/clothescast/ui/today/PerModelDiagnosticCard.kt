@@ -96,6 +96,7 @@ internal fun PerModelDiagnosticCard(
      * doesn't shift the axis labels.
      */
     showOverlay: Boolean = false,
+    leadingIcon: (@Composable () -> Unit)? = null,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // Timestamp → list-position map for the card's hourly window — see
@@ -150,7 +151,7 @@ internal fun PerModelDiagnosticCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(text = title, style = MaterialTheme.typography.titleSmall)
-                ChartSubtitleRow(subtitle = subtitle, readout = readout)
+                ChartSubtitleRow(subtitle = subtitle, readout = readout, leadingIcon = leadingIcon)
                 PerModelDiagnosticChart(
                     hourly = hourly,
                     startDate = startDate,

@@ -126,4 +126,53 @@ class SunshineConsensusTest {
         val hours = data.consensusSunshineHoursFor(today).shouldNotBeNull()
         hours shouldBe (2.5 plusOrMinus 0.0001)
     }
+
+    private fun daylight(date: LocalDate, hour: Int, radiation: Double, sunshineSec: Double = 0.0) = PerModelHour(
+        time = LocalDateTime.of(date, LocalTime.of(hour, 0)),
+        apparentTemperatureC = 10.0,
+        temperatureC = 11.0,
+        precipitationProbabilityPct = 0.0,
+        shortwaveRadiationWm2 = radiation,
+        sunshineDurationSec = sunshineSec,
+    )
+
+    @Test
+    fun `sunshine fraction is sunny hours over hours with any solar radiation`() {
+        // Four daylight hours (radiation > 0, cloudy or not) and two dark ones.
+        val data = PerModelHourly(
+            byModel = mapOf(
+                "a" to listOf(6, 9, 12, 15, 18, 21).map { h -> daylight(today, h, if (h in 9..18) 200.0 else 0.0) },
+            ),
+        )
+        data.sunshineFraction(sunshineHours = 2.0, date = today).shouldNotBeNull() shouldBe (0.5 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `an hour any model sees light counts once as daylight`() {
+        val data = PerModelHourly(
+            byModel = mapOf(
+                "a" to listOf(daylight(today, 9, 100.0), daylight(today, 10, 0.0)),
+                // Model b sees light at 10 too, and only reports sunshine there.
+                "b" to listOf(daylight(today, 9, 120.0), daylight(today, 10, 0.0, sunshineSec = 600.0)),
+            ),
+        )
+        data.sunshineFraction(sunshineHours = 1.0, date = today).shouldNotBeNull() shouldBe (0.5 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `sunshine fraction is capped at full and ignores other dates`() {
+        val data = PerModelHourly(
+            byModel = mapOf(
+                "a" to listOf(daylight(today, 12, 300.0), daylight(tomorrow, 12, 300.0)),
+            ),
+        )
+        data.sunshineFraction(sunshineHours = 3.0, date = today).shouldNotBeNull() shouldBe (1.0 plusOrMinus 1e-9)
+        data.sunshineFraction(sunshineHours = 1.0).shouldNotBeNull() shouldBe (0.5 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `sunshine fraction is null with no daylight in the window`() {
+        val data = PerModelHourly(byModel = mapOf("a" to listOf(daylight(today, 23, 0.0))))
+        data.sunshineFraction(sunshineHours = 0.0, date = today).shouldBeNull()
+    }
 }

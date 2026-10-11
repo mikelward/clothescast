@@ -317,7 +317,8 @@ internal fun SevenDayPage(
         // [InsightCardShell]): a 20.dp-padded Card, a back chevron in the left
         // 28.dp slot, the title in the centered label position, a 28.dp slot
         // reserved on the right for an optional forward chevron to the
-        // following week, and the prose headline below in headlineSmall.
+        // following week, and the prose headline below in titleLarge (the
+        // Today card's forecast style).
         //
         // The prose slot shows the week-ahead headline when one fires (rain,
         // a notable temperature shift, or a persistent hot / cold run); a
@@ -361,7 +362,7 @@ internal fun SevenDayPage(
         ) {
             Text(
                 text = proseText,
-                style = MaterialTheme.typography.headlineSmall,
+                style = MaterialTheme.typography.titleLarge,
             )
         }
         },

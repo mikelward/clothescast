@@ -3701,6 +3701,42 @@
             ]
         },
         {
+            "uniqueId": "com.mikelward.androidzoom:zoom-compose",
+            "artifactVersion": "1.0.2",
+            "name": "androidzoom zoom-compose",
+            "description": "Text-size state, pinch-to-resize and scaled density for Compose.",
+            "website": "https://github.com/mikelward/androidzoom",
+            "developers": [
+                {
+                    "name": "Mikel Ward"
+                }
+            ],
+            "licenses": [
+                "Apache-2.0"
+            ],
+            "funding": [
+                
+            ]
+        },
+        {
+            "uniqueId": "com.mikelward.androidzoom:zoom-core",
+            "artifactVersion": "1.0.2",
+            "name": "androidzoom zoom-core",
+            "description": "The text-size range and pinch math, testable without Android.",
+            "website": "https://github.com/mikelward/androidzoom",
+            "developers": [
+                {
+                    "name": "Mikel Ward"
+                }
+            ],
+            "licenses": [
+                "Apache-2.0"
+            ],
+            "funding": [
+                
+            ]
+        },
+        {
             "uniqueId": "com.mikepenz:aboutlibraries-compose-core-android",
             "artifactVersion": "12.2.4",
             "name": "AboutLibraries Compose UI Library",

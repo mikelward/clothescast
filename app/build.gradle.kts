@@ -650,6 +650,11 @@ dependencies {
     // when you are changing both repositories at once.
     implementation(libs.androidlog.logging.android)
 
+    // The shared text-size setting (mikelward/androidzoom): the range, the
+    // pinch and the scaled density. Storage and the Settings controls are
+    // this app's own. `-PandroidzoomLocal` substitutes a local checkout.
+    implementation(libs.androidzoom.compose)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)

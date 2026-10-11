@@ -2335,6 +2335,38 @@ internal fun TodayInsightCardLargeFontPreview() {
     ScaledFrame(fontScale = 1.5f) { InsightCard(SAMPLE_INSIGHT, Region.SYSTEM) }
 }
 
+// The chart card at both ends of the in-app text size (mikelward/androidzoom,
+// 80%-160%). That setting multiplies the density's fontScale, so the same
+// ScaledFrame reproduces it: axis labels, subtitle and readout grow while the
+// plot and paddings keep their dp.
+@Preview(name = "Forecast card · text 160%", widthDp = 360, fontScale = 1.6f)
+@Composable
+internal fun ForecastCardLargeTextPreview() {
+    ScaledFrame(fontScale = 1.6f) {
+        ForecastCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = false,
+        )
+    }
+}
+
+@Preview(name = "Forecast card · text 80%", widthDp = 360, fontScale = 0.8f)
+@Composable
+internal fun ForecastCardSmallTextPreview() {
+    ScaledFrame(fontScale = 0.8f) {
+        ForecastCard(
+            hourly = SAMPLE_HOURLY,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            startDate = SAMPLE_PER_MODEL_DATE,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            showModelSpread = false,
+        )
+    }
+}
+
 @Preview(name = "Outfit · t-shirt + shorts (RTL)", widthDp = 360, locale = "ar")
 @Composable
 internal fun OutfitTShirtShortsRtlPreview() {

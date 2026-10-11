@@ -41,6 +41,7 @@ import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
 import app.clothescast.ui.settings.SettingsClothesRuleDialogPreview
 import app.clothescast.ui.settings.SettingsClothesRulePrecipDialogPreview
+import app.clothescast.ui.settings.SettingsDisplayLargeTextPreview
 import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsDoneBarPreview
 import app.clothescast.ui.settings.SettingsForecastersGoogleBlockedPreview
@@ -470,6 +471,8 @@ class PreviewSnapshots {
     @Test fun forecast_chart_with_model_spread() = capture { ForecastChartWithModelSpreadPreview() }
     @Test fun forecast_card_with_model_spread() = capture { ForecastCardWithModelSpreadPreview() }
     @Test fun forecast_card_consensus() = capture { ForecastCardConsensusPreview() }
+    @Test fun forecast_card_large_text() = capture { ForecastCardLargeTextPreview() }
+    @Test fun forecast_card_small_text() = capture { ForecastCardSmallTextPreview() }
     @Test fun air_temperature_card_consensus() = capture { AirTemperatureCardConsensusPreview() }
     @Test fun precipitation_card_consensus() = capture { PrecipitationCardConsensusPreview() }
     @Test fun precipitation_amount_card_consensus() = capture { PrecipitationAmountCardConsensusPreview() }
@@ -735,6 +738,7 @@ class PreviewSnapshots {
     @Test fun settings_clothes_rule_precip_dialog() = capture { SettingsClothesRulePrecipDialogPreview() }
     @Test fun settings_region() = capture { SettingsRegionPreview() }
     @Test fun settings_display() = capture { SettingsDisplayPreview() }
+    @Test fun settings_display_large_text() = capture { SettingsDisplayLargeTextPreview() }
     @Test fun settings_voice_device() = capture { SettingsVoiceDevicePreview() }
     @Test fun settings_voice_gemini() = capture { SettingsVoiceGeminiPreview() }
     @Test fun settings_voice_gemini_no_key() = capture { SettingsVoiceGeminiNoKeyPreview() }

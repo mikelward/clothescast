@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import app.clothescast.core.domain.model.DEFAULT_APP_FONT_SCALE
+import com.mikelward.androidzoom.FontSizeSettings
+import com.mikelward.androidzoom.compose.rememberFontSizeState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -82,7 +85,7 @@ import java.util.Locale
 //
 
 @Composable
-private fun SettingsFrame(content: @Composable () -> Unit) {
+private fun SettingsFrame(fontScale: Float? = null, content: @Composable () -> Unit) {
     // Inspection mode, exactly as Android Studio's @Preview pane does it and as
     // Today's preview frame already did. It is what the banner wrappers' own
     // LocalInspectionMode guards are for: a banner that collects lifecycle-aware
@@ -91,7 +94,12 @@ private fun SettingsFrame(content: @Composable () -> Unit) {
     // mounted on it. The stateless *Card variants carry no guard, so the banner
     // previews that render those directly are unaffected.
     CompositionLocalProvider(LocalInspectionMode provides true) {
-        ClothesCastTheme(dynamicColor = false) {
+        // A text-size state only where a preview asks for one, so the Display
+        // card's slider shows and every other preview is drawn exactly as before.
+        val fontSize = fontScale?.let {
+            rememberFontSizeState(FontSizeSettings(scale = it), {}, {})
+        }
+        ClothesCastTheme(dynamicColor = false, fontSize = fontSize) {
             Surface { content() }
         }
     }
@@ -417,7 +425,25 @@ internal fun SettingsRegionPreview() {
 @Preview(name = "Settings · Display", widthDp = 360)
 @Composable
 internal fun SettingsDisplayPreview() {
-    SettingsFrame {
+    SettingsFrame(fontScale = DEFAULT_APP_FONT_SCALE) {
+        DisplayContent(
+            themeMode = ThemeMode.SYSTEM,
+            colorPalette = ColorPalette.RAINBOW,
+            homeSectionOrder = HomeSection.DEFAULTS,
+            padding = PaddingValues(0.dp),
+            onSetThemeMode = {},
+            onSetColorPalette = {},
+            onReorderHomeSection = { _, _ -> },
+        )
+    }
+}
+
+// The Display screen as it draws itself mid-drag at the top of the range: the
+// slider resizes the screen it sits on.
+@Preview(name = "Settings · Display · text 160%", widthDp = 360)
+@Composable
+internal fun SettingsDisplayLargeTextPreview() {
+    SettingsFrame(fontScale = 1.6f) {
         DisplayContent(
             themeMode = ThemeMode.SYSTEM,
             colorPalette = ColorPalette.RAINBOW,

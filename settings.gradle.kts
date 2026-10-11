@@ -33,6 +33,13 @@ dependencyResolutionManagement {
             url = uri("https://raw.githubusercontent.com/mikelward/androidlog/maven")
             content { includeGroup("com.mikelward.androidlog") }
         }
+        // mikelward/androidzoom, the shared text-size setting, publishes the
+        // same way and is scoped the same way.
+        maven {
+            name = "androidzoom"
+            url = uri("https://raw.githubusercontent.com/mikelward/androidzoom/maven")
+            content { includeGroup("com.mikelward.androidzoom") }
+        }
     }
 }
 
@@ -77,6 +84,30 @@ if (androidlogLocal) {
         )
     includeBuild(androidlog)
     logger.lifecycle("androidlog: using the local checkout at $androidlog")
+}
+
+// The same opt-in for mikelward/androidzoom: `-PandroidzoomLocal` substitutes a
+// checkout at `.androidzoom` or `../androidzoom` for the published coordinate,
+// for changing both repositories at once. Off by default for the reason the
+// androidlog switch above is.
+val androidzoomLocal = providers.gradleProperty("androidzoomLocal").orNull?.let { raw ->
+    when (raw.trim().lowercase()) {
+        "", "true" -> true
+        "false" -> false
+        else -> error("androidzoomLocal must be true or false (or bare), not \"$raw\"")
+    }
+} ?: false
+
+if (androidzoomLocal) {
+    val androidzoom = listOf(file(".androidzoom"), file("../androidzoom"))
+        .firstOrNull { it.isDirectory }
+        ?: error(
+            "androidzoomLocal is set but no checkout was found: " +
+                "git clone https://github.com/mikelward/androidzoom ../androidzoom, " +
+                "or drop the property to resolve the published version"
+        )
+    includeBuild(androidzoom)
+    logger.lifecycle("androidzoom: using the local checkout at $androidzoom")
 }
 
 rootProject.name = "clothescast"

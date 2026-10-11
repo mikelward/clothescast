@@ -630,6 +630,12 @@
     <string name="settings_display_palette_rainbow_description">Pink, orange, and green chart lines and Material teal / red confidence cards. The default.</string>
     <string name="settings_display_palette_accessible_description">An Okabe-Ito-derived palette designed to stay distinguishable under deuteranopia, protanopia, and tritanopia. Confidence cards use sky blue, neutral, and amber instead of teal, neutral, and red.</string>
     <string name="settings_display_palette_highlighter_description">Magenta, yellow, and cyan chart lines — like highlighter pens on the page. Visibly different from Rainbow at a glance; the light theme uses deeper variants for readability. Safe under red-green color blindness.</string>
+    <!-- TODO: translate -->
+    <string name="settings_display_text_size_title" tools:ignore="MissingTranslation">Text size</string>
+    <!-- TODO: translate. %1$d is a percentage of the system's own text size; 100 is the same size. -->
+    <string name="settings_display_text_size_value" tools:ignore="MissingTranslation">%1$d%%</string>
+    <!-- TODO: translate -->
+    <string name="settings_display_text_size_pinch" tools:ignore="MissingTranslation">Pinch to resize</string>
     <string name="settings_display_home_layout_title">Home screen layout</string>
     <string name="settings_display_home_layout_description">Drag the handles to reorder how these sections appear on the home screen.</string>
     <string name="settings_display_home_section_conditions">Conditions</string>

@@ -371,6 +371,9 @@ class ClothesCastApplication : Application() {
     // Telemetry) and read by the nav layer for the onboarding-skip write.
     internal val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    /** Text-size writes, in the order they were made; see [OrderedWrites]. */
+    internal val fontSizeWrites by lazy { app.clothescast.data.OrderedWrites(applicationScope, "FontSize") }
+
     /**
      * The startup coroutine that reconciles the two alarm slots and the widget
      * refresh chain against stored preferences.

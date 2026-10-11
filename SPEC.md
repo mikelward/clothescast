@@ -123,7 +123,9 @@ I put on before I leave?" instead of a full weather-office report.
   do?" before explaining why.
 - **Visual style:** Material 3 Compose with dynamic/system theming, light/dark
   support, card-based settings, short directional navigation transitions, and
-  RTL-aware motion.
+  RTL-aware motion. A back swipe shows the standard predictive-back peek (the
+  page shrinks away from the swiped edge, revealing the one beneath) rather than
+  sliding the whole page.
 - **Charts:** weather charts favour readable overlays and an explicit app palette
   over purely theme-derived colours. Rainbow is the default, Accessible uses a
   colour-vision-deficiency-safe palette, and Highlighter is intentionally vivid.

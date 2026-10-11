@@ -1,0 +1,9 @@
+# Baseline profile: code ART compiles ahead of time at install, so the first
+# scrolls after an update don't run interpreted while the JIT warms up.
+# Compose and the other AndroidX libraries ship their own profiles; these
+# rules cover the app's code and Vico, which ships none. Wildcards keep the
+# list from drifting as the code changes.
+HSPLapp/clothescast/**->**(**)**
+Lapp/clothescast/**;
+HSPLcom/patrykandpatrick/vico/**->**(**)**
+Lcom/patrykandpatrick/vico/**;

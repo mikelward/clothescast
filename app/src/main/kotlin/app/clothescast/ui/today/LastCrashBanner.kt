@@ -43,10 +43,10 @@ import kotlinx.coroutines.launch
  * "Dismiss" silences the banner without sharing.
  *
  * Dismiss marks the crash acknowledged so the banner stops reappearing. Share
- * doesn't acknowledge directly: the shared library consumes the previous run
- * when the report is retained (the clipboard copy lands), which clears the
- * crash state the same [DiagLog.unacknowledgedCrash] reads — so a share that
- * reached nobody leaves the banner up for a retry. A *new* crash bumps the
+ * doesn't acknowledge directly: the shared library lowers the banner when the
+ * report is retained (the clipboard copy lands), through the crash state the
+ * same [DiagLog.unacknowledgedCrash] reads — so a share that reached nobody
+ * leaves the banner up for a retry. Neither deletes the crashed run. A *new* crash bumps the
  * on-disk file's mtime, which that state uses as identity, so the banner
  * surfaces again next launch.
  *
@@ -98,11 +98,11 @@ internal fun LastCrashBanner(modifier: Modifier = Modifier) {
             // No screenshot: the crash is from a previous run, so the screen
             // visible now would be misleading attached to that report.
             //
-            // The banner lowers itself: the library consumes the previous run —
-            // and so clears the crash state behind [DiagLog.unacknowledgedCrash]
-            // — only when the clipboard copy lands, which is the durable "the
-            // user can still get at this" signal. A share that reached nobody
-            // leaves the run, and the banner, up for a retry. So this must not
+            // The banner lowers itself: the library clears the crash state
+            // behind [DiagLog.unacknowledgedCrash] only when the clipboard copy
+            // lands, which is the durable "the user can still get at this"
+            // signal. A share that reached nobody leaves the banner up for a
+            // retry; the run itself stays on disk either way. So this must not
             // acknowledge on share()'s return: that reads true for a launched
             // chooser even when the clipboard write failed, which would hide the
             // banner over a report no copy of exists.

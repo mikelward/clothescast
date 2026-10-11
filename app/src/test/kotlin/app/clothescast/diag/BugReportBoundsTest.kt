@@ -2,6 +2,7 @@ package app.clothescast.diag
 
 import com.mikelward.androidlog.DebugLog
 import com.mikelward.androidlog.android.DebugReport
+import com.mikelward.androidlog.android.ProcessExits
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
@@ -22,7 +23,10 @@ class BugReportBoundsTest {
     fun `a huge settings section is truncated but still leaves room for the log`() {
         val head = "--- Settings ---\n" + (0 until 4_000).joinToString("\n") { "Clothes rule $it: " + "x".repeat(40) }
 
-        val report = BugReport.assembleSection(head, recent = listOf("the newest event"))
+        val log = DebugLog()
+        log.event("the newest event")
+
+        val report = BugReport.assembleSection(head, log)
 
         report shouldContain "details truncated"
         report shouldContain "the newest event"
@@ -38,8 +42,8 @@ class BugReportBoundsTest {
 
         recent.last() shouldContain "the newest event"
         recent.none { it.contains("line-0 ") } shouldBe true
-        (recent.sumOf { it.length + 1 } <= 16_000) shouldBe true
-        BugReport.assembleSection("head\n", recent) shouldContain
+        (recent.sumOf { it.length + 1 } <= DebugReport.APP_SECTION_CHARS) shouldBe true
+        BugReport.assembleSection("head\n", log) shouldContain
             "older lines are dropped to keep the report shareable"
     }
 
@@ -52,10 +56,34 @@ class BugReportBoundsTest {
         val log = DebugLog()
         repeat(300) { log.event("line-%s %s", it, "x".repeat(600)) }
 
-        val section = BugReport.assembleSection(head, BugReport.reportLogLines(log))
+        val section = BugReport.assembleSection(head, log)
 
         section shouldContain "details truncated"
-        (section.length <= DebugReport.MAX_REPORT_CHARS - DebugReport.MAX_EARLIER_RUNS_CHARS) shouldBe true
+        section shouldContain "line-299 "
+        (section.length <= DebugReport.APP_SECTION_CHARS) shouldBe true
+    }
+
+    @Test
+    fun `a whole process-exit batch and the newest lines survive the longest settings`() {
+        // The worst case together: settings past their cap, a pinned batch as
+        // large as the library can write (an ANR's stuck frames included), and
+        // a busy run that has pushed it out of the ring (Codex, PR #1277).
+        val head = "--- Settings ---\n" + (0 until 4_000).joinToString("\n") { "Clothes rule $it: " + "x".repeat(40) }
+        val log = DebugLog()
+        val pinnedLines = 20
+        val pinnedChars = ProcessExits.maxBatchChars() / pinnedLines - 80
+        repeat(pinnedLines) { log.pinnedEvent("pinned-%s %s", it, "p".repeat(pinnedChars)) }
+        repeat(300) { log.event("line-%s %s", it, "x".repeat(600)) }
+        log.event("the newest event")
+
+        val section = BugReport.assembleSection(head, log)
+
+        section shouldContain "details truncated"
+        (0 until pinnedLines).all { section.contains("pinned-$it ") } shouldBe true
+        section shouldContain "the newest event"
+        // Room for real recent lines beside the batch, not just the last one.
+        section shouldContain "line-299 "
+        (section.length <= DebugReport.APP_SECTION_CHARS) shouldBe true
     }
 
     @Test
@@ -70,7 +98,7 @@ class BugReportBoundsTest {
 
     @Test
     fun `an empty log is called out rather than left blank`() {
-        BugReport.assembleSection("head\n", recent = emptyList()) shouldContain
+        BugReport.assembleSection("head\n", DebugLog()) shouldContain
             "(no captured log lines)"
     }
 }

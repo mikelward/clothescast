@@ -26,9 +26,9 @@ import org.robolectric.shadows.ShadowToast
  * main-thread hop are all injected, so every outcome is drivable without a real
  * window, `ClipboardManager`, or share target.
  *
- * The rule that the previous run is consumed only once the clipboard copy lands
- * — so a share the user backed out of leaves the crash banner up — now lives in
- * the library (`DebugReport.settle`) and is tested there.
+ * The rule that the crash banner comes down only once the clipboard copy lands
+ * — so a share the user backed out of leaves it up — lives in the library
+ * (`DebugReport.settle`) and is tested there.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [35])

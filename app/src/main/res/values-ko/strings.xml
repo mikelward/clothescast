@@ -601,9 +601,7 @@ displayed label localizes.
     <string name="today_precipitation_title">강수 확률</string>
     <string name="today_precipitation_peak">최고 %1$d%% (%2$s)</string>
     <string name="today_precipitation_peak_day">최고 %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">오늘은 비 예보 없음</string>
-    <string name="today_precipitation_dry_week">비 예보 없음</string>
-    <string name="today_precipitation_dry_overnight">밤사이 비 예보 없음</string>
+    <string name="today_precipitation_dry">비 없음</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">모델:</string>
@@ -1339,9 +1337,7 @@ displayed label localizes.
     <string name="today_play">재생</string>
     <string name="today_play_toast_daily">데일리 ClothesCast를 재생 중.</string>
     <string name="today_play_toast_nightly">야간 ClothesCast를 재생 중.</string>
-    <string name="today_precipitation_amount_dry_today">오늘은 비 예보 없음</string>
-    <string name="today_precipitation_amount_dry_tonight">오늘 밤은 비 예보 없음</string>
-    <string name="today_precipitation_amount_dry_week">비 예보 없음</string>
+    <string name="today_precipitation_amount_dry">강수 없음</string>
     <string name="today_precipitation_amount_total_week">비 %1$s</string>
     <string name="today_precipitation_title_snow">강설 확률</string>
     <string name="today_precipitation_title_mixed">비 또는 눈 확률</string>

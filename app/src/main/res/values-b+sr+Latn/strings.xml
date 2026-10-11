@@ -469,9 +469,7 @@ default English (matching values-pl / values-uk).
     <string name="today_precipitation_title">Verovatnoća kiše</string>
     <string name="today_precipitation_peak">Vrhunac %1$d%% u %2$s</string>
     <string name="today_precipitation_peak_day">Vrhunac %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Danas se ne očekuje kiša</string>
-    <string name="today_precipitation_dry_week">Ne očekuje se kiša</string>
-    <string name="today_precipitation_dry_overnight">Tokom noći se ne očekuje kiša</string>
+    <string name="today_precipitation_dry">Bez kiše</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modeli:</string>
@@ -1177,9 +1175,7 @@ default English (matching values-pl / values-uk).
     <string name="today_play">Pusti</string>
     <string name="today_play_toast_daily">Puštam tvoj jutarnji ClothesCast.</string>
     <string name="today_play_toast_nightly">Puštam tvoj večernji ClothesCast.</string>
-    <string name="today_precipitation_amount_dry_today">Danas se ne očekuje kiša</string>
-    <string name="today_precipitation_amount_dry_tonight">Večeras se ne očekuje kiša</string>
-    <string name="today_precipitation_amount_dry_week">Ne očekuje se kiša</string>
+    <string name="today_precipitation_amount_dry">Bez padavina</string>
     <string name="today_precipitation_amount_total_week">%1$s kiše</string>
     <string name="today_precipitation_title_snow">Verovatnoća snega</string>
     <string name="today_precipitation_title_mixed">Verovatnoća kiše ili snega</string>

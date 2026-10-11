@@ -166,9 +166,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_precipitation_title">বৃষ্টির সম্ভাবনা</string>
     <string name="today_precipitation_peak">%2$s-এ সর্বোচ্চ %1$d%%</string>
     <string name="today_precipitation_peak_day">সর্বোচ্চ %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">আজ বৃষ্টির সম্ভাবনা নেই</string>
-    <string name="today_precipitation_dry_week">বৃষ্টির সম্ভাবনা নেই</string>
-    <string name="today_precipitation_dry_overnight">সারারাত বৃষ্টির সম্ভাবনা নেই</string>
+    <string name="today_precipitation_dry">বৃষ্টি নেই</string>
 
     <!-- Model spread / charts -->
     <string name="today_chart_model_legend_label">মডেল:</string>
@@ -1259,9 +1257,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_play">চালাও</string>
     <string name="today_play_toast_daily">তোমার দৈনিক ClothesCast চালাচ্ছি।</string>
     <string name="today_play_toast_nightly">তোমার রাত্রিকালীন ClothesCast চালাচ্ছি।</string>
-    <string name="today_precipitation_amount_dry_today">আজ বৃষ্টির সম্ভাবনা নেই</string>
-    <string name="today_precipitation_amount_dry_tonight">আজ রাতে বৃষ্টির সম্ভাবনা নেই</string>
-    <string name="today_precipitation_amount_dry_week">বৃষ্টির সম্ভাবনা নেই</string>
+    <string name="today_precipitation_amount_dry">বৃষ্টিপাত নেই</string>
     <string name="today_precipitation_amount_total_week">%1$s বৃষ্টি</string>
     <string name="today_precipitation_title_snow">তুষারপাতের সম্ভাবনা</string>
     <string name="today_precipitation_title_mixed">বৃষ্টি বা তুষারপাতের সম্ভাবনা</string>

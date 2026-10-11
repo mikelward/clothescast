@@ -176,9 +176,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_precipitation_title">Probabilitate de ploaie</string>
     <string name="today_precipitation_peak">Vârf %1$d%% la %2$s</string>
     <string name="today_precipitation_peak_day">Vârf %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Nu se prevede ploaie astăzi</string>
-    <string name="today_precipitation_dry_week">Nu se prevede ploaie</string>
-    <string name="today_precipitation_dry_overnight">Nu se prevede ploaie peste noapte</string>
+    <string name="today_precipitation_dry">Fără ploaie</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modele:</string>
@@ -1165,9 +1163,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_play">Redă</string>
     <string name="today_play_toast_daily">Redau ClothesCast-ul tău zilnic.</string>
     <string name="today_play_toast_nightly">Redau ClothesCast-ul tău de seară.</string>
-    <string name="today_precipitation_amount_dry_today">Nu se așteaptă ploaie astăzi</string>
-    <string name="today_precipitation_amount_dry_tonight">Nu se așteaptă ploaie diseară</string>
-    <string name="today_precipitation_amount_dry_week">Nu se așteaptă ploaie</string>
+    <string name="today_precipitation_amount_dry">Fără precipitații</string>
     <string name="today_precipitation_amount_total_week">%1$s de ploaie</string>
     <string name="today_precipitation_title_snow">Probabilitate de ninsoare</string>
     <string name="today_precipitation_title_mixed">Probabilitate de ploaie sau ninsoare</string>

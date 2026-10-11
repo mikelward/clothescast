@@ -174,9 +174,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_precipitation_title">Kebarangkalian hujan</string>
     <string name="today_precipitation_peak">Puncak %1$d%% pada %2$s</string>
     <string name="today_precipitation_peak_day">Puncak %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Tiada hujan dijangka hari ini</string>
-    <string name="today_precipitation_dry_week">Tiada hujan dijangka</string>
-    <string name="today_precipitation_dry_overnight">Tiada hujan dijangka semalaman</string>
+    <string name="today_precipitation_dry">Tiada hujan</string>
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Model:</string>
@@ -1193,9 +1191,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_play">Putar</string>
     <string name="today_play_toast_daily">Memainkan ClothesCast harian anda.</string>
     <string name="today_play_toast_nightly">Memainkan ClothesCast malam anda.</string>
-    <string name="today_precipitation_amount_dry_today">Tiada hujan dijangka hari ini</string>
-    <string name="today_precipitation_amount_dry_tonight">Tiada hujan dijangka malam ini</string>
-    <string name="today_precipitation_amount_dry_week">Tiada hujan dijangka</string>
+    <string name="today_precipitation_amount_dry">Tiada hujan</string>
     <string name="today_precipitation_amount_total_week">%1$s hujan</string>
     <string name="today_precipitation_title_snow">Kebarangkalian salji</string>
     <string name="today_precipitation_title_mixed">Kebarangkalian hujan atau salji</string>

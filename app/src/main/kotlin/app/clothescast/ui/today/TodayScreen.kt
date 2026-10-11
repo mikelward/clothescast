@@ -3458,13 +3458,9 @@ internal fun PrecipitationCard(
     }
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry || peakIdx == null) {
-        stringResource(
-            when {
-                isWeekView() -> R.string.today_precipitation_dry_week
-                period == ForecastPeriod.TONIGHT -> R.string.today_precipitation_dry_overnight
-                else -> R.string.today_precipitation_dry
-            },
-        )
+        // One phrase for every window: the page header, or the widget's time
+        // axis, already says which window this is.
+        stringResource(R.string.today_precipitation_dry)
     } else {
         peakSubtitle(
             hourly = hourly,
@@ -3569,7 +3565,7 @@ internal fun PrecipitationCard(
  * the cumulative daily total ("4.2 mm of rain today") rather than the
  * peak hour — same design as [SunshineCard]'s "Xh of sun today" blurb so
  * the two summary lines read consistently. Below the dry threshold the
- * subtitle switches to "No rainfall expected today" (or tonight).
+ * subtitle switches to "No rainfall".
  *
  * Total is the sum of the [consensusRainfallMainLine] series so the
  * subtitle figure matches exactly what the "Combined" chart line implies
@@ -3613,13 +3609,7 @@ internal fun PrecipitationAmountCard(
     }
     val scrubController = LocalChartScrub.current
     val subtitleText = if (isDry) {
-        stringResource(
-            when {
-                isWeekView() -> R.string.today_precipitation_amount_dry_week
-                period == ForecastPeriod.TODAY -> R.string.today_precipitation_amount_dry_today
-                else -> R.string.today_precipitation_amount_dry_tonight
-            },
-        )
+        stringResource(R.string.today_precipitation_amount_dry)
     } else if (isWeekView() &&
         rainPeakIdx != null &&
         mainLine[rainPeakIdx] >= TRACE_MM_FLOOR

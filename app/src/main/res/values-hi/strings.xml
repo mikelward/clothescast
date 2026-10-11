@@ -490,9 +490,7 @@ Not overridden by design:
     <string name="today_precipitation_title">बारिश की संभावना</string>
     <string name="today_precipitation_peak">सर्वोच्च %1$d%% (%2$s)</string>
     <string name="today_precipitation_peak_day">सर्वोच्च %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">आज बारिश की उम्मीद नहीं</string>
-    <string name="today_precipitation_dry_week">बारिश की उम्मीद नहीं</string>
-    <string name="today_precipitation_dry_overnight">रात भर बारिश की उम्मीद नहीं</string>
+    <string name="today_precipitation_dry">बारिश नहीं</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">मॉडल:</string>
@@ -1217,9 +1215,7 @@ Not overridden by design:
     <string name="today_play">चलाएँ</string>
     <string name="today_play_toast_daily">आपका दैनिक ClothesCast चला रहे हैं।</string>
     <string name="today_play_toast_nightly">आपका रात्रिकालीन ClothesCast चला रहे हैं।</string>
-    <string name="today_precipitation_amount_dry_today">आज बारिश की संभावना नहीं</string>
-    <string name="today_precipitation_amount_dry_tonight">आज रात बारिश की संभावना नहीं</string>
-    <string name="today_precipitation_amount_dry_week">बारिश की संभावना नहीं</string>
+    <string name="today_precipitation_amount_dry">वर्षा नहीं</string>
     <string name="today_precipitation_amount_total_week">%1$s बारिश</string>
     <string name="today_precipitation_title_snow">बर्फ़बारी की संभावना</string>
     <string name="today_precipitation_title_mixed">बारिश या बर्फ़बारी की संभावना</string>

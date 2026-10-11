@@ -588,9 +588,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_precipitation_title">Risque de pluie</string>
     <string name="today_precipitation_peak">Pic %1$d%% à %2$s</string>
     <string name="today_precipitation_peak_day">Pic %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Aucune pluie prévue aujourd\'hui</string>
-    <string name="today_precipitation_dry_week">Aucune pluie prévue</string>
-    <string name="today_precipitation_dry_overnight">Aucune pluie prévue pendant la nuit</string>
+    <string name="today_precipitation_dry">Pas de pluie</string>
 
     <!-- Chart labels. -->
     <string name="today_chart_model_legend_label">Modèles :</string>
@@ -1314,9 +1312,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_play">Lecture</string>
     <string name="today_play_toast_daily">Lecture de ton ClothesCast du matin.</string>
     <string name="today_play_toast_nightly">Lecture de ton ClothesCast du soir.</string>
-    <string name="today_precipitation_amount_dry_today">Pas de pluie prévue aujourd\'hui</string>
-    <string name="today_precipitation_amount_dry_tonight">Pas de pluie prévue ce soir</string>
-    <string name="today_precipitation_amount_dry_week">Pas de pluie prévue</string>
+    <string name="today_precipitation_amount_dry">Pas de précipitations</string>
     <string name="today_precipitation_amount_total_week">%1$s de pluie</string>
     <string name="today_precipitation_title_snow">Risque de neige</string>
     <string name="today_precipitation_title_mixed">Risque de pluie ou de neige</string>

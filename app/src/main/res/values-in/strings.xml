@@ -176,9 +176,7 @@ to values/strings.xml (English).
     <string name="today_precipitation_title">Kemungkinan hujan</string>
     <string name="today_precipitation_peak">Puncak %1$d%% pukul %2$s</string>
     <string name="today_precipitation_peak_day">Puncak %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Tidak ada hujan hari ini</string>
-    <string name="today_precipitation_dry_week">Tidak ada hujan</string>
-    <string name="today_precipitation_dry_overnight">Tidak ada hujan malam ini</string>
+    <string name="today_precipitation_dry">Tidak ada hujan</string>
 
     <!-- Chart labels -->
     <string name="today_chart_model_legend_label">Model:</string>
@@ -1186,9 +1184,7 @@ to values/strings.xml (English).
     <string name="today_play">Putar</string>
     <string name="today_play_toast_daily">Memutar ClothesCast harianmu.</string>
     <string name="today_play_toast_nightly">Memutar ClothesCast malamu.</string>
-    <string name="today_precipitation_amount_dry_today">Tidak diperkirakan hujan hari ini</string>
-    <string name="today_precipitation_amount_dry_tonight">Tidak diperkirakan hujan malam ini</string>
-    <string name="today_precipitation_amount_dry_week">Tidak diperkirakan hujan</string>
+    <string name="today_precipitation_amount_dry">Tidak ada curah hujan</string>
     <string name="today_precipitation_amount_total_week">%1$s hujan</string>
     <string name="today_precipitation_title_snow">Kemungkinan salju</string>
     <string name="today_precipitation_title_mixed">Kemungkinan hujan atau salju</string>

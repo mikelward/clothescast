@@ -793,7 +793,7 @@ internal fun RainWidgetDryPreview() {
     }
 }
 
-// A dry tonight window reads "No rain expected overnight", not "…today".
+// A dry tonight window reads "No rain"; the time axis says it is tonight.
 @Preview(name = "Chance-of-rain widget · dry tonight", widthDp = 360)
 @Composable
 internal fun RainWidgetDryTonightPreview() {

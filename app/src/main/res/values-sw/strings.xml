@@ -168,9 +168,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_precipitation_title">Uwezekano wa mvua</string>
     <string name="today_precipitation_peak">Kilele %1$d%% saa %2$s</string>
     <string name="today_precipitation_peak_day">Kilele %1$d%% %2$s</string>
-    <string name="today_precipitation_dry">Hakuna mvua inayotarajiwa leo</string>
-    <string name="today_precipitation_dry_week">Hakuna mvua inayotarajiwa</string>
-    <string name="today_precipitation_dry_overnight">Hakuna mvua inayotarajiwa usiku</string>
+    <string name="today_precipitation_dry">Hakuna mvua</string>
     <string name="today_chart_model_legend_label">Mifano:</string>
     <string name="today_chart_main_line_label">Wastani</string>
     <string name="today_wind_title">Kasi ya upepo</string>
@@ -1156,9 +1154,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_play">Cheza</string>
     <string name="today_play_toast_daily">Ninacheza ClothesCast yako ya kila siku.</string>
     <string name="today_play_toast_nightly">Ninacheza ClothesCast yako ya usiku.</string>
-    <string name="today_precipitation_amount_dry_today">Hakuna mvua inayotarajiwa leo</string>
-    <string name="today_precipitation_amount_dry_tonight">Hakuna mvua inayotarajiwa usiku huu</string>
-    <string name="today_precipitation_amount_dry_week">Hakuna mvua inayotarajiwa</string>
+    <string name="today_precipitation_amount_dry">Hakuna mvua</string>
     <string name="today_precipitation_amount_total_week">%1$s ya mvua</string>
     <string name="today_precipitation_title_snow">Uwezekano wa theluji</string>
     <string name="today_precipitation_title_mixed">Uwezekano wa mvua au theluji</string>

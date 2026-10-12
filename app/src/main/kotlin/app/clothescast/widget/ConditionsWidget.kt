@@ -17,7 +17,6 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
-import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -70,6 +69,17 @@ class ConditionsWidget : GlanceAppWidget() {
         // elapsed — so a day-stale snapshot shows the empty state and self-heals
         // rather than surfacing yesterday's range. NEXT_PERIOD is deliberately
         // not consulted: it's a pre-render of the upcoming window.
+        provideLiveContent(context, { loadConditionsWidgetData(context) }) { data ->
+            GlanceTheme {
+                ConditionsWidgetContent(data.info, data.darkTheme)
+            }
+        }
+    }
+
+    /** What the strip draws: its lines (null → empty state) and the in-app theme. */
+    private data class ConditionsWidgetData(val info: OutfitCardInfoLines?, val darkTheme: Boolean)
+
+    private suspend fun loadConditionsWidgetData(context: Context): ConditionsWidgetData {
         val loaded = loadCurrentInsight(context)
         val insight = loaded?.first
         val prefs = loaded?.second
@@ -96,11 +106,7 @@ class ConditionsWidget : GlanceAppWidget() {
             null
         }
         val darkTheme = prefs?.let { resolveDarkTheme(context, it.themeMode) } ?: false
-        provideContent {
-            GlanceTheme {
-                ConditionsWidgetContent(info, darkTheme)
-            }
-        }
+        return ConditionsWidgetData(info, darkTheme)
     }
 }
 

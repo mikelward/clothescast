@@ -46,6 +46,7 @@ import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.core.data.tts.isRetryableGeminiTtsFailure
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
+import app.clothescast.mqtt.MqttPublisher
 import app.clothescast.notification.CHANNEL_PLAYBACK
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -1138,7 +1139,7 @@ class FetchAndNotifyWorker(
             } else null
             val video: ByteArray? = if (png != null && wav != null) {
                 withContext(Dispatchers.Default) {
-                    runCatching { Mp4Encoder.encode(png, wav) }
+                    runCatching { Mp4Encoder.encode(png, wav, MqttPublisher.VIDEO_MIN_DURATION_US) }
                         .onFailure { t ->
                             if (t is CancellationException) throw t
                             DiagLog.w(TAG, t, "Next-window MQTT video mux failed; publishing bundle without video.")
@@ -1295,7 +1296,7 @@ class FetchAndNotifyWorker(
             val mqttVideoDeferred: Deferred<ByteArray?>? =
                 if (gates.mqttPublishable && png != null && wav != null) {
                     async(Dispatchers.Default) {
-                        runCatching { Mp4Encoder.encode(png, wav) }
+                        runCatching { Mp4Encoder.encode(png, wav, MqttPublisher.VIDEO_MIN_DURATION_US) }
                             .onFailure { t ->
                                 if (t is CancellationException) throw t
                                 DiagLog.w(TAG, t, "MQTT video mux failed; publishing bundle without video.")

@@ -873,6 +873,14 @@ class MqttPublisher(
         // these, a black-holed broker host would let TCP connect block past the
         // outer timeout — coroutine cancellation can't interrupt a blocked
         // socket call by itself.
+        /**
+         * Minimum length of the MQTT `video` clip. The outfit frame is held
+         * after the speech so a Home Assistant automation can cast the one
+         * clip and let it end on its own, without the receiver dropping to
+         * its idle screen or loading a second still image.
+         */
+        const val VIDEO_MIN_DURATION_US = 120_000_000L
+
         internal const val SOCKET_CONNECT_TIMEOUT_MS = 4_000L
         internal const val MQTT_CONNECT_TIMEOUT_MS = 4_000L
 

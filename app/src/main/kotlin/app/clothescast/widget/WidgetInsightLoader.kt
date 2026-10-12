@@ -1,14 +1,31 @@
 package app.clothescast.widget
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.provideContent
 import app.clothescast.ClothesCastApplication
 import app.clothescast.alarm.reconcileWidgetRefreshChain
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.diag.DiagLog
 import app.clothescast.work.FetchAndNotifyWorker
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDateTime
@@ -205,6 +222,89 @@ internal fun widgetCacheAction(
     // can always reach the current window and this branch is normally not taken.
     if (currentDate != localNow.toLocalDate()) return WidgetCacheAction.KEEP
     return WidgetCacheAction.REFRESH
+}
+
+/**
+ * What a widget's render depends on: the cached snapshot and the settings the
+ * widgets draw ([WidgetInputs]). A change to either during an open Glance
+ * session redraws the widget (see [provideLiveContent]).
+ */
+internal data class WidgetRedrawKey(val snapshot: ForecastSnapshot?, val inputs: WidgetInputs)
+
+/**
+ * The live [WidgetRedrawKey]. Whole [UserPreferences] would be the wrong key:
+ * the fetch worker itself writes settings (the resolved device location), and a
+ * redraw of a stale window kicks a silent refresh that REPLACEs the running one
+ * — so keying on every settings write could cancel the refresh it is waiting on.
+ */
+internal fun widgetRedrawKeys(context: Context): Flow<WidgetRedrawKey> {
+    val app = context.applicationContext as ClothesCastApplication
+    return combine(
+        app.insightCache.thisPeriod,
+        app.settingsRepository.preferences.map { it.toWidgetInputs() },
+    ) { snapshot, inputs -> WidgetRedrawKey(snapshot, inputs) }
+}
+
+/**
+ * Builds once per distinct value of [keys], newest wins: a key that changes
+ * while a build runs cancels it and starts again, so the result always
+ * reflects the latest key, even one that flips and flips back mid-build.
+ * Suspends until the first build lands and returns it, plus the later builds.
+ * The collector is launched in this scope and lives as long as it does.
+ */
+internal suspend fun <T> CoroutineScope.launchLiveBuild(
+    keys: Flow<Any?>,
+    build: suspend (first: Boolean) -> T,
+): Pair<T, Flow<T>> {
+    val built = MutableStateFlow<Any?>(Unbuilt)
+    launch {
+        var first = true
+        keys.distinctUntilChanged().collectLatest {
+            val value = build(first)
+            first = false
+            built.value = value
+        }
+    }
+    @Suppress("UNCHECKED_CAST")
+    val initial = built.first { it !== Unbuilt } as T
+    @Suppress("UNCHECKED_CAST")
+    return initial to built.filter { it !== Unbuilt }.map { it as T }
+}
+
+private object Unbuilt
+
+/**
+ * Provides widget content built by [build], rebuilt whenever the cache or the
+ * widget settings change while this Glance session is open.
+ *
+ * Why: Glance runs `provideGlance` once per session, and a session stays open
+ * for ~45s. `update()` on an open session only recomposes, with whatever
+ * `provideGlance` loaded. So when a widget rendered its empty state and kicked a
+ * silent refresh, the refresh's cache write — seconds later, inside that window
+ * — repainted the same empty state, and the widget said "tap to open" until the
+ * next hourly tick.
+ *
+ * The rebuild runs once per session, here, not in the composition: with
+ * [androidx.glance.appwidget.SizeMode.Exact] Glance composes the content once
+ * per size the launcher lists, and a collector in each would rebuild (and, for
+ * the charts, re-render every cell size) once per size.
+ */
+internal suspend fun <T> GlanceAppWidget.provideLiveContent(
+    context: Context,
+    build: suspend () -> T,
+    content: @Composable (T) -> Unit,
+): Nothing = coroutineScope {
+    val keys = widgetRedrawKeys(context).map<WidgetRedrawKey, WidgetRedrawKey?> { it }.catch {
+        if (it is CancellationException) throw it
+        // Still build once, so the widget renders; the next session watches again.
+        DiagLog.w(TAG, it, "Widget: watching for cache changes failed")
+        emit(null)
+    }
+    val (initial, updates) = launchLiveBuild(keys) { first ->
+        if (!first) DiagLog.i(TAG, "Widget: cache or settings changed while open; redrawing")
+        build()
+    }
+    provideContent { content(updates.collectAsState(initial).value) }
 }
 
 private const val TAG = "Widget"

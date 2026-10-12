@@ -8,7 +8,6 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceTheme
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
-import androidx.glance.appwidget.provideContent
 import app.clothescast.R
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HourlyForecast
@@ -40,8 +39,7 @@ class ChanceOfRainWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val charts = buildRainCharts(context, id)
-        provideContent {
+        provideLiveContent(context, { buildRainCharts(context, id) }) { charts ->
             GlanceTheme {
                 ChartWidgetContent(
                     charts = charts,

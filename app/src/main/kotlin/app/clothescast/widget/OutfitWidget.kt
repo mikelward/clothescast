@@ -22,7 +22,6 @@ import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
-import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -85,24 +84,48 @@ class OutfitWidget : GlanceAppWidget() {
         // specifically (not "freshest of either slot"): NEXT_PERIOD is a
         // pre-render of the upcoming window and would surface "Tonight" while
         // the user is still in the daytime window the morning worker delivered.
-        val loaded = loadCurrentInsight(context)
-        val insight = loaded?.first
-        val prefs = loaded?.second
-        // Per-garment colour overrides — empty when the user hasn't customised.
-        // Pulled here (not inside the Composable) so the bitmap rasterizer can
-        // run on this dispatcher rather than during composition.
-        val topColors = prefs?.outfitTopColors ?: emptyMap()
-        val bottomColors = prefs?.outfitBottomColors ?: emptyMap()
-        val handsColors = prefs?.outfitHandsColors ?: emptyMap()
-        val carriedColors = prefs?.outfitCarriedColors ?: emptyMap()
-        val outerColors = prefs?.outfitOuterColors ?: emptyMap()
-        val headColors = prefs?.outfitHeadColors ?: emptyMap()
-        provideContent {
+        provideLiveContent(context, { loadOutfitWidgetData(context) }) { data ->
             GlanceTheme {
-                OutfitWidgetContent(insight, topColors, bottomColors, handsColors, carriedColors, outerColors, headColors)
+                OutfitWidgetContent(
+                    data.insight,
+                    data.topColors,
+                    data.bottomColors,
+                    data.handsColors,
+                    data.carriedColors,
+                    data.outerColors,
+                    data.headColors,
+                )
             }
         }
     }
+}
+
+/** What [OutfitWidget] draws: the current insight (null → empty state) and the colour overrides. */
+private data class OutfitWidgetData(
+    val insight: Insight?,
+    val topColors: Map<OutfitSuggestion.Top, Long>,
+    val bottomColors: Map<OutfitSuggestion.Bottom, Long>,
+    val handsColors: Map<OutfitSuggestion.Hands, Long>,
+    val carriedColors: Map<OutfitSuggestion.Carried, Long>,
+    val outerColors: Map<OutfitSuggestion.Outer, Long>,
+    val headColors: Map<OutfitSuggestion.Head, Long>,
+)
+
+private suspend fun loadOutfitWidgetData(context: Context): OutfitWidgetData {
+    val loaded = loadCurrentInsight(context)
+    val prefs = loaded?.second
+    // Per-garment colour overrides — empty when the user hasn't customised.
+    // Pulled here (not inside the Composable) so the bitmap rasterizer can
+    // run on this dispatcher rather than during composition.
+    return OutfitWidgetData(
+        insight = loaded?.first,
+        topColors = prefs?.outfitTopColors ?: emptyMap(),
+        bottomColors = prefs?.outfitBottomColors ?: emptyMap(),
+        handsColors = prefs?.outfitHandsColors ?: emptyMap(),
+        carriedColors = prefs?.outfitCarriedColors ?: emptyMap(),
+        outerColors = prefs?.outfitOuterColors ?: emptyMap(),
+        headColors = prefs?.outfitHeadColors ?: emptyMap(),
+    )
 }
 
 // Threshold at which we split into two columns: each column needs roughly the

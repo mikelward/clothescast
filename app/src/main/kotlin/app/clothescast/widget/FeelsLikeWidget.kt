@@ -31,7 +31,6 @@ import androidx.glance.appwidget.LocalAppWidgetOptions
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
-import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -87,8 +86,7 @@ class FeelsLikeWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val charts = buildCharts(context, id, weekly = false)
-        provideContent {
+        provideLiveContent(context, { buildCharts(context, id, weekly = false) }) { charts ->
             GlanceTheme {
                 ChartWidgetContent(charts = charts, page = THIS_PERIOD_PAGE, labelRes = R.string.feels_like_widget_label)
             }
@@ -101,8 +99,7 @@ class SevenDayFeelsLikeWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val charts = buildCharts(context, id, weekly = true)
-        provideContent {
+        provideLiveContent(context, { buildCharts(context, id, weekly = true) }) { charts ->
             GlanceTheme {
                 ChartWidgetContent(charts = charts, page = WEEK_PAGE, labelRes = R.string.feels_like_week_widget_label)
             }

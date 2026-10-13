@@ -186,6 +186,12 @@ whenever you edit this file.
   Applies to strings, dialog and button text, and screen titles. (Same
   instinct as the ≤80-char commit-subject rule — say it in fewer words.)
 
+## Icons
+
+- **Use a standard Material icon by default** (Material Icons or Material
+  Symbols), not a hand-drawn one: users already know what they mean. If no
+  Material icon clearly fits, or two do, ask before picking or drawing one.
+
 ## Commits and PRs
 
 - **Linear history.** Never merge — rebase. The repo's PRs land as a linear

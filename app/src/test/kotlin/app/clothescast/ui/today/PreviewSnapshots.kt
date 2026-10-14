@@ -221,10 +221,11 @@ class PreviewSnapshots {
      * `animateFloatAsState`-driven on-load animations settle to their final
      * values (e.g. [app.clothescast.ui.EdgeFadeOverlay]'s top/bottom fade
      * alphas), then one frame per attempt so the settled picture paints
-     * before we rasterise. Chart producers run synchronously under inspection
-     * mode (set in [Frame]), so there's no background-dispatcher race to
-     * wait on and no data-diff animation to settle — chart animations are
-     * disabled everywhere (see [CHART_ANIMATION_SPEC]).
+     * before we rasterise. Under inspection mode (set in [Frame]),
+     * [ChartModelTransaction] builds every chart's model during composition,
+     * so there's no background-dispatcher race to wait on and no data-diff
+     * animation to settle — chart animations are disabled everywhere (see
+     * [CHART_ANIMATION_SPEC]).
      *
      * After the in-session stable check passes, the result is compared
      * against the pre-capture baseline (the PNG already on disk, i.e.

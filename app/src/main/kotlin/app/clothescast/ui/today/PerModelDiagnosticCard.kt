@@ -10,7 +10,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -197,28 +196,26 @@ private fun PerModelDiagnosticChart(
     val times = remember(hourly) { hourly.map { it.time } }
     val mainLineColor = AppTheme.mainLineColor
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(seriesByModel, overlayModels, mainLine) {
-        producer.runTransaction {
-            lineModel {
-                // Main consensus line first so it stays at series index 0
-                // whether or not the overlay is on — see [ForecastChart] for
-                // the rationale (Vico animates by index, so pinning the main
-                // line stops it fading in/out on toggle). Per-model overlays
-                // follow and end up drawn on top of the consensus line. When
-                // the overlay is off, [overlayModels] is empty and only the
-                // main line is emitted — but the y-bounds below still use the
-                // full per-model envelope so the axis labels don't jump.
+    ChartModelTransaction(producer, seriesByModel, overlayModels, mainLine) {
+        lineModel {
+            // Main consensus line first so it stays at series index 0
+            // whether or not the overlay is on — see [ForecastChart] for
+            // the rationale (Vico animates by index, so pinning the main
+            // line stops it fading in/out on toggle). Per-model overlays
+            // follow and end up drawn on top of the consensus line. When
+            // the overlay is off, [overlayModels] is empty and only the
+            // main line is emitted — but the y-bounds below still use the
+            // full per-model envelope so the axis labels don't jump.
+            series(
+                x = mainLine.map { it.first },
+                y = mainLine.map { it.second },
+            )
+            overlayModels.forEach { modelId ->
+                val data = seriesByModel.getValue(modelId)
                 series(
-                    x = mainLine.map { it.first },
-                    y = mainLine.map { it.second },
+                    x = data.map { it.first },
+                    y = data.map { it.second },
                 )
-                overlayModels.forEach { modelId ->
-                    val data = seriesByModel.getValue(modelId)
-                    series(
-                        x = data.map { it.first },
-                        y = data.map { it.second },
-                    )
-                }
             }
         }
     }

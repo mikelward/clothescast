@@ -72,11 +72,10 @@ private val SIDE_BY_SIDE_MIN_WIDTH = 240.dp
 private fun WidgetFrame(darkTheme: Boolean = false, content: @Composable () -> Unit) {
     // Render every widget preview in inspection mode, matching `Frame` in
     // TodayPreviews.kt. The feels-like widget previews reuse `ForecastChart`
-    // through `WidgetForecastChart`, so they need the same synchronous Vico
-    // producer dispatcher (`Dispatchers.Unconfined` under inspection mode,
-    // `Dispatchers.Default` otherwise) — without it the snapshot can race the
-    // background transaction and capture a chrome-only card with no plotted
-    // line under heavy parallel CI load.
+    // through `WidgetForecastChart`, so they need the same in-composition
+    // chart model `ChartModelTransaction` builds under inspection mode.
+    // Without it the snapshot can race the background transaction and capture
+    // a chrome-only card with no plotted line under heavy parallel CI load.
     CompositionLocalProvider(LocalInspectionMode provides true) {
         ClothesCastTheme(darkTheme = darkTheme, dynamicColor = false) {
             // Slight surface inset so the rounded widget corners are visible

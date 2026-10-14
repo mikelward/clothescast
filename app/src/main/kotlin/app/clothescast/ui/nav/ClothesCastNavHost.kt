@@ -30,6 +30,7 @@ import app.clothescast.locale.AppLocale
 import app.clothescast.location.LocationResolver
 import app.clothescast.ui.LocalNavigateToAbout
 import app.clothescast.ui.garment.outfitCardHeader
+import app.clothescast.ui.garment.outfitCardHoliday
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
@@ -374,6 +375,11 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                 prefs.wearPreamble,
             )
             val prose = formatter.format(insight.summary)
+            // By the insight's own date, as the worker's card is. Resolved
+            // outside the render's runCatching so leaving the screen cancels
+            // the publish here rather than becoming a null image; the
+            // resolver already contains a failed calendar read.
+            val theme = resolveHolidayTheme(prefs, app.calendarEventReader, today = insight.forDate)
             val png: ByteArray? = insight.outfit?.let { outfit ->
                 runCatching {
                     val info = outfitCardInfoLines(
@@ -384,7 +390,6 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                         windSpeedUnit = prefs.windSpeedUnit,
                     )
                     val header = outfitCardHeader(app, insight.period, prefs, formatter.locale)
-                    val theme = resolveHolidayTheme(prefs, app.calendarEventReader)
                     val topColors: Map<OutfitSuggestion.Top, Long> =
                         prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
                     val bottomColors: Map<OutfitSuggestion.Bottom, Long> =
@@ -419,6 +424,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                             prefs.timeFormat,
                         ),
                         darkTheme = insight.period != ForecastPeriod.TODAY,
+                        holiday = outfitCardHoliday(app, theme, prefs.region),
                     )
                 }.getOrNull()
             }

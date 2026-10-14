@@ -7,13 +7,15 @@ already synced to your phone to make the daily forecast more useful:
   can fold in the weather for *that* part of the day (e.g. "Tonight, rain,
   bring a jacket").
 - **Birthdays and public holidays** — these can theme the outfit card with
-  special colors and messages.
+  special colors, and name the day ("🎂 Alice's birthday") in a banner on
+  the Today screen and on the outfit card.
 
 The **Calendar settings** screen has two listings — **Birthdays** and
 **Public holidays** — that show the upcoming celebrations ClothesCast found in
-your synced calendars for the year ahead. Event titles stay on your device:
-they never appear in notifications, the spoken forecast, Cast, MQTT, or any
-analytics. See [PRIVACY.md](../PRIVACY.md) for the full boundary.
+your synced calendars for the year ahead. Event titles never appear in
+notifications, the spoken forecast, or any analytics. They do appear on the
+outfit card, which goes to the smart display you cast to and the MQTT broker
+you set up. See [PRIVACY.md](../PRIVACY.md) for the full boundary.
 
 ## Why a holiday sometimes shows on the wrong date
 

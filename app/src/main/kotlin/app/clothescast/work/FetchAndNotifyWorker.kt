@@ -67,6 +67,7 @@ import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.ui.today.toLite
 import app.clothescast.R
 import app.clothescast.ui.garment.outfitCardHeader
+import app.clothescast.ui.garment.outfitCardHoliday
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
@@ -1125,6 +1126,7 @@ class FetchAndNotifyWorker(
                 renderOutfitPngIfPossible(
                     insight = insight,
                     prefs = prefs,
+                    theme = colors.theme,
                     prose = prose,
                     topColors = colors.topColors,
                     bottomColors = colors.bottomColors,
@@ -1224,6 +1226,11 @@ class FetchAndNotifyWorker(
             theme, topColors, bottomColors, handsColors,
             carriedColors, outerColors, topStrokes, bottomStrokes, headColors,
         ) = resolveThemedOutfitColors(prefs)
+        // The outfit card is themed by its insight's own date, as the paired
+        // next-window bundle is: an evening "Play now" of tomorrow's daytime
+        // cast must not draw today's birthday on tomorrow's card. On every
+        // scheduled run the two dates agree.
+        val cardColors = resolveThemedOutfitColors(prefs, insight.forDate)
 
         // Compute every "should this fire?" decision from one snapshot
         // of prefs so the pre- and post-alignment fan-outs stay
@@ -1277,15 +1284,16 @@ class FetchAndNotifyWorker(
                 renderOutfitPngIfPossible(
                     insight = insight,
                     prefs = prefs,
+                    theme = cardColors.theme,
                     prose = prose,
-                    topColors = topColors,
-                    bottomColors = bottomColors,
-                    handsColors = handsColors,
-                    carriedColors = carriedColors,
-                    outerColors = outerColors,
-                    topStrokes = topStrokes,
-                    bottomStrokes = bottomStrokes,
-                    headColors = headColors,
+                    topColors = cardColors.topColors,
+                    bottomColors = cardColors.bottomColors,
+                    handsColors = cardColors.handsColors,
+                    carriedColors = cardColors.carriedColors,
+                    outerColors = cardColors.outerColors,
+                    topStrokes = cardColors.topStrokes,
+                    bottomStrokes = cardColors.bottomStrokes,
+                    headColors = cardColors.headColors,
                 )
             }
 
@@ -1567,6 +1575,7 @@ class FetchAndNotifyWorker(
     private fun renderOutfitPngIfPossible(
         insight: Insight,
         prefs: UserPreferences,
+        theme: HolidayTheme?,
         prose: String,
         topColors: Map<OutfitSuggestion.Top, Long>,
         bottomColors: Map<OutfitSuggestion.Bottom, Long>,
@@ -1611,6 +1620,7 @@ class FetchAndNotifyWorker(
                     prefs.timeFormat,
                 ),
                 darkTheme = insight.period != ForecastPeriod.TODAY,
+                holiday = outfitCardHoliday(applicationContext, theme, prefs.region),
             )
         }
             .onFailure { t ->

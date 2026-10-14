@@ -94,6 +94,9 @@ I put on before I leave?" instead of a full weather-office report.
   Mon 4 Oct 19:00"), so a card left up on a display shows when it went stale.
   The day card is light and the tonight card dark, since the tonight card is
   shown in the evening and a white screen glares in a dimmed room.
+  On a themed day the card names the celebration under its title, in the
+  Today banner's words and colors — a birthday or calendar holiday by its
+  calendar title.
 - **TV / leanback.** The manifest opts into Android TV / leanback launchability
   while keeping touchscreen optional, so the same app can appear on supported TV
   homes without filtering out phones.

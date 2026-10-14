@@ -13,6 +13,7 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withTranslation
 import app.clothescast.R
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.TemperatureBand
@@ -23,7 +24,11 @@ import app.clothescast.core.domain.model.symbol
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.insight.InsightFormatter
+import app.clothescast.tts.toJavaLocale
+import app.clothescast.ui.today.holidayBannerContentArgb
+import app.clothescast.ui.today.holidayBannerText
 import app.clothescast.core.domain.model.TimeFormat
+import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.UserPreferences
 import app.clothescast.core.domain.model.formatHourMinute
 import app.clothescast.core.domain.usecase.tonightDateTime
@@ -585,6 +590,7 @@ private fun renderFigureOverlayBitmap(
  * ```
  * ┌──────────────────────────────────────────┐
  * │  [top icon]  TODAY'S CLOTHESCAST         │  ← header over the prose
+ * │  [        ]  (🎂  Alice's birthday)      │  ← holiday chip, themed days only
  * │  [        ]  A warm one today. Wear a    │    column, not the icons
  * │  [bot icon]  t-shirt and shorts. High…   │
  * │  [        ]                               │
@@ -602,7 +608,9 @@ private fun renderFigureOverlayBitmap(
  * on a display shows when it went stale; the conditions row moves up to make
  * room for it, and nothing moves when it is null. [darkTheme] swaps the white
  * card for the dark strip palette — the tonight card is shown in the evening on
- * a display in a dimmed room, where a white screen glares.
+ * a display in a dimmed room, where a white screen glares. [holiday] (from
+ * [outfitCardHoliday]) names the day's celebration in a chip under the header;
+ * the prose gives up the lines it needs, and nothing moves when it is null.
  */
 internal fun renderOutfitCard(
     context: Context,
@@ -624,6 +632,7 @@ internal fun renderOutfitCard(
     headStrokes: Map<OutfitSuggestion.Head, Long> = emptyMap(),
     window: String? = null,
     darkTheme: Boolean = false,
+    holiday: OutfitCardHoliday? = null,
 ): ByteArray {
     val palette = if (darkTheme) DARK_CARD_PALETTE else LIGHT_CARD_PALETTE
     val bmp = createBitmap(CARD_W, CARD_H)
@@ -719,7 +728,7 @@ internal fun renderOutfitCard(
         color = palette.header
     }
     val headerBaseline = CARD_PAD - headerPaint.fontMetrics.ascent
-    val proseTop = (headerBaseline + headerPaint.fontMetrics.descent + HEADER_GAP_PX).toInt()
+    val headerBottom = headerBaseline + headerPaint.fontMetrics.descent
     val headerText = header.uppercase()
     val headerWidth = (CARD_W - proseX - CARD_PAD).toFloat()
     while (headerPaint.measureText(headerText) > headerWidth && headerPaint.textSize > HEADER_MIN_PX) {
@@ -728,6 +737,18 @@ internal fun renderOutfitCard(
     val fittedHeader = TextUtils.ellipsize(headerText, headerPaint, headerWidth, TextUtils.TruncateAt.END)
     canvas.drawText(fittedHeader, 0, fittedHeader.length, proseX.toFloat(), headerBaseline, headerPaint)
 
+    // A themed day's chip sits between the header and the prose, which moves
+    // down by its height and gives up as many lines as that costs, so the
+    // prose still ends above the conditions row.
+    val plainProseTop = (headerBottom + HEADER_GAP_PX).toInt()
+    val proseTop = holiday
+        ?.let { h ->
+            val chipTop = headerBottom + HOLIDAY_GAP_PX
+            val chipHeight = drawHolidayChip(canvas, h, proseX.toFloat(), chipTop, headerWidth)
+            (chipTop + chipHeight + HOLIDAY_GAP_PX).toInt()
+        }
+        ?: plainProseTop
+
     // Prose wraps in the column to the right of the icon stack.
     if (prose.isNotBlank()) {
         val prosePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -735,10 +756,11 @@ internal fun renderOutfitCard(
             textSize = PROSE_PX
             color = palette.prose
         }
+        val linesGivenUp = ceil((proseTop - plainProseTop) / prosePaint.fontSpacing).toInt()
         val layout = StaticLayout.Builder
             .obtain(prose, 0, prose.length, prosePaint, CARD_W - proseX - CARD_PAD)
             .setEllipsize(TextUtils.TruncateAt.END)
-            .setMaxLines(PROSE_MAX_LINES)
+            .setMaxLines((PROSE_MAX_LINES - linesGivenUp).coerceAtLeast(1))
             .build()
         canvas.withTranslation(proseX.toFloat(), proseTop.toFloat()) {
             layout.draw(this)
@@ -811,6 +833,49 @@ internal fun renderOutfitCard(
     bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
     bmp.recycle()
     return out.toByteArray()
+}
+
+/**
+ * Draws [holiday] as a rounded chip at ([x], [top]) that hugs its label,
+ * ellipsized to fit [maxWidth]. Laid out through StaticLayout so an RTL title
+ * comes out in the right visual order. Returns the chip's height.
+ */
+private fun drawHolidayChip(
+    canvas: Canvas,
+    holiday: OutfitCardHoliday,
+    x: Float,
+    top: Float,
+    maxWidth: Float,
+): Float {
+    val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        typeface = Typeface.DEFAULT_BOLD
+        textSize = HOLIDAY_PX
+        color = holiday.contentArgb
+    }
+    val label = holiday.label
+    val maxTextWidth = maxWidth - 2 * HOLIDAY_PAD_X
+    val textWidth = minOf(ceil(StaticLayout.getDesiredWidth(label, textPaint)), maxTextWidth).toInt()
+    val layout = StaticLayout.Builder
+        .obtain(label, 0, label.length, textPaint, textWidth)
+        .setMaxLines(1)
+        .setEllipsize(TextUtils.TruncateAt.END)
+        .setIncludePad(false)
+        .build()
+    val height = (layout.height + 2 * HOLIDAY_PAD_Y).toFloat()
+    val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = holiday.backgroundArgb }
+    canvas.drawRoundRect(
+        x,
+        top,
+        x + textWidth + 2 * HOLIDAY_PAD_X,
+        top + height,
+        HOLIDAY_RADIUS,
+        HOLIDAY_RADIUS,
+        fill,
+    )
+    canvas.withTranslation(x + HOLIDAY_PAD_X, top + HOLIDAY_PAD_Y) {
+        layout.draw(this)
+    }
+    return height
 }
 
 // Material thermostat / thermometer silhouette in a 24×24 viewport. Same
@@ -1267,6 +1332,41 @@ internal fun outfitCardHeader(
     }
 }
 
+/**
+ * The day's celebration as the outfit card shows it: the Today banner's
+ * "{emoji}  {text}" on the banner's own color. [label] is display text and
+ * may carry a calendar title — a birthday's contact name included — so it
+ * belongs on the card and nowhere spoken.
+ */
+internal data class OutfitCardHoliday(
+    val label: String,
+    val backgroundArgb: Int,
+    val contentArgb: Int,
+)
+
+/**
+ * Builds the card's [OutfitCardHoliday] for [theme], reading the banner the
+ * same way the Today screen does ([holidayBannerText]) so a smart display
+ * names the day — "Alice's birthday", "Merry Christmas" — exactly as the phone
+ * does. [region] picks the per-country name (Veterans Day in the US). Null on
+ * an ordinary day.
+ */
+internal fun outfitCardHoliday(
+    context: Context,
+    theme: HolidayTheme?,
+    region: Region,
+): OutfitCardHoliday? {
+    if (theme == null) return null
+    val country = (region.toJavaLocale() ?: Locale.getDefault()).country
+    val text = holidayBannerText(context, theme, country).trim()
+    if (text.isEmpty()) return null
+    return OutfitCardHoliday(
+        label = "${theme.emoji}  $text",
+        backgroundArgb = theme.bannerArgb.toInt(),
+        contentArgb = holidayBannerContentArgb(theme.bannerArgb),
+    )
+}
+
 internal fun outfitCardInfoLines(
     context: Context,
     formatter: InsightFormatter,
@@ -1667,6 +1767,13 @@ private const val WINDOW_ARGB = 0xFF888888.toInt()
 // Dark card's garment tile: 12dp past the icons on every side, inside CARD_PAD.
 private const val ICON_TILE_PAD = 12
 private const val ICON_TILE_RADIUS = 16f
+// Holiday chip under the header: prose-sized bold text, padded like a small
+// banner, with the same gap above and below.
+private const val HOLIDAY_PX = 22f
+private const val HOLIDAY_PAD_X = 16
+private const val HOLIDAY_PAD_Y = 8
+private const val HOLIDAY_GAP_PX = 16
+private const val HOLIDAY_RADIUS = 12f
 
 /** Colors for one theme of [renderOutfitCard]. */
 internal data class OutfitCardPalette(

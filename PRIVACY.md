@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-10-10_
+_Last updated: 2026-10-14_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -49,6 +49,10 @@ have over it.
   below, one calendar-derived boolean — whether the window has a located
   event, with no titles, times, or locations — is published to your own
   broker.
+- If you turn on **calendar theming** (Holiday settings), a detected
+  birthday or public holiday is named — contact name included — in the
+  banner on your screen and on the outfit-card image that goes to the smart
+  display and MQTT broker you set up. Calendar titles are never spoken.
 - If you opt in to the **Smart Home / Home Assistant MQTT bridge**
   (Settings → Smart Home, off by default), the rendered forecast
   sentence — plus a small calendar-derived `has_events` boolean — is
@@ -142,9 +146,14 @@ The source code is at <https://github.com/mikelward/clothescast>.
   doesn't cover (Diwali, Eid, Lunar New Year, etc.) and on detected
   birthdays — a celebratory palette + a banner naming the day.
 - **Where it goes:** Detected event titles — including contact names on
-  birthday events — stay on your device. They are shown only in the themed
-  banner on your screen: **never** read aloud through online TTS, **never**
-  sent to Gemini, and **never** written to Firebase Analytics or
+  birthday events — are shown in the themed banner on your screen and in a
+  banner on the outfit card for the day the forecast covers ("🎂 Alice's
+  birthday"). The outfit card is an image, so the title travels wherever that
+  image goes: the smart display you cast to and, if you use the MQTT bridge,
+  your broker — which receives the next day's card the evening before (see
+  the Smart Home section below). Neither is a service the developer
+  operates. The titles are **never** read aloud through online TTS,
+  **never** sent to Gemini, and **never** written to Firebase Analytics or
   Crashlytics.
 
   One narrow exception, and only if you use the online (Gemini) voice: on a
@@ -256,14 +265,26 @@ The source code is at <https://github.com/mikelward/clothescast>.
   one. A `has_events` topic carries a single boolean — `true`/`false` for
   whether that window has a located calendar event — so an automation can
   tell a deliberately-quiet evening (when "notify only on event nights"
-  keeps the phone silent) from an outage. It's the only calendar-derived
-  field here, and it carries no event titles, times, or locations. The
-  payload includes any calendar-event extras clause that fires
-  (e.g. _"Bring a jacket for your concert tonight"_) when you have the
-  calendar extras enabled, because that clause is part of the rendered
-  sentence. No coordinates, no API keys, no settings values, no device
-  identifiers travel with any of these messages, with one exception you
-  choose: the optional **Name** on the Smart Home page.
+  keeps the phone silent) from an outage. It carries no event titles,
+  times, or locations. The payload includes any calendar-event extras
+  clause that fires (e.g. _"Bring a jacket for your concert tonight"_)
+  when you have the calendar extras enabled, because that clause is part
+  of the rendered sentence. No coordinates, no API keys, no settings
+  values, no device identifiers travel with any of these messages, with two
+  exceptions you choose: the optional **Name** on the Smart Home page, and,
+  when your calendar theming fires for the day a card covers, the
+  celebration's name.
+- **Celebrations (optional):** If you turn on calendar theming in the
+  Holiday settings, a detected birthday or public holiday is named in a
+  banner on the outfit-card image — the event's title as your calendar
+  has it, contact name included ("🎂 Alice's birthday"). It travels wherever
+  that image goes: the MQTT image topic and the combined MP4, and the smart
+  display you cast to. The card is named for the day its forecast covers,
+  and the bridge publishes the next day's daytime card the evening before,
+  so a birthday's name reaches your broker that evening. Catalog holidays
+  (Christmas, Bastille Day, …) are named the same way, from the app's own
+  translations. Leave calendar theming off and no calendar title is drawn on
+  the card.
 - **Your name (optional):** If you type a Name on the Smart Home page
   (e.g. "Alex's"), it is drawn into the title of the outfit-card image
   ("Alex's 7am ClothesCast"), so it travels wherever that image goes — the
@@ -567,6 +588,15 @@ Open an issue at <https://github.com/mikelward/clothescast/issues> or
 email the address listed on the Play Store listing.
 
 ## Changelog
+
+- **2026-10-14** — When your calendar theming fires for the day a forecast
+  covers, the outfit-card image names the celebration in a banner under its
+  title, contact name included ("🎂 Alice's birthday"), so a birthday or
+  holiday title from your calendar now reaches your own smart display and
+  MQTT broker — the broker from the evening before, when the bridge
+  publishes the next day's card. Calendar titles are
+  still never spoken, and nothing new reaches the online voice. Off unless
+  you turn on calendar theming.
 
 - **2026-10-10** — Added the optional Smart Home **Name**. When set, it
   appears in the outfit-card image title, the Home Assistant device name and

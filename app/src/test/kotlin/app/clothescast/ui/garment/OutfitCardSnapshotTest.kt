@@ -2,9 +2,13 @@ package app.clothescast.ui.garment
 
 import androidx.test.core.app.ApplicationProvider
 import android.content.Context
+import app.clothescast.core.domain.model.FestiveThemes
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.HolidayCatalog
+import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.OutfitSuggestion
+import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.WeatherCondition
@@ -449,6 +453,59 @@ class OutfitCardSnapshotTest {
                 topColors = emptyMap(),
                 bottomColors = emptyMap(),
                 darkTheme = true,
+            ),
+        )
+    }
+
+    @Test
+    fun outfit_card_today_birthday_chip() {
+        // A birthday names whose it is in a chip under the header, in the
+        // birthday theme's colors; long prose gives up the lines the chip
+        // takes rather than running into the conditions row.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val birthday = FestiveThemes.birthday("Alice's birthday")
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+                header = "7am ClothesCast",
+                prose = "Today, it will be cool, then mild. 3° warmer than yesterday. " +
+                    "Wear a sweater and long pants. Chance of rain this afternoon. " +
+                    "Windy this evening. Bring a jacket for your dinner tonight, " +
+                    "when it will be cold and breezy with a chance of a shower.",
+                info = OutfitCardInfoLines(
+                    tempLine = "11–18°C",
+                    tempFillFraction = thermometerFillFractionFor(18.0),
+                    rainFillFraction = 0.40f,
+                    rainLineShort = "40%",
+                ),
+                topColors = birthday.topOverrides,
+                bottomColors = birthday.bottomOverrides,
+                holiday = outfitCardHoliday(ctx, birthday, Region.EN_US),
+            ),
+        )
+    }
+
+    @Test
+    fun outfit_card_tonight_holiday_chip() {
+        // The dark tonight card keeps the theme's own chip color.
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        val christmas = HolidayCatalog.all.first { it.second.id == HolidayId.CHRISTMAS_DAY }.second
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+                header = "7pm ClothesCast",
+                prose = "Tonight, it will be cold. Wear a sweater and long pants.",
+                info = OutfitCardInfoLines(
+                    tempLine = "2–6°C",
+                    tempFillFraction = thermometerFillFractionFor(6.0),
+                    rainFillFraction = null,
+                ),
+                topColors = christmas.topOverrides,
+                bottomColors = christmas.bottomOverrides,
+                darkTheme = true,
+                holiday = outfitCardHoliday(ctx, christmas, Region.EN_US),
             ),
         )
     }

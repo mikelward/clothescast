@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -187,39 +186,45 @@ fun ForecastChart(
     // Key on [overlays] (the underlying map) rather than [visibleModels] (just
     // the ID list) so a refresh that updates per-model values while keeping
     // the same model IDs still re-emits the series. [showModelSpread] is
-    // included separately so flipping the toggle on/off re-fires the effect
+    // included separately so flipping the toggle on/off re-runs the transaction
     // even when [overlays] hasn't changed.
-    LaunchedEffect(hourly, temperatureUnit, showFeelsLike, overlays, showModelSpread, indexByTime) {
-        producer.runTransaction {
-            lineModel {
-                // Main blended line first so it occupies series index 0 in
-                // both single and per-model views — keeps Vico's identity-
-                // by-index animation stable when the spread toggles, so the
-                // combined line no longer fades out and back in. Per-model
-                // overlays follow in MODEL_DRAW_ORDER (and end up drawn on
-                // top of the combined line); empty when [showModelSpread] is
-                // off, in which case only the main line is emitted.
-                series(hourly.map { pickHourly(it).toUnit(temperatureUnit) })
-                visibleModels.forEach { modelId ->
-                    overlays.getValue(modelId).let { entries ->
-                        // Plot each per-model point at the window position of
-                        // its timestamp (explicit x) rather than letting Vico
-                        // assign x by list position — a model that dropped an
-                        // hour would otherwise draw its tail an hour early,
-                        // disagreeing with the (timestamp-keyed) range band
-                        // and the bottom axis. Entries whose timestamps fall
-                        // outside the window are skipped; in the common case
-                        // every entry maps to its old position, so the
-                        // rendered line is unchanged.
-                        val points = entries.mapNotNull { e ->
-                            indexByTime[e.time]?.let { it to pickModel(e).toUnit(temperatureUnit) }
-                        }
-                        // Never empty: [visibleModels] is pre-filtered to
-                        // models with ≥1 in-window point, which keeps the
-                        // emitted series count equal to the line provider's
-                        // color list (and Vico rejects an empty series).
-                        series(x = points.map { it.first }, y = points.map { it.second })
+    ChartModelTransaction(
+        producer,
+        hourly,
+        temperatureUnit,
+        showFeelsLike,
+        overlays,
+        showModelSpread,
+        indexByTime,
+    ) {
+        lineModel {
+            // Main blended line first so it occupies series index 0 in
+            // both single and per-model views — keeps Vico's identity-
+            // by-index animation stable when the spread toggles, so the
+            // combined line no longer fades out and back in. Per-model
+            // overlays follow in MODEL_DRAW_ORDER (and end up drawn on
+            // top of the combined line); empty when [showModelSpread] is
+            // off, in which case only the main line is emitted.
+            series(hourly.map { pickHourly(it).toUnit(temperatureUnit) })
+            visibleModels.forEach { modelId ->
+                overlays.getValue(modelId).let { entries ->
+                    // Plot each per-model point at the window position of
+                    // its timestamp (explicit x) rather than letting Vico
+                    // assign x by list position — a model that dropped an
+                    // hour would otherwise draw its tail an hour early,
+                    // disagreeing with the (timestamp-keyed) range band
+                    // and the bottom axis. Entries whose timestamps fall
+                    // outside the window are skipped; in the common case
+                    // every entry maps to its old position, so the
+                    // rendered line is unchanged.
+                    val points = entries.mapNotNull { e ->
+                        indexByTime[e.time]?.let { it to pickModel(e).toUnit(temperatureUnit) }
                     }
+                    // Never empty: [visibleModels] is pre-filtered to
+                    // models with ≥1 in-window point, which keeps the
+                    // emitted series count equal to the line provider's
+                    // color list (and Vico rejects an empty series).
+                    series(x = points.map { it.first }, y = points.map { it.second })
                 }
             }
         }

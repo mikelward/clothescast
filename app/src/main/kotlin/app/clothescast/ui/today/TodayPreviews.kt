@@ -100,14 +100,14 @@ internal fun Frame(
 ) {
     // Render every preview in inspection mode, exactly as Android Studio's
     // @Preview pane does. Beyond matching Studio, this is what lets the Vico
-    // charts snapshot deterministically: Vico's CartesianChartModelProducer
-    // runs its model transform on Dispatchers.Default (a real background
-    // thread) in normal composition, but switches to Dispatchers.Unconfined
-    // — synchronous, on the calling thread — when LocalInspectionMode is set.
-    // Without this, a chart-bearing preview races the background transform and
-    // can capture a chrome-only card with no plotted line. The inspection-mode
-    // guards in the *Banner wrappers don't bite here: the banner previews
-    // render the stateless *Card variants directly, which carry no guard.
+    // charts snapshot deterministically: under LocalInspectionMode,
+    // [ChartModelTransaction] builds each chart's model during composition,
+    // and the chart host then draws the cached model synchronously. Without
+    // it, the model is built on a background thread the test clock can't wait
+    // on, and a capture can show a chrome-only card with no plotted line. The
+    // inspection-mode guards in the *Banner wrappers don't bite here: the
+    // banner previews render the stateless *Card variants directly, which
+    // carry no guard.
     CompositionLocalProvider(LocalInspectionMode provides true) {
         ClothesCastTheme(
             darkTheme = darkTheme,

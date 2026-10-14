@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -88,44 +87,42 @@ fun PrecipitationChart(
     // Key on [overlays] (the underlying map) rather than [visibleModels] (just
     // the ID list) so a refresh that updates per-model values while keeping
     // the same model IDs still re-emits the series. [showModelSpread] is
-    // included separately so flipping the toggle on/off re-fires the effect
+    // included separately so flipping the toggle on/off re-runs the transaction
     // even when [overlays] hasn't changed.
-    LaunchedEffect(hourly, overlays, showModelSpread, indexByTime) {
-        producer.runTransaction {
-            lineModel {
-                // Main blended line first so it stays at series index 0 in
-                // both single and per-model views — see [ForecastChart] for
-                // the rationale (keeps Vico's by-index animation stable so
-                // the combined line doesn't fade in/out on toggle). Per-model
-                // overlays follow and end up drawn on top; empty when
-                // [showModelSpread] is off.
-                series(hourly.map { it.precipitationProbabilityPct })
-                visibleModels.forEach { modelId ->
-                    overlays.getValue(modelId).let { entries ->
-                        // Build (x, y) pairs so a sparse precip series plots
-                        // at its real hour positions on the chart, mirroring
-                        // [PerModelDiagnosticCard]. A bare `series(y)` would
-                        // compact surviving y values to indices 0..n which
-                        // misaligns the line under the bottom axis when a
-                        // model omits its leading or trailing hours. The x
-                        // index is the window position of the entry's
-                        // timestamp ([hourlyTimestampIndices]) — not its
-                        // list position, which drifts when the parser drops
-                        // an hour whose temperature_2m is null. Entries
-                        // outside the window and nulls inside the precip
-                        // series are skipped; Vico bridges the gap visually
-                        // between surviving points without drawing a fake-0
-                        // baseline.
-                        val points = entries.mapNotNull { e ->
-                            val idx = indexByTime[e.time] ?: return@mapNotNull null
-                            e.precipitationProbabilityPct?.let { idx to it }
-                        }
-                        // Never empty: [visibleModels] is pre-filtered to
-                        // models with ≥1 plottable in-window point, keeping
-                        // the emitted series count equal to the line
-                        // provider's color list (Vico rejects empty series).
-                        series(x = points.map { it.first }, y = points.map { it.second })
+    ChartModelTransaction(producer, hourly, overlays, showModelSpread, indexByTime) {
+        lineModel {
+            // Main blended line first so it stays at series index 0 in
+            // both single and per-model views — see [ForecastChart] for
+            // the rationale (keeps Vico's by-index animation stable so
+            // the combined line doesn't fade in/out on toggle). Per-model
+            // overlays follow and end up drawn on top; empty when
+            // [showModelSpread] is off.
+            series(hourly.map { it.precipitationProbabilityPct })
+            visibleModels.forEach { modelId ->
+                overlays.getValue(modelId).let { entries ->
+                    // Build (x, y) pairs so a sparse precip series plots
+                    // at its real hour positions on the chart, mirroring
+                    // [PerModelDiagnosticCard]. A bare `series(y)` would
+                    // compact surviving y values to indices 0..n which
+                    // misaligns the line under the bottom axis when a
+                    // model omits its leading or trailing hours. The x
+                    // index is the window position of the entry's
+                    // timestamp ([hourlyTimestampIndices]) — not its
+                    // list position, which drifts when the parser drops
+                    // an hour whose temperature_2m is null. Entries
+                    // outside the window and nulls inside the precip
+                    // series are skipped; Vico bridges the gap visually
+                    // between surviving points without drawing a fake-0
+                    // baseline.
+                    val points = entries.mapNotNull { e ->
+                        val idx = indexByTime[e.time] ?: return@mapNotNull null
+                        e.precipitationProbabilityPct?.let { idx to it }
                     }
+                    // Never empty: [visibleModels] is pre-filtered to
+                    // models with ≥1 plottable in-window point, keeping
+                    // the emitted series count equal to the line
+                    // provider's color list (Vico rejects empty series).
+                    series(x = points.map { it.first }, y = points.map { it.second })
                 }
             }
         }

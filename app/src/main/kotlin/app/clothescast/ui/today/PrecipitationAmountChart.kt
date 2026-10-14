@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -77,25 +76,23 @@ fun PrecipitationAmountChart(
     }
 
     val producer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(hourly, overlays, showModelSpread, indexByTime) {
-        producer.runTransaction {
-            lineModel {
-                series(mainLine)
-                visibleModels.forEach { modelId ->
-                    overlays.getValue(modelId).let { entries ->
-                        // Window position by timestamp lookup, not list
-                        // position — see [PrecipitationChart] for the
-                        // sparse-series x-keying rationale.
-                        val points = entries.mapNotNull { e ->
-                            val idx = indexByTime[e.time] ?: return@mapNotNull null
-                            e.precipitationMm?.let { idx to it }
-                        }
-                        // Never empty: [visibleModels] is pre-filtered to
-                        // models with ≥1 plottable in-window point, keeping
-                        // the emitted series count equal to the line
-                        // provider's color list (Vico rejects empty series).
-                        series(x = points.map { it.first }, y = points.map { it.second })
+    ChartModelTransaction(producer, hourly, overlays, showModelSpread, indexByTime) {
+        lineModel {
+            series(mainLine)
+            visibleModels.forEach { modelId ->
+                overlays.getValue(modelId).let { entries ->
+                    // Window position by timestamp lookup, not list
+                    // position — see [PrecipitationChart] for the
+                    // sparse-series x-keying rationale.
+                    val points = entries.mapNotNull { e ->
+                        val idx = indexByTime[e.time] ?: return@mapNotNull null
+                        e.precipitationMm?.let { idx to it }
                     }
+                    // Never empty: [visibleModels] is pre-filtered to
+                    // models with ≥1 plottable in-window point, keeping
+                    // the emitted series count equal to the line
+                    // provider's color list (Vico rejects empty series).
+                    series(x = points.map { it.first }, y = points.map { it.second })
                 }
             }
         }

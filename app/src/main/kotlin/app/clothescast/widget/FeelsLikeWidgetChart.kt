@@ -36,9 +36,10 @@ import java.util.Locale
  *
  * Two render paths, one composable:
  *  - **Snapshot tests** drive it through `PreviewSnapshots`. `WidgetFrame`
- *    provides `LocalInspectionMode = true`, so Vico's producer runs on its
- *    synchronous in-inspection dispatcher and the chart is fully drawn by
- *    the time `captureUntilStable` rasterises — no extra timing dance.
+ *    provides `LocalInspectionMode = true`, so `ChartModelTransaction`
+ *    builds the chart's model during composition and the chart is fully
+ *    drawn by the time `captureUntilStable` rasterises — no extra timing
+ *    dance.
  *  - **Runtime** rasterises it to a bitmap via [renderComposableToBitmap] for
  *    the Glance widget (Glance can't host Compose/Vico directly).
  *

@@ -857,14 +857,23 @@ class FetchAndNotifyWorker(
      * meaningful "yesterday" comparison for tomorrow's daytime forecast.
      */
     private suspend fun recordDailyHistory(insight: Insight) {
-        if (insight.period != ForecastPeriod.TODAY) return
-        if (insight.hourly.isEmpty()) return
-        val entry = DailyHistoryEntry(
-            date = insight.forDate,
-            feelsLikeMinC = insight.hourly.minOf { it.feelsLikeC },
-            feelsLikeMaxC = insight.hourly.maxOf { it.feelsLikeC },
-        )
+        if (insight.location?.isMock == true) {
+            // The forecast followed a mock-location fix; recording it would make
+            // tomorrow's delta compare against a place the user never was.
+            DiagLog.i(TAG, "Daily history not recorded for %s: location fix is mocked.", insight.forDate)
+            return
+        }
+        val entry = dailyHistoryEntryFor(insight) ?: return
         runCatching { app.dailyHistoryStore.put(entry) }
+            .onSuccess {
+                DiagLog.i(
+                    TAG,
+                    "Daily history recorded for %s: feels-like min/max=%s/%s",
+                    entry.date,
+                    entry.feelsLikeMinC.roundToTenth(),
+                    entry.feelsLikeMaxC.roundToTenth(),
+                )
+            }
             .onFailure {
                 if (it is CancellationException) throw it
                 DiagLog.w(
@@ -2598,6 +2607,27 @@ class FetchAndNotifyWorker(
             period == ForecastPeriod.TONIGHT &&
                 prefs.tonightSchedule.time > prefs.schedule.time &&
                 now < prefs.schedule.time
+
+        /**
+         * The day's [DailyHistoryEntry] for [insight], or null when it shouldn't
+         * be recorded: only TODAY-period deliveries write (TONIGHT covers the
+         * evening slice, which isn't a meaningful "yesterday" for tomorrow's
+         * daytime forecast), an empty hourly slice has nothing to aggregate,
+         * and a forecast for a mocked fix ([Location.isMock]) describes a place
+         * the user never was.
+         */
+        internal fun dailyHistoryEntryFor(insight: Insight): DailyHistoryEntry? {
+            if (insight.period != ForecastPeriod.TODAY) return null
+            if (insight.hourly.isEmpty()) return null
+            if (insight.location?.isMock == true) return null
+            return DailyHistoryEntry(
+                date = insight.forDate,
+                feelsLikeMinC = insight.hourly.minOf { it.feelsLikeC },
+                feelsLikeMaxC = insight.hourly.maxOf { it.feelsLikeC },
+            )
+        }
+
+        private fun Double.roundToTenth(): Double = Math.round(this * 10) / 10.0
 
         /**
          * The calendar date the [requestedPeriod] cast that on-demand play

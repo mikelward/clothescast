@@ -19,6 +19,8 @@ import java.time.LocalDate
  *    wrote whatever the snapshot's location resolved to. A user who wakes up in
  *    a different city today still gets a comparison against the day they
  *    actually lived rather than against the new city's past-day model output.
+ *    A mocked fix ([Location.isMock]) is never recorded: that's a place the
+ *    user tested, not one they lived.
  *
  * Aggregates are for the daytime slice the morning insight runs against
  * (07:00..19:00 by default; whatever the user's notification schedule defines).

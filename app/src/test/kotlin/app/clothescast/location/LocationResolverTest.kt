@@ -142,6 +142,22 @@ class LocationResolverTest {
         resolved?.longitude shouldBe 2.35
     }
 
+    @Test
+    fun `a mocked fix is flagged and a real one is not`() {
+        shadowOf(locationManager).setLastKnownLocation(
+            LocationManager.NETWORK_PROVIDER,
+            androidLocation(LocationManager.NETWORK_PROVIDER, lat = 51.5, lon = -0.1, ageMs = 5_000L)
+                .apply { isMock = true },
+        )
+        runBlocking { resolver().resolve() }?.isMock shouldBe true
+
+        shadowOf(locationManager).setLastKnownLocation(
+            LocationManager.NETWORK_PROVIDER,
+            androidLocation(LocationManager.NETWORK_PROVIDER, lat = 51.5, lon = -0.1, ageMs = 5_000L),
+        )
+        runBlocking { resolver().resolve() }?.isMock shouldBe false
+    }
+
     private fun resolver(): LocationResolver = LocationResolver(
         context = context,
         timeoutMillis = 50L,

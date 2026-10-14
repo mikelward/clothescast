@@ -10,6 +10,7 @@ import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.ui.garment.outfitCardHeader
+import app.clothescast.ui.garment.outfitCardHoliday
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.outfitCardWindow
 import app.clothescast.ui.garment.renderOutfitCard
@@ -101,7 +102,9 @@ internal suspend fun castCurrentInsight(
     )
     val header = outfitCardHeader(context, insight.period, prefs, formatter.locale)
 
-    val theme = resolveHolidayTheme(prefs, calendarEventReader)
+    // By the insight's own date, as the worker's card is: overnight the current
+    // cast is last night's, and must not carry a new day's birthday.
+    val theme = resolveHolidayTheme(prefs, calendarEventReader, today = insight.forDate)
     val topColors = prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
     val bottomColors = prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
     val handsColors = prefs.outfitHandsColors
@@ -134,6 +137,7 @@ internal suspend fun castCurrentInsight(
                 prefs.timeFormat,
             ),
             darkTheme = insight.period != ForecastPeriod.TODAY,
+            holiday = outfitCardHoliday(context, theme, prefs.region),
         )
     }
 

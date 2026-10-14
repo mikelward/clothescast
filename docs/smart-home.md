@@ -355,6 +355,10 @@ card is 800 × 480 px (Nest Hub 7" native resolution) and shows:
   e.g. "7AM CLOTHESCAST", led by the Smart Home Name when one is set
   ("ALEX'S 7AM CLOTHESCAST"). A long name shrinks the title to fit the
   column, then truncates it.
+- On a themed day, a colored banner under the title naming the celebration
+  the way the Today screen does — "🎄 Merry Christmas", or a birthday or
+  holiday from your calendar by its title, "🎂 Alice's birthday" (see
+  [PRIVACY.md](../PRIVACY.md))
 - Top and bottom garment icons stacked in the left column
 - The full insight prose sentence wrapped in Roboto Regular on the right
 - The conditions strip (feels-like range, plus rain, wind and UV when notable)

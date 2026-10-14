@@ -110,7 +110,6 @@ import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.GarmentReason
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HomeSection
-import app.clothescast.core.domain.model.bannerTextKeyFor
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.OutfitRationale
@@ -1740,36 +1739,10 @@ internal fun HolidayBanner(
     // up front so it isn't queried off LocalContext inside the remember body.
     val and = stringResource(R.string.holiday_banner_and)
     val bannerText = remember(theme, effectiveCountry, and) {
-        val segments = theme.bannerSegments
-        if (!segments.isNullOrEmpty()) {
-            segments.joinToString(separator = " $and ") { segment ->
-                segment.literalText ?: run {
-                    val key = segment.textKeyByCountry[effectiveCountry.uppercase()] ?: segment.textKey
-                    resolveBannerString(context, key, theme.id.name)
-                }
-            }
-        } else {
-            // Synthetic themes (calendar-sourced holidays/birthdays) carry the
-            // event title as [displayTitleOverride]; bypass the resource lookup
-            // because the key is a runtime string, not a `@string/...` id.
-            theme.displayTitleOverride
-                ?: resolveBannerString(context, theme.bannerTextKeyFor(effectiveCountry), theme.id.name)
-        }
+        holidayBannerText(context, theme, effectiveCountry, and)
     }
     val bannerColor = remember(theme.bannerArgb) { Color(theme.bannerArgb.toInt()) }
-    val textColor = remember(theme.bannerArgb) {
-        // sRGB luminance via the 0.299/0.587/0.114 weights — bright banners
-        // (Australia Day gold, Brazil yellow) get dark text; deep banners
-        // (Christmas red, St Andrew's blue) get white. Threshold 0.55 is a
-        // visual compromise that keeps Halloween's medium-orange on white
-        // text rather than flipping at the midpoint.
-        val argb = theme.bannerArgb.toInt()
-        val r = ((argb shr 16) and 0xFF) / 255f
-        val g = ((argb shr 8) and 0xFF) / 255f
-        val b = (argb and 0xFF) / 255f
-        val luminance = 0.299f * r + 0.587f * g + 0.114f * b
-        if (luminance > 0.55f) Color.Black else Color.White
-    }
+    val textColor = remember(theme.bannerArgb) { Color(holidayBannerContentArgb(theme.bannerArgb)) }
     val cardColors = CardDefaults.cardColors(
         containerColor = bannerColor,
         contentColor = textColor,
@@ -1793,25 +1766,6 @@ internal fun HolidayBanner(
     } else {
         Card(modifier = cardModifier, colors = cardColors) { content() }
     }
-}
-
-/**
- * Resolves a `@string/<name>` banner key by name (the theme catalogue lives
- * in `:core:domain` and can't hold compile-time `R` ids). Falls back to
- * [fallback] (the holiday's enum name) when the key is null or unknown so a
- * missing translation degrades to something developer-readable rather than
- * blank.
- */
-@android.annotation.SuppressLint("DiscouragedApi")
-private fun resolveBannerString(
-    context: android.content.Context,
-    key: String?,
-    fallback: String,
-): String {
-    if (key == null) return fallback
-    // getIdentifier is required: the string name is a runtime banner key.
-    val resId = context.resources.getIdentifier(key, "string", context.packageName)
-    return if (resId == 0) fallback else context.getString(resId)
 }
 
 @Composable

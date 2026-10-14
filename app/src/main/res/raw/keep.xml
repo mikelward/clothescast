@@ -10,7 +10,7 @@
   strips them; getIdentifier then returns 0 and the banner falls back to the
   raw HolidayId enum name (e.g. "UK_KINGS_BIRTHDAY" instead of "God save the
   King"). Keep the three dynamically-referenced families so the lookup
-  resolves. See TodayScreen.resolveBannerString, HolidayGreeting, and
+  resolves. See HolidayBannerText.resolveBannerString, HolidayGreeting, and
   HolidaySettings.resolveHolidayString.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools"

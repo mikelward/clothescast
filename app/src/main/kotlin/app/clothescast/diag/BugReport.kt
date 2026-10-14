@@ -16,6 +16,7 @@ import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
 import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.PreambleVisibility
 import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
@@ -425,10 +426,7 @@ object BugReport {
         appendLine("TTS style: ${prefs.ttsStyle}")
         appendLine("Device voice: ${prefs.deviceVoice ?: "(auto)"}")
         appendLine("Use device location: ${prefs.useDeviceLocation}")
-        val locDesc = prefs.location?.let { loc ->
-            val name = loc.displayName ?: "(unnamed)"
-            "%.2f, %.2f — %s".format(Locale.US, loc.latitude, loc.longitude, name)
-        } ?: "(unset)"
+        val locDesc = prefs.location?.let(::locationDescription) ?: "(unset)"
         appendLine("Location: $locDesc")
         appendLine("Calendar access: ${prefs.calendarEnabled}")
         appendLine("Use calendar events: ${prefs.useCalendarEvents}")
@@ -442,6 +440,17 @@ object BugReport {
      * The effective topic and where it comes from: a typed override (no
      * suffix), the Smart Home name, or the default when neither is set.
      */
+    /**
+     * "lat, lon — name", with a "(mock)" suffix when the fix came from a
+     * mock-location app, since a mocked fix explains forecasts and "than
+     * yesterday" deltas for a place the user isn't.
+     */
+    internal fun locationDescription(loc: Location): String {
+        val name = loc.displayName ?: "(unnamed)"
+        val mock = if (loc.isMock) " (mock)" else ""
+        return "%.2f, %.2f — %s%s".format(Locale.US, loc.latitude, loc.longitude, name, mock)
+    }
+
     internal fun mqttTopicLine(prefs: UserPreferences): String {
         val source = when {
             prefs.mqttTopicOverride != null -> ""
@@ -596,10 +605,7 @@ object BugReport {
         prefs: UserPreferences?,
     ) {
         snapshot.location?.let { loc ->
-            val name = loc.displayName ?: "(unnamed)"
-            appendLine("  Snapshot location: %.2f, %.2f — %s".format(
-                Locale.US, loc.latitude, loc.longitude, name,
-            ))
+            appendLine("  Snapshot location: ${locationDescription(loc)}")
         }
         val historic = snapshot.historicYesterday
         if (historic != null) {

@@ -31,6 +31,16 @@ data class Location(
      * Location page.
      */
     val addressDetail: String? = null,
+    /**
+     * True when this came from a device fix Android flagged as mocked
+     * ([android.location.Location.isMock] — a developer-options mock-location
+     * app). The forecast still follows it, so testing a place works as
+     * expected, but nothing that outlives the test should learn from it:
+     * the worker skips recording the day's `DailyHistoryEntry` for a mocked
+     * fix, so tomorrow's "warmer / cooler than yesterday" doesn't compare
+     * against a place the user never was.
+     */
+    val isMock: Boolean = false,
 ) {
     init {
         require(latitude in -90.0..90.0) { "latitude out of range: $latitude" }

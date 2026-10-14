@@ -627,6 +627,17 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `a mocked fallback location keeps its flag until a real one replaces it`() = runTest {
+        val place = Location(latitude = 0.0, longitude = 0.0, displayName = "City A")
+
+        subject.setLocation(place.copy(isMock = true))
+        subject.preferences.first().location?.isMock shouldBe true
+
+        subject.setLocation(place)
+        subject.preferences.first().location?.isMock shouldBe false
+    }
+
+    @Test
     fun `holidayCountrySelection defaults to home+current+global+funny on with all off`() = runTest {
         val selection = subject.preferences.first().holidayCountrySelection
         selection.home shouldBe true

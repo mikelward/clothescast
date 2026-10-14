@@ -162,6 +162,16 @@ class InsightCacheTest {
         read shouldBe sample
     }
 
+    @Test
+    fun `a mocked location keeps its flag through the cache`() = runTest {
+        // A same-day redelivery reads the forecast back from here and decides
+        // whether to record daily history off this flag.
+        val mocked = sample.copy(location = sample.location!!.copy(isMock = true))
+        subject.store(InsightCache.Slot.THIS_PERIOD, mocked)
+
+        subject.thisPeriod.first()?.location?.isMock shouldBe true
+    }
+
     // The cache scrubs event content to placeholders on disk (privacy — see
     // PLACEHOLDER_LOCATION), so events don't round-trip by value; these assert
     // on event *presence*, which is what the permission gate switches.

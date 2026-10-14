@@ -434,6 +434,10 @@ class InsightCache(
         val displayName: String? = null,
         val countryCode: String? = null,
         val addressDetail: String? = null,
+        // Kept so a same-day redelivery from this cache still knows the
+        // forecast followed a mocked fix and skips the daily-history write.
+        // Defaults false for payloads cached before the field existed.
+        val isMock: Boolean = false,
     ) {
         fun toDomain(): Location = Location(
             latitude = latitude,
@@ -441,6 +445,7 @@ class InsightCache(
             displayName = displayName,
             countryCode = countryCode,
             addressDetail = addressDetail,
+            isMock = isMock,
         )
     }
 
@@ -501,7 +506,7 @@ class InsightCache(
         bundle = bundle.toDto(),
         events = events.map { it.toDto() },
         location = location?.let {
-            LocationDto(it.latitude, it.longitude, it.displayName, it.countryCode, it.addressDetail)
+            LocationDto(it.latitude, it.longitude, it.displayName, it.countryCode, it.addressDetail, it.isMock)
         },
         period = period.name,
         generatedAtEpochMillis = generatedAt.toEpochMilli(),

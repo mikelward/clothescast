@@ -211,11 +211,15 @@ class LocationResolver(
     private fun AndroidLocation.isFresh(maxAgeMillis: Long): Boolean =
         System.currentTimeMillis() - time < maxAgeMillis
 
-    private fun AndroidLocation.toDomain(): Location = Location(
-        latitude = latitude,
-        longitude = longitude,
-        displayName = "Device location",
-    ).coarsened()
+    private fun AndroidLocation.toDomain(): Location {
+        if (isMock) DiagLog.i(TAG, "Device location fix is mocked.")
+        return Location(
+            latitude = latitude,
+            longitude = longitude,
+            displayName = "Device location",
+            isMock = isMock,
+        ).coarsened()
+    }
 
     companion object {
         private const val TAG = "LocationResolver"

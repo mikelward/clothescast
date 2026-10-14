@@ -339,6 +339,10 @@ class SettingsRepository(
                 ?.takeIf { it.isNotBlank() }
                 ?.let { prefs[LOCATION_ADDRESS_DETAIL] = it }
                 ?: prefs.remove(LOCATION_ADDRESS_DETAIL)
+            // A mocked device fix is still saved as the fallback (the Settings
+            // page and the no-location banner read it), but keeps its flag so a
+            // later run that falls back to it doesn't record daily history.
+            if (location.isMock) prefs[LOCATION_IS_MOCK] = true else prefs.remove(LOCATION_IS_MOCK)
         }
     }
 
@@ -349,6 +353,7 @@ class SettingsRepository(
             prefs.remove(LOCATION_NAME)
             prefs.remove(LOCATION_COUNTRY)
             prefs.remove(LOCATION_ADDRESS_DETAIL)
+            prefs.remove(LOCATION_IS_MOCK)
         }
     }
 
@@ -1548,6 +1553,7 @@ class SettingsRepository(
                 displayName = prefs[LOCATION_NAME],
                 countryCode = prefs[LOCATION_COUNTRY]?.takeIf { it.isNotBlank() },
                 addressDetail = prefs[LOCATION_ADDRESS_DETAIL]?.takeIf { it.isNotBlank() },
+                isMock = prefs[LOCATION_IS_MOCK] == true,
             ).coarsened()
         }.getOrNull()
     }
@@ -1708,6 +1714,7 @@ class SettingsRepository(
         private val LOCATION_NAME = stringPreferencesKey("location_display_name")
         private val LOCATION_COUNTRY = stringPreferencesKey("location_country_code")
         private val LOCATION_ADDRESS_DETAIL = stringPreferencesKey("location_address_detail")
+        private val LOCATION_IS_MOCK = booleanPreferencesKey("location_is_mock")
         private val USE_DEVICE_LOCATION = booleanPreferencesKey("use_device_location")
         private val TTS_ENGINE = stringPreferencesKey("tts_engine")
         private val GEMINI_VOICE = stringPreferencesKey("gemini_voice")

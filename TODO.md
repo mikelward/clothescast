@@ -619,6 +619,19 @@ Open work:
 
 ## Testing & quality
 
+- [ ] **Chart snapshots can still record with the plot missing.** On PR #1281
+      the snapshot bot twice committed a chart card with its title, readout
+      line and legend but an empty chart area —
+      `forecast_card_with_model_spread.png`, then
+      `uv_index_card_consensus.png` (a local run on `main` hit the UV one too) —
+      the "chrome rendered, plot missing" race `b3573bb7` judged closed once
+      chart producers ran synchronously under `LocalInspectionMode`. That capture is
+      stable (the same blank chart twice), so `captureUntilStable` accepts it,
+      and `looksEmpty` only catches a wholly blank image. The PR dropped the
+      bot's commits rather than land the broken baselines. Fix the race itself
+      (find what still renders the plot asynchronously), or restore a guard
+      that rejects a capture far smaller than its content-bearing baseline;
+      don't add sleeps.
 - [ ] **Move this app onto the shared debug log** (`mikelward/androidlog`).
       The four apps had each grown a copy of the same mechanism and the copies
       were drifting — `LogValue.kt` byte-identical between two of them, the two

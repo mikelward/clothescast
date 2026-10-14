@@ -214,14 +214,24 @@ class OpenMeteoClient(
         // week-ahead headline, and the conditions strip's week-wide peaks all
         // reading the same blended numbers — and lets the strip read wind / UV
         // straight off [HourlyForecast] (now consensus) instead of recomputing
-        // the per-model mean itself. Yesterday is historical, with no per-model
-        // coverage, so it stays best_match.
+        // the per-model mean itself.
+        //
+        // Yesterday blends too: the side-band fetch carries past_days=1, so the
+        // consulted models' series reach back to yesterday 00:00. Leaving it on
+        // best_match compared today's consensus against one model's look-back
+        // wherever the delta clause falls back to bundle.yesterday (no recorded
+        // history: first day, a missed day, a mocked fix), and the ongoing
+        // overnight's pre-midnight hours read one model while its post-midnight
+        // hours read the consensus. Google's series starts at the current hour,
+        // so yesterday's blend is the Open-Meteo models alone; with fewer than
+        // two of them reporting, the blender keeps best_match as before.
         fun blendDay(day: DailyForecast): DailyForecast =
             blendConsensusHourly(day.date, day.hourly, perModelWithBestMatch)
                 ?.let { day.withAggregatesFrom(it) }
                 ?: day
 
         bundle.copy(
+            yesterday = blendDay(bundle.yesterday),
             today = blendDay(bundle.today),
             tomorrow = bundle.tomorrow?.let { blendDay(it) },
             upcomingDays = bundle.upcomingDays.map { blendDay(it) },
@@ -244,9 +254,8 @@ class OpenMeteoClient(
                 // confidence call fetch past_days=1, so the consulted models'
                 // series reach back to yesterday 00:00 — filtering best_match
                 // to today made the "Auto" line alone start at midnight on the
-                // Overnight chart's pre-midnight hours. Day-keyed consumers
-                // (the consensus blend) never look yesterday up, so the extra
-                // entries are inert outside the charts.
+                // Overnight chart's pre-midnight hours. They also give
+                // yesterday's consensus blend its best_match vote.
                 val air = temperature.getOrNull(i) ?: continue
                 add(
                     PerModelHour(

@@ -265,6 +265,98 @@ class OpenMeteoClientTest {
     }
 
     @Test
+    fun `yesterday blends across models like today`() = runTest {
+        // The delta clause falls back to bundle.yesterday whenever no history
+        // entry was recorded; comparing today's consensus against one model's
+        // look-back made "N° warmer / cooler" an apples-to-oranges number.
+        val bundle = fetchWithSideBand(
+            yesterdayHourly = """
+                "time": ["2026-04-24T09:00", "2026-04-24T15:00", "2026-04-25T12:00"],
+                "temperature_2m_ecmwf_ifs025": [10.0, 14.0, 21.0],
+                "apparent_temperature_ecmwf_ifs025": [9.0, 13.0, 21.0],
+                "temperature_2m_icon_seamless": [12.0, 20.0, 23.0],
+                "apparent_temperature_icon_seamless": [11.0, 19.0, 23.0]
+            """,
+        )
+
+        // 09:00 — best_match 8, ECMWF 9, ICON 11; 15:00 — best_match 16,
+        // ECMWF 13, ICON 19.
+        bundle.yesterday.hourly.map { it.feelsLikeC } shouldBe listOf(
+            (8.0 + 9.0 + 11.0) / 3,
+            (16.0 + 13.0 + 19.0) / 3,
+        )
+        // The day's aggregates follow the blended series, which is what the
+        // delta clause reads.
+        bundle.yesterday.feelsLikeMinC shouldBe ((8.0 + 9.0 + 11.0) / 3 plusOrMinus 1e-6)
+        bundle.yesterday.feelsLikeMaxC shouldBe ((16.0 + 13.0 + 19.0) / 3 plusOrMinus 1e-6)
+    }
+
+    @Test
+    fun `yesterday stays best_match when no other model covers it`() = runTest {
+        // Only today in the side-band: a one-model "consensus" isn't one, so
+        // yesterday keeps the primary call's series and daily aggregates.
+        val bundle = fetchWithSideBand(
+            yesterdayHourly = """
+                "time": ["2026-04-25T12:00"],
+                "temperature_2m_ecmwf_ifs025": [21.0],
+                "apparent_temperature_ecmwf_ifs025": [21.0],
+                "temperature_2m_icon_seamless": [23.0],
+                "apparent_temperature_icon_seamless": [23.0]
+            """,
+        )
+
+        bundle.yesterday.hourly.map { it.feelsLikeC } shouldBe listOf(8.0, 16.0)
+        bundle.yesterday.feelsLikeMinC shouldBe 10.0
+        bundle.yesterday.feelsLikeMaxC shouldBe 17.0
+    }
+
+    // Primary call with two yesterday hours (feels-like 8 and 16, daily
+    // feels-like 10..17) and one today hour; [yesterdayHourly] is the side-band
+    // call's hourly object body.
+    private suspend fun fetchWithSideBand(yesterdayHourly: String) =
+        OpenMeteoClient(
+            HttpClient(
+                MockEngine { request ->
+                    val isPrimary = request.url.parameters["models"] == null
+                    respond(
+                        content = if (isPrimary) {
+                            """
+                            {
+                              "timezone": "Europe/London",
+                              "daily": {
+                                "time": ["2026-04-24", "2026-04-25"],
+                                "temperature_2m_min": [9.0, 16.0],
+                                "temperature_2m_max": [18.0, 24.0],
+                                "apparent_temperature_min": [10.0, 15.0],
+                                "apparent_temperature_max": [17.0, 23.0],
+                                "precipitation_probability_max": [5, 60],
+                                "precipitation_sum": [0.0, 4.5],
+                                "weather_code": [2, 63]
+                              },
+                              "hourly": {
+                                "time": ["2026-04-24T09:00", "2026-04-24T15:00", "2026-04-25T12:00"],
+                                "temperature_2m": [9.0, 17.0, 20.0],
+                                "apparent_temperature": [8.0, 16.0, 20.0],
+                                "precipitation_probability": [0, 10, 40],
+                                "weather_code": [2, 2, 2]
+                              }
+                            }
+                            """.trimIndent()
+                        } else {
+                            """{"daily": {"time": ["2026-04-25"]}, "hourly": {$yesterdayHourly}}"""
+                        },
+                        status = HttpStatusCode.OK,
+                        headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                    )
+                },
+            ) {
+                install(ContentNegotiation) {
+                    json(Json { ignoreUnknownKeys = true })
+                }
+            },
+        ).fetchForecast(london)
+
+    @Test
     fun `google is treated as just another model - votes in the blend and lands in the stored per-model map`() = runTest {
         // Same two-model side-band (ECMWF + ICON) and best_match primary as the
         // synthetic-zero test above. At 12:00 best_match=20, ECMWF=21, ICON=23.

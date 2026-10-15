@@ -41,16 +41,14 @@ whenever you edit this file.
   most important point and stop. If there's more, say the first point and
   ask whether they're ready for the next one rather than emptying
   everything at once.
-- **Don't narrate routine machinery.** A check run flipping, a re-run, a scheduled check
-  re-arming, a webhook echo, a resolved thread — act on those silently; the noise buries
-  the one line that matters. Reports another rule requires stand (each review and its
-  findings, the versionCode).
-- **Don't report your own caught mistakes.** A wrong turn you noticed
-  and fixed before it reached the user is not news — no "one thing worth
-  flagging", no post-mortem of your own reasoning, no inside baseball
-  about the loop. Say what the work is and what's outstanding. A mistake
-  that reached their repo, cost them something, or changes what they
-  should do is different: say that plainly.
+- **Message only when the user needs to see it** (maintainer, 2026-10-15): each one
+  notifies their phone. Work and listen in silence; speak up for a question or blocker,
+  something to merge or act on, a merge, an autopilot decision (to review when seen,
+  never waited on), or a change from the plan, `SPEC.md` or their instructions, a
+  review-prompted one included. Never for progress (a client's nudge doesn't count), a
+  review or a push alone (its report rides the next message), routine machinery, or a
+  mistake caught and fixed before it reached the repo. The session-start `AGENTS.md`
+  line still opens every session.
 - **End the turn by restating any pending decision.** If you're waiting on
   an answer — a question you asked, or a guess autopilot recorded for
   review — the last line of the reply is that question, written out in
@@ -523,13 +521,12 @@ whenever you edit this file.
   the push, and the reply — only the resolve is skipped. The push re-triggers
   Codex, so don't also poke it unless five minutes pass with nothing back;
   escalate if the re-review re-raises it, or stays silent.
-- **Always link every open PR in the stack.** Any time you push, summarise
-  CI, or invite the user to review, list every currently-open PR on the
-  feature by URL — one per line — not just the topmost one. The Claude Code
-  mobile UI only renders the first PR card in a message and treats later
-  links as plain text, so a single link can hide the rest of the stack
-  (and may surface an already-merged PR while obscuring the live one).
-  Worth the extra two lines.
+- **Always link every open PR in the stack.** When a feature has more than
+  one open PR, list every one by URL — one per line — not just the topmost.
+  The Claude Code mobile UI only renders the first PR card in a message and
+  treats later links as plain text, so a single link can hide the rest of
+  the stack (and may surface an already-merged PR while obscuring the live
+  one). Worth the extra two lines.
 - **Codex is the automated reviewer on this repo** — not Copilot. Its
   reviews are triggered automatically; you don't request them, except when
   nothing has come back five minutes after a push — that means it never
@@ -550,13 +547,13 @@ whenever you edit this file.
   ID (`PRRC_*`) fails with `Could not resolve to PullRequestReviewThread
   node` — they're different objects. So reply *then* resolve; there's no
   "replied-but-unresolved, please resolve in the UI" caveat to report.
-- **Report each review in chat, and what it said.** Name the commit it read and
-  the finding count — say so when that commit is no longer the head — then one
-  bullet per finding: review
-  comment, top-level comment or review body alike, most blocking first — what
-  it claims, where, and what you did about it, or the options where it's the
-  maintainer's call. Summarize them all in that one reply, ahead of *keep
-  replies short*; ask only the most blocking question.
+- **Report each review in the next message you send, and what it said.** Name
+  the commit it read and the finding count — say so when that commit is no
+  longer the head — then one bullet per finding: review comment, top-level
+  comment or review body alike, most blocking first — what it claims, where,
+  and what you did about it, or the options where it's the maintainer's call.
+  Summarize them all in that one reply, ahead of *keep replies short*; ask only
+  the most blocking question.
 - **Read the Codex verdict, don't infer it.** It reacts to the PR body
   (`issue_read` → `reactions`), not to a review thread, whose `Useful?` bar
   reads true on any PR it has commented on. `eyes` means reading, `+1` means

@@ -230,6 +230,33 @@ jobs:
           # omission.
           cache-read-only: ${{ github.event_name != 'push' }}
 
+      # Robolectric's Android runtime (android-all-instrumented, ~200 MB per
+      # SDK level) is fetched from Maven Central into ~/.m2 on first use,
+      # which setup-gradle's cache doesn't cover: every run downloaded it
+      # again, and a failed fetch failed the job before any test ran. Kept
+      # here by Robolectric's version, saved only from main pushes
+      # (PR-controlled code must not write the shared cache, as for
+      # Gradle's), restored everywhere. A miss just downloads it, as before.
+      # One key covers every SDK level this job runs (33, 35, 36), since they
+      # all download inside "Run unit tests"; a new SDK level under the same
+      # version is fetched each run until the next bump.
+      - name: Robolectric version
+        id: robolectric
+        run: |
+          version=$(sed -n 's/^robolectric = "\(.*\)"$/\1/p' gradle/libs.versions.toml)
+          if [ -z "$version" ]; then
+            echo "::error::No robolectric version in gradle/libs.versions.toml; the runtime cache has no key."
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Robolectric's Android runtime
+        id: robolectric-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ runner.os }}-${{ steps.robolectric.outputs.version }}
+
       - name: Decode google-services.json from secret
         # The Firebase Gradle plugins (gms-google-services + crashlytics) are
         # applied conditionally on `app/google-services.json` being present —
@@ -294,6 +321,18 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew :core:domain:test :core:data:test :app:testDebugUnitTest --stacktrace --info 2>&1 | tee /tmp/jvm-tests.log
+
+      - name: Save Robolectric's Android runtime
+        # Only after the step using it passed, so the runtime is whole: an
+        # entry can't be replaced, and one saved from a failed download would
+        # be restored, incomplete, until the next version bump. Only from
+        # pushes, as setup-gradle's cache-read-only is, so code from a pull
+        # request can't write a cache that main restores.
+        if: success() && github.event_name == 'push' && steps.robolectric-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ runner.os }}-${{ steps.robolectric.outputs.version }}
 
       - name: Clear prior CI comments for this job
         # Runs on both pass and fail. A green run on a fix commit removes the

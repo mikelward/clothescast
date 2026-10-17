@@ -41,7 +41,9 @@ yourself; no developer-operated service ever sees the payload.
    card-plus-announcement MP4 (when published) land on
    `<prefix>/<period>/image`, `<prefix>/<period>/audio`, and
    `<prefix>/<period>/video` respectively (where `<period>` is `day` or
-   `night`). A `<prefix>/<period>/has_events` flag (`true`/`false`) reports
+   `night`). The MP4 lasts at least two minutes: the outfit card stays on
+   screen after the announcement, so a display can play the one clip and
+   let it end on its own. A `<prefix>/<period>/has_events` flag (`true`/`false`) reports
    whether that window has a located calendar event — handy when *Notify only
    on event nights* keeps the phone quiet, so an automation can tell a
    deliberately-silent evening from an outage. **Each scheduled run publishes

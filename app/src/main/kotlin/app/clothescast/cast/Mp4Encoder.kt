@@ -40,14 +40,16 @@ object Mp4Encoder {
 
     /**
      * Returns MP4 bytes muxing [png] as the video track and [wav]'s PCM
-     * as the audio track.
+     * as the audio track. With [minDurationUs] the still frame is held
+     * past the end of the speech until the clip lasts at least that long;
+     * only the near-free video track is extended, the audio isn't padded.
      *
      * @throws IllegalArgumentException if [png] doesn't decode or [wav]
      *   isn't a recognisable RIFF/WAVE PCM clip.
      * @throws IllegalStateException if the platform encoder rejects the
      *   inputs (e.g. unsupported dimensions for the H.264 encoder).
      */
-    fun encode(png: ByteArray, wav: ByteArray): ByteArray {
+    fun encode(png: ByteArray, wav: ByteArray, minDurationUs: Long = 0L): ByteArray {
         val source = BitmapFactory.decodeByteArray(png, 0, png.size)
             ?: throw IllegalArgumentException("Failed to decode PNG (${png.size} bytes)")
         val wavInfo = WavInfo.parse(wav)
@@ -56,7 +58,7 @@ object Mp4Encoder {
 
         val output = File.createTempFile("cast-insight", ".mp4")
         try {
-            muxToFile(frame, wavInfo, output)
+            muxToFile(frame, wavInfo, minDurationUs, output)
             return output.readBytes()
         } finally {
             output.delete()
@@ -78,11 +80,15 @@ object Mp4Encoder {
         return source.scale(targetW, targetH)
     }
 
-    private fun muxToFile(frame: Bitmap, wav: WavInfo, output: File) {
+    /** Frames of the still image needed to cover the audio and [minDurationUs]. */
+    internal fun videoFrameCount(audioDurationUs: Long, minDurationUs: Long): Int =
+        max(1, ceil(max(audioDurationUs, minDurationUs) / 1_000_000.0 * VIDEO_FPS).toInt())
+
+    private fun muxToFile(frame: Bitmap, wav: WavInfo, minDurationUs: Long, output: File) {
         val width = frame.width
         val height = frame.height
         val durationUs = wav.durationUs()
-        val frameCount = max(1, ceil(durationUs / 1_000_000.0 * VIDEO_FPS).toInt())
+        val frameCount = videoFrameCount(durationUs, minDurationUs)
         val frameDurationUs = 1_000_000L / VIDEO_FPS
         val argb = IntArray(width * height)
         frame.getPixels(argb, 0, width, 0, 0, width, height)

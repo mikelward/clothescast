@@ -404,7 +404,10 @@ flow the worker subscribes to.
   no-cast, notification-only run still synthesises and retains
   `${topic}/<period>/audio` for HA's speak-on-trigger automations.
   The period `video` topic fires when the worker can mux the outfit
-  PNG and WAV into a single MP4. The latest bundle is mirrored to
+  PNG and WAV into a single MP4; the still frame is held past the speech
+  until the clip lasts at least `MqttPublisher.VIDEO_MIN_DURATION_US`
+  (2 min) so a consumer can cast it once and let it end on its own (the
+  audio track isn't padded). The latest bundle is mirrored to
   `${topic}/now/{text,image,audio,video}`; missing image / audio /
   video modalities clear their retained `now` slots, and
   `${topic}/now/timestamp` is published last as the commit marker.

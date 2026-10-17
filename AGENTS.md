@@ -6,8 +6,9 @@ last_modified: 2026-10-17
 
 # Agent guide for clothescast
 
-Rules and gotchas for AI coding agents (Claude Code, Codex, etc.) working in
-this repo. Keep this file short and concrete — one-liners over essays. Add a
+Rules and gotchas for AI coding agents (Claude Code, Gemini / Antigravity,
+Codex, etc.) working in this repo. `CLAUDE.md` and `GEMINI.md` are symlinks to
+this file; edit `AGENTS.md`. Keep this file short and concrete — one-liners over essays. Add a
 new rule the first time something bites you, not the third. Every rule here
 loads into every agent's context each session, so verbosity taxes every
 future task; the incident narrative belongs in the commit message.
@@ -98,7 +99,10 @@ whenever you edit this file.
   back to the inner build below. Missing `sdkmanager` (or
   `/opt/android-sdk` not present) = SessionStart hook didn't run or
   hasn't been wired; `:app` tasks won't work, but `:core:*` tasks
-  still will via either build.
+  still will via either build. The hook (`.claude/hooks/session-start.sh`)
+  is auto-invoked only in Claude Code; in another agent's remote container,
+  run `CLAUDE_CODE_REMOTE=true .claude/hooks/session-start.sh` yourself
+  rather than hand-installing the SDK.
 - **Fallback path — inner Gradle build, pure-Kotlin only.** If Google
   Maven is blocked or the SDK isn't installed, `:core:*:test` still
   works through a second Gradle root scoped to the pure-Kotlin modules:
@@ -217,6 +221,14 @@ whenever you edit this file.
   upstream push you hadn't seen (CI's own `ci: regenerate UI snapshots`
   commit, most often here). The only protected ref is `main`: never
   force-push it, and never drop commits already on it.
+- **Branch naming.** Feature branches are `<agent>/<short-topic>`:
+  `claude/…` for Claude Code, `gemini/…` for Gemini / Antigravity, `codex/…`
+  for Codex.
+- **No model identifier** — never name the coding agent's model or version (`Opus 4.8`,
+  `Sonnet`, `Gemini …`, `claude-*`, `gemini-*`) in a commit, PR, comment, or pushed
+  artifact; keep it to chat. A model the product calls (the app's Gemini model IDs) is
+  not covered. Generic attribution (`Co-Authored-By: Claude` / `Gemini`,
+  `Claude-Session:`, "Generated with Claude Code") is fine.
 - **Merge cue (`merged` / `I merged` / `landed` / merge webhook) runs
   hygiene *before* engaging with the rest of the message:** fetch main if
   the sandbox can (`git fetch origin
@@ -338,11 +350,13 @@ whenever you edit this file.
   need repeating per branch.
 - **Watch your own PRs by subscription, plus one scheduled check.** Have a
   subscription — Claude Code makes one when you open a PR; where a client
-  doesn't, call `subscribe_pr_activity`. It delivers reviews, comments and CI
+  doesn't, call `subscribe_pr_activity` where exposed (only
+  `claude-code-remote` has it). It delivers reviews, comments and CI
   failures. It cannot deliver CI *success*, a push, the merge, Codex's clean
   verdict (a reaction), or Codex never answering at all — so keep exactly one
   check armed for as long as the PR is open (each event and each check costs
-  a model turn). Under drive, arm auto-merge at PR open too — but only where
+  a model turn): `send_later` in Claude Code, `schedule` with
+  `DurationSeconds` in Antigravity (cancel via `manage_task` `kill`). Under drive, arm auto-merge at PR open too — but only where
   the ruleset makes the Codex verdict a required check AND requires
   conversations resolved: where CI is the only requirement it merges before
   Codex has answered, and an open review comment holds nothing back on its own.
@@ -390,8 +404,9 @@ whenever you edit this file.
     if it doesn't merge cleanly with it (`git merge-tree --write-tree`, Git
     2.38 or later, exits 1). Any exit but 0 or 1 from either is a failure
     to report, not an answer. Your own rules decide the rebase from there.
-    Skip a PR with no session URL, and don't retry a failed send; its own
-    scheduled check is the fallback.
+    Skip a PR with no session URL, or when your client only has local
+    subagent messaging, and don't retry a failed send; its own scheduled
+    check is the fallback.
   - Merged or closed, take one last reply-and-resolve pass — a review can
     land after the merge. Nothing is holding the PR now, so on a merged one
     anything real goes to a follow-up PR, named on the thread, before you
@@ -453,8 +468,8 @@ whenever you edit this file.
 
 ## GitHub
 
-- Use the `mcp__github__*` MCP tools for *all* GitHub operations. The `gh`
-  CLI is **not** available in this sandbox.
+- Prefer the `mcp__github__*` MCP tools where mounted (Claude Code requires
+  them; `gh` is not installed in its sandbox); otherwise fall back to `gh`.
 - **"Drive to merge"** is the PR stretch of *drive* (see "Autonomy" above):
   open the PR, wait for the automatic Codex review, address every review
   comment — fix it if you agree, reply on the thread saying why if you don't
@@ -548,8 +563,9 @@ whenever you edit this file.
 - **`resolve_review_thread` works — pass the thread ID, not a comment ID.**
   `mcp__github__pull_request_read` / `get_review_comments` returns each
   thread's node ID (`PRRT_*`) on `review_threads[].id`. Pass that straight
-  to `mcp__github__resolve_review_thread` as `threadId`. A comment's node
-  ID (`PRRC_*`) fails with `Could not resolve to PullRequestReviewThread
+  to `mcp__github__resolve_review_thread` as `threadId` (or to
+  `gh api graphql`'s `resolveReviewThread` where MCP isn't mounted). A
+  comment's node ID (`PRRC_*`) fails with `Could not resolve to PullRequestReviewThread
   node` — they're different objects. So reply *then* resolve; there's no
   "replied-but-unresolved, please resolve in the UI" caveat to report.
 - **Report each review in the next message you send, and what it said.** Name
@@ -621,7 +637,8 @@ whenever you edit this file.
   Firebase / locally-built APK contains their fix.
   **Sandbox clones start shallow** (`git rev-parse --is-shallow-repository`
   returns `true`) until the best-effort session-start hook deepens them with
-  `scripts/unshallow.sh`; a shallow clone silently truncates `rev-list --count`
+  `scripts/unshallow.sh` — Claude Code only; Gemini / Antigravity and Codex
+  run `scripts/unshallow.sh` themselves; a shallow clone silently truncates `rev-list --count`
   and makes the reported number lower than the real APK's. While it is, add
   `--unshallow` to that fetch (it fails on a complete repository) — the user
   has been bitten by an under-by-15 count.
@@ -939,4 +956,5 @@ whenever you edit this file.
 - **This is a client-only Android app.** No backend server, database, or
   Docker containers to start. The app calls Open-Meteo (free, keyless) and
   optionally Gemini (BYOK). Testing is purely JVM-based.
-- **`CLAUDE.md` is a symlink** to `AGENTS.md` — editing either edits both.
+- **`CLAUDE.md` and `GEMINI.md` are symlinks** to `AGENTS.md` — editing
+  any of them edits all three.

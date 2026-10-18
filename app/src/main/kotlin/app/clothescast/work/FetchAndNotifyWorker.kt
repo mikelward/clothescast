@@ -46,6 +46,7 @@ import app.clothescast.core.data.tts.WavEncoder
 import app.clothescast.core.data.tts.isRetryableGeminiTtsFailure
 import app.clothescast.data.InsightCache
 import app.clothescast.mqtt.MqttPublishOutcome
+import app.clothescast.notification.GeminiSignInNotifier
 import app.clothescast.notification.CHANNEL_PLAYBACK
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -1203,6 +1204,39 @@ class FetchAndNotifyWorker(
     }
 
     /**
+     * Posts the one-time "Gemini voice paused" notice when this run's phone
+     * speech falls back to the device voice because the user isn't signed in
+     * with Google, and records that it was shown. Recorded only once actually
+     * posted, so a user without notification permission is told on a later
+     * run instead. Best-effort: a failure here is logged and never stops the
+     * forecast's own delivery.
+     */
+    private suspend fun noticeGeminiSignInIfNeeded(
+        prefs: UserPreferences,
+        ownGeminiKey: Boolean,
+        phoneWillSpeak: Boolean,
+    ) {
+        try {
+            val needed = GeminiSignInNotifier.needsNotice(
+                phoneWillSpeak = phoneWillSpeak,
+                geminiSelected = isGeminiEngineSelected(prefs),
+                ownKeyConfigured = ownGeminiKey,
+                sharedTtsConfigured = app.sharedTtsConfigured,
+                signedIn = app.googleAccount.isSignedIn(),
+                alreadyShown = prefs.geminiSignInNoticeShown,
+            )
+            if (needed && GeminiSignInNotifier(app).notify()) {
+                app.settingsRepository.setGeminiSignInNoticeShown(true)
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Not recorded, so a later run tries again.
+            DiagLog.w(TAG, e, "Gemini sign-in notice failed")
+        }
+    }
+
+    /**
      * @param forceNotifyAndSpeak the user tapped the Today screen's Play
      *   button, an explicit "do it now" that posts the notification *and*
      *   speaks regardless of the period's delivery mode — a SILENT /
@@ -1238,12 +1272,12 @@ class FetchAndNotifyWorker(
         // DeliveryGatesTest in :core:domain).
         // Gemini is reachable from the worker if the user picked it AND either
         // has their own key set (BYOK → direct to Google) or the shared-key
-        // proxy is available on this build (Cloud Function holds the dev key).
-        // Without either, fall back to device TTS.
-        val geminiAvailable = isGeminiEngineSelected(prefs) && (
-            runCatching { app.secureKeyStore.geminiKeyConfiguredFlow.first() }.getOrDefault(false) ||
-                app.sharedTtsAvailable
-            )
+        // proxy is usable (on this build, and the user is signed in with
+        // Google). Without either, fall back to device TTS — and, the first
+        // time that's for want of sign-in, say so.
+        val ownGeminiKey =
+            runCatching { app.secureKeyStore.geminiKeyConfiguredFlow.first() }.getOrDefault(false)
+        val geminiAvailable = isGeminiEngineSelected(prefs) && (ownGeminiKey || app.sharedTtsAvailable)
         val gates = computeDeliveryGates(
             prefs = prefs,
             period = insight.period,
@@ -1251,6 +1285,11 @@ class FetchAndNotifyWorker(
             geminiAvailable = geminiAvailable,
             mqttPublishable = isMqttPublishable(prefs),
             forcePhoneSpeech = forceNotifyAndSpeak,
+        )
+        noticeGeminiSignInIfNeeded(
+            prefs,
+            ownGeminiKey,
+            phoneWillSpeak = gates.phoneTtsConfigured && !gates.emptyEveningSkip,
         )
 
         // Two-phase fan-out per SPEC.md §Sequencing:

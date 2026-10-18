@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.data.SignedInGoogleAccount
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -567,10 +568,10 @@ internal fun SettingsVoiceGeminiNoKeyPreview() {
     }
 }
 
-// Gemini selected, no BYOK key, but the shared-key proxy is reachable on this
-// build: the Test Voice button is enabled and the key field reframes itself as
-// optional ("Optional — paste your own key…") rather than the gate-style "Get a
-// free API key…" copy. Companion to SettingsVoiceGeminiNoKeyPreview.
+// Gemini selected, no BYOK key, signed in with Google, so the shared-key proxy
+// is reachable: the account row shows who is signed in, the Test Voice button
+// is enabled and the key field reframes itself as optional. Companion to
+// SettingsVoiceGeminiNoKeyPreview and SettingsVoiceGeminiSignedOutPreview.
 @Preview(name = "Settings · Voice (Gemini, no key, shared)", widthDp = 360)
 @Composable
 internal fun SettingsVoiceGeminiNoKeySharedPreview() {
@@ -603,6 +604,49 @@ internal fun SettingsVoiceGeminiNoKeySharedPreview() {
             onSetGeminiKey = {},
             onClearGeminiKey = {},
             onPairFromPhone = {},
+            googleSignInAvailable = true,
+            googleAccount = SignedInGoogleAccount(email = "alice@example.com"),
+        )
+    }
+}
+
+// Gemini selected, no BYOK key, on a build with the shared voice but signed
+// out: the free voice needs Google sign-in, so the account row asks for it and
+// Test Voice stays disabled until then.
+@Preview(name = "Settings · Voice (Gemini, no key, signed out)", widthDp = 360)
+@Composable
+internal fun SettingsVoiceGeminiSignedOutPreview() {
+    SettingsFrame {
+        VoiceContent(
+            selected = TtsEngine.GEMINI,
+            geminiVoice = UserPreferences.DEFAULT_GEMINI_VOICE,
+            ttsStyle = TtsStyle.WEATHER_FORECASTER,
+            deviceVoice = null,
+            deviceVoices = emptyList(),
+            effectiveDeviceVoice = null,
+            geminiKeyConfigured = false,
+            sharedTtsAvailable = false,
+            voiceLocale = VoiceLocale.SYSTEM,
+            region = Region.SYSTEM,
+            temperatureUnit = TemperatureUnit.CELSIUS,
+            rangeFormat = RangeFormat.DEGREES,
+            clothesFormat = ClothesFormat.ITEMS,
+            bottomsFormat = BottomsFormat.IF_GARMENTS,
+            accessoriesFormat = AccessoriesFormat.ALWAYS,
+            periodPreamble = PreambleVisibility.ALWAYS,
+            wearPreamble = PreambleVisibility.ALWAYS,
+            currentInsight = null,
+            padding = PaddingValues(0.dp),
+            onSetTtsEngine = {},
+            onSetGeminiVoice = {},
+            onSetTtsStyle = {},
+            onSetDeviceVoice = {},
+            onSetVoiceLocale = {},
+            onSetGeminiKey = {},
+            onClearGeminiKey = {},
+            onPairFromPhone = {},
+            googleSignInAvailable = true,
+            googleAccount = null,
         )
     }
 }

@@ -198,7 +198,10 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
         composable<FormatDest> { e -> SettingsSubPage(nav, e) { FormatPage(e.settingsViewModel(nav, app), onBack) } }
         composable<ClothesDest> { e -> SettingsSubPage(nav, e) { ClothesPage(e.settingsViewModel(nav, app), onBack) } }
         composable<RegionDest> { e -> SettingsSubPage(nav, e) { RegionPage(e.settingsViewModel(nav, app), onBack) } }
-        composable<VoiceDest> { e ->
+        composable<VoiceDest>(
+            // The "Gemini voice paused" notification lands here, on the sign-in.
+            deepLinks = listOf(navDeepLink<VoiceDest>(basePath = MainActivity.DEEP_LINK_VOICE)),
+        ) { e ->
             SettingsSubPage(nav, e) {
                 VoicePage(
                     viewModel = e.settingsViewModel(nav, app),
@@ -434,7 +437,9 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
         castRouteDiscovery = app.castRouteDiscovery,
         calendarEventReader = app.calendarEventReader,
         castAvailable = app.castContext != null,
-        sharedTtsAvailable = app.sharedTtsAvailable,
+        sharedTtsConfigured = app.sharedTtsConfigured,
+        googleSignInAvailable = app.googleAccount.available,
+        googleAccount = app.googleAccount.account,
         castNowAction = app.castInsightController?.let { controller ->
             {
                 castCurrentInsight(

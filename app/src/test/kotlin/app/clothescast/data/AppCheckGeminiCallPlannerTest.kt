@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import app.clothescast.core.data.insight.GeminiEndpoint
+import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.core.data.insight.InvalidApiKeyException
 import com.google.crypto.tink.Aead
 import io.kotest.assertions.throwables.shouldThrow
@@ -52,12 +53,35 @@ class AppCheckGeminiCallPlannerTest {
         val subject = AppCheckGeminiCallPlanner(
             secureKeyStore = secureKeyStore,
             proxyBaseUrl = "https://example.test/tts",
-            sharedPathEnabled = true,
+            sharedPathEnabled = { true },
             model = "gemini-test",
         )
 
         shouldThrow<InvalidApiKeyException> { subject.plan() }
         shouldThrow<InvalidApiKeyException> { subject.plan() }
+    }
+
+    @Test
+    fun `without a key the shared path follows sign-in at each call`() = runTest {
+        // No key set: the shared proxy is the only route, and it needs Google
+        // sign-in. The gate is read per call, so signing in (or out) takes
+        // effect on the next plan without rebuilding the planner.
+        val secureKeyStore = SecureKeyStore(aead = PlannerDecryptFailsFakeAead, dataStore = dataStore)
+        var signedIn = false
+        val subject = AppCheckGeminiCallPlanner(
+            secureKeyStore = secureKeyStore,
+            proxyBaseUrl = "https://example.test/tts",
+            sharedPathEnabled = { signedIn },
+            model = "gemini-test",
+        )
+
+        shouldThrow<MissingApiKeyException> { subject.plan() }
+
+        signedIn = true
+        subject.plan().endpoint shouldBe GeminiEndpoint(host = "example.test", apiVersion = "tts")
+
+        signedIn = false
+        shouldThrow<MissingApiKeyException> { subject.plan() }
     }
 
     @Test

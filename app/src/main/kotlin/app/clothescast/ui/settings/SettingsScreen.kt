@@ -289,6 +289,7 @@ internal fun VoicePage(
     onPairFromPhone: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val accountActions = rememberGoogleAccountActions(onSignedIn = viewModel::onGoogleSignedIn)
     SettingsScaffold(R.string.settings_page_voice, onBack) { padding ->
         VoiceContent(
             selected = state.ttsEngine,
@@ -323,6 +324,12 @@ internal fun VoicePage(
             // off by default so a developer's real token never gets baked
             // into the committed `app/snapshots/settings_voice_*.png` files.
             showAppCheckDebugTokenRow = true,
+            googleSignInAvailable = state.googleSignInAvailable,
+            sharedTtsConfigured = state.sharedTtsConfigured,
+            googleAccount = state.googleAccount,
+            onSignIn = accountActions.signIn,
+            onSignOut = accountActions.signOut,
+            onDeleteAccount = accountActions.deleteAccount,
         )
     }
 }

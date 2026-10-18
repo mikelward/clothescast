@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.data.SignedInGoogleAccount
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
@@ -208,13 +209,28 @@ data class SettingsState(
      */
     val googleApiKeyConfigured: Boolean = false,
     /**
-     * True when this build can synthesise Gemini TTS through the developer's
-     * Cloud Function proxy (Firebase initialised + `GEMINI_PROXY_URL` set).
-     * The Voice screen ORs this with [apiKeyConfigured] so users without a
-     * BYOK key can still preview / use Gemini when the shared path is live.
-     * Process-stable, set once when the ViewModel is constructed.
+     * True when this user can synthesise Gemini TTS through the developer's
+     * Cloud Function proxy: the build has it ([sharedTtsConfigured]) and the
+     * user is signed in with Google. The Voice screen ORs this with
+     * [apiKeyConfigured] so users without a BYOK key can still preview / use
+     * Gemini.
      */
     val sharedTtsAvailable: Boolean = false,
+    /**
+     * True when this build has the shared voice and Sign in with Google at
+     * all (Firebase initialised, `GEMINI_PROXY_URL` set, web client ID
+     * present). Process-stable. Gates whether the sign-in row shows.
+     */
+    val sharedTtsConfigured: Boolean = false,
+    /**
+     * True when this build has Sign in with Google (Firebase and the web
+     * client ID), proxy or not. Voice settings always shows the account
+     * section then, so a signed-out user can still sign in to delete their
+     * account. Process-stable.
+     */
+    val googleSignInAvailable: Boolean = false,
+    /** The signed-in Google account, or null when signed out. */
+    val googleAccount: SignedInGoogleAccount? = null,
     /**
      * True while the WorkManager location-cache-refresh job is ENQUEUED,
      * RUNNING, or BLOCKED. Drives "Detecting…" in the Location settings

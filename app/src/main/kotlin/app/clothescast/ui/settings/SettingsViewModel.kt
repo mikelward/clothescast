@@ -38,6 +38,7 @@ import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
+import app.clothescast.data.SignedInGoogleAccount
 import app.clothescast.cast.CastRouteDiscovery
 import app.clothescast.cast.CastTestOutcome
 import app.clothescast.cast.DiscoveredCastRoute
@@ -54,12 +55,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -170,13 +173,22 @@ class SettingsViewModel(
      */
     private val castAvailable: Boolean = false,
     /**
-     * True when the developer's Cloud Function TTS proxy is available on
-     * this build (Firebase initialised + `GEMINI_PROXY_URL` set). Lets a
-     * user without a BYOK key still preview / use Gemini — the Voice
-     * screen ORs this with `apiKeyConfigured`. Process-stable; passed
-     * straight through to [SettingsState.sharedTtsAvailable] on init.
+     * True when the developer's Cloud Function TTS proxy and Sign in with
+     * Google are built into this app. Process-stable; passed straight
+     * through to [SettingsState.sharedTtsConfigured] on init.
      */
-    private val sharedTtsAvailable: Boolean = false,
+    private val sharedTtsConfigured: Boolean = false,
+    /**
+     * True when this build has Sign in with Google at all (Firebase and the
+     * web client ID), with or without the proxy. Process-stable; passed
+     * through to [SettingsState.googleSignInAvailable].
+     */
+    private val googleSignInAvailable: Boolean = false,
+    /**
+     * The signed-in Google account, tracked live. Together with
+     * [sharedTtsConfigured] it drives [SettingsState.sharedTtsAvailable].
+     */
+    private val googleAccount: Flow<SignedInGoogleAccount?> = flowOf(null),
     /**
      * Reads the user's synced calendars for the Celebrations screen's
      * upcoming-birthdays / -holidays listing. Null in pure-VM tests that don't
@@ -205,7 +217,7 @@ class SettingsViewModel(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
-        SettingsState(sharedTtsAvailable = sharedTtsAvailable),
+        SettingsState(sharedTtsConfigured = sharedTtsConfigured, googleSignInAvailable = googleSignInAvailable),
     )
     val state: StateFlow<SettingsState> = _state.asStateFlow()
 
@@ -241,6 +253,16 @@ class SettingsViewModel(
     private var lastEnumeratedLocale: Locale? = null
 
     init {
+        viewModelScope.launch {
+            googleAccount.collect { account ->
+                _state.update {
+                    it.copy(
+                        googleAccount = account,
+                        sharedTtsAvailable = sharedTtsConfigured && account != null,
+                    )
+                }
+            }
+        }
         viewModelScope.launch {
             settingsRepository.preferences.collect { prefs ->
                 val regionLocale = prefs.region.toJavaLocale() ?: Locale.getDefault()
@@ -502,6 +524,14 @@ class SettingsViewModel(
             keyStore.clear()
             refreshApiKeyStatus()
         }
+    }
+
+    /**
+     * After a Google sign-in: re-arm the one-time "Gemini voice paused"
+     * notice, so signing out later tells the user again.
+     */
+    fun onGoogleSignedIn() {
+        viewModelScope.launch { settingsRepository.setGeminiSignInNoticeShown(false) }
     }
 
     /**
@@ -1356,7 +1386,9 @@ class SettingsViewModel(
         private val castRouteDiscovery: CastRouteDiscovery? = null,
         private val castNowAction: (suspend () -> CastTestOutcome)? = null,
         private val castAvailable: Boolean = false,
-        private val sharedTtsAvailable: Boolean = false,
+        private val sharedTtsConfigured: Boolean = false,
+        private val googleSignInAvailable: Boolean = false,
+        private val googleAccount: Flow<SignedInGoogleAccount?> = flowOf(null),
         private val calendarEventReader: CalendarEventReader? = null,
         private val insightCache: InsightCache? = null,
         private val googleWeatherProbe: (suspend () -> GoogleWeatherProbe)? = null,
@@ -1382,7 +1414,9 @@ class SettingsViewModel(
                 castRouteDiscovery = castRouteDiscovery,
                 castNowAction = castNowAction,
                 castAvailable = castAvailable,
-                sharedTtsAvailable = sharedTtsAvailable,
+                sharedTtsConfigured = sharedTtsConfigured,
+                googleSignInAvailable = googleSignInAvailable,
+                googleAccount = googleAccount,
                 calendarEventReader = calendarEventReader,
                 insightCache = insightCache,
                 googleWeatherProbe = googleWeatherProbe,

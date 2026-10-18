@@ -67,6 +67,7 @@ import app.clothescast.ui.settings.SettingsSmartHomePreview
 import app.clothescast.ui.settings.SettingsVoiceDevicePreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiNoKeyPreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiNoKeySharedPreview
+import app.clothescast.ui.settings.SettingsVoiceGeminiSignedOutPreview
 import app.clothescast.ui.settings.SettingsVoiceGeminiPreview
 import app.clothescast.widget.FeelsLikeWidgetNoCurrentTimePreview
 import app.clothescast.widget.FeelsLikeWidgetTodayDarkPreview
@@ -744,6 +745,7 @@ class PreviewSnapshots {
     @Test fun settings_voice_gemini() = capture { SettingsVoiceGeminiPreview() }
     @Test fun settings_voice_gemini_no_key() = capture { SettingsVoiceGeminiNoKeyPreview() }
     @Test fun settings_voice_gemini_no_key_shared() = capture { SettingsVoiceGeminiNoKeySharedPreview() }
+    @Test fun settings_voice_gemini_signed_out() = capture { SettingsVoiceGeminiSignedOutPreview() }
     // The debug-only Voice → App Check debug token row is snapshotted by
     // `DebugPreviewSnapshots` in the `testDebug` source set, since the
     // preview composable is itself debug-variant-only and a reference

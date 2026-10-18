@@ -30,6 +30,7 @@ import app.clothescast.core.domain.usecase.GenerateDailyInsight
 import app.clothescast.data.AppCheckGeminiCallPlanner
 import app.clothescast.data.DailyHistoryStore
 import app.clothescast.data.provideAppCheckProviderFactory
+import app.clothescast.data.GoogleAccount
 import app.clothescast.data.GoogleForecastCache
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
@@ -59,6 +60,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -148,19 +150,54 @@ class ClothesCastApplication : Application() {
 
     /**
      * Is the shared-key TTS path (developer's Cloud Function proxy)
-     * usable on this build? True iff Firebase initialised
+     * built into this app? True iff Firebase initialised
      * (`google-services.json` was present at build time and the
-     * runtime SDK has an app instance) AND `GEMINI_PROXY_URL` is
-     * non-blank. The Voice settings UI and the daily worker OR this
-     * flag against `geminiKeyConfigured` so a user without a BYOK key
-     * can still use Gemini — preview button enabled, scheduled
-     * delivery synthesises through the proxy. Computed once at first
-     * read; both inputs are stable for the process lifetime.
+     * runtime SDK has an app instance), `GEMINI_PROXY_URL` is non-blank
+     * and Sign in with Google is wired ([GoogleAccount.available]).
+     * Computed once at first read; the inputs are stable for the process
+     * lifetime. Whether the *user* can use it is [sharedTtsAvailable].
      */
-    val sharedTtsAvailable: Boolean by lazy {
-        com.google.firebase.FirebaseApp.getApps(this).isNotEmpty() &&
-            BuildConfig.GEMINI_PROXY_URL.isNotBlank()
+    val sharedTtsConfigured: Boolean by lazy {
+        firebaseAvailable() &&
+            BuildConfig.GEMINI_PROXY_URL.isNotBlank() &&
+            googleAccount.available
     }
+
+    /**
+     * Can this user reach the shared-key TTS path right now? It needs Google
+     * sign-in (SPEC.md → "Accounts and the developer-funded paths"). The
+     * Voice settings UI and the daily worker OR this against
+     * `geminiKeyConfigured` so a signed-in user without a BYOK key still
+     * gets Gemini. Read at the moment of use; the UI follows
+     * [sharedTtsAvailableFlow].
+     */
+    val sharedTtsAvailable: Boolean
+        get() = sharedTtsConfigured && googleAccount.isSignedIn()
+
+    /** [sharedTtsAvailable], tracked for the UI. */
+    val sharedTtsAvailableFlow: Flow<Boolean> by lazy {
+        googleAccount.account.map { sharedTtsConfigured && it != null }
+    }
+
+    /**
+     * Optional Sign in with Google. The web client ID is the
+     * `default_web_client_id` string the google-services plugin generates
+     * from `google-services.json`; looked up by name because builds without
+     * that file (CI, forks) have no such resource, and sign-in is then
+     * unavailable rather than a compile error.
+     */
+    val googleAccount: GoogleAccount by lazy {
+        GoogleAccount(
+            firebaseAvailable = ::firebaseAvailable,
+            webClientId = resources
+                .getIdentifier("default_web_client_id", "string", packageName)
+                .takeIf { it != 0 }
+                ?.let { getString(it) },
+        )
+    }
+
+    private fun firebaseAvailable(): Boolean =
+        com.google.firebase.FirebaseApp.getApps(this).isNotEmpty()
 
     /**
      * Picks the Gemini backend per call: BYOK direct to Google when the
@@ -174,7 +211,7 @@ class ClothesCastApplication : Application() {
         AppCheckGeminiCallPlanner(
             secureKeyStore = secureKeyStore,
             proxyBaseUrl = BuildConfig.GEMINI_PROXY_URL,
-            sharedPathEnabled = sharedTtsAvailable,
+            sharedPathEnabled = { sharedTtsAvailable },
             model = DEFAULT_GEMINI_TTS_MODEL,
         )
     }
@@ -491,6 +528,7 @@ class ClothesCastApplication : Application() {
         // DiagLog.install so the lines land in the log this run writes.
         applicationScope.launch(Dispatchers.IO) { logRecentProcessExits(this@ClothesCastApplication) }
         initAppCheck()
+        googleAccount.start()
         // Bridge the user's Privacy toggle to Firebase. No-ops on builds
         // assembled without google-services.json (CI). Crashlytics's own
         // UncaughtExceptionHandler is auto-installed by FirebaseInitProvider

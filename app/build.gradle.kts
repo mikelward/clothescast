@@ -739,19 +739,23 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
-    // App Check (Play Integrity in release, Debug provider in debug) +
-    // anonymous Auth: the TTS proxy gates on a valid App Check token and
-    // counts usage per anonymous Firebase Authentication uid (verified
-    // server-side, so the client can't spoof its quota bucket). Installations
-    // stays for the migration window — the client sends the legacy FID
-    // alongside the ID token so a not-yet-redeployed function keeps working;
-    // it's dropped once old app versions age out. All no-op on builds
+    // App Check (Play Integrity in release, Debug provider in debug) + Auth:
+    // the TTS proxy gates on a valid App Check token and counts usage per
+    // Google account from the signed-in user's Firebase ID token (verified
+    // server-side, so the client can't spoof its quota bucket). This build
+    // no longer sends the Installation ID older builds did; Installations
+    // stays as a direct dependency until a cleanup drops it. All no-op on builds
     // assembled without google-services.json — FirebaseApp doesn't init, the
     // planner falls back to BYOK semantics, and the rest of the app
     // continues to assemble and run.
     implementation(libs.firebase.appcheck.playintegrity)
     debugImplementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.auth)
+    // Sign in with Google for the developer-funded paths (SPEC.md →
+    // "Accounts and the developer-funded paths").
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
     implementation(libs.firebase.installations)
     // `.await()` on the App Check token / anonymous sign-in / ID token Tasks.
     // Production (not test-only) because the planner runs in the main coroutine flow.
@@ -770,6 +774,7 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.kotest.assertions.core)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
     testImplementation(libs.androidx.datastore.preferences.core)
     // TestListenableWorkerBuilder + WorkManagerTestInitHelper for unit-testing
     // FetchAndNotifyWorker's doWork() path and its enqueue companion methods.

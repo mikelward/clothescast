@@ -251,10 +251,20 @@ class MainActivity : ComponentActivity() {
         fun todayPageUri(page: Int): String =
             if (page <= 0) DEEP_LINK_TODAY else "$DEEP_LINK_TODAY?page=$page"
 
+        /** Deep-link URI that lands on Voice settings, where the Google sign-in
+         *  for the free voice lives. ClothesCastNavHost declares a matching
+         *  navDeepLink on VoiceDest. */
+        const val DEEP_LINK_VOICE = "clothescast://settings/voice"
+
         /** Tap intent for notifications: opens (or brings forward) MainActivity and
          *  deep-links to Today. SINGLE_TOP/CLEAR_TOP reuses a running task. */
-        fun todayTapIntent(context: Context): Intent =
-            Intent(Intent.ACTION_VIEW, DEEP_LINK_TODAY.toUri(), context, MainActivity::class.java).apply {
+        fun todayTapIntent(context: Context): Intent = tapIntent(context, DEEP_LINK_TODAY)
+
+        /** Like [todayTapIntent], deep-linking to Voice settings instead. */
+        fun voiceTapIntent(context: Context): Intent = tapIntent(context, DEEP_LINK_VOICE)
+
+        private fun tapIntent(context: Context, uri: String): Intent =
+            Intent(Intent.ACTION_VIEW, uri.toUri(), context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
     }

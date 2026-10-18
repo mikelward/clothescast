@@ -208,6 +208,75 @@ I put on before I leave?" instead of a full weather-office report.
   calendar data, precise location, insight prose, API keys, notification text,
   ad identifiers, and user content must stay out of Firebase payloads.
 
+### Accounts and the developer-funded paths
+
+Decided 2026-10-18 by the maintainer; not built yet (`TODO.md` → *Sign-in and
+family access*).
+
+- **The paths the developer pays for require Google sign-in:** the shared
+  Gemini voice (the TTS proxy) and a new Google Weather proxy. The app itself
+  needs no account. Device voice, Open-Meteo, and the user's own keys keep
+  working signed out.
+- **Why sign-in and not the anonymous uid:** the anonymous uid rotates on
+  reinstall or clear-data, so a cap keyed on it resets for free, and an
+  allowlist keyed on it silently drops people. A Google account is the durable
+  identity both need. This gives up "no login" for those two paths. A durable
+  device identifier was the other way to make the cap hold, but it needs a
+  Data Safety answer too and is collected without the user choosing it;
+  sign-in is at least the user's choice.
+- **Plain sign-in, never linking to the anonymous account.** The uid is then
+  the Google account's own uid on every device from the start, and there is
+  no "credential already in use" path or rule about which device came first.
+  Anonymous sign-in remains for signed-out users and for older app versions
+  during the rollout.
+- **The free cap is per account, shared across a person's devices.** For a
+  signed-in caller the proxy keys the quota on a keyed hash of the Google
+  account ID carried in the verified token, not on the Firebase uid: deleting
+  the account and signing in again mints a new uid, and keying on the uid
+  would hand back a fresh day's allowance. The signed-in quota doc holds only
+  today's date and count, so after a deletion all that survives is a count
+  for the rest of that UTC day, which is then deleted (disclosed as retained
+  for abuse prevention). Signing out returns to an anonymous uid, which gets
+  no free voice once the rollout is over, so signing out doesn't reset the
+  cap either.
+- **Per-account limits live in Firebase custom claims.** No TTS claim: the
+  default free cap. A number: that cap. `unlimited`: no per-account count. A
+  separate on/off claim grants the Weather proxy. An admin script sets them
+  by email; the list of people lives only in Firebase, never in the repo.
+  A change applies at the next token refresh (within an hour) unless the app
+  forces one.
+- **Unlimited accounts have a project-level backstop:** a billing alert and
+  per-API request quotas on the Google Cloud project, so a runaway loop or a
+  leaked token stops at a known cost.
+- **The Weather proxy forwards the coarse coordinate to Google Weather with
+  the developer's Maps Platform key,** and must not log or store the
+  coordinate. When it refuses or fails, the forecast falls back to Open-Meteo
+  and says so. The Google forecaster with the user's own key keeps calling
+  Google directly. Any server-side cache needs checking against the Maps
+  Platform caching terms first.
+- **Cost:** Weather Usage is a Maps Platform Essentials SKU, 10,000 free calls
+  a month, then about $0.15 per 1,000 (unconfirmed whether hourly forecasts
+  bill under it). A device fetches Google's 7-day hourly series about twice a
+  day at up to 7 pages, roughly 420 calls a month, so about 23 devices fit in
+  the free allowance and each one past that costs about $0.06 a month. Cloud
+  Functions and Firestore stay in their free tiers at this scale.
+- **Rollout:** the proxy tells Google tokens from anonymous ones by the
+  token's sign-in provider. During the transition anonymous tokens keep
+  today's free cap, the same way the anonymous-ID migration let old and new
+  clients coexist; a later cutover release removes it, along with the legacy
+  `X-Install-Id` fallback.
+- **When sign-in or a claim can't be verified,** the user gets the default
+  free tier (or the device voice) and is told why, never a silent downgrade.
+- **Before the sign-in release ships:** `PRIVACY.md` (its "no login" claim, the
+  Online TTS section, the third-party table and "What we do not collect"), the
+  Play Data Safety form (optional, for account management: the email address,
+  the name and profile photo URL that Firebase copies from the Google account,
+  and the Firebase user ID; the approximate location now reaching a
+  developer-run server, processed ephemerally; the quota count kept to the end
+  of the day after a deletion), Play's account-deletion requirement (an in-app
+  delete and a web page to request deletion), and Play's App access
+  instructions for reviewers. `PRIVACY.md` keeps describing shipped behavior until then.
+
 ### Roadmap
 
 Near-term product work should focus on recommendation quality and reducing
@@ -226,6 +295,8 @@ setup friction rather than adding more delivery destinations:
    or other owner-funded quota — with explicit cost caps, abuse controls,
    privacy review, and clear fallback to device TTS when trial access is
    unavailable.
+   The shared-key proxy now provides this; access to it moves behind
+   Google sign-in (*Accounts and the developer-funded paths* above).
 
 ### Inconsistencies and further investigation
 

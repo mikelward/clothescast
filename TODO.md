@@ -50,6 +50,48 @@ enforced the same way, costs, and the open questions — are in
       ID — nothing consumes it, so it's exposure for no benefit. See
       ROADMAP.md.
 
+## Sign-in and family access
+
+Design and reasons in [SPEC.md](SPEC.md) → *Accounts and the developer-funded
+paths*. Google sign-in gates both developer-funded paths: the shared Gemini
+voice and the Google Weather proxy.
+
+- [ ] **Sign in with Google** (Credential Manager plus Firebase Auth), from an
+      optional Settings row. A plain sign-in, never linked to the anonymous
+      account. Signing out falls back to anonymous.
+- [ ] **TTS proxy reads the sign-in provider.** Google tokens get the cap
+      their custom claim sets (default 5 a day, a number, or `unlimited`);
+      anonymous tokens keep today's cap until the cutover.
+- [ ] **Admin script for custom claims** (`functions/`): set a TTS limit,
+      `unlimited`, or the weather flag by email, or clear them. Emails are
+      arguments, never committed.
+- [ ] **Project backstop:** a billing alert plus Gemini and Weather API request
+      quotas on the Google Cloud project, documented in
+      [docs/gemini-tts-proxy.md](docs/gemini-tts-proxy.md).
+- [ ] **Google Weather proxy function**, gated on the weather claim: the Maps
+      Platform key held as a secret, the coordinate never logged or stored,
+      an Open-Meteo fallback that says why. Check the Maps Platform caching
+      terms before adding any server-side cache, and confirm which SKU the
+      hourly forecast bills under.
+      Google's hourly series is already capped at 7 days (about $0.06 per
+      user a month); if it opens beyond family, 3 days would be about $0.03.
+- [ ] **Copy:** "sign in for the free voice" for signed-out users, and a
+      message when sign-in or a claim can't be verified.
+- [ ] **Quota key for signed-in callers:** a keyed hash of the Google account
+      ID from the verified token, holding only today's date and count, so
+      deleting and recreating the account doesn't reset the day's cap.
+- [ ] **Account deletion** (Play requirement): an in-app delete that removes
+      the Firebase user (and with it the email, name, photo URL and custom
+      claims), plus a web page to request deletion. Today's quota count
+      outlives it until the day ends.
+- [ ] **Disclosure before the sign-in release:** `PRIVACY.md`, the Data Safety
+      form (optional, account management: email, name, profile photo URL and
+      the Firebase user ID; approximate location to a developer-run server,
+      processed ephemerally; the day's quota count after a deletion), and
+      Play's App access instructions for reviewers.
+- [ ] **Cutover release:** anonymous tokens lose the free voice, and the
+      legacy `X-Install-Id` fallback goes with them.
+
 ## Voice / TTS
 
 - [x] Gemini TTS as opt-in voice engine (PR #27)

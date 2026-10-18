@@ -209,6 +209,11 @@ cap "the price of not fingerprinting devices": that reads an existing policy lin
 as a permanent prohibition, which is neither what it says nor something a
 monetization page gets to decide.
 
+**Decided (maintainer, 2026-10-18): Google sign-in.** The free voice requires
+a signed-in Google account, and the cap is per account across a person's
+devices. None of the three options above was taken; the reasons are in `SPEC.md` →
+*Accounts and the developer-funded paths*.
+
 **The rate is settled for a subscription, and an earlier draft of this section
 made it look open.** Google's subscription service fee has been **15% on
 auto-renewing subscription revenue from day one** since January 2022,
@@ -1078,7 +1083,7 @@ posture rather than fighting it.
     **The third concurrent call is not Open-Meteo's** (Codex, 2026-09-03) and
     was wrong to count here: `extraModelHourly` is the Google Weather path,
     fired against the user's own Google Cloud key with its own device-side
-    `GoogleForecastCache`, and a miss there is roughly ten paginated Google
+    `GoogleForecastCache`, and a miss there is roughly seven paginated Google
     calls. It spends none of the Open-Meteo allowance, and it must stay outside
     this proxy and its cache — routing BYOK Google traffic through
     developer-operated infrastructure is a different decision, taken nowhere on

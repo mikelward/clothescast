@@ -653,6 +653,9 @@ Making it durable would require a recoverable identity — a real
 Google sign-in — which trades away the anonymity that PRIVACY.md
 currently treats as a feature, and imposes a sign-in on users who never
 asked for an account, in order to keep something they already have.
+(Google sign-in is now planned for the developer-funded paths — `SPEC.md` →
+*Accounts and the developer-funded paths* — but it is optional for everything
+else, including the bridge, so the argument here stands.)
 
 That leaves accepting the loss on reinstall (a support burden and a
 bad look), or not creating the problem.

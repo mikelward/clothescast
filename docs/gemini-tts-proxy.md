@@ -79,7 +79,7 @@ database**. Pick **Production mode** (the rules in
 to it via the Admin SDK). Region is up to you — pick something close
 to your function region (step 5).
 
-### 4. Register apps in App Check, and enable anonymous sign-in
+### 4. Register apps in App Check, and enable Google sign-in
 
 Find these products by name in the left sidebar — the category
 headers Firebase groups them under (App Check currently sits under a
@@ -104,25 +104,34 @@ plain HTTP (`onRequest`) function, which enforces App Check **in code**
 `getAppCheck().verifyToken()` fails (see `functions/src/index.ts`). So
 enforcement is always on for `tts` and there's nothing to flip here.
 
-**Authentication** — enable anonymous sign-in:
+**Authentication** — enable Google sign-in:
 
-- Open **Authentication → Sign-in method → Anonymous → Enable.** The
-  app signs in anonymously to get the ID token it sends to the proxy
-  (the function verifies it and keys the per-install daily quota on the
-  `uid`); no other provider is needed. **If this is off, the shared
-  voice silently falls back to device TTS.**
-- **Enforce App Check on Authentication** to stop scripted
-  anonymous-account farming (minting fresh `uid`s to reset the daily
-  cap): in **App Check**, expand the **Authentication** product's
-  metrics row and click **Enforce** (takes up to ~15 min to apply).
-  Without it, App Check still gates the function but not account
-  creation.
-- *(Optional)* Auto-delete anonymous accounts inactive for 30+ days so
-  stale quota identities don't pile up. This lives under
-  **Authentication → Settings → User account management** and
-  **requires upgrading to Firebase Authentication with Identity
-  Platform.** The client re-signs in anonymously if a still-cached
-  account gets deleted, so it's safe to enable.
+- Open **Authentication → Sign-in method → Google → Enable**, and pick a
+  support email. This creates OAuth clients in the project's Google Cloud
+  console. The app needs two of them, and neither is a build setting:
+  - **The Web client** (created now). Its ID reaches the app through
+    `google-services.json`, as the `default_web_client_id` string. **Download
+    `google-services.json` again after enabling Google**, then replace
+    `app/google-services.json` and the `GOOGLE_SERVICES_JSON` CI secret. With
+    an older file the build has no sign-in and the account row stays hidden.
+  - **An Android client per signing key**, which Firebase creates from the
+    SHA-1 fingerprints on each Android app (step 2). Google refuses the
+    sign-in for an APK whose signing certificate isn't registered. For the
+    release app (`app.clothescast`), add the **Play App Signing key's**
+    SHA-1 (Play Console → *Test and release → App integrity → App signing*),
+    which signs what users install from Play, and the **upload key's** if
+    you sideload release builds. For the debug app (`app.clothescast.debug`),
+    add your local debug keystore's SHA-1 (`./gradlew :app:signingReport`).
+    A CI-built debug APK is signed with a fresh keystore each run, so
+    sign-in can't work on it.
+- **If this is off, or the SHA-1 is missing, sign-in fails** with "Couldn't
+  sign in" and the free voice stays on the device voice.
+- Leave **Anonymous** enabled while older app versions are still installed:
+  they sign in anonymously, and the proxy still accepts them.
+- **Enforce App Check on Authentication** to stop scripted account creation:
+  in **App Check**, expand the **Authentication** product's metrics row and
+  click **Enforce** (takes up to ~15 min to apply). Without it, App Check
+  still gates the function but not account creation.
 
 ### 5. Set up the function locally
 

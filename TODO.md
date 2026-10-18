@@ -56,19 +56,25 @@ Design and reasons in [SPEC.md](SPEC.md) → *Accounts and the developer-funded
 paths*. Google sign-in gates both developer-funded paths: the shared Gemini
 voice and the Google Weather proxy.
 
-- [ ] **Sign in with Google** (Credential Manager plus Firebase Auth), from an
-      optional Settings row. A plain sign-in, never linked to the anonymous
-      account. Signing out falls back to anonymous.
-- [ ] **TTS proxy reads the sign-in provider.** Google tokens get the cap
+- [ ] **Sign in with Google** (Credential Manager plus Firebase Auth), from a
+      button on the Forecasters page and in Voice settings. A plain sign-in,
+      never linked to the anonymous account. Signing out falls back to
+      anonymous.
+- [ ] **Separate opt-ins, each needing sign-in:** the free voice (Voice
+      settings) and the Google forecast through the proxy (Forecasters page).
+      Turning either on while signed out starts the sign-in; signing in turns
+      neither on. A dismissible promo card on Today offers the Google
+      forecast.
+- [x] **TTS proxy reads the sign-in provider.** Google tokens get the cap
       their custom claim sets (default 5 a day, a number, or `unlimited`);
       anonymous tokens keep today's cap until the cutover.
-- [ ] **Admin script for custom claims** (`functions/`): set a TTS limit,
-      `unlimited`, or the weather flag by email, or clear them. Emails are
-      arguments, never committed.
+- [x] **Admin script for the TTS limit claim**
+      (`functions/scripts/set-tts-limit.js`). Emails are arguments, never
+      committed.
 - [ ] **Project backstop:** a billing alert plus Gemini and Weather API request
       quotas on the Google Cloud project, documented in
       [docs/gemini-tts-proxy.md](docs/gemini-tts-proxy.md).
-- [ ] **Google Weather proxy function**, gated on the weather claim: the Maps
+- [ ] **Google Weather proxy function**, for any Google-signed-in caller: the Maps
       Platform key held as a secret, the coordinate never logged or stored,
       an Open-Meteo fallback that says why. Check the Maps Platform caching
       terms before adding any server-side cache, and confirm which SKU the
@@ -77,7 +83,7 @@ voice and the Google Weather proxy.
       user a month); if it opens beyond family, 3 days would be about $0.03.
 - [ ] **Copy:** "sign in for the free voice" for signed-out users, and a
       message when sign-in or a claim can't be verified.
-- [ ] **Quota key for signed-in callers:** a keyed hash of the Google account
+- [x] **Quota key for signed-in callers:** a keyed hash of the Google account
       ID from the verified token, holding only today's date and count, so
       deleting and recreating the account doesn't reset the day's cap.
 - [ ] **Account deletion** (Play requirement): an in-app delete that removes

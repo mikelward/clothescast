@@ -235,14 +235,21 @@ family access*).
   the account and signing in again mints a new uid, and keying on the uid
   would hand back a fresh day's allowance. The signed-in quota doc holds only
   today's date and count, so after a deletion all that survives is a count
-  for the rest of that UTC day, which is then deleted (disclosed as retained
-  for abuse prevention). Signing out returns to an anonymous uid, which gets
+  for the rest of that UTC day, which a Firestore TTL policy then deletes,
+  typically within a day (disclosed as retained for abuse prevention). Signing out returns to an anonymous uid, which gets
   no free voice once the rollout is over, so signing out doesn't reset the
   cap either.
 - **Per-account limits live in Firebase custom claims.** No TTS claim: the
-  default free cap. A number: that cap. `unlimited`: no per-account count. A
-  separate on/off claim grants the Weather proxy. An admin script sets them
-  by email; the list of people lives only in Firebase, never in the repo.
+  default free cap. A number: that cap. `unlimited`: no per-account count. An
+  admin script sets them by email; the list of people lives only in
+  Firebase, never in the repo.
+- **The Weather proxy is for every signed-in user** (maintainer, 2026-10-18),
+  not a flagged list.
+- **The free voice and the Google forecast are separate opt-ins**
+  (maintainer, 2026-10-18), and each requires Google sign-in; signing in
+  turns neither on. Turning either on while signed out starts the sign-in.
+  The Forecasters page carries the Google forecast switch, and a dismissible
+  promo card on Today offers it to people who haven't turned it on.
   A change applies at the next token refresh (within an hour) unless the app
   forces one.
 - **Unlimited accounts have a project-level backstop:** a billing alert and

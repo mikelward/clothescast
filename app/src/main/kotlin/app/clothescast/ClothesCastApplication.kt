@@ -111,7 +111,7 @@ class ClothesCastApplication : Application() {
     val telemetryInviteDismissedForSession = MutableStateFlow(false)
     val deriveInsight: DeriveInsight by lazy { DeriveInsight() }
     val insightCache: InsightCache by lazy { InsightCache.create(this, deriveInsight) }
-    // Caches the extended (10-day) Google forecast so its ~10-page walk happens
+    // Caches the extended (7-day) Google forecast so its ~7-page walk happens
     // at most a couple of times a day; see [fetchGoogleSeries].
     val googleForecastCache: GoogleForecastCache by lazy { GoogleForecastCache.create(this) }
     val dailyHistoryStore: DailyHistoryStore by lazy { DailyHistoryStore.create(this) }
@@ -345,7 +345,7 @@ class ClothesCastApplication : Application() {
                 // keep including (or excluding) Google until expiry, and swapping
                 // a key that 403'd the Weather API for a working one wouldn't
                 // take effect on a manual refresh.
-                // Google now always contributes the same extended (10-day) series
+                // Google now always contributes the same extended (7-day) series
                 // — gated only by GoogleForecastCache's TTL, not by who's fetching
                 // — so the bundle's Google depth no longer varies with the caller
                 // and the freshness key only needs the model set + key fingerprint.
@@ -420,8 +420,8 @@ class ClothesCastApplication : Application() {
     /**
      * Resolves the Google forecaster's contribution to one consensus blend.
      *
-     * The full 10-day walk ([GoogleWeatherModelClient.EXTENDED_HOURS]) is
-     * expensive (~10 paginated, billed calls), so it's rate-limited behind
+     * The full 7-day walk ([GoogleWeatherModelClient.EXTENDED_HOURS]) is
+     * expensive (~7 paginated, billed calls), so it's rate-limited behind
      * [GoogleForecastCache] (a ~12 h TTL) rather than gated per caller: a fresh
      * cached series serves *every* refresh path — app opens and background
      * refreshes (scheduled alarms, widget self-heals) alike — and a cache miss
@@ -643,10 +643,10 @@ class ClothesCastApplication : Application() {
         // requestAllPages returns the pages gathered so far if a page fails
         // partway (PR #1084), so a transient mid-walk failure yields a
         // near-length series; caching that would keep week-ahead Google missing
-        // for the whole 12 h TTL. 7 days clears a healthy 10-day walk (and a walk
+        // for the whole 12 h TTL. 5 days clears a healthy 7-day walk (and a walk
         // that lost only its last page or two) while rejecting an early
-        // truncation. A genuine sub-7-day success just re-walks on the next
+        // truncation. A genuine sub-5-day success just re-walks on the next
         // refresh — safe.
-        private const val MIN_CACHEABLE_EXTENDED_HOURS = 168
+        private const val MIN_CACHEABLE_EXTENDED_HOURS = 120
     }
 }

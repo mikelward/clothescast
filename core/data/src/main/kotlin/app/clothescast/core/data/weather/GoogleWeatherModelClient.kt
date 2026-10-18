@@ -74,11 +74,11 @@ sealed interface GoogleWeatherProbe {
  * blend proceeds on the Open-Meteo models alone. The fetch never fails the
  * surrounding forecast.
  *
- * [fetchHourly] walks Google's pagination across the full [EXTENDED_HOURS]-hour
- * (10-day) horizon — Google caps each page at [PAGE_SIZE] hours and hands back a
+ * [fetchHourly] walks Google's pagination across the [EXTENDED_HOURS]-hour
+ * (7-day) horizon — Google caps each page at [PAGE_SIZE] hours and hands back a
  * `nextPageToken`, so the series is assembled across up to [MAX_PAGES] round-trips,
- * matching the Open-Meteo models' forward reach so Google votes in the consensus
- * on every day rather than just today + tomorrow. The walk is expensive, so the
+ * so Google votes in the consensus across the week ahead rather than just today +
+ * tomorrow. The walk is expensive, so the
  * :app layer rate-limits it behind `GoogleForecastCache` (a ~12 h TTL) rather than
  * gating it per caller. A page that fails partway keeps the hours already gathered
  * (so a late network blip still contributes the near days) rather than dropping
@@ -92,8 +92,8 @@ class GoogleWeatherModelClient(
     private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
 ) {
     /**
-     * Fetches the full [EXTENDED_HOURS]-hour (10-day) Google forecast, walking
-     * pagination as needed (~10 round-trips). The expensive walk is rate-limited
+     * Fetches the [EXTENDED_HOURS]-hour (7-day) Google forecast, walking
+     * pagination as needed (~7 round-trips). The expensive walk is rate-limited
      * by the :app layer's `GoogleForecastCache` (a ~12 h TTL), so it runs at most
      * a couple of times a day regardless of how often the forecast refreshes —
      * which is why every caller can ask for the whole horizon here without a
@@ -272,11 +272,12 @@ class GoogleWeatherModelClient(
     }
 
     companion object {
-        // The full horizon Google's hourly endpoint serves — 240 hours / 10 days
-        // — so Google reaches as far forward as the Open-Meteo models and votes in
-        // the consensus on every day, not just today + tomorrow. The forecast path
-        // ([fetchHourly]) always walks this; the :app cache rate-limits it.
-        const val EXTENDED_HOURS = 240
+        // 168 hours / 7 days, so Google votes in the consensus across the week
+        // ahead, not just today + tomorrow. Google serves up to 240 hours, but
+        // every page is a billed call, and days 8–14 are left to the free
+        // Open-Meteo models. The forecast path ([fetchHourly]) always walks this;
+        // the :app cache rate-limits it.
+        const val EXTENDED_HOURS = 168
 
         // A single 24-hour page — all [probe] needs to confirm the key reaches the
         // Weather API and returns usable hours, without walking the full horizon.

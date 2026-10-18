@@ -176,8 +176,8 @@ class GoogleWeatherModelClientTest {
         params["location.latitude"] shouldBe "51.5074"
         params["location.longitude"] shouldBe "-0.1278"
         params["unitsSystem"] shouldBe "METRIC"
-        // The full 10-day horizon, fetched 24 hours at a time via pagination.
-        params["hours"] shouldBe "240"
+        // The 7-day horizon, fetched 24 hours at a time via pagination.
+        params["hours"] shouldBe "168"
         params["pageSize"] shouldBe "24"
         // No token on the first page.
         params["pageToken"].shouldBeNull()
@@ -234,9 +234,9 @@ class GoogleWeatherModelClientTest {
                 .fetchHourly(london, "AIza-test-key"),
         ).hours
 
-        // 240 hours / 24 per page = 10 pages, and no more.
-        captured.size shouldBe 10
-        result.size shouldBe 10
+        // 168 hours / 24 per page = 7 pages, and no more.
+        captured.size shouldBe 7
+        result.size shouldBe 7
     }
 
     @Test

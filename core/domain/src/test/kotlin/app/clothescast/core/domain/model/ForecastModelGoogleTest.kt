@@ -52,21 +52,20 @@ class ForecastModelGoogleTest {
     }
 
     @Test
-    fun `withGoogle on an Auto set stays within the cap, dropping the least local model`() {
-        // Every region, including any whose Auto set already sits at the cap.
+    fun `autoModels with Google puts Google in ICON's place`() {
+        // UK: Google, UKMO and ECMWF (maintainer, 2026-10-18).
+        ForecastModel.autoModels(Location(51.5, -0.12, displayName = null), google = true) shouldBe
+            setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS025, ForecastModel.GOOGLE_WEATHER)
         listOf(
-            Location(51.5, -0.12, displayName = null),
             Location(48.86, 2.35, displayName = null),
             Location(59.33, 18.07, displayName = null),
             Location(40.7, -74.0, displayName = null),
             Location(35.7, 139.7, displayName = null),
             null,
         ).forEach { loc ->
-            val defaults = ForecastModel.defaultsFor(loc)
-            val withGoogle = ForecastModel.withGoogle(defaults, google = true)
-            withGoogle shouldContain ForecastModel.GOOGLE_WEATHER
-            (withGoogle.size <= ForecastModel.MAX_MODELS) shouldBe true
-            withGoogle - ForecastModel.GOOGLE_WEATHER shouldBe defaults.take(ForecastModel.MAX_MODELS - 1).toSet()
+            ForecastModel.autoModels(loc, google = true) shouldBe
+                ForecastModel.defaultsFor(loc) - ForecastModel.ICON_SEAMLESS + ForecastModel.GOOGLE_WEATHER
+            ForecastModel.autoModels(loc, google = false) shouldBe ForecastModel.defaultsFor(loc)
         }
     }
 
@@ -83,12 +82,37 @@ class ForecastModelGoogleTest {
             location = london,
         )
         base.copy(forecastModels = pick, googleForecast = true)
-            .effectiveForecastModels() shouldBe pick + ForecastModel.GOOGLE_WEATHER
+            .effectiveForecastModels(googleReachable = true) shouldBe pick + ForecastModel.GOOGLE_WEATHER
         base.copy(googleForecast = true)
-            .effectiveForecastModels() shouldContain ForecastModel.GOOGLE_WEATHER
+            .effectiveForecastModels(googleReachable = true) shouldBe ForecastModel.autoModels(london, google = true)
         base.copy(forecastModels = pick)
-            .effectiveForecastModels() shouldBe pick
+            .effectiveForecastModels(googleReachable = true) shouldBe pick
+        // A one-model pick beside an unreachable Google (signed out, no key)
+        // fetches as Auto, while the stored pick stays as it is.
+        val one = setOf(ForecastModel.UKMO_SEAMLESS)
+        base.copy(forecastModels = one, googleForecast = true)
+            .effectiveForecastModels(googleReachable = false) shouldBe ForecastModel.defaultsFor(london)
+        base.copy(forecastModels = one, googleForecast = true)
+            .effectiveForecastModels(googleReachable = true) shouldBe one + ForecastModel.GOOGLE_WEATHER
         base
-            .effectiveForecastModels() shouldBe ForecastModel.defaultsFor(london)
+            .effectiveForecastModels(googleReachable = true) shouldBe ForecastModel.defaultsFor(london)
+
+        // Chart colours stay distinct whichever set the fetch ends up using.
+        val slots = base.copy(forecastModels = one, googleForecast = true).chartColorSlots()
+        val shown = ForecastModel.defaultsFor(london) + one + ForecastModel.GOOGLE_WEATHER
+        shown.map { slots.getValue(it.openMeteoId) }.toSet().size shouldBe shown.size
+    }
+
+    @Test
+    fun `a single-model pick is used only beside Google, else Auto`() {
+        // An older build's Google plus one model carries over as one pick plus
+        // the switch; turning Google off must not leave a lone model.
+        val london = Location(51.5, -0.12, displayName = null)
+        val one = setOf(ForecastModel.ECMWF_IFS025)
+        ForecastModel.effective(one, london, google = true) shouldBe one + ForecastModel.GOOGLE_WEATHER
+        ForecastModel.effective(one, london, google = false) shouldBe ForecastModel.defaultsFor(london)
+        ForecastModel.usablePick(one, google = false) shouldBe null
+        val two = setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS)
+        ForecastModel.effective(two, london, google = false) shouldBe two
     }
 }

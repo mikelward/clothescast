@@ -248,13 +248,24 @@ family access*).
 - **Turning on the Google forecaster without a key of your own is the
   Google-forecast opt-in**: Forecasters lets it be added once signed in, and
   shows the same sign-in section as Voice settings.
+- **Auto picks the best three forecasters for the region** (maintainer,
+  2026-10-18): the local official model where Open-Meteo has one, ECMWF and
+  ICON. AIFS is out of every Auto set, and GEM stays only over North America
+  and the global fallback. Over most regions ECMWF alone reaches days 8-14.
+  With Google on, Google replaces ICON (over the UK: Google, UKMO, ECMWF).
 - **Google has its own switch, independent of Auto** (maintainer,
   2026-10-18): one setting, not a member of the forecaster picks, so it works
   with Auto on or off and flipping Auto leaves it alone. Auto never turns it
-  on, since it needs a key or sign-in. Google counts toward the five-forecaster
-  cap: Auto drops its least local model to make room, and a custom pick at the
-  cap must free a slot first. Selections from older builds that held Google
-  carry over with the switch on. The proxy is the
+  on, since it needs a key or sign-in. In Auto, Google takes ICON's place; in a
+  custom pick it counts toward the five-forecaster cap, so a pick at the cap
+  must free a slot first. Selections from older builds that held Google
+  carry over with the switch on, and keep their own forecasters (maintainer,
+  2026-10-18). A one-model pick beside Google fetches as Auto while Google
+  can't be reached (no key, signed out), and goes back to the pick once it
+  can; the stored pick never changes. If Google is reachable but its request
+  fails (proxy down, quota spent, an API error), that fetch has one model and
+  the confidence chip hides until Google answers again; the forecast still
+  shows (maintainer, 2026-10-18). The proxy is the
   `weather` function beside `tts` (same host), capped per account per day.
 - **Choosing the Gemini voice without a key of your own is the free-voice
   opt-in** (maintainer, 2026-10-18): no separate switch. A user who chose it

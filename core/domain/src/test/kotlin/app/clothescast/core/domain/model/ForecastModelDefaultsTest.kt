@@ -11,42 +11,33 @@ class ForecastModelDefaultsTest {
     private fun at(lat: Double, lon: Double): Location =
         Location(latitude = lat, longitude = lon, displayName = null)
 
-    // The regional locals (UKMO / ARPEGE / JMA) and ICON are short-range, so
-    // every default set keeps a long-range model painting the second-week
-    // charts: AIFS (~day 15) everywhere, paired with ECMWF IFS 0.25° (~day
-    // 15). GEM (~day 10) reinforces only where it's skillful — North America
-    // and East Asia — and is left out of the European sets the same way GFS
-    // is. Shared here so the per-city expectations stay readable.
+    // Three models per region: the local official (where Open-Meteo has
+    // one), ECMWF IFS 0.25° and ICON. Shared here so the per-city
+    // expectations stay readable.
     private val britishIsles = listOf(
         ForecastModel.UKMO_SEAMLESS,
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
-        ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val westernEurope = listOf(
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
         ForecastModel.METEOFRANCE_SEAMLESS,
-        ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val nordics = listOf(
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
         ForecastModel.UKMO_SEAMLESS,
-        ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val northAmerica = listOf(
         ForecastModel.GEM_SEAMLESS,
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
-        ForecastModel.ECMWF_AIFS025_SINGLE,
     )
     private val eastAsia = listOf(
         ForecastModel.JMA_SEAMLESS,
         ForecastModel.ECMWF_IFS025,
         ForecastModel.ICON_SEAMLESS,
-        ForecastModel.GEM_SEAMLESS,
-        ForecastModel.ECMWF_AIFS025_SINGLE,
     )
 
     @Test
@@ -55,12 +46,11 @@ class ForecastModelDefaultsTest {
     }
 
     @Test
-    fun `global default is the four-model blend with second-week coverage`() {
+    fun `global default is the three-model blend`() {
         ForecastModel.DEFAULTS shouldContainExactlyInAnyOrder listOf(
             ForecastModel.ECMWF_IFS025,
             ForecastModel.ICON_SEAMLESS,
             ForecastModel.GEM_SEAMLESS,
-            ForecastModel.ECMWF_AIFS025_SINGLE,
         )
     }
 
@@ -181,11 +171,11 @@ class ForecastModelDefaultsTest {
     }
 
     @Test
-    fun `every regional default carries a model that reaches the second week`() {
-        // The whole point of the GEM + AIFS additions: no region should be
-        // left with only short-range models painting days 8-14. AIFS reaches
-        // ~day 15 everywhere, so assert it's present in each region's set.
-        val cities = listOf(
+    fun `every default set is three models with ECMWF reaching the second week`() {
+        // Auto is the best three (maintainer, 2026-10-18). ECMWF IFS is the one
+        // member reaching ~day 15, so every set must keep it.
+        val everywhere = listOf(
+            null,
             at(51.51, -0.13), // London
             at(48.86, 2.35), // Paris
             at(59.33, 18.07), // Stockholm
@@ -193,26 +183,20 @@ class ForecastModelDefaultsTest {
             at(40.71, -74.01), // New York
             at(35.68, 139.76), // Tokyo
             at(37.57, 126.98), // Seoul
+            at(-33.87, 151.21), // Sydney
         )
-        for (city in cities) {
-            ForecastModel.defaultsFor(city) shouldContain ForecastModel.ECMWF_AIFS025_SINGLE
+        for (city in everywhere) {
+            val models = ForecastModel.defaultsFor(city)
+            models.size shouldBe 3
+            models shouldContain ForecastModel.ECMWF_IFS025
+            models shouldContain ForecastModel.ICON_SEAMLESS
         }
-    }
-
-    @Test
-    fun `North American defaults keep two models reporting in the second week`() {
-        // ICON replaced GFS and stops at ~day 7, so assert the long-range
-        // pair that paints days 8-14 is still there.
-        val models = ForecastModel.defaultsFor(at(40.71, -74.01))
-        models shouldContain ForecastModel.ECMWF_IFS025
-        models shouldContain ForecastModel.ECMWF_AIFS025_SINGLE
     }
 
     @Test
     fun `European defaults exclude both GFS and GEM`() {
         // GFS and GEM are both weak over Europe, so neither belongs in a
-        // European default set — Europe leans on ECMWF IFS + AIFS for the
-        // second week instead of GEM's tail reinforcement.
+        // European default set.
         val europeanCities = listOf(
             at(51.51, -0.13), // London (British Isles)
             at(48.86, 2.35), // Paris (Western Europe)

@@ -36,7 +36,8 @@ import app.clothescast.R
 import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
-import app.clothescast.core.domain.model.defaultsFor
+import app.clothescast.core.domain.model.effective
+import app.clothescast.core.domain.model.usablePick
 import app.clothescast.core.domain.model.withGoogle
 import app.clothescast.ui.EdgeFadeOverlay
 
@@ -56,8 +57,8 @@ private const val MIN_MODELS = 2
  * — it's a readability floor. Five overlay lines on the per-model chart is
  * already busy; the full set turns it into a rainbow nobody can read. The
  * picker disables unchecked rows when the user is at the cap, with a one-line
- * hint directing them to deselect first. The location-aware Auto defaults
- * (see [ForecastModel.defaultsFor]) are sized to sit at this ceiling.
+ * hint directing them to deselect first. Auto picks three (see
+ * [ForecastModel.defaultsFor]).
  */
 private const val MAX_MODELS = 5
 
@@ -104,8 +105,18 @@ internal fun ForecastersContent(
     // null; toggling any checkbox switches to a non-null effective set
     // with the toggle applied (so an Auto user who unchecks one model
     // ends up explicitly customised, starting from what Auto picked).
-    val isAuto = forecastModels == null
-    val effective = ForecastModel.withGoogle(forecastModels ?: ForecastModel.defaultsFor(location), googleForecast)
+    // A pick too small to make a consensus without Google reads as Auto (usablePick).
+    // Google counts only while reachable (a key of the user's own, or signed in
+    // with the proxy built in), as on the fetch path, so the page shows the set
+    // the forecast actually uses.
+    val googleReachable = googleForecastReachable(
+        googleApiKeyConfigured = googleApiKeyConfigured,
+        googleWeatherProxyConfigured = googleWeatherProxyConfigured,
+        signedIn = googleAccount != null,
+    )
+    val googleInUse = googleForecast && googleReachable
+    val isAuto = ForecastModel.usablePick(forecastModels, googleInUse) == null
+    val effective = ForecastModel.effective(forecastModels, location, googleInUse)
     // The Open-Meteo picks alone: what Auto-off persists and the two-model
     // floor counts. Google doesn't count toward the floor, since it may not
     // contribute (no key, signed out).
@@ -144,7 +155,10 @@ internal fun ForecastersContent(
                     },
                 )
                 HorizontalDivider()
-                val atCap = effective.size >= MAX_MODELS
+                // Google's switch holds its slot even while it can't be reached,
+                // so a pick made signed out still fits once Google is back.
+                val googleSlot = forecasterSlots(openMeteoCount = 0, googleForecast = googleForecast)
+                val atCap = forecasterSlots(openMeteo.size, googleForecast) >= MAX_MODELS
                 if (atCap && !isAuto) {
                     Text(
                         text = stringResource(R.string.settings_forecasters_cap_hint, MAX_MODELS),
@@ -173,7 +187,7 @@ internal fun ForecastersContent(
                         enabled = enabled,
                         onToggle = { nowChecked ->
                             val updated = if (nowChecked) openMeteo + model else openMeteo - model
-                            if (updated.size >= MIN_MODELS && effective.size - openMeteo.size + updated.size <= MAX_MODELS) {
+                            if (updated.size >= MIN_MODELS && googleSlot + updated.size <= MAX_MODELS) {
                                 onSetForecastModels(updated)
                             }
                         },
@@ -206,8 +220,6 @@ internal fun ForecastersContent(
                     googleWeatherProxyConfigured = googleWeatherProxyConfigured,
                     googleApiKeyConfigured = googleApiKeyConfigured,
                 )
-                val googleReachable = googleApiKeyConfigured ||
-                    (googleWeatherProxyConfigured && googleAccount != null)
                 val googleEnabled = googleChecked ||
                     ((googleReachable || signInWouldReach) && (isAuto || !atCap))
                 ForecasterRow(
@@ -426,6 +438,24 @@ private fun forecastModelSubtitle(model: ForecastModel): Int = when (model) {
  * out, no key of the user's own, and the proxy built in (which implies the
  * build has sign-in).
  */
+/**
+ * Slots a pick takes against the five-model cap: its Open-Meteo models, plus
+ * one for Google whenever its switch is on, reachable or not.
+ */
+internal fun forecasterSlots(openMeteoCount: Int, googleForecast: Boolean): Int =
+    openMeteoCount + if (googleForecast) 1 else 0
+
+/**
+ * Whether the Google forecaster can be reached: a key of the user's own, or
+ * signed in with the proxy built in. The fetch path asks the same of the key
+ * store; the page and the probe read it from settings state.
+ */
+internal fun googleForecastReachable(
+    googleApiKeyConfigured: Boolean,
+    googleWeatherProxyConfigured: Boolean,
+    signedIn: Boolean,
+): Boolean = googleApiKeyConfigured || (googleWeatherProxyConfigured && signedIn)
+
 internal fun googleForecastStartsSignIn(
     signedIn: Boolean,
     googleWeatherProxyConfigured: Boolean,

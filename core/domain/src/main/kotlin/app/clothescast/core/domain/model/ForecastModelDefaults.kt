@@ -17,23 +17,19 @@ package app.clothescast.core.domain.model
  * (ICON) so the spread doesn't collapse when the regional model and ECMWF
  * happen to share a synoptic interpretation.
  *
- * Tail reinforcement: the regional locals (UKMO, ARPEGE, JMA) and ICON are
- * short-range — they fall silent after ~day 7, which would leave the
- * second-week ("Following 7 days") charts thin. So every set carries AIFS —
- * ECMWF's AI model, skillful to ~day 15 — paired with ECMWF IFS 0.25° (also
- * ~day 15), so at least two models keep reporting through days 8-14. AIFS
- * appends last because it's the lowest-priority member to trim.
+ * Three models, no more (maintainer, 2026-10-18): the best few rather than a
+ * wide blend, which dropped ECMWF's AI model AIFS everywhere and GEM over
+ * East Asia. The cost is the second week:
+ * the regional locals and ICON fall silent after ~day 7, so over most regions
+ * ECMWF IFS (~day 15) carries days 8-14 alone, and North America keeps GEM
+ * (~day 10) beside it. GFS (NOAA) stays out of every set; see the North
+ * America branch for the rainfall record behind that, and
+ * [ForecastModel.DEFAULTS] for why a systematically dry member is worse than
+ * no member at all.
  *
- * GEM (ECCC, reaches ~day 10) adds a third long-range voice, but only where
- * it's actually skillful: it's the local official over North America and a
- * reasonable cross-check over East Asia, so those sets carry it. It's a poor
- * performer over Europe — the same reason GFS (NOAA) is kept out of every
- * European set — so the British Isles, Iceland, Nordics, and Western/Central
- * Europe branches leave it out and lean on ECMWF IFS + AIFS for the second
- * week. GFS is now absent from every default set — the regional branches,
- * North America included, and the global fallback; see the North America
- * branch for the rainfall record behind that, and [ForecastModel.DEFAULTS]
- * for why a systematically dry member is worse than no member at all.
+ * With the Google forecaster on, it takes ICON's place as the structurally
+ * different second opinion, so Auto keeps the local official and ECMWF (see
+ * [autoModels]).
  *
  * The mapping is intentionally coarse — bounding boxes, not country
  * polygons — because the goal is "good defaults", not "perfect mapping".
@@ -47,7 +43,7 @@ package app.clothescast.core.domain.model
  * the picker's MIN_MODELS = 2 floor means dropping the first model leaves
  * a usable pair, so the "most local" model goes first.
  *
- * Returns the global default set (ECMWF / ICON / GEM / AIFS) when [location]
+ * Returns the global default set (ECMWF / ICON / GEM) when [location]
  * is null (no location set yet) or falls outside every regional bounding box.
  * This matches the picker's pre-location-awareness behaviour and also acts
  * as a safe initial value for a fresh install before the first GPS fix
@@ -68,7 +64,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.UKMO_SEAMLESS,
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
-                ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // Iceland: handled before the Nordic branch because it sits west of
@@ -80,7 +75,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
                 ForecastModel.UKMO_SEAMLESS,
-                ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // Nordics (Norway / Sweden / Finland / Denmark, plus a Baltic slop
@@ -92,7 +86,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
                 ForecastModel.UKMO_SEAMLESS,
-                ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // Western + Central Europe (Iberia / France / Benelux / Germany /
@@ -105,7 +98,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
                 ForecastModel.METEOFRANCE_SEAMLESS,
-                ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // Japan: JMA is the local official, ECMWF + ICON as the global
@@ -116,8 +108,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.JMA_SEAMLESS,
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
-                ForecastModel.GEM_SEAMLESS,
-                ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // Korean peninsula: KMA isn't on Open-Meteo, so JMA is the closest
@@ -128,8 +118,6 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
                 ForecastModel.JMA_SEAMLESS,
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
-                ForecastModel.GEM_SEAMLESS,
-                ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // North America: US (lower 48 + Alaska) + Canada + Mexico. GEM
@@ -155,15 +143,13 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
         // one voice in the average instead of the two it held while it was
         // also listed here.
         //
-        // Second-week coverage survives the swap: ICON stops at ~day 7, but
-        // ECMWF IFS and AIFS both reach ~day 15 and GEM ~day 10, so at least
-        // two models still report across days 8-14.
+        // Second-week coverage: ICON stops at ~day 7, but ECMWF IFS reaches
+        // ~day 15 and GEM ~day 10.
         lat in 15.0..72.0 && lon in -170.0..-50.0 ->
             setOf(
                 ForecastModel.GEM_SEAMLESS,
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.ICON_SEAMLESS,
-                ForecastModel.ECMWF_AIFS025_SINGLE,
             )
 
         // Australia + New Zealand: BOM (Australian Bureau of Meteorology)
@@ -183,13 +169,40 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
 }
 
 /**
+ * Auto's set for [location]: the regional three, or with [google] on, Google in
+ * ICON's place (every regional set carries ICON as its independent second
+ * opinion, and the maintainer rates it below the local official and ECMWF).
+ */
+fun ForecastModel.Companion.autoModels(location: Location?, google: Boolean): Set<ForecastModel> {
+    val regional = defaultsFor(location)
+    if (!google) return regional
+    return regional - ForecastModel.ICON_SEAMLESS + ForecastModel.GOOGLE_WEATHER
+}
+
+/**
  * [models]' Open-Meteo forecasters plus Google when [google]. A set already at
- * [ForecastModel.MAX_MODELS] gives up its last model to make room — for Auto's
- * regional sets that's the least local one, and the picker never lets a
- * custom pick reach the cap with Google on.
+ * [ForecastModel.MAX_MODELS] gives up its last model to make room; the picker
+ * never lets a custom pick reach the cap with Google on.
  */
 fun ForecastModel.Companion.withGoogle(models: Set<ForecastModel>, google: Boolean): Set<ForecastModel> {
     val openMeteo = models - ForecastModel.GOOGLE_WEATHER
     if (!google) return openMeteo
     return openMeteo.take(ForecastModel.MAX_MODELS - 1).toSet() + ForecastModel.GOOGLE_WEATHER
 }
+
+/**
+ * The custom pick if it still makes a consensus, else null (Auto). A pick
+ * needs two Open-Meteo models, or one beside Google: an older build's
+ * "Google plus one" carries over as one pick plus the Google switch, and
+ * turning Google off must not leave a single model, which has no spread.
+ */
+fun ForecastModel.Companion.usablePick(selection: Set<ForecastModel>?, google: Boolean): Set<ForecastModel>? =
+    selection?.takeIf { (it - ForecastModel.GOOGLE_WEATHER).size >= if (google) 1 else 2 }
+
+/** The forecasters a fetch uses: a [usablePick] plus Google, else Auto ([autoModels]). */
+fun ForecastModel.Companion.effective(
+    selection: Set<ForecastModel>?,
+    location: Location?,
+    google: Boolean,
+): Set<ForecastModel> =
+    usablePick(selection, google)?.let { withGoogle(it, google) } ?: autoModels(location, google)

@@ -159,7 +159,7 @@ class ConsensusBlendTest {
     }
 
     @Test
-    fun `google's temperature counts double in the consensus mean`() {
+    fun `google's temperature and chance of rain count double in the consensus mean`() {
         // ECMWF 10 / GFS 16 / Google 13 → (10 + 16 + 2×13) / 4 = 13.0 for air;
         // feels-like 8 / 14 / 20 → (8 + 14 + 2×20) / 4 = 15.5. An equal-weight
         // mean would give 13.0 and 14.0 — the feels-like pins the weighting.
@@ -176,25 +176,46 @@ class ConsensusBlendTest {
 
         blended.single().temperatureC shouldBe (13.0 plusOrMinus 1e-9)
         blended.single().feelsLikeC shouldBe (15.5 plusOrMinus 1e-9)
-        // Precipitation stays one-model-one-vote: (0 + 0 + 90) / 3.
-        blended.single().precipitationProbabilityPct shouldBe (30.0 plusOrMinus 1e-9)
+        // Chance of rain is weighted too: (0 + 0 + 2×90) / 4 = 45, not 30.
+        blended.single().precipitationProbabilityPct shouldBe (45.0 plusOrMinus 1e-9)
     }
 
     @Test
-    fun `google's temperature weight also applies to a synthesized hour`() {
+    fun `google's double weight on chance of rain skips models without a reading`() {
+        // GFS reports no probability, so it sits the hour out: (20 + 2×80) / 3 = 60.
+        // Rain amount stays one-model-one-vote: (1 + 3 + 5) / 3 = 3.
         val perModel = PerModelHourly(
             byModel = mapOf(
-                "ecmwf_ifs04" to listOf(perModel(13, apparent = 9.0, air = 10.0)),
-                ForecastModel.GOOGLE_WEATHER.openMeteoId to listOf(perModel(13, apparent = 12.0, air = 13.0)),
+                "ecmwf_ifs04" to listOf(perModel(12, apparent = 8.0, air = 10.0, precip = 20.0, mm = 1.0)),
+                "gfs_seamless" to listOf(perModel(12, apparent = 8.0, air = 10.0, precip = null, mm = 3.0)),
+                ForecastModel.GOOGLE_WEATHER.openMeteoId to
+                    listOf(perModel(12, apparent = 8.0, air = 10.0, precip = 80.0, mm = 5.0)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, listOf(hour(12, temp = 0.0)), perModel).shouldNotBeNull()
+
+        blended.single().precipitationProbabilityPct shouldBe (60.0 plusOrMinus 1e-9)
+        blended.single().precipitationMm shouldBe (3.0 plusOrMinus 1e-9)
+    }
+
+    @Test
+    fun `google's double weight also applies to a synthesized hour`() {
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "ecmwf_ifs04" to listOf(perModel(13, apparent = 9.0, air = 10.0, precip = 10.0)),
+                ForecastModel.GOOGLE_WEATHER.openMeteoId to
+                    listOf(perModel(13, apparent = 12.0, air = 13.0, precip = 70.0)),
             ),
         )
 
         val blended = blendConsensusHourly(today, listOf(hour(12, temp = 5.0)), perModel).shouldNotBeNull()
 
-        // (10 + 2×13) / 3 = 12.0; (9 + 2×12) / 3 = 11.0.
+        // (10 + 2×13) / 3 = 12.0; (9 + 2×12) / 3 = 11.0; (10 + 2×70) / 3 = 50.
         val synthesized = blended.single { it.time == LocalTime.of(13, 0) }
         synthesized.temperatureC shouldBe (12.0 plusOrMinus 1e-9)
         synthesized.feelsLikeC shouldBe (11.0 plusOrMinus 1e-9)
+        synthesized.precipitationProbabilityPct shouldBe (50.0 plusOrMinus 1e-9)
     }
 
     @Test

@@ -435,9 +435,9 @@ class OpenMeteoClientTest {
         val bundle = client.fetchForecast(london)
 
         // best_match 20, ECMWF 21, ICON 23, and Google 27 counted twice for
-        // temperature; rain chance stays one vote each.
+        // temperature and for chance of rain.
         bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0 + 2 * 27.0) / 5 plusOrMinus 1e-6)
-        bundle.today.hourly[0].precipitationProbabilityPct shouldBe ((40.0 + 50.0 + 70.0 + 90.0) / 4 plusOrMinus 1e-6)
+        bundle.today.hourly[0].precipitationProbabilityPct shouldBe ((40.0 + 50.0 + 70.0 + 2 * 90.0) / 5 plusOrMinus 1e-6)
 
         // Google sits in the stored per-model series alongside the source models
         // and best_match, so the chart overlay, confidence chip, and divergence

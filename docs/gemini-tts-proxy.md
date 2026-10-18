@@ -151,6 +151,16 @@ carry a shebang line — so the `predeploy` hook dies with
 --version` reports the same number either way; check for
 `~/.cache/firebase/runtime` to tell them apart.
 
+On a headless machine (a cloud VM over SSH), `firebase login`'s
+redirect to `localhost` has nowhere to land. Either run
+`firebase login --no-localhost` and paste the code it prints back, or
+forward the CLI's callback port when you connect
+(`ssh -L 9005:localhost:9005 …`, or
+`gcloud compute ssh … -- -L 9005:localhost:9005`) and open the printed
+URL in your local browser. `firebase use --add` reports "Invalid project
+selection" when the CLI is signed in with an account that can't see the
+project: check `firebase login:list` and `firebase projects:list`.
+
 `firebase use --add` writes a `.firebaserc` entry — that file *is*
 committed (it just pins the project ID), so other developers cloning
 the repo can `firebase use <alias>` if you've set one up.
@@ -194,6 +204,19 @@ Function URL (tts(us-central1)): https://us-central1-<projectId>.cloudfunctions.
 ```
 
 That's your `GEMINI_PROXY_URL`. Save it.
+
+The function asks for public invocation (`invoker: "public"`) and
+checks App Check and the caller's ID token itself. If the deploy warns
+that it couldn't set the invoker, Cloud Run rejects every call before
+the function runs: the app sees an HTML `401 Unauthorized` page rather
+than the function's JSON, and `firebase functions:log` shows "The
+access token could not be verified". Grant it by hand:
+
+```sh
+gcloud run services add-iam-policy-binding tts \
+  --region us-central1 --project <projectId> \
+  --member allUsers --role roles/run.invoker
+```
 
 ### 8. Point the Android app at the function
 

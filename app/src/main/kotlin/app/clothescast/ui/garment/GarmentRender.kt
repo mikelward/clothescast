@@ -773,7 +773,7 @@ internal fun renderOutfitCard(
     // wind / UV extend the row only when notable. Left-aligned with the prose;
     // shrinks to fit the column width when all four cells are present.
     val infoPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        typeface = Typeface.DEFAULT_BOLD
+        typeface = CONDITIONS_LABEL_TYPEFACE
         textSize = INFO_PX
         color = palette.info
     }
@@ -1502,7 +1502,7 @@ internal fun renderConditionsStripBitmap(
     val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = textArgb
         textSize = h * STRIP_TEXT_HEIGHT_FRACTION
-        typeface = Typeface.DEFAULT_BOLD
+        typeface = CONDITIONS_LABEL_TYPEFACE
     }
     drawConditionsRow(
         canvas = canvas,
@@ -1630,6 +1630,12 @@ private val conditionsStripCache: MutableMap<ConditionsStripCacheKey, Bitmap> = 
         private val MAX = 16
     },
 )
+
+// Medium (500), not bold: at the strip's label size bold reads heavy next to
+// the glyphs. Shared by the strip and the outfit card's conditions row.
+// Lazy: a file-level Typeface would initialize in plain-JVM tests that touch
+// this file without Robolectric, where Typeface.DEFAULT is null.
+private val CONDITIONS_LABEL_TYPEFACE: Typeface by lazy { Typeface.create(Typeface.DEFAULT, 500, false) }
 
 // Geometry of the conditions strip, expressed as fractions of the render
 // height so the layout scales cleanly with the widget cell.

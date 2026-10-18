@@ -60,8 +60,13 @@ voice and the Google Weather proxy.
       settings. A plain sign-in, never linked to the anonymous account. The
       free voice needs it; a signed-out Gemini user hears the device voice
       and is told once by notification.
-- [ ] **Sign in with Google on the Forecasters page**, with the Google
+- [x] **Sign in with Google on the Forecasters page**, with the Google
       forecast proxy.
+- [x] **Google gets its own switch**, independent of Auto, so it can be
+      turned on with Auto on.
+- [ ] **Reword the Google forecaster's subtitle and key hint**, which still
+      say it uses a Google API key; with the proxy a key is optional. The
+      change needs fresh translations.
 - [ ] **Separate opt-ins, each needing sign-in:** the free voice (Voice
       settings) and the Google forecast through the proxy (Forecasters page).
       Turning either on while signed out starts the sign-in; signing in turns
@@ -76,13 +81,19 @@ voice and the Google Weather proxy.
 - [ ] **Project backstop:** a billing alert plus Gemini and Weather API request
       quotas on the Google Cloud project, documented in
       [docs/gemini-tts-proxy.md](docs/gemini-tts-proxy.md).
-- [ ] **Google Weather proxy function**, for any Google-signed-in caller: the Maps
+- [x] **Google Weather proxy function**, for any Google-signed-in caller: the Maps
       Platform key held as a secret, the coordinate never logged or stored,
       an Open-Meteo fallback that says why. Check the Maps Platform caching
       terms before adding any server-side cache, and confirm which SKU the
       hourly forecast bills under.
       Google's hourly series is already capped at 7 days (about $0.06 per
       user a month); if it opens beyond family, 3 days would be about $0.03.
+- [ ] **Say when Google drops out of a fetch.** A Google request that fails
+      during a scheduled or manual refresh (proxy 429/5xx, network, an API
+      error) only logs; the Forecasters page's probe is the one place that
+      says why. `SPEC.md` asks the forecast to say so: carry the failure on
+      the forecast bundle and show it beside the confidence chip (copy needs
+      approval). Own-key failures behave the same today.
 - [ ] **Copy:** "sign in for the free voice" for signed-out users, and a
       message when sign-in or a claim can't be verified.
 - [x] **Quota key for signed-in callers:** a keyed hash of the Google account

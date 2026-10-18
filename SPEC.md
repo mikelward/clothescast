@@ -245,6 +245,17 @@ family access*).
   Firebase, never in the repo.
 - **The Weather proxy is for every signed-in user** (maintainer, 2026-10-18),
   not a flagged list.
+- **Turning on the Google forecaster without a key of your own is the
+  Google-forecast opt-in**: Forecasters lets it be added once signed in, and
+  shows the same sign-in section as Voice settings.
+- **Google has its own switch, independent of Auto** (maintainer,
+  2026-10-18): one setting, not a member of the forecaster picks, so it works
+  with Auto on or off and flipping Auto leaves it alone. Auto never turns it
+  on, since it needs a key or sign-in. Google counts toward the five-forecaster
+  cap: Auto drops its least local model to make room, and a custom pick at the
+  cap must free a slot first. Selections from older builds that held Google
+  carry over with the switch on. The proxy is the
+  `weather` function beside `tts` (same host), capped per account per day.
 - **Choosing the Gemini voice without a key of your own is the free-voice
   opt-in** (maintainer, 2026-10-18): no separate switch. A user who chose it
   on an older build and isn't signed in hears the device voice and gets one

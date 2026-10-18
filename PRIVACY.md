@@ -8,12 +8,14 @@ have over it.
 
 ## TL;DR
 
-- ClothesCast needs no account. The one exception is optional: the free
-  online voice needs **Sign in with Google**, which gives ClothesCast your
-  Google email address, name and profile photo URL so the free daily
-  limit counts per account. You can sign out or delete that account in
-  Settings → Voice at any time; without signing in, the app uses the
-  on-device voice (or your own Gemini key).
+- ClothesCast needs no account. Two optional features need **Sign in
+  with Google**: the free online voice, and the Google forecaster without
+  a key of your own. Signing in gives ClothesCast your Google email
+  address, name and profile photo URL so each feature's free daily limit
+  counts per account. You can sign out or delete that account in
+  Settings → Voice or Forecasters at any time; without signing in, the
+  app uses the on-device voice (or your own Gemini key) and leaves Google
+  out of the forecast (unless you add your own Google key).
   The app can send anonymous crash reports and aggregate usage analytics
   to a third-party reporting service so the developer can fix bugs and
   decide which features to keep — but **only if you turn that on**.
@@ -100,11 +102,20 @@ The source code is at <https://github.com/mikelward/clothescast>.
   - **Google's Weather API** ([Google Maps Platform](https://developers.google.com/maps/documentation/weather)) —
     receives the coarse coordinate to return a weather forecast, **only
     if** you turn on the "Google" forecaster on the Settings → Forecasters
-    page. That forecaster reuses your own Gemini API key (Google's keys
-    are project-scoped, so the same key calls the Weather API when your
-    project has it enabled), so the key is sent to Google with the
-    request. Off by default; nothing goes to Google's Weather API unless
-    you enable the forecaster and have set your own Gemini key.
+    page. Off by default. It reaches Google one of two ways:
+    - **With your own Google API key** (Settings → Forecasters), the
+      request goes straight to Google with your key.
+    - **Without a key, while signed in with Google** (see "Online TTS"
+      below for what signing in stores), the request goes through a small
+      ClothesCast-operated Cloud Function, which adds the developer's key
+      and forwards it to Google. The function receives the coarse
+      coordinate, your Firebase sign-in token and a Firebase App Check
+      token. It does not log or store the coordinate; it keeps only a
+      count of today's requests for your account (under a keyed hash of
+      your Google account ID), deleted after the day, to cap use. As with
+      the voice, Cloud Functions infrastructure logs (operated by Google
+      Cloud, not configured by us) record the client IP and HTTP status
+      of each call; we do not associate the IP with your account.
 
   None of these services receives an account, device identifier, or any
   other payload beyond the items listed above.
@@ -331,7 +342,8 @@ Online TTS (the Gemini voice) has two paths.
   sign in with Google; until you do, the app speaks with the device
   voice instead, and the first time that happens it tells you so in a
   notification.
-  - **Signing in.** Settings → Voice → **Sign in with Google** signs
+  - **Signing in.** **Sign in with Google** (Settings → Voice or
+    Forecasters) signs
     you in to Firebase Authentication (a Google service) with your
     Google account. Firebase stores your **email address, name and
     profile photo URL** (copied from your Google account) and a
@@ -340,7 +352,8 @@ Online TTS (the Gemini voice) has two paths.
     account across your devices, and so the developer can give
     particular accounts (such as family) a different limit. They are
     never used for advertising or tracking across apps. Signing in is
-    optional; nothing else in the app needs it.
+    optional; only the free voice and the Google forecaster without a key
+    of your own need it.
   - **Sent on each request:** the rendered insight sentence (the same
     text the phone speaks), your Firebase sign-in token in the
     `Authorization` header (the proxy verifies it to read which account
@@ -364,13 +377,14 @@ Online TTS (the Gemini voice) has two paths.
   - **Cloud Functions infrastructure logs** (operated by Google Cloud,
     not configured by us) record the client IP and HTTP status of
     each call. We do not associate the IP with your account.
-  - **Signing out and deleting your account.** Settings → Voice →
-    **Sign out** signs you out on this device. **Delete account**
+  - **Signing out and deleting your account.** Settings → Voice (or
+    Forecasters) → **Sign out** signs you out on this device. **Delete account**
     deletes your Firebase account — email, name, photo URL, user ID and
-    any limit set on it. Only that day's clip count survives, until it
-    expires as above; it can't identify you without your Google account
-    and is kept so that deleting and re-creating an account doesn't
-    reset the day's limit. To ask for deletion without the app, use the
+    any limit set on it. Only that day's clip count, and that day's count
+    of Google forecast requests if you used the weather proxy, survive,
+    until they expire as above; they can't identify you without your
+    Google account and are kept so that deleting and re-creating an
+    account doesn't reset the day's limits. To ask for deletion without the app, use the
     contact details at the end of this policy.
 - **Your own key (BYOK).** Open Settings → Voice → Gemini API key and
   paste your own key. Keys are stored on your device, encrypted at
@@ -389,8 +403,9 @@ policies apply to anything they receive:
 |---|---|---|
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use the Settings location picker | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
-| [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate and your own Gemini API key | Only if you enable the "Google" forecaster on the Forecasters page and have set your own Gemini key |
-| Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Voice), then periodic token refreshes |
+| [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate, and your own Google API key if you set one | Only if you enable the "Google" forecaster on the Forecasters page, with your own key or through the ClothesCast weather proxy |
+| ClothesCast weather proxy (Cloud Function, ClothesCast-operated) | Coarse coordinate, your Firebase sign-in token and a Firebase App Check token | The Google forecaster without a key of your own, while signed in with Google |
+| Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Voice or Forecasters), then periodic token refreshes |
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase sign-in token, a Firebase App Check token, and the Gemini model name | Online TTS with the free voice, while signed in with Google |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence; the outfit-card image, TTS audio, and muxed MP4 on sibling topics; an update timestamp; and a calendar-derived `has_events` boolean (no event titles, times, or locations) — all as retained MQTT messages | Only if you opt in to the Smart Home bridge and configure a broker |
@@ -409,8 +424,10 @@ terms.
 ## What we do _not_ collect
 
 - No passwords and no account of our own. The only sign-in is the
-  optional Sign in with Google for the free online voice, described under
-  "Online TTS" above; nothing else in the app needs it.
+  optional Sign in with Google, used for two things: the free online voice
+  ("Online TTS" above) and the Google forecaster without a key of your own
+  (the ClothesCast weather proxy under "Third-party services"). Nothing
+  else in the app needs it.
 - No advertising identifiers, no ad networks, no ad targeting.
 - No precise GPS location.
 - No contacts, photos, microphone, or files.
@@ -428,7 +445,8 @@ terms.
   to keep all spoken text on-device.
 - **API keys:** Clear them from Settings → API Keys at any time.
 - **Google account:** Sign out, or delete your ClothesCast account
-  (email, name, photo URL and user ID), in Settings → Voice. Uninstalling
+  (email, name, photo URL and user ID), in Settings → Voice or
+  Forecasters. Uninstalling
   doesn't delete it; use Delete account first, or contact us.
 - **Everything:** Uninstalling the app deletes all locally stored data
   (settings, cached insight, API keys).
@@ -602,7 +620,9 @@ email the address listed on the Play Store listing.
 ## Changelog
 
 - **2026-10-18** — The free online voice now needs **Sign in with
-  Google**. Signing in stores your Google email address, name, profile
+  Google**, as does the Google forecaster without a key of your own,
+  which now goes through a ClothesCast weather proxy that receives your
+  coarse coordinate and doesn't log or store it. Signing in stores your Google email address, name, profile
   photo URL and a Firebase user ID with Firebase Authentication, and the
   free daily limit now counts per Google account (a keyed hash of its ID,
   holding only today's count, deleted after the day). You can sign out or

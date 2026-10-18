@@ -27,13 +27,13 @@ import java.time.LocalTime
 import kotlin.math.roundToLong
 
 /**
- * Persists the most recent *extended* (10-day) Google forecast series for one
+ * Persists the most recent *extended* (7-day) Google forecast series for one
  * location so the expensive multi-page walk runs at most a couple of times a
  * day rather than on every forecast refresh.
  *
  * Why this exists: the Google forecaster's full horizon
  * ([app.clothescast.core.data.weather.GoogleWeatherModelClient.EXTENDED_HOURS])
- * costs ~10 paginated, billed Google API calls. We only want to pay that when
+ * costs ~7 paginated, billed Google API calls. We only want to pay that when
  * the user opens the app, then reuse the result — for both later app opens and
  * the cheap background refreshes — until it goes stale ([defaultTtl], "once or
  * twice a day"). [ClothesCastApplication] reads [fresh] first and only walks the

@@ -31,11 +31,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import app.clothescast.data.SignedInGoogleAccount
 import app.clothescast.R
 import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.defaultsFor
+import app.clothescast.core.domain.model.withGoogle
 import app.clothescast.ui.EdgeFadeOverlay
 
 /**
@@ -65,6 +67,10 @@ internal fun ForecastersContent(
     location: Location?,
     padding: PaddingValues,
     onSetForecastModels: (Set<ForecastModel>?) -> Unit,
+    // Google's own switch, independent of Auto and the Open-Meteo picks.
+    // Defaulted so previews compile.
+    googleForecast: Boolean = false,
+    onSetGoogleForecast: (Boolean) -> Unit = {},
     // The Google forecaster uses its own BYOK Google API key (separate slot from
     // the Gemini TTS key); pass the key state and set/clear actions so the row
     // can disable without a key and the key entry can sit right below it.
@@ -78,6 +84,16 @@ internal fun ForecastersContent(
     googleProbeRunning: Boolean = false,
     googleProbeResult: GoogleWeatherProbe? = null,
     onCheckGoogleWeather: () -> Unit = {},
+    // The Google forecast proxy: with it built in and the user signed in with
+    // Google, the Google forecaster works without a key of their own.
+    googleWeatherProxyConfigured: Boolean = false,
+    // Builds with Sign in with Google show the account section always, as
+    // Voice settings does (see voiceAccountSectionVisible).
+    googleSignInAvailable: Boolean = false,
+    googleAccount: SignedInGoogleAccount? = null,
+    onSignIn: () -> Unit = {},
+    onSignOut: () -> Unit = {},
+    onDeleteAccount: () -> Unit = {},
 ) {
     val context = LocalContext.current
     // When the stored selection is null we're in Auto mode: derive a
@@ -89,7 +105,11 @@ internal fun ForecastersContent(
     // with the toggle applied (so an Auto user who unchecks one model
     // ends up explicitly customised, starting from what Auto picked).
     val isAuto = forecastModels == null
-    val effective = forecastModels ?: ForecastModel.defaultsFor(location)
+    val effective = ForecastModel.withGoogle(forecastModels ?: ForecastModel.defaultsFor(location), googleForecast)
+    // The Open-Meteo picks alone: what Auto-off persists and the two-model
+    // floor counts. Google doesn't count toward the floor, since it may not
+    // contribute (no key, signed out).
+    val openMeteo = effective - ForecastModel.GOOGLE_WEATHER
     val scrollState = rememberScrollState()
     EdgeFadeOverlay(
         scrollState = scrollState,
@@ -119,7 +139,7 @@ internal fun ForecastersContent(
                             // already resolving to, so the visible checkboxes
                             // don't suddenly jump — the user then explicitly
                             // edits from that starting point.
-                            onSetForecastModels(effective)
+                            onSetForecastModels(openMeteo)
                         }
                     },
                 )
@@ -138,11 +158,12 @@ internal fun ForecastersContent(
                     val checked = model in effective
                     // Auto mode: every row reflects the resolver's pick but is
                     // not toggleable — user has to flip Auto off first. Custom
-                    // mode: block unchecking when we'd drop below MIN_MODELS,
-                    // block checking when we'd exceed MAX_MODELS. An already-
-                    // checked row stays interactable above the cap so the user
-                    // can still toggle it off to free a slot.
-                    val canToggleOff = effective.size > MIN_MODELS
+                    // mode: block unchecking when we'd drop below MIN_MODELS
+                    // Open-Meteo models, block checking when we'd exceed
+                    // MAX_MODELS (Google included). An already-checked row stays
+                    // interactable above the cap so the user can still toggle it
+                    // off to free a slot.
+                    val canToggleOff = openMeteo.size > MIN_MODELS
                     val canToggleOn = !atCap
                     val enabled = !isAuto && (if (checked) canToggleOff else canToggleOn)
                     ForecasterRow(
@@ -151,8 +172,10 @@ internal fun ForecastersContent(
                         checked = checked,
                         enabled = enabled,
                         onToggle = { nowChecked ->
-                            val updated = if (nowChecked) effective + model else effective - model
-                            if (updated.size in MIN_MODELS..MAX_MODELS) onSetForecastModels(updated)
+                            val updated = if (nowChecked) openMeteo + model else openMeteo - model
+                            if (updated.size >= MIN_MODELS && effective.size - openMeteo.size + updated.size <= MAX_MODELS) {
+                                onSetForecastModels(updated)
+                            }
                         },
                     )
                 }
@@ -168,33 +191,33 @@ internal fun ForecastersContent(
                     enabled = false,
                     onToggle = {},
                 )
-                // Google sits last — it isn't an Open-Meteo model and needs the
-                // user's BYOK Google API key. *Adding* Google requires a key (so
-                // the picker can't allow a key-less Google + one Open-Meteo
-                // "two-model" selection that would leave just one contributing
-                // model). But an already-checked Google row stays removable
-                // without a key — otherwise a selection carried over from before
-                // the key split (no carry-over from the Gemini key) would leave
-                // a non-contributing Google stuck in the set, un-removable
-                // without first pasting a key or toggling Auto. So gate only the
-                // check path on the key; mirror the Open-Meteo rows for uncheck.
-                val googleChecked = ForecastModel.GOOGLE_WEATHER in effective
-                val googleEnabled = !isAuto && (
-                    if (googleChecked) effective.size > MIN_MODELS
-                    else googleApiKeyConfigured && !atCap
+                // Google sits last — it isn't an Open-Meteo model, and its switch
+                // is independent of Auto and the picks above, so it toggles in
+                // either mode. *Adding* Google needs a route to it (a key of the
+                // user's own, or Google sign-in with the proxy built in), and in
+                // a custom pick a free slot under the cap; Auto makes room for it.
+                // Signed out with the proxy built in and no key, turning Google
+                // on starts the sign-in in the same tap (SPEC.md). An
+                // already-checked Google row always stays removable, so one that
+                // can't contribute (key cleared, signed out) never sticks.
+                val googleChecked = googleForecast
+                val signInWouldReach = googleForecastStartsSignIn(
+                    signedIn = googleAccount != null,
+                    googleWeatherProxyConfigured = googleWeatherProxyConfigured,
+                    googleApiKeyConfigured = googleApiKeyConfigured,
                 )
+                val googleReachable = googleApiKeyConfigured ||
+                    (googleWeatherProxyConfigured && googleAccount != null)
+                val googleEnabled = googleChecked ||
+                    ((googleReachable || signInWouldReach) && (isAuto || !atCap))
                 ForecasterRow(
                     label = stringResource(forecastModelLabel(ForecastModel.GOOGLE_WEATHER)),
                     subtitle = stringResource(forecastModelSubtitle(ForecastModel.GOOGLE_WEATHER)),
                     checked = googleChecked,
                     enabled = googleEnabled,
                     onToggle = { nowChecked ->
-                        val updated = if (nowChecked) {
-                            effective + ForecastModel.GOOGLE_WEATHER
-                        } else {
-                            effective - ForecastModel.GOOGLE_WEATHER
-                        }
-                        if (updated.size in MIN_MODELS..MAX_MODELS) onSetForecastModels(updated)
+                        onSetGoogleForecast(nowChecked)
+                        if (nowChecked && signInWouldReach) onSignIn()
                     },
                 )
                 // Connectivity status for the Google forecaster — only while
@@ -206,6 +229,16 @@ internal fun ForecastersContent(
                         running = googleProbeRunning,
                         result = googleProbeResult,
                         onCheckAgain = onCheckGoogleWeather,
+                    )
+                }
+                if (voiceAccountSectionVisible(signedIn = googleAccount != null, googleSignInAvailable)) {
+                    GoogleAccountSection(
+                        account = googleAccount,
+                        signedOutReason = R.string.settings_forecasters_google_sign_in_reason,
+                        enabled = true,
+                        onSignIn = onSignIn,
+                        onSignOut = onSignOut,
+                        onDeleteAccount = onDeleteAccount,
                     )
                 }
                 HorizontalDivider()
@@ -387,3 +420,14 @@ private fun forecastModelSubtitle(model: ForecastModel): Int = when (model) {
     ForecastModel.ECMWF_AIFS025_SINGLE -> R.string.settings_forecasters_aifs_subtitle
     ForecastModel.GOOGLE_WEATHER -> R.string.settings_forecasters_google_subtitle
 }
+
+/**
+ * Whether turning the Google forecaster on starts Sign in with Google: signed
+ * out, no key of the user's own, and the proxy built in (which implies the
+ * build has sign-in).
+ */
+internal fun googleForecastStartsSignIn(
+    signedIn: Boolean,
+    googleWeatherProxyConfigured: Boolean,
+    googleApiKeyConfigured: Boolean,
+): Boolean = googleWeatherProxyConfigured && !signedIn && !googleApiKeyConfigured

@@ -440,6 +440,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
         sharedTtsConfigured = app.sharedTtsConfigured,
         googleSignInAvailable = app.googleAccount.available,
         googleAccount = app.googleAccount.account,
+        googleWeatherProxyConfigured = app.googleWeatherProxyConfigured,
         castNowAction = app.castInsightController?.let { controller ->
             {
                 castCurrentInsight(
@@ -466,28 +467,15 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
             val prefs = app.settingsRepository.preferences.first()
             val location = prefs.location
                 ?: if (prefs.useDeviceLocation) app.locationResolver.resolve() else null
-            // Rethrow cancellation rather than swallowing it: if the probe is
-            // superseded (key replaced mid-probe) or the VM is cleared while
-            // the key read is suspended, a runCatching would turn the cancel
-            // into an empty key -> NoKey and let the dead probe publish a stale
-            // result, breaking the supersede contract. Only a genuine read
-            // failure (e.g. corrupt ciphertext after a Keystore reset) degrades
-            // to the blank-key/NoKey path. Mirrors the extraModelHourly wiring
-            // in ClothesCastApplication.
-            val key = try {
-                app.secureKeyStore.getGoogleApiKey().orEmpty()
-            } catch (ce: CancellationException) {
-                throw ce
-            } catch (e: Exception) {
-                DiagLog.w("GoogleWeather", e, "Google API key unavailable; probe reports no key")
-                ""
-            }
+            // The same route the forecast would take: the user's own key, or
+            // the proxy while signed in with Google. Neither → NoKey.
+            val access = app.googleWeatherAccessWithFingerprint().first
             when {
-                key.isBlank() -> GoogleWeatherProbe.NoKey
+                access == null -> GoogleWeatherProbe.NoKey
                 // No location to probe with — report a generic failure rather
                 // than guess coordinates; the status line invites a retry.
                 location == null -> GoogleWeatherProbe.Failed(httpStatus = null)
-                else -> app.googleWeatherClient.probe(location, key)
+                else -> app.googleWeatherClient.probe(location, access)
             }
         },
     )

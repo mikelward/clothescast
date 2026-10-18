@@ -15,13 +15,14 @@ import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.DEFAULT_GEMINI_TTS_MODEL
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
+import app.clothescast.core.data.weather.GoogleWeatherAccess
 import app.clothescast.core.data.weather.GoogleWeatherModelClient
 import app.clothescast.core.data.weather.OpenMeteoClient
 import app.clothescast.core.data.weather.ZonedHourlySeries
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.Location
-import app.clothescast.core.domain.model.defaultsFor
+import app.clothescast.core.domain.model.effectiveForecastModels
 import app.clothescast.core.domain.repository.CachingWeatherRepository
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.repository.WeatherRepository
@@ -32,6 +33,7 @@ import app.clothescast.data.DailyHistoryStore
 import app.clothescast.data.provideAppCheckProviderFactory
 import app.clothescast.data.GoogleAccount
 import app.clothescast.data.GoogleForecastCache
+import app.clothescast.data.authorizeForProxy
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
@@ -196,6 +198,78 @@ class ClothesCastApplication : Application() {
         )
     }
 
+    /**
+     * The weather proxy sits beside the TTS proxy: the same Cloud Functions
+     * host, function `weather`. Null on builds without the TTS proxy URL.
+     */
+    private val googleWeatherProxyHost: String? by lazy {
+        BuildConfig.GEMINI_PROXY_URL.takeIf { it.isNotBlank() }?.let { url ->
+            try {
+                AppCheckGeminiCallPlanner.parseProxyEndpoint(url).host
+            } catch (e: IllegalArgumentException) {
+                DiagLog.w("GoogleWeather", e, "Proxy URL unusable; no weather proxy")
+                null
+            } catch (e: IllegalStateException) {
+                DiagLog.w("GoogleWeather", e, "Proxy URL unusable; no weather proxy")
+                null
+            }
+        }
+    }
+
+    /** Is the Google forecast proxy built into this app (and sign-in with it)? */
+    val googleWeatherProxyConfigured: Boolean by lazy {
+        sharedTtsConfigured && googleWeatherProxyHost != null
+    }
+
+    /**
+     * How to reach Google's forecast right now, with the cache fingerprint to
+     * file the result under: the user's own key if they've set one, else the
+     * proxy while signed in with Google, else neither. A key that can't be
+     * read (corrupt ciphertext after a Keystore reset) counts as unset. The
+     * proxy's fingerprint is a constant, so moving between the routes (adding
+     * a key, signing in or out) invalidates the cached series.
+     */
+    suspend fun googleWeatherAccessWithFingerprint(): Pair<GoogleWeatherAccess?, Int?> {
+        val (key, fingerprint) = try {
+            secureKeyStore.getGoogleApiKeyWithFingerprint()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Exception) {
+            DiagLog.w("GoogleWeather", e, "Google API key unavailable")
+            null to null
+        }
+        if (!key.isNullOrBlank()) return GoogleWeatherAccess.OwnKey(key) to fingerprint
+        val host = googleWeatherProxyHost
+        if (googleWeatherProxyConfigured && host != null && googleAccount.isSignedIn()) {
+            return GoogleWeatherAccess.Proxy(
+                host = host,
+                path = WEATHER_PROXY_FUNCTION,
+                authorize = { authorizeForProxy(it) },
+            ) to PROXY_FINGERPRINT
+        }
+        return null to null
+    }
+
+    /**
+     * [googleWeatherAccessWithFingerprint]'s fingerprint without decrypting
+     * the key: the key's ciphertext hash, else the proxy's constant while
+     * signed in, else null.
+     */
+    private suspend fun googleWeatherFingerprint(): Int? {
+        val keyFingerprint = try {
+            secureKeyStore.googleApiKeyFingerprint()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Exception) {
+            // Best-effort, like the access lookup: a key-store failure must not
+            // block the Open-Meteo forecast this key also guards.
+            DiagLog.w("GoogleWeather", e, "Google API key fingerprint unavailable")
+            null
+        }
+        return keyFingerprint
+            ?: PROXY_FINGERPRINT.takeIf { googleWeatherProxyConfigured && googleAccount.isSignedIn() }
+    }
+
     private fun firebaseAvailable(): Boolean =
         com.google.firebase.FirebaseApp.getApps(this).isNotEmpty()
 
@@ -331,37 +405,28 @@ class ClothesCastApplication : Application() {
                 // read after the first call.
                 confidenceModelsProvider = { location ->
                     val prefs = settingsRepository.preferences.first()
-                    val effective = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
+                    val effective = prefs.effectiveForecastModels(location)
                     // Google isn't an Open-Meteo model — openMeteoIds() drops it
                     // so it never reaches the `models=` param (which would 400).
                     ForecastModel.openMeteoIds(effective)
                 },
                 // Fetch Google's forecast only when the user has enabled the
-                // Google forecaster on the Forecasters page AND has a Google API
-                // key configured (a project-scoped Cloud key with the Weather
-                // API enabled — separate from the Gemini TTS key). Not selected
-                // or no key → no Google series → today's Open-Meteo consensus
-                // exactly. Key present but unreadable (corrupt ciphertext after
-                // a Keystore reset) reads as null → skip Google rather than fail.
+                // Google forecaster on the Forecasters page AND can reach it:
+                // a Google API key of their own (a project-scoped Cloud key with
+                // the Weather API enabled — separate from the Gemini TTS key), or
+                // the ClothesCast weather proxy while signed in with Google. Not
+                // selected or neither route → no Google series → today's
+                // Open-Meteo consensus exactly.
                 extraModelHourly = { location ->
                     val prefs = settingsRepository.preferences.first()
-                    val effective = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
-                    val googleSelected = ForecastModel.GOOGLE_WEATHER in effective
-                    if (!googleSelected) {
+                    if (!prefs.googleForecast) {
                         null
                     } else {
-                        // Read the key and its fingerprint from one snapshot so a
+                        // Read the route and its fingerprint from one snapshot so a
                         // key edit racing this fetch can't cache the old key's
                         // series under the new key's fingerprint.
-                        val (key, fingerprint) = try {
-                            secureKeyStore.getGoogleApiKeyWithFingerprint()
-                        } catch (ce: CancellationException) {
-                            throw ce
-                        } catch (e: Exception) {
-                            DiagLog.w("GoogleWeather", e, "Google API key unavailable; skipping Google")
-                            null to null
-                        }
-                        key?.takeIf { it.isNotBlank() }?.let { fetchGoogleSeries(location, it, fingerprint) }
+                        val (access, fingerprint) = googleWeatherAccessWithFingerprint()
+                        access?.let { fetchGoogleSeries(location, it, fingerprint) }
                     }
                 },
             ),
@@ -375,7 +440,7 @@ class ClothesCastApplication : Application() {
             // location.
             freshnessKeyProvider = { location ->
                 val prefs = settingsRepository.preferences.first()
-                val models = prefs.forecastModels ?: ForecastModel.defaultsFor(location)
+                val models = prefs.effectiveForecastModels(location)
                 // Fold in the Google key's fingerprint (null when unset) so
                 // adding, clearing, OR replacing it invalidates the cache
                 // instead of waiting out the 1 h TTL — otherwise the blend would
@@ -386,7 +451,7 @@ class ClothesCastApplication : Application() {
                 // — gated only by GoogleForecastCache's TTL, not by who's fetching
                 // — so the bundle's Google depth no longer varies with the caller
                 // and the freshness key only needs the model set + key fingerprint.
-                models to secureKeyStore.googleApiKeyFingerprint()
+                models to googleWeatherFingerprint()
             },
         )
     }
@@ -473,7 +538,7 @@ class ClothesCastApplication : Application() {
      */
     private suspend fun fetchGoogleSeries(
         location: Location,
-        apiKey: String,
+        access: GoogleWeatherAccess,
         fingerprint: Int?,
     ): ZonedHourlySeries? {
         // [fingerprint] is read atomically with [apiKey] by the caller and keys
@@ -482,7 +547,7 @@ class ClothesCastApplication : Application() {
         // it for the rest of the TTL.
         googleForecastCache.fresh(location, fingerprint)?.let { return it }
 
-        return googleWeatherClient.fetchHourly(location, apiKey)?.also { series ->
+        return googleWeatherClient.fetchHourly(location, access)?.also { series ->
             // Persist only a (near-)complete walk — a transient mid-walk page
             // failure truncates the result to a near-length series, and freezing
             // that into the 12 h cache would keep week-ahead Google missing for the
@@ -686,5 +751,11 @@ class ClothesCastApplication : Application() {
         // truncation. A genuine sub-5-day success just re-walks on the next
         // refresh — safe.
         private const val MIN_CACHEABLE_EXTENDED_HOURS = 120
+
+        private const val WEATHER_PROXY_FUNCTION = "weather"
+
+        // Caches the proxy's series apart from any key's (whose fingerprint is
+        // its ciphertext hash); any constant that isn't null does.
+        private const val PROXY_FINGERPRINT = 0x50524f58
     }
 }

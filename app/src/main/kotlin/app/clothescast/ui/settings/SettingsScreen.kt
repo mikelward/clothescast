@@ -425,22 +425,38 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     // both opening the page with Google already on and toggling it on here.
     // Keyed on the two booleans (not the whole model set) so changing an
     // unrelated model doesn't trigger a redundant probe.
-    val googleSelected = state.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
-    LaunchedEffect(googleSelected, state.googleApiKeyConfigured) {
-        if (googleSelected && state.googleApiKeyConfigured) viewModel.probeGoogleWeather()
+    val googleSelected = state.googleForecast
+    val googleReachable = state.googleApiKeyConfigured ||
+        (state.googleWeatherProxyConfigured && state.googleAccount != null)
+    LaunchedEffect(googleSelected, googleReachable) {
+        if (googleSelected && googleReachable) {
+            viewModel.probeGoogleWeather()
+        } else if (!googleReachable) {
+            // Signed out with no key: an earlier verdict no longer holds.
+            viewModel.clearGoogleProbe()
+        }
     }
+    val accountActions = rememberGoogleAccountActions(onSignedIn = viewModel::onGoogleSignedIn)
     SettingsScaffold(R.string.settings_page_forecasters, onBack) { padding ->
         ForecastersContent(
             forecastModels = state.forecastModels,
             location = state.location,
             padding = padding,
             onSetForecastModels = viewModel::setForecastModels,
+            googleForecast = state.googleForecast,
+            onSetGoogleForecast = viewModel::setGoogleForecast,
             googleApiKeyConfigured = state.googleApiKeyConfigured,
             onSetGoogleApiKey = viewModel::setGoogleApiKey,
             onClearGoogleApiKey = viewModel::clearGoogleApiKey,
             googleProbeRunning = state.googleProbeRunning,
             googleProbeResult = state.googleProbeResult,
             onCheckGoogleWeather = viewModel::probeGoogleWeather,
+            googleWeatherProxyConfigured = state.googleWeatherProxyConfigured,
+            googleSignInAvailable = state.googleSignInAvailable,
+            googleAccount = state.googleAccount,
+            onSignIn = accountActions.signIn,
+            onSignOut = accountActions.signOut,
+            onDeleteAccount = accountActions.deleteAccount,
         )
     }
 }

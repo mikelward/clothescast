@@ -774,7 +774,6 @@ internal fun SettingsForecastersGoogleBlockedPreview() {
             forecastModels = setOf(
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.UKMO_SEAMLESS,
-                ForecastModel.GOOGLE_WEATHER,
             ),
             location = Location(
                 latitude = 51.5074,
@@ -782,16 +781,16 @@ internal fun SettingsForecastersGoogleBlockedPreview() {
             ),
             padding = PaddingValues(0.dp),
             onSetForecastModels = {},
+            googleForecast = true,
             googleApiKeyConfigured = true,
             googleProbeResult = GoogleWeatherProbe.Forbidden,
         )
     }
 }
 
-// Google checked but no Google key — the carried-over-without-carry-over
-// state. The Google row must stay ENABLED (solid checkbox) so the user can
-// remove the non-contributing forecaster without first pasting a key; the
-// three-model selection keeps removal above the two-model floor.
+// Google on but no Google key — the carried-over-without-carry-over state.
+// The Google row must stay ENABLED (solid checkbox) so the user can turn the
+// non-contributing forecaster off without first pasting a key.
 @Preview(name = "Settings · Forecasters · Google no key", widthDp = 360)
 @Composable
 internal fun SettingsForecastersGoogleNoKeyPreview() {
@@ -800,7 +799,6 @@ internal fun SettingsForecastersGoogleNoKeyPreview() {
             forecastModels = setOf(
                 ForecastModel.ECMWF_IFS025,
                 ForecastModel.UKMO_SEAMLESS,
-                ForecastModel.GOOGLE_WEATHER,
             ),
             location = Location(
                 latitude = 51.5074,
@@ -808,7 +806,47 @@ internal fun SettingsForecastersGoogleNoKeyPreview() {
             ),
             padding = PaddingValues(0.dp),
             onSetForecastModels = {},
+            googleForecast = true,
             googleApiKeyConfigured = false,
+        )
+    }
+}
+
+// The Google forecast proxy, signed out: no key of the user's own, so the
+// Google row can't be added yet and the account section asks for sign-in.
+@Preview(name = "Settings · Forecasters · Google signed out", widthDp = 360)
+@Composable
+internal fun SettingsForecastersGoogleSignedOutPreview() {
+    SettingsFrame {
+        ForecastersContent(
+            forecastModels = setOf(ForecastModel.ECMWF_IFS025, ForecastModel.UKMO_SEAMLESS),
+            location = Location(latitude = 51.5074, longitude = -0.1278),
+            padding = PaddingValues(0.dp),
+            onSetForecastModels = {},
+            googleApiKeyConfigured = false,
+            googleWeatherProxyConfigured = true,
+            googleSignInAvailable = true,
+            googleAccount = null,
+        )
+    }
+}
+
+// The Google forecast proxy, signed in and Google turned on alongside Auto,
+// still without a key of the user's own: Google contributes through the proxy.
+@Preview(name = "Settings · Forecasters · Google signed in", widthDp = 360)
+@Composable
+internal fun SettingsForecastersGoogleSignedInPreview() {
+    SettingsFrame {
+        ForecastersContent(
+            forecastModels = null,
+            location = Location(latitude = 51.5074, longitude = -0.1278),
+            padding = PaddingValues(0.dp),
+            onSetForecastModels = {},
+            googleForecast = true,
+            googleApiKeyConfigured = false,
+            googleProbeResult = GoogleWeatherProbe.Reachable(hours = 168),
+            googleWeatherProxyConfigured = true,
+            googleAccount = SignedInGoogleAccount(email = "alice@example.com"),
         )
     }
 }

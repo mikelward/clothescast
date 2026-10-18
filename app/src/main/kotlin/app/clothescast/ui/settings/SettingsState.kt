@@ -232,6 +232,13 @@ data class SettingsState(
     /** The signed-in Google account, or null when signed out. */
     val googleAccount: SignedInGoogleAccount? = null,
     /**
+     * True when this build has the Google forecast proxy (the TTS proxy's
+     * host plus Sign in with Google). Process-stable. With a signed-in
+     * account it lets the Google forecaster work without a key of the
+     * user's own.
+     */
+    val googleWeatherProxyConfigured: Boolean = false,
+    /**
      * True while the WorkManager location-cache-refresh job is ENQUEUED,
      * RUNNING, or BLOCKED. Drives "Detecting…" in the Location settings
      * card — the label only shows "Detecting…" while this is true, so it
@@ -256,6 +263,8 @@ data class SettingsState(
      * mapping the Auto state resolves through.
      */
     val forecastModels: Set<ForecastModel>? = null,
+    /** The Google forecaster's switch; see [UserPreferences.googleForecast]. */
+    val googleForecast: Boolean = false,
     /**
      * True while a one-shot Google Weather connectivity probe is in flight.
      * The Forecasters page kicks one when the Google forecaster is enabled (or

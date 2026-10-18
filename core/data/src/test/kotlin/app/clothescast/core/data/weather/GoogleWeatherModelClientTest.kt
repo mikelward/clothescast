@@ -10,7 +10,9 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestData
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
@@ -184,6 +186,32 @@ class GoogleWeatherModelClientTest {
     }
 
     @Test
+    fun `the proxy route posts the same fields as a form body, with its own headers and no key`() = runTest {
+        var captured: HttpRequestData? = null
+        val proxy = GoogleWeatherAccess.Proxy(
+            host = "proxy.example.test",
+            path = "weather",
+            authorize = { it.headers.append("Authorization", "Bearer token") },
+        )
+        client(captureRequest = { captured = it }).fetchHourly(london, proxy)
+
+        val req = checkNotNull(captured)
+        req.url.host shouldBe "proxy.example.test"
+        req.url.encodedPath shouldBe "/weather"
+        req.headers["Authorization"] shouldBe "Bearer token"
+        req.headers["X-Goog-Api-Key"].shouldBeNull()
+        // The coordinate stays out of the URL, which Cloud Run logs.
+        req.method shouldBe HttpMethod.Post
+        req.url.parameters.isEmpty() shouldBe true
+        val params = (req.body as FormDataContent).formData
+        params["location.latitude"] shouldBe "51.5074"
+        params["location.longitude"] shouldBe "-0.1278"
+        params["hours"] shouldBe "168"
+        params["pageSize"] shouldBe "24"
+        params["unitsSystem"] shouldBe "METRIC"
+    }
+
+    @Test
     fun `follows nextPageToken across pages and concatenates the hours`() = runTest {
         val captured = mutableListOf<HttpRequestData>()
         val result = checkNotNull(
@@ -290,6 +318,13 @@ class GoogleWeatherModelClientTest {
     fun `probe singles out a 403 so the UI can point at the Cloud Console fix`() = runTest {
         client(status = HttpStatusCode.Forbidden).probe(london, "AIza-test-key") shouldBe
             GoogleWeatherProbe.Forbidden
+    }
+
+    @Test
+    fun `a 403 through the proxy is a service failure, not a rejected key of the user's own`() = runTest {
+        val proxy = GoogleWeatherAccess.Proxy(host = "proxy.example.test", path = "weather", authorize = {})
+        client(status = HttpStatusCode.Forbidden).probe(london, proxy) shouldBe
+            GoogleWeatherProbe.Failed(HttpStatusCode.Forbidden.value)
     }
 
     @Test

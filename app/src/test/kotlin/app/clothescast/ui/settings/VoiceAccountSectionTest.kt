@@ -29,4 +29,12 @@ class VoiceAccountSectionTest {
         geminiChoiceStartsSignIn(TtsEngine.GEMINI, signedIn = false, sharedTtsConfigured = false, geminiKeyConfigured = false) shouldBe false
         geminiChoiceStartsSignIn(TtsEngine.GEMINI, signedIn = false, sharedTtsConfigured = true, geminiKeyConfigured = true) shouldBe false
     }
+
+    @Test
+    fun `turning Google on signed out without a key starts the sign-in`() {
+        googleForecastStartsSignIn(signedIn = false, googleWeatherProxyConfigured = true, googleApiKeyConfigured = false) shouldBe true
+        googleForecastStartsSignIn(signedIn = true, googleWeatherProxyConfigured = true, googleApiKeyConfigured = false) shouldBe false
+        googleForecastStartsSignIn(signedIn = false, googleWeatherProxyConfigured = false, googleApiKeyConfigured = false) shouldBe false
+        googleForecastStartsSignIn(signedIn = false, googleWeatherProxyConfigured = true, googleApiKeyConfigured = true) shouldBe false
+    }
 }

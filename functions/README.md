@@ -146,13 +146,37 @@ header and `Authorization: Bearer <ID token>`. It:
   `weatherQuota/g_<hex>` (day and count only, TTL on `expireAt`);
 - never logs or stores the coordinate or the upstream URL.
 
-One-time setup: a Maps Platform API key restricted to the Weather API,
-stored as a secret, then deploy alongside Firestore (the TTL policy):
+One-time setup: enable the Weather API in the same project as `tts` (the
+app derives the weather URL from `GEMINI_PROXY_URL`'s host, so the project
+ID is the `<projectId>` in `https://us-central1-<projectId>.cloudfunctions.net`),
+create a Maps Platform API key restricted to the Weather API, store it as a
+secret, then deploy alongside Firestore (the TTL policy). Use the npm-installed
+CLI and install this directory's dependencies first; see
+`docs/gemini-tts-proxy.md` steps 5 and 7 for login and CLI pitfalls.
 
 ```sh
+npm ci
 firebase functions:secrets:set GOOGLE_WEATHER_API_KEY
 firebase deploy --only functions:weather,firestore
 ```
+
+If the deploy couldn't set the public invoker (it warns), grant it by hand;
+the function still enforces App Check, Google sign-in and the daily cap:
+
+```sh
+gcloud run services add-iam-policy-binding weather \
+  --region us-central1 --project <projectId> \
+  --member allUsers --role roles/run.invoker
+```
+
+What the app's bug report shows for `GoogleWeather`:
+
+- HTML `404 Page not found`: the function isn't deployed in that project.
+- HTML `401 Unauthorized` (and "The access token could not be verified" in
+  `firebase functions:log --only weather`): the invoker binding above is
+  missing.
+- JSON `{"error":"…"}`: the function itself refused (App Check, sign-in or
+  quota), as listed above.
 
 ## Dependency pins
 

@@ -84,7 +84,7 @@ private fun AboutCard(onOpenLicenses: () -> Unit) {
     }
 
     SectionCard(title = stringResource(R.string.settings_about_title)) {
-        // Release builds get a clean "Version 0.1.0+61.85d100b (61)". Anything else
+        // Release builds get a clean "Version 61+85d100b (61)". Anything else
         // (debug today, possibly internal QA flavours later) appends " · <type> build"
         // so a tester can tell which install they're on without digging into adb.
         val versionText = stringResource(

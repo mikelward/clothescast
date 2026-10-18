@@ -81,10 +81,8 @@ fun String.asJavaStringLiteralBody(): String = this
 // shallow clones make rev-list --count return 1 and break monotonicity across builds.
 val gitCommitCount: Int = git("rev-list", "--count", "HEAD").toInt()
 
-// versionName base. Bumped manually for marketing-meaningful releases. The short
-// SHA is appended at build time so any APK in the wild can be traced to the
-// commit that produced it (visible in Settings -> About at runtime).
-val versionNameBase = "0.1.0"
+// The short SHA goes into versionName so any APK in the wild can be traced to
+// the commit that produced it (visible in Settings -> About at runtime).
 val gitShortSha: String = git("rev-parse", "--short", "HEAD")
 
 // "Is this a CI build?" CI builds keep the unmodified launcher icon; any
@@ -207,11 +205,11 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = 36
         versionCode = gitCommitCount
-        // semver build metadata: <base>+<commitCount>.<shortSha>. Some downstream
-        // tools (Crashlytics, Bugsnag, screenshots in bug reports) carry only
-        // versionName, not versionCode — embedding the count means one string
-        // identifies the build everywhere.
-        versionName = "$versionNameBase+$gitCommitCount.$gitShortSha"
+        // <commitCount>+<shortSha>, like the sibling apps. Some downstream tools
+        // (Crashlytics, Bugsnag, screenshots in bug reports) carry only versionName, not
+        // versionCode — embedding the count means one string identifies the build
+        // everywhere.
+        versionName = "$gitCommitCount+$gitShortSha"
 
         // Manifest-merger placeholder consumed by AndroidManifest.xml's
         // android:icon attribute. See the launcherIconRes block above for

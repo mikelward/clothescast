@@ -1,7 +1,7 @@
 "use strict";
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const { utcDayKey, nextUtcMidnightIso } = require("../lib/utc-day");
+const { utcDayKey, nextUtcMidnight, nextUtcMidnightIso } = require("../lib/utc-day");
 
 test("utcDayKey: zero-pads month and day", () => {
   assert.equal(utcDayKey(new Date("2026-01-02T03:04:05Z")), "2026-01-02");
@@ -47,4 +47,13 @@ test("nextUtcMidnightIso: its day is the day after utcDayKey's", () => {
   const at = new Date("2026-06-05T23:59:59.999Z");
   assert.equal(utcDayKey(at), "2026-06-05");
   assert.ok(nextUtcMidnightIso(at).startsWith("2026-06-06"));
+});
+
+test("nextUtcMidnight: the quota doc's expiry is the same instant as the reset", () => {
+  // A signed-in quota doc's `expireAt` must not outlive the day it counts,
+  // or the TTL keeps a deleted account's count longer than PRIVACY.md says.
+  const at = new Date("2026-06-05T13:45:00Z");
+  assert.ok(nextUtcMidnight(at) instanceof Date);
+  assert.equal(nextUtcMidnight(at).toISOString(), nextUtcMidnightIso(at));
+  assert.equal(nextUtcMidnight(new Date("2026-12-31T23:59:59Z")).toISOString(), "2027-01-01T00:00:00.000Z");
 });

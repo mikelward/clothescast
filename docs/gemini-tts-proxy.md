@@ -160,6 +160,16 @@ The function references it by name (`defineSecret("GEMINI_API_KEY")`
 in `functions/src/index.ts`); the value never appears in the
 deployed source.
 
+Then set the key that hashes Google account IDs into quota buckets. Any
+long random string works; the deploy fails until it exists:
+
+```sh
+openssl rand -hex 32 | firebase functions:secrets:set QUOTA_HASH_KEY --data-file=-
+```
+
+Rotating it resets every signed-in account's count for the day, nothing
+worse.
+
 ### 7. Deploy
 
 ```sh

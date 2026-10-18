@@ -18,6 +18,7 @@ key by default, your own key on request".
 ```sh
 npm install                                     # one-time
 firebase functions:secrets:set GEMINI_API_KEY   # one-time (see setup guide)
+firebase functions:secrets:set QUOTA_HASH_KEY   # one-time: any long random string
 ```
 
 ## Run locally
@@ -75,7 +76,7 @@ Successful responses carry `X-Daily-Quota-Limit: 5` and
 in the Voice settings preview Toast as "Free TTS limit reached for
 today. Add your own Gemini key in Settings for unlimited use."
 
-Firestore document shape:
+Firestore document shape for an anonymous caller:
 
 ```
 quota/<uid> {
@@ -86,6 +87,41 @@ quota/<uid> {
   dayCount:   number,   // successful calls within dayKey
 }
 ```
+
+### Google-signed-in callers
+
+A Google sign-in token (`firebase.sign_in_provider == "google.com"`) is
+counted per Google account, not per Firebase uid, so the cap is shared
+across a person's devices and survives deleting and recreating the
+account. The bucket is an HMAC-SHA256 of the Google account ID, keyed by
+the `QUOTA_HASH_KEY` secret, and the doc holds nothing else:
+
+```
+quota/g_<hex> {
+  dayKey:   string,     // "YYYY-MM-DD" UTC
+  dayCount: number,     // successful calls within dayKey
+  expireAt: Timestamp,  // next UTC midnight
+}
+```
+
+A Firestore TTL policy on `quota.expireAt` (`firestore.indexes.json`,
+deployed with `firebase deploy --only firestore`) deletes the doc after its
+day ends; TTL deletion typically runs within 24 hours of expiry. Anonymous
+docs carry no `expireAt` and are unaffected.
+
+The limit comes from the account's `ttsDailyLimit` custom claim: absent
+means the default (5), a whole number is that cap, and `"unlimited"`
+skips the count (the project-level Gemini quota and billing alert bound
+it instead). A malformed claim reads as the default. Set it with:
+
+```sh
+npm run build
+node scripts/set-tts-limit.js <email> <limit|unlimited|default>
+```
+
+using Application Default Credentials for the project. The change applies
+at the app's next ID-token refresh, within an hour. Claims on anonymous
+callers are ignored.
 
 If Firestore is unreachable, the function **fails open** (forwards
 the call without recording it) so a backend hiccup doesn't deny

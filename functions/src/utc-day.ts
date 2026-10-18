@@ -17,7 +17,12 @@ export function utcDayKey(date: Date): string {
 
 /** ISO-8601 instant of the next UTC midnight after `date` — the quota reset. */
 export function nextUtcMidnightIso(date: Date): string {
-  const next = new Date(
+  return nextUtcMidnight(date).toISOString();
+}
+
+/** The next UTC midnight after `date`: when a day's quota count stops mattering. */
+export function nextUtcMidnight(date: Date): Date {
+  return new Date(
     Date.UTC(
       date.getUTCFullYear(),
       date.getUTCMonth(),
@@ -28,5 +33,4 @@ export function nextUtcMidnightIso(date: Date): string {
       0,
     ),
   );
-  return next.toISOString();
 }

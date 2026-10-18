@@ -1634,9 +1634,13 @@ private val conditionsStripCache: MutableMap<ConditionsStripCacheKey, Bitmap> = 
 // Geometry of the conditions strip, expressed as fractions of the render
 // height so the layout scales cleanly with the widget cell.
 private const val STRIP_ICON_HEIGHT_FRACTION = 0.62f
-private const val STRIP_TEXT_HEIGHT_FRACTION = 0.34f
+// Labels at ~2/3 of the glyph height, close to the outfit card's INFO_PX /
+// INFO_ICON_PX ratio; on the 36dp Today band that's ~15dp text.
+private const val STRIP_TEXT_HEIGHT_FRACTION = 0.42f
 private const val STRIP_ICON_TEXT_GAP_FRACTION = 0.18f
-private const val STRIP_SECTION_GAP_FRACTION = 0.7f
+// About twice the icon-to-label gap, so cells still read as separate, but
+// tight enough that all four fit the Today band without shrinking the text.
+private const val STRIP_SECTION_GAP_FRACTION = 0.4f
 // Fraction of the bitmap width the content may occupy before it's scaled to
 // fit, leaving a small horizontal margin so icons/text don't touch the edge.
 private const val STRIP_USABLE_WIDTH_FRACTION = 0.94f

@@ -11,14 +11,19 @@ import {
   Timestamp,
 } from "firebase-admin/firestore";
 
+import { callerFromToken, DEFAULT_DAILY_LIMIT, TtsLimit } from "./caller";
 import { excerpt, responseHasAudio, structuralEnvelope } from "./envelope";
 import { errorCode, headerValue } from "./narrow";
-import { nextUtcMidnightIso, utcDayKey } from "./utc-day";
+import { nextUtcMidnight, nextUtcMidnightIso, utcDayKey } from "./utc-day";
 
 initializeApp();
 setGlobalOptions({ region: "us-central1" });
 
 const GEMINI_API_KEY = defineSecret("GEMINI_API_KEY");
+// Keys the hash that turns a Google account ID into its quota bucket
+// (`caller.ts` → googleQuotaKey). Rotating it resets every signed-in
+// account's count for the day, nothing worse.
+const QUOTA_HASH_KEY = defineSecret("QUOTA_HASH_KEY");
 
 // Allowlist of upstream Gemini models the proxy will forward to. Keep narrow
 // so a compromised or modded client can't redirect billing onto an expensive
@@ -30,16 +35,15 @@ const GEMINI_API_VERSION = "v1beta";
 
 const QUOTA_COLLECTION = "quota";
 
-// Per-install daily quota for the shared-key path. Counted by UTC calendar
-// day so the reset moment is global and unambiguous; the Android client's
-// nudge copy ("resets at midnight UTC") matches. Bump when we have a clearer
-// signal of real-world legitimate use — five successful syntheses covers
-// two morning + two evening insights + one preview tap per day.
-const DAILY_LIMIT = 5;
+// The daily quota for the shared-key path is counted by UTC calendar day so
+// the reset moment is global and unambiguous; the Android client's nudge
+// copy ("resets at midnight UTC") matches. The default cap lives in
+// `caller.ts` (DEFAULT_DAILY_LIMIT); a Google-signed-in account's
+// `ttsDailyLimit` claim can raise, lower or remove it.
 
 export const tts = onRequest(
   {
-    secrets: [GEMINI_API_KEY],
+    secrets: [GEMINI_API_KEY, QUOTA_HASH_KEY],
     cors: false,
     invoker: "public",
   },
@@ -62,10 +66,12 @@ export const tts = onRequest(
       return;
     }
 
-    // Identity for the per-install daily quota. Prefer the Firebase
-    // Authentication uid from a verified anonymous ID token — it's minted
-    // and signed by Firebase Auth, so a modded client can't choose its own
-    // quota bucket. During the client rollout we still accept the legacy
+    // Identity for the daily quota. Prefer a verified Firebase ID token —
+    // minted and signed by Firebase Auth, so a modded client can't choose
+    // its own quota bucket. A Google sign-in counts per Google account
+    // (across devices, and across deleting and recreating the account) and
+    // reads its limit from custom claims; an anonymous one counts per uid at
+    // the default cap. During the client rollout we still accept the legacy
     // client-chosen `X-Install-Id` header so app versions built before the
     // switch keep working; that header is spoofable, so it's a transitional
     // fallback only — remove it (and stop the client sending it) once old
@@ -74,18 +80,31 @@ export const tts = onRequest(
     // (Security → App Check → Authentication → Enforce) stops scripted
     // anonymous-account farming to rotate the uid.
     let quotaKey: string;
+    let signedIn = false;
+    let limit: TtsLimit = DEFAULT_DAILY_LIMIT;
     const authHeader = headerValue(req.header("Authorization"));
     const idToken = authHeader?.startsWith("Bearer ")
       ? authHeader.slice("Bearer ".length).trim()
       : null;
     if (idToken) {
+      let caller;
       try {
-        quotaKey = (await getAuth().verifyIdToken(idToken)).uid;
+        caller = callerFromToken(
+          await getAuth().verifyIdToken(idToken),
+          QUOTA_HASH_KEY.value(),
+        );
       } catch (err) {
         logger.warn("ID token verification failed", { code: errorCode(err) });
         res.status(401).json({ error: "invalid_auth_token" });
         return;
       }
+      if (!caller) {
+        logger.warn("Google ID token carried no Google account ID");
+        res.status(401).json({ error: "invalid_auth_token" });
+        return;
+      }
+      ({ quotaKey, signedIn } = caller);
+      limit = caller.ttsLimit;
     } else {
       const installId = headerValue(req.header("X-Install-Id"));
       if (!installId || !/^[A-Za-z0-9_-]{1,128}$/.test(installId)) {
@@ -112,12 +131,15 @@ export const tts = onRequest(
     // burn a user's daily allowance. Firestore outages fail open
     // (`reservation.reserved === false` with a logged warning) — better to
     // serve audio than to block on our own bookkeeping when the upstream
-    // path is the expensive bit.
+    // path is the expensive bit. An unlimited account skips the count
+    // entirely; the project-level quota and billing alert bound it instead.
     const now = new Date();
     const today = utcDayKey(now);
     let reservation: Reservation;
     try {
-      reservation = await reserveDailySlot(quotaKey, today);
+      reservation = limit === "unlimited"
+        ? { reserved: false, remaining: null }
+        : await reserveDailySlot(quotaKey, today, nextUtcMidnight(now), limit, signedIn);
     } catch (err) {
       logger.warn("Quota reservation failed; failing open", {
         code: errorCode(err),
@@ -125,11 +147,11 @@ export const tts = onRequest(
       reservation = { reserved: false, remaining: null };
     }
     if (reservation.exhausted) {
-      res.setHeader("X-Daily-Quota-Limit", String(DAILY_LIMIT));
+      res.setHeader("X-Daily-Quota-Limit", String(limit));
       res.setHeader("X-Daily-Quota-Remaining", "0");
       res.status(429).json({
         error: "daily_quota_exhausted",
-        limit: DAILY_LIMIT,
+        limit,
         resetAtUtc: nextUtcMidnightIso(now),
       });
       return;
@@ -161,7 +183,7 @@ export const tts = onRequest(
       // Firestore recovers.
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(quotaKey, today);
+          await releaseDailySlot(quotaKey, today, signedIn);
         } catch (rbErr) {
           logger.warn("Quota rollback after fetch failure failed", {
             code: errorCode(rbErr),
@@ -184,7 +206,7 @@ export const tts = onRequest(
       logger.error("Upstream Gemini body read failed", { code: errorCode(err) });
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(quotaKey, today);
+          await releaseDailySlot(quotaKey, today, signedIn);
         } catch (rbErr) {
           logger.warn("Quota rollback after body read failure failed", {
             code: errorCode(rbErr),
@@ -207,7 +229,7 @@ export const tts = onRequest(
 
     if (successHasAudio) {
       if (reservation.reserved) {
-        res.setHeader("X-Daily-Quota-Limit", String(DAILY_LIMIT));
+        res.setHeader("X-Daily-Quota-Limit", String(limit));
         res.setHeader("X-Daily-Quota-Remaining", String(reservation.remaining));
       }
     } else if (upstream.ok) {
@@ -221,7 +243,7 @@ export const tts = onRequest(
       logger.warn("Gemini returned 200 but no inline audio", structuralEnvelope(upstreamBody));
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(quotaKey, today);
+          await releaseDailySlot(quotaKey, today, signedIn);
         } catch (err) {
           logger.warn("Quota rollback after no-audio 200 failed", {
             code: errorCode(err),
@@ -242,7 +264,7 @@ export const tts = onRequest(
       // to undo.
       if (reservation.reserved) {
         try {
-          await releaseDailySlot(quotaKey, today);
+          await releaseDailySlot(quotaKey, today, signedIn);
         } catch (err) {
           logger.warn("Quota rollback after upstream non-success failed", {
             code: errorCode(err),
@@ -269,9 +291,19 @@ interface Reservation {
   remaining: number | null;
 }
 
+// A signed-in account's doc holds only today's date and count — no lifetime
+// counter or history — so after an account deletion all that survives is the
+// rest of that day's count (SPEC.md, PRIVACY.md). `expireAt` is the end of
+// `today`, computed by the caller from the same instant as `today` so a
+// transaction retried across midnight can't push it a day later; the
+// Firestore TTL policy on it (firestore.indexes.json) deletes the doc once
+// the day is over, whether or not the account comes back.
 async function reserveDailySlot(
   quotaKey: string,
   today: string,
+  endOfToday: Date,
+  limit: number,
+  signedIn: boolean,
 ): Promise<Reservation> {
   const docRef = getFirestore().collection(QUOTA_COLLECTION).doc(quotaKey);
   return await getFirestore().runTransaction(async (tx) => {
@@ -284,14 +316,20 @@ async function reserveDailySlot(
       ? data.dayCount
       : 0;
 
-    if (dayCount >= DAILY_LIMIT) {
+    if (dayCount >= limit) {
       return { reserved: false, exhausted: true, remaining: 0 };
     }
 
     const nextDayCount = dayCount + 1;
-    const remaining = DAILY_LIMIT - nextDayCount;
+    const remaining = limit - nextDayCount;
 
-    if (snap.exists) {
+    if (signedIn) {
+      tx.set(docRef, {
+        dayKey: today,
+        dayCount: nextDayCount,
+        expireAt: Timestamp.fromDate(endOfToday),
+      });
+    } else if (snap.exists) {
       tx.update(docRef, {
         count: FieldValue.increment(1),
         lastUseAt: now,
@@ -315,6 +353,7 @@ async function reserveDailySlot(
 async function releaseDailySlot(
   quotaKey: string,
   today: string,
+  signedIn: boolean,
 ): Promise<void> {
   const docRef = getFirestore().collection(QUOTA_COLLECTION).doc(quotaKey);
   await getFirestore().runTransaction(async (tx) => {
@@ -328,9 +367,8 @@ async function releaseDailySlot(
     if (data.dayKey !== today) return;
     const dayCount = typeof data.dayCount === "number" ? data.dayCount : 0;
     if (dayCount <= 0) return;
-    tx.update(docRef, {
-      count: FieldValue.increment(-1),
-      dayCount: dayCount - 1,
-    });
+    tx.update(docRef, signedIn
+      ? { dayCount: dayCount - 1 }
+      : { count: FieldValue.increment(-1), dayCount: dayCount - 1 });
   });
 }

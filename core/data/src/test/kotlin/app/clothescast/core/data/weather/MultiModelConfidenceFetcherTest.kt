@@ -29,7 +29,7 @@ class MultiModelConfidenceFetcherTest {
 
     // The three models these mechanics fixtures are keyed on. Passed
     // explicitly so the parse / confidence / logging assertions don't depend
-    // on the production default set (now five models — see
+    // on the production default set (see
     // ForecastModel.DEFAULTS / MultiModelConfidenceFetcher.DEFAULT_MODELS),
     // which would otherwise log drops for the fixture-omitted models and
     // change the consulted-model counts.
@@ -39,7 +39,7 @@ class MultiModelConfidenceFetcherTest {
     // (or an empty) model list — mirrors MultiModelConfidenceFetcher
     // .DEFAULT_MODELS. Joined into the request's models= parameter.
     private val defaultModelsParam =
-        "ecmwf_ifs025,icon_seamless,gem_seamless,ecmwf_aifs025_single"
+        "ecmwf_ifs025,icon_seamless,gem_seamless"
 
     private data class LogEntry(val message: String, val throwable: Throwable?)
 
@@ -402,7 +402,7 @@ class MultiModelConfidenceFetcherTest {
     @Test
     fun `model missing daily precip max still contributes its temperature`() = runTest {
         // Open-Meteo omits precipitation_probability_max for several models
-        // (verified live: ecmwf_aifs025_single among the defaults, plus
+        // (verified live: ecmwf_aifs025_single, plus
         // ukmo / jma / meteofrance / arpege). Such a model must still cast its
         // temperature vote rather than being dropped from the chip entirely.
         // icon omits precip here and also defines the day's high (23.5 vs

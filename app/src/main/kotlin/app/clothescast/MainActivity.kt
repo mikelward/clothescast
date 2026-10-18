@@ -22,10 +22,9 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import app.clothescast.core.domain.model.DEFAULT_APP_FONT_SCALE
-import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.model.effectiveForecastModels
+import app.clothescast.core.domain.model.chartColorSlots
 import app.clothescast.diag.DiagLog
 import app.clothescast.diag.Telemetry
 import app.clothescast.locale.AppLocale
@@ -40,16 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
 
-/**
- * Resolves the per-forecaster chart-colour slot assignment from prefs: the
- * explicit selection (or the location-aware Auto default) reconciled against the
- * persisted slot map, so each forecaster's overlay colour is stable across edits.
- */
-private fun colorSlotsOf(prefs: UserPreferences): Map<String, Int> =
-    ForecastModel.assignColorSlots(
-        prefs.effectiveForecastModels(),
-        prefs.forecasterColorSlots,
-    )
+private fun colorSlotsOf(prefs: UserPreferences): Map<String, Int> = prefs.chartColorSlots()
 
 class MainActivity : ComponentActivity() {
     // The latest intent delivered while the activity is already running (a

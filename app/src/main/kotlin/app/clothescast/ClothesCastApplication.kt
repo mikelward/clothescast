@@ -270,6 +270,15 @@ class ClothesCastApplication : Application() {
             ?: PROXY_FINGERPRINT.takeIf { googleWeatherProxyConfigured && googleAccount.isSignedIn() }
     }
 
+    /**
+     * Whether Google's forecast can be fetched right now, through the same
+     * decrypting check the fetch uses: a key whose ciphertext can't be read
+     * (Keystore reset, restore) counts as unset here too, so a pick leaning on
+     * Google falls back to Auto on the first fetch rather than the second.
+     */
+    private suspend fun googleWeatherReachable(): Boolean =
+        googleWeatherAccessWithFingerprint().first != null
+
     private fun firebaseAvailable(): Boolean =
         com.google.firebase.FirebaseApp.getApps(this).isNotEmpty()
 
@@ -405,7 +414,12 @@ class ClothesCastApplication : Application() {
                 // read after the first call.
                 confidenceModelsProvider = { location ->
                     val prefs = settingsRepository.preferences.first()
-                    val effective = prefs.effectiveForecastModels(location)
+                    // Google unreachable counts as off, so a one-model pick
+                    // beside it fetches as Auto rather than a lone model.
+                    val effective = prefs.effectiveForecastModels(
+                        location,
+                        googleReachable = googleWeatherReachable(),
+                    )
                     // Google isn't an Open-Meteo model — openMeteoIds() drops it
                     // so it never reaches the `models=` param (which would 400).
                     ForecastModel.openMeteoIds(effective)
@@ -440,7 +454,10 @@ class ClothesCastApplication : Application() {
             // location.
             freshnessKeyProvider = { location ->
                 val prefs = settingsRepository.preferences.first()
-                val models = prefs.effectiveForecastModels(location)
+                val models = prefs.effectiveForecastModels(
+                    location,
+                    googleReachable = googleWeatherReachable(),
+                )
                 // Fold in the Google key's fingerprint (null when unset) so
                 // adding, clearing, OR replacing it invalidates the cache
                 // instead of waiting out the 1 h TTL — otherwise the blend would

@@ -1237,11 +1237,9 @@ enum class ForecastModel(val openMeteoId: String, val requiresGeminiKey: Boolean
          * the recovery set when the user has somehow deselected everything
          * (the picker's UI prevents that, but a hand-edited DataStore could).
          *
-         * Four models: ECMWF (0.25°) and ICON for the high-resolution first
-         * week, plus GEM and AIFS so at least two keep reporting through the
-         * second week once ICON drops out at ~day 7. One under the picker's
-         * MAX_MODELS = 5 ceiling, leaving a slot free rather than filling it
-         * for its own sake.
+         * Three models, like every Auto set (see [defaultsFor]): ECMWF (0.25°)
+         * and ICON for the high-resolution first week, plus GEM, which keeps a
+         * second voice reporting to ~day 10 once ICON drops out at ~day 7.
          *
          * GFS was the fifth and was removed along with its North America
          * slot (see [defaultsFor]). A mean-based consensus has no way to
@@ -1255,15 +1253,14 @@ enum class ForecastModel(val openMeteoId: String, val requiresGeminiKey: Boolean
          *
          * What this set gives up, and why it is acceptable: over Australia
          * and the other regions that land here, ECMWF and GEM both carry
-         * precipitation probability across the full ~day-15 horizon (AIFS
-         * publishes none, ICON stops at ~day 7), so the rain surfaces still
-         * have two independent long-range voices without GFS.
+         * precipitation probability well into the second week (ICON stops at
+         * ~day 7), so the rain surfaces still have two independent
+         * longer-range voices without GFS.
          */
         val DEFAULTS: Set<ForecastModel> = setOf(
             ECMWF_IFS025,
             ICON_SEAMLESS,
             GEM_SEAMLESS,
-            ECMWF_AIFS025_SINGLE,
         )
 
         /**
@@ -1397,7 +1394,29 @@ const val DEFAULT_APP_FONT_SCALE = 1.15f
 
 /**
  * The forecasters a fetch uses: the Open-Meteo picks (or Auto's regional set
- * for [location]), plus Google when [UserPreferences.googleForecast] is on.
+ * for [location]), plus Google when [UserPreferences.googleForecast] is on
+ * and [googleReachable] (a key of the user's own, or signed in with the proxy
+ * built in). An unreachable Google counts as off, so a pick that leans on it
+ * (one model beside Google) reads as Auto until Google is back; the stored
+ * pick itself is never changed (maintainer, 2026-10-18).
  */
-fun UserPreferences.effectiveForecastModels(location: Location? = this.location): Set<ForecastModel> =
-    ForecastModel.withGoogle(forecastModels ?: ForecastModel.defaultsFor(location), googleForecast)
+fun UserPreferences.effectiveForecastModels(
+    location: Location? = this.location,
+    googleReachable: Boolean,
+): Set<ForecastModel> =
+    ForecastModel.effective(forecastModels, location, googleForecast && googleReachable)
+
+/**
+ * The per-forecaster chart-colour slots: the effective set reconciled against
+ * the persisted slot map, so each forecaster's overlay colour is stable across
+ * edits. Slots cover the set with Google reachable and without, since a pick
+ * that leans on Google fetches as Auto while Google can't be reached (no key,
+ * signed out): every line gets its own colour either way, with no key-store
+ * read on the theme path.
+ */
+fun UserPreferences.chartColorSlots(): Map<String, Int> =
+    ForecastModel.assignColorSlots(
+        effectiveForecastModels(googleReachable = true) +
+            effectiveForecastModels(googleReachable = false),
+        forecasterColorSlots,
+    )

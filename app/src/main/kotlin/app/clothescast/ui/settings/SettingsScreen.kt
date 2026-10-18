@@ -426,9 +426,14 @@ internal fun ForecastersPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     // Keyed on the two booleans (not the whole model set) so changing an
     // unrelated model doesn't trigger a redundant probe.
     val googleSelected = state.googleForecast
-    val googleReachable = state.googleApiKeyConfigured ||
-        (state.googleWeatherProxyConfigured && state.googleAccount != null)
-    LaunchedEffect(googleSelected, googleReachable) {
+    val googleReachable = googleForecastReachable(
+        googleApiKeyConfigured = state.googleApiKeyConfigured,
+        googleWeatherProxyConfigured = state.googleWeatherProxyConfigured,
+        signedIn = state.googleAccount != null,
+    )
+    // Keyed on the route too: clearing a key while signed in keeps Google
+    // reachable through the proxy, and the old key's verdict mustn't linger.
+    LaunchedEffect(googleSelected, googleReachable, state.googleApiKeyConfigured) {
         if (googleSelected && googleReachable) {
             viewModel.probeGoogleWeather()
         } else if (!googleReachable) {

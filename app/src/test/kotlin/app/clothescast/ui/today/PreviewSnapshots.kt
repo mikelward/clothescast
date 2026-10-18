@@ -46,6 +46,8 @@ import app.clothescast.ui.settings.SettingsDisplayPreview
 import app.clothescast.ui.settings.SettingsDoneBarPreview
 import app.clothescast.ui.settings.SettingsForecastersGoogleBlockedPreview
 import app.clothescast.ui.settings.SettingsForecastersGoogleNoKeyPreview
+import app.clothescast.ui.settings.SettingsForecastersGoogleSignedInPreview
+import app.clothescast.ui.settings.SettingsForecastersGoogleSignedOutPreview
 import app.clothescast.ui.settings.SettingsForecastersPreview
 import app.clothescast.ui.settings.SettingsFormatClothesNeverPreview
 import app.clothescast.ui.settings.SettingsFormatCurrentForecastPreview

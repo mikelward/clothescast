@@ -31,6 +31,21 @@ class VoiceAccountSectionTest {
     }
 
     @Test
+    fun `Google is reachable with a key of your own, or signed in through the proxy`() {
+        googleForecastReachable(googleApiKeyConfigured = true, googleWeatherProxyConfigured = false, signedIn = false) shouldBe true
+        googleForecastReachable(googleApiKeyConfigured = false, googleWeatherProxyConfigured = true, signedIn = true) shouldBe true
+        // Signed out with no key, the page shows the set the fetch uses: Google left out.
+        googleForecastReachable(googleApiKeyConfigured = false, googleWeatherProxyConfigured = true, signedIn = false) shouldBe false
+        googleForecastReachable(googleApiKeyConfigured = false, googleWeatherProxyConfigured = false, signedIn = true) shouldBe false
+    }
+
+    @Test
+    fun `Google's switch holds a slot against the cap even while unreachable`() {
+        forecasterSlots(openMeteoCount = 4, googleForecast = true) shouldBe 5
+        forecasterSlots(openMeteoCount = 4, googleForecast = false) shouldBe 4
+    }
+
+    @Test
     fun `turning Google on signed out without a key starts the sign-in`() {
         googleForecastStartsSignIn(signedIn = false, googleWeatherProxyConfigured = true, googleApiKeyConfigured = false) shouldBe true
         googleForecastStartsSignIn(signedIn = true, googleWeatherProxyConfigured = true, googleApiKeyConfigured = false) shouldBe false

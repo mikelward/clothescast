@@ -7,11 +7,13 @@ const path = require("node:path");
 
 const config = require(path.join(__dirname, "..", "..", "firestore.indexes.json"));
 
-test("quota.expireAt has a TTL policy", () => {
-  assert.ok(Array.isArray(config.fieldOverrides) && config.fieldOverrides.length > 0);
-  const ttl = config.fieldOverrides.find(
-    (o) => o.collectionGroup === "quota" && o.fieldPath === "expireAt",
-  );
-  assert.ok(ttl, "no fieldOverride for quota.expireAt");
-  assert.equal(ttl.ttl, true);
-});
+for (const collection of ["quota", "weatherQuota"]) {
+  test(`${collection}.expireAt has a TTL policy`, () => {
+    assert.ok(Array.isArray(config.fieldOverrides) && config.fieldOverrides.length > 0);
+    const ttl = config.fieldOverrides.find(
+      (o) => o.collectionGroup === collection && o.fieldPath === "expireAt",
+    );
+    assert.ok(ttl, `no fieldOverride for ${collection}.expireAt`);
+    assert.equal(ttl.ttl, true);
+  });
+}

@@ -129,6 +129,31 @@ service. The trade-off is that a sustained outage lets a single
 uid exceed the daily cap — acceptable given how expensive
 Gemini TTS is relative to a Firestore read.
 
+## Weather proxy
+
+`weather` forwards one Google Weather hourly-forecast page
+(`/v1/forecast/hours:lookup`) for a Google-signed-in caller of a genuine app
+build, spending the developer's Maps Platform key. It takes `POST` with the
+fields of Google's query as a form body (`application/x-www-form-urlencoded`),
+never a query string, because Cloud Run's request log records the full URL and
+the coordinate must stay out of it. It also needs the `X-Firebase-AppCheck`
+header and `Authorization: Bearer <ID token>`. It:
+
+- refuses an anonymous token (`403 sign_in_required`);
+- forwards only the known fields (`weather-query.ts`): the coordinate, up to
+  168 hours, pages of up to 24, `METRIC`, and the next-page token;
+- caps each account at 60 upstream calls per UTC day in
+  `weatherQuota/g_<hex>` (day and count only, TTL on `expireAt`);
+- never logs or stores the coordinate or the upstream URL.
+
+One-time setup: a Maps Platform API key restricted to the Weather API,
+stored as a secret, then deploy alongside Firestore (the TTL policy):
+
+```sh
+firebase functions:secrets:set GOOGLE_WEATHER_API_KEY
+firebase deploy --only functions:weather,firestore
+```
+
 ## Dependency pins
 
 `package.json` carries an `overrides` block that holds three transitive

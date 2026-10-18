@@ -13,6 +13,7 @@ import {
 
 import { callerFromToken, DEFAULT_DAILY_LIMIT, TtsLimit } from "./caller";
 import { excerpt, responseHasAudio, structuralEnvelope } from "./envelope";
+import { weatherQuery } from "./weather-query";
 import { errorCode, headerValue } from "./narrow";
 import { nextUtcMidnight, nextUtcMidnightIso, utcDayKey } from "./utc-day";
 
@@ -24,6 +25,9 @@ const GEMINI_API_KEY = defineSecret("GEMINI_API_KEY");
 // (`caller.ts` → googleQuotaKey). Rotating it resets every signed-in
 // account's count for the day, nothing worse.
 const QUOTA_HASH_KEY = defineSecret("QUOTA_HASH_KEY");
+// The developer's Google Maps Platform key with the Weather API enabled,
+// spent by the `weather` proxy below.
+const GOOGLE_WEATHER_API_KEY = defineSecret("GOOGLE_WEATHER_API_KEY");
 
 // Allowlist of upstream Gemini models the proxy will forward to. Keep narrow
 // so a compromised or modded client can't redirect billing onto an expensive
@@ -370,5 +374,155 @@ async function releaseDailySlot(
     tx.update(docRef, signedIn
       ? { dayCount: dayCount - 1 }
       : { count: FieldValue.increment(-1), dayCount: dayCount - 1 });
+  });
+}
+
+const WEATHER_HOST = "weather.googleapis.com";
+const WEATHER_QUOTA_COLLECTION = "weatherQuota";
+
+// Upstream calls per signed-in account per UTC day. The app caches the 7-day
+// series (~7 pages) for about 12 hours, so a phone uses ~14 a day; this leaves
+// room for a few devices and refreshes while bounding a runaway client.
+const WEATHER_DAILY_LIMIT = 60;
+
+/**
+ * The Google Weather proxy: forwards one hourly-forecast page to Google with
+ * the developer's Maps Platform key, for a Google-signed-in caller of a
+ * genuine app build (SPEC.md → "Accounts and the developer-funded paths").
+ * The request carries the user's coarse coordinate, so neither it nor the
+ * upstream URL is ever logged, and nothing about the request is stored
+ * beyond the day's call count.
+ */
+export const weather = onRequest(
+  {
+    secrets: [GOOGLE_WEATHER_API_KEY, QUOTA_HASH_KEY],
+    cors: false,
+    invoker: "public",
+  },
+  async (req, res) => {
+    // POST with a form body, never a query string: Cloud Run's request log
+    // records the full URL, and the coordinate must not land in it.
+    if (req.method !== "POST") {
+      res.status(405).json({ error: "method_not_allowed" });
+      return;
+    }
+
+    const appCheckToken = headerValue(req.header("X-Firebase-AppCheck"));
+    if (!appCheckToken) {
+      res.status(401).json({ error: "missing_app_check_token" });
+      return;
+    }
+    try {
+      await getAppCheck().verifyToken(appCheckToken);
+    } catch (err) {
+      logger.warn("App Check verification failed", { code: errorCode(err) });
+      res.status(401).json({ error: "invalid_app_check_token" });
+      return;
+    }
+
+    const authHeader = headerValue(req.header("Authorization"));
+    const idToken = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice("Bearer ".length).trim()
+      : null;
+    if (!idToken) {
+      res.status(401).json({ error: "missing_auth_token" });
+      return;
+    }
+    let caller;
+    try {
+      caller = callerFromToken(await getAuth().verifyIdToken(idToken), QUOTA_HASH_KEY.value());
+    } catch (err) {
+      logger.warn("ID token verification failed", { code: errorCode(err) });
+      res.status(401).json({ error: "invalid_auth_token" });
+      return;
+    }
+    // Only Google sign-ins get the proxied forecast; an anonymous token is
+    // a genuine but unsigned-in install.
+    if (!caller || !caller.signedIn) {
+      res.status(403).json({ error: "sign_in_required" });
+      return;
+    }
+
+    // Form fields only; a query string would be ignored (and logged).
+    const query = weatherQuery(
+      req.is("application/x-www-form-urlencoded") && req.body && typeof req.body === "object"
+        ? (req.body as Record<string, unknown>)
+        : {},
+    );
+    if (!query.ok) {
+      res.status(400).json({ error: query.error });
+      return;
+    }
+
+    const now = new Date();
+    let exhausted = false;
+    try {
+      exhausted = !(await countWeatherCall(
+        caller.quotaKey,
+        utcDayKey(now),
+        nextUtcMidnight(now),
+      ));
+    } catch (err) {
+      // Same posture as the TTS quota: our bookkeeping failing shouldn't
+      // take the forecast down.
+      logger.warn("Weather quota count failed; failing open", { code: errorCode(err) });
+    }
+    if (exhausted) {
+      res.status(429).json({
+        error: "daily_quota_exhausted",
+        limit: WEATHER_DAILY_LIMIT,
+        resetAtUtc: nextUtcMidnightIso(now),
+      });
+      return;
+    }
+
+    let upstream: Response;
+    let upstreamBody: ArrayBuffer;
+    try {
+      upstream = await fetch(
+        `https://${WEATHER_HOST}/v1/forecast/hours:lookup?${query.params}`,
+        { headers: { "x-goog-api-key": GOOGLE_WEATHER_API_KEY.value() } },
+      );
+      upstreamBody = await upstream.arrayBuffer();
+    } catch (err) {
+      // The URL carries the coordinate: log the error code only.
+      logger.error("Upstream Weather fetch failed", { code: errorCode(err) });
+      res.status(502).json({ error: "upstream_unreachable" });
+      return;
+    }
+    if (!upstream.ok) {
+      logger.warn("Weather API returned non-success", { status: upstream.status });
+    }
+    res.status(upstream.status);
+    const contentType = upstream.headers.get("content-type");
+    if (contentType) res.setHeader("content-type", contentType);
+    res.send(Buffer.from(upstreamBody));
+  },
+);
+
+/**
+ * Counts one Weather call against today's per-account cap. False when the
+ * cap is already reached. The doc holds only the day and count, and expires
+ * with the day (TTL on `weatherQuota.expireAt`, firestore.indexes.json).
+ */
+async function countWeatherCall(
+  quotaKey: string,
+  today: string,
+  endOfToday: Date,
+): Promise<boolean> {
+  const docRef = getFirestore().collection(WEATHER_QUOTA_COLLECTION).doc(quotaKey);
+  return await getFirestore().runTransaction(async (tx) => {
+    const snap = await tx.get(docRef);
+    const data = snap.exists ? (snap.data() ?? {}) : {};
+    const dayCount = data.dayKey === today && typeof data.dayCount === "number"
+      ? data.dayCount
+      : 0;
+    if (dayCount >= WEATHER_DAILY_LIMIT) return false;
+    tx.set(docRef, {
+      dayKey: today,
+      dayCount: dayCount + 1,
+      expireAt: Timestamp.fromDate(endOfToday),
+    });
+    return true;
   });
 }

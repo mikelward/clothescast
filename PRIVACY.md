@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-10-14_
+_Last updated: 2026-10-18_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -8,10 +8,12 @@ have over it.
 
 ## TL;DR
 
-- ClothesCast has no login and no personal account. The free online
-  voice signs in **anonymously** — a random ID with no name, email, or
-  password — purely to count your daily usage; no backend holds personal
-  data about you.
+- ClothesCast needs no account. The one exception is optional: the free
+  online voice needs **Sign in with Google**, which gives ClothesCast your
+  Google email address, name and profile photo URL so the free daily
+  limit counts per account. You can sign out or delete that account in
+  Settings → Voice at any time; without signing in, the app uses the
+  on-device voice (or your own Gemini key).
   The app can send anonymous crash reports and aggregate usage analytics
   to a third-party reporting service so the developer can fix bugs and
   decide which features to keep — but **only if you turn that on**.
@@ -316,57 +318,66 @@ The source code is at <https://github.com/mikelward/clothescast>.
   network — and discovery stops as soon as you leave the page or pick
   a result. No discovery happens unless you tap the button.
 
-### Online TTS: shared key by default, your own key on request
+### Online TTS: free with Google sign-in, or your own key
 
 Online TTS (the Gemini voice) has two paths.
 
-- **Default — shared key via the ClothesCast TTS proxy.** When you have
-  not set your own Gemini key, online TTS requests go to a small
+- **Free — the ClothesCast TTS proxy, with Google sign-in.** When you
+  have not set your own Gemini key, online TTS requests go to a small
   ClothesCast-operated Cloud Function instead of directly to Google.
   The function holds a Google Gemini API key paid for by the developer,
   forwards your request to Google, and returns the audio. It does not
-  log the spoken prose or the audio response.
-  - **First use — an anonymous identifier from Google.** Before the
-    first shared-key request, the app signs in anonymously to Firebase
-    Authentication (a Google service). This is **not** a user account:
-    there is no name, email, password, or sign-in screen. It returns a
-    random, app-generated identifier — just a string of letters and
-    digits, e.g. `a1B2c3…` — that is **not** linked to your name,
-    email, phone number, device, or location, and is never used for
-    advertising or tracking across apps. It exists only so the proxy
-    can count how many free clips this app install has used today. On
-    the shared path your data is handled by ClothesCast and Google
-    servers.
+  log the spoken prose or the audio response. This path needs you to
+  sign in with Google; until you do, the app speaks with the device
+  voice instead, and the first time that happens it tells you so in a
+  notification.
+  - **Signing in.** Settings → Voice → **Sign in with Google** signs
+    you in to Firebase Authentication (a Google service) with your
+    Google account. Firebase stores your **email address, name and
+    profile photo URL** (copied from your Google account) and a
+    **Firebase user ID** for ClothesCast. We use them only to know which
+    account a request comes from, so the free daily limit counts per
+    account across your devices, and so the developer can give
+    particular accounts (such as family) a different limit. They are
+    never used for advertising or tracking across apps. Signing in is
+    optional; nothing else in the app needs it.
   - **Sent on each request:** the rendered insight sentence (the same
-    text the phone speaks), the anonymous identifier above (carried as
-    a signed Firebase ID token in the `Authorization` header, which the
-    proxy verifies to read the identifier — the client cannot forge or
-    swap it), a Firebase App Check attestation token (proves the request
-    came from a genuine install — verified in-memory and discarded), and
-    the model name. During the current rollout the app *also* sends a
-    Firebase Installation ID for backward compatibility (so older proxy
-    versions still recognize the install); it is likewise an anonymous,
-    random identifier with no personal information, and is dropped once
-    the rollout completes. No coordinates, calendar metadata as fields,
-    user account, advertising ID, or hardware / device identifiers are
-    added.
-  - **Stored:** a Firestore document at `quota/<your anonymous ID>`
-    with a first-use timestamp, a successful-call counter, and a
-    most-recent-use timestamp, capped at 5 successful clips per UTC day.
-    Used to enforce the free daily limit and for capacity planning. Not
-    used for advertising or cross-app tracking. Your anonymous
-    identifier resets if you reinstall the app or use "Clear data" in
-    Android Settings.
+    text the phone speaks), your Firebase sign-in token in the
+    `Authorization` header (the proxy verifies it to read which account
+    is calling; it carries the details above), a Firebase App Check
+    attestation token (proves the request came from a genuine install —
+    verified in-memory and discarded), and the model name. No
+    coordinates, calendar metadata as fields, advertising ID, or
+    hardware / device identifiers are added.
+  - **Stored:** a Firestore document holding only today's date and how
+    many free clips you've used today (5 by default), under a keyed hash
+    of your Google account ID rather than the ID itself. It expires at
+    the end of the day (midnight UTC) and is deleted automatically,
+    typically within a day after that. Used only to enforce the daily
+    limit.
+  - **Older versions of the app** signed in anonymously instead (a
+    random identifier with no name or email) and also sent a Firebase
+    Installation ID. The proxy still accepts those from versions already
+    installed, counting each anonymous identifier in a Firestore document
+    with a first-use timestamp, a successful-call counter and a
+    most-recent-use timestamp. This version does not use them.
   - **Cloud Functions infrastructure logs** (operated by Google Cloud,
     not configured by us) record the client IP and HTTP status of
-    each call. We do not associate the IP with your anonymous
-    identifier.
+    each call. We do not associate the IP with your account.
+  - **Signing out and deleting your account.** Settings → Voice →
+    **Sign out** signs you out on this device. **Delete account**
+    deletes your Firebase account — email, name, photo URL, user ID and
+    any limit set on it. Only that day's clip count survives, until it
+    expires as above; it can't identify you without your Google account
+    and is kept so that deleting and re-creating an account doesn't
+    reset the day's limit. To ask for deletion without the app, use the
+    contact details at the end of this policy.
 - **Your own key (BYOK).** Open Settings → Voice → Gemini API key and
   paste your own key. Keys are stored on your device, encrypted at
   rest using a key sealed by the Android Keystore. With your own key
   set, online TTS requests skip the ClothesCast proxy entirely and
-  go straight to Google — no anonymous identifier, no App Check token,
-  no anonymous sign-in, no proxy involvement. Your key is never shared
+  go straight to Google — no sign-in token, no App Check token, no
+  proxy involvement, and no sign-in needed. Your key is never shared
   with us or any third party.
 
 ## Third-party services
@@ -379,17 +390,17 @@ policies apply to anything they receive:
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use the Settings location picker | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
 | [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate and your own Gemini API key | Only if you enable the "Google" forecaster on the Forecasters page and have set your own Gemini key |
-| Google Firebase Authentication | An App Check attestation, to mint and refresh an anonymous identifier (no name, email, or password) | First use of the shared-key path, then periodic token refreshes |
-| ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, an anonymous app identifier (as a signed Firebase ID token; plus a Firebase Installation ID during the current rollout), a Firebase App Check token, and the Gemini model name | Online TTS with the shared key (default) |
+| Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Voice), then periodic token refreshes |
+| ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase sign-in token, a Firebase App Check token, and the Gemini model name | Online TTS with the free voice, while signed in with Google |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence; the outfit-card image, TTS audio, and muxed MP4 on sibling topics; an update timestamp; and a calendar-derived `has_events` boolean (no event titles, times, or locations) — all as retained MQTT messages | Only if you opt in to the Smart Home bridge and configure a broker |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Only if you turn on crash and usage reporting in Settings → Privacy, plus the one upgrade exception described there |
 
 These providers act as service providers fulfilling a single request and
 returning the result. When the ClothesCast TTS proxy is in the path, it
-adds the anonymous identifier and App Check token described above; when
+adds your sign-in token and the App Check token described above; when
 you use your own Gemini key, the request goes straight to Google and no
-anonymous identifier is attached.
+sign-in token is attached.
 
 Note on Gemini API: request inputs are not retained for training by
 default. See the provider's policy linked above for the authoritative
@@ -397,11 +408,9 @@ terms.
 
 ## What we do _not_ collect
 
-- No user accounts and no personal sign-in — no name, email, password,
-  or login screen. (The free online-TTS path uses an anonymous,
-  randomly-generated identifier to count daily usage, described under
-  "Online TTS" above; it identifies an app install, not you, and carries
-  no personal information.)
+- No passwords and no account of our own. The only sign-in is the
+  optional Sign in with Google for the free online voice, described under
+  "Online TTS" above; nothing else in the app needs it.
 - No advertising identifiers, no ad networks, no ad targeting.
 - No precise GPS location.
 - No contacts, photos, microphone, or files.
@@ -418,6 +427,9 @@ terms.
 - **Online TTS:** Switch the voice engine to "Device" in Settings → Voice
   to keep all spoken text on-device.
 - **API keys:** Clear them from Settings → API Keys at any time.
+- **Google account:** Sign out, or delete your ClothesCast account
+  (email, name, photo URL and user ID), in Settings → Voice. Uninstalling
+  doesn't delete it; use Delete account first, or contact us.
 - **Everything:** Uninstalling the app deletes all locally stored data
   (settings, cached insight, API keys).
 
@@ -589,6 +601,14 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-10-18** — The free online voice now needs **Sign in with
+  Google**. Signing in stores your Google email address, name, profile
+  photo URL and a Firebase user ID with Firebase Authentication, and the
+  free daily limit now counts per Google account (a keyed hash of its ID,
+  holding only today's count, deleted after the day). You can sign out or
+  delete the account in Settings → Voice. Older versions' anonymous
+  sign-in is no longer used by this version. Until you sign in, the app
+  uses the on-device voice and tells you once in a notification.
 - **2026-10-14** — When your calendar theming fires for the day a forecast
   covers, the outfit-card image names the celebration in a banner under its
   title, contact name included ("🎂 Alice's birthday"), so a birthday or

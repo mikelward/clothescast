@@ -245,6 +245,15 @@ family access*).
   Firebase, never in the repo.
 - **The Weather proxy is for every signed-in user** (maintainer, 2026-10-18),
   not a flagged list.
+- **Choosing the Gemini voice without a key of your own is the free-voice
+  opt-in** (maintainer, 2026-10-18): no separate switch. A user who chose it
+  on an older build and isn't signed in hears the device voice and gets one
+  notification ("Gemini voice paused") pointing at the sign-in in Voice
+  settings; signing in re-arms that notice for a later sign-out.
+- **Voice settings always shows the Google account row** on builds with
+  Google sign-in (maintainer, 2026-10-18), whatever the voice or key: sign in
+  when signed out, sign out and delete account when signed in. Deleting
+  needs a sign-in, so it must never be hidden from a signed-out user.
 - **The free voice and the Google forecast are separate opt-ins**
   (maintainer, 2026-10-18), and each requires Google sign-in; signing in
   turns neither on. Turning either on while signed out starts the sign-in.

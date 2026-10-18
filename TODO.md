@@ -56,10 +56,12 @@ Design and reasons in [SPEC.md](SPEC.md) → *Accounts and the developer-funded
 paths*. Google sign-in gates both developer-funded paths: the shared Gemini
 voice and the Google Weather proxy.
 
-- [ ] **Sign in with Google** (Credential Manager plus Firebase Auth), from a
-      button on the Forecasters page and in Voice settings. A plain sign-in,
-      never linked to the anonymous account. Signing out falls back to
-      anonymous.
+- [x] **Sign in with Google** (Credential Manager plus Firebase Auth) in Voice
+      settings. A plain sign-in, never linked to the anonymous account. The
+      free voice needs it; a signed-out Gemini user hears the device voice
+      and is told once by notification.
+- [ ] **Sign in with Google on the Forecasters page**, with the Google
+      forecast proxy.
 - [ ] **Separate opt-ins, each needing sign-in:** the free voice (Voice
       settings) and the Google forecast through the proxy (Forecasters page).
       Turning either on while signed out starts the sign-in; signing in turns
@@ -86,11 +88,14 @@ voice and the Google Weather proxy.
 - [x] **Quota key for signed-in callers:** a keyed hash of the Google account
       ID from the verified token, holding only today's date and count, so
       deleting and recreating the account doesn't reset the day's cap.
-- [ ] **Account deletion** (Play requirement): an in-app delete that removes
+- [x] **Account deletion** (Play requirement): an in-app delete that removes
       the Firebase user (and with it the email, name, photo URL and custom
-      claims), plus a web page to request deletion. Today's quota count
-      outlives it until the day ends.
-- [ ] **Disclosure before the sign-in release:** `PRIVACY.md`, the Data Safety
+      claims). Today's quota count outlives it until the day ends.
+- [ ] **Account deletion web link for Play's Data safety form**: Play wants a
+      URL where someone without the app can ask for deletion. `PRIVACY.md`
+      points at its contact section; a dedicated page would be clearer.
+- [ ] **Disclosure before the sign-in release:** `PRIVACY.md` (done with the
+      sign-in), the Data Safety
       form (optional, account management: email, name, profile photo URL and
       the Firebase user ID; approximate location to a developer-run server,
       processed ephemerally; the day's quota count after a deletion), and

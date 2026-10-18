@@ -2032,4 +2032,33 @@
     <string name="holiday_banner_whit_monday">Happy Whit Monday</string>
     <string name="holiday_name_corpus_christi">Corpus Christi</string>
     <string name="holiday_banner_corpus_christi">Happy Corpus Christi</string>
+    <!-- Sign in with Google (SPEC.md: Accounts and the developer-funded paths). -->
+    <!-- TODO: translate -->
+    <string name="settings_tts_gemini_sign_in_reason" tools:ignore="MissingTranslation">The free Gemini voice needs Google sign-in.</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_sign_in" tools:ignore="MissingTranslation">Sign in with Google</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_signed_in_as" tools:ignore="MissingTranslation">Signed in as %1$s</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_signed_in" tools:ignore="MissingTranslation">Signed in with Google</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_sign_out" tools:ignore="MissingTranslation">Sign out</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_delete_account" tools:ignore="MissingTranslation">Delete account</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_delete_title" tools:ignore="MissingTranslation">Delete account?</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_delete_body" tools:ignore="MissingTranslation">Your settings on this phone stay.</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_delete_confirm" tools:ignore="MissingTranslation">Delete</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_no_account" tools:ignore="MissingTranslation">No Google account on this device.</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_sign_in_failed" tools:ignore="MissingTranslation">Couldn\'t sign in. Try again.</string>
+    <!-- TODO: translate -->
+    <string name="settings_google_delete_failed" tools:ignore="MissingTranslation">Couldn\'t delete account. Try again.</string>
+    <!-- TODO: translate -->
+    <string name="notify_gemini_sign_in_title" tools:ignore="MissingTranslation">Gemini voice paused</string>
+    <!-- TODO: translate -->
+    <string name="notify_gemini_sign_in_text" tools:ignore="MissingTranslation">Sign in with Google in Voice settings to keep it. Using the device voice for now.</string>
 </resources>

@@ -460,6 +460,10 @@ class SettingsRepository(
         dataStore.edit { it[GEMINI_PROMO_CARD_DISMISSED] = dismissed }
     }
 
+    suspend fun setGeminiSignInNoticeShown(shown: Boolean) {
+        dataStore.edit { it[GEMINI_SIGN_IN_NOTICE_SHOWN] = shown }
+    }
+
     /**
      * Bumps [UserPreferences.calendarPermissionRecheckTick] to the current
      * wall-clock millis so the preferences flow re-emits. Use after the
@@ -1240,6 +1244,7 @@ class SettingsRepository(
         val scheduleCardDismissed = this[SCHEDULE_CARD_DISMISSED] == true
         val playCardDismissed = this[PLAY_CARD_DISMISSED] == true
         val geminiPromoCardDismissed = this[GEMINI_PROMO_CARD_DISMISSED] == true
+        val geminiSignInNoticeShown = this[GEMINI_SIGN_IN_NOTICE_SHOWN] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { runCatching { LocalTime.parse(it, TIME_FORMAT) }.getOrNull() }
             ?: DEFAULT_TONIGHT_TIME
@@ -1413,6 +1418,7 @@ class SettingsRepository(
             scheduleCardDismissed = scheduleCardDismissed,
             playCardDismissed = playCardDismissed,
             geminiPromoCardDismissed = geminiPromoCardDismissed,
+            geminiSignInNoticeShown = geminiSignInNoticeShown,
             calendarPermissionRecheckTick = calendarPermissionRecheckTick,
             dailyEnabled = dailyEnabled,
             tonightSchedule = Schedule(time = tonightTime, days = tonightDays, zoneId = zone),
@@ -1730,6 +1736,7 @@ class SettingsRepository(
         private val SCHEDULE_CARD_DISMISSED = booleanPreferencesKey("schedule_card_dismissed")
         private val PLAY_CARD_DISMISSED = booleanPreferencesKey("play_card_dismissed")
         private val GEMINI_PROMO_CARD_DISMISSED = booleanPreferencesKey("gemini_promo_card_dismissed")
+        private val GEMINI_SIGN_IN_NOTICE_SHOWN = booleanPreferencesKey("gemini_sign_in_notice_shown")
         private val GEMINI_TTS_LIMIT_AT_MS = longPreferencesKey("gemini_tts_limit_at_ms")
         private val GEMINI_TTS_LIMIT_RESET_AT_MS = longPreferencesKey("gemini_tts_limit_reset_at_ms")
         private val GEMINI_TTS_LIMIT_DISMISSED_AT_MS =

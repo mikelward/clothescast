@@ -9,8 +9,6 @@ import app.clothescast.diag.DiagLog
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.installations.FirebaseInstallations
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
 /**
@@ -19,41 +17,35 @@ import kotlinx.coroutines.tasks.await
  * - **User has set their own Gemini key (BYOK):** plan a DIRECT call —
  *   straight to Google's Generative Language API, key in `x-goog-api-key`.
  *   The developer's proxy never sees the request.
- * - **No key set, proxy configured:** plan a SHARED call — to the
- *   developer-operated Cloud Function at [proxyBaseUrl], carrying a
- *   Firebase App Check attestation token (`X-Firebase-AppCheck`), an
- *   anonymous Firebase Authentication ID token (`Authorization: Bearer
- *   <idToken>`), the model name (`X-Gemini-Model`), and — during the
- *   rollout migration — the legacy Firebase Installation ID
- *   (`X-Install-Id`). The function holds the developer's Gemini key and
- *   forwards the call. It prefers the verified `uid` from the ID token
- *   (which a modded client can't rotate to evade the daily cap) and
- *   falls back to the FID only for app versions built before the switch.
- *   Sending both keeps a pre-switch *and* a post-switch function happy,
- *   so the app, function, and Firebase config can roll out in any order;
- *   the FID send is removed once old app versions age out.
- * - **No key set and shared path disabled** ([sharedPathEnabled] is
- *   false — CI builds without `google-services.json`, or forks that
- *   haven't configured `GEMINI_PROXY_URL`): throw
- *   [MissingApiKeyException], same surface as before.
+ * - **No key set, signed in with Google, proxy configured:** plan a SHARED
+ *   call — to the developer-operated Cloud Function at [proxyBaseUrl],
+ *   carrying a Firebase App Check attestation token (`X-Firebase-AppCheck`),
+ *   the signed-in user's Firebase ID token (`Authorization: Bearer
+ *   <idToken>`) and the model name (`X-Gemini-Model`). The function holds
+ *   the developer's Gemini key, verifies the token, counts the call against
+ *   that Google account's daily quota and forwards it.
+ * - **No key set and the shared path unusable** ([sharedPathEnabled] reads
+ *   false — not signed in, or a build without `google-services.json` /
+ *   `GEMINI_PROXY_URL`): throw [MissingApiKeyException], the same surface
+ *   as before, so callers fall back to the device voice.
  *
- * On the SHARED path, App Check token, anonymous sign-in, and ID token
- * fetches can fail legitimately (offline, Play Integrity unavailable,
- * Anonymous Auth provider not enabled in the Firebase project). Those
- * propagate as the SDK's own exceptions — surfaced as the existing
- * diagnostic Toast via [app.clothescast.ui.settings.VoiceSettings]'s
- * catch-all. We don't map them to a dedicated app-side type until the
- * trial-exhausted (429) mapping lands; see `TODO.md` "Enforce
- * shared-key TTS trial limit".
+ * Older builds signed in anonymously and also sent the Firebase
+ * Installation ID; the proxy still accepts those for app versions already
+ * installed (SPEC.md → "Accounts and the developer-funded paths"), but this
+ * build sends neither.
+ *
+ * On the SHARED path, App Check and ID token fetches can fail legitimately
+ * (offline, Play Integrity unavailable). Those propagate as the SDK's own
+ * exceptions — surfaced as the existing diagnostic Toast via
+ * [app.clothescast.ui.settings.VoiceSettings]'s catch-all.
  */
 class AppCheckGeminiCallPlanner(
     private val secureKeyStore: SecureKeyStore,
     private val proxyBaseUrl: String,
-    private val sharedPathEnabled: Boolean,
+    private val sharedPathEnabled: () -> Boolean,
     private val model: String,
     private val appCheck: () -> FirebaseAppCheck = { FirebaseAppCheck.getInstance() },
     private val auth: () -> FirebaseAuth = { FirebaseAuth.getInstance() },
-    private val installations: () -> FirebaseInstallations = { FirebaseInstallations.getInstance() },
 ) : GeminiCallPlanner {
 
     override suspend fun plan(): GeminiCallPlan {
@@ -61,7 +53,7 @@ class AppCheckGeminiCallPlanner(
         if (ownKey != null) {
             return directPlan(ownKey)
         }
-        if (!sharedPathEnabled || proxyBaseUrl.isBlank()) {
+        if (!sharedPathEnabled() || proxyBaseUrl.isBlank()) {
             throw MissingApiKeyException()
         }
         return sharedPlan()
@@ -85,64 +77,34 @@ class AppCheckGeminiCallPlanner(
             applyAuth = {
                 val appCheckToken = appCheck().getAppCheckToken(false).await().token
                 it.headers.append("X-Firebase-AppCheck", appCheckToken)
-                // Backward-compat during the rollout: always send the FID so
-                // a not-yet-redeployed function (which keys quota on
-                // X-Install-Id) keeps working, and so a token fetch failure
-                // still leaves a usable identity. The new function prefers
-                // the verified uid below and ignores this when present.
-                it.headers.append("X-Install-Id", installations().id.await())
-                // Anonymous ID token: the new function verifies it and keys
-                // quota on the unspoofable uid. If sign-in is unavailable
-                // (Anonymous provider disabled, offline), fall back to the
-                // FID-only request above rather than failing the call —
-                // worst case the user is on the old, spoofable identity, not
-                // dropped to device TTS.
-                try {
-                    val idToken = anonymousIdToken()
-                    it.headers.append("Authorization", "Bearer $idToken")
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    DiagLog.w(TAG, e, "Anonymous ID token unavailable; sending FID only")
-                }
+                it.headers.append("Authorization", "Bearer ${signedInIdToken()}")
                 it.headers.append("X-Gemini-Model", model)
             },
         )
     }
 
     /**
-     * Fetches an ID token for the anonymous Firebase user, creating that
-     * user on first use. The `uid` inside the token is what the proxy keys
-     * its per-install daily quota on — minted and signed by Firebase Auth,
-     * so the client can't choose it. [com.google.firebase.auth.FirebaseUser.getIdToken]
+     * The signed-in user's ID token. [com.google.firebase.auth.FirebaseUser.getIdToken]
      * returns a cached token until it expires (~1 h) and refreshes
-     * transparently after that, so steady-state calls don't hit the network
-     * for a new token.
+     * transparently after that, so steady-state calls don't hit the network.
      *
-     * If the cached anonymous account was deleted or disabled server-side
-     * — e.g. Firebase's optional inactive-anonymous-account cleanup ran
-     * while this install kept the user cached — the token refresh throws
-     * [FirebaseAuthInvalidUserException]. We recover by signing the stale
-     * user out and minting a fresh anonymous identity, rather than letting
-     * the install's free-voice path break permanently until app-data-clear.
-     * A fresh identity just means a fresh daily quota, which is the correct
-     * outcome for what is effectively a new install record.
+     * If the account was deleted or disabled server-side while this install
+     * kept it cached, the refresh throws [FirebaseAuthInvalidUserException].
+     * Sign the stale user out so the UI shows the signed-out state and the
+     * next call falls back to the device voice, then rethrow so this call
+     * does too.
      */
-    private suspend fun anonymousIdToken(): String {
+    private suspend fun signedInIdToken(): String {
         val firebaseAuth = auth()
-        firebaseAuth.currentUser?.let { existing ->
-            try {
-                return existing.getIdToken(false).await().token
-                    ?: error("Anonymous user returned no ID token")
-            } catch (e: FirebaseAuthInvalidUserException) {
-                DiagLog.w(TAG, e, "Cached anonymous user invalid; re-signing in")
-                firebaseAuth.signOut()
-            }
+        val user = firebaseAuth.currentUser ?: throw MissingApiKeyException()
+        return try {
+            user.getIdToken(false).await().token
+                ?: error("Signed-in user returned no ID token")
+        } catch (e: FirebaseAuthInvalidUserException) {
+            DiagLog.w(TAG, e, "Signed-in user is no longer valid; signing out")
+            firebaseAuth.signOut()
+            throw e
         }
-        val user = firebaseAuth.signInAnonymously().await().user
-            ?: error("Anonymous sign-in returned no user")
-        return user.getIdToken(false).await().token
-            ?: error("Anonymous user returned no ID token")
     }
 
     companion object {

@@ -1390,6 +1390,19 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `geminiSignInNoticeShown defaults to false and round-trips`() = runTest {
+        // Default false so the first signed-out scheduled run tells the user;
+        // reset to false on sign-in so a later sign-out tells them again.
+        subject.preferences.first().geminiSignInNoticeShown shouldBe false
+
+        subject.setGeminiSignInNoticeShown(true)
+        subject.preferences.first().geminiSignInNoticeShown shouldBe true
+
+        subject.setGeminiSignInNoticeShown(false)
+        subject.preferences.first().geminiSignInNoticeShown shouldBe false
+    }
+
+    @Test
     fun `telemetryNoticeAcked defaults to false and round-trips`() = runTest {
         // Default false so the one-time disclosure banner surfaces on first
         // launch. Acked separately from telemetryEnabled so a user who turns

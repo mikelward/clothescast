@@ -57,6 +57,7 @@ import app.clothescast.tts.GeminiTtsSpeaker
 import app.clothescast.tts.TtsVoiceOption
 import app.clothescast.tts.insightTtsUtterance
 import app.clothescast.tts.resolve
+import app.clothescast.data.SignedInGoogleAccount
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.tts.withSpeechAudioFocus
 import app.clothescast.ui.EdgeFadeOverlay
@@ -114,6 +115,15 @@ internal fun VoiceContent(
     // placeholder-driven preview lives at
     // `AppCheckDebugTokenRowPreview.kt` for visual review.
     showAppCheckDebugTokenRow: Boolean = false,
+    // Sign in with Google: builds that have it show the account section
+    // always (see voiceAccountSectionVisible). With the shared voice built in
+    // too, choosing Gemini without a key starts the sign-in.
+    googleSignInAvailable: Boolean = false,
+    sharedTtsConfigured: Boolean = false,
+    googleAccount: SignedInGoogleAccount? = null,
+    onSignIn: () -> Unit = {},
+    onSignOut: () -> Unit = {},
+    onDeleteAccount: () -> Unit = {},
 ) {
     val context = LocalContext.current
     // Only surface the "Pair from phone" handoff where typing a key directly is
@@ -234,8 +244,18 @@ internal fun VoiceContent(
                         selected = engine == selected,
                         enabled = !isPreviewing,
                         onSelect = {
+                            val startSignIn = engine != selected && geminiChoiceStartsSignIn(
+                                engine = engine,
+                                signedIn = googleAccount != null,
+                                sharedTtsConfigured = sharedTtsConfigured,
+                                geminiKeyConfigured = geminiKeyConfigured,
+                            )
                             onSetTtsEngine(engine)
-                            preview(engine, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
+                            if (startSignIn) {
+                                onSignIn()
+                            } else {
+                                preview(engine, geminiVoice, ttsStyle, deviceVoice, voiceLocale)
+                            }
                         },
                     )
                 }
@@ -246,6 +266,16 @@ internal fun VoiceContent(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        if (voiceAccountSectionVisible(signedIn = googleAccount != null, googleSignInAvailable)) {
+                            GoogleAccountSection(
+                                account = googleAccount,
+                                signedOutReason = R.string.settings_tts_gemini_sign_in_reason,
+                                enabled = !isPreviewing,
+                                onSignIn = onSignIn,
+                                onSignOut = onSignOut,
+                                onDeleteAccount = onDeleteAccount,
+                            )
+                        }
                         KeyEntryFields(
                             configured = geminiKeyConfigured,
                             statusText = stringResource(
@@ -305,7 +335,7 @@ internal fun VoiceContent(
                         )
                         // Disabled only when there's no way to actually reach
                         // Gemini — neither a BYOK key set nor the shared-key
-                        // proxy available on this build. Without either, the
+                        // proxy available (on this build, and signed in). Without either, the
                         // preview would fall back to the device voice and
                         // masquerade as Gemini. The "Not set" status above
                         // tells the user the BYOK side of why.
@@ -337,6 +367,16 @@ internal fun VoiceContent(
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                        if (voiceAccountSectionVisible(signedIn = googleAccount != null, googleSignInAvailable)) {
+                            GoogleAccountSection(
+                                account = googleAccount,
+                                signedOutReason = R.string.settings_tts_gemini_sign_in_reason,
+                                enabled = !isPreviewing,
+                                onSignIn = onSignIn,
+                                onSignOut = onSignOut,
+                                onDeleteAccount = onDeleteAccount,
+                            )
+                        }
                         DeviceVoicePicker(
                             voices = deviceVoices,
                             selectedId = deviceVoice,
@@ -776,6 +816,29 @@ internal suspend fun runTtsPreview(
         }
     }
 }
+
+/**
+ * Whether Voice settings shows the Google account section: always on a build
+ * with Sign in with Google, whatever the voice or key (maintainer,
+ * 2026-10-18), so signing in, signing out and deleting the account stay
+ * reachable (PRIVACY.md promises deletion here, and deleting needs a sign-in).
+ * A signed-in account shows even if this build somehow lacks sign-in.
+ */
+internal fun voiceAccountSectionVisible(signedIn: Boolean, googleSignInAvailable: Boolean): Boolean =
+    signedIn || googleSignInAvailable
+
+/**
+ * Whether choosing [engine] starts Sign in with Google: choosing the Gemini
+ * voice without a key of your own is the free-voice opt-in, and turning it on
+ * while signed out starts the sign-in (SPEC.md). [sharedTtsConfigured] already
+ * implies the build has sign-in.
+ */
+internal fun geminiChoiceStartsSignIn(
+    engine: TtsEngine,
+    signedIn: Boolean,
+    sharedTtsConfigured: Boolean,
+    geminiKeyConfigured: Boolean,
+): Boolean = engine == TtsEngine.GEMINI && sharedTtsConfigured && !signedIn && !geminiKeyConfigured
 
 internal fun ttsEngineLabel(engine: TtsEngine): Int = when (engine) {
     TtsEngine.DEVICE -> R.string.settings_tts_engine_device

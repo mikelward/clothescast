@@ -715,6 +715,13 @@ data class UserPreferences(
      */
     val geminiPromoCardDismissed: Boolean = false,
     /**
+     * True once the scheduled run has told a signed-out user that the free
+     * Gemini voice now needs Google sign-in (and spoke with the device voice
+     * instead). Shown once, so the notice doesn't repeat every run; reset by
+     * signing in, so a later sign-out gets told again.
+     */
+    val geminiSignInNoticeShown: Boolean = false,
+    /**
      * Bumped to `System.currentTimeMillis()` whenever the user re-grants
      * `READ_CALENDAR` via the in-app permission flow. Exists purely to
      * force the [SettingsRepository.preferences] flow to re-emit so any

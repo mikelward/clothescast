@@ -127,7 +127,7 @@
         },
         {
             "uniqueId": "androidx.appcompat:appcompat",
-            "artifactVersion": "1.1.0",
+            "artifactVersion": "1.2.0",
             "name": "Android AppCompat Library v7",
             "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
             "website": "https://developer.android.com/jetpack/androidx",
@@ -227,6 +227,28 @@
             "scm": {
                 "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
                 "url": "http://source.android.com"
+            },
+            "licenses": [
+                "Apache-2.0"
+            ],
+            "funding": [
+                
+            ]
+        },
+        {
+            "uniqueId": "androidx.biometric:biometric",
+            "artifactVersion": "1.1.0",
+            "name": "Biometric",
+            "description": "The Biometric library is a static library that you can add to your Android application. It invokes BiometricPrompt on devices running P and greater, and on older devices will show a compat dialog. Compatible on devices running API 14 or later.",
+            "website": "https://developer.android.com/jetpack/androidx/releases/biometric#1.1.0",
+            "developers": [
+                {
+                    "name": "The Android Open Source Project"
+                }
+            ],
+            "scm": {
+                "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
+                "url": "https://cs.android.com/androidx/platform/frameworks/support"
             },
             "licenses": [
                 "Apache-2.0"
@@ -903,10 +925,10 @@
         },
         {
             "uniqueId": "androidx.credentials:credentials",
-            "artifactVersion": "1.2.0-rc01",
+            "artifactVersion": "1.6.0",
             "name": "Credentials",
             "description": "Android Credentials Library",
-            "website": "https://developer.android.com/jetpack/androidx/releases/credentials#1.2.0-rc01",
+            "website": "https://developer.android.com/jetpack/androidx/releases/credentials#1.6.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -928,10 +950,10 @@
         },
         {
             "uniqueId": "androidx.credentials:credentials-play-services-auth",
-            "artifactVersion": "1.2.0-rc01",
+            "artifactVersion": "1.6.0",
             "name": "Credentials Play Services Auth",
             "description": "sign into apps using play-services-auth library",
-            "website": "https://developer.android.com/jetpack/androidx/releases/credentials#1.2.0-rc01",
+            "website": "https://developer.android.com/jetpack/androidx/releases/credentials#1.6.0",
             "developers": [
                 {
                     "name": "The Android Open Source Project"
@@ -1260,7 +1282,7 @@
         },
         {
             "uniqueId": "androidx.fragment:fragment",
-            "artifactVersion": "1.1.0",
+            "artifactVersion": "1.2.5",
             "name": "Support fragment",
             "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
             "website": "https://developer.android.com/jetpack/androidx",
@@ -2720,7 +2742,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-auth",
-            "artifactVersion": "20.7.0",
+            "artifactVersion": "21.1.1",
             "name": "play-services-auth",
             "description": "",
             "developers": [
@@ -2750,8 +2772,23 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-auth-base",
-            "artifactVersion": "18.0.4",
+            "artifactVersion": "18.0.10",
             "name": "play-services-auth-base",
+            "description": "",
+            "developers": [
+                
+            ],
+            "licenses": [
+                "ASDKL"
+            ],
+            "funding": [
+                
+            ]
+        },
+        {
+            "uniqueId": "com.google.android.gms:play-services-auth-blockstore",
+            "artifactVersion": "16.4.0",
+            "name": "play-services-auth-blockstore",
             "description": "",
             "developers": [
                 
@@ -2825,7 +2862,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-fido",
-            "artifactVersion": "20.1.0",
+            "artifactVersion": "21.0.0",
             "name": "play-services-fido",
             "description": "",
             "developers": [
@@ -2842,6 +2879,21 @@
             "uniqueId": "com.google.android.gms:play-services-flags",
             "artifactVersion": "18.1.0",
             "name": "play-services-flags",
+            "description": "",
+            "developers": [
+                
+            ],
+            "licenses": [
+                "ASDKL"
+            ],
+            "funding": [
+                
+            ]
+        },
+        {
+            "uniqueId": "com.google.android.gms:play-services-identity-credentials",
+            "artifactVersion": "16.0.0-alpha08",
+            "name": "play-services-identity-credentials",
             "description": "",
             "developers": [
                 
@@ -2975,7 +3027,7 @@
         },
         {
             "uniqueId": "com.google.android.libraries.identity.googleid:googleid",
-            "artifactVersion": "1.1.0",
+            "artifactVersion": "1.2.1",
             "name": "googleid",
             "description": "",
             "developers": [

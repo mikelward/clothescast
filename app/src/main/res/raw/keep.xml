@@ -12,6 +12,10 @@
   King"). Keep the three dynamically-referenced families so the lookup
   resolves. See HolidayBannerText.resolveBannerString, HolidayGreeting, and
   HolidaySettings.resolveHolidayString.
+
+  default_web_client_id (generated from google-services.json) is looked up
+  the same way, by name, in ClothesCastApplication: stripped, release builds
+  would quietly lose Sign in with Google.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:keep="@string/holiday_name_*,@string/holiday_banner_*,@string/settings_holiday_country_*" />
+    tools:keep="@string/holiday_name_*,@string/holiday_banner_*,@string/settings_holiday_country_*,@string/default_web_client_id" />

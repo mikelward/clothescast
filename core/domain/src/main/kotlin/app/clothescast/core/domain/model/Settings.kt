@@ -992,6 +992,13 @@ data class UserPreferences(
      */
     val forecasterColorSlots: Map<String, Int> = emptyMap(),
     /**
+     * The Google forecaster's switch, independent of Auto and of the
+     * Open-Meteo picks in [forecastModels]: it adds Google whichever way those
+     * are chosen. Google needs a key of the user's own or Google sign-in, so
+     * Auto never turns it on by itself.
+     */
+    val googleForecast: Boolean = false,
+    /**
      * Optional Smart Home / Home Assistant MQTT bridge. When [mqttBridgeEnabled]
      * is true and [mqttHost] is set, the worker publishes the rendered insight
      * prose to a retained topic on the user's MQTT broker after each twice-daily
@@ -1387,3 +1394,10 @@ enum class HomeSection {
  * text style to match, so it reads at the size it had before the setting.
  */
 const val DEFAULT_APP_FONT_SCALE = 1.15f
+
+/**
+ * The forecasters a fetch uses: the Open-Meteo picks (or Auto's regional set
+ * for [location]), plus Google when [UserPreferences.googleForecast] is on.
+ */
+fun UserPreferences.effectiveForecastModels(location: Location? = this.location): Set<ForecastModel> =
+    ForecastModel.withGoogle(forecastModels ?: ForecastModel.defaultsFor(location), googleForecast)

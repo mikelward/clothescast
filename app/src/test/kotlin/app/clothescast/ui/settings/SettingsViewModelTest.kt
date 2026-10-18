@@ -1,5 +1,7 @@
 package app.clothescast.ui.settings
 
+import kotlinx.coroutines.flow.flowOf
+import app.clothescast.data.SignedInGoogleAccount
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
@@ -209,24 +211,69 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `clearGoogleApiKey drops the Google forecaster from a custom selection`() = runTest {
-        // Google needs its own key; clearing it must remove Google so the
-        // selection doesn't keep a forecaster that can no longer contribute.
-        // Clearing the Gemini key, by contrast, leaves the selection alone.
+    fun `clearGoogleApiKey turns the Google forecaster off and leaves the picks alone`() = runTest {
+        // Google needs its own key; clearing it turns Google off so it doesn't
+        // stay on while unable to contribute. The Open-Meteo picks (or Auto)
+        // are untouched.
         subject.setGoogleApiKey("AIzaSyKey")
         subject.state.first { it.googleApiKeyConfigured }
-        subject.setForecastModels(
-            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS, ForecastModel.GOOGLE_WEATHER),
-        )
-        settingsRepository.preferences.first {
-            it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
-        }
+        val picks = setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS)
+        subject.setForecastModels(picks)
+        subject.setGoogleForecast(true)
+        settingsRepository.preferences.first { it.googleForecast }
 
         subject.clearGoogleApiKey()
 
-        settingsRepository.preferences
-            .first { it.forecastModels == setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS) }
-            .forecastModels shouldBe setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS)
+        settingsRepository.preferences.first { !it.googleForecast }.forecastModels shouldBe picks
+    }
+
+    @Test
+    fun `clearGoogleApiKey turns the Google forecaster off in Auto too`() = runTest {
+        subject.setGoogleApiKey("AIzaSyKey")
+        subject.state.first { it.googleApiKeyConfigured }
+        subject.setGoogleForecast(true)
+        subject.state.first { it.googleForecast }
+
+        subject.clearGoogleApiKey()
+
+        settingsRepository.preferences.first { !it.googleForecast }.forecastModels shouldBe null
+    }
+
+    @Test
+    fun `clearGoogleApiKey keeps Google while signed in to the forecast proxy`() = runTest {
+        // With the proxy built in and a Google sign-in, Google still works
+        // without the key, so clearing it leaves the selection alone.
+        val signedIn = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine {
+                        respond(
+                            content = ByteReadChannel("""{"results":[]}"""),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    }) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
+                googleAccount = flowOf(SignedInGoogleAccount(email = "alice@example.com")),
+                googleWeatherProxyConfigured = true,
+            ),
+        )
+        signedIn.state.first { it.googleAccount != null }
+        signedIn.setGoogleApiKey("AIzaSyKey")
+        signedIn.state.first { it.googleApiKeyConfigured }
+        signedIn.setGoogleForecast(true)
+        settingsRepository.preferences.first { it.googleForecast }
+
+        signedIn.clearGoogleApiKey()
+        signedIn.state.first { !it.googleApiKeyConfigured }
+
+        settingsRepository.preferences.first().googleForecast shouldBe true
     }
 
     @Test
@@ -235,37 +282,15 @@ class SettingsViewModelTest {
         // the Forecasters selection.
         subject.setGoogleApiKey("AIzaGoogle")
         subject.state.first { it.googleApiKeyConfigured }
-        subject.setForecastModels(
-            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS, ForecastModel.GOOGLE_WEATHER),
-        )
-        settingsRepository.preferences.first {
-            it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
-        }
+        subject.setGoogleForecast(true)
+        settingsRepository.preferences.first { it.googleForecast }
 
         subject.setApiKey("AIzaGemini")
         subject.state.first { it.apiKeyConfigured }
         subject.clearApiKey()
         subject.state.first { !it.apiKeyConfigured }
 
-        settingsRepository.preferences.first().forecastModels shouldBe
-            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GFS_SEAMLESS, ForecastModel.GOOGLE_WEATHER)
-    }
-
-    @Test
-    fun `clearGoogleApiKey falls back to Auto when dropping Google would leave too few models`() = runTest {
-        // Google + one Open-Meteo model: removing Google leaves a single model,
-        // below the two-model consensus floor, so the selection reverts to Auto.
-        subject.setGoogleApiKey("AIzaSyKey")
-        subject.state.first { it.googleApiKeyConfigured }
-        subject.setForecastModels(setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GOOGLE_WEATHER))
-        settingsRepository.preferences.first {
-            it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
-        }
-
-        subject.clearGoogleApiKey()
-
-        settingsRepository.preferences.first { it.forecastModels == null }
-            .forecastModels shouldBe null
+        settingsRepository.preferences.first().googleForecast shouldBe true
     }
 
     @Test
@@ -298,6 +323,37 @@ class SettingsViewModelTest {
     }
 
     @Test
+    fun `clearGoogleProbe drops an earlier verdict once Google is unreachable`() = runTest {
+        val vm = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(
+                    HttpClient(MockEngine {
+                        respond(
+                            content = ByteReadChannel("""{"results":[]}"""),
+                            status = HttpStatusCode.OK,
+                            headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                        )
+                    }) { install(ContentNegotiation) { json(KotlinxJson { ignoreUnknownKeys = true }) } },
+                ),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
+                googleWeatherProbe = { GoogleWeatherProbe.Forbidden },
+            ),
+        )
+        vm.probeGoogleWeather()
+        vm.state.first { it.googleProbeResult == GoogleWeatherProbe.Forbidden }
+
+        vm.clearGoogleProbe()
+
+        vm.state.value.googleProbeResult shouldBe null
+        vm.state.value.googleProbeRunning shouldBe false
+    }
+
+    @Test
     fun `setGoogleApiKey re-probes Google when it is selected so a replaced key refreshes the status`() = runTest {
         var probeCount = 0
         val vm = track(
@@ -322,8 +378,8 @@ class SettingsViewModelTest {
         )
         vm.setGoogleApiKey("AIzaFirst")
         vm.state.first { it.googleApiKeyConfigured }
-        vm.setForecastModels(setOf(ForecastModel.ECMWF_IFS025, ForecastModel.GOOGLE_WEATHER))
-        vm.state.first { it.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true }
+        vm.setGoogleForecast(true)
+        vm.state.first { it.googleForecast }
 
         // Selecting Google doesn't probe (that's the UI LaunchedEffect's job);
         // replacing the key while Google is selected must, so the recovery flow

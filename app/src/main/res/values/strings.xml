@@ -2058,6 +2058,8 @@
     <!-- TODO: translate -->
     <string name="settings_google_delete_failed" tools:ignore="MissingTranslation">Couldn\'t delete account. Try again.</string>
     <!-- TODO: translate -->
+    <string name="settings_forecasters_google_sign_in_reason" tools:ignore="MissingTranslation">Sign in with Google to use Google without your own key.</string>
+    <!-- TODO: translate -->
     <string name="notify_gemini_sign_in_title" tools:ignore="MissingTranslation">Gemini voice paused</string>
     <!-- TODO: translate -->
     <string name="notify_gemini_sign_in_text" tools:ignore="MissingTranslation">Sign in with Google in Voice settings to keep it. Using the device voice for now.</string>

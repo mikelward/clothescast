@@ -992,8 +992,15 @@ class SettingsRepository(
      * empty set that would later trip the fetcher's degenerate-input
      * safety net.
      */
-    suspend fun setForecastModels(models: Set<ForecastModel>?) {
+    suspend fun setForecastModels(selection: Set<ForecastModel>?) {
+        // Google is [setGoogleForecast]'s, never one of the picks.
+        val models = selection?.minus(ForecastModel.GOOGLE_WEATHER)
         dataStore.edit { prefs ->
+            // Rewriting the picks drops an older build's Google entry, so
+            // move it to the switch first.
+            if (GOOGLE_FORECAST !in prefs && prefs[FORECAST_MODELS]?.contains(ForecastModel.GOOGLE_WEATHER.name) == true) {
+                prefs[GOOGLE_FORECAST] = true
+            }
             if (models.isNullOrEmpty()) {
                 prefs.remove(FORECAST_MODELS)
                 // Leave the colour slots untouched: flipping back to a custom
@@ -1007,6 +1014,11 @@ class SettingsRepository(
                 prefs.writeJson(FORECASTER_COLOR_SLOTS, ForecastModel.assignColorSlots(models, prior))
             }
         }
+    }
+
+    /** Turns the Google forecaster on or off, independent of [setForecastModels]. */
+    suspend fun setGoogleForecast(enabled: Boolean) {
+        dataStore.edit { it[GOOGLE_FORECAST] = enabled }
     }
 
     /**
@@ -1348,7 +1360,7 @@ class SettingsRepository(
         // behaviour ("fall back to DEFAULTS") was equivalent to a global trio
         // forced on every install; null lets fresh installs follow the user's
         // region.
-        val forecastModels: Set<ForecastModel>? = this[FORECAST_MODELS]
+        val storedModels: Set<ForecastModel>? = this[FORECAST_MODELS]
             ?.mapNotNull { stored ->
                 // Migrate the pre-0.25° ECMWF id forward: users who explicitly
                 // picked ECMWF before the ecmwf_ifs04 → ecmwf_ifs025 swap have
@@ -1364,6 +1376,10 @@ class SettingsRepository(
                 runCatching { ForecastModel.valueOf(name) }.getOrNull()
             }
             ?.toSet()
+        // Google has its own switch now; older builds stored it with the picks.
+        val storedGoogle = storedModels?.contains(ForecastModel.GOOGLE_WEATHER) == true
+        val forecastModels = storedModels
+            ?.minus(ForecastModel.GOOGLE_WEATHER)
             ?.takeIf { it.isNotEmpty() }
         val mqttBridgeEnabled = this[MQTT_BRIDGE_ENABLED] == true
         val mqttHost = this[MQTT_HOST]?.takeIf { it.isNotBlank() }
@@ -1450,6 +1466,9 @@ class SettingsRepository(
             holidayOverrides = holidayOverrides,
             calendarOverrides = calendarOverrides,
             forecastModels = forecastModels,
+            // Older builds kept Google inside the picks; carry that over until
+            // the switch is first written.
+            googleForecast = this[GOOGLE_FORECAST] ?: storedGoogle,
             forecasterColorSlots = parseForecasterColorSlots(this[FORECASTER_COLOR_SLOTS]),
             mqttBridgeEnabled = mqttBridgeEnabled,
             mqttHost = mqttHost,
@@ -1804,6 +1823,7 @@ class SettingsRepository(
         private val HOLIDAY_COUNTRY_ALL = booleanPreferencesKey("holiday_country_all")
         private val HOLIDAY_COUNTRY_OVERRIDES = stringSetPreferencesKey("holiday_country_overrides")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
+        private val GOOGLE_FORECAST = booleanPreferencesKey("google_forecast")
         private val FORECASTER_COLOR_SLOTS = stringPreferencesKey("forecaster_color_slots_json")
         // Legacy persisted name for the ECMWF model, retired when Open-Meteo
         // moved the IFS open feed from 0.4° to 0.25° (ecmwf_ifs04 →

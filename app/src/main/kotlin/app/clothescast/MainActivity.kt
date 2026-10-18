@@ -25,7 +25,7 @@ import app.clothescast.core.domain.model.DEFAULT_APP_FONT_SCALE
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.UserPreferences
-import app.clothescast.core.domain.model.defaultsFor
+import app.clothescast.core.domain.model.effectiveForecastModels
 import app.clothescast.diag.DiagLog
 import app.clothescast.diag.Telemetry
 import app.clothescast.locale.AppLocale
@@ -47,7 +47,7 @@ import java.time.Instant
  */
 private fun colorSlotsOf(prefs: UserPreferences): Map<String, Int> =
     ForecastModel.assignColorSlots(
-        prefs.forecastModels ?: ForecastModel.defaultsFor(prefs.location),
+        prefs.effectiveForecastModels(),
         prefs.forecasterColorSlots,
     )
 

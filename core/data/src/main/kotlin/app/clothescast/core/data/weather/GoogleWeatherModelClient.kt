@@ -11,10 +11,14 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.expectSuccess
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Parameters
 import io.ktor.http.URLProtocol
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerialName
@@ -22,6 +26,28 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 internal const val GOOGLE_WEATHER_HOST = "weather.googleapis.com"
+
+/**
+ * How a Google Weather request is authorized: with a Maps Platform key of
+ * the user's own, sent straight to Google, or through the ClothesCast
+ * `weather` proxy for a signed-in user, which holds the developer's key
+ * (SPEC.md → "Accounts and the developer-funded paths").
+ */
+sealed interface GoogleWeatherAccess {
+    /** The user's own key, as `X-Goog-Api-Key` to [GOOGLE_WEATHER_HOST]. */
+    data class OwnKey(val apiKey: String) : GoogleWeatherAccess
+
+    /**
+     * The proxy at `https://[host]/[path]`, which forwards the same fields,
+     * posted as a form body so the coordinate stays out of request logs.
+     * [authorize] adds its headers (App Check, the signed-in ID token).
+     */
+    class Proxy(
+        val host: String,
+        val path: String,
+        val authorize: suspend (HttpRequestBuilder) -> Unit,
+    ) : GoogleWeatherAccess
+}
 
 /**
  * Outcome of [GoogleWeatherModelClient.probe] — a user-facing connectivity
@@ -38,7 +64,7 @@ sealed interface GoogleWeatherProbe {
     data object NoKey : GoogleWeatherProbe
 
     /**
-     * The API rejected the key with 403 PERMISSION_DENIED. The single most
+     * The API rejected the user's own key with 403 PERMISSION_DENIED. The single most
      * common Google-on-the-charts failure, and the one with a concrete fix:
      * enable the Weather API + billing for the key's Google Cloud project, and
      * make sure the key's API restrictions don't exclude it.
@@ -99,10 +125,13 @@ class GoogleWeatherModelClient(
      * which is why every caller can ask for the whole horizon here without a
      * cheaper "near" variant.
      */
-    suspend fun fetchHourly(location: Location, apiKey: String): ZonedHourlySeries? {
-        if (apiKey.isBlank()) return null
+    suspend fun fetchHourly(location: Location, apiKey: String): ZonedHourlySeries? =
+        if (apiKey.isBlank()) null else fetchHourly(location, GoogleWeatherAccess.OwnKey(apiKey))
+
+    /** [fetchHourly] through either route; see [GoogleWeatherAccess]. */
+    suspend fun fetchHourly(location: Location, access: GoogleWeatherAccess): ZonedHourlySeries? {
         val (hours, zoneId) = try {
-            requestAllPages(location, apiKey)
+            requestAllPages(location, access)
         } catch (ce: CancellationException) {
             // Narrow the catch and rethrow cancellation so a cancelled fetch
             // doesn't get masked as "Google unavailable" and break structured
@@ -128,12 +157,15 @@ class GoogleWeatherModelClient(
      * (fixable)" and "the network blipped (transient)" is exactly what the user
      * needs to act. Both share [request]/[parse], so they can't drift apart.
      */
-    suspend fun probe(location: Location, apiKey: String): GoogleWeatherProbe {
-        if (apiKey.isBlank()) return GoogleWeatherProbe.NoKey
+    suspend fun probe(location: Location, apiKey: String): GoogleWeatherProbe =
+        if (apiKey.isBlank()) GoogleWeatherProbe.NoKey else probe(location, GoogleWeatherAccess.OwnKey(apiKey))
+
+    /** [probe] through either route; see [GoogleWeatherAccess]. */
+    suspend fun probe(location: Location, access: GoogleWeatherAccess): GoogleWeatherProbe {
         val response = try {
             // Single page is enough for a connectivity check — no need to walk
             // the full horizon just to learn the key reaches the API.
-            request(location, apiKey, maxHours = NEAR_HOURS, pageToken = null)
+            request(location, access, maxHours = NEAR_HOURS, pageToken = null)
         } catch (ce: CancellationException) {
             throw ce
         } catch (t: Throwable) {
@@ -142,9 +174,11 @@ class GoogleWeatherModelClient(
             // Weather API isn't enabled for the key's project, billing is off,
             // or the key's API restrictions exclude it. Surface it distinctly
             // from a transient network / quota / 5xx failure so the UI can point
-            // at the Cloud Console fix rather than "try again later".
+            // at the Cloud Console fix rather than "try again later". Only for a
+            // key of the user's own: a 403 through the proxy is the developer's
+            // key or the proxy refusing the caller, which the user can't fix.
             val status = (t as? ResponseException)?.response?.status?.value
-            return if (status == HttpStatusCode.Forbidden.value) {
+            return if (status == HttpStatusCode.Forbidden.value && access is GoogleWeatherAccess.OwnKey) {
                 GoogleWeatherProbe.Forbidden
             } else {
                 GoogleWeatherProbe.Failed(status)
@@ -169,7 +203,7 @@ class GoogleWeatherModelClient(
      */
     private suspend fun requestAllPages(
         location: Location,
-        apiKey: String,
+        access: GoogleWeatherAccess,
     ): Pair<List<GoogleForecastHour>, String?> {
         val all = mutableListOf<GoogleForecastHour>()
         // The zone Google reports for the location; the hours' display times
@@ -179,10 +213,10 @@ class GoogleWeatherModelClient(
         var pages = 0
         do {
             val response = if (all.isEmpty()) {
-                request(location, apiKey, EXTENDED_HOURS, pageToken)
+                request(location, access, EXTENDED_HOURS, pageToken)
             } else {
                 try {
-                    request(location, apiKey, EXTENDED_HOURS, pageToken)
+                    request(location, access, EXTENDED_HOURS, pageToken)
                 } catch (ce: CancellationException) {
                     throw ce
                 } catch (t: Throwable) {
@@ -200,42 +234,60 @@ class GoogleWeatherModelClient(
 
     private suspend fun request(
         location: Location,
-        apiKey: String,
+        access: GoogleWeatherAccess,
         maxHours: Int,
         pageToken: String?,
     ): GoogleHourlyResponse =
         apiCallLogger.instrument(ApiEndpoints.GOOGLE_WEATHER) {
-            httpClient.get {
-                expectSuccess = true
-                url {
-                    protocol = URLProtocol.HTTPS
-                    host = GOOGLE_WEATHER_HOST
-                    // `hours:lookup` must keep its literal colon. Plain
-                    // `path(...)` would too — Ktor's segment encoder
-                    // preserves ':' (GeminiTtsClient relies on that for
-                    // `<model>:generateContent`) — so pre-encoded segments
-                    // here are explicitness, not a workaround.
-                    encodedPathSegments = listOf("v1", "forecast", "hours:lookup")
-                }
-                // Send the key as a header, NOT a `key=` query param: on an HTTP
-                // error Ktor's ResponseException message embeds the request URL,
-                // which we log via the [logger] below — a `key=` in the URL would
-                // put the user's Gemini key into the recent-logs buffer that bug
-                // reports attach. Google documents X-Goog-Api-Key precisely to
-                // keep the key out of URLs.
-                header("X-Goog-Api-Key", apiKey)
-                parameter("location.latitude", location.latitude)
-                parameter("location.longitude", location.longitude)
-                parameter("hours", maxHours)
+            val query = Parameters.build {
+                append("location.latitude", location.latitude.toString())
+                append("location.longitude", location.longitude.toString())
+                append("hours", maxHours.toString())
                 // Google caps the hourly page at PAGE_SIZE; the rest of the
                 // requested window arrives via nextPageToken (see
                 // [requestAllPages]).
-                parameter("pageSize", PAGE_SIZE)
+                append("pageSize", PAGE_SIZE.toString())
                 // METRIC so temperatures come back in °C and wind in km/h, the
                 // units PerModelHour / the domain already speak — no conversion.
-                parameter("unitsSystem", "METRIC")
+                append("unitsSystem", "METRIC")
                 // Subsequent pages: hand back the token from the prior page.
-                if (pageToken != null) parameter("pageToken", pageToken)
+                if (pageToken != null) append("pageToken", pageToken)
+            }
+            when (access) {
+                is GoogleWeatherAccess.OwnKey -> httpClient.get {
+                    expectSuccess = true
+                    url {
+                        protocol = URLProtocol.HTTPS
+                        host = GOOGLE_WEATHER_HOST
+                        // `hours:lookup` must keep its literal colon. Plain
+                        // `path(...)` would too — Ktor's segment encoder
+                        // preserves ':' (GeminiTtsClient relies on that for
+                        // `<model>:generateContent`) — so pre-encoded segments
+                        // here are explicitness, not a workaround.
+                        encodedPathSegments = listOf("v1", "forecast", "hours:lookup")
+                        parameters.appendAll(query)
+                    }
+                    // Send the key as a header, NOT a `key=` query param: on an HTTP
+                    // error Ktor's ResponseException message embeds the request URL,
+                    // which we log via the [logger] below — a `key=` in the URL would
+                    // put the user's key into the recent-logs buffer that bug
+                    // reports attach. Google documents X-Goog-Api-Key precisely to
+                    // keep the key out of URLs.
+                    header("X-Goog-Api-Key", access.apiKey)
+                }
+                // The proxy takes the same fields as a form body, not a query:
+                // Cloud Run's request log records the full URL, and the
+                // coordinate must not land in it (PRIVACY.md).
+                is GoogleWeatherAccess.Proxy -> httpClient.post {
+                    expectSuccess = true
+                    url {
+                        protocol = URLProtocol.HTTPS
+                        host = access.host
+                        encodedPathSegments = listOf(access.path)
+                    }
+                    access.authorize(this)
+                    setBody(FormDataContent(query))
+                }
             }.body()
         }
 

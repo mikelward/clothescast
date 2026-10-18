@@ -1643,7 +1643,8 @@ class SettingsRepositoryTest {
         // Cover every ForecastModel value so adding or dropping an entry
         // without keeping the persistence path in sync shows up here.
         // Stored as enum names; the read-back side resolves them back.
-        for (model in ForecastModel.entries) {
+        // Google is excluded: it has its own switch (see below).
+        for (model in ForecastModel.entries - ForecastModel.GOOGLE_WEATHER) {
             val subset = ForecastModel.DEFAULTS + model
             subject.setForecastModels(subset)
             subject.preferences.first().forecastModels shouldBe subset
@@ -1669,6 +1670,46 @@ class SettingsRepositoryTest {
             setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS025)
         subject.setForecastModels(null)
         subject.preferences.first().forecastModels shouldBe null
+    }
+
+    @Test
+    fun `the Google forecaster switch is independent of the picks`() = runTest {
+        subject.preferences.first().googleForecast shouldBe false
+        subject.setGoogleForecast(true)
+        subject.preferences.first().googleForecast shouldBe true
+        subject.preferences.first().forecastModels shouldBe null
+
+        val picks = setOf(ForecastModel.UKMO_SEAMLESS, ForecastModel.ECMWF_IFS025)
+        subject.setForecastModels(picks)
+        subject.setForecastModels(null)
+        subject.preferences.first().googleForecast shouldBe true
+
+        subject.setGoogleForecast(false)
+        subject.preferences.first().googleForecast shouldBe false
+    }
+
+    @Test
+    fun `Google stored with the picks by an older build moves to the switch`() = runTest {
+        dataStore.edit {
+            it[stringSetPreferencesKey("forecast_models")] =
+                setOf("ECMWF_IFS025", "UKMO_SEAMLESS", "GOOGLE_WEATHER")
+        }
+        val prefs = subject.preferences.first()
+        prefs.forecastModels shouldBe setOf(ForecastModel.ECMWF_IFS025, ForecastModel.UKMO_SEAMLESS)
+        prefs.googleForecast shouldBe true
+
+        // Rewriting the picks keeps Google on rather than losing it.
+        subject.setForecastModels(setOf(ForecastModel.ECMWF_IFS025, ForecastModel.ICON_SEAMLESS))
+        subject.preferences.first().googleForecast shouldBe true
+    }
+
+    @Test
+    fun `setForecastModels never stores Google with the picks`() = runTest {
+        subject.setForecastModels(
+            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.ICON_SEAMLESS, ForecastModel.GOOGLE_WEATHER),
+        )
+        subject.preferences.first().forecastModels shouldBe
+            setOf(ForecastModel.ECMWF_IFS025, ForecastModel.ICON_SEAMLESS)
     }
 
     @Test

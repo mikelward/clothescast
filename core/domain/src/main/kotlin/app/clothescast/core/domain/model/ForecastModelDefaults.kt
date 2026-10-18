@@ -181,3 +181,15 @@ fun ForecastModel.Companion.defaultsFor(location: Location?): Set<ForecastModel>
         else -> DEFAULTS
     }
 }
+
+/**
+ * [models]' Open-Meteo forecasters plus Google when [google]. A set already at
+ * [ForecastModel.MAX_MODELS] gives up its last model to make room — for Auto's
+ * regional sets that's the least local one, and the picker never lets a
+ * custom pick reach the cap with Google on.
+ */
+fun ForecastModel.Companion.withGoogle(models: Set<ForecastModel>, google: Boolean): Set<ForecastModel> {
+    val openMeteo = models - ForecastModel.GOOGLE_WEATHER
+    if (!google) return openMeteo
+    return openMeteo.take(ForecastModel.MAX_MODELS - 1).toSet() + ForecastModel.GOOGLE_WEATHER
+}

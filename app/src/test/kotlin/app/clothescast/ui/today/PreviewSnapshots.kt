@@ -775,6 +775,17 @@ class PreviewSnapshots {
     @Config(qualifiers = "w360dp-h1400dp-xhdpi")
     fun settings_forecasters_google_no_key() = capture { SettingsForecastersGoogleNoKeyPreview() }
 
+    // The Google forecaster without a key of the user's own: signed out (the
+    // sign-in button) and signed in with Auto on (Google added to Auto's set).
+    // The account section sits at the bottom of the page, hence the height.
+    @Test
+    @Config(qualifiers = "w360dp-h2400dp-xhdpi")
+    fun settings_forecasters_google_signed_out() = capture { SettingsForecastersGoogleSignedOutPreview() }
+
+    @Test
+    @Config(qualifiers = "w360dp-h2400dp-xhdpi")
+    fun settings_forecasters_google_signed_in() = capture { SettingsForecastersGoogleSignedInPreview() }
+
     // The merged Calendar page renders the permission + feature toggle cards,
     // the celebration sources card, the two calendar listings, one collapsible
     // per country (15), and a flat "All" collapsible — well past the

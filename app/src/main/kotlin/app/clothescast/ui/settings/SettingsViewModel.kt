@@ -78,13 +78,6 @@ private fun List<WorkInfo>.hasActiveWork(): Boolean = any { info ->
         info.state == WorkInfo.State.BLOCKED
 }
 
-/**
- * Smallest forecaster selection the confidence spread can be computed from
- * (mirrors the Forecasters picker's MIN_MODELS). Used when clearing the Gemini
- * key drops the Google forecaster: if too few models would remain, fall back to
- * Auto rather than persist a one-model selection.
- */
-private const val MIN_CONSENSUS_MODELS = 2
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
@@ -189,6 +182,8 @@ class SettingsViewModel(
      * [sharedTtsConfigured] it drives [SettingsState.sharedTtsAvailable].
      */
     private val googleAccount: Flow<SignedInGoogleAccount?> = flowOf(null),
+    /** Passed straight through to [SettingsState.googleWeatherProxyConfigured]. */
+    private val googleWeatherProxyConfigured: Boolean = false,
     /**
      * Reads the user's synced calendars for the Celebrations screen's
      * upcoming-birthdays / -holidays listing. Null in pure-VM tests that don't
@@ -217,7 +212,11 @@ class SettingsViewModel(
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
-        SettingsState(sharedTtsConfigured = sharedTtsConfigured, googleSignInAvailable = googleSignInAvailable),
+        SettingsState(
+            sharedTtsConfigured = sharedTtsConfigured,
+            googleSignInAvailable = googleSignInAvailable,
+            googleWeatherProxyConfigured = googleWeatherProxyConfigured,
+        ),
     )
     val state: StateFlow<SettingsState> = _state.asStateFlow()
 
@@ -328,6 +327,7 @@ class SettingsViewModel(
                         themeFromCalendarBirthdays = prefs.themeFromCalendarBirthdays,
                         telemetryEnabled = prefs.telemetryEnabled,
                         forecastModels = prefs.forecastModels,
+                        googleForecast = prefs.googleForecast,
                         mqttBridgeEnabled = prefs.mqttBridgeEnabled,
                         mqttHost = prefs.mqttHost.orEmpty(),
                         mqttPort = prefs.mqttPort,
@@ -546,26 +546,26 @@ class SettingsViewModel(
         viewModelScope.launch {
             keyStore.setGoogleApiKey(key.trim())
             refreshGoogleApiKeyStatus()
-            if (_state.value.forecastModels?.contains(ForecastModel.GOOGLE_WEATHER) == true) {
+            if (_state.value.googleForecast) {
                 probeGoogleWeather()
             }
         }
     }
 
     /**
-     * Clears the Google API key and drops the Google forecaster from a custom
-     * selection — it can no longer contribute without the key. Falls back to
-     * Auto if fewer than two models would remain (the confidence spread needs at
-     * least two), mirroring the old Gemini-key cleanup that this replaces.
+     * Clears the Google API key and turns the Google forecaster off — it can
+     * no longer contribute without the key, unless the user is signed in to
+     * the Google forecast proxy.
      */
     fun clearGoogleApiKey() {
         viewModelScope.launch {
             keyStore.clearGoogleApiKey()
             refreshGoogleApiKeyStatus()
-            val selected = settingsRepository.preferences.first().forecastModels
-            if (selected != null && ForecastModel.GOOGLE_WEATHER in selected) {
-                val remaining = selected - ForecastModel.GOOGLE_WEATHER
-                settingsRepository.setForecastModels(remaining.takeIf { it.size >= MIN_CONSENSUS_MODELS })
+            // Signed in on a build with the proxy, Google keeps working
+            // without the key, so it stays selected.
+            val proxyUsable = googleWeatherProxyConfigured && _state.value.googleAccount != null
+            if (!proxyUsable && settingsRepository.preferences.first().googleForecast) {
+                settingsRepository.setGoogleForecast(false)
             }
         }
     }
@@ -1029,6 +1029,11 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setForecastModels(models) }
     }
 
+    /** The Google forecaster's switch, independent of [setForecastModels]. */
+    fun setGoogleForecast(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setGoogleForecast(enabled) }
+    }
+
     /**
      * Runs a one-shot Google Weather connectivity probe and surfaces the result
      * on the Forecasters page. The page calls this when the Google forecaster
@@ -1069,6 +1074,17 @@ class SettingsViewModel(
         googleProbeJob = job
         previous?.cancel()
         job.start()
+    }
+
+    /**
+     * Drops the probe verdict (and any probe in flight) when the Google
+     * forecaster can no longer be reached, so a "Google is contributing" from
+     * before a sign-out doesn't linger beside a forecaster that can't.
+     */
+    fun clearGoogleProbe() {
+        googleProbeJob?.cancel()
+        googleProbeJob = null
+        _state.update { it.copy(googleProbeRunning = false, googleProbeResult = null) }
     }
 
     /**
@@ -1389,6 +1405,7 @@ class SettingsViewModel(
         private val sharedTtsConfigured: Boolean = false,
         private val googleSignInAvailable: Boolean = false,
         private val googleAccount: Flow<SignedInGoogleAccount?> = flowOf(null),
+        private val googleWeatherProxyConfigured: Boolean = false,
         private val calendarEventReader: CalendarEventReader? = null,
         private val insightCache: InsightCache? = null,
         private val googleWeatherProbe: (suspend () -> GoogleWeatherProbe)? = null,
@@ -1417,6 +1434,7 @@ class SettingsViewModel(
                 sharedTtsConfigured = sharedTtsConfigured,
                 googleSignInAvailable = googleSignInAvailable,
                 googleAccount = googleAccount,
+                googleWeatherProxyConfigured = googleWeatherProxyConfigured,
                 calendarEventReader = calendarEventReader,
                 insightCache = insightCache,
                 googleWeatherProbe = googleWeatherProbe,

@@ -1189,6 +1189,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_gemini_promo_body">Zapněte Gemini a poslechněte si svůj ClothesCast přirozenými, věrnými hlasy.</string>
     <string name="today_gemini_promo_cta">Nastavení hlasu</string>
     <string name="today_gemini_promo_dismiss">Zavřít</string>
+    <string name="today_google_forecast_promo_dismiss">Zavřít</string>
     <string name="today_clothes_promo_title">Přizpůsob si oblečení</string>
     <string name="today_insight_format_link">Formát</string>
     <string name="today_play">Přehrát</string>

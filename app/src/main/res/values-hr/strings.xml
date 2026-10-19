@@ -1248,6 +1248,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_gemini_promo_body">Uključite Gemini da čujete svoj ClothesCast prirodnim, životnim glasovima.</string>
     <string name="today_gemini_promo_cta">Postavke glasa</string>
     <string name="today_gemini_promo_dismiss">Odbaci</string>
+    <string name="today_google_forecast_promo_dismiss">Odbaci</string>
     <string name="today_clothes_promo_title">Prilagodi odjeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>

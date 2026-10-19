@@ -1179,6 +1179,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_promo_body">เปิด Gemini เพื่อฟัง ClothesCast ของคุณด้วยเสียงที่เป็นธรรมชาติและสมจริง</string>
     <string name="today_gemini_promo_cta">การตั้งค่าเสียง</string>
     <string name="today_gemini_promo_dismiss">ปิด</string>
+    <string name="today_google_forecast_promo_dismiss">ปิด</string>
     <string name="today_clothes_promo_title">ปรับเสื้อผ้าให้เป็นของคุณ</string>
     <string name="today_insight_format_link">รูปแบบ</string>
     <string name="today_play">เล่น</string>

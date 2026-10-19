@@ -469,6 +469,17 @@
     <string name="today_gemini_promo_body">Turn on Gemini to hear your ClothesCast in natural, lifelike voices.</string>
     <string name="today_gemini_promo_cta">Speech settings</string>
     <string name="today_gemini_promo_dismiss">Dismiss</string>
+    <string name="today_google_forecast_promo_dismiss">Dismiss</string>
+
+    <!-- Promo card on the Today screen pointing everyone at the Google
+         forecaster until they dismiss it or follow its CTA to Forecasters
+         settings. -->
+    <!-- TODO: translate -->
+    <string name="today_google_forecast_promo_title" tools:ignore="MissingTranslation">Try Google forecasts</string>
+    <!-- TODO: translate -->
+    <string name="today_google_forecast_promo_body" tools:ignore="MissingTranslation">Choose your weather forecast providers for increased accuracy.</string>
+    <!-- TODO: translate -->
+    <string name="today_google_forecast_promo_cta" tools:ignore="MissingTranslation">Forecasters settings</string>
 
     <!-- Card on the Today screen shown when a cast used up the shared free
          Gemini voice allowance for the day. The cast still played in the

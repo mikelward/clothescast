@@ -1292,6 +1292,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_gemini_promo_body">Attiva Gemini per ascoltare il tuo ClothesCast con voci naturali e realistiche.</string>
     <string name="today_gemini_promo_cta">Impostazioni voce</string>
     <string name="today_gemini_promo_dismiss">Ignora</string>
+    <string name="today_google_forecast_promo_dismiss">Ignora</string>
     <string name="today_clothes_promo_title">Personalizza l\'abbigliamento</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Riproduci</string>

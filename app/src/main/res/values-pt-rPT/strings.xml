@@ -1308,6 +1308,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_gemini_promo_body">Ative o Gemini para ouvir o seu ClothesCast com vozes naturais e realistas.</string>
     <string name="today_gemini_promo_cta">Definições de voz</string>
     <string name="today_gemini_promo_dismiss">Dispensar</string>
+    <string name="today_google_forecast_promo_dismiss">Dispensar</string>
     <string name="today_clothes_promo_title">Faz a roupa tua</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Reproduzir</string>

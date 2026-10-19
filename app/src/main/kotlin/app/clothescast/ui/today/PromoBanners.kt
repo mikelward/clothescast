@@ -6,17 +6,18 @@ package app.clothescast.ui.today
  * operational banners (update / crash / work-status / holiday), which aren't
  * capped.
  */
-internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, PLAY, GEMINI, SCHEDULE, CELEBRATION }
+internal enum class PromoBanner { LOCATION, TELEMETRY, CLOTHES, PLAY, GEMINI, SCHEDULE, CELEBRATION, GOOGLE_FORECAST }
 
 /**
  * Decides which promo cards the Today screen shows, capping the stack so a
  * fresh user isn't buried under "set this up" noise. Eligible cards are taken
- * in priority order (location > privacy > clothes > play > gemini > schedule > celebration) up
+ * in priority order (location > privacy > clothes > play > gemini > schedule > celebration > google forecast) up
  * to [maxVisible]; the rest wait until a higher one is resolved or dismissed.
  *
- * The five customization nudges — clothes ([clothesPromoEligible]),
+ * The six customization nudges — clothes ([clothesPromoEligible]),
  * schedule ([schedulePromoEligible]), play ([playPromoEligible]),
- * Gemini voices ([geminiPromoEligible]), and
+ * Gemini voices ([geminiPromoEligible]), the Google forecast
+ * ([googleForecastPromoEligible]), and
  * holiday/birthday theming ([celebrationEligible]) — plus the location prompt
  * ([locationActionRequired]) are held back until [hasForecast]:
  * the user has received at least one forecast (foreground or background), i.e.
@@ -44,6 +45,7 @@ internal fun promoBannersToShow(
     playPromoEligible: Boolean,
     geminiPromoEligible: Boolean,
     celebrationEligible: Boolean,
+    googleForecastPromoEligible: Boolean = false,
     hasForecast: Boolean,
     maxVisible: Int = 2,
 ): Set<PromoBanner> {
@@ -57,6 +59,7 @@ internal fun promoBannersToShow(
         if (geminiPromoEligible && hasForecast) add(PromoBanner.GEMINI)
         if (schedulePromoEligible && hasForecast) add(PromoBanner.SCHEDULE)
         if (celebrationEligible && hasForecast) add(PromoBanner.CELEBRATION)
+        if (googleForecastPromoEligible && hasForecast) add(PromoBanner.GOOGLE_FORECAST)
     }
     return eligible.take(maxVisible).toSet()
 }

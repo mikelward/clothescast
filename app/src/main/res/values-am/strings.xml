@@ -1147,6 +1147,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_promo_body">የእርስዎን ClothesCast በተፈጥሯዊ፣ ሕያው ድምፆች ለመስማት Gemini ን ያብሩ።</string>
     <string name="today_gemini_promo_cta">የድምፅ ቅንብሮች</string>
     <string name="today_gemini_promo_dismiss">ዝጋ</string>
+    <string name="today_google_forecast_promo_dismiss">ዝጋ</string>
     <string name="today_clothes_promo_title">ልብሶቹን የራስህ አድርግ</string>
     <string name="today_insight_format_link">ቅርጸት</string>
     <string name="today_play">አጫውት</string>

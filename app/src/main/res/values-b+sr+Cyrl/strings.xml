@@ -1157,6 +1157,7 @@ surfaces.
     <string name="today_gemini_promo_body">Укључите Gemini да чујете свој ClothesCast природним, животним гласовима.</string>
     <string name="today_gemini_promo_cta">Подешавања гласа</string>
     <string name="today_gemini_promo_dismiss">Одбаци</string>
+    <string name="today_google_forecast_promo_dismiss">Одбаци</string>
     <string name="today_clothes_promo_title">Прилагоди одећу себи</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Пусти</string>

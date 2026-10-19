@@ -1148,6 +1148,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_promo_body">Washa Gemini ili kusikia ClothesCast yako kwa sauti za asili, zinazofanana na halisi.</string>
     <string name="today_gemini_promo_cta">Mipangilio ya sauti</string>
     <string name="today_gemini_promo_dismiss">Funga</string>
+    <string name="today_google_forecast_promo_dismiss">Funga</string>
     <string name="today_clothes_promo_title">Fanya nguo ziwe zako</string>
     <string name="today_insight_format_link">Umbo</string>
     <string name="today_play">Cheza</string>

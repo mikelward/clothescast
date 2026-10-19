@@ -147,6 +147,7 @@ fun ClothesCastNavHost(
                 onNavigateToDeveloper = { nav.navigate(DeveloperDest) },
                 onNavigateToFormat = { nav.navigate(FormatDest) },
                 onNavigateToVoice = { nav.navigate(VoiceDest) },
+                onNavigateToForecasters = { nav.navigate(ForecastersDest) },
             )
         }
 

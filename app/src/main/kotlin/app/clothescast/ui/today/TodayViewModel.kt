@@ -221,6 +221,12 @@ data class TodayState(
      */
     val geminiTtsPromoCardVisible: Boolean = false,
     /**
+     * Whether the "Try Google forecasts" promo card is
+     * eligible: shown to everyone until they dismiss it or follow it to
+     * Forecasters settings (maintainer, 2026-10-19).
+     */
+    val googleForecastPromoCardVisible: Boolean = false,
+    /**
      * Whether the "free voice limit reached" card is showing — true iff a synth
      * hit the shared-key daily Gemini TTS allowance, the user hasn't dismissed
      * that exceedance, AND no BYOK Gemini key is configured (a configured key
@@ -767,6 +773,7 @@ class TodayViewModel(
             // card's CTA) the limit no longer applies and the card hides
             // immediately — without waiting for the next synth to clear the
             // persisted quota status.
+            googleForecastPromoCardVisible = !prefs.googleForecastPromoCardDismissed,
             geminiTtsLimitCardVisible = misc.geminiTtsLimitExceeded &&
                 !geminiKeyConfigured &&
                 !geminiKeyNeedsReentry,
@@ -850,6 +857,16 @@ class TodayViewModel(
     fun dismissGeminiTtsPromoCard() {
         viewModelScope.launch {
             settingsRepository.setGeminiPromoCardDismissed(true)
+        }
+    }
+
+    /**
+     * Persists the dismissal of the Google forecast promo card, from its X or
+     * its CTA, as [dismissGeminiTtsPromoCard] does.
+     */
+    fun dismissGoogleForecastPromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setGoogleForecastPromoCardDismissed(true)
         }
     }
 

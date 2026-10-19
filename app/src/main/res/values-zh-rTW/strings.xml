@@ -1341,6 +1341,7 @@ label localises.
     <string name="today_gemini_promo_body">開啟 Gemini，以自然逼真的語音聆聽您的 ClothesCast。</string>
     <string name="today_gemini_promo_cta">語音設定</string>
     <string name="today_gemini_promo_dismiss">關閉</string>
+    <string name="today_google_forecast_promo_dismiss">關閉</string>
     <string name="today_clothes_promo_title">把服裝變成你的</string>
     <string name="today_insight_format_link">格式</string>
     <string name="today_play">播放</string>

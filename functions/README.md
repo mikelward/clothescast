@@ -123,6 +123,25 @@ using Application Default Credentials for the project. The change applies
 at the app's next ID-token refresh, within an hour. Claims on anonymous
 callers are ignored.
 
+Once the proxy stops accepting older app versions (the `TODO.md` cutover),
+delete what they left behind: every anonymous Firebase user and every `quota`
+doc without `expireAt`, as `docs/delete-account.md` promises.
+
+```sh
+npm run build
+node scripts/purge-legacy-identities.js --project <id>           # dry run
+node scripts/purge-legacy-identities.js --project <id> --apply   # deletes
+```
+
+Run `--apply` only after the cutover is deployed **and** the Anonymous
+provider is disabled (Firebase console → Authentication → Sign-in method →
+Anonymous). Older app versions call `signInAnonymously()` before they reach
+the proxy, so while the provider is on, an old install opened after the purge
+creates a new anonymous user even though the proxy then rejects it. `--project` is required, so the target is
+never whichever project Application Default Credentials happen to resolve
+to. It prints the project and counts, never uids, and paces user deletes to
+the Auth API's 1 request a second.
+
 If Firestore is unreachable, the function **fails open** (forwards
 the call without recording it) so a backend hiccup doesn't deny
 service. The trade-off is that a sustained outage lets a single

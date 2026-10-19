@@ -4,7 +4,6 @@ import com.mikepenz.aboutlibraries.entity.Developer
 import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.entity.Organization
 import io.kotest.matchers.shouldBe
-import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Test
 
 /**
@@ -32,7 +31,7 @@ class LibraryAuthorsTest {
         name = "Example",
         description = null,
         website = null,
-        developers = persistentListOf(*developers.toTypedArray()),
+        developers = developers,
         organization = organization,
         scm = null,
     )

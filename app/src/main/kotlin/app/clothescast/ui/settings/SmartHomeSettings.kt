@@ -59,8 +59,8 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-private const val SETUP_GUIDE_URL =
-    "https://github.com/mikelward/clothescast/blob/main/docs/smart-home.md"
+internal const val SETUP_GUIDE_URL =
+    "https://mikelward.github.io/clothescast/docs/smart-home.html"
 // PRIVACY_POLICY_URL lives in SettingsCommon.kt — shared with Privacy +
 // Location settings.
 

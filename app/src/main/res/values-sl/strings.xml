@@ -300,7 +300,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
 
     <!-- API key screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Glasovi v visoki kakovosti prek strežnikov ClothesCast in Gemini.</string>
     <string name="settings_tts_device_header">Glasovi v nizki kakovosti, vgrajeni v tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini-ključ je nastavljen.</string>
     <string name="settings_api_key_placeholder">Prilepi svoj Gemini API-ključ</string>
@@ -1254,7 +1253,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Model UI podjetja ECMWF — zanesljiv do 15 dni vnaprej, zato podpira grafe za drugi teden. Nekateri podrobni grafi zanj morda ne prikazujejo črte.</string>
-    <string name="settings_forecasters_google_subtitle">Googlova napoved vremena z UI. Uporablja Google API-ključ.</string>
     <string name="settings_forecasters_google_key_header">Google API-ključ</string>
     <string name="settings_forecasters_google_key_placeholder">Prilepite svoj Google API-ključ</string>
     <string name="settings_forecasters_google_key_save">Shrani Google-ključ</string>

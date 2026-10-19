@@ -562,7 +562,6 @@ the displayed label localizes.
     <string name="settings_display_theme_dark">ダーク</string>
 
     <!-- API keys screen — header above the Gemini block. -->
-    <string name="settings_api_key_gemini_header">ClothesCast と Gemini のサーバー経由の高品質な音声。</string>
     <string name="settings_tts_device_header">スマホに内蔵された低品質な音声。</string>
 
     <!-- Location screen additions — device-location subtitle, in-flight
@@ -1415,7 +1414,6 @@ the displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWFのAIモデル — 15日先まで精度が高く、2週目のチャートを担っています。一部の詳細チャートではこのモデルの線が表示されないことがあります。</string>
-    <string name="settings_forecasters_google_subtitle">GoogleのAI天気予報。Google APIキーを使用します。</string>
     <string name="settings_forecasters_google_key_header">Google APIキー</string>
     <string name="settings_forecasters_google_key_placeholder">Google APIキーを貼り付けてください</string>
     <string name="settings_forecasters_google_key_save">Googleキーを保存</string>

@@ -282,7 +282,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Settings — API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">صداهای باکیفیت از طریق سرورهای ClothesCast و Gemini.</string>
     <string name="settings_tts_device_header">صداهای کم‌کیفیت تعبیه‌شده در گوشی شما.</string>
     <string name="settings_api_key_status_set">یک کلید Gemini پیکربندی شده.</string>
     <string name="settings_api_key_placeholder">کلید Gemini API خود را جای‌گذاری کنید</string>
@@ -1255,7 +1254,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">مدل هوش مصنوعی ECMWF — تا ۱۵ روز آینده قابل اعتماد است، بنابراین نمودارهای هفته دوم را بر عهده دارد. برخی نمودارهای جزئی ممکن است خطی برای آن نشان ندهند.</string>
-    <string name="settings_forecasters_google_subtitle">پیش‌بینی هوش مصنوعی آب‌وهوای Google. از یک کلید Google API استفاده می‌کند.</string>
     <string name="settings_forecasters_google_key_header">کلید Google API</string>
     <string name="settings_forecasters_google_key_placeholder">کلید Google API خود را جای‌گذاری کنید</string>
     <string name="settings_forecasters_google_key_save">ذخیره کلید Google</string>

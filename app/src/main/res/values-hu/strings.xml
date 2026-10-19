@@ -266,7 +266,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Kiváló minőségű hangok a ClothesCast és a Gemini szerverein keresztül.</string>
     <string name="settings_tts_device_header">A telefonodba beépített, gyenge minőségű hangok.</string>
     <string name="settings_api_key_status_set">Gemini-kulcs be van állítva.</string>
     <string name="settings_api_key_placeholder">Gemini API-kulcs beillesztése ide</string>
@@ -1260,7 +1259,6 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Az ECMWF mesterségesintelligencia-modellje — 15 napig megbízható, ezért ő hordozza a második hét diagramjait. Egyes részletes diagramok esetleg nem jelenítenek meg vonalat hozzá.</string>
-    <string name="settings_forecasters_google_subtitle">A Google mesterséges intelligenciás időjárás-előrejelzése. Google API-kulcsot használ.</string>
     <string name="settings_forecasters_google_key_header">Google API-kulcs</string>
     <string name="settings_forecasters_google_key_placeholder">Illeszd be a Google API-kulcsodat</string>
     <string name="settings_forecasters_google_key_save">Google-kulcs mentése</string>

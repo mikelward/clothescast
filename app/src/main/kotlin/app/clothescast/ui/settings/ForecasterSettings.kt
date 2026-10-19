@@ -224,7 +224,7 @@ internal fun ForecastersContent(
                     ((googleReachable || signInWouldReach) && (isAuto || !atCap))
                 ForecasterRow(
                     label = stringResource(forecastModelLabel(ForecastModel.GOOGLE_WEATHER)),
-                    subtitle = stringResource(forecastModelSubtitle(ForecastModel.GOOGLE_WEATHER)),
+                    subtitle = stringResource(googleForecasterSubtitle(googleWeatherProxyConfigured)),
                     checked = googleChecked,
                     enabled = googleEnabled,
                     onToggle = { nowChecked ->
@@ -432,6 +432,17 @@ private fun forecastModelSubtitle(model: ForecastModel): Int = when (model) {
     ForecastModel.ECMWF_AIFS025_SINGLE -> R.string.settings_forecasters_aifs_subtitle
     ForecastModel.GOOGLE_WEATHER -> R.string.settings_forecasters_google_subtitle
 }
+
+/**
+ * The Google row's subtitle: mentions sign-in only on builds with the proxy
+ * built in, so a key-only build doesn't offer a route it lacks.
+ */
+internal fun googleForecasterSubtitle(googleWeatherProxyConfigured: Boolean): Int =
+    if (googleWeatherProxyConfigured) {
+        R.string.settings_forecasters_google_subtitle
+    } else {
+        R.string.settings_forecasters_google_subtitle_key_only
+    }
 
 /**
  * Whether turning the Google forecaster on starts Sign in with Google: signed

@@ -555,7 +555,6 @@ label localizes.
     <string name="settings_display_theme_dark">深色</string>
 
     <!-- API keys screen — header above the Gemini block. -->
-    <string name="settings_api_key_gemini_header">通过 ClothesCast 和 Gemini 服务器的高质量语音。</string>
     <string name="settings_tts_device_header">内置于你手机的低质量语音。</string>
 
     <!-- Location screen additions — device-location subtitle, in-flight
@@ -1414,7 +1413,6 @@ label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF 的 AI 模型——预报能力可达 15 天，因此承担第二周的图表。部分详细图表可能不会显示它的曲线。</string>
-    <string name="settings_forecasters_google_subtitle">Google 的 AI 天气预报。使用 Google API 密钥。</string>
     <string name="settings_forecasters_google_key_header">Google API 密钥</string>
     <string name="settings_forecasters_google_key_placeholder">粘贴您的 Google API 密钥</string>
     <string name="settings_forecasters_google_key_save">保存 Google 密钥</string>

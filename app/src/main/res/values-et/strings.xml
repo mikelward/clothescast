@@ -179,7 +179,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_privacy_open_policy">Loe täielikku privaatsuspoliitikat</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Kõrgkvaliteetsed hääled ClothesCasti ja Gemini serverite kaudu.</string>
     <string name="settings_tts_device_header">Madala kvaliteediga hääled, mis on telefoni sisse ehitatud.</string>
     <string name="settings_api_key_status_set">Gemini võti on seadistatud.</string>
     <string name="settings_api_key_placeholder">Kleebi oma Gemini API-võti</string>
@@ -1211,7 +1210,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF-i tehisintellektimudel — täpne kuni 15 päeva ette, seetõttu kannab see teise nädala diagramme. Mõned üksikasjalikud diagrammid ei pruugi selle jaoks joont kuvada.</string>
-    <string name="settings_forecasters_google_subtitle">Google\'i tehisintellekti ilmaprognoos. Kasutab Google\'i API-võtit.</string>
     <string name="settings_forecasters_google_key_header">Google\'i API-võti</string>
     <string name="settings_forecasters_google_key_placeholder">Kleebi oma Google\'i API-võti</string>
     <string name="settings_forecasters_google_key_save">Salvesta Google\'i võti</string>

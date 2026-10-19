@@ -546,7 +546,6 @@
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">Ndërmjetësi MQTT</string>
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Zëra cilësorë përmes serverëve të ClothesCast dhe Gemini.</string>
     <string name="settings_tts_device_header">Zëra me cilësi të ulët të integruar në telefonin tënd.</string>
     <string name="settings_api_key_status_set">Një çelës Gemini është i konfiguruar.</string>
     <string name="settings_api_key_status_unset">4 falas çdo ditë, merr një çelës për më shumë.</string>
@@ -1123,7 +1122,6 @@
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Modeli AI i ECMWF — i saktë deri në 15 ditë, ndaj mban grafikët e javës së dytë. Disa grafikë të detajuar mund të mos shfaqin një vijë për të.</string>
-    <string name="settings_forecasters_google_subtitle">Parashikimi i motit me AI i Google. Përdor një çelës API të Google.</string>
     <string name="settings_forecasters_google_key_header">Çelësi API i Google</string>
     <string name="settings_forecasters_google_key_placeholder">Ngjit çelësin tënd API të Google</string>
     <string name="settings_forecasters_google_key_save">Ruaj çelësin e Google</string>

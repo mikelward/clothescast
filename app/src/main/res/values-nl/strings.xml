@@ -505,7 +505,6 @@ the displayed label localizes.
     <string name="settings_display_theme_dark">Donker</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Stemmen van hoge kwaliteit via de servers van ClothesCast en Gemini.</string>
     <string name="settings_tts_device_header">Stemmen van lage kwaliteit ingebouwd in je telefoon.</string>
 
     <!-- Location screen — additional strings. -->
@@ -1315,7 +1314,6 @@ the displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Het AI-model van ECMWF — betrouwbaar tot 15 dagen vooruit, waardoor het de grafieken van de tweede week draagt. Sommige detailgrafieken tonen mogelijk geen lijn ervoor.</string>
-    <string name="settings_forecasters_google_subtitle">Google\'s AI-weersvoorspelling. Gebruikt een Google API-sleutel.</string>
     <string name="settings_forecasters_google_key_header">Google API-sleutel</string>
     <string name="settings_forecasters_google_key_placeholder">Plak je Google API-sleutel</string>
     <string name="settings_forecasters_google_key_save">Google-sleutel opslaan</string>

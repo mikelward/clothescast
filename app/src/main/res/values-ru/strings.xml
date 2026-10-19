@@ -304,7 +304,6 @@ only the displayed label localizes.
     and save / clear buttons. URLs stay verbatim.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Голоса высокого качества через серверы ClothesCast и Gemini.</string>
     <string name="settings_tts_device_header">Голоса низкого качества, встроенные в твой телефон.</string>
 
     <string name="settings_api_key_status_set">Ключ Gemini настроен.</string>
@@ -1322,7 +1321,6 @@ only the displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ИИ-модель ECMWF — точна на срок до 15 дней, поэтому именно она обеспечивает графики второй недели. На некоторых детальных графиках для неё может не быть линии.</string>
-    <string name="settings_forecasters_google_subtitle">ИИ-прогноз погоды от Google. Использует ключ API Google.</string>
     <string name="settings_forecasters_google_key_header">Ключ API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Вставьте свой ключ API Google</string>
     <string name="settings_forecasters_google_key_save">Сохранить ключ Google</string>

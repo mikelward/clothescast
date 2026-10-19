@@ -454,7 +454,6 @@ displayed label localizes.
     <string name="settings_display_theme_light">Açık</string>
     <string name="settings_display_theme_dark">Koyu</string>
 
-    <string name="settings_api_key_gemini_header">ClothesCast ve Gemini sunucuları üzerinden yüksek kaliteli sesler.</string>
     <string name="settings_tts_device_header">Telefonuna yerleşik düşük kaliteli sesler.</string>
 
     <string name="settings_location_detecting">Belirleniyor…</string>
@@ -1267,7 +1266,6 @@ displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF\'nin YZ modeli — 15 güne kadar isabetli, bu yüzden ikinci hafta grafiklerini taşır. Bazı ayrıntılı grafiklerde bunun için bir çizgi görünmeyebilir.</string>
-    <string name="settings_forecasters_google_subtitle">Google\'ın YZ hava tahmini. Google API anahtarı kullanır.</string>
     <string name="settings_forecasters_google_key_header">Google API anahtarı</string>
     <string name="settings_forecasters_google_key_placeholder">Google API anahtarınızı yapıştırın</string>
     <string name="settings_forecasters_google_key_save">Google anahtarını kaydet</string>

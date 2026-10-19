@@ -455,7 +455,6 @@ displayed label localizes.
     <string name="settings_display_theme_light">Vaalea</string>
     <string name="settings_display_theme_dark">Tumma</string>
 
-    <string name="settings_api_key_gemini_header">Korkealaatuiset äänet ClothesCast- ja Gemini-palvelimien kautta.</string>
     <string name="settings_tts_device_header">Heikkolaatuiset äänet, jotka on rakennettu puhelimeesi.</string>
 
     <string name="settings_location_detecting">Määritetään…</string>
@@ -1274,7 +1273,6 @@ displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF:n tekoälymalli — luotettava aina 15 päivään asti, joten se kantaa toisen viikon kaaviot. Jotkin yksityiskohtaiset kaaviot eivät ehkä näytä viivaa sille.</string>
-    <string name="settings_forecasters_google_subtitle">Googlen tekoälyn sääennuste. Käyttää Google-API-avainta.</string>
     <string name="settings_forecasters_google_key_header">Googlen API-avain</string>
     <string name="settings_forecasters_google_key_placeholder">Liitä Googlen API-avaimesi</string>
     <string name="settings_forecasters_google_key_save">Tallenna Google-avain</string>

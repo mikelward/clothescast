@@ -237,7 +237,6 @@ Not overridden by design:
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">ClothesCast और Gemini सर्वर के माध्यम से उच्च-गुणवत्ता वाली आवाज़ें।</string>
     <string name="settings_tts_device_header">आपके फ़ोन में निर्मित निम्न-गुणवत्ता वाली आवाज़ें।</string>
     <string name="settings_api_key_status_set">Gemini कुंजी सेट है।</string>
     <string name="settings_api_key_placeholder">अपनी Gemini API कुंजी चिपकाएँ</string>
@@ -1297,7 +1296,6 @@ Not overridden by design:
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF का AI मॉडल — 15 दिनों तक सटीक, इसलिए यह दूसरे सप्ताह के चार्ट संभालता है। कुछ विस्तृत चार्ट में इसके लिए रेखा नहीं दिख सकती।</string>
-    <string name="settings_forecasters_google_subtitle">Google का AI मौसम पूर्वानुमान। Google API कुंजी का उपयोग करता है।</string>
     <string name="settings_forecasters_google_key_header">Google API कुंजी</string>
     <string name="settings_forecasters_google_key_placeholder">अपनी Google API कुंजी पेस्ट करें</string>
     <string name="settings_forecasters_google_key_save">Google कुंजी सहेजें</string>

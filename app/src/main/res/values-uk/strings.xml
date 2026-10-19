@@ -271,7 +271,6 @@ only the displayed label localizes.
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Голоси високої якості через сервери ClothesCast і Gemini.</string>
     <string name="settings_tts_device_header">Голоси низької якості, вбудовані у твій телефон.</string>
     <string name="settings_api_key_status_set">Ключ Gemini налаштовано.</string>
     <string name="settings_api_key_placeholder">Вставте ваш ключ API Gemini</string>
@@ -1266,7 +1265,6 @@ only the displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ШІ-модель ECMWF — точна на строк до 15 днів, тому саме вона забезпечує графіки другого тижня. На деяких детальних графіках лінія для неї може не відображатися.</string>
-    <string name="settings_forecasters_google_subtitle">ШІ-прогноз погоди від Google. Використовує ключ API Google.</string>
     <string name="settings_forecasters_google_key_header">Ключ API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Вставте свій ключ API Google</string>
     <string name="settings_forecasters_google_key_save">Зберегти ключ Google</string>

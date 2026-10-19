@@ -288,7 +288,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- API key settings. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Voci de calitate înaltă prin serverele ClothesCast și Gemini.</string>
     <string name="settings_tts_device_header">Voci de calitate scăzută integrate în telefonul tău.</string>
     <string name="settings_api_key_status_set">O cheie Gemini este configurată.</string>
     <string name="settings_api_key_placeholder">Lipește cheia ta API Gemini</string>
@@ -1245,7 +1244,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Modelul AI al ECMWF — precis până la 15 zile, așa că el susține graficele pentru a doua săptămână. Unele grafice detaliate pot să nu afișeze o linie pentru el.</string>
-    <string name="settings_forecasters_google_subtitle">Prognoza meteo AI a Google. Folosește o cheie API Google.</string>
     <string name="settings_forecasters_google_key_header">Cheie API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Inserează cheia ta API Google</string>
     <string name="settings_forecasters_google_key_save">Salvează cheia Google</string>

@@ -555,7 +555,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_display_theme_dark">Escuro</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Vozes de alta qualidade através dos servidores do ClothesCast e do Gemini.</string>
     <string name="settings_tts_device_header">Vozes de baixa qualidade integradas no teu telemóvel.</string>
 
     <!-- Location screen — additional strings. -->
@@ -1396,7 +1395,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">O modelo de IA do ECMWF — fiável até 15 dias, pelo que sustenta os gráficos da segunda semana. Alguns gráficos detalhados podem não mostrar uma linha para ele.</string>
-    <string name="settings_forecasters_google_subtitle">Previsão meteorológica de IA do Google. Usa uma chave de API do Google.</string>
     <string name="settings_forecasters_google_key_header">Chave de API do Google</string>
     <string name="settings_forecasters_google_key_placeholder">Cola a tua chave de API do Google</string>
     <string name="settings_forecasters_google_key_save">Guardar chave do Google</string>

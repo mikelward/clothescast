@@ -679,7 +679,11 @@
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF\'s AI model — skillful out to 15 days, so it carries the second-week charts. Some detail charts may not show a line for it.</string>
     <string name="settings_forecasters_google">Google</string>
-    <string name="settings_forecasters_google_subtitle">Google\'s AI weather forecast. Uses a Google API key.</string>
+    <!-- TODO: translate -->
+    <string name="settings_forecasters_google_subtitle" tools:ignore="MissingTranslation">Google\'s advanced AI weather forecast. Requires log in or API key.</string>
+    <!-- The same, on builds without the Google forecast proxy (no sign-in). -->
+    <!-- TODO: translate -->
+    <string name="settings_forecasters_google_subtitle_key_only" tools:ignore="MissingTranslation">Google\'s advanced AI weather forecast. Requires an API key.</string>
     <!-- The Google forecaster's key lives in its own slot, separate from the
          Gemini voice key — a project-scoped Cloud key with the Weather API
          enabled. Users can paste the same AIza key as Gemini (if its project
@@ -802,7 +806,8 @@
 
     <string name="settings_api_key_gemini_label">Gemini</string>
 
-    <string name="settings_api_key_gemini_header">High-quality voices via ClothesCast and Gemini servers.</string>
+    <!-- TODO: translate -->
+    <string name="settings_api_key_gemini_header" tools:ignore="MissingTranslation">High-quality voices via ClothesCast and Google servers.</string>
     <!-- Shown under the Device radio in Voice settings and the Speech setup
          sheet, paired with the Gemini header above so the user reads both
          halves of the engine tradeoff (offline + low quality vs. server +

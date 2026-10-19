@@ -166,7 +166,6 @@ default English (matching values-pl / values-uk).
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Glasovi visokog kvaliteta preko servera ClothesCast i Gemini.</string>
     <string name="settings_tts_device_header">Glasovi niskog kvaliteta ugrađeni u tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini ključ je podešen.</string>
     <string name="settings_api_key_placeholder">Nalepi svoj Gemini API ključ</string>
@@ -1257,7 +1256,6 @@ default English (matching values-pl / values-uk).
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">AI model ECMWF-a — pouzdan do 15 dana unapred, zato nosi grafikone druge nedelje. Neki detaljni grafikoni možda ne prikazuju liniju za njega.</string>
-    <string name="settings_forecasters_google_subtitle">Google AI prognoza vremena. Koristi Google API ključ.</string>
     <string name="settings_forecasters_google_key_header">Google API ključ</string>
     <string name="settings_forecasters_google_key_placeholder">Nalepite svoj Google API ključ</string>
     <string name="settings_forecasters_google_key_save">Sačuvaj Google ključ</string>

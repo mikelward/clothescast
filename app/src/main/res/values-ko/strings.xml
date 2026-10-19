@@ -566,7 +566,6 @@ displayed label localizes.
     <string name="settings_display_theme_dark">다크</string>
 
     <!-- API keys screen — header above the Gemini block. -->
-    <string name="settings_api_key_gemini_header">ClothesCast 및 Gemini 서버를 통한 고품질 음성.</string>
     <string name="settings_tts_device_header">휴대전화에 내장된 저품질 음성.</string>
 
     <!-- Location screen additions — device-location subtitle, in-flight
@@ -1419,7 +1418,6 @@ displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF의 AI 모델 — 15일까지 정확도가 높아 둘째 주 차트를 담당합니다. 일부 상세 차트에서는 이 모델의 선이 표시되지 않을 수 있습니다.</string>
-    <string name="settings_forecasters_google_subtitle">Google의 AI 날씨 예보. Google API 키를 사용합니다.</string>
     <string name="settings_forecasters_google_key_header">Google API 키</string>
     <string name="settings_forecasters_google_key_placeholder">Google API 키를 붙여넣으세요</string>
     <string name="settings_forecasters_google_key_save">Google 키 저장</string>

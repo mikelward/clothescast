@@ -269,7 +269,6 @@ What is NOT overridden, by design:
     API keys screen.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Hlasy vo vysokej kvalite cez servery ClothesCast a Gemini.</string>
     <string name="settings_tts_device_header">Hlasy v nízkej kvalite zabudované v tvojom telefóne.</string>
     <string name="settings_api_key_status_set">Gemini kľúč je nastavený.</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API kľúč</string>
@@ -1291,7 +1290,6 @@ What is NOT overridden, by design:
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">AI model spoločnosti ECMWF — spoľahlivý až na 15 dní, preto nesie grafy druhého týždňa. Niektoré podrobné grafy preň nemusia zobrazovať čiaru.</string>
-    <string name="settings_forecasters_google_subtitle">Predpoveď počasia AI od Google. Používa kľúč API Google.</string>
     <string name="settings_forecasters_google_key_header">Kľúč API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Vložte svoj kľúč API Google</string>
     <string name="settings_forecasters_google_key_save">Uložiť kľúč Google</string>

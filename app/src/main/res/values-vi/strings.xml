@@ -303,7 +303,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          Settings — Voice / API key
          ===================================================================== -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Giọng nói chất lượng cao qua máy chủ ClothesCast và Gemini.</string>
     <string name="settings_tts_device_header">Giọng nói chất lượng thấp tích hợp sẵn trong điện thoại của bạn.</string>
     <string name="settings_api_key_status_set">Đã cài đặt khóa Gemini.</string>
     <string name="settings_api_key_placeholder">Dán khóa API Gemini của bạn</string>
@@ -1328,7 +1327,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Mô hình AI của ECMWF — chính xác trong 15 ngày, nên đảm nhận các biểu đồ tuần thứ hai. Một số biểu đồ chi tiết có thể không hiển thị đường của mô hình này.</string>
-    <string name="settings_forecasters_google_subtitle">Dự báo thời tiết AI của Google. Sử dụng khóa API Google.</string>
     <string name="settings_forecasters_google_key_header">Khóa API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Dán khóa API Google của bạn</string>
     <string name="settings_forecasters_google_key_save">Lưu khóa Google</string>

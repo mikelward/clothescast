@@ -284,7 +284,6 @@ to values/strings.xml (English).
 
     <!-- API key settings -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Suara berkualitas tinggi melalui server ClothesCast dan Gemini.</string>
     <string name="settings_tts_device_header">Suara berkualitas rendah bawaan di ponselmu.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
     <string name="settings_api_key_placeholder">Tempelkan kunci API Gemini Anda</string>
@@ -1266,7 +1265,6 @@ to values/strings.xml (English).
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Model AI ECMWF — andal hingga 15 hari, sehingga menopang grafik minggu kedua. Beberapa grafik detail mungkin tidak menampilkan garis untuknya.</string>
-    <string name="settings_forecasters_google_subtitle">Perkiraan cuaca AI Google. Menggunakan kunci API Google.</string>
     <string name="settings_forecasters_google_key_header">Kunci API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Tempel kunci API Google Anda</string>
     <string name="settings_forecasters_google_key_save">Simpan kunci Google</string>

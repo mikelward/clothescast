@@ -549,7 +549,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_theme_dark">Sombre</string>
 
     <!-- API key screen — Gemini section header. -->
-    <string name="settings_api_key_gemini_header">Voix de haute qualité via les serveurs ClothesCast et Gemini.</string>
     <string name="settings_tts_device_header">Voix de basse qualité intégrées à ton téléphone.</string>
 
     <!-- Location screen — additional strings. -->
@@ -1394,7 +1393,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Le modèle d\'IA d\'ECMWF — fiable jusqu\'à 15 jours, donc c\'est lui qui porte les graphiques de la deuxième semaine. Certains graphiques détaillés peuvent ne pas afficher de ligne pour lui.</string>
-    <string name="settings_forecasters_google_subtitle">Prévision météo par IA de Google. Utilise une clé API Google.</string>
     <string name="settings_forecasters_google_key_header">Clé API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Collez votre clé API Google</string>
     <string name="settings_forecasters_google_key_save">Enregistrer la clé Google</string>

@@ -502,7 +502,6 @@ West Bengal vocabulary differences in a future PR.
          ============================================================ -->
 
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">ClothesCast এবং Gemini সার্ভারের মাধ্যমে উচ্চ-মানের ভয়েস।</string>
     <string name="settings_tts_device_header">আপনার ফোনে অন্তর্নির্মিত নিম্ন-মানের ভয়েস।</string>
     <string name="settings_api_key_status_set">একটি Gemini কী কনফিগার করা আছে।</string>
     <string name="settings_api_key_placeholder">আপনার Gemini API কী পেস্ট করুন</string>
@@ -1339,7 +1338,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF-এর AI মডেল — ১৫ দিন পর্যন্ত নির্ভুল, তাই এটি দ্বিতীয় সপ্তাহের চার্ট বহন করে। কিছু বিস্তারিত চার্টে এটির জন্য কোনো রেখা নাও দেখাতে পারে।</string>
-    <string name="settings_forecasters_google_subtitle">Google-এর AI আবহাওয়ার পূর্বাভাস। একটি Google API কী ব্যবহার করে।</string>
     <string name="settings_forecasters_google_key_header">Google API কী</string>
     <string name="settings_forecasters_google_key_placeholder">আপনার Google API কী পেস্ট করুন</string>
     <string name="settings_forecasters_google_key_save">Google কী সংরক্ষণ করুন</string>

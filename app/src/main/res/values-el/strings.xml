@@ -642,7 +642,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_location_manual_override_disclosure">Η επιλογή πόλης απενεργοποιεί τον αυτόματο εντοπισμό.</string>
 
     <!-- Missing API key strings. -->
-    <string name="settings_api_key_gemini_header">Φωνές υψηλής ποιότητας μέσω των διακομιστών ClothesCast και Gemini.</string>
     <string name="settings_tts_device_header">Φωνές χαμηλής ποιότητας ενσωματωμένες στο τηλέφωνό σου.</string>
 
     <!-- Missing TTS engine description. -->
@@ -1387,7 +1386,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">Το μοντέλο ΤΝ του ECMWF — αξιόπιστο έως και 15 ημέρες, γι\' αυτό στηρίζει τα γραφήματα της δεύτερης εβδομάδας. Ορισμένα λεπτομερή γραφήματα ενδέχεται να μην εμφανίζουν γραμμή για αυτό.</string>
-    <string name="settings_forecasters_google_subtitle">Πρόγνωση καιρού ΤΝ της Google. Χρησιμοποιεί κλειδί API Google.</string>
     <string name="settings_forecasters_google_key_header">Κλειδί API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Επικολλήστε το κλειδί API Google</string>
     <string name="settings_forecasters_google_key_save">Αποθήκευση κλειδιού Google</string>

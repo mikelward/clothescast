@@ -154,7 +154,6 @@ surfaces.
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Гласови високог квалитета преко сервера ClothesCast и Gemini.</string>
     <string name="settings_tts_device_header">Гласови ниског квалитета уграђени у твој телефон.</string>
     <string name="settings_api_key_status_set">Gemini кључ је подешен.</string>
     <string name="settings_api_key_placeholder">Налепи свој Gemini API кључ</string>
@@ -1245,7 +1244,6 @@ surfaces.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">АИ модел ECMWF-а — поуздан до 15 дана унапред, зато носи графиконе друге недеље. Неки детаљни графикони можда не приказују линију за њега.</string>
-    <string name="settings_forecasters_google_subtitle">Google АИ прогноза времена. Користи Google API кључ.</string>
     <string name="settings_forecasters_google_key_header">Google API кључ</string>
     <string name="settings_forecasters_google_key_placeholder">Налепите свој Google API кључ</string>
     <string name="settings_forecasters_google_key_save">Сачувај Google кључ</string>

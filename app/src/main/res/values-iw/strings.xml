@@ -286,7 +286,6 @@ standard in Israeli digital communication.
 
     <!-- Settings — API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">קולות באיכות גבוהה דרך השרתים של ClothesCast ושל Gemini.</string>
     <string name="settings_tts_device_header">קולות באיכות נמוכה שמובנים בטלפון שלך.</string>
     <string name="settings_api_key_status_set">מפתח Gemini מוגדר.</string>
     <string name="settings_api_key_placeholder">הדבק/י את מפתח Gemini API שלך</string>
@@ -1262,7 +1261,6 @@ standard in Israeli digital communication.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">מודל הבינה המלאכותית של ECMWF — אמין עד 15 ימים קדימה, ולכן הוא נושא את התרשימים של השבוע השני. חלק מהתרשימים המפורטים עשויים שלא להציג עבורו קו.</string>
-    <string name="settings_forecasters_google_subtitle">תחזית מזג האוויר של Google מבוססת בינה מלאכותית. משתמשת במפתח Google API.</string>
     <string name="settings_forecasters_google_key_header">מפתח Google API</string>
     <string name="settings_forecasters_google_key_placeholder">הדבק את מפתח Google API שלך</string>
     <string name="settings_forecasters_google_key_save">שמור מפתח Google</string>

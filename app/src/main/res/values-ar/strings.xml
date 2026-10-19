@@ -291,7 +291,6 @@ they work correctly in both the single-band and range templates.
 
     <!-- Settings — API key / Gemini -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">أصوات عالية الجودة عبر خوادم ClothesCast وGemini.</string>
     <string name="settings_tts_device_header">أصوات منخفضة الجودة مدمجة في هاتفك.</string>
     <string name="settings_api_key_status_set">تم تكوين مفتاح Gemini.</string>
     <string name="settings_api_key_placeholder">الصق مفتاح Gemini API</string>
@@ -1267,7 +1266,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">نموذج الذكاء الاصطناعي من ECMWF — دقيق حتى 15 يومًا، لذا يتولى رسوم الأسبوع الثاني البيانية. قد لا تُظهر بعض الرسوم التفصيلية خطًا له.</string>
-    <string name="settings_forecasters_google_subtitle">توقعات الطقس بالذكاء الاصطناعي من Google. يستخدم مفتاح Google API.</string>
     <string name="settings_forecasters_google_key_header">مفتاح Google API</string>
     <string name="settings_forecasters_google_key_placeholder">الصق مفتاح Google API الخاص بك</string>
     <string name="settings_forecasters_google_key_save">حفظ مفتاح Google</string>

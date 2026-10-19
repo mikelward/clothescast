@@ -288,7 +288,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- API key settings -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">เสียงคุณภาพสูงผ่านเซิร์ฟเวอร์ของ ClothesCast และ Gemini</string>
     <string name="settings_tts_device_header">เสียงคุณภาพต่ำที่มีมาในเครื่องของคุณ</string>
     <string name="settings_api_key_status_set">กำหนดค่า Gemini key แล้ว</string>
     <string name="settings_api_key_placeholder">วาง Gemini API key ของคุณ</string>
@@ -1267,7 +1266,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">โมเดล AI ของ ECMWF — แม่นยำได้ถึง 15 วัน จึงเป็นตัวรับผิดชอบกราฟของสัปดาห์ที่สอง กราฟรายละเอียดบางรายการอาจไม่แสดงเส้นของโมเดลนี้</string>
-    <string name="settings_forecasters_google_subtitle">การพยากรณ์อากาศ AI ของ Google ใช้คีย์ Google API</string>
     <string name="settings_forecasters_google_key_header">คีย์ Google API</string>
     <string name="settings_forecasters_google_key_placeholder">วางคีย์ Google API ของคุณ</string>
     <string name="settings_forecasters_google_key_save">บันทึกคีย์ Google</string>

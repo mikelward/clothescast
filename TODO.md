@@ -64,9 +64,10 @@ voice and the Google Weather proxy.
       forecast proxy.
 - [x] **Google gets its own switch**, independent of Auto, so it can be
       turned on with Auto on.
-- [ ] **Reword the Google forecaster's subtitle and key hint**, which still
-      say it uses a Google API key; with the proxy a key is optional. The
-      change needs fresh translations.
+- [x] **Reword the Google forecaster's subtitle** ("Requires log in or API
+      key"); its translations are cleared for the next translations pass.
+- [ ] **Reword the Google forecaster's key hint**, which still says a key is
+      needed to turn Google on; with the proxy a key is optional.
 - [ ] **Separate opt-ins, each needing sign-in:** the free voice (Voice
       settings) and the Google forecast through the proxy (Forecasters page).
       Turning either on while signed out starts the sign-in; signing in turns

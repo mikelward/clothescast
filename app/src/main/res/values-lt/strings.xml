@@ -292,7 +292,6 @@ What is NOT overridden, by design:
 
     <!-- API key screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Aukštos kokybės balsai per ClothesCast ir Gemini serverius.</string>
     <string name="settings_tts_device_header">Žemos kokybės balsai, įdiegti tavo telefone.</string>
     <string name="settings_api_key_status_set">Gemini raktas sukonfigūruotas.</string>
     <string name="settings_api_key_placeholder">Įklijuok Gemini API raktą</string>
@@ -1257,7 +1256,6 @@ What is NOT overridden, by design:
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">„ECMWF“ DI modelis — patikimas iki 15 dienų, todėl juo remiasi antros savaitės diagramos. Kai kuriose išsamiose diagramose linija jam gali nebūti rodoma.</string>
-    <string name="settings_forecasters_google_subtitle">„Google“ DI orų prognozė. Naudoja „Google“ API raktą.</string>
     <string name="settings_forecasters_google_key_header">„Google“ API raktas</string>
     <string name="settings_forecasters_google_key_placeholder">Įklijuokite savo „Google“ API raktą</string>
     <string name="settings_forecasters_google_key_save">Išsaugoti „Google“ raktą</string>

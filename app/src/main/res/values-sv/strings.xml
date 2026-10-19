@@ -264,7 +264,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Röster i hög kvalitet via ClothesCast- och Gemini-servrar.</string>
     <string name="settings_tts_device_header">Röster i låg kvalitet inbyggda i din telefon.</string>
     <string name="settings_api_key_status_set">En Gemini-nyckel är inställd.</string>
     <string name="settings_api_key_placeholder">Klistra in Gemini API-nyckel här</string>
@@ -1296,7 +1295,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF:s AI-modell — träffsäker upp till 15 dagar, så den bär diagrammen för den andra veckan. Vissa detaljdiagram kanske inte visar en linje för den.</string>
-    <string name="settings_forecasters_google_subtitle">Googles AI-väderprognos. Använder en Google API-nyckel.</string>
     <string name="settings_forecasters_google_key_header">Google API-nyckel</string>
     <string name="settings_forecasters_google_key_placeholder">Klistra in din Google API-nyckel</string>
     <string name="settings_forecasters_google_key_save">Spara Google-nyckel</string>

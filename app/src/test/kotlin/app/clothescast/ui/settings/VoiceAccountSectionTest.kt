@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.R
 import app.clothescast.core.domain.model.TtsEngine
 import io.kotest.matchers.shouldBe
 import org.junit.Test
@@ -43,6 +44,12 @@ class VoiceAccountSectionTest {
     fun `Google's switch holds a slot against the cap even while unreachable`() {
         forecasterSlots(openMeteoCount = 4, googleForecast = true) shouldBe 5
         forecasterSlots(openMeteoCount = 4, googleForecast = false) shouldBe 4
+    }
+
+    @Test
+    fun `the Google subtitle mentions sign-in only where the build has it`() {
+        googleForecasterSubtitle(googleWeatherProxyConfigured = true) shouldBe R.string.settings_forecasters_google_subtitle
+        googleForecasterSubtitle(googleWeatherProxyConfigured = false) shouldBe R.string.settings_forecasters_google_subtitle_key_only
     }
 
     @Test

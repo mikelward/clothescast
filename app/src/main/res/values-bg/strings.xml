@@ -303,7 +303,6 @@ What is NOT overridden, by design:
 
     <!-- API key screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Гласове с високо качество чрез сървърите на ClothesCast и Gemini.</string>
     <string name="settings_tts_device_header">Гласове с ниско качество, вградени в телефона ти.</string>
     <string name="settings_api_key_status_set">Конфигуриран е ключ за Gemini.</string>
     <string name="settings_api_key_placeholder">Постави своя API ключ за Gemini</string>
@@ -1254,7 +1253,6 @@ What is NOT overridden, by design:
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">AI моделът на ECMWF — надежден до 15 дни напред, затова той поддържа графиките за втората седмица. Някои подробни графики може да не показват линия за него.</string>
-    <string name="settings_forecasters_google_subtitle">AI прогноза за времето на Google. Използва API ключ на Google.</string>
     <string name="settings_forecasters_google_key_header">API ключ на Google</string>
     <string name="settings_forecasters_google_key_placeholder">Поставете вашия API ключ на Google</string>
     <string name="settings_forecasters_google_key_save">Запазване на ключа на Google</string>

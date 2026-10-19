@@ -177,7 +177,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_privacy_open_policy">Llegeix la política de privadesa completa</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Veus d\'alta qualitat a través dels servidors de ClothesCast i Gemini.</string>
     <string name="settings_tts_device_header">Veus de baixa qualitat integrades al teu telèfon.</string>
     <string name="settings_api_key_status_set">Hi ha una clau de Gemini configurada.</string>
     <string name="settings_api_key_placeholder">Enganxa la teva clau API de Gemini</string>
@@ -1208,7 +1207,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">El model d\'IA d\'ECMWF — fiable fins a 15 dies, per la qual cosa sosté els gràfics de la segona setmana. Alguns gràfics detallats poden no mostrar-hi una línia.</string>
-    <string name="settings_forecasters_google_subtitle">Predicció meteorològica d\'IA de Google. Utilitza una clau d\'API de Google.</string>
     <string name="settings_forecasters_google_key_header">Clau d\'API de Google</string>
     <string name="settings_forecasters_google_key_placeholder">Enganxa la teva clau d\'API de Google</string>
     <string name="settings_forecasters_google_key_save">Desa la clau de Google</string>

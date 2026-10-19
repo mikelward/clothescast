@@ -268,7 +268,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
 
     <!-- API key settings -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">Augstas kvalitātes balsis caur ClothesCast un Gemini serveriem.</string>
     <string name="settings_tts_device_header">Zemas kvalitātes balsis, kas iebūvētas jūsu tālrunī.</string>
     <string name="settings_api_key_status_set">Gemini atslēga ir konfigurēta.</string>
     <string name="settings_api_key_placeholder">Ielīmē savu Gemini API atslēgu</string>
@@ -1209,7 +1208,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF MI modelis — precīzs līdz 15 dienām, tāpēc tas nes otrās nedēļas diagrammas. Dažās detalizētās diagrammās tam var nebūt redzama līnija.</string>
-    <string name="settings_forecasters_google_subtitle">Google MI laikapstākļu prognoze. Izmanto Google API atslēgu.</string>
     <string name="settings_forecasters_google_key_header">Google API atslēga</string>
     <string name="settings_forecasters_google_key_placeholder">Ielīmējiet savu Google API atslēgu</string>
     <string name="settings_forecasters_google_key_save">Saglabāt Google atslēgu</string>

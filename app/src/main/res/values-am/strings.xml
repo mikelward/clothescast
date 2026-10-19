@@ -217,7 +217,6 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings — API key / Gemini -->
     <string name="settings_api_key_gemini_label">Gemini</string>
-    <string name="settings_api_key_gemini_header">በClothesCast እና Gemini አገልጋዮች በኩል ከፍተኛ ጥራት ያላቸው ድምፆች።</string>
     <string name="settings_tts_device_header">በስልክህ ውስጥ የተገነቡ ዝቅተኛ ጥራት ድምፆች።</string>
     <string name="settings_api_key_status_set">Gemini ቁልፍ ተዋቅሯል።</string>
     <string name="settings_api_key_placeholder">Gemini API key ይለጥፉ</string>
@@ -1235,7 +1234,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
     <string name="settings_forecasters_aifs_subtitle">የECMWF የAI ሞዴል — እስከ 15 ቀናት ድረስ ውጤታማ ስለሆነ የሁለተኛውን ሳምንት ቻርቶች ይይዛል። አንዳንድ ዝርዝር ቻርቶች ለእሱ መስመር ላያሳዩ ይችላሉ።</string>
-    <string name="settings_forecasters_google_subtitle">የGoogle AI የአየር ሁኔታ ትንበያ። የGoogle API ቁልፍ ይጠቀማል።</string>
     <string name="settings_forecasters_google_key_header">የGoogle API ቁልፍ</string>
     <string name="settings_forecasters_google_key_placeholder">የGoogle API ቁልፍዎን ይለጥፉ</string>
     <string name="settings_forecasters_google_key_save">የGoogle ቁልፍ አስቀምጥ</string>

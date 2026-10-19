@@ -249,6 +249,7 @@ label localizes.
     space-around-Latin spacing.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">通过 ClothesCast 和 Google 服务器提供的高品质语音。</string>
 
     <string name="settings_api_key_status_set">已配置 Gemini 密钥。</string>
     <string name="settings_api_key_placeholder">粘贴你的 Gemini API 密钥</string>
@@ -307,6 +308,10 @@ label localizes.
     <string name="settings_about_dontkillmyapp">后台限制（dontkillmyapp.com）</string>
     <string name="settings_about_share_bug_report">分享问题报告</string>
     <string name="settings_about_version_copied">版本已复制到剪贴板</string>
+    <string name="settings_about_licenses">许可</string>
+    <string name="settings_licenses_title">开源许可</string>
+    <string name="settings_licenses_version">版本 %1$s</string>
+    <string name="settings_licenses_authors">作者：%1$s</string>
 
     <!--
     Today screen — top bar, refresh toasts, empty state, generated-at
@@ -532,6 +537,10 @@ label localizes.
     <string name="today_update_downloading_dismiss">取消</string>
     <string name="today_update_downloaded_body">更新已下载。重启以完成安装。</string>
     <string name="today_update_downloaded_action">重启</string>
+    <string name="today_telemetry_invite_title">帮助改进 ClothesCast？</string>
+    <string name="today_telemetry_invite_body">发送崩溃报告和匿名使用统计，帮助发现并修复问题？</string>
+    <string name="today_telemetry_invite_accept">好的</string>
+    <string name="today_telemetry_invite_decline">不用了</string>
 
     <!-- Onboarding additions — TV-shorter subtitle (TV onboarding has
          less screen real-estate), the always-on location step, and the
@@ -652,6 +661,7 @@ label localizes.
     <string name="bug_report_consent_dont_show_again">不再显示</string>
     <string name="bug_report_consent_continue">继续</string>
     <string name="bug_report_consent_cancel">取消</string>
+    <string name="bug_report_share_failed">无法分享问题报告</string>
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "可能" — invariant adverb; works for any precip noun. -->
@@ -673,6 +683,9 @@ label localizes.
     <string name="settings_display_palette_rainbow_description">粉红、橙色和绿色图表线条，以及 Material 青色/红色置信度卡片。默认设置。</string>
     <string name="settings_display_palette_highlighter">荧光笔</string>
     <string name="settings_display_palette_highlighter_description">洋红、黄色和青色的图表线条——像是用荧光笔在纸上画过。一眼就能与\"彩虹\"区分；浅色主题使用更深的变体以提高可读性。对红绿色盲安全。</string>
+    <string name="settings_display_text_size_title">文字大小</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">双指缩放调整大小</string>
     <string name="settings_display_home_layout_title">主屏幕布局</string>
     <string name="settings_display_home_layout_description">拖动手柄可重新排列这些版块在主屏幕上的显示顺序。</string>
     <string name="settings_display_home_layout_drag">拖动以重新排列%1$s</string>
@@ -855,6 +868,8 @@ label localizes.
     <string name="cast_error_no_insight_yet">还没有可用的预报。等待下次计划运行，或在今天页面点击刷新。</string>
     <string name="cast_error_no_route_picked">请先选择一个智能显示器。</string>
     <string name="cast_error_unknown">投屏失败。</string>
+    <string name="settings_smart_home_name">名称</string>
+    <string name="settings_smart_home_name_hint">例如：小明的</string>
 
     <!-- Holiday banners. -->
     <string name="holiday_banner_all_saints_day">万圣节快乐</string>
@@ -920,6 +935,8 @@ label localizes.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">%1$s ClothesCast</string>
+    <string name="outfit_card_header_named">%1$s%2$s ClothesCast</string>
 
     <!-- API key replace button. -->
     <string name="settings_api_key_replace">更换 Gemini 密钥</string>
@@ -1119,6 +1136,21 @@ label localizes.
     <string name="holiday_banner_ca_labour_day">劳动节快乐</string>
     <string name="holiday_banner_cinco_de_mayo">五月五日节快乐</string>
     <string name="holiday_banner_corpus_christi">圣体圣血节快乐</string>
+    <string name="settings_tts_gemini_sign_in_reason">免费的 Gemini 语音需要登录 Google。</string>
+    <string name="settings_google_sign_in">使用 Google 登录</string>
+    <string name="settings_google_signed_in_as">已登录为 %1$s</string>
+    <string name="settings_google_signed_in">已使用 Google 登录</string>
+    <string name="settings_google_sign_out">退出登录</string>
+    <string name="settings_google_delete_account">删除账号</string>
+    <string name="settings_google_delete_title">删除账号？</string>
+    <string name="settings_google_delete_body">这部手机上的设置会保留。</string>
+    <string name="settings_google_delete_confirm">删除</string>
+    <string name="settings_google_no_account">此设备上没有 Google 账号。</string>
+    <string name="settings_google_sign_in_failed">无法登录，请重试。</string>
+    <string name="settings_google_delete_failed">无法删除账号，请重试。</string>
+    <string name="settings_forecasters_google_sign_in_reason">使用 Google 登录，无需自己的密钥即可使用 Google。</string>
+    <string name="notify_gemini_sign_in_title">Gemini 语音已暂停</string>
+    <string name="notify_gemini_sign_in_text">在语音设置中登录 Google 即可继续使用。目前使用设备语音。</string>
     <string name="holiday_banner_egypt_revolution_day">革命日快乐</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">西奈解放日快乐</string>
     <string name="holiday_banner_india_childrens_day">儿童节快乐</string>
@@ -1327,6 +1359,9 @@ label localizes.
     <string name="today_gemini_promo_cta">语音设置</string>
     <string name="today_gemini_promo_dismiss">关闭</string>
     <string name="today_google_forecast_promo_dismiss">关闭</string>
+    <string name="today_google_forecast_promo_title">试用 Google 预报</string>
+    <string name="today_google_forecast_promo_body">选择天气预报来源，提高准确度。</string>
+    <string name="today_google_forecast_promo_cta">预报模型设置</string>
     <string name="today_clothes_promo_title">把服装变成你的</string>
     <string name="today_insight_format_link">格式</string>
     <string name="today_play">播放</string>
@@ -1413,6 +1448,8 @@ label localizes.
     <string name="settings_holidays_calendar_source">日历：%1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google 先进的 AI 天气预报。需要登录或 API 密钥。</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google 先进的 AI 天气预报。需要 API 密钥。</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF 的 AI 模型——预报能力可达 15 天，因此承担第二周的图表。部分详细图表可能不会显示它的曲线。</string>
     <string name="settings_forecasters_google_key_header">Google API 密钥</string>
     <string name="settings_forecasters_google_key_placeholder">粘贴您的 Google API 密钥</string>

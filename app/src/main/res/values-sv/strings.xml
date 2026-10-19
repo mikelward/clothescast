@@ -264,6 +264,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Röster i hög kvalitet via ClothesCast och Googles servrar.</string>
     <string name="settings_tts_device_header">Röster i låg kvalitet inbyggda i din telefon.</string>
     <string name="settings_api_key_status_set">En Gemini-nyckel är inställd.</string>
     <string name="settings_api_key_placeholder">Klistra in Gemini API-nyckel här</string>
@@ -327,6 +328,10 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_about_dontkillmyapp">Bakgrundsbegränsningar (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Dela felrapport</string>
     <string name="settings_about_version_copied">Version kopierad till urklipp</string>
+    <string name="settings_about_licenses">Licenser</string>
+    <string name="settings_licenses_title">Licenser för öppen källkod</string>
+    <string name="settings_licenses_version">Version %1$s</string>
+    <string name="settings_licenses_authors">Av %1$s</string>
 
     <!-- Today screen. -->
     <string name="today_title">Idag</string>
@@ -415,6 +420,10 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_update_available_dismiss">Inte nu</string>
     <string name="today_update_downloaded_body">Uppdatering nedladdad. Starta om för att slutföra installationen.</string>
     <string name="today_update_downloaded_action">Starta om</string>
+    <string name="today_telemetry_invite_title">Vill du hjälpa till att förbättra ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Skicka kraschrapporter och anonym användningsstatistik så att buggar hittas och åtgärdas?</string>
+    <string name="today_telemetry_invite_accept">Ja tack</string>
+    <string name="today_telemetry_invite_decline">Nej tack</string>
 
     <!-- Precipitation card. -->
     <string name="today_precipitation_title">Regnsannolikhet</string>
@@ -497,6 +506,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="bug_report_consent_dont_show_again">Visa inte igen</string>
     <string name="bug_report_consent_continue">Fortsätt</string>
     <string name="bug_report_consent_cancel">Avbryt</string>
+    <string name="bug_report_share_failed">Det gick inte att dela felrapporten</string>
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Idag</string>
@@ -574,6 +584,9 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_display_palette_rainbow_description">Rosa, orange och gröna diagramlinjer med Material teal/röda konfidenskort. Standardalternativet.</string>
     <string name="settings_display_palette_highlighter">Överstrykningspenna</string>
     <string name="settings_display_palette_highlighter_description">Magenta, gula och cyanfärgade diagramlinjer — som en överstrykningspenna på sidan. Vid en första anblick synligt annorlunda än \"Regnbåge\"; det ljusa temat använder djupare varianter för läsbarhet. Säker vid röd-grön färgblindhet.</string>
+    <string name="settings_display_text_size_title">Textstorlek</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Nyp för att ändra storlek</string>
     <string name="settings_display_home_layout_title">Layout för startskärm</string>
     <string name="settings_display_home_layout_description">Dra i handtagen för att ändra ordningen som de här avsnitten visas i på startskärmen.</string>
     <string name="settings_display_home_layout_drag">Dra för att ändra ordning på %1$s</string>
@@ -767,6 +780,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast kl. %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast kl. %2$s</string>
 
     <!-- Today screen -->
     <string name="today_rationale_open_clothes_settings">Klädinställningar</string>
@@ -851,6 +866,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="cast_error_no_route_picked">Välj en smart skärm först.</string>
     <string name="cast_error_no_insight_yet">Ingen prognos tillgänglig ännu. Vänta på nästa schemalagda körning eller tryck på Uppdatera på skärmen Idag.</string>
     <string name="cast_error_unknown">Kastning misslyckades.</string>
+    <string name="settings_smart_home_name">Namn</string>
+    <string name="settings_smart_home_name_hint">t.ex. Annas</string>
 
     <!-- Holiday banners (missing ones) -->
     <string name="holiday_banner_anzac_day">Vi glömmer aldrig</string>
@@ -1000,6 +1017,21 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="holiday_banner_ca_labour_day">Grattis på arbetarrörelsens dag</string>
     <string name="holiday_banner_cinco_de_mayo">Glad Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Glad Corpus Christi</string>
+    <string name="settings_tts_gemini_sign_in_reason">Den kostnadsfria Gemini-rösten kräver Google-inloggning.</string>
+    <string name="settings_google_sign_in">Logga in med Google</string>
+    <string name="settings_google_signed_in_as">Inloggad som %1$s</string>
+    <string name="settings_google_signed_in">Inloggad med Google</string>
+    <string name="settings_google_sign_out">Logga ut</string>
+    <string name="settings_google_delete_account">Ta bort konto</string>
+    <string name="settings_google_delete_title">Ta bort kontot?</string>
+    <string name="settings_google_delete_body">Dina inställningar på den här telefonen finns kvar.</string>
+    <string name="settings_google_delete_confirm">Ta bort</string>
+    <string name="settings_google_no_account">Inget Google-konto på den här enheten.</string>
+    <string name="settings_google_sign_in_failed">Det gick inte att logga in. Försök igen.</string>
+    <string name="settings_google_delete_failed">Det gick inte att ta bort kontot. Försök igen.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Logga in med Google för att använda Google utan egen nyckel.</string>
+    <string name="notify_gemini_sign_in_title">Gemini-rösten pausad</string>
+    <string name="notify_gemini_sign_in_text">Logga in med Google i Röstinställningar för att behålla den. Använder enhetens röst tills vidare.</string>
     <string name="holiday_banner_egypt_revolution_day">Grattis på revolutionsdagen</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Glad Sinai-befrielsedag</string>
     <string name="holiday_banner_india_childrens_day">Glad barnens dag</string>
@@ -1209,6 +1241,9 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="today_gemini_promo_cta">Röstinställningar</string>
     <string name="today_gemini_promo_dismiss">Stäng</string>
     <string name="today_google_forecast_promo_dismiss">Stäng</string>
+    <string name="today_google_forecast_promo_title">Testa Googles prognoser</string>
+    <string name="today_google_forecast_promo_body">Välj väderprognosleverantörer för bättre precision.</string>
+    <string name="today_google_forecast_promo_cta">Prognosmodellinställningar</string>
     <string name="today_clothes_promo_title">Gör kläderna till dina egna</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Spela upp</string>
@@ -1295,6 +1330,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_holidays_calendar_source">Kalender: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Googles avancerade AI-väderprognos. Kräver inloggning eller API-nyckel.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Googles avancerade AI-väderprognos. Kräver en API-nyckel.</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF:s AI-modell — träffsäker upp till 15 dagar, så den bär diagrammen för den andra veckan. Vissa detaljdiagram kanske inte visar en linje för den.</string>
     <string name="settings_forecasters_google_key_header">Google API-nyckel</string>
     <string name="settings_forecasters_google_key_placeholder">Klistra in din Google API-nyckel</string>

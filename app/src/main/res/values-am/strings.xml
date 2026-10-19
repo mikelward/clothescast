@@ -142,6 +142,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_available_dismiss">አሁን አይሆንም</string>
     <string name="today_update_downloaded_body">ዝማኔ ተሰቅሏል። ጫንን ለማጠናቀቅ እንደገና ጀምር።</string>
     <string name="today_update_downloaded_action">እንደገና ጀምር</string>
+    <string name="today_telemetry_invite_title">ClothesCastን ለማሻሻል ይረዳሉ?</string>
+    <string name="today_telemetry_invite_body">ስህተቶች እንዲገኙና እንዲስተካከሉ የብልሽት ሪፖርቶችንና ስም-አልባ የአጠቃቀም ስታቲስቲክስ ይላኩ?</string>
+    <string name="today_telemetry_invite_accept">አዎ፣ እባክዎ</string>
+    <string name="today_telemetry_invite_decline">አይ፣ አመሰግናለሁ</string>
     <string name="today_telemetry_notice_open_settings">የግለነት ቅንብሮች</string>
     <string name="today_telemetry_notice_dismiss">ዝጋ</string>
 
@@ -217,6 +221,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings — API key / Gemini -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">በClothesCast እና በGoogle አገልጋዮች በኩል ከፍተኛ ጥራት ያላቸው ድምፆች።</string>
     <string name="settings_tts_device_header">በስልክህ ውስጥ የተገነቡ ዝቅተኛ ጥራት ድምፆች።</string>
     <string name="settings_api_key_status_set">Gemini ቁልፍ ተዋቅሯል።</string>
     <string name="settings_api_key_placeholder">Gemini API key ይለጥፉ</string>
@@ -315,6 +320,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_about_dontkillmyapp">የዳራ ገደቦች (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">ስህተት ሪፖርት አጋራ</string>
     <string name="settings_about_version_copied">ስሪት ወደ ክሊፕቦርድ ተቀድቷል</string>
+    <string name="settings_about_licenses">ፈቃዶች</string>
+    <string name="settings_licenses_title">የክፍት ምንጭ ፈቃዶች</string>
+    <string name="settings_licenses_version">ስሪት %1$s</string>
+    <string name="settings_licenses_authors">በ%1$s</string>
 
     <!-- Bug report consent -->
     <string name="bug_report_consent_title">ስህተት ሪፖርት ያጋሩ?</string>
@@ -323,6 +332,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="bug_report_consent_dont_show_again">ዳግም አታሳይ</string>
     <string name="bug_report_consent_continue">ቀጥል</string>
     <string name="bug_report_consent_cancel">ሰርዝ</string>
+    <string name="bug_report_share_failed">ስህተት ሪፖርቱን ማጋራት አልተቻለም</string>
 
     <!-- Notifications -->
     <string name="notification_daily_insight_title">የዛሬ ClothesCast</string>
@@ -402,6 +412,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">ሮዝ፣ ብርቱካናማ እና አረንጓዴ ሰንጠረዥ መስመሮች የ Material ቲያ/ቀይ የአስተማማኝነት ካርዶች ጋር። ነባሪ።</string>
     <string name="settings_display_palette_highlighter">ማድመቂያ</string>
     <string name="settings_display_palette_highlighter_description">ማጄንታ፣ ቢጫ እና ሳያን የግራፍ መስመሮች — በወረቀት ላይ እንዳለ የማስታወቂያ ብዕር ሁሉ። ከ\"ቀስተ ደመና\" በቅጽበት ይለያያሉ፤ የብርሃን ጭብጥ ለንባብ ምቾት ጥልቅ ቅርጾች ይጠቀማል። ለቀይ-አረንጓዴ የቀለም ዕውር ሁኔታ ደህንነቱ የተጠበቀ።</string>
+    <string name="settings_display_text_size_title">የጽሑፍ መጠን</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">መጠን ለመቀየር በሁለት ጣቶች ይቆንጥጡ</string>
     <string name="settings_display_home_layout_title">የመነሻ ማያ ገጽ አቀማመጥ</string>
     <string name="settings_display_home_layout_description">እነዚህ ክፍሎች በመነሻ ማያ ገጹ ላይ የሚታዩበትን ቅደም ተከተል ለመቀየር መያዣዎቹን ይጎትቱ።</string>
     <string name="settings_display_home_layout_drag">%1$s ለመቀየር ይጎትቱ</string>
@@ -602,6 +615,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="cast_error_no_insight_yet">እስካሁን ትንበያ የለም። ቀጣዩን መርሃ ግብር ይጠብቁ፣ ወይም በዛሬ ማያ ላይ አድስ ን ይጫኑ።</string>
     <string name="cast_error_no_route_picked">መጀመሪያ ስማርት ማሳያ ይምረጡ።</string>
     <string name="cast_error_unknown">Cast ተሳናል።</string>
+    <string name="settings_smart_home_name">ስም</string>
+    <string name="settings_smart_home_name_hint">ለምሳሌ፦ የአበበ</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">የሁሉም ቅዱሳን በዓልዎ ይብሰርዎ</string>
@@ -722,6 +737,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">የ%1$s ClothesCast</string>
+    <string name="outfit_card_header_named">%1$s የ%2$s ClothesCast</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Gemini ቁልፍ ተካ</string>
@@ -939,6 +956,21 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_ca_labour_day">የሠራተኞች ቀን መልካም ይሁን</string>
     <string name="holiday_banner_cinco_de_mayo">ሲንኮ ደ ማዮ መልካም ይሁን</string>
     <string name="holiday_banner_corpus_christi">ኮርፐስ ክሪስቲ መልካም ይሁን</string>
+    <string name="settings_tts_gemini_sign_in_reason">ነፃው የGemini ድምፅ በGoogle መግባትን ይፈልጋል።</string>
+    <string name="settings_google_sign_in">በGoogle ይግቡ</string>
+    <string name="settings_google_signed_in_as">እንደ %1$s ገብተዋል</string>
+    <string name="settings_google_signed_in">በGoogle ገብተዋል</string>
+    <string name="settings_google_sign_out">ውጣ</string>
+    <string name="settings_google_delete_account">መለያ ሰርዝ</string>
+    <string name="settings_google_delete_title">መለያው ይሰረዝ?</string>
+    <string name="settings_google_delete_body">በዚህ ስልክ ላይ ያሉ ቅንብሮችዎ ይቆያሉ።</string>
+    <string name="settings_google_delete_confirm">ሰርዝ</string>
+    <string name="settings_google_no_account">በዚህ መሳሪያ ላይ የGoogle መለያ የለም።</string>
+    <string name="settings_google_sign_in_failed">መግባት አልተቻለም። እንደገና ይሞክሩ።</string>
+    <string name="settings_google_delete_failed">መለያውን መሰረዝ አልተቻለም። እንደገና ይሞክሩ።</string>
+    <string name="settings_forecasters_google_sign_in_reason">ያለ የራስዎ key Googleን ለመጠቀም በGoogle ይግቡ።</string>
+    <string name="notify_gemini_sign_in_title">የGemini ድምፅ ቆሟል</string>
+    <string name="notify_gemini_sign_in_text">ለማቆየት በድምፅ ቅንብሮች ውስጥ በGoogle ይግቡ። ለአሁን የመሳሪያ ድምፅ ጥቅም ላይ ነው።</string>
     <string name="holiday_banner_egypt_revolution_day">የአብዮት ቀን መልካም ይሁን</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">የሲና ነፃነት ቀን መልካም ይሁን</string>
     <string name="holiday_banner_india_childrens_day">የልጆች ቀን መልካም ይሁን</string>
@@ -1148,6 +1180,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_promo_cta">የድምፅ ቅንብሮች</string>
     <string name="today_gemini_promo_dismiss">ዝጋ</string>
     <string name="today_google_forecast_promo_dismiss">ዝጋ</string>
+    <string name="today_google_forecast_promo_title">የGoogle ትንበያዎችን ይሞክሩ</string>
+    <string name="today_google_forecast_promo_body">ለተሻለ ትክክለኛነት የአየር ትንበያ አቅራቢዎችዎን ይምረጡ።</string>
+    <string name="today_google_forecast_promo_cta">የትንበያ ሞዴሎች ቅንብሮች</string>
     <string name="today_clothes_promo_title">ልብሶቹን የራስህ አድርግ</string>
     <string name="today_insight_format_link">ቅርጸት</string>
     <string name="today_play">አጫውት</string>
@@ -1234,6 +1269,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_calendar_source">የቀን መቁጠሪያ፦ %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">የGoogle የላቀ የሰው ሰራሽ አስተውሎት የአየር ትንበያ። መግባት ወይም API key ይፈልጋል።</string>
+    <string name="settings_forecasters_google_subtitle_key_only">የGoogle የላቀ የሰው ሰራሽ አስተውሎት የአየር ትንበያ። API key ይፈልጋል።</string>
     <string name="settings_forecasters_aifs_subtitle">የECMWF የAI ሞዴል — እስከ 15 ቀናት ድረስ ውጤታማ ስለሆነ የሁለተኛውን ሳምንት ቻርቶች ይይዛል። አንዳንድ ዝርዝር ቻርቶች ለእሱ መስመር ላያሳዩ ይችላሉ።</string>
     <string name="settings_forecasters_google_key_header">የGoogle API ቁልፍ</string>
     <string name="settings_forecasters_google_key_placeholder">የGoogle API ቁልፍዎን ይለጥፉ</string>

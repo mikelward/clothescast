@@ -264,6 +264,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Vysoce kvalitní hlasy přes servery ClothesCast a Google.</string>
     <string name="settings_tts_device_header">Hlasy v nízké kvalitě zabudované do tvého telefonu.</string>
     <string name="settings_api_key_status_set">Gemini klíč je nastaven.</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API klíč</string>
@@ -326,6 +327,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_about_dontkillmyapp">Omezení na pozadí (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Sdílet hlášení chyby</string>
     <string name="settings_about_version_copied">Verze zkopírována do schránky</string>
+    <string name="settings_about_licenses">Licence</string>
+    <string name="settings_licenses_title">Licence open source</string>
+    <string name="settings_licenses_version">Verze %1$s</string>
+    <string name="settings_licenses_authors">Autor: %1$s</string>
 
     <!-- Today screen. -->
     <string name="today_title">Dnes</string>
@@ -440,6 +445,10 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_update_available_dismiss">Teď ne</string>
     <string name="today_update_downloaded_body">Aktualizace stažena. Restartuj pro dokončení instalace.</string>
     <string name="today_update_downloaded_action">Restartovat</string>
+    <string name="today_telemetry_invite_title">Pomůžeš vylepšit ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Odesílat hlášení o pádech a anonymní statistiky používání, aby se chyby našly a opravily?</string>
+    <string name="today_telemetry_invite_accept">Ano, prosím</string>
+    <string name="today_telemetry_invite_decline">Ne, díky</string>
 
     <!-- App widget. -->
     <string name="widget_label">Outfit</string>
@@ -494,6 +503,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="bug_report_consent_dont_show_again">Příště nezobrazovat</string>
     <string name="bug_report_consent_continue">Pokračovat</string>
     <string name="bug_report_consent_cancel">Zrušit</string>
+    <string name="bug_report_share_failed">Hlášení chyby se nepodařilo sdílet</string>
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Dnes</string>
@@ -562,6 +572,9 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_display_palette_rainbow_description">Růžové, oranžové a zelené linky grafů s tyrkysovými/červenými kartami spolehlivosti Material. Výchozí.</string>
     <string name="settings_display_palette_highlighter">Zvýrazňovač</string>
     <string name="settings_display_palette_highlighter_description">Purpurové, žluté a azurové čáry grafu — jako stopa zvýrazňovače na stránce. Na první pohled viditelně odlišné od \"Duhy\"; světlý motiv používá hlubší varianty pro čitelnost. Bezpečné při červeno-zelené barvosleposti.</string>
+    <string name="settings_display_text_size_title">Velikost textu</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Roztažením prstů změníš velikost</string>
     <string name="settings_display_home_layout_title">Rozvržení domovské obrazovky</string>
     <string name="settings_display_home_layout_description">Přetažením úchytů změň pořadí, v jakém se tyto sekce zobrazují na domovské obrazovce.</string>
     <string name="settings_display_home_layout_drag">Přetažením změň pořadí: %1$s</string>
@@ -749,6 +762,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast v %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast v %2$s</string>
 
     <!-- Today screen. -->
     <string name="today_rationale_open_clothes_settings">Nastavení oblečení</string>
@@ -831,6 +846,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="cast_error_no_route_picked">Nejprve vyberte chytrý displej.</string>
     <string name="cast_error_no_insight_yet">Předpověď zatím není dostupná. Počkejte na příští naplánované spuštění nebo klepněte na Obnovit na obrazovce Dnes.</string>
     <string name="cast_error_unknown">Přenos selhal.</string>
+    <string name="settings_smart_home_name">Jméno</string>
+    <string name="settings_smart_home_name_hint">např. Annin</string>
 
     <!-- Holiday banners — missing entries. -->
     <string name="holiday_banner_japan_coming_of_age_day">Šťastný japonský Den dospělosti</string>
@@ -979,6 +996,21 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="holiday_banner_ca_labour_day">Šťastný Svátek práce</string>
     <string name="holiday_banner_cinco_de_mayo">Šťastné Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Šťastné Boží Tělo</string>
+    <string name="settings_tts_gemini_sign_in_reason">Bezplatný hlas Gemini vyžaduje přihlášení přes Google.</string>
+    <string name="settings_google_sign_in">Přihlásit se přes Google</string>
+    <string name="settings_google_signed_in_as">Přihlášeno jako %1$s</string>
+    <string name="settings_google_signed_in">Přihlášeno přes Google</string>
+    <string name="settings_google_sign_out">Odhlásit se</string>
+    <string name="settings_google_delete_account">Smazat účet</string>
+    <string name="settings_google_delete_title">Smazat účet?</string>
+    <string name="settings_google_delete_body">Nastavení v tomto telefonu zůstane.</string>
+    <string name="settings_google_delete_confirm">Smazat</string>
+    <string name="settings_google_no_account">V tomto zařízení není účet Google.</string>
+    <string name="settings_google_sign_in_failed">Přihlášení se nezdařilo. Zkus to znovu.</string>
+    <string name="settings_google_delete_failed">Účet se nepodařilo smazat. Zkus to znovu.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Přihlas se přes Google a používej Google bez vlastního klíče.</string>
+    <string name="notify_gemini_sign_in_title">Hlas Gemini pozastaven</string>
+    <string name="notify_gemini_sign_in_text">Přihlas se přes Google v Nastavení hlasu, aby zůstal. Zatím se používá hlas zařízení.</string>
     <string name="holiday_banner_egypt_revolution_day">Šťastný Den revoluce</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Šťastný Den osvobození Sinaje</string>
     <string name="holiday_banner_india_childrens_day">Šťastný Den dětí</string>
@@ -1190,6 +1222,9 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_gemini_promo_cta">Nastavení hlasu</string>
     <string name="today_gemini_promo_dismiss">Zavřít</string>
     <string name="today_google_forecast_promo_dismiss">Zavřít</string>
+    <string name="today_google_forecast_promo_title">Vyzkoušej předpovědi Google</string>
+    <string name="today_google_forecast_promo_body">Vyber si poskytovatele předpovědi počasí pro vyšší přesnost.</string>
+    <string name="today_google_forecast_promo_cta">Nastavení modelů předpovědi</string>
     <string name="today_clothes_promo_title">Přizpůsob si oblečení</string>
     <string name="today_insight_format_link">Formát</string>
     <string name="today_play">Přehrát</string>
@@ -1276,6 +1311,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_holidays_calendar_source">Kalendář: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Pokročilá předpověď počasí od Google s AI. Vyžaduje přihlášení nebo klíč API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Pokročilá předpověď počasí od Google s AI. Vyžaduje klíč API.</string>
     <string name="settings_forecasters_aifs_subtitle">Model AI od ECMWF — spolehlivý až na 15 dní, proto nese grafy druhého týdne. Některé podrobné grafy pro něj nemusí zobrazovat čáru.</string>
     <string name="settings_forecasters_google_key_header">Klíč API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Vložte svůj klíč API Google</string>

@@ -210,6 +210,7 @@ displayed label localizes.
     <string name="settings_tts_voice_locale_sw_ke">Swahili (Kenia)</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Laadukkaat äänet ClothesCastin ja Googlen palvelimien kautta.</string>
 
     <string name="settings_api_key_status_set">Gemini-avain on asetettu.</string>
     <string name="settings_api_key_placeholder">Liitä Gemini-API-avain tähän</string>
@@ -250,6 +251,10 @@ displayed label localizes.
     <string name="settings_about_dontkillmyapp">Taustakäyttörajoitukset (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Jaa virheraportti</string>
     <string name="settings_about_version_copied">Versio kopioitu leikepöydälle</string>
+    <string name="settings_about_licenses">Lisenssit</string>
+    <string name="settings_licenses_title">Avoimen lähdekoodin lisenssit</string>
+    <string name="settings_licenses_version">Versio %1$s</string>
+    <string name="settings_licenses_authors">Tekijä: %1$s</string>
 
     <string name="today_title">Tänään</string>
     <string name="today_open_settings">Avaa asetukset</string>
@@ -471,6 +476,10 @@ displayed label localizes.
     <string name="today_update_available_dismiss">Ei nyt</string>
     <string name="today_update_downloaded_body">Päivitys ladattu. Käynnistä uudelleen viimeistelläksesi asennus.</string>
     <string name="today_update_downloaded_action">Käynnistä uudelleen</string>
+    <string name="today_telemetry_invite_title">Autatko parantamaan ClothesCastia?</string>
+    <string name="today_telemetry_invite_body">Lähetetäänkö kaatumisraportit ja anonyymit käyttötilastot, jotta virheet löydetään ja korjataan?</string>
+    <string name="today_telemetry_invite_accept">Kyllä kiitos</string>
+    <string name="today_telemetry_invite_decline">Ei kiitos</string>
 
     <string name="today_outfit_top_polo">Poolopaita</string>
     <string name="today_outfit_top_thin_jacket">Kevyt takki</string>
@@ -541,6 +550,7 @@ displayed label localizes.
     <string name="bug_report_consent_dont_show_again">Älä näytä uudelleen</string>
     <string name="bug_report_consent_continue">Jatka</string>
     <string name="bug_report_consent_cancel">Peruuta</string>
+    <string name="bug_report_share_failed">Virheraportin jakaminen epäonnistui</string>
 
     <string name="error_device_incompatible">ClothesCastia ei voi suorittaa tällä laitteella — Android-koontiversiostasi puuttuu ominaisuus, jota sovelluksen käyttöliittymä tarvitsee (Configuration.fontWeightAdjustment, odotetaan Android 12:sta ylöspäin). Ota yhteyttä laitevalmistajaan järjestelmäpäivitystä varten.</string>
     <string name="today_forecast_air_section_title">Ilman lämpötila</string>
@@ -553,6 +563,9 @@ displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Vaaleanpunaiset, oranssit ja vihreät kaavioviivat sekä Material teal/punaiset luotettavuuskortit. Oletus.</string>
     <string name="settings_display_palette_highlighter">Korostuskynä</string>
     <string name="settings_display_palette_highlighter_description">Magenta, keltaiset ja syaaninväriset kaaviolinjat — kuin korostuskynänjälki sivulla. Erottuu ensisilmäyksellä \"Sateenkaaresta\"; vaalea teema käyttää syvempiä variantteja luettavuuden vuoksi. Turvallinen puna-vihersokeudelle.</string>
+    <string name="settings_display_text_size_title">Tekstin koko</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Muuta kokoa nipistämällä</string>
     <string name="settings_display_home_layout_title">Aloitusnäytön asettelu</string>
     <string name="settings_display_home_layout_description">Vedä kahvoista järjestääksesi uudelleen, miten nämä osiot näkyvät aloitusnäytöllä.</string>
     <string name="settings_display_home_layout_drag">Vedä järjestääksesi uudelleen: %1$s</string>
@@ -746,6 +759,8 @@ displayed label localizes.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast klo %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast klo %2$s</string>
 
     <!-- Today screen -->
     <string name="today_rationale_open_clothes_settings">Vaateasetukset</string>
@@ -830,6 +845,8 @@ displayed label localizes.
     <string name="cast_error_no_route_picked">Valitse ensin älykäs näyttö.</string>
     <string name="cast_error_no_insight_yet">Ennustetta ei ole vielä saatavilla. Odota seuraavaa ajoitettua ajoa tai napauta Päivitä Tänään-näytöllä.</string>
     <string name="cast_error_unknown">Lähetys epäonnistui.</string>
+    <string name="settings_smart_home_name">Nimi</string>
+    <string name="settings_smart_home_name_hint">esim. Annan</string>
 
     <!-- Holiday banners (missing ones) -->
     <string name="holiday_banner_anzac_day">Emme unohda</string>
@@ -978,6 +995,21 @@ displayed label localizes.
     <string name="holiday_banner_ca_labour_day">Hyvää työn juhlapäivää</string>
     <string name="holiday_banner_cinco_de_mayo">Hyvää Cinco de Mayota</string>
     <string name="holiday_banner_corpus_christi">Hyvää Kristuksen ruumiin juhlaa</string>
+    <string name="settings_tts_gemini_sign_in_reason">Ilmainen Gemini-ääni vaatii Google-kirjautumisen.</string>
+    <string name="settings_google_sign_in">Kirjaudu Googlella</string>
+    <string name="settings_google_signed_in_as">Kirjautunut: %1$s</string>
+    <string name="settings_google_signed_in">Kirjautunut Googlella</string>
+    <string name="settings_google_sign_out">Kirjaudu ulos</string>
+    <string name="settings_google_delete_account">Poista tili</string>
+    <string name="settings_google_delete_title">Poistetaanko tili?</string>
+    <string name="settings_google_delete_body">Asetuksesi pysyvät tässä puhelimessa.</string>
+    <string name="settings_google_delete_confirm">Poista</string>
+    <string name="settings_google_no_account">Laitteella ei ole Google-tiliä.</string>
+    <string name="settings_google_sign_in_failed">Kirjautuminen epäonnistui. Yritä uudelleen.</string>
+    <string name="settings_google_delete_failed">Tilin poistaminen epäonnistui. Yritä uudelleen.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Kirjaudu Googlella, niin voit käyttää Googlea ilman omaa avainta.</string>
+    <string name="notify_gemini_sign_in_title">Gemini-ääni keskeytetty</string>
+    <string name="notify_gemini_sign_in_text">Kirjaudu Googlella Ääniasetuksissa säilyttääksesi sen. Käytetään toistaiseksi laitteen ääntä.</string>
     <string name="holiday_banner_egypt_revolution_day">Hyvää vallankumouksen päivää</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Hyvää Siinain vapautuspäivää</string>
     <string name="holiday_banner_india_childrens_day">Hyvää lasten päivää</string>
@@ -1187,6 +1219,9 @@ displayed label localizes.
     <string name="today_gemini_promo_cta">Ääniasetukset</string>
     <string name="today_gemini_promo_dismiss">Sulje</string>
     <string name="today_google_forecast_promo_dismiss">Sulje</string>
+    <string name="today_google_forecast_promo_title">Kokeile Googlen ennusteita</string>
+    <string name="today_google_forecast_promo_body">Valitse sääennusteiden tarjoajat tarkempia ennusteita varten.</string>
+    <string name="today_google_forecast_promo_cta">Ennustemallien asetukset</string>
     <string name="today_clothes_promo_title">Tee vaatteista omasi</string>
     <string name="today_insight_format_link">Muoto</string>
     <string name="today_play">Toista</string>
@@ -1273,6 +1308,8 @@ displayed label localizes.
     <string name="settings_holidays_calendar_source">Kalenteri: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Googlen kehittynyt tekoälysääennuste. Vaatii kirjautumisen tai API-avaimen.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Googlen kehittynyt tekoälysääennuste. Vaatii API-avaimen.</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF:n tekoälymalli — luotettava aina 15 päivään asti, joten se kantaa toisen viikon kaaviot. Jotkin yksityiskohtaiset kaaviot eivät ehkä näytä viivaa sille.</string>
     <string name="settings_forecasters_google_key_header">Googlen API-avain</string>
     <string name="settings_forecasters_google_key_placeholder">Liitä Googlen API-avaimesi</string>

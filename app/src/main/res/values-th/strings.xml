@@ -231,6 +231,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_available_dismiss">ไม่ใช่ตอนนี้</string>
     <string name="today_update_downloaded_body">ดาวน์โหลดการอัปเดตแล้ว รีสตาร์ทเพื่อติดตั้ง</string>
     <string name="today_update_downloaded_action">รีสตาร์ท</string>
+    <string name="today_telemetry_invite_title">ช่วยพัฒนา ClothesCast ไหม</string>
+    <string name="today_telemetry_invite_body">ส่งรายงานข้อขัดข้องและสถิติการใช้งานแบบไม่ระบุตัวตน เพื่อช่วยค้นหาและแก้ไขข้อผิดพลาดไหม</string>
+    <string name="today_telemetry_invite_accept">ได้เลย</string>
+    <string name="today_telemetry_invite_decline">ไม่ล่ะ</string>
 
     <!-- Telemetry notice -->
     <string name="today_telemetry_notice_open_settings">การตั้งค่าความเป็นส่วนตัว</string>
@@ -288,6 +292,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- API key settings -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">เสียงคุณภาพสูงผ่านเซิร์ฟเวอร์ของ ClothesCast และ Google</string>
     <string name="settings_tts_device_header">เสียงคุณภาพต่ำที่มีมาในเครื่องของคุณ</string>
     <string name="settings_api_key_status_set">กำหนดค่า Gemini key แล้ว</string>
     <string name="settings_api_key_placeholder">วาง Gemini API key ของคุณ</string>
@@ -523,6 +528,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_about_dontkillmyapp">ข้อจำกัดการทำงานเบื้องหลัง (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">แชร์รายงานข้อผิดพลาด</string>
     <string name="settings_about_version_copied">คัดลอกเวอร์ชันไปยังคลิปบอร์ดแล้ว</string>
+    <string name="settings_about_licenses">สัญญาอนุญาต</string>
+    <string name="settings_licenses_title">สัญญาอนุญาตโอเพนซอร์ส</string>
+    <string name="settings_licenses_version">เวอร์ชัน %1$s</string>
+    <string name="settings_licenses_authors">โดย %1$s</string>
 
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">แชร์รายงานข้อผิดพลาด?</string>
@@ -531,6 +540,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="bug_report_consent_dont_show_again">ไม่ต้องแสดงอีก</string>
     <string name="bug_report_consent_continue">ดำเนินการต่อ</string>
     <string name="bug_report_consent_cancel">ยกเลิก</string>
+    <string name="bug_report_share_failed">แชร์รายงานข้อผิดพลาดไม่ได้</string>
 
     <!-- Device incompatibility error -->
     <string name="error_device_incompatible">ClothesCast ไม่สามารถทำงานบนอุปกรณ์นี้ได้ — Android build ของคุณขาดฟีเจอร์ที่ UI ของแอปต้องการ (Configuration.fontWeightAdjustment ที่คาดว่าจะมีใน Android 12 และสูงกว่า) กรุณาติดต่อผู้ผลิตอุปกรณ์ของคุณเพื่อขอการอัปเดตระบบ</string>
@@ -545,6 +555,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">เส้นกราฟสีชมพู ส้ม และเขียว พร้อมการ์ดความเชื่อมั่น Material สีเขียวน้ำทะเล/แดง ค่าเริ่มต้น</string>
     <string name="settings_display_palette_highlighter">ปากกาเน้น</string>
     <string name="settings_display_palette_highlighter_description">เส้นกราฟสีบานเย็น เหลือง และฟ้าคราม — เหมือนรอยปากกาเน้นข้อความบนหน้ากระดาษ มองปุ๊บก็เห็นต่างจาก \"สีรุ้ง\" ทันที ธีมสว่างใช้โทนเข้มขึ้นเพื่อให้อ่านง่าย ปลอดภัยกับตาบอดสีแดง-เขียว</string>
+    <string name="settings_display_text_size_title">ขนาดข้อความ</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">จีบนิ้วเพื่อปรับขนาด</string>
     <string name="settings_display_home_layout_title">เลย์เอาต์หน้าหลัก</string>
     <string name="settings_display_home_layout_description">ลากที่จับเพื่อจัดลำดับการแสดงส่วนเหล่านี้บนหน้าหลักใหม่</string>
     <string name="settings_display_home_layout_drag">ลากเพื่อจัดลำดับ %1$s ใหม่</string>
@@ -717,6 +730,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="cast_error_no_insight_yet">ยังไม่มีพยากรณ์อากาศ รอรอบถัดไป หรือแตะ รีเฟรช บนหน้าวันนี้</string>
     <string name="cast_error_no_route_picked">เลือกสมาร์ทดิสเพลย์ก่อน</string>
     <string name="cast_error_unknown">การ Cast ล้มเหลว</string>
+    <string name="settings_smart_home_name">ชื่อ</string>
+    <string name="settings_smart_home_name_hint">เช่น ของต้น</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">สุขสันต์วันนักบุญทั้งหลาย</string>
@@ -780,6 +795,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %2$s %1$s</string>
 
     <!-- Settings — API key -->
     <string name="settings_api_key_replace">เปลี่ยน Gemini key</string>
@@ -972,6 +989,21 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_ca_labour_day">สุขสันต์วันแรงงาน</string>
     <string name="holiday_banner_cinco_de_mayo">สุขสันต์ซินโกเดมาโย</string>
     <string name="holiday_banner_corpus_christi">สุขสันต์วันสมโภชพระวรกายและพระโลหิตของพระคริสต์</string>
+    <string name="settings_tts_gemini_sign_in_reason">เสียง Gemini ฟรีต้องเข้าสู่ระบบด้วย Google</string>
+    <string name="settings_google_sign_in">ลงชื่อเข้าใช้ด้วย Google</string>
+    <string name="settings_google_signed_in_as">ลงชื่อเข้าใช้เป็น %1$s</string>
+    <string name="settings_google_signed_in">ลงชื่อเข้าใช้ด้วย Google แล้ว</string>
+    <string name="settings_google_sign_out">ออกจากระบบ</string>
+    <string name="settings_google_delete_account">ลบบัญชี</string>
+    <string name="settings_google_delete_title">ลบบัญชีไหม</string>
+    <string name="settings_google_delete_body">การตั้งค่าในโทรศัพท์เครื่องนี้ยังคงอยู่</string>
+    <string name="settings_google_delete_confirm">ลบ</string>
+    <string name="settings_google_no_account">ไม่มีบัญชี Google ในอุปกรณ์นี้</string>
+    <string name="settings_google_sign_in_failed">ลงชื่อเข้าใช้ไม่ได้ ลองอีกครั้ง</string>
+    <string name="settings_google_delete_failed">ลบบัญชีไม่ได้ ลองอีกครั้ง</string>
+    <string name="settings_forecasters_google_sign_in_reason">ลงชื่อเข้าใช้ด้วย Google เพื่อใช้ Google โดยไม่ต้องใช้คีย์ของคุณเอง</string>
+    <string name="notify_gemini_sign_in_title">หยุดเสียง Gemini ชั่วคราว</string>
+    <string name="notify_gemini_sign_in_text">ลงชื่อเข้าใช้ด้วย Google ในการตั้งค่าเสียงเพื่อใช้ต่อ ตอนนี้ใช้เสียงอุปกรณ์ไปก่อน</string>
     <string name="holiday_banner_egypt_revolution_day">สุขสันต์วันปฏิวัติ</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">สุขสันต์วันปลดปล่อยซีนาย</string>
     <string name="holiday_banner_india_childrens_day">สุขสันต์วันเด็ก</string>
@@ -1180,6 +1212,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_promo_cta">การตั้งค่าเสียง</string>
     <string name="today_gemini_promo_dismiss">ปิด</string>
     <string name="today_google_forecast_promo_dismiss">ปิด</string>
+    <string name="today_google_forecast_promo_title">ลองใช้การพยากรณ์ของ Google</string>
+    <string name="today_google_forecast_promo_body">เลือกผู้ให้บริการพยากรณ์อากาศเพื่อความแม่นยำยิ่งขึ้น</string>
+    <string name="today_google_forecast_promo_cta">การตั้งค่าผู้พยากรณ์</string>
     <string name="today_clothes_promo_title">ปรับเสื้อผ้าให้เป็นของคุณ</string>
     <string name="today_insight_format_link">รูปแบบ</string>
     <string name="today_play">เล่น</string>
@@ -1266,6 +1301,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_calendar_source">ปฏิทิน: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">การพยากรณ์อากาศด้วย AI ขั้นสูงของ Google ต้องเข้าสู่ระบบหรือใช้ API key</string>
+    <string name="settings_forecasters_google_subtitle_key_only">การพยากรณ์อากาศด้วย AI ขั้นสูงของ Google ต้องใช้ API key</string>
     <string name="settings_forecasters_aifs_subtitle">โมเดล AI ของ ECMWF — แม่นยำได้ถึง 15 วัน จึงเป็นตัวรับผิดชอบกราฟของสัปดาห์ที่สอง กราฟรายละเอียดบางรายการอาจไม่แสดงเส้นของโมเดลนี้</string>
     <string name="settings_forecasters_google_key_header">คีย์ Google API</string>
     <string name="settings_forecasters_google_key_placeholder">วางคีย์ Google API ของคุณ</string>

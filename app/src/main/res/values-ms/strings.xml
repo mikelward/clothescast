@@ -227,6 +227,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_update_available_dismiss">Bukan sekarang</string>
     <string name="today_update_downloaded_body">Kemas kini telah dimuat turun. Mulakan semula untuk menyelesaikan pemasangan.</string>
     <string name="today_update_downloaded_action">Mulakan semula</string>
+    <string name="today_telemetry_invite_title">Bantu perbaiki ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Hantar laporan ranap dan statistik penggunaan tanpa nama supaya pepijat dapat dikesan dan dibaiki?</string>
+    <string name="today_telemetry_invite_accept">Ya, boleh</string>
+    <string name="today_telemetry_invite_decline">Tidak, terima kasih</string>
 
     <!-- Telemetry notice banner -->
     <string name="today_telemetry_notice_open_settings">Tetapan Privasi</string>
@@ -286,6 +290,7 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Gemini API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Suara berkualiti tinggi melalui pelayan ClothesCast dan Google.</string>
     <string name="settings_tts_device_header">Suara berkualiti rendah yang terbina dalam telefon anda.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
     <string name="settings_api_key_placeholder">Tampal kunci API Gemini anda</string>
@@ -523,6 +528,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_about_dontkillmyapp">Sekatan latar belakang (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Kongsikan laporan pepijat</string>
     <string name="settings_about_version_copied">Versi disalin ke papan klip</string>
+    <string name="settings_about_licenses">Lesen</string>
+    <string name="settings_licenses_title">Lesen sumber terbuka</string>
+    <string name="settings_licenses_version">Versi %1$s</string>
+    <string name="settings_licenses_authors">Oleh %1$s</string>
 
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">Kongsikan laporan pepijat?</string>
@@ -531,6 +540,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="bug_report_consent_dont_show_again">Jangan tunjukkan ini lagi</string>
     <string name="bug_report_consent_continue">Teruskan</string>
     <string name="bug_report_consent_cancel">Batal</string>
+    <string name="bug_report_share_failed">Tidak dapat berkongsi laporan pepijat</string>
 
     <!-- Insight prose: precipitation chance variant -->
     <string name="insight_precip_chance">Kemungkinan %1$s.</string>
@@ -551,6 +561,9 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_display_palette_rainbow_description">Garis carta merah jambu, oren, dan hijau dengan kad keyakinan Material teal/merah. Lalai.</string>
     <string name="settings_display_palette_highlighter">Stabilo</string>
     <string name="settings_display_palette_highlighter_description">Garis carta magenta, kuning, dan biru kehijauan — seperti coretan stabilo di muka surat. Sekilas pandang ternyata berbeza daripada \"Pelangi\"; tema cerah menggunakan varian yang lebih gelap untuk kebolehbacaan. Selamat untuk buta warna merah-hijau.</string>
+    <string name="settings_display_text_size_title">Saiz teks</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Cubit untuk ubah saiz</string>
     <string name="settings_display_home_layout_title">Susun atur skrin utama</string>
     <string name="settings_display_home_layout_description">Seret pemegang untuk menyusun semula cara bahagian ini muncul pada skrin utama.</string>
     <string name="settings_display_home_layout_drag">Seret untuk menyusun semula %1$s</string>
@@ -723,6 +736,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="cast_error_no_insight_yet">Ramalan belum tersedia. Tunggu jadual seterusnya, atau ketik Muat Semula pada skrin Hari Ini.</string>
     <string name="cast_error_no_route_picked">Pilih paparan pintar dahulu.</string>
     <string name="cast_error_unknown">Cast gagal.</string>
+    <string name="settings_smart_home_name">Nama</string>
+    <string name="settings_smart_home_name_hint">cth. Aisyah</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Selamat Hari Semua Orang Suci</string>
@@ -786,6 +801,8 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %2$s %1$s</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Gantikan kunci Gemini</string>
@@ -978,6 +995,21 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="holiday_banner_ca_labour_day">Selamat Hari Buruh</string>
     <string name="holiday_banner_cinco_de_mayo">Selamat Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Selamat Hari Raya Tubuh Kristus</string>
+    <string name="settings_tts_gemini_sign_in_reason">Suara Gemini percuma memerlukan log masuk Google.</string>
+    <string name="settings_google_sign_in">Log masuk dengan Google</string>
+    <string name="settings_google_signed_in_as">Log masuk sebagai %1$s</string>
+    <string name="settings_google_signed_in">Log masuk dengan Google</string>
+    <string name="settings_google_sign_out">Log keluar</string>
+    <string name="settings_google_delete_account">Padam akaun</string>
+    <string name="settings_google_delete_title">Padam akaun?</string>
+    <string name="settings_google_delete_body">Tetapan anda pada telefon ini kekal.</string>
+    <string name="settings_google_delete_confirm">Padam</string>
+    <string name="settings_google_no_account">Tiada akaun Google pada peranti ini.</string>
+    <string name="settings_google_sign_in_failed">Tidak dapat log masuk. Cuba semula.</string>
+    <string name="settings_google_delete_failed">Tidak dapat memadam akaun. Cuba semula.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Log masuk dengan Google untuk menggunakan Google tanpa kunci anda sendiri.</string>
+    <string name="notify_gemini_sign_in_title">Suara Gemini dijeda</string>
+    <string name="notify_gemini_sign_in_text">Log masuk dengan Google dalam Tetapan suara untuk terus menggunakannya. Buat masa ini menggunakan suara peranti.</string>
     <string name="holiday_banner_egypt_revolution_day">Selamat Hari Revolusi</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Selamat Hari Pembebasan Sinai</string>
     <string name="holiday_banner_india_childrens_day">Selamat Hari Kanak-kanak</string>
@@ -1186,6 +1218,9 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_gemini_promo_cta">Tetapan suara</string>
     <string name="today_gemini_promo_dismiss">Tutup</string>
     <string name="today_google_forecast_promo_dismiss">Tutup</string>
+    <string name="today_google_forecast_promo_title">Cuba ramalan Google</string>
+    <string name="today_google_forecast_promo_body">Pilih penyedia ramalan cuaca untuk ketepatan yang lebih baik.</string>
+    <string name="today_google_forecast_promo_cta">Tetapan peramal cuaca</string>
     <string name="today_clothes_promo_title">Jadikan pakaian milik anda</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Putar</string>
@@ -1272,6 +1307,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_holidays_calendar_source">Kalendar: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Ramalan cuaca AI termaju Google. Perlu log masuk atau kunci API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Ramalan cuaca AI termaju Google. Perlu kunci API.</string>
     <string name="settings_forecasters_aifs_subtitle">Model AI ECMWF — tepat sehingga 15 hari, jadi ia menyokong carta minggu kedua. Sesetengah carta terperinci mungkin tidak menunjukkan garisan untuknya.</string>
     <string name="settings_forecasters_google_key_header">Kunci API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Tampal kunci API Google anda</string>

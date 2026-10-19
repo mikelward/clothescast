@@ -209,6 +209,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_available_dismiss">Si sasa</string>
     <string name="today_update_downloaded_body">Sasisho limepakuliwa. Anzisha upya ili kumaliza usakinishaji.</string>
     <string name="today_update_downloaded_action">Anzisha upya</string>
+    <string name="today_telemetry_invite_title">Saidia kuboresha ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Tuma ripoti za hitilafu na takwimu za matumizi zisizo na jina ili hitilafu zipatikane na kurekebishwa?</string>
+    <string name="today_telemetry_invite_accept">Ndiyo tafadhali</string>
+    <string name="today_telemetry_invite_decline">Hapana asante</string>
     <string name="today_telemetry_notice_open_settings">Mipangilio ya Faragha</string>
     <string name="today_telemetry_notice_dismiss">Ondoa</string>
 
@@ -362,6 +366,7 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Settings: API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Sauti za ubora wa juu kupitia seva za ClothesCast na Google.</string>
     <string name="settings_tts_device_header">Sauti za ubora wa chini zilizojengwa kwenye simu yako.</string>
     <string name="settings_api_key_status_set">Ufunguo wa Gemini umewekwa.</string>
     <string name="settings_api_key_placeholder">Bandika ufunguo wako wa Gemini API</string>
@@ -376,6 +381,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_about_dontkillmyapp">Vizuizi vya mandharinyuma (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Shiriki ripoti ya hitilafu</string>
     <string name="settings_about_version_copied">Toleo limenakiliwa kwenye ubao wa kunakili</string>
+    <string name="settings_about_licenses">Leseni</string>
+    <string name="settings_licenses_title">Leseni za programu huria</string>
+    <string name="settings_licenses_version">Toleo %1$s</string>
+    <string name="settings_licenses_authors">Na %1$s</string>
 
     <!-- Bug report consent -->
     <string name="bug_report_consent_title">Shiriki ripoti ya hitilafu?</string>
@@ -384,6 +393,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="bug_report_consent_dont_show_again">Usionyeshe tena</string>
     <string name="bug_report_consent_continue">Endelea</string>
     <string name="bug_report_consent_cancel">Ghairi</string>
+    <string name="bug_report_share_failed">Imeshindwa kushiriki ripoti ya hitilafu</string>
 
     <!-- Insight: precipitation / extras templates (new variants) -->
     <string name="insight_precip_chance">Uwezekano wa %1$s.</string>
@@ -403,6 +413,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">Mistari ya chati ya rangi waridi, machungwa na kijani na kadi za imani za Material bluu-kijani/nyekundu. Chaguo-msingi.</string>
     <string name="settings_display_palette_highlighter">Highlighter</string>
     <string name="settings_display_palette_highlighter_description">Mistari ya chati ya magenta, manjano, na cyan — kama alama ya kalamu ya kuangaza kwenye karatasi. Inatofautiana wazi na \"Upinde wa Mvua\" kwa mtazamo wa kwanza; mandhari nyepesi hutumia rangi za kina zaidi kwa kusomeka kwa urahisi. Salama kwa upofu wa rangi nyekundu-kijani.</string>
+    <string name="settings_display_text_size_title">Ukubwa wa maandishi</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Bana ili kubadilisha ukubwa</string>
     <string name="settings_display_home_layout_title">Mpangilio wa skrini ya mwanzo</string>
     <string name="settings_display_home_layout_description">Buruta vishikizo ili kupanga upya jinsi sehemu hizi zinavyoonekana kwenye skrini ya mwanzo.</string>
     <string name="settings_display_home_layout_drag">Buruta ili kupanga upya %1$s</string>
@@ -603,6 +616,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="cast_error_no_insight_yet">Hakuna utabiri bado. Subiri mzunguko uliofuata, au gonga Onyesha upya kwenye skrini ya Leo.</string>
     <string name="cast_error_no_route_picked">Chagua onyesho mahiri kwanza.</string>
     <string name="cast_error_unknown">Cast imeshindwa.</string>
+    <string name="settings_smart_home_name">Jina</string>
+    <string name="settings_smart_home_name_hint">k.m. ya Amani</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Sikukuu ya Watakatifu Wote</string>
@@ -723,6 +738,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast ya %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %1$s ya %2$s</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Badilisha ufunguo wa Gemini</string>
@@ -940,6 +957,21 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_ca_labour_day">Heri ya Siku ya Wafanyakazi</string>
     <string name="holiday_banner_cinco_de_mayo">Heri ya Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Heri ya Corpus Christi</string>
+    <string name="settings_tts_gemini_sign_in_reason">Sauti ya bure ya Gemini inahitaji kuingia kwa Google.</string>
+    <string name="settings_google_sign_in">Ingia kwa Google</string>
+    <string name="settings_google_signed_in_as">Umeingia kama %1$s</string>
+    <string name="settings_google_signed_in">Umeingia kwa Google</string>
+    <string name="settings_google_sign_out">Ondoka</string>
+    <string name="settings_google_delete_account">Futa akaunti</string>
+    <string name="settings_google_delete_title">Futa akaunti?</string>
+    <string name="settings_google_delete_body">Mipangilio yako kwenye simu hii itabaki.</string>
+    <string name="settings_google_delete_confirm">Futa</string>
+    <string name="settings_google_no_account">Hakuna akaunti ya Google kwenye kifaa hiki.</string>
+    <string name="settings_google_sign_in_failed">Imeshindwa kuingia. Jaribu tena.</string>
+    <string name="settings_google_delete_failed">Imeshindwa kufuta akaunti. Jaribu tena.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Ingia kwa Google ili kutumia Google bila ufunguo wako mwenyewe.</string>
+    <string name="notify_gemini_sign_in_title">Sauti ya Gemini imesitishwa</string>
+    <string name="notify_gemini_sign_in_text">Ingia kwa Google kwenye mipangilio ya sauti ili kuiweka. Kwa sasa inatumia sauti ya kifaa.</string>
     <string name="holiday_banner_egypt_revolution_day">Heri ya Siku ya Mapinduzi</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Heri ya Siku ya Ukombozi wa Sinai</string>
     <string name="holiday_banner_india_childrens_day">Heri ya Siku ya Watoto</string>
@@ -1149,6 +1181,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_promo_cta">Mipangilio ya sauti</string>
     <string name="today_gemini_promo_dismiss">Funga</string>
     <string name="today_google_forecast_promo_dismiss">Funga</string>
+    <string name="today_google_forecast_promo_title">Jaribu utabiri wa Google</string>
+    <string name="today_google_forecast_promo_body">Chagua watoa huduma wa utabiri wa hali ya hewa kwa usahihi zaidi.</string>
+    <string name="today_google_forecast_promo_cta">Mipangilio ya modeli za utabiri</string>
     <string name="today_clothes_promo_title">Fanya nguo ziwe zako</string>
     <string name="today_insight_format_link">Umbo</string>
     <string name="today_play">Cheza</string>
@@ -1235,6 +1270,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_calendar_source">Kalenda: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Utabiri wa hali ya hewa wa hali ya juu wa Google kwa akili bandia. Unahitaji kuingia au ufunguo wa API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Utabiri wa hali ya hewa wa hali ya juu wa Google kwa akili bandia. Unahitaji ufunguo wa API.</string>
     <string name="settings_forecasters_aifs_subtitle">Muundo wa AI wa ECMWF — una uwezo hadi siku 15, hivyo unabeba chati za wiki ya pili. Baadhi ya chati za kina huenda zisionyeshe mstari kwa ajili yake.</string>
     <string name="settings_forecasters_google_key_header">Ufunguo wa Google API</string>
     <string name="settings_forecasters_google_key_placeholder">Bandika ufunguo wako wa Google API</string>

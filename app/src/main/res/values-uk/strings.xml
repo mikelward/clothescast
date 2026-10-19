@@ -271,6 +271,7 @@ only the displayed label localizes.
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Голоси високої якості через сервери ClothesCast і Google.</string>
     <string name="settings_tts_device_header">Голоси низької якості, вбудовані у твій телефон.</string>
     <string name="settings_api_key_status_set">Ключ Gemini налаштовано.</string>
     <string name="settings_api_key_placeholder">Вставте ваш ключ API Gemini</string>
@@ -343,6 +344,10 @@ only the displayed label localizes.
     <string name="settings_about_dontkillmyapp">Обмеження у фоні (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Поділитися звітом про помилку</string>
     <string name="settings_about_version_copied">Версію скопійовано до буфера обміну</string>
+    <string name="settings_about_licenses">Ліцензії</string>
+    <string name="settings_licenses_title">Ліцензії відкритого коду</string>
+    <string name="settings_licenses_version">Версія %1$s</string>
+    <string name="settings_licenses_authors">Автор: %1$s</string>
 
     <!-- Today screen. -->
     <string name="today_title">Сьогодні</string>
@@ -472,6 +477,10 @@ only the displayed label localizes.
     <string name="today_update_available_dismiss">Не зараз</string>
     <string name="today_update_downloaded_body">Оновлення завантажено. Перезапустіть, щоб завершити встановлення.</string>
     <string name="today_update_downloaded_action">Перезапустити</string>
+    <string name="today_telemetry_invite_title">Допоможете покращити ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Надсилати звіти про збої та анонімну статистику використання, щоб знаходити й виправляти помилки?</string>
+    <string name="today_telemetry_invite_accept">Так, будь ласка</string>
+    <string name="today_telemetry_invite_decline">Ні, дякую</string>
 
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_open_settings">Налаштування конфіденційності</string>
@@ -500,6 +509,7 @@ only the displayed label localizes.
     <string name="bug_report_consent_dont_show_again">Більше не показувати</string>
     <string name="bug_report_consent_continue">Продовжити</string>
     <string name="bug_report_consent_cancel">Скасувати</string>
+    <string name="bug_report_share_failed">Не вдалося поділитися звітом про помилку</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast не може працювати на цьому пристрої — у вашій Android-прошивці відсутня функція, необхідна для інтерфейсу застосунку (Configuration.fontWeightAdjustment, очікується на Android 12 і вище). Зверніться до виробника пристрою за оновленням системи.</string>
@@ -573,6 +583,9 @@ only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Рожеві, помаранчеві та зелені лінії графіків з картками достовірності Material бірюзово/червоного. За замовчуванням.</string>
     <string name="settings_display_palette_highlighter">Маркер</string>
     <string name="settings_display_palette_highlighter_description">Лінії графіка пурпурового, жовтого та блакитного кольорів — наче слід маркера на сторінці. Помітно відрізняються від \"Райдуги\" з першого погляду; світла тема використовує глибші варіанти для читабельності. Безпечно для червоно-зеленої цветової сліпоти.</string>
+    <string name="settings_display_text_size_title">Розмір тексту</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Розведіть пальці, щоб змінити розмір</string>
     <string name="settings_display_home_layout_title">Макет головного екрана</string>
     <string name="settings_display_home_layout_description">Перетягуй маркери, щоб змінити порядок відображення цих розділів на головному екрані.</string>
     <string name="settings_display_home_layout_drag">Перетягни, щоб змінити порядок: %1$s</string>
@@ -754,6 +767,8 @@ only the displayed label localizes.
     <string name="holiday_banner_boxing_day">З наступним різдвяним днем</string>
     <string name="today_rationale_open_clothes_settings">Налаштування одягу</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast на %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %1$s на %2$s</string>
     <string name="today_celebration_card_title">Святкові теми</string>
     <string name="today_celebration_card_body">Увімкніть спеціальні кольори та повідомлення для свят і днів народження.</string>
     <string name="today_celebration_card_cta">Налаштування календаря</string>
@@ -782,6 +797,8 @@ only the displayed label localizes.
     <string name="cast_error_no_route_picked">Спочатку виберіть розумний дисплей.</string>
     <string name="cast_error_no_insight_yet">Прогноз ще недоступний. Зачекайте наступного запланованого оновлення або натисніть «Оновити» на екрані «Сьогодні».</string>
     <string name="cast_error_unknown">Трансляція не вдалася.</string>
+    <string name="settings_smart_home_name">Ім\'я</string>
+    <string name="settings_smart_home_name_hint">напр. Алекса</string>
     <string name="settings_smart_home_mqtt_title">Міст Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Публікувати прогноз у MQTT</string>
     <string name="settings_smart_home_mqtt_host">Хост брокера</string>
@@ -968,6 +985,21 @@ only the displayed label localizes.
     <string name="holiday_banner_ca_labour_day">Зі святом Дня праці</string>
     <string name="holiday_banner_cinco_de_mayo">Зі святом Сінко-де-Майо</string>
     <string name="holiday_banner_corpus_christi">Зі святом Тіла Господнього</string>
+    <string name="settings_tts_gemini_sign_in_reason">Для безкоштовного голосу Gemini потрібен вхід через Google.</string>
+    <string name="settings_google_sign_in">Увійти через Google</string>
+    <string name="settings_google_signed_in_as">Ви ввійшли як %1$s</string>
+    <string name="settings_google_signed_in">Ви ввійшли через Google</string>
+    <string name="settings_google_sign_out">Вийти</string>
+    <string name="settings_google_delete_account">Видалити обліковий запис</string>
+    <string name="settings_google_delete_title">Видалити обліковий запис?</string>
+    <string name="settings_google_delete_body">Ваші налаштування на цьому телефоні збережуться.</string>
+    <string name="settings_google_delete_confirm">Видалити</string>
+    <string name="settings_google_no_account">На цьому пристрої немає облікового запису Google.</string>
+    <string name="settings_google_sign_in_failed">Не вдалося ввійти. Спробуйте ще раз.</string>
+    <string name="settings_google_delete_failed">Не вдалося видалити обліковий запис. Спробуйте ще раз.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Увійдіть через Google, щоб користуватися Google без власного ключа.</string>
+    <string name="notify_gemini_sign_in_title">Голос Gemini призупинено</string>
+    <string name="notify_gemini_sign_in_text">Увійдіть через Google у налаштуваннях голосу, щоб зберегти його. Поки що використовується голос пристрою.</string>
     <string name="holiday_banner_egypt_revolution_day">Зі святом Дня революції</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Зі святом Дня визволення Синаю</string>
     <string name="holiday_banner_india_childrens_day">Зі святом Дня дітей</string>
@@ -1179,6 +1211,9 @@ only the displayed label localizes.
     <string name="today_gemini_promo_cta">Налаштування голосу</string>
     <string name="today_gemini_promo_dismiss">Закрити</string>
     <string name="today_google_forecast_promo_dismiss">Закрити</string>
+    <string name="today_google_forecast_promo_title">Спробуйте прогнози Google</string>
+    <string name="today_google_forecast_promo_body">Виберіть постачальників прогнозів погоди для більшої точності.</string>
+    <string name="today_google_forecast_promo_cta">Налаштування прогнозистів</string>
     <string name="today_clothes_promo_title">Зроби одяг своїм</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Відтворити</string>
@@ -1265,6 +1300,8 @@ only the displayed label localizes.
     <string name="settings_holidays_calendar_source">Календар: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Розширений прогноз погоди від Google на основі ШІ. Потрібен вхід або ключ API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Розширений прогноз погоди від Google на основі ШІ. Потрібен ключ API.</string>
     <string name="settings_forecasters_aifs_subtitle">ШІ-модель ECMWF — точна на строк до 15 днів, тому саме вона забезпечує графіки другого тижня. На деяких детальних графіках лінія для неї може не відображатися.</string>
     <string name="settings_forecasters_google_key_header">Ключ API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Вставте свій ключ API Google</string>

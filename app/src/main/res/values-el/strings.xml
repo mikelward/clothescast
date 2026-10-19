@@ -285,6 +285,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     keeps them unchanged.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Φωνές υψηλής ποιότητας μέσω των διακομιστών του ClothesCast και της Google.</string>
 
     <string name="settings_api_key_status_set">Έχει ρυθμιστεί ένα Gemini key.</string>
     <string name="settings_api_key_placeholder">Επικόλλησε το Gemini API key σου</string>
@@ -355,6 +356,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_about_dontkillmyapp">Περιορισμοί παρασκηνίου (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Κοινοποίηση αναφοράς σφαλμάτων</string>
     <string name="settings_about_version_copied">Η έκδοση αντιγράφηκε στο πρόχειρο</string>
+    <string name="settings_about_licenses">Άδειες</string>
+    <string name="settings_licenses_title">Άδειες ανοιχτού κώδικα</string>
+    <string name="settings_licenses_version">Έκδοση %1$s</string>
+    <string name="settings_licenses_authors">Από %1$s</string>
 
     <!--
     Today screen — top bar, refresh toasts, empty state, generated-at
@@ -610,6 +615,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="bug_report_consent_dont_show_again">Να μην εμφανίζεται ξανά</string>
     <string name="bug_report_consent_continue">Συνέχεια</string>
     <string name="bug_report_consent_cancel">Άκυρο</string>
+    <string name="bug_report_share_failed">Δεν ήταν δυνατή η κοινοποίηση της αναφοράς σφαλμάτων</string>
 
     <!-- Missing insight prose. -->
     <string name="insight_precip_chance">Πιθανότητα %1$s.</string>
@@ -660,6 +666,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_update_available_dismiss">Όχι τώρα</string>
     <string name="today_update_downloaded_body">Η ενημέρωση λήφθηκε. Επανεκκίνησε για να ολοκληρωθεί η εγκατάσταση.</string>
     <string name="today_update_downloaded_action">Επανεκκίνηση</string>
+    <string name="today_telemetry_invite_title">Να γίνει το ClothesCast καλύτερο;</string>
+    <string name="today_telemetry_invite_body">Να στέλνονται αναφορές σφαλμάτων και ανώνυμα στατιστικά χρήσης, ώστε να βρίσκονται και να διορθώνονται τα σφάλματα;</string>
+    <string name="today_telemetry_invite_accept">Ναι, ευχαριστώ</string>
+    <string name="today_telemetry_invite_decline">Όχι, ευχαριστώ</string>
 
     <!-- TTS style picker. -->
     <string name="settings_tts_style_label">Στυλ</string>
@@ -692,6 +702,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Ροζ, πορτοκαλί και πράσινες γραμμές γραφημάτων με κάρτες αξιοπιστίας Material πετρόλ/κόκκινο. Προεπιλογή.</string>
     <string name="settings_display_palette_highlighter">Μαρκαδόρος</string>
     <string name="settings_display_palette_highlighter_description">Γραμμές γραφήματος σε ματζέντα, κίτρινο και κυανό — σαν ίχνος μαρκαδόρου στη σελίδα. Με μια ματιά διακρίνονται από το \"Ουράνιο τόξο\"· το ανοιχτό θέμα χρησιμοποιεί πιο σκούρες εκδοχές για αναγνωσιμότητα. Ασφαλές για κόκκινη-πράσινη αχρωματοψία.</string>
+    <string name="settings_display_text_size_title">Μέγεθος κειμένου</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Τσίμπησε για αλλαγή μεγέθους</string>
     <string name="settings_display_home_layout_title">Διάταξη αρχικής οθόνης</string>
     <string name="settings_display_home_layout_description">Σύρε τις λαβές για να αλλάξεις τη σειρά με την οποία εμφανίζονται αυτές οι ενότητες στην αρχική οθόνη.</string>
     <string name="settings_display_home_layout_drag">Σύρε για αναδιάταξη: %1$s</string>
@@ -921,6 +934,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_root_smart_home_subtitle">Έξυπνες οθόνες και οικιακή αυτοματοποίηση</string>
     <string name="settings_api_key_replace">Αντικατάσταση κλειδιού Gemini</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %2$s %1$s</string>
     <string name="today_rationale_open_clothes_settings">Ρυθμίσεις ρούχων</string>
     <string name="today_celebration_card_title">Εορταστικά θέματα</string>
     <string name="today_celebration_card_body">Ενεργοποίησε ειδικά χρώματα και μηνύματα για αργίες και γενέθλια.</string>
@@ -986,6 +1001,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_no_route_picked">Επίλεξε πρώτα έξυπνη οθόνη.</string>
     <string name="cast_error_no_insight_yet">Δεν υπάρχει ακόμα διαθέσιμη πρόγνωση. Περίμενε την επόμενη προγραμματισμένη εκτέλεση ή πάτησε Ανανέωση στην οθόνη Σήμερα.</string>
     <string name="cast_error_unknown">Η μετάδοση απέτυχε.</string>
+    <string name="settings_smart_home_name">Όνομα</string>
+    <string name="settings_smart_home_name_hint">π.χ. της Ελένης</string>
     <string name="settings_calendar_birthdays">Γενέθλια ημερολογίου</string>
     <string name="settings_calendar_public_holidays">Αργίες ημερολογίου</string>
 
@@ -1091,6 +1108,21 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_ca_labour_day">Καλή Εργατική Πρωτομαγιά</string>
     <string name="holiday_banner_cinco_de_mayo">Καλό Σίνκο ντε Μάγιο</string>
     <string name="holiday_banner_corpus_christi">Καλή Εορτή Σώματος Χριστού</string>
+    <string name="settings_tts_gemini_sign_in_reason">Η δωρεάν φωνή Gemini απαιτεί σύνδεση με Google.</string>
+    <string name="settings_google_sign_in">Σύνδεση με Google</string>
+    <string name="settings_google_signed_in_as">Συνδέθηκες ως %1$s</string>
+    <string name="settings_google_signed_in">Συνδέθηκες με Google</string>
+    <string name="settings_google_sign_out">Αποσύνδεση</string>
+    <string name="settings_google_delete_account">Διαγραφή λογαριασμού</string>
+    <string name="settings_google_delete_title">Διαγραφή λογαριασμού;</string>
+    <string name="settings_google_delete_body">Οι ρυθμίσεις σου σε αυτό το τηλέφωνο παραμένουν.</string>
+    <string name="settings_google_delete_confirm">Διαγραφή</string>
+    <string name="settings_google_no_account">Δεν υπάρχει λογαριασμός Google σε αυτή τη συσκευή.</string>
+    <string name="settings_google_sign_in_failed">Η σύνδεση απέτυχε. Δοκίμασε ξανά.</string>
+    <string name="settings_google_delete_failed">Η διαγραφή λογαριασμού απέτυχε. Δοκίμασε ξανά.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Συνδέσου με Google για να χρησιμοποιείς τη Google χωρίς δικό σου key.</string>
+    <string name="notify_gemini_sign_in_title">Η φωνή Gemini σε παύση</string>
+    <string name="notify_gemini_sign_in_text">Συνδέσου με Google στις Ρυθμίσεις φωνής για να την κρατήσεις. Προς το παρόν χρησιμοποιείται η φωνή συσκευής.</string>
     <string name="holiday_banner_egypt_revolution_day">Καλή Ημέρα Επανάστασης</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Καλή Ημέρα Απελευθέρωσης Σινά</string>
     <string name="holiday_banner_india_childrens_day">Καλή Ημέρα του Παιδιού</string>
@@ -1300,6 +1332,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_gemini_promo_cta">Ρυθμίσεις φωνής</string>
     <string name="today_gemini_promo_dismiss">Απόρριψη</string>
     <string name="today_google_forecast_promo_dismiss">Απόρριψη</string>
+    <string name="today_google_forecast_promo_title">Δοκίμασε τις προβλέψεις Google</string>
+    <string name="today_google_forecast_promo_body">Διάλεξε παρόχους πρόγνωσης καιρού για μεγαλύτερη ακρίβεια.</string>
+    <string name="today_google_forecast_promo_cta">Ρυθμίσεις μοντέλων πρόβλεψης</string>
     <string name="today_clothes_promo_title">Κάνε τα ρούχα δικά σου</string>
     <string name="today_insight_format_link">Μορφή</string>
     <string name="today_play">Αναπαραγωγή</string>
@@ -1386,6 +1421,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_holidays_calendar_source">Ημερολόγιο: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Η προηγμένη πρόγνωση καιρού της Google με ΤΝ. Απαιτεί σύνδεση ή API key.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Η προηγμένη πρόγνωση καιρού της Google με ΤΝ. Απαιτεί API key.</string>
     <string name="settings_forecasters_aifs_subtitle">Το μοντέλο ΤΝ του ECMWF — αξιόπιστο έως και 15 ημέρες, γι\' αυτό στηρίζει τα γραφήματα της δεύτερης εβδομάδας. Ορισμένα λεπτομερή γραφήματα ενδέχεται να μην εμφανίζουν γραμμή για αυτό.</string>
     <string name="settings_forecasters_google_key_header">Κλειδί API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Επικολλήστε το κλειδί API Google</string>

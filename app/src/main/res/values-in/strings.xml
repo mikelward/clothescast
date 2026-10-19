@@ -227,6 +227,10 @@ to values/strings.xml (English).
     <string name="today_update_available_dismiss">Nanti saja</string>
     <string name="today_update_downloaded_body">Pembaruan telah diunduh. Mulai ulang untuk menyelesaikan instalasi.</string>
     <string name="today_update_downloaded_action">Mulai ulang</string>
+    <string name="today_telemetry_invite_title">Bantu kembangkan ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Kirim laporan crash dan statistik penggunaan anonim agar bug ditemukan dan diperbaiki?</string>
+    <string name="today_telemetry_invite_accept">Ya, boleh</string>
+    <string name="today_telemetry_invite_decline">Tidak, terima kasih</string>
 
     <!-- Telemetry notice banner -->
     <string name="today_telemetry_notice_open_settings">Pengaturan Privasi</string>
@@ -284,6 +288,7 @@ to values/strings.xml (English).
 
     <!-- API key settings -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Suara berkualitas tinggi melalui server ClothesCast dan Google.</string>
     <string name="settings_tts_device_header">Suara berkualitas rendah bawaan di ponselmu.</string>
     <string name="settings_api_key_status_set">Kunci Gemini telah dikonfigurasi.</string>
     <string name="settings_api_key_placeholder">Tempelkan kunci API Gemini Anda</string>
@@ -525,6 +530,10 @@ to values/strings.xml (English).
     <string name="settings_about_dontkillmyapp">Pembatasan latar belakang (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Bagikan laporan bug</string>
     <string name="settings_about_version_copied">Versi disalin ke papan klip</string>
+    <string name="settings_about_licenses">Lisensi</string>
+    <string name="settings_licenses_title">Lisensi open source</string>
+    <string name="settings_licenses_version">Versi %1$s</string>
+    <string name="settings_licenses_authors">Oleh %1$s</string>
 
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">Bagikan laporan bug?</string>
@@ -533,6 +542,7 @@ to values/strings.xml (English).
     <string name="bug_report_consent_dont_show_again">Jangan tampilkan lagi</string>
     <string name="bug_report_consent_continue">Lanjutkan</string>
     <string name="bug_report_consent_cancel">Batal</string>
+    <string name="bug_report_share_failed">Tidak dapat membagikan laporan bug</string>
 
     <string name="today_forecast_air_section_title">Suhu udara</string>
 
@@ -544,6 +554,9 @@ to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">Garis grafik merah muda, oranye, dan hijau dengan kartu keyakinan Material teal/merah. Bawaan.</string>
     <string name="settings_display_palette_highlighter">Stabilo</string>
     <string name="settings_display_palette_highlighter_description">Garis grafik magenta, kuning, dan cyan — seperti goresan stabilo di halaman. Sekilas tampak jelas berbeda dari \"Pelangi\"; tema terang memakai varian yang lebih gelap agar lebih mudah dibaca. Aman untuk buta warna merah-hijau.</string>
+    <string name="settings_display_text_size_title">Ukuran teks</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Cubit untuk mengubah ukuran</string>
     <string name="settings_display_home_layout_title">Tata letak layar utama</string>
     <string name="settings_display_home_layout_description">Seret pegangan untuk mengatur ulang urutan tampilan bagian-bagian ini di layar utama.</string>
     <string name="settings_display_home_layout_drag">Seret untuk mengatur ulang %1$s</string>
@@ -716,6 +729,8 @@ to values/strings.xml (English).
     <string name="cast_error_no_insight_yet">Prakiraan belum tersedia. Tunggu jadwal berikutnya, atau ketuk Perbarui di layar Hari ini.</string>
     <string name="cast_error_no_route_picked">Pilih layar pintar terlebih dahulu.</string>
     <string name="cast_error_unknown">Cast gagal.</string>
+    <string name="settings_smart_home_name">Nama</string>
+    <string name="settings_smart_home_name_hint">mis. Budi</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Selamat Hari Semua Orang Kudus</string>
@@ -779,6 +794,8 @@ to values/strings.xml (English).
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %2$s %1$s</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Ganti kunci Gemini</string>
@@ -971,6 +988,21 @@ to values/strings.xml (English).
     <string name="holiday_banner_ca_labour_day">Selamat Hari Buruh</string>
     <string name="holiday_banner_cinco_de_mayo">Selamat Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Selamat Hari Raya Tubuh Kristus</string>
+    <string name="settings_tts_gemini_sign_in_reason">Suara Gemini gratis memerlukan login Google.</string>
+    <string name="settings_google_sign_in">Login dengan Google</string>
+    <string name="settings_google_signed_in_as">Login sebagai %1$s</string>
+    <string name="settings_google_signed_in">Login dengan Google</string>
+    <string name="settings_google_sign_out">Logout</string>
+    <string name="settings_google_delete_account">Hapus akun</string>
+    <string name="settings_google_delete_title">Hapus akun?</string>
+    <string name="settings_google_delete_body">Setelan di ponsel ini tetap tersimpan.</string>
+    <string name="settings_google_delete_confirm">Hapus</string>
+    <string name="settings_google_no_account">Tidak ada akun Google di perangkat ini.</string>
+    <string name="settings_google_sign_in_failed">Tidak dapat login. Coba lagi.</string>
+    <string name="settings_google_delete_failed">Tidak dapat menghapus akun. Coba lagi.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Login dengan Google untuk memakai Google tanpa kunci sendiri.</string>
+    <string name="notify_gemini_sign_in_title">Suara Gemini dijeda</string>
+    <string name="notify_gemini_sign_in_text">Login dengan Google di Setelan suara agar tetap aktif. Untuk sementara memakai suara perangkat.</string>
     <string name="holiday_banner_egypt_revolution_day">Selamat Hari Revolusi</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Selamat Hari Pembebasan Sinai</string>
     <string name="holiday_banner_india_childrens_day">Selamat Hari Anak</string>
@@ -1179,6 +1211,9 @@ to values/strings.xml (English).
     <string name="today_gemini_promo_cta">Setelan suara</string>
     <string name="today_gemini_promo_dismiss">Tutup</string>
     <string name="today_google_forecast_promo_dismiss">Tutup</string>
+    <string name="today_google_forecast_promo_title">Coba prakiraan Google</string>
+    <string name="today_google_forecast_promo_body">Pilih penyedia prakiraan cuaca agar lebih akurat.</string>
+    <string name="today_google_forecast_promo_cta">Pengaturan prakiraan</string>
     <string name="today_clothes_promo_title">Buat pakaian sendiri</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Putar</string>
@@ -1265,6 +1300,8 @@ to values/strings.xml (English).
     <string name="settings_holidays_calendar_source">Kalender: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Prakiraan cuaca AI canggih dari Google. Perlu login atau kunci API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Prakiraan cuaca AI canggih dari Google. Perlu kunci API.</string>
     <string name="settings_forecasters_aifs_subtitle">Model AI ECMWF — andal hingga 15 hari, sehingga menopang grafik minggu kedua. Beberapa grafik detail mungkin tidak menampilkan garis untuknya.</string>
     <string name="settings_forecasters_google_key_header">Kunci API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Tempel kunci API Google Anda</string>

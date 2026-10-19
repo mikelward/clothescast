@@ -254,6 +254,7 @@ the displayed label localizes.
     space-around-Latin spacing.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">ClothesCast と Google のサーバーを使った高品質な音声。</string>
 
     <string name="settings_api_key_status_set">Gemini キーが設定されています。</string>
     <string name="settings_api_key_placeholder">Gemini API キーを貼り付け</string>
@@ -313,6 +314,10 @@ the displayed label localizes.
     <string name="settings_about_dontkillmyapp">バックグラウンド制限（dontkillmyapp.com）</string>
     <string name="settings_about_share_bug_report">バグレポートを共有</string>
     <string name="settings_about_version_copied">バージョンをクリップボードにコピーしました</string>
+    <string name="settings_about_licenses">ライセンス</string>
+    <string name="settings_licenses_title">オープンソースライセンス</string>
+    <string name="settings_licenses_version">バージョン %1$s</string>
+    <string name="settings_licenses_authors">作成者: %1$s</string>
 
     <!--
     Today screen — top bar, refresh toasts, empty state, generated-at
@@ -539,6 +544,10 @@ the displayed label localizes.
     <string name="today_update_downloading_dismiss">キャンセル</string>
     <string name="today_update_downloaded_body">アップデートをダウンロードしました。インストールを完了するには再起動してください。</string>
     <string name="today_update_downloaded_action">再起動</string>
+    <string name="today_telemetry_invite_title">ClothesCast の改善に協力しますか？</string>
+    <string name="today_telemetry_invite_body">クラッシュレポートと匿名の利用状況を送信して、バグの発見と修正に役立てますか？</string>
+    <string name="today_telemetry_invite_accept">はい</string>
+    <string name="today_telemetry_invite_decline">いいえ</string>
 
     <!-- Onboarding additions — TV-shorter subtitle (TV onboarding has
          less screen real-estate), the always-on location step, and the
@@ -659,6 +668,7 @@ the displayed label localizes.
     <string name="bug_report_consent_dont_show_again">今後表示しない</string>
     <string name="bug_report_consent_continue">続ける</string>
     <string name="bug_report_consent_cancel">キャンセル</string>
+    <string name="bug_report_share_failed">バグレポートを共有できませんでした</string>
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "〜の可能性" wraps a noun (e.g. 雨); invariant for any precip noun. -->
@@ -680,6 +690,9 @@ the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">ピンク・オレンジ・グリーンのグラフ線とMaterialのティール/レッドの信頼度カード。デフォルト設定。</string>
     <string name="settings_display_palette_highlighter">ハイライト</string>
     <string name="settings_display_palette_highlighter_description">マゼンタ・イエロー・シアンのグラフ線。ページの上の蛍光ペンのよう。「レインボー」とひと目で見分けがつき、ライトテーマでは読みやすさのため少し濃いバージョンを使います。赤緑の色覚特性でも安全です。</string>
+    <string name="settings_display_text_size_title">文字サイズ</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">ピンチでサイズ変更</string>
     <string name="settings_display_home_layout_title">ホーム画面のレイアウト</string>
     <string name="settings_display_home_layout_description">ハンドルをドラッグして、これらのセクションがホーム画面に表示される順序を変更します。</string>
     <string name="settings_display_home_layout_drag">ドラッグして%1$sを並べ替え</string>
@@ -922,6 +935,8 @@ the displayed label localizes.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">%1$sのClothesCast</string>
+    <string name="outfit_card_header_named">%1$s%2$sのClothesCast</string>
 
     <!-- API key screen — replace action. -->
     <string name="settings_api_key_replace">Gemini キーを変更</string>
@@ -1005,6 +1020,8 @@ the displayed label localizes.
     <string name="cast_error_no_insight_yet">まだ予報がありません。次回のスケジュール実行をお待ちいただくか、「今日」画面で「更新」をタップしてください。</string>
     <string name="cast_error_no_route_picked">先にスマートディスプレイを選択してください。</string>
     <string name="cast_error_unknown">キャストに失敗しました。</string>
+    <string name="settings_smart_home_name">名前</string>
+    <string name="settings_smart_home_name_hint">例: アレックスの</string>
 
     <!-- Today screen — celebration card. -->
     <string name="today_celebration_card_title">お祝いのテーマ</string>
@@ -1120,6 +1137,21 @@ the displayed label localizes.
     <string name="holiday_banner_ca_labour_day">労働者の日おめでとう</string>
     <string name="holiday_banner_cinco_de_mayo">シンコ・デ・マヨおめでとう</string>
     <string name="holiday_banner_corpus_christi">聖体の祝日おめでとう</string>
+    <string name="settings_tts_gemini_sign_in_reason">無料の Gemini 音声には Google ログインが必要です。</string>
+    <string name="settings_google_sign_in">Google でログイン</string>
+    <string name="settings_google_signed_in_as">%1$s でログイン中</string>
+    <string name="settings_google_signed_in">Google でログイン済み</string>
+    <string name="settings_google_sign_out">ログアウト</string>
+    <string name="settings_google_delete_account">アカウントを削除</string>
+    <string name="settings_google_delete_title">アカウントを削除しますか？</string>
+    <string name="settings_google_delete_body">このスマホの設定はそのまま残ります。</string>
+    <string name="settings_google_delete_confirm">削除</string>
+    <string name="settings_google_no_account">この端末に Google アカウントがありません。</string>
+    <string name="settings_google_sign_in_failed">ログインできませんでした。再試行してください。</string>
+    <string name="settings_google_delete_failed">アカウントを削除できませんでした。再試行してください。</string>
+    <string name="settings_forecasters_google_sign_in_reason">Google でログインすると、自分のキーなしで Google を使えます。</string>
+    <string name="notify_gemini_sign_in_title">Gemini 音声を一時停止中</string>
+    <string name="notify_gemini_sign_in_text">音声設定で Google にログインすると引き続き使えます。今はデバイスの音声を使用中です。</string>
     <string name="holiday_banner_egypt_revolution_day">革命記念日おめでとう</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">シナイ解放の日おめでとう</string>
     <string name="holiday_banner_india_childrens_day">こどもの日おめでとう</string>
@@ -1328,6 +1360,9 @@ the displayed label localizes.
     <string name="today_gemini_promo_cta">音声設定</string>
     <string name="today_gemini_promo_dismiss">閉じる</string>
     <string name="today_google_forecast_promo_dismiss">閉じる</string>
+    <string name="today_google_forecast_promo_title">Google の予報を試す</string>
+    <string name="today_google_forecast_promo_body">天気予報の提供元を選んで、精度を高めましょう。</string>
+    <string name="today_google_forecast_promo_cta">予報モデル設定</string>
     <string name="today_clothes_promo_title">服装を自分好みに</string>
     <string name="today_insight_format_link">形式</string>
     <string name="today_play">再生</string>
@@ -1414,6 +1449,8 @@ the displayed label localizes.
     <string name="settings_holidays_calendar_source">カレンダー: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google の高度な AI 天気予報。ログインまたは API キーが必要です。</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google の高度な AI 天気予報。API キーが必要です。</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWFのAIモデル — 15日先まで精度が高く、2週目のチャートを担っています。一部の詳細チャートではこのモデルの線が表示されないことがあります。</string>
     <string name="settings_forecasters_google_key_header">Google APIキー</string>
     <string name="settings_forecasters_google_key_placeholder">Google APIキーを貼り付けてください</string>

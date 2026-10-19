@@ -338,6 +338,8 @@
     <string name="conditions_wind">%1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast-i %1$s %2$s</string>
     <string name="today_confidence_precip_spread">Modelet nuk pajtohen për shiun (Δ %1$.0f%% në %2$d modele)</string>
     <string name="today_sunshine_total_hours_minutes">%1$dh %2$dm me diell sot</string>
     <string name="today_sunshine_total_hours_only">%1$dh me diell sot</string>
@@ -368,6 +370,10 @@
     <string name="today_update_downloading_dismiss">Anulo</string>
     <string name="today_update_downloaded_body">Përditësimi u shkarkua. Rinis për të përfunduar instalimin.</string>
     <string name="today_update_downloaded_action">Rinis</string>
+    <string name="today_telemetry_invite_title">Të ndihmosh ta përmirësojmë ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Të dërgohen raporte gabimesh dhe statistika anonime përdorimi, që gabimet të gjenden e të rregullohen?</string>
+    <string name="today_telemetry_invite_accept">Po, të lutem</string>
+    <string name="today_telemetry_invite_decline">Jo, faleminderit</string>
     <string name="today_telemetry_notice_open_settings">Cilësimet e privatësisë</string>
     <string name="today_telemetry_notice_dismiss">Hiq</string>
     <string name="today_clothes_promo_title">Bëji veshjet tuat</string>
@@ -386,6 +392,9 @@
     <string name="today_gemini_promo_cta">Cilësimet e zërit</string>
     <string name="today_gemini_promo_dismiss">Hiq</string>
     <string name="today_google_forecast_promo_dismiss">Hiq</string>
+    <string name="today_google_forecast_promo_title">Provo parashikimet e Google</string>
+    <string name="today_google_forecast_promo_body">Zgjidh ofruesit e parashikimit të motit për më shumë saktësi.</string>
+    <string name="today_google_forecast_promo_cta">Cilësimet e parashikuesve</string>
     <string name="today_gemini_limit_title">U arrit kufiri i zërave falas</string>
     <string name="today_gemini_limit_body">I ke përdorur zërat falas të Gemini për sot. Shto çelësin tënd të Gemini për më shumë.</string>
     <string name="today_gemini_limit_cta">Cilësimet e zërit</string>
@@ -444,6 +453,9 @@
     <string name="settings_display_palette_rainbow_description">Linja grafikësh në rozë, portokalli dhe jeshile dhe karta besueshmërie Material në bruz / të kuqe. Të paracaktuarat.</string>
     <string name="settings_display_palette_accessible_description">Një paletë e bazuar në Okabe-Ito, e projektuar të mbetet e dallueshme nën deuteranopi, protanopi dhe tritanopi. Kartat e besueshmërisë përdorin blu qielli, neutrale dhe qelibar në vend të bruzi, neutrale dhe të kuqe.</string>
     <string name="settings_display_palette_highlighter_description">Linja grafikësh në magenta, të verdhë dhe ciano — si lapsa theksues mbi faqe. Dukshëm të ndryshme nga Ylberi me një shikim; tema e çelët përdor variante më të thella për lexueshmëri. E sigurt nën verbërinë e ngjyrave të kuqe-jeshile.</string>
+    <string name="settings_display_text_size_title">Madhësia e tekstit</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Shtrëngo me gishta për ta ndryshuar</string>
     <string name="settings_display_home_layout_title">Skema e ekranit bazë</string>
     <string name="settings_display_home_layout_description">Tërhiq dorezat për të rirenditur se si shfaqen këto seksione në ekranin bazë.</string>
     <string name="settings_display_home_section_conditions">Kushtet</string>
@@ -514,6 +526,8 @@
     <string name="cast_error_no_route_picked">Zgjidh së pari një ekran inteligjent.</string>
     <string name="cast_error_no_insight_yet">Ende nuk ka parashikim. Prit ekzekutimin e radhës të planifikuar ose prek Rifresko në ekranin Sot.</string>
     <string name="cast_error_unknown">Transmetimi dështoi.</string>
+    <string name="settings_smart_home_name">Emri</string>
+    <string name="settings_smart_home_name_hint">p.sh. i Albës</string>
     <string name="settings_smart_home_mqtt_title">Ura Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publiko parashikimin në MQTT</string>
     <string name="settings_smart_home_mqtt_host">Hosti i ndërmjetësit</string>
@@ -547,6 +561,7 @@
     <string name="settings_smart_home_discover_label_ha">Home Assistant</string>
     <string name="settings_smart_home_discover_label_mqtt">Ndërmjetësi MQTT</string>
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Zëra me cilësi të lartë përmes serverëve të ClothesCast dhe Google.</string>
     <string name="settings_tts_device_header">Zëra me cilësi të ulët të integruar në telefonin tënd.</string>
     <string name="settings_api_key_status_set">Një çelës Gemini është i konfiguruar.</string>
     <string name="settings_api_key_status_unset">4 falas çdo ditë, merr një çelës për më shumë.</string>
@@ -750,12 +765,17 @@
     <string name="settings_about_open_meteo">Të dhënat e motit nga Open-Meteo</string>
     <string name="settings_about_share_bug_report">Ndaj raportin e gabimit</string>
     <string name="settings_about_version_copied">Versioni u kopjua në kujtesën e fragmenteve</string>
+    <string name="settings_about_licenses">Licencat</string>
+    <string name="settings_licenses_title">Licencat me burim të hapur</string>
+    <string name="settings_licenses_version">Versioni %1$s</string>
+    <string name="settings_licenses_authors">Nga %1$s</string>
     <string name="bug_report_consent_title">Ta ndajmë raportin e gabimit?</string>
     <string name="bug_report_consent_body">Kjo ndihmon në diagnostikimin e problemeve. Raporti përmban informacione personale të ndjeshme, përfshirë vendndodhjen, cilësimet e aplikacionit dhe aktivitetin e fundit. Do të mund ta shqyrtosh dhe ta redaktosh para se ta dërgosh.</string>
     <string name="bug_report_consent_screenshot">Gjithashtu bashkëngjit një pamje të ekranit në të cilin ndodhesh tani, prandaj sigurohu që të mos tregojë asgjë private para se ta dërgosh.</string>
     <string name="bug_report_consent_dont_show_again">Mos e shfaq më këtë</string>
     <string name="bug_report_consent_continue">Vazhdo</string>
     <string name="bug_report_consent_cancel">Anulo</string>
+    <string name="bug_report_share_failed">Raporti i gabimit nuk u nda dot</string>
     <string name="insight_lead_continues">%1$s, %2$s</string>
     <string name="insight_delta_warmer_lead">do të jetë %1$d° më ngrohtë se dje.</string>
     <string name="insight_delta_cooler_lead">do të jetë %1$d° më ftohtë se dje.</string>
@@ -1095,6 +1115,21 @@
     <string name="holiday_banner_whit_monday">Gëzuar të Hënën e Rrëshajëve</string>
     <string name="holiday_name_corpus_christi">Corpus Christi</string>
     <string name="holiday_banner_corpus_christi">Gëzuar Festën e Trupit të Krishtit</string>
+    <string name="settings_tts_gemini_sign_in_reason">Zëri falas Gemini kërkon hyrje me Google.</string>
+    <string name="settings_google_sign_in">Hyr me Google</string>
+    <string name="settings_google_signed_in_as">Je i identifikuar si %1$s</string>
+    <string name="settings_google_signed_in">Je i identifikuar me Google</string>
+    <string name="settings_google_sign_out">Dil</string>
+    <string name="settings_google_delete_account">Fshi llogarinë</string>
+    <string name="settings_google_delete_title">Të fshihet llogaria?</string>
+    <string name="settings_google_delete_body">Cilësimet e tua në këtë telefon mbeten.</string>
+    <string name="settings_google_delete_confirm">Fshi</string>
+    <string name="settings_google_no_account">Nuk ka llogari Google në këtë pajisje.</string>
+    <string name="settings_google_sign_in_failed">Hyrja dështoi. Riprovo.</string>
+    <string name="settings_google_delete_failed">Llogaria nuk u fshi dot. Riprovo.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Hyr me Google për ta përdorur Google pa çelësin tënd.</string>
+    <string name="notify_gemini_sign_in_title">Zëri Gemini u ndërpre</string>
+    <string name="notify_gemini_sign_in_text">Hyr me Google te Cilësimet e zërit për ta mbajtur. Tani për tani përdoret zëri i pajisjes.</string>
 
     <!-- Previously missing translations (lint MissingTranslation), added in bulk. -->
     <string name="today_go_home">Shko te periudha aktuale</string>
@@ -1122,6 +1157,8 @@
     <string name="settings_holidays_calendar_source">Kalendari: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Parashikimi i avancuar i motit me IA nga Google. Kërkon hyrje ose çelës API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Parashikimi i avancuar i motit me IA nga Google. Kërkon një çelës API.</string>
     <string name="settings_forecasters_aifs_subtitle">Modeli AI i ECMWF — i saktë deri në 15 ditë, ndaj mban grafikët e javës së dytë. Disa grafikë të detajuar mund të mos shfaqin një vijë për të.</string>
     <string name="settings_forecasters_google_key_header">Çelësi API i Google</string>
     <string name="settings_forecasters_google_key_placeholder">Ngjit çelësin tënd API të Google</string>

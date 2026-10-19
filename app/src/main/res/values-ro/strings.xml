@@ -231,6 +231,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_update_available_dismiss">Nu acum</string>
     <string name="today_update_downloaded_body">Actualizare descărcată. Repornește pentru a finaliza instalarea.</string>
     <string name="today_update_downloaded_action">Repornește</string>
+    <string name="today_telemetry_invite_title">Ajuți la îmbunătățirea ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Trimiți rapoarte de erori și statistici de utilizare anonime ca bugurile să fie găsite și remediate?</string>
+    <string name="today_telemetry_invite_accept">Da, te rog</string>
+    <string name="today_telemetry_invite_decline">Nu, mulțumesc</string>
 
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_open_settings">Setări de confidențialitate</string>
@@ -288,6 +292,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
 
     <!-- API key settings. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Voci de înaltă calitate prin serverele ClothesCast și Google.</string>
     <string name="settings_tts_device_header">Voci de calitate scăzută integrate în telefonul tău.</string>
     <string name="settings_api_key_status_set">O cheie Gemini este configurată.</string>
     <string name="settings_api_key_placeholder">Lipește cheia ta API Gemini</string>
@@ -529,6 +534,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_about_dontkillmyapp">Restricții în fundal (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Trimite raport de bug</string>
     <string name="settings_about_version_copied">Versiunea copiată în clipboard</string>
+    <string name="settings_about_licenses">Licențe</string>
+    <string name="settings_licenses_title">Licențe open source</string>
+    <string name="settings_licenses_version">Versiunea %1$s</string>
+    <string name="settings_licenses_authors">De %1$s</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Trimiți raportul de bug?</string>
@@ -537,6 +546,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="bug_report_consent_dont_show_again">Nu mai arăta din nou</string>
     <string name="bug_report_consent_continue">Continuă</string>
     <string name="bug_report_consent_cancel">Anulează</string>
+    <string name="bug_report_share_failed">Raportul de bug nu a putut fi trimis</string>
 
     <string name="today_forecast_air_section_title">Temperatura aerului</string>
 
@@ -548,6 +558,9 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_display_palette_rainbow_description">Linii de grafic roz, portocaliu și verde cu carduri de încredere Material teal/roșu. Implicit.</string>
     <string name="settings_display_palette_highlighter">Marker</string>
     <string name="settings_display_palette_highlighter_description">Linii de grafic magenta, galben și cyan — ca urma unui marker pe pagină. Vizibil diferite față de \"Curcubeu\" de la prima privire; tema deschisă folosește variante mai închise pentru lizibilitate. Sigure în cazul daltonismului roșu-verde.</string>
+    <string name="settings_display_text_size_title">Dimensiune text</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Ciupește pentru a redimensiona</string>
     <string name="settings_display_home_layout_title">Aspectul ecranului principal</string>
     <string name="settings_display_home_layout_description">Trage de mânere pentru a reordona modul în care apar aceste secțiuni pe ecranul principal.</string>
     <string name="settings_display_home_layout_drag">Trage pentru a reordona %1$s</string>
@@ -777,6 +790,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_root_smart_home_subtitle">Afișaje inteligente și automatizare acasă</string>
     <string name="settings_api_key_replace">Înlocuiește cheia Gemini</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast de la %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast-ul %1$s de la %2$s</string>
     <string name="today_rationale_open_clothes_settings">Setări îmbrăcăminte</string>
     <string name="today_celebration_card_title">Teme de sărbătoare</string>
     <string name="today_celebration_card_body">Activează culori și mesaje speciale pentru sărbători și zile de naștere.</string>
@@ -842,6 +857,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="cast_error_no_route_picked">Selectează mai întâi un afișaj inteligent.</string>
     <string name="cast_error_no_insight_yet">Nu este disponibilă nicio prognoză încă. Așteaptă următoarea rulare programată sau atinge Reîmprospătează pe ecranul Astăzi.</string>
     <string name="cast_error_unknown">Transmisia a eșuat.</string>
+    <string name="settings_smart_home_name">Nume</string>
+    <string name="settings_smart_home_name_hint">ex. lui Alex</string>
     <string name="settings_calendar_birthdays">Zile de naștere din calendar</string>
     <string name="settings_calendar_public_holidays">Sărbători din calendar</string>
 
@@ -948,6 +965,21 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="holiday_banner_ca_labour_day">La mulți ani de Ziua Muncii</string>
     <string name="holiday_banner_cinco_de_mayo">La mulți ani de Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">La mulți ani de Corpus Christi</string>
+    <string name="settings_tts_gemini_sign_in_reason">Vocea Gemini gratuită necesită conectare cu Google.</string>
+    <string name="settings_google_sign_in">Conectează-te cu Google</string>
+    <string name="settings_google_signed_in_as">Conectat ca %1$s</string>
+    <string name="settings_google_signed_in">Conectat cu Google</string>
+    <string name="settings_google_sign_out">Deconectează-te</string>
+    <string name="settings_google_delete_account">Șterge contul</string>
+    <string name="settings_google_delete_title">Ștergi contul?</string>
+    <string name="settings_google_delete_body">Setările tale de pe acest telefon rămân.</string>
+    <string name="settings_google_delete_confirm">Șterge</string>
+    <string name="settings_google_no_account">Niciun cont Google pe acest dispozitiv.</string>
+    <string name="settings_google_sign_in_failed">Conectarea a eșuat. Încearcă din nou.</string>
+    <string name="settings_google_delete_failed">Contul nu a putut fi șters. Încearcă din nou.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Conectează-te cu Google pentru a folosi Google fără cheia ta.</string>
+    <string name="notify_gemini_sign_in_title">Vocea Gemini a fost întreruptă</string>
+    <string name="notify_gemini_sign_in_text">Conectează-te cu Google în setările Voce pentru a o păstra. Deocamdată se folosește vocea dispozitivului.</string>
     <string name="holiday_banner_egypt_revolution_day">La mulți ani de Ziua Revoluției</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">La mulți ani de Ziua Eliberării Sinaiului</string>
     <string name="holiday_banner_india_childrens_day">La mulți ani de Ziua Copilului</string>
@@ -1158,6 +1190,9 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_gemini_promo_cta">Setări de voce</string>
     <string name="today_gemini_promo_dismiss">Închide</string>
     <string name="today_google_forecast_promo_dismiss">Închide</string>
+    <string name="today_google_forecast_promo_title">Încearcă prognozele Google</string>
+    <string name="today_google_forecast_promo_body">Alege-ți furnizorii de prognoză meteo pentru o precizie mai mare.</string>
+    <string name="today_google_forecast_promo_cta">Setări modele de prognoză</string>
     <string name="today_clothes_promo_title">Fă hainele ale tale</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Redă</string>
@@ -1244,6 +1279,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_holidays_calendar_source">Calendar: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Prognoza meteo avansată cu IA de la Google. Necesită conectare sau cheie API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Prognoza meteo avansată cu IA de la Google. Necesită o cheie API.</string>
     <string name="settings_forecasters_aifs_subtitle">Modelul AI al ECMWF — precis până la 15 zile, așa că el susține graficele pentru a doua săptămână. Unele grafice detaliate pot să nu afișeze o linie pentru el.</string>
     <string name="settings_forecasters_google_key_header">Cheie API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Inserează cheia ta API Google</string>

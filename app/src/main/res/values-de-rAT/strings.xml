@@ -680,4 +680,5 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_sunshine_total_hours_only_tonight">%1$d Std. Sonne heute Abend</string>
     <string name="today_sunshine_total_minutes_only_tonight">%1$d Min. Sonne heute Abend</string>
     <string name="today_placeholder_tonight_title">Vorhersage für heute Abend</string>
+    <string name="settings_google_delete_body">Deine Einstellungen auf diesem Handy bleiben erhalten.</string>
 </resources>

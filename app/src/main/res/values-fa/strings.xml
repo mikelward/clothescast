@@ -225,6 +225,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_update_available_dismiss">نه الان</string>
     <string name="today_update_downloaded_body">به‌روزرسانی دانلود شد. برای تکمیل نصب راه‌اندازی مجدد کنید.</string>
     <string name="today_update_downloaded_action">راه‌اندازی مجدد</string>
+    <string name="today_telemetry_invite_title">به بهتر شدن ClothesCast کمک می‌کنید؟</string>
+    <string name="today_telemetry_invite_body">گزارش خرابی و آمار ناشناس استفاده ارسال شود تا اشکال‌ها پیدا و رفع شوند؟</string>
+    <string name="today_telemetry_invite_accept">بله، لطفاً</string>
+    <string name="today_telemetry_invite_decline">نه، ممنون</string>
 
     <!-- Today — telemetry notice -->
     <string name="today_telemetry_notice_open_settings">تنظیمات حریم خصوصی</string>
@@ -282,6 +286,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Settings — API key -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">صداهای باکیفیت از طریق سرورهای ClothesCast و Google.</string>
     <string name="settings_tts_device_header">صداهای کم‌کیفیت تعبیه‌شده در گوشی شما.</string>
     <string name="settings_api_key_status_set">یک کلید Gemini پیکربندی شده.</string>
     <string name="settings_api_key_placeholder">کلید Gemini API خود را جای‌گذاری کنید</string>
@@ -392,6 +397,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_about_dontkillmyapp">محدودیت‌های پس‌زمینه (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">اشتراک‌گذاری گزارش خطا</string>
     <string name="settings_about_version_copied">نسخه در کلیپ‌بورد کپی شد</string>
+    <string name="settings_about_licenses">مجوزها</string>
+    <string name="settings_licenses_title">مجوزهای متن‌باز</string>
+    <string name="settings_licenses_version">نسخه %1$s</string>
+    <string name="settings_licenses_authors">از %1$s</string>
 
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">گزارش خطا را به اشتراک می‌گذارید؟</string>
@@ -400,6 +409,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="bug_report_consent_dont_show_again">دیگر نشان نده</string>
     <string name="bug_report_consent_continue">ادامه</string>
     <string name="bug_report_consent_cancel">لغو</string>
+    <string name="bug_report_share_failed">اشتراک‌گذاری گزارش خطا ممکن نشد</string>
 
     <!-- Insight prose — precipitation and extras variants -->
     <string name="insight_precip_chance">احتمال %1$s.</string>
@@ -419,6 +429,9 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_display_palette_rainbow_description">خطوط نمودار صورتی، نارنجی و سبز با کارت‌های اطمینان Material فیروزه‌ای/قرمز. پیش‌فرض.</string>
     <string name="settings_display_palette_highlighter">ماژیک هایلایت</string>
     <string name="settings_display_palette_highlighter_description">خطوط نمودار به رنگ‌های ارغوانی، زرد و فیروزه‌ای — مانند ردّ ماژیک هایلایت روی کاغذ. در نگاه اول به‌وضوح از \"رنگین‌کمان\" متمایزند؛ تم روشن از تنالیته‌های عمیق‌تر برای خوانایی استفاده می‌کند. برای کوررنگی قرمز-سبز ایمن است.</string>
+    <string name="settings_display_text_size_title">اندازه متن</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">برای تغییر اندازه، دو انگشت را جمع یا باز کنید</string>
     <string name="settings_display_home_layout_title">چیدمان صفحه اصلی</string>
     <string name="settings_display_home_layout_description">برای تغییر ترتیب نمایش این بخش‌ها در صفحه اصلی، دستگیره‌ها را بکشید.</string>
     <string name="settings_display_home_layout_drag">برای تغییر ترتیب %1$s بکشید</string>
@@ -619,6 +632,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="cast_error_no_insight_yet">هنوز پیش‌بینی‌ای موجود نیست. منتظر اجرای بعدی باشید، یا روی بازخوانی در صفحه امروز ضربه بزنید.</string>
     <string name="cast_error_no_route_picked">ابتدا یک نمایشگر هوشمند انتخاب کنید.</string>
     <string name="cast_error_unknown">پخش ناموفق بود.</string>
+    <string name="settings_smart_home_name">نام</string>
+    <string name="settings_smart_home_name_hint">مثلاً: برای سارا</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">روز همه قدیسین مبارک</string>
@@ -739,6 +754,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %2$s %1$s</string>
 
     <!-- Settings — API key replace -->
     <string name="settings_api_key_replace">جایگزینی کلید Gemini</string>
@@ -959,6 +976,21 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="holiday_banner_ca_labour_day">روز کارگر مبارک</string>
     <string name="holiday_banner_cinco_de_mayo">سینکو دو مایو مبارک</string>
     <string name="holiday_banner_corpus_christi">عید کورپوس کریستی مبارک</string>
+    <string name="settings_tts_gemini_sign_in_reason">صدای رایگان Gemini به ورود با Google نیاز دارد.</string>
+    <string name="settings_google_sign_in">ورود با Google</string>
+    <string name="settings_google_signed_in_as">وارد شده با %1$s</string>
+    <string name="settings_google_signed_in">وارد شده با Google</string>
+    <string name="settings_google_sign_out">خروج</string>
+    <string name="settings_google_delete_account">حذف حساب</string>
+    <string name="settings_google_delete_title">حساب حذف شود؟</string>
+    <string name="settings_google_delete_body">تنظیمات شما در این گوشی باقی می‌ماند.</string>
+    <string name="settings_google_delete_confirm">حذف</string>
+    <string name="settings_google_no_account">هیچ حساب Google در این دستگاه نیست.</string>
+    <string name="settings_google_sign_in_failed">ورود ممکن نشد. دوباره تلاش کنید.</string>
+    <string name="settings_google_delete_failed">حذف حساب ممکن نشد. دوباره تلاش کنید.</string>
+    <string name="settings_forecasters_google_sign_in_reason">برای استفاده از Google بدون کلید خودتان، با Google وارد شوید.</string>
+    <string name="notify_gemini_sign_in_title">صدای Gemini متوقف شد</string>
+    <string name="notify_gemini_sign_in_text">برای حفظ آن، در تنظیمات صدا با Google وارد شوید. فعلاً از صدای دستگاه استفاده می‌شود.</string>
     <string name="holiday_banner_egypt_revolution_day">روز انقلاب مبارک</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">روز آزادسازی سینا مبارک</string>
     <string name="holiday_banner_india_childrens_day">روز کودک مبارک</string>
@@ -1168,6 +1200,9 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_gemini_promo_cta">تنظیمات صدا</string>
     <string name="today_gemini_promo_dismiss">رد کردن</string>
     <string name="today_google_forecast_promo_dismiss">رد کردن</string>
+    <string name="today_google_forecast_promo_title">پیش‌بینی‌های Google را امتحان کنید</string>
+    <string name="today_google_forecast_promo_body">برای دقت بیشتر، ارائه‌دهندگان پیش‌بینی هوا را انتخاب کنید.</string>
+    <string name="today_google_forecast_promo_cta">تنظیمات مدل‌های پیش‌بینی</string>
     <string name="today_clothes_promo_title">لباس را مال خودت کن</string>
     <string name="today_insight_format_link">قالب</string>
     <string name="today_play">پخش</string>
@@ -1254,6 +1289,8 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_holidays_calendar_source">تقویم: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">پیش‌بینی پیشرفته هوای Google با هوش مصنوعی. به ورود یا کلید API نیاز دارد.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">پیش‌بینی پیشرفته هوای Google با هوش مصنوعی. به کلید API نیاز دارد.</string>
     <string name="settings_forecasters_aifs_subtitle">مدل هوش مصنوعی ECMWF — تا ۱۵ روز آینده قابل اعتماد است، بنابراین نمودارهای هفته دوم را بر عهده دارد. برخی نمودارهای جزئی ممکن است خطی برای آن نشان ندهند.</string>
     <string name="settings_forecasters_google_key_header">کلید Google API</string>
     <string name="settings_forecasters_google_key_placeholder">کلید Google API خود را جای‌گذاری کنید</string>

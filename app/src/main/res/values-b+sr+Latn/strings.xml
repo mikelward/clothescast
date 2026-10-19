@@ -166,6 +166,7 @@ default English (matching values-pl / values-uk).
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Visokokvalitetni glasovi preko servera ClothesCast i Google.</string>
     <string name="settings_tts_device_header">Glasovi niskog kvaliteta ugrađeni u tvoj telefon.</string>
     <string name="settings_api_key_status_set">Gemini ključ je podešen.</string>
     <string name="settings_api_key_placeholder">Nalepi svoj Gemini API ključ</string>
@@ -399,6 +400,10 @@ default English (matching values-pl / values-uk).
     <string name="settings_about_dontkillmyapp">Pozadinska ograničenja (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Podeli izveštaj o grešci</string>
     <string name="settings_about_version_copied">Verzija kopirana u međuspremnik</string>
+    <string name="settings_about_licenses">Licence</string>
+    <string name="settings_licenses_title">Licence otvorenog koda</string>
+    <string name="settings_licenses_version">Verzija %1$s</string>
+    <string name="settings_licenses_authors">Autor: %1$s</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Izveštaji o greškama i korišćenju</string>
@@ -523,6 +528,10 @@ default English (matching values-pl / values-uk).
     <string name="today_update_available_dismiss">Ne sada</string>
     <string name="today_update_downloaded_body">Ažuriranje preuzeto. Ponovo pokreni da završiš instalaciju.</string>
     <string name="today_update_downloaded_action">Ponovo pokreni</string>
+    <string name="today_telemetry_invite_title">Pomogneš da ClothesCast bude bolji?</string>
+    <string name="today_telemetry_invite_body">Šalji izveštaje o padovima i anonimnu statistiku korišćenja da bi se greške pronašle i ispravile?</string>
+    <string name="today_telemetry_invite_accept">Da, molim</string>
+    <string name="today_telemetry_invite_decline">Ne, hvala</string>
 
     <!-- Telemetry notice banner. -->
     <string name="today_telemetry_notice_open_settings">Podešavanja privatnosti</string>
@@ -550,6 +559,7 @@ default English (matching values-pl / values-uk).
     <string name="bug_report_consent_dont_show_again">Ne prikazuj više</string>
     <string name="bug_report_consent_continue">Nastavi</string>
     <string name="bug_report_consent_cancel">Otkaži</string>
+    <string name="bug_report_share_failed">Deljenje izveštaja o grešci nije uspelo</string>
 
     <string name="today_forecast_air_section_title">Temperatura vazduha</string>
 
@@ -561,6 +571,9 @@ default English (matching values-pl / values-uk).
     <string name="settings_display_palette_rainbow_description">Roze, narandžaste i zelene linije grafikona sa tirkiznim/crvenim karticama pouzdanosti Material. Podrazumevano.</string>
     <string name="settings_display_palette_highlighter">Marker</string>
     <string name="settings_display_palette_highlighter_description">Magenta, žute i cijan linije grafikona — kao trag markera na stranici. Na prvi pogled vidno drugačije od \"Duge\"; svetla tema koristi dublje varijante za čitljivost. Bezbedno za crveno-zeleno slepilo za boje.</string>
+    <string name="settings_display_text_size_title">Veličina teksta</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Raširi prste za promenu veličine</string>
     <string name="settings_display_home_layout_title">Raspored početnog ekrana</string>
     <string name="settings_display_home_layout_description">Prevuci ručice da promeniš redosled kojim se ovi odeljci prikazuju na početnom ekranu.</string>
     <string name="settings_display_home_layout_drag">Prevuci da promeniš redosled: %1$s</string>
@@ -790,6 +803,8 @@ default English (matching values-pl / values-uk).
     <string name="settings_root_smart_home_subtitle">Pametni displej i kućna automatizacija</string>
     <string name="settings_api_key_replace">Zameni Gemini ključ</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast u %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast u %2$s</string>
     <string name="today_rationale_open_clothes_settings">Podešavanja odeće</string>
     <string name="today_celebration_card_title">Praznične teme</string>
     <string name="today_celebration_card_body">Omogućite posebne boje i poruke za praznike i rođendane.</string>
@@ -855,6 +870,8 @@ default English (matching values-pl / values-uk).
     <string name="cast_error_no_route_picked">Prvo odaberi pametni ekran.</string>
     <string name="cast_error_no_insight_yet">Prognoza još nije dostupna. Sačekaj sledeće planirano pokretanje ili dodirni Osveži na ekranu Danas.</string>
     <string name="cast_error_unknown">Prenos nije uspeo.</string>
+    <string name="settings_smart_home_name">Ime</string>
+    <string name="settings_smart_home_name_hint">npr. Aleksov</string>
     <string name="settings_calendar_birthdays">Rođendani iz kalendara</string>
     <string name="settings_calendar_public_holidays">Praznici iz kalendara</string>
 
@@ -960,6 +977,21 @@ default English (matching values-pl / values-uk).
     <string name="holiday_banner_ca_labour_day">Srećan Praznik rada</string>
     <string name="holiday_banner_cinco_de_mayo">Srećan Sinko de Majo</string>
     <string name="holiday_banner_corpus_christi">Srećan praznik Tela Hristovog</string>
+    <string name="settings_tts_gemini_sign_in_reason">Za besplatni Gemini glas potrebna je prijava preko Google-a.</string>
+    <string name="settings_google_sign_in">Prijavi se preko Google-a</string>
+    <string name="settings_google_signed_in_as">Prijavljen kao %1$s</string>
+    <string name="settings_google_signed_in">Prijavljen preko Google-a</string>
+    <string name="settings_google_sign_out">Odjavi se</string>
+    <string name="settings_google_delete_account">Izbriši nalog</string>
+    <string name="settings_google_delete_title">Izbrisati nalog?</string>
+    <string name="settings_google_delete_body">Tvoja podešavanja na ovom telefonu ostaju.</string>
+    <string name="settings_google_delete_confirm">Izbriši</string>
+    <string name="settings_google_no_account">Na ovom uređaju nema Google naloga.</string>
+    <string name="settings_google_sign_in_failed">Prijava nije uspela. Pokušaj ponovo.</string>
+    <string name="settings_google_delete_failed">Brisanje naloga nije uspelo. Pokušaj ponovo.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Prijavi se preko Google-a da koristiš Google bez svog ključa.</string>
+    <string name="notify_gemini_sign_in_title">Gemini glas pauziran</string>
+    <string name="notify_gemini_sign_in_text">Prijavi se preko Google-a u podešavanjima glasa da ga zadržiš. Za sada se koristi glas uređaja.</string>
     <string name="holiday_banner_egypt_revolution_day">Srećan Dan revolucije</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Srećan Dan oslobođenja Sinaja</string>
     <string name="holiday_banner_india_childrens_day">Srećan Dan dece</string>
@@ -1170,6 +1202,9 @@ default English (matching values-pl / values-uk).
     <string name="today_gemini_promo_cta">Podešavanja glasa</string>
     <string name="today_gemini_promo_dismiss">Odbaci</string>
     <string name="today_google_forecast_promo_dismiss">Odbaci</string>
+    <string name="today_google_forecast_promo_title">Isprobaj Google prognoze</string>
+    <string name="today_google_forecast_promo_body">Izaberi dobavljače vremenske prognoze za veću preciznost.</string>
+    <string name="today_google_forecast_promo_cta">Podešavanja modela prognoze</string>
     <string name="today_clothes_promo_title">Prilagodi odeću sebi</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Pusti</string>
@@ -1256,6 +1291,8 @@ default English (matching values-pl / values-uk).
     <string name="settings_holidays_calendar_source">Kalendar: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Googleova napredna vremenska prognoza sa VI. Potrebna je prijava ili API ključ.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Googleova napredna vremenska prognoza sa VI. Potreban je API ključ.</string>
     <string name="settings_forecasters_aifs_subtitle">AI model ECMWF-a — pouzdan do 15 dana unapred, zato nosi grafikone druge nedelje. Neki detaljni grafikoni možda ne prikazuju liniju za njega.</string>
     <string name="settings_forecasters_google_key_header">Google API ključ</string>
     <string name="settings_forecasters_google_key_placeholder">Nalepite svoj Google API ključ</string>

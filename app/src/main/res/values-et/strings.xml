@@ -124,6 +124,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_update_available_dismiss">Mitte praegu</string>
     <string name="today_update_downloaded_body">Uuendus alla laaditud. Taaskäivita installimise lõpetamiseks.</string>
     <string name="today_update_downloaded_action">Taaskäivita</string>
+    <string name="today_telemetry_invite_title">Kas aitad ClothesCasti paremaks teha?</string>
+    <string name="today_telemetry_invite_body">Kas saata krahhiaruanded ja anonüümne kasutusstatistika, et vead leitaks ja parandataks?</string>
+    <string name="today_telemetry_invite_accept">Jah, palun</string>
+    <string name="today_telemetry_invite_decline">Ei, aitäh</string>
 
     <string name="today_telemetry_notice_open_settings">Privaatsuse seaded</string>
     <string name="today_telemetry_notice_dismiss">Sulge</string>
@@ -179,6 +183,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_privacy_open_policy">Loe täielikku privaatsuspoliitikat</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Kvaliteetsed hääled ClothesCasti ja Google\'i serverite kaudu.</string>
     <string name="settings_tts_device_header">Madala kvaliteediga hääled, mis on telefoni sisse ehitatud.</string>
     <string name="settings_api_key_status_set">Gemini võti on seadistatud.</string>
     <string name="settings_api_key_placeholder">Kleebi oma Gemini API-võti</string>
@@ -444,6 +449,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_about_dontkillmyapp">Taustarakenduste piirangud (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Jaga veaaruannet</string>
     <string name="settings_about_version_copied">Versioon kopeeriti lõikelauale</string>
+    <string name="settings_about_licenses">Litsentsid</string>
+    <string name="settings_licenses_title">Avatud lähtekoodi litsentsid</string>
+    <string name="settings_licenses_version">Versioon %1$s</string>
+    <string name="settings_licenses_authors">Autor: %1$s</string>
 
     <string name="bug_report_consent_title">Jaga veaaruannet?</string>
     <string name="bug_report_consent_body">See aitab probleeme diagnoosida. Aruanne sisaldab tundlikku isiklikku teavet, sh sinu asukoha, rakenduse seaded ja hiljutise tegevuse. Saad seda enne saatmist üle vaadata ja redigeerida.</string>
@@ -451,6 +460,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="bug_report_consent_dont_show_again">Ära näita seda enam</string>
     <string name="bug_report_consent_continue">Jätka</string>
     <string name="bug_report_consent_cancel">Tühista</string>
+    <string name="bug_report_share_failed">Veaaruannet ei saanud jagada</string>
 
     <string name="insight_lead_today">Täna</string>
     <string name="insight_lead_tomorrow">Homme</string>
@@ -520,6 +530,9 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_display_palette_rainbow_description">Roosa, oranž ja roheline diagrammijoon koos Material teal/punaste usaldusväärsuskaartidega. Vaikimisi.</string>
     <string name="settings_display_palette_highlighter">Esiletõstja</string>
     <string name="settings_display_palette_highlighter_description">Magenta, kollased ja tsüaani värvi graafiku jooned — nagu esiletõstja jälg lehel. Ühe pilguga selgelt erinevad \"Vikerkaarest\"; hele teema kasutab loetavuse jaoks tumedamaid variante. Ohutu punase-rohelise värvipimeduse korral.</string>
+    <string name="settings_display_text_size_title">Teksti suurus</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Suuruse muutmiseks näpista</string>
     <string name="settings_display_home_layout_title">Avakuva paigutus</string>
     <string name="settings_display_home_layout_description">Lohista pidemeid, et muuta nende jaotiste järjestust avakuval.</string>
     <string name="settings_display_home_layout_drag">Lohista, et muuta jaotise %1$s järjestust</string>
@@ -701,6 +714,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="holiday_banner_boxing_day">Häid teisejõule</string>
     <string name="today_rationale_open_clothes_settings">Riidete seaded</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast kell %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast kell %2$s</string>
     <string name="today_celebration_card_title">Tähistamisteemad</string>
     <string name="today_celebration_card_body">Luba erilised värvid ja sõnumid pühade ja sünnipäevade jaoks.</string>
     <string name="today_celebration_card_cta">Kalendri seaded</string>
@@ -729,6 +744,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="cast_error_no_route_picked">Vali esmalt nutikas ekraan.</string>
     <string name="cast_error_no_insight_yet">Prognoosi pole veel saadaval. Oota järgmist ajastatud käivitust või puuduta Tänase ekraani Värskenda nuppu.</string>
     <string name="cast_error_unknown">Ülekanne ebaõnnestus.</string>
+    <string name="settings_smart_home_name">Nimi</string>
+    <string name="settings_smart_home_name_hint">nt Jaani</string>
     <string name="settings_smart_home_mqtt_title">Home Assistanti sild (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Avalda prognoos MQTT-le</string>
     <string name="settings_smart_home_mqtt_host">Brokkeri host</string>
@@ -915,6 +932,21 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="holiday_banner_ca_labour_day">Häid kevadpüha</string>
     <string name="holiday_banner_cinco_de_mayo">Häid Cinco de Mayo päeva</string>
     <string name="holiday_banner_corpus_christi">Häid Kristuse Ihu püha</string>
+    <string name="settings_tts_gemini_sign_in_reason">Tasuta Gemini hääl vajab Google\'i sisselogimist.</string>
+    <string name="settings_google_sign_in">Logi sisse Google\'iga</string>
+    <string name="settings_google_signed_in_as">Sisse logitud: %1$s</string>
+    <string name="settings_google_signed_in">Sisse logitud Google\'iga</string>
+    <string name="settings_google_sign_out">Logi välja</string>
+    <string name="settings_google_delete_account">Kustuta konto</string>
+    <string name="settings_google_delete_title">Kas kustutada konto?</string>
+    <string name="settings_google_delete_body">Sinu seaded selles telefonis jäävad alles.</string>
+    <string name="settings_google_delete_confirm">Kustuta</string>
+    <string name="settings_google_no_account">Selles seadmes pole Google\'i kontot.</string>
+    <string name="settings_google_sign_in_failed">Sisselogimine ebaõnnestus. Proovi uuesti.</string>
+    <string name="settings_google_delete_failed">Kontot ei saanud kustutada. Proovi uuesti.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Logi Google\'iga sisse, et kasutada Google\'it ilma oma võtmeta.</string>
+    <string name="notify_gemini_sign_in_title">Gemini hääl on peatatud</string>
+    <string name="notify_gemini_sign_in_text">Selle säilitamiseks logi hääle seadetes Google\'iga sisse. Praegu kasutatakse seadme häält.</string>
     <string name="holiday_banner_egypt_revolution_day">Häid revolutsioonipäeva</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Häid Siinai vabastuspäeva</string>
     <string name="holiday_banner_india_childrens_day">Häid lastepäeva</string>
@@ -1124,6 +1156,9 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_gemini_promo_cta">Hääle seaded</string>
     <string name="today_gemini_promo_dismiss">Sulge</string>
     <string name="today_google_forecast_promo_dismiss">Sulge</string>
+    <string name="today_google_forecast_promo_title">Proovi Google\'i prognoose</string>
+    <string name="today_google_forecast_promo_body">Vali ilmaprognoosi pakkujad, et saada täpsem prognoos.</string>
+    <string name="today_google_forecast_promo_cta">Prognoosijate seaded</string>
     <string name="today_clothes_promo_title">Tee riided enda omaks</string>
     <string name="today_insight_format_link">Vorming</string>
     <string name="today_play">Esita</string>
@@ -1210,6 +1245,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_holidays_calendar_source">Kalender: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google\'i täiustatud TI-ilmaprognoos. Vajab sisselogimist või API-võtit.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google\'i täiustatud TI-ilmaprognoos. Vajab API-võtit.</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF-i tehisintellektimudel — täpne kuni 15 päeva ette, seetõttu kannab see teise nädala diagramme. Mõned üksikasjalikud diagrammid ei pruugi selle jaoks joont kuvada.</string>
     <string name="settings_forecasters_google_key_header">Google\'i API-võti</string>
     <string name="settings_forecasters_google_key_placeholder">Kleebi oma Google\'i API-võti</string>

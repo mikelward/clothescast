@@ -172,12 +172,10 @@
          the renderer; keep the source string in the form you'd want spoken.
          %1$s = the period's scheduled delivery time, in the user's 12h / 24h
          setting ("7am", "19:00"). -->
-    <!-- TODO: translate -->
-    <string name="outfit_card_header" tools:ignore="MissingTranslation">%1$s ClothesCast</string>
+    <string name="outfit_card_header">%1$s ClothesCast</string>
     <!-- Same header once the user has set a name on Settings → Smart Home.
          %1$s = that name exactly as typed ("Alex\'s"), %2$s = the time as above. -->
-    <!-- TODO: translate -->
-    <string name="outfit_card_header_named" tools:ignore="MissingTranslation">%1$s %2$s ClothesCast</string>
+    <string name="outfit_card_header_named">%1$s %2$s ClothesCast</string>
 
     <!-- Footer label below the forecast / precipitation charts when "Show model
          spread" is enabled. Each model name is rendered alongside a coloured
@@ -418,14 +416,10 @@
          already on, and a locale still carrying that would tell its reader
          something false about their privacy. A missing translation falls back
          to this English, which is merely untranslated. -->
-    <!-- TODO: translate -->
-    <string name="today_telemetry_invite_title" tools:ignore="MissingTranslation">Help make ClothesCast better?</string>
-    <!-- TODO: translate -->
-    <string name="today_telemetry_invite_body" tools:ignore="MissingTranslation">Send crash reports and anonymous usage stats so bugs get found and fixed?</string>
-    <!-- TODO: translate -->
-    <string name="today_telemetry_invite_accept" tools:ignore="MissingTranslation">Yes please</string>
-    <!-- TODO: translate -->
-    <string name="today_telemetry_invite_decline" tools:ignore="MissingTranslation">No thanks</string>
+    <string name="today_telemetry_invite_title">Help make ClothesCast better?</string>
+    <string name="today_telemetry_invite_body">Send crash reports and anonymous usage stats so bugs get found and fixed?</string>
+    <string name="today_telemetry_invite_accept">Yes please</string>
+    <string name="today_telemetry_invite_decline">No thanks</string>
     <string name="today_telemetry_notice_open_settings">Privacy settings</string>
     <string name="today_telemetry_notice_dismiss">Dismiss</string>
 
@@ -474,12 +468,9 @@
     <!-- Promo card on the Today screen pointing everyone at the Google
          forecaster until they dismiss it or follow its CTA to Forecasters
          settings. -->
-    <!-- TODO: translate -->
-    <string name="today_google_forecast_promo_title" tools:ignore="MissingTranslation">Try Google forecasts</string>
-    <!-- TODO: translate -->
-    <string name="today_google_forecast_promo_body" tools:ignore="MissingTranslation">Choose your weather forecast providers for increased accuracy.</string>
-    <!-- TODO: translate -->
-    <string name="today_google_forecast_promo_cta" tools:ignore="MissingTranslation">Forecasters settings</string>
+    <string name="today_google_forecast_promo_title">Try Google forecasts</string>
+    <string name="today_google_forecast_promo_body">Choose your weather forecast providers for increased accuracy.</string>
+    <string name="today_google_forecast_promo_cta">Forecasters settings</string>
 
     <!-- Card on the Today screen shown when a cast used up the shared free
          Gemini voice allowance for the day. The cast still played in the
@@ -634,12 +625,10 @@
     <string name="settings_display_palette_rainbow_description">Pink, orange, and green chart lines and Material teal / red confidence cards. The default.</string>
     <string name="settings_display_palette_accessible_description">An Okabe-Ito-derived palette designed to stay distinguishable under deuteranopia, protanopia, and tritanopia. Confidence cards use sky blue, neutral, and amber instead of teal, neutral, and red.</string>
     <string name="settings_display_palette_highlighter_description">Magenta, yellow, and cyan chart lines — like highlighter pens on the page. Visibly different from Rainbow at a glance; the light theme uses deeper variants for readability. Safe under red-green color blindness.</string>
-    <!-- TODO: translate -->
-    <string name="settings_display_text_size_title" tools:ignore="MissingTranslation">Text size</string>
-    <!-- TODO: translate. %1$d is a percentage of the system's own text size; 100 is the same size. -->
-    <string name="settings_display_text_size_value" tools:ignore="MissingTranslation">%1$d%%</string>
-    <!-- TODO: translate -->
-    <string name="settings_display_text_size_pinch" tools:ignore="MissingTranslation">Pinch to resize</string>
+    <string name="settings_display_text_size_title">Text size</string>
+    <!-- %1$d is a percentage of the system's own text size; 100 is the same size. -->
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Pinch to resize</string>
     <string name="settings_display_home_layout_title">Home screen layout</string>
     <string name="settings_display_home_layout_description">Drag the handles to reorder how these sections appear on the home screen.</string>
     <string name="settings_display_home_section_conditions">Conditions</string>
@@ -690,11 +679,9 @@
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF\'s AI model — skillful out to 15 days, so it carries the second-week charts. Some detail charts may not show a line for it.</string>
     <string name="settings_forecasters_google">Google</string>
-    <!-- TODO: translate -->
-    <string name="settings_forecasters_google_subtitle" tools:ignore="MissingTranslation">Google\'s advanced AI weather forecast. Requires log in or API key.</string>
+    <string name="settings_forecasters_google_subtitle">Google\'s advanced AI weather forecast. Requires log in or API key.</string>
     <!-- The same, on builds without the Google forecast proxy (no sign-in). -->
-    <!-- TODO: translate -->
-    <string name="settings_forecasters_google_subtitle_key_only" tools:ignore="MissingTranslation">Google\'s advanced AI weather forecast. Requires an API key.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google\'s advanced AI weather forecast. Requires an API key.</string>
     <!-- The Google forecaster's key lives in its own slot, separate from the
          Gemini voice key — a project-scoped Cloud key with the Weather API
          enabled. Users can paste the same AIza key as Gemini (if its project
@@ -777,10 +764,8 @@
 
     <!-- Optional name at the top of Settings → Smart Home. It heads the outfit
          card, names the Home Assistant device and seeds the MQTT topic. -->
-    <!-- TODO: translate -->
-    <string name="settings_smart_home_name" tools:ignore="MissingTranslation">Name</string>
-    <!-- TODO: translate -->
-    <string name="settings_smart_home_name_hint" tools:ignore="MissingTranslation">e.g. Alex\'s</string>
+    <string name="settings_smart_home_name">Name</string>
+    <string name="settings_smart_home_name_hint">e.g. Alex\'s</string>
 
     <string name="settings_smart_home_mqtt_title">Home Assistant bridge (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publish to MQTT</string>
@@ -817,8 +802,7 @@
 
     <string name="settings_api_key_gemini_label">Gemini</string>
 
-    <!-- TODO: translate -->
-    <string name="settings_api_key_gemini_header" tools:ignore="MissingTranslation">High-quality voices via ClothesCast and Google servers.</string>
+    <string name="settings_api_key_gemini_header">High-quality voices via ClothesCast and Google servers.</string>
     <!-- Shown under the Device radio in Voice settings and the Speech setup
          sheet, paired with the Gemini header above so the user reads both
          halves of the engine tradeoff (offline + low quality vs. server +
@@ -1246,21 +1230,17 @@
     <!-- Open-source attribution, reached from the About page. The row reads
          "Licenses" because the About page it sits on already sets the context;
          the page it opens spells out which licenses these are. -->
-    <!-- TODO: translate -->
-    <string name="settings_about_licenses" tools:ignore="MissingTranslation">Licenses</string>
-    <!-- TODO: translate -->
-    <string name="settings_licenses_title" tools:ignore="MissingTranslation">Open source licenses</string>
+    <string name="settings_about_licenses">Licenses</string>
+    <string name="settings_licenses_title">Open source licenses</string>
     <!-- Version of one bundled component, shown in the dialog a component row
          opens. Separate from settings_about_version above, which carries the
          app\'s own version name and code. -->
-    <!-- TODO: translate -->
-    <string name="settings_licenses_version" tools:ignore="MissingTranslation">Version %1$s</string>
+    <string name="settings_licenses_version">Version %1$s</string>
     <!-- Who wrote one bundled component, shown under its version in the same
          dialog. Apache-2.0 §4 asks that attribution travel with the code, so
          the page names the authors rather than only the license they chose.
          Omitted entirely when the component's own metadata names nobody. -->
-    <!-- TODO: translate -->
-    <string name="settings_licenses_authors" tools:ignore="MissingTranslation">By %1$s</string>
+    <string name="settings_licenses_authors">By %1$s</string>
 
     <!-- Consent dialog shown before any "share bug report" action (Today
          overflow, About page, or the post-crash banner). Brief by design:
@@ -1278,8 +1258,7 @@
     <string name="bug_report_consent_cancel">Cancel</string>
     <!-- Shown when a share reached neither a share target nor the clipboard, so
          the tap would otherwise look like it did nothing at all. -->
-    <!-- TODO: translate -->
-    <string name="bug_report_share_failed" tools:ignore="MissingTranslation">Couldn\'t share the bug report</string>
+    <string name="bug_report_share_failed">Couldn\'t share the bug report</string>
 
     <!--
     Insight prose templates rendered by InsightFormatter. Each clause is its own
@@ -2049,34 +2028,19 @@
     <string name="holiday_name_corpus_christi">Corpus Christi</string>
     <string name="holiday_banner_corpus_christi">Happy Corpus Christi</string>
     <!-- Sign in with Google (SPEC.md: Accounts and the developer-funded paths). -->
-    <!-- TODO: translate -->
-    <string name="settings_tts_gemini_sign_in_reason" tools:ignore="MissingTranslation">The free Gemini voice needs Google sign-in.</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_sign_in" tools:ignore="MissingTranslation">Sign in with Google</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_signed_in_as" tools:ignore="MissingTranslation">Signed in as %1$s</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_signed_in" tools:ignore="MissingTranslation">Signed in with Google</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_sign_out" tools:ignore="MissingTranslation">Sign out</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_delete_account" tools:ignore="MissingTranslation">Delete account</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_delete_title" tools:ignore="MissingTranslation">Delete account?</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_delete_body" tools:ignore="MissingTranslation">Your settings on this phone stay.</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_delete_confirm" tools:ignore="MissingTranslation">Delete</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_no_account" tools:ignore="MissingTranslation">No Google account on this device.</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_sign_in_failed" tools:ignore="MissingTranslation">Couldn\'t sign in. Try again.</string>
-    <!-- TODO: translate -->
-    <string name="settings_google_delete_failed" tools:ignore="MissingTranslation">Couldn\'t delete account. Try again.</string>
-    <!-- TODO: translate -->
-    <string name="settings_forecasters_google_sign_in_reason" tools:ignore="MissingTranslation">Sign in with Google to use Google without your own key.</string>
-    <!-- TODO: translate -->
-    <string name="notify_gemini_sign_in_title" tools:ignore="MissingTranslation">Gemini voice paused</string>
-    <!-- TODO: translate -->
-    <string name="notify_gemini_sign_in_text" tools:ignore="MissingTranslation">Sign in with Google in Voice settings to keep it. Using the device voice for now.</string>
+    <string name="settings_tts_gemini_sign_in_reason">The free Gemini voice needs Google sign-in.</string>
+    <string name="settings_google_sign_in">Sign in with Google</string>
+    <string name="settings_google_signed_in_as">Signed in as %1$s</string>
+    <string name="settings_google_signed_in">Signed in with Google</string>
+    <string name="settings_google_sign_out">Sign out</string>
+    <string name="settings_google_delete_account">Delete account</string>
+    <string name="settings_google_delete_title">Delete account?</string>
+    <string name="settings_google_delete_body">Your settings on this phone stay.</string>
+    <string name="settings_google_delete_confirm">Delete</string>
+    <string name="settings_google_no_account">No Google account on this device.</string>
+    <string name="settings_google_sign_in_failed">Couldn\'t sign in. Try again.</string>
+    <string name="settings_google_delete_failed">Couldn\'t delete account. Try again.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Sign in with Google to use Google without your own key.</string>
+    <string name="notify_gemini_sign_in_title">Gemini voice paused</string>
+    <string name="notify_gemini_sign_in_text">Sign in with Google in Voice settings to keep it. Using the device voice for now.</string>
 </resources>

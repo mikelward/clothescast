@@ -267,6 +267,7 @@ displayed label localizes.
     save / clear buttons. URLs stay verbatim.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">ClothesCast 및 Google 서버를 통한 고품질 음성.</string>
 
     <string name="settings_api_key_status_set">Gemini 키가 설정되어 있어요.</string>
     <string name="settings_api_key_placeholder">Gemini API 키 붙여넣기</string>
@@ -326,6 +327,10 @@ displayed label localizes.
     <string name="settings_about_dontkillmyapp">백그라운드 제한 (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">버그 보고서 공유</string>
     <string name="settings_about_version_copied">버전이 클립보드에 복사되었어요</string>
+    <string name="settings_about_licenses">라이선스</string>
+    <string name="settings_licenses_title">오픈소스 라이선스</string>
+    <string name="settings_licenses_version">버전 %1$s</string>
+    <string name="settings_licenses_authors">제작: %1$s</string>
 
     <!--
     Today screen — top bar, refresh toasts, empty state, generated-at
@@ -543,6 +548,10 @@ displayed label localizes.
     <string name="today_update_downloading_dismiss">취소</string>
     <string name="today_update_downloaded_body">업데이트가 다운로드되었습니다. 설치를 완료하려면 다시 시작하세요.</string>
     <string name="today_update_downloaded_action">다시 시작</string>
+    <string name="today_telemetry_invite_title">ClothesCast 개선에 참여할까요?</string>
+    <string name="today_telemetry_invite_body">버그를 찾아 고칠 수 있도록 충돌 보고서와 익명 사용 통계를 보낼까요?</string>
+    <string name="today_telemetry_invite_accept">네, 좋아요</string>
+    <string name="today_telemetry_invite_decline">괜찮아요</string>
 
     <!-- Onboarding additions — TV-shorter subtitle (TV onboarding has
          less screen real-estate), the always-on location step, and the
@@ -663,6 +672,7 @@ displayed label localizes.
     <string name="bug_report_consent_dont_show_again">다시 표시 안 함</string>
     <string name="bug_report_consent_continue">계속</string>
     <string name="bug_report_consent_cancel">취소</string>
+    <string name="bug_report_share_failed">버그 보고서를 공유하지 못했어요</string>
 
     <!-- Insight: hedged precipitation and evening-rain templates. -->
     <!-- "가능성" — invariant Sino-Korean noun, no inflection on the preceding precip noun. -->
@@ -684,6 +694,9 @@ displayed label localizes.
     <string name="settings_display_palette_rainbow_description">핑크, 주황, 초록 차트 선과 Material 청록/빨강 신뢰도 카드. 기본값.</string>
     <string name="settings_display_palette_highlighter">형광펜</string>
     <string name="settings_display_palette_highlighter_description">마젠타·노랑·시안 차트 선 — 종이 위에 형광펜으로 그은 듯한 느낌입니다. 한눈에 \"무지개\"와 분명히 구분되며, 라이트 테마는 가독성을 위해 더 짙은 색을 사용합니다. 적-녹 색각 이상에서도 안전합니다.</string>
+    <string name="settings_display_text_size_title">글자 크기</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">손가락을 모으거나 벌려 크기 조절</string>
     <string name="settings_display_home_layout_title">홈 화면 레이아웃</string>
     <string name="settings_display_home_layout_description">핸들을 드래그하여 이 섹션들이 홈 화면에 표시되는 순서를 바꾸세요.</string>
     <string name="settings_display_home_layout_drag">드래그하여 %1$s 순서 변경</string>
@@ -926,6 +939,8 @@ displayed label localizes.
 
     <!-- Outfit card — header labels and temperature range. -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">%1$s ClothesCast</string>
+    <string name="outfit_card_header_named">%1$s %2$s ClothesCast</string>
 
     <!-- API keys screen — replace key action. -->
     <string name="settings_api_key_replace">Gemini 키 교체</string>
@@ -1009,6 +1024,8 @@ displayed label localizes.
     <string name="cast_error_no_insight_yet">아직 예보가 없어요. 다음 예약 실행을 기다리거나 「오늘」 화면에서 새로고침을 탭하세요.</string>
     <string name="cast_error_no_route_picked">먼저 스마트 디스플레이를 선택하세요.</string>
     <string name="cast_error_unknown">캐스트에 실패했어요.</string>
+    <string name="settings_smart_home_name">이름</string>
+    <string name="settings_smart_home_name_hint">예: 민준의</string>
 
     <!-- Today screen — Celebration card. -->
     <string name="today_celebration_card_title">기념일 테마</string>
@@ -1124,6 +1141,21 @@ displayed label localizes.
     <string name="holiday_banner_ca_labour_day">노동절을 축하합니다</string>
     <string name="holiday_banner_cinco_de_mayo">신코 데 마요를 축하합니다</string>
     <string name="holiday_banner_corpus_christi">성체 성혈 대축일을 축하합니다</string>
+    <string name="settings_tts_gemini_sign_in_reason">무료 Gemini 음성을 쓰려면 Google 로그인이 필요해요.</string>
+    <string name="settings_google_sign_in">Google로 로그인</string>
+    <string name="settings_google_signed_in_as">%1$s(으)로 로그인됨</string>
+    <string name="settings_google_signed_in">Google로 로그인됨</string>
+    <string name="settings_google_sign_out">로그아웃</string>
+    <string name="settings_google_delete_account">계정 삭제</string>
+    <string name="settings_google_delete_title">계정을 삭제할까요?</string>
+    <string name="settings_google_delete_body">이 휴대전화의 설정은 그대로 유지돼요.</string>
+    <string name="settings_google_delete_confirm">삭제</string>
+    <string name="settings_google_no_account">이 기기에 Google 계정이 없어요.</string>
+    <string name="settings_google_sign_in_failed">로그인하지 못했어요. 다시 시도하세요.</string>
+    <string name="settings_google_delete_failed">계정을 삭제하지 못했어요. 다시 시도하세요.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Google로 로그인하면 내 키 없이 Google을 사용할 수 있어요.</string>
+    <string name="notify_gemini_sign_in_title">Gemini 음성 일시중지됨</string>
+    <string name="notify_gemini_sign_in_text">계속 사용하려면 음성 설정에서 Google로 로그인하세요. 지금은 기기 음성을 사용해요.</string>
     <string name="holiday_banner_egypt_revolution_day">혁명 기념일을 축하합니다</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">시나이 해방의 날을 축하합니다</string>
     <string name="holiday_banner_india_childrens_day">어린이날을 축하합니다</string>
@@ -1332,6 +1364,9 @@ displayed label localizes.
     <string name="today_gemini_promo_cta">음성 설정</string>
     <string name="today_gemini_promo_dismiss">닫기</string>
     <string name="today_google_forecast_promo_dismiss">닫기</string>
+    <string name="today_google_forecast_promo_title">Google 예보 사용해 보기</string>
+    <string name="today_google_forecast_promo_body">더 정확한 예보를 위해 날씨 예보 제공자를 선택하세요.</string>
+    <string name="today_google_forecast_promo_cta">예보 모델 설정</string>
     <string name="today_clothes_promo_title">옷을 내 것으로</string>
     <string name="today_insight_format_link">형식</string>
     <string name="today_play">재생</string>
@@ -1418,6 +1453,8 @@ displayed label localizes.
     <string name="settings_holidays_calendar_source">캘린더: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google의 고급 AI 날씨 예보. 로그인 또는 API 키가 필요해요.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google의 고급 AI 날씨 예보. API 키가 필요해요.</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF의 AI 모델 — 15일까지 정확도가 높아 둘째 주 차트를 담당합니다. 일부 상세 차트에서는 이 모델의 선이 표시되지 않을 수 있습니다.</string>
     <string name="settings_forecasters_google_key_header">Google API 키</string>
     <string name="settings_forecasters_google_key_placeholder">Google API 키를 붙여넣으세요</string>

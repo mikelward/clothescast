@@ -154,6 +154,7 @@ surfaces.
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Висококвалитетни гласови преко сервера ClothesCast и Google.</string>
     <string name="settings_tts_device_header">Гласови ниског квалитета уграђени у твој телефон.</string>
     <string name="settings_api_key_status_set">Gemini кључ је подешен.</string>
     <string name="settings_api_key_placeholder">Налепи свој Gemini API кључ</string>
@@ -387,6 +388,10 @@ surfaces.
     <string name="settings_about_dontkillmyapp">Позадинска ограничења (донткиллмyапп.цом)</string>
     <string name="settings_about_share_bug_report">Подели извештај о грешци</string>
     <string name="settings_about_version_copied">Верзија копирана у међуспремник</string>
+    <string name="settings_about_licenses">Лиценце</string>
+    <string name="settings_licenses_title">Лиценце отвореног кода</string>
+    <string name="settings_licenses_version">Верзија %1$s</string>
+    <string name="settings_licenses_authors">Аутор: %1$s</string>
 
     <!-- Privacy sub-screen. -->
     <string name="settings_privacy_telemetry_title">Извештаји о грешкама и коришћењу</string>
@@ -511,6 +516,10 @@ surfaces.
     <string name="today_update_available_dismiss">Не сада</string>
     <string name="today_update_downloaded_body">Ажурирање преузето. Поново покрени да завршиш инсталацију.</string>
     <string name="today_update_downloaded_action">Поново покрени</string>
+    <string name="today_telemetry_invite_title">Помогнеш да ClothesCast буде бољи?</string>
+    <string name="today_telemetry_invite_body">Шаљи извештаје о падовима и анонимну статистику коришћења да би се грешке пронашле и исправиле?</string>
+    <string name="today_telemetry_invite_accept">Да, молим</string>
+    <string name="today_telemetry_invite_decline">Не, хвала</string>
 
     <!-- Telemetry notice banner. -->
     <string name="today_telemetry_notice_open_settings">Подешавања приватности</string>
@@ -538,6 +547,7 @@ surfaces.
     <string name="bug_report_consent_dont_show_again">Не приказуј више</string>
     <string name="bug_report_consent_continue">Настави</string>
     <string name="bug_report_consent_cancel">Откажи</string>
+    <string name="bug_report_share_failed">Дељење извештаја о грешци није успело</string>
 
     <string name="today_forecast_air_section_title">Температура ваздуха</string>
 
@@ -549,6 +559,9 @@ surfaces.
     <string name="settings_display_palette_rainbow_description">Розе, наранџасте и зелене линије графикона са тиркизним/црвеним картицама поузданости Material. Подразумевано.</string>
     <string name="settings_display_palette_highlighter">Маркер</string>
     <string name="settings_display_palette_highlighter_description">Магента, жуте и цијан линије графикона — као траг маркера на страници. На први поглед видно другачије од \"Дуге\"; светла тема користи дубље варијанте за читљивост. Безбедно за црвено-зелено слепило за боје.</string>
+    <string name="settings_display_text_size_title">Величина текста</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Рашири прсте за промену величине</string>
     <string name="settings_display_home_layout_title">Распоред почетног екрана</string>
     <string name="settings_display_home_layout_description">Превуци ручице да промениш редослед којим се ови одељци приказују на почетном екрану.</string>
     <string name="settings_display_home_layout_drag">Превуци да промениш редослед: %1$s</string>
@@ -778,6 +791,8 @@ surfaces.
     <string name="settings_root_smart_home_subtitle">Паметни дисплеј и кућна аутоматизација</string>
     <string name="settings_api_key_replace">Замени Gemini кључ</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast у %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast у %2$s</string>
     <string name="today_rationale_open_clothes_settings">Подешавања одеће</string>
     <string name="today_celebration_card_title">Празничне теме</string>
     <string name="today_celebration_card_body">Омогућите посебне боје и поруке за празнике и рођендане.</string>
@@ -843,6 +858,8 @@ surfaces.
     <string name="cast_error_no_route_picked">Прво одабери паметни екран.</string>
     <string name="cast_error_no_insight_yet">Прогноза још није доступна. Сачекај следеће планирано покретање или додирни Освежи на екрану Данас.</string>
     <string name="cast_error_unknown">Пренос није успео.</string>
+    <string name="settings_smart_home_name">Име</string>
+    <string name="settings_smart_home_name_hint">нпр. Алексов</string>
     <string name="settings_calendar_birthdays">Рођендани из календара</string>
     <string name="settings_calendar_public_holidays">Празници из календара</string>
 
@@ -948,6 +965,21 @@ surfaces.
     <string name="holiday_banner_ca_labour_day">Срећан Празник рада</string>
     <string name="holiday_banner_cinco_de_mayo">Срећан Синко де Мајо</string>
     <string name="holiday_banner_corpus_christi">Срећан празник Тела Христовог</string>
+    <string name="settings_tts_gemini_sign_in_reason">За бесплатни Gemini глас потребна је пријава преко Google-а.</string>
+    <string name="settings_google_sign_in">Пријави се преко Google-а</string>
+    <string name="settings_google_signed_in_as">Пријављен као %1$s</string>
+    <string name="settings_google_signed_in">Пријављен преко Google-а</string>
+    <string name="settings_google_sign_out">Одјави се</string>
+    <string name="settings_google_delete_account">Избриши налог</string>
+    <string name="settings_google_delete_title">Избрисати налог?</string>
+    <string name="settings_google_delete_body">Твоја подешавања на овом телефону остају.</string>
+    <string name="settings_google_delete_confirm">Избриши</string>
+    <string name="settings_google_no_account">На овом уређају нема Google налога.</string>
+    <string name="settings_google_sign_in_failed">Пријава није успела. Покушај поново.</string>
+    <string name="settings_google_delete_failed">Брисање налога није успело. Покушај поново.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Пријави се преко Google-а да користиш Google без свог кључа.</string>
+    <string name="notify_gemini_sign_in_title">Gemini глас паузиран</string>
+    <string name="notify_gemini_sign_in_text">Пријави се преко Google-а у подешавањима гласа да га задржиш. За сада се користи глас уређаја.</string>
     <string name="holiday_banner_egypt_revolution_day">Срећан Дан револуције</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Срећан Дан ослобођења Синаја</string>
     <string name="holiday_banner_india_childrens_day">Срећан Дан деце</string>
@@ -1158,6 +1190,9 @@ surfaces.
     <string name="today_gemini_promo_cta">Подешавања гласа</string>
     <string name="today_gemini_promo_dismiss">Одбаци</string>
     <string name="today_google_forecast_promo_dismiss">Одбаци</string>
+    <string name="today_google_forecast_promo_title">Испробај Google прогнозе</string>
+    <string name="today_google_forecast_promo_body">Изабери добављаче временске прогнозе за већу прецизност.</string>
+    <string name="today_google_forecast_promo_cta">Подешавања модела прогнозе</string>
     <string name="today_clothes_promo_title">Прилагоди одећу себи</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Пусти</string>
@@ -1244,6 +1279,8 @@ surfaces.
     <string name="settings_holidays_calendar_source">Календар: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google-ова напредна временска прогноза са ВИ. Потребна је пријава или API кључ.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google-ова напредна временска прогноза са ВИ. Потребан је API кључ.</string>
     <string name="settings_forecasters_aifs_subtitle">АИ модел ECMWF-а — поуздан до 15 дана унапред, зато носи графиконе друге недеље. Неки детаљни графикони можда не приказују линију за њега.</string>
     <string name="settings_forecasters_google_key_header">Google API кључ</string>
     <string name="settings_forecasters_google_key_placeholder">Налепите свој Google API кључ</string>

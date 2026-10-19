@@ -247,6 +247,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     verbatim.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Voci di alta qualità tramite i server di ClothesCast e Google.</string>
 
     <string name="settings_api_key_status_set">È configurata una chiave Gemini.</string>
     <string name="settings_api_key_placeholder">Incolla la tua chiave API Gemini</string>
@@ -306,6 +307,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_about_dontkillmyapp">Restrizioni in background (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Condividi report di bug</string>
     <string name="settings_about_version_copied">Versione copiata negli appunti</string>
+    <string name="settings_about_licenses">Licenze</string>
+    <string name="settings_licenses_title">Licenze open source</string>
+    <string name="settings_licenses_version">Versione %1$s</string>
+    <string name="settings_licenses_authors">Di %1$s</string>
 
     <!--
     Today screen — top bar, refresh toasts, empty state, generated-at
@@ -554,6 +559,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_update_available_dismiss">Non ora</string>
     <string name="today_update_downloaded_body">Aggiornamento scaricato. Riavvia per completare l\'installazione.</string>
     <string name="today_update_downloaded_action">Riavvia</string>
+    <string name="today_telemetry_invite_title">Aiutaci a migliorare ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Vuoi inviare report sugli arresti anomali e statistiche d\'uso anonime per trovare e correggere i bug?</string>
+    <string name="today_telemetry_invite_accept">Sì, grazie</string>
+    <string name="today_telemetry_invite_decline">No, grazie</string>
 
     <!-- Outfit card labels — additional garments not previously translated. -->
     <string name="today_outfit_top_polo">Polo</string>
@@ -637,6 +646,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="bug_report_consent_dont_show_again">Non mostrare più</string>
     <string name="bug_report_consent_continue">Continua</string>
     <string name="bug_report_consent_cancel">Annulla</string>
+    <string name="bug_report_share_failed">Impossibile condividere il report di bug</string>
 
     <!-- Insight: extras at night (no "Stasera" prefix — band lead already set context). -->
     <string name="insight_extras_at_night">Porta %1$s.</string>
@@ -658,6 +668,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Linee del grafico rosa, arancione e verde con schede di affidabilità Material verde acqua/rosso. Il valore predefinito.</string>
     <string name="settings_display_palette_highlighter">Evidenziatore</string>
     <string name="settings_display_palette_highlighter_description">Linee del grafico magenta, gialle e ciano — come tratti di evidenziatore sulla pagina. Visivamente diverse da \"Arcobaleno\" al primo sguardo; il tema chiaro usa varianti più scure per la leggibilità. Sicuro per il daltonismo rosso-verde.</string>
+    <string name="settings_display_text_size_title">Dimensione testo</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Pizzica per ridimensionare</string>
     <string name="settings_display_home_layout_title">Layout della schermata Home</string>
     <string name="settings_display_home_layout_description">Trascina le maniglie per riordinare come queste sezioni appaiono nella schermata Home.</string>
     <string name="settings_display_home_layout_drag">Trascina per riordinare %1$s</string>
@@ -851,6 +864,8 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast delle %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %1$s delle %2$s</string>
 
     <!-- Rationale dialog button. -->
     <string name="today_rationale_open_clothes_settings">Impostazioni abbigliamento</string>
@@ -977,6 +992,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="cast_error_no_route_picked">Scegli prima un display intelligente.</string>
     <string name="cast_error_no_insight_yet">Nessuna previsione ancora disponibile. Attendi la prossima esecuzione programmata o tocca Aggiorna nella schermata Oggi.</string>
     <string name="cast_error_unknown">Trasmissione fallita.</string>
+    <string name="settings_smart_home_name">Nome</string>
+    <string name="settings_smart_home_name_hint">es. di Alex</string>
     <string name="settings_calendar_birthdays">Compleanni del calendario</string>
     <string name="settings_calendar_public_holidays">Festività del calendario</string>
 
@@ -1083,6 +1100,21 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_ca_labour_day">Buona Festa del Lavoro</string>
     <string name="holiday_banner_cinco_de_mayo">Buon Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Buon Corpus Domini</string>
+    <string name="settings_tts_gemini_sign_in_reason">La voce Gemini gratuita richiede l\'accesso con Google.</string>
+    <string name="settings_google_sign_in">Accedi con Google</string>
+    <string name="settings_google_signed_in_as">Accesso effettuato come %1$s</string>
+    <string name="settings_google_signed_in">Accesso effettuato con Google</string>
+    <string name="settings_google_sign_out">Esci</string>
+    <string name="settings_google_delete_account">Elimina account</string>
+    <string name="settings_google_delete_title">Eliminare l\'account?</string>
+    <string name="settings_google_delete_body">Le impostazioni su questo telefono restano.</string>
+    <string name="settings_google_delete_confirm">Elimina</string>
+    <string name="settings_google_no_account">Nessun account Google su questo dispositivo.</string>
+    <string name="settings_google_sign_in_failed">Accesso non riuscito. Riprova.</string>
+    <string name="settings_google_delete_failed">Impossibile eliminare l\'account. Riprova.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Accedi con Google per usare Google senza una tua chiave.</string>
+    <string name="notify_gemini_sign_in_title">Voce Gemini in pausa</string>
+    <string name="notify_gemini_sign_in_text">Accedi con Google nelle impostazioni Voce per mantenerla. Nel frattempo viene usata la voce del dispositivo.</string>
     <string name="holiday_banner_egypt_revolution_day">Buona festa della Rivoluzione</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Buona festa della Liberazione del Sinai</string>
     <string name="holiday_banner_india_childrens_day">Buona Festa dei Bambini</string>
@@ -1293,6 +1325,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_gemini_promo_cta">Impostazioni voce</string>
     <string name="today_gemini_promo_dismiss">Ignora</string>
     <string name="today_google_forecast_promo_dismiss">Ignora</string>
+    <string name="today_google_forecast_promo_title">Prova le previsioni Google</string>
+    <string name="today_google_forecast_promo_body">Scegli i tuoi fornitori di previsioni meteo per una maggiore precisione.</string>
+    <string name="today_google_forecast_promo_cta">Impostazioni modelli di previsione</string>
     <string name="today_clothes_promo_title">Personalizza l\'abbigliamento</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Riproduci</string>
@@ -1379,6 +1414,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_holidays_calendar_source">Calendario: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Previsioni meteo avanzate con IA di Google. Richiede accesso o chiave API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Previsioni meteo avanzate con IA di Google. Richiede una chiave API.</string>
     <string name="settings_forecasters_aifs_subtitle">Il modello IA di ECMWF — affidabile fino a 15 giorni, quindi è quello che sostiene i grafici della seconda settimana. Alcuni grafici di dettaglio potrebbero non mostrare una linea per esso.</string>
     <string name="settings_forecasters_google_key_header">Chiave API di Google</string>
     <string name="settings_forecasters_google_key_placeholder">Incolla la tua chiave API di Google</string>

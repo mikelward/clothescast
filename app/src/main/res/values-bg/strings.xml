@@ -244,6 +244,10 @@ What is NOT overridden, by design:
     <string name="today_update_available_dismiss">Не сега</string>
     <string name="today_update_downloaded_body">Актуализацията е изтеглена. Рестартирай, за да завършиш инсталацията.</string>
     <string name="today_update_downloaded_action">Рестартирай</string>
+    <string name="today_telemetry_invite_title">Ще помогнеш ли ClothesCast да стане по-добър?</string>
+    <string name="today_telemetry_invite_body">Да се изпращат ли доклади за сривове и анонимна статистика за употреба, за да се откриват и поправят грешки?</string>
+    <string name="today_telemetry_invite_accept">Да, моля</string>
+    <string name="today_telemetry_invite_decline">Не, благодаря</string>
 
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_open_settings">Настройки за поверителност</string>
@@ -303,6 +307,7 @@ What is NOT overridden, by design:
 
     <!-- API key screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Висококачествени гласове чрез сървърите на ClothesCast и Google.</string>
     <string name="settings_tts_device_header">Гласове с ниско качество, вградени в телефона ти.</string>
     <string name="settings_api_key_status_set">Конфигуриран е ключ за Gemini.</string>
     <string name="settings_api_key_placeholder">Постави своя API ключ за Gemini</string>
@@ -540,6 +545,10 @@ What is NOT overridden, by design:
     <string name="settings_about_dontkillmyapp">Ограничения в background (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Сподели доклад за грешка</string>
     <string name="settings_about_version_copied">Версията е копирана в клипборда</string>
+    <string name="settings_about_licenses">Лицензи</string>
+    <string name="settings_licenses_title">Лицензи с отворен код</string>
+    <string name="settings_licenses_version">Версия %1$s</string>
+    <string name="settings_licenses_authors">От %1$s</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Да се сподели ли доклад за грешка?</string>
@@ -548,6 +557,7 @@ What is NOT overridden, by design:
     <string name="bug_report_consent_dont_show_again">Не показвай отново</string>
     <string name="bug_report_consent_continue">Продължи</string>
     <string name="bug_report_consent_cancel">Откажи</string>
+    <string name="bug_report_share_failed">Докладът за грешка не можа да бъде споделен</string>
 
     <string name="today_forecast_air_section_title">Температура на въздуха</string>
 
@@ -559,6 +569,9 @@ What is NOT overridden, by design:
     <string name="settings_display_palette_rainbow_description">Розови, оранжеви и зелени линии на графиките с карти за достоверност Material синьо-зелено/червено. По подразбиране.</string>
     <string name="settings_display_palette_highlighter">Маркер</string>
     <string name="settings_display_palette_highlighter_description">Линии на графиката в магента, жълто и циан — като следа от маркер върху страницата. Видимо различни от \"Дъга\" от пръв поглед; светлата тема използва по-наситени варианти за четливост. Безопасни при червено-зелена цветна слепота.</string>
+    <string name="settings_display_text_size_title">Размер на текста</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Раздалечи пръсти за промяна на размера</string>
     <string name="settings_display_home_layout_title">Оформление на началния екран</string>
     <string name="settings_display_home_layout_description">Плъзни манипулаторите, за да пренаредиш как тези секции се показват на началния екран.</string>
     <string name="settings_display_home_layout_drag">Плъзни, за да пренаредиш %1$s</string>
@@ -788,6 +801,8 @@ What is NOT overridden, by design:
     <string name="settings_root_smart_home_subtitle">Умни дисплеи и домашна автоматизация</string>
     <string name="settings_api_key_replace">Смени ключа за Gemini</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast в %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %1$s в %2$s</string>
     <string name="today_rationale_open_clothes_settings">Настройки за облекло</string>
     <string name="today_celebration_card_title">Празнични теми</string>
     <string name="today_celebration_card_body">Включи специални цветове и съобщения за празници и рождени дни.</string>
@@ -853,6 +868,8 @@ What is NOT overridden, by design:
     <string name="cast_error_no_route_picked">Първо избери умен дисплей.</string>
     <string name="cast_error_no_insight_yet">Все още няма налична прогноза. Изчакай следващото планирано изпълнение или докосни Обнови на екрана Днес.</string>
     <string name="cast_error_unknown">Предаването се провали.</string>
+    <string name="settings_smart_home_name">Име</string>
+    <string name="settings_smart_home_name_hint">напр. на Алекс</string>
     <string name="settings_calendar_birthdays">Рождени дни от календара</string>
     <string name="settings_calendar_public_holidays">Празници от календара</string>
 
@@ -958,6 +975,21 @@ What is NOT overridden, by design:
     <string name="holiday_banner_ca_labour_day">Честит Ден на труда</string>
     <string name="holiday_banner_cinco_de_mayo">Честит Синко де Майо</string>
     <string name="holiday_banner_corpus_christi">Честит Корпус Кристи</string>
+    <string name="settings_tts_gemini_sign_in_reason">Безплатният глас на Gemini изисква вход с Google.</string>
+    <string name="settings_google_sign_in">Вход с Google</string>
+    <string name="settings_google_signed_in_as">Влязъл си като %1$s</string>
+    <string name="settings_google_signed_in">Влязъл си с Google</string>
+    <string name="settings_google_sign_out">Изход</string>
+    <string name="settings_google_delete_account">Изтрий профила</string>
+    <string name="settings_google_delete_title">Да се изтрие ли профилът?</string>
+    <string name="settings_google_delete_body">Настройките ти на този телефон остават.</string>
+    <string name="settings_google_delete_confirm">Изтрий</string>
+    <string name="settings_google_no_account">Няма профил в Google на това устройство.</string>
+    <string name="settings_google_sign_in_failed">Входът не успя. Опитай отново.</string>
+    <string name="settings_google_delete_failed">Профилът не можа да бъде изтрит. Опитай отново.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Влез с Google, за да ползваш Google без собствен ключ.</string>
+    <string name="notify_gemini_sign_in_title">Гласът на Gemini е на пауза</string>
+    <string name="notify_gemini_sign_in_text">Влез с Google в настройките на гласа, за да го запазиш. Засега се ползва гласът на устройството.</string>
     <string name="holiday_banner_egypt_revolution_day">Честит Ден на революцията</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Честит Ден на освобождението на Синай</string>
     <string name="holiday_banner_india_childrens_day">Честит Ден на детето</string>
@@ -1167,6 +1199,9 @@ What is NOT overridden, by design:
     <string name="today_gemini_promo_cta">Настройки на гласа</string>
     <string name="today_gemini_promo_dismiss">Затвори</string>
     <string name="today_google_forecast_promo_dismiss">Затвори</string>
+    <string name="today_google_forecast_promo_title">Пробвай прогнозите на Google</string>
+    <string name="today_google_forecast_promo_body">Избери доставчици на прогнози за времето за по-голяма точност.</string>
+    <string name="today_google_forecast_promo_cta">Настройки на прогностиците</string>
     <string name="today_clothes_promo_title">Направи дрехите свои</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Възпроизведи</string>
@@ -1253,6 +1288,8 @@ What is NOT overridden, by design:
     <string name="settings_holidays_calendar_source">Календар: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Усъвършенствана прогноза за времето с ИИ от Google. Изисква вход или API ключ.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Усъвършенствана прогноза за времето с ИИ от Google. Изисква API ключ.</string>
     <string name="settings_forecasters_aifs_subtitle">AI моделът на ECMWF — надежден до 15 дни напред, затова той поддържа графиките за втората седмица. Някои подробни графики може да не показват линия за него.</string>
     <string name="settings_forecasters_google_key_header">API ключ на Google</string>
     <string name="settings_forecasters_google_key_placeholder">Поставете вашия API ключ на Google</string>

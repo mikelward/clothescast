@@ -267,6 +267,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     imperative of "colar" (paste).
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Vozes de alta qualidade através dos servidores do ClothesCast e da Google.</string>
 
     <string name="settings_api_key_status_set">Está configurada uma chave Gemini.</string>
     <string name="settings_api_key_placeholder">Cola a tua chave API Gemini</string>
@@ -335,6 +336,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_about_dontkillmyapp">Restrições em segundo plano (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Partilhar relatório de erro</string>
     <string name="settings_about_version_copied">Versão copiada para a área de transferência</string>
+    <string name="settings_about_licenses">Licenças</string>
+    <string name="settings_licenses_title">Licenças de código aberto</string>
+    <string name="settings_licenses_version">Versão %1$s</string>
+    <string name="settings_licenses_authors">Por %1$s</string>
 
     <!--
     Today screen — top bar, refresh toasts, empty state, generated-at
@@ -515,6 +520,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_update_available_dismiss">Agora não</string>
     <string name="today_update_downloaded_body">Atualização transferida. Reinicia para concluir a instalação.</string>
     <string name="today_update_downloaded_action">Reiniciar</string>
+    <string name="today_telemetry_invite_title">Ajudar a melhorar o ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Enviar relatórios de falhas e estatísticas de utilização anónimas para encontrar e corrigir erros?</string>
+    <string name="today_telemetry_invite_accept">Sim, claro</string>
+    <string name="today_telemetry_invite_decline">Não, obrigado</string>
 
     <!-- TV-specific onboarding subtitle (two steps instead of three). -->
 
@@ -665,6 +674,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="bug_report_consent_dont_show_again">Não mostrar novamente</string>
     <string name="bug_report_consent_continue">Continuar</string>
     <string name="bug_report_consent_cancel">Cancelar</string>
+    <string name="bug_report_share_failed">Não foi possível partilhar o relatório de erro</string>
 
     <string name="insight_precip_chance">Possibilidade de %1$s.</string>
     <string name="insight_extras_at_night">Leva %1$s.</string>
@@ -702,6 +712,9 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_display_palette_rainbow_description">Linhas de gráfico rosa, cor-de-laranja e verde com cartões de confiança Material verde-azulado/vermelho. A predefinição.</string>
     <string name="settings_display_palette_highlighter">Marcador</string>
     <string name="settings_display_palette_highlighter_description">Linhas de gráfico magenta, amarelas e ciano — como marcadores fluorescentes na página. Visivelmente diferentes do \"Arco-íris\" à primeira vista; o tema claro usa variantes mais escuras para legibilidade. Seguro para daltonismo vermelho-verde.</string>
+    <string name="settings_display_text_size_title">Tamanho do texto</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Junta os dedos para redimensionar</string>
     <string name="settings_display_home_layout_title">Esquema do ecrã inicial</string>
     <string name="settings_display_home_layout_description">Arrasta as pegas para reordenar como estas secções aparecem no ecrã inicial.</string>
     <string name="settings_display_home_layout_drag">Arrasta para reordenar %1$s</string>
@@ -884,6 +897,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
 
     <string name="today_rationale_open_clothes_settings">Definições de roupa</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast das %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %1$s das %2$s</string>
     <string name="today_celebration_card_title">Temas festivos</string>
     <string name="today_celebration_card_body">Ativa cores e mensagens especiais para feriados e aniversários.</string>
     <string name="today_celebration_card_cta">Definições de calendário</string>
@@ -912,6 +927,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="cast_error_no_route_picked">Escolhe primeiro um ecrã inteligente.</string>
     <string name="cast_error_no_insight_yet">Ainda não há previsão disponível. Aguarda a próxima atualização agendada ou toca em Atualizar no ecrã Hoje.</string>
     <string name="cast_error_unknown">A transmissão falhou.</string>
+    <string name="settings_smart_home_name">Nome</string>
+    <string name="settings_smart_home_name_hint">p. ex. do Alex</string>
     <string name="settings_smart_home_mqtt_title">Bridge Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publicar previsão via MQTT</string>
     <string name="settings_smart_home_mqtt_host">Host do broker</string>
@@ -1099,6 +1116,21 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="holiday_banner_ca_labour_day">Feliz Dia do Trabalho</string>
     <string name="holiday_banner_cinco_de_mayo">Feliz Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Feliz Corpus Christi</string>
+    <string name="settings_tts_gemini_sign_in_reason">A voz gratuita do Gemini requer sessão iniciada com a Google.</string>
+    <string name="settings_google_sign_in">Iniciar sessão com a Google</string>
+    <string name="settings_google_signed_in_as">Sessão iniciada como %1$s</string>
+    <string name="settings_google_signed_in">Sessão iniciada com a Google</string>
+    <string name="settings_google_sign_out">Terminar sessão</string>
+    <string name="settings_google_delete_account">Eliminar conta</string>
+    <string name="settings_google_delete_title">Eliminar conta?</string>
+    <string name="settings_google_delete_body">As tuas definições neste telemóvel mantêm-se.</string>
+    <string name="settings_google_delete_confirm">Eliminar</string>
+    <string name="settings_google_no_account">Nenhuma conta Google neste dispositivo.</string>
+    <string name="settings_google_sign_in_failed">Não foi possível iniciar sessão. Tenta novamente.</string>
+    <string name="settings_google_delete_failed">Não foi possível eliminar a conta. Tenta novamente.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Inicia sessão com a Google para usar a Google sem a tua própria chave.</string>
+    <string name="notify_gemini_sign_in_title">Voz do Gemini em pausa</string>
+    <string name="notify_gemini_sign_in_text">Inicia sessão com a Google nas definições de Voz para a manteres. Por agora, é usada a voz do dispositivo.</string>
     <string name="holiday_banner_egypt_revolution_day">Feliz Dia da Revolução</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Feliz Dia da Libertação do Sinai</string>
     <string name="holiday_banner_india_childrens_day">Feliz Dia da Criança</string>
@@ -1309,6 +1341,9 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_gemini_promo_cta">Definições de voz</string>
     <string name="today_gemini_promo_dismiss">Dispensar</string>
     <string name="today_google_forecast_promo_dismiss">Dispensar</string>
+    <string name="today_google_forecast_promo_title">Experimenta as previsões da Google</string>
+    <string name="today_google_forecast_promo_body">Escolhe os teus fornecedores de previsão meteorológica para maior precisão.</string>
+    <string name="today_google_forecast_promo_cta">Definições de modelos de previsão</string>
     <string name="today_clothes_promo_title">Faz a roupa tua</string>
     <string name="today_insight_format_link">Formato</string>
     <string name="today_play">Reproduzir</string>
@@ -1395,6 +1430,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_holidays_calendar_source">Calendário: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Previsão meteorológica avançada com IA da Google. Requer sessão iniciada ou chave de API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Previsão meteorológica avançada com IA da Google. Requer uma chave de API.</string>
     <string name="settings_forecasters_aifs_subtitle">O modelo de IA do ECMWF — fiável até 15 dias, pelo que sustenta os gráficos da segunda semana. Alguns gráficos detalhados podem não mostrar uma linha para ele.</string>
     <string name="settings_forecasters_google_key_header">Chave de API do Google</string>
     <string name="settings_forecasters_google_key_placeholder">Cola a tua chave de API do Google</string>

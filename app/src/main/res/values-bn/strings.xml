@@ -219,6 +219,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_update_available_dismiss">এখন নয়</string>
     <string name="today_update_downloaded_body">আপডেট ডাউনলোড হয়েছে। ইনস্টল সম্পন্ন করতে পুনরায় চালু করুন।</string>
     <string name="today_update_downloaded_action">পুনরায় চালু করুন</string>
+    <string name="today_telemetry_invite_title">ClothesCast আরও ভালো করতে সাহায্য করবেন?</string>
+    <string name="today_telemetry_invite_body">বাগ খুঁজে ঠিক করার জন্য ক্র্যাশ রিপোর্ট ও বেনামি ব্যবহারের পরিসংখ্যান পাঠাবেন?</string>
+    <string name="today_telemetry_invite_accept">হ্যাঁ, পাঠান</string>
+    <string name="today_telemetry_invite_decline">না, ধন্যবাদ</string>
 
     <!-- Telemetry notice banner -->
     <string name="today_telemetry_notice_open_settings">গোপনীয়তা সেটিংস</string>
@@ -502,6 +506,7 @@ West Bengal vocabulary differences in a future PR.
          ============================================================ -->
 
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">ClothesCast ও Google সার্ভারের মাধ্যমে উচ্চমানের ভয়েস।</string>
     <string name="settings_tts_device_header">আপনার ফোনে অন্তর্নির্মিত নিম্ন-মানের ভয়েস।</string>
     <string name="settings_api_key_status_set">একটি Gemini কী কনফিগার করা আছে।</string>
     <string name="settings_api_key_placeholder">আপনার Gemini API কী পেস্ট করুন</string>
@@ -580,6 +585,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_about_dontkillmyapp">ব্যাকগ্রাউন্ড বিধিনিষেধ (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">বাগ রিপোর্ট শেয়ার করুন</string>
     <string name="settings_about_version_copied">সংস্করণ ক্লিপবোর্ডে কপি হয়েছে</string>
+    <string name="settings_about_licenses">লাইসেন্স</string>
+    <string name="settings_licenses_title">ওপেন সোর্স লাইসেন্স</string>
+    <string name="settings_licenses_version">সংস্করণ %1$s</string>
+    <string name="settings_licenses_authors">%1$s-এর তৈরি</string>
 
     <!-- ============================================================
          Bug report consent dialog
@@ -591,6 +600,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="bug_report_consent_dont_show_again">আর দেখাবেন না</string>
     <string name="bug_report_consent_continue">চালিয়ে যান</string>
     <string name="bug_report_consent_cancel">বাতিল করুন</string>
+    <string name="bug_report_share_failed">বাগ রিপোর্ট শেয়ার করা যায়নি</string>
 
     <!-- ============================================================
          Notification channels
@@ -615,6 +625,9 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_display_palette_rainbow_description">গোলাপি, কমলা এবং সবুজ চার্ট লাইন সহ Material টিল/লাল আস্থা কার্ড। ডিফল্ট।</string>
     <string name="settings_display_palette_highlighter">হাইলাইটার</string>
     <string name="settings_display_palette_highlighter_description">ম্যাজেন্টা, হলুদ এবং সায়ান চার্ট লাইন — যেন পাতার উপর হাইলাইটার কলমের ছোঁয়া। এক নজরেই \"রংধনু\" থেকে দৃশ্যমানভাবে আলাদা; লাইট থিমে পঠনযোগ্যতার জন্য গভীরতর সংস্করণ ব্যবহার করা হয়। লাল-সবুজ বর্ণান্ধতার জন্য নিরাপদ।</string>
+    <string name="settings_display_text_size_title">লেখার আকার</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">আকার বদলাতে পিঞ্চ করুন</string>
     <string name="settings_display_home_layout_title">হোম স্ক্রিনের লেআউট</string>
     <string name="settings_display_home_layout_description">এই বিভাগগুলো হোম স্ক্রিনে কীভাবে দেখাবে তা পুনর্বিন্যাস করতে হ্যান্ডেলগুলো টেনে নিন।</string>
     <string name="settings_display_home_layout_drag">%1$s পুনর্বিন্যাস করতে টেনে নিন</string>
@@ -787,6 +800,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="cast_error_no_insight_yet">এখনো কোনো পূর্বাভাস পাওয়া যায়নি। পরবর্তী নির্ধারিত রানের জন্য অপেক্ষা করুন, অথবা আজকের স্ক্রিনে রিফ্রেশ-এ ট্যাপ করুন।</string>
     <string name="cast_error_no_route_picked">প্রথমে একটি স্মার্ট ডিসপ্লে বেছে নিন।</string>
     <string name="cast_error_unknown">Cast ব্যর্থ হয়েছে।</string>
+    <string name="settings_smart_home_name">নাম</string>
+    <string name="settings_smart_home_name_hint">যেমন: অনুর</string>
 
     <!-- Holiday banners. -->
     <string name="holiday_banner_all_saints_day">সকল সাধুর দিবসের শুভেচ্ছা</string>
@@ -850,6 +865,8 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">%1$s-এর ClothesCast</string>
+    <string name="outfit_card_header_named">%1$s %2$s-এর ClothesCast</string>
 
     <!-- Settings — API key replace. -->
     <string name="settings_api_key_replace">Gemini কী পরিবর্তন করুন</string>
@@ -1043,6 +1060,21 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_ca_labour_day">শ্রমিক দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_cinco_de_mayo">সিনকো দে মায়ো শুভেচ্ছা</string>
     <string name="holiday_banner_corpus_christi">কর্পাস ক্রিস্টি শুভেচ্ছা</string>
+    <string name="settings_tts_gemini_sign_in_reason">বিনামূল্যের Gemini ভয়েসের জন্য Google দিয়ে সাইন ইন করতে হবে।</string>
+    <string name="settings_google_sign_in">Google দিয়ে সাইন ইন করুন</string>
+    <string name="settings_google_signed_in_as">%1$s হিসেবে সাইন ইন করা</string>
+    <string name="settings_google_signed_in">Google দিয়ে সাইন ইন করা</string>
+    <string name="settings_google_sign_out">সাইন আউট</string>
+    <string name="settings_google_delete_account">অ্যাকাউন্ট মুছুন</string>
+    <string name="settings_google_delete_title">অ্যাকাউন্ট মুছবেন?</string>
+    <string name="settings_google_delete_body">এই ফোনে আপনার সেটিংস থেকে যাবে।</string>
+    <string name="settings_google_delete_confirm">মুছুন</string>
+    <string name="settings_google_no_account">এই ডিভাইসে কোনো Google অ্যাকাউন্ট নেই।</string>
+    <string name="settings_google_sign_in_failed">সাইন ইন করা যায়নি। আবার চেষ্টা করুন।</string>
+    <string name="settings_google_delete_failed">অ্যাকাউন্ট মোছা যায়নি। আবার চেষ্টা করুন।</string>
+    <string name="settings_forecasters_google_sign_in_reason">নিজের কী ছাড়া Google ব্যবহার করতে Google দিয়ে সাইন ইন করুন।</string>
+    <string name="notify_gemini_sign_in_title">Gemini ভয়েস বিরতিতে</string>
+    <string name="notify_gemini_sign_in_text">এটি রাখতে ভয়েস সেটিংসে Google দিয়ে সাইন ইন করুন। আপাতত ডিভাইস ভয়েস ব্যবহার হচ্ছে।</string>
     <string name="holiday_banner_egypt_revolution_day">বিপ্লব দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">সিনাই মুক্তি দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_india_childrens_day">শিশু দিবসের শুভেচ্ছা</string>
@@ -1252,6 +1284,9 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_gemini_promo_cta">ভয়েস সেটিংস</string>
     <string name="today_gemini_promo_dismiss">বন্ধ</string>
     <string name="today_google_forecast_promo_dismiss">বন্ধ</string>
+    <string name="today_google_forecast_promo_title">Google পূর্বাভাস ব্যবহার করে দেখুন</string>
+    <string name="today_google_forecast_promo_body">আরও নির্ভুলতার জন্য আবহাওয়া পূর্বাভাসের উৎস বেছে নিন।</string>
+    <string name="today_google_forecast_promo_cta">পূর্বাভাসদাতা সেটিংস</string>
     <string name="today_clothes_promo_title">পোশাককে নিজের করো</string>
     <string name="today_insight_format_link">ফর্ম্যাট</string>
     <string name="today_play">চালাও</string>
@@ -1338,6 +1373,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_holidays_calendar_source">ক্যালেন্ডার: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google-এর উন্নত এআই আবহাওয়া পূর্বাভাস। লগ ইন বা API কী লাগবে।</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google-এর উন্নত এআই আবহাওয়া পূর্বাভাস। একটি API কী লাগবে।</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF-এর AI মডেল — ১৫ দিন পর্যন্ত নির্ভুল, তাই এটি দ্বিতীয় সপ্তাহের চার্ট বহন করে। কিছু বিস্তারিত চার্টে এটির জন্য কোনো রেখা নাও দেখাতে পারে।</string>
     <string name="settings_forecasters_google_key_header">Google API কী</string>
     <string name="settings_forecasters_google_key_placeholder">আপনার Google API কী পেস্ট করুন</string>

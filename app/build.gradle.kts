@@ -576,12 +576,13 @@ aboutLibraries {
 }
 
 // The plugin walks the dependency *graph*, so its export still lists nodes that
-// resolve to no bundled artifact: Kotlin-Multiplatform metadata coordinates
-// (e.g. androidx.compose.ui:ui, which selects ...:ui-android) and the
-// org.jetbrains.compose redirect modules that alias to the androidx artifacts on
-// Android. Both would render as duplicate rows. This task regenerates the export
-// and then keeps only the coordinates that resolve to an actual artifact on the
-// release runtime classpath -- i.e. what's really bundled in the APK.
+// resolve to no bundled artifact, and the org.jetbrains.compose redirect modules
+// that alias to the androidx artifacts on Android, which would render as
+// duplicate rows. A Kotlin-Multiplatform library is listed once, by its root
+// coordinate (androidx.compose.ui:ui for the bundled ui-android). This task
+// regenerates the export and then keeps only the coordinates that resolve to an
+// actual artifact on the release runtime classpath -- i.e. what's really bundled
+// in the APK.
 @Suppress("UNCHECKED_CAST")
 tasks.register("exportBundledLicenses") {
     description = "Exports open-source attributions filtered to the release APK's bundled artifacts."
@@ -594,6 +595,10 @@ tasks.register("exportBundledLicenses") {
             .artifactView { lenient(true) }.artifacts.artifacts
             .mapNotNull { it.id.componentIdentifier as? org.gradle.api.artifacts.component.ModuleComponentIdentifier }
             .map { "${it.moduleIdentifier.group}:${it.moduleIdentifier.name}" }
+            // The plugin lists a Kotlin-Multiplatform library once, by its root
+            // coordinate (androidx.compose.ui:ui), where the APK bundles its
+            // platform artifact (ui-android).
+            .flatMap { listOf(it, it.removeSuffix("-android"), it.removeSuffix("-jvm")) }
             .toSet()
         val root = groovy.json.JsonSlurper().parse(licensesFile) as MutableMap<String, Any?>
         val libraries = root["libraries"] as List<Map<String, Any?>>
@@ -611,7 +616,10 @@ tasks.register("exportBundledLicenses") {
         // coordinate rather than the display name also leaves genuinely
         // distinct artifacts that happen to share a POM name alone
         // (vico:compose-android vs vico:compose-m3-android).
-        val artifactOf = { id: String -> id.substringAfter(':') }
+        // Compared by root artifact name, so a redirect listed by its platform
+        // artifact (ui-android) still meets an androidx library listed by its
+        // root (ui), or the reverse.
+        val artifactOf = { id: String -> id.substringAfter(':').removeSuffix("-android").removeSuffix("-jvm") }
         val aliased = kept
             .filterNot { (it["uniqueId"] as String).startsWith("org.jetbrains.compose") }
             .map { artifactOf(it["uniqueId"] as String) }
@@ -762,7 +770,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.play.services)
 
     // Reads the committed res/raw/aboutlibraries.json for the Licenses page.
-    // Only `rememberLibraries` and the `Libs`/`Library` model are used -- the
+    // Only `produceLibraries` and the `Libs`/`Library` model are used -- the
     // artifact's own list UI is not.
     implementation(libs.aboutlibraries.compose.m3)
 

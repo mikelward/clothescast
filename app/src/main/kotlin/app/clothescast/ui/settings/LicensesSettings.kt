@@ -35,7 +35,7 @@ import app.clothescast.R
 import app.clothescast.ui.EdgeFadeOverlay
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
-import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
+import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 
 /**
  * Open-source attribution, reached from Settings → About → Licenses: every
@@ -49,10 +49,10 @@ import com.mikepenz.aboutlibraries.ui.compose.android.rememberLibraries
 @Composable
 internal fun LicensesPage(onBack: () -> Unit) {
     val context = LocalContext.current
-    // rememberLibraries parses the bundled JSON off the composition thread and
+    // produceLibraries parses the bundled JSON off the composition thread and
     // swaps it in when ready, so the page renders its chrome instantly rather
     // than holding the first frame on a 180 KB parse.
-    val libraries by rememberLibraries(R.raw.aboutlibraries)
+    val libraries by produceLibraries(R.raw.aboutlibraries)
     SettingsScaffold(R.string.settings_licenses_title, onBack) { padding ->
         LicensesContent(
             libraries = libraries,

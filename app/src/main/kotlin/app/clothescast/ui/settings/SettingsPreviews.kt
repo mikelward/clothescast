@@ -1067,7 +1067,7 @@ internal fun SettingsSmartHomePreview() {
 // The attribution list, built from the same committed
 // res/raw/aboutlibraries.json the page reads at runtime — so the snapshot moves
 // exactly when the bundled dependency set does, which is worth seeing on a PR.
-// Built synchronously here rather than through `rememberLibraries`, whose
+// Built synchronously here rather than through `produceLibraries`, whose
 // background parse would leave the capture racing an empty first frame.
 @Preview(name = "Settings · Licenses", widthDp = 360)
 @Composable

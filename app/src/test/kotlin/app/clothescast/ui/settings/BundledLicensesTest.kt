@@ -2,6 +2,7 @@ package app.clothescast.ui.settings
 
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.shouldBe
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -31,12 +32,24 @@ class BundledLicensesTest {
     @Test
     fun `no compose redirect is listed beside the androidx artifact it aliases`() {
         uniqueIds.shouldNotBeEmpty()
+        // By root artifact name: the export lists a Kotlin-Multiplatform library
+        // by its root (ui), a redirect possibly by its platform artifact (ui-android).
+        val artifactOf = { id: String -> id.substringAfter(':').removeSuffix("-android").removeSuffix("-jvm") }
         val androidxArtifacts = uniqueIds
             .filterNot { it.startsWith("org.jetbrains.compose") }
-            .map { it.substringAfter(':') }
+            .map(artifactOf)
             .toSet()
         uniqueIds
-            .filter { it.startsWith("org.jetbrains.compose") && it.substringAfter(':') in androidxArtifacts }
+            .filter { it.startsWith("org.jetbrains.compose") && artifactOf(it) in androidxArtifacts }
             .shouldBeEmpty()
+    }
+
+    @Test
+    fun `kotlin multiplatform libraries are listed by their root coordinate`() {
+        // The plugin names a KMP library by its root (androidx.compose.ui:ui)
+        // while the APK bundles the platform artifact (ui-android); matching
+        // only the bundled name dropped Compose and coroutines from the page.
+        uniqueIds.filter { it == "androidx.compose.ui:ui" || it == "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
+            .toSet() shouldBe setOf("androidx.compose.ui:ui", "org.jetbrains.kotlinx:kotlinx-coroutines-core")
     }
 }

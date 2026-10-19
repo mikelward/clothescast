@@ -74,7 +74,7 @@ playAppUpdate = "2.1.0"
 # in app/build.gradle.kts based on app/google-services.json's presence so CI
 # (which doesn't carry the file) still compiles. See PRIVACY.md for the data
 # boundary contract these SDKs operate under.
-firebaseBom = "34.19.0"
+firebaseBom = "35.0.2"
 gmsGoogleServices = "4.5.0"
 firebaseCrashlyticsPlugin = "3.0.8"
 # HiveMQ MQTT Client — used by the optional Smart Home bridge to publish the

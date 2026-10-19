@@ -1209,6 +1209,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="today_gemini_promo_body">Slå Gemini til for at høre din ClothesCast med naturlige, livagtige stemmer.</string>
     <string name="today_gemini_promo_cta">Stemmeindstillinger</string>
     <string name="today_gemini_promo_dismiss">Afvis</string>
+    <string name="today_google_forecast_promo_dismiss">Afvis</string>
     <string name="today_clothes_promo_title">Gør tøjet til dit eget</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Afspil</string>

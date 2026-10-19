@@ -1227,6 +1227,7 @@ is unchanged; only the displayed label localizes.
     <string name="today_gemini_promo_body">Włącz Gemini, aby słuchać swojego ClothesCast naturalnymi, realistycznymi głosami.</string>
     <string name="today_gemini_promo_cta">Ustawienia głosu</string>
     <string name="today_gemini_promo_dismiss">Odrzuć</string>
+    <string name="today_google_forecast_promo_dismiss">Odrzuć</string>
     <string name="today_clothes_promo_title">Dostosuj ubrania do siebie</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Odtwórz</string>

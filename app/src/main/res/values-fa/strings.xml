@@ -1167,6 +1167,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_gemini_promo_body">برای شنیدن ClothesCast خود با صداهای طبیعی و واقعی، Gemini را روشن کنید.</string>
     <string name="today_gemini_promo_cta">تنظیمات صدا</string>
     <string name="today_gemini_promo_dismiss">رد کردن</string>
+    <string name="today_google_forecast_promo_dismiss">رد کردن</string>
     <string name="today_clothes_promo_title">لباس را مال خودت کن</string>
     <string name="today_insight_format_link">قالب</string>
     <string name="today_play">پخش</string>

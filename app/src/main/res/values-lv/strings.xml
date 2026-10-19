@@ -1121,6 +1121,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_gemini_promo_body">Ieslēdziet Gemini, lai klausītos savu ClothesCast dabiskās, dzīvīgās balsīs.</string>
     <string name="today_gemini_promo_cta">Balss iestatījumi</string>
     <string name="today_gemini_promo_dismiss">Aizvērt</string>
+    <string name="today_google_forecast_promo_dismiss">Aizvērt</string>
     <string name="today_clothes_promo_title">Padari apģērbu par savējo</string>
     <string name="today_insight_format_link">Formāts</string>
     <string name="today_play">Atskaņot</string>

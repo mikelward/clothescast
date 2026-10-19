@@ -1209,6 +1209,7 @@ Not overridden by design:
     <string name="today_gemini_promo_body">प्राकृतिक, सजीव आवाज़ों में अपना ClothesCast सुनने के लिए Gemini चालू करें।</string>
     <string name="today_gemini_promo_cta">आवाज़ सेटिंग</string>
     <string name="today_gemini_promo_dismiss">बंद करें</string>
+    <string name="today_google_forecast_promo_dismiss">बंद करें</string>
     <string name="today_clothes_promo_title">कपड़ों को अपना बनाएँ</string>
     <string name="today_insight_format_link">प्रारूप</string>
     <string name="today_play">चलाएँ</string>

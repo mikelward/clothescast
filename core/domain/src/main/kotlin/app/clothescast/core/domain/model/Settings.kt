@@ -715,6 +715,12 @@ data class UserPreferences(
      */
     val geminiPromoCardDismissed: Boolean = false,
     /**
+     * True once the user has dismissed the Today-screen Google forecast promo
+     * card or followed it to Forecasters settings. The card shows to everyone
+     * until then (maintainer, 2026-10-19).
+     */
+    val googleForecastPromoCardDismissed: Boolean = false,
+    /**
      * True once the scheduled run has told a signed-out user that the free
      * Gemini voice now needs Google sign-in (and spoke with the device voice
      * instead). Shown once, so the notice doesn't repeat every run; reset by

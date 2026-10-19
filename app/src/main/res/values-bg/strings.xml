@@ -1166,6 +1166,7 @@ What is NOT overridden, by design:
     <string name="today_gemini_promo_body">Включете Gemini, за да чувате своя ClothesCast с естествени, реалистични гласове.</string>
     <string name="today_gemini_promo_cta">Настройки на гласа</string>
     <string name="today_gemini_promo_dismiss">Затвори</string>
+    <string name="today_google_forecast_promo_dismiss">Затвори</string>
     <string name="today_clothes_promo_title">Направи дрехите свои</string>
     <string name="today_insight_format_link">Формат</string>
     <string name="today_play">Възпроизведи</string>

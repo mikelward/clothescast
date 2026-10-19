@@ -385,6 +385,7 @@
     <string name="today_gemini_promo_body">Aktivizo Gemini për ta dëgjuar ClothesCast-in tënd me zëra natyralë e të gjallë.</string>
     <string name="today_gemini_promo_cta">Cilësimet e zërit</string>
     <string name="today_gemini_promo_dismiss">Hiq</string>
+    <string name="today_google_forecast_promo_dismiss">Hiq</string>
     <string name="today_gemini_limit_title">U arrit kufiri i zërave falas</string>
     <string name="today_gemini_limit_body">I ke përdorur zërat falas të Gemini për sot. Shto çelësin tënd të Gemini për më shumë.</string>
     <string name="today_gemini_limit_cta">Cilësimet e zërit</string>

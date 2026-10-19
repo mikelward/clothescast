@@ -280,7 +280,9 @@ family access*).
   (maintainer, 2026-10-18), and each requires Google sign-in; signing in
   turns neither on. Turning either on while signed out starts the sign-in.
   The Forecasters page carries the Google forecast switch, and a dismissible
-  promo card on Today offers it to people who haven't turned it on.
+  promo card on Today ("Try Google forecasts") shows
+  to everyone until dismissed or followed to Forecasters settings
+  (maintainer, 2026-10-19).
   A change applies at the next token refresh (within an hour) unless the app
   forces one.
 - **Unlimited accounts have a project-level backstop:** a billing alert and

@@ -1331,6 +1331,7 @@ displayed label localizes.
     <string name="today_gemini_promo_body">자연스럽고 생생한 음성으로 ClothesCast를 들으려면 Gemini를 켜세요.</string>
     <string name="today_gemini_promo_cta">음성 설정</string>
     <string name="today_gemini_promo_dismiss">닫기</string>
+    <string name="today_google_forecast_promo_dismiss">닫기</string>
     <string name="today_clothes_promo_title">옷을 내 것으로</string>
     <string name="today_insight_format_link">형식</string>
     <string name="today_play">재생</string>

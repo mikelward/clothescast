@@ -1166,6 +1166,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_gemini_promo_body">Vklopite Gemini in poslušajte svoj ClothesCast z naravnimi, življenjskimi glasovi.</string>
     <string name="today_gemini_promo_cta">Nastavitve glasu</string>
     <string name="today_gemini_promo_dismiss">Zapri</string>
+    <string name="today_google_forecast_promo_dismiss">Zapri</string>
     <string name="today_clothes_promo_title">Prilagodi oblačila sebi</string>
     <string name="today_insight_format_link">Oblika</string>
     <string name="today_play">Predvajaj</string>

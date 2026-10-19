@@ -616,6 +616,7 @@ class PreviewSnapshots {
     @Test fun schedule_promo_card() = capture { SchedulePromoCardPreview() }
     @Test fun play_promo_card() = capture { PlayPromoCardPreview() }
     @Test fun gemini_tts_promo_card() = capture { GeminiTtsPromoCardPreview() }
+    @Test fun google_forecast_promo_card() = capture { GoogleForecastPromoCardPreview() }
     @Test fun gemini_tts_limit_card() = capture { GeminiTtsLimitCardPreview() }
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 

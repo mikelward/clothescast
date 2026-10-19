@@ -1673,6 +1673,13 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `the Google forecast promo card stays dismissed`() = runTest {
+        subject.preferences.first().googleForecastPromoCardDismissed shouldBe false
+        subject.setGoogleForecastPromoCardDismissed(true)
+        subject.preferences.first().googleForecastPromoCardDismissed shouldBe true
+    }
+
+    @Test
     fun `the Google forecaster switch is independent of the picks`() = runTest {
         subject.preferences.first().googleForecast shouldBe false
         subject.setGoogleForecast(true)

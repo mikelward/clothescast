@@ -1398,6 +1398,17 @@ internal fun GeminiTtsPromoCardPreview() {
     }
 }
 
+@Preview(name = "Banner · google forecast promo", widthDp = 360)
+@Composable
+internal fun GoogleForecastPromoCardPreview() {
+    Frame {
+        GoogleForecastPromoCardContent(
+            onOpenForecasters = {},
+            onDismiss = {},
+        )
+    }
+}
+
 @Preview(name = "Banner · gemini voice limit", widthDp = 360)
 @Composable
 internal fun GeminiTtsLimitCardPreview() {

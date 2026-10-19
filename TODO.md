@@ -68,11 +68,11 @@ voice and the Google Weather proxy.
       key"); its translations are cleared for the next translations pass.
 - [ ] **Reword the Google forecaster's key hint**, which still says a key is
       needed to turn Google on; with the proxy a key is optional.
-- [ ] **Separate opt-ins, each needing sign-in:** the free voice (Voice
+- [x] **Separate opt-ins, each needing sign-in:** the free voice (Voice
       settings) and the Google forecast through the proxy (Forecasters page).
       Turning either on while signed out starts the sign-in; signing in turns
       neither on. A dismissible promo card on Today offers the Google
-      forecast.
+      forecast to everyone until dismissed or followed.
 - [x] **TTS proxy reads the sign-in provider.** Google tokens get the cap
       their custom claim sets (default 5 a day, a number, or `unlimited`);
       anonymous tokens keep today's cap until the cutover.

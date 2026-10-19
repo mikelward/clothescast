@@ -1123,6 +1123,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_gemini_promo_body">Lülitage Gemini sisse, et kuulata oma ClothesCasti loomulike, elutruude häältega.</string>
     <string name="today_gemini_promo_cta">Hääle seaded</string>
     <string name="today_gemini_promo_dismiss">Sulge</string>
+    <string name="today_google_forecast_promo_dismiss">Sulge</string>
     <string name="today_clothes_promo_title">Tee riided enda omaks</string>
     <string name="today_insight_format_link">Vorming</string>
     <string name="today_play">Esita</string>

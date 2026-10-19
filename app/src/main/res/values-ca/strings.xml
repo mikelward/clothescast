@@ -1120,6 +1120,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_gemini_promo_body">Activa Gemini per escoltar el teu ClothesCast amb veus naturals i realistes.</string>
     <string name="today_gemini_promo_cta">Configuració de veu</string>
     <string name="today_gemini_promo_dismiss">Descarta</string>
+    <string name="today_google_forecast_promo_dismiss">Descarta</string>
     <string name="today_clothes_promo_title">Fes teva la roba</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Reprodueix</string>

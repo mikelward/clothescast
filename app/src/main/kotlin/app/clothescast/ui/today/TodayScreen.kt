@@ -192,6 +192,7 @@ fun TodayScreen(
     onNavigateToDeveloper: () -> Unit = onNavigateToSettings,
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
     onNavigateToVoice: () -> Unit = onNavigateToSettings,
+    onNavigateToForecasters: () -> Unit = onNavigateToSettings,
     // Pager page to open on, from the Today deep link's `?page=` query. The
     // feels-like home-screen widgets deep-link to page 0 (current period) and
     // page 2 (7-day). rememberPagerState only reads this on first composition,
@@ -387,6 +388,8 @@ fun TodayScreen(
             onDismissPlayPromoCard = viewModel::dismissPlayPromoCard,
             onOpenVoice = onNavigateToVoice,
             onDismissGeminiTtsPromoCard = viewModel::dismissGeminiTtsPromoCard,
+            onOpenForecasters = onNavigateToForecasters,
+            onDismissGoogleForecastPromoCard = viewModel::dismissGoogleForecastPromoCard,
             onDismissGeminiTtsLimitCard = viewModel::dismissGeminiTtsLimitCard,
             onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
             onNavigateToClothes = onNavigateToClothes,
@@ -418,6 +421,8 @@ private fun TodayContent(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onOpenForecasters: () -> Unit,
+    onDismissGoogleForecastPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
     onCalendarPermissionChanged: () -> Unit,
     onNavigateToClothes: () -> Unit,
@@ -503,6 +508,8 @@ private fun TodayContent(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onOpenForecasters = onOpenForecasters,
+                    onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
                     onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
@@ -657,6 +664,8 @@ private fun TodayContent(
                         onDismissPlayPromoCard = onDismissPlayPromoCard,
                         onOpenVoice = onOpenVoice,
                         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                        onOpenForecasters = onOpenForecasters,
+                        onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
                         onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
@@ -718,6 +727,8 @@ private fun TodayContent(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onOpenForecasters = onOpenForecasters,
+                    onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
                     onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
@@ -753,6 +764,8 @@ private fun BannerStack(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onOpenForecasters: () -> Unit,
+    onDismissGoogleForecastPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
     onOpenCalendarSettings: () -> Unit,
     onDismissCelebrationCard: () -> Unit,
@@ -779,6 +792,7 @@ private fun BannerStack(
         schedulePromoEligible = state.schedulePromoCardVisible,
         playPromoEligible = state.playPromoCardVisible,
         geminiPromoEligible = state.geminiTtsPromoCardVisible,
+        googleForecastPromoEligible = state.googleForecastPromoCardVisible,
         celebrationEligible = state.celebrationCardVisible,
         hasForecast = state.thisPeriodInsight != null,
     )
@@ -918,6 +932,20 @@ private fun BannerStack(
         onDismiss = onDismissCelebrationCard,
         modifier = bannerModifier,
     )
+    // "Try Google forecasts": shown to everyone until
+    // dismissed or followed (maintainer, 2026-10-19). Its CTA opens
+    // Forecasters settings, where turning Google on starts sign-in if needed,
+    // and retires the card like the other promos' CTAs. Last in the series
+    // (maintainer, 2026-10-19).
+    GoogleForecastPromoCard(
+        visible = PromoBanner.GOOGLE_FORECAST in shownPromos,
+        onOpenForecasters = {
+            onDismissGoogleForecastPromoCard()
+            onOpenForecasters()
+        },
+        onDismiss = onDismissGoogleForecastPromoCard,
+        modifier = bannerModifier,
+    )
     WorkStatusBanner(status = workStatusToShow, modifier = bannerModifier)
     // Delivery-destination failures sit just under the fetch / work-status
     // banner: the forecast may have fetched fine, but if the cast to the
@@ -981,6 +1009,8 @@ internal fun HomePageScaffold(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onOpenForecasters: () -> Unit,
+    onDismissGoogleForecastPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
@@ -1107,6 +1137,8 @@ internal fun HomePageScaffold(
                     onDismissPlayPromoCard = onDismissPlayPromoCard,
                     onOpenVoice = onOpenVoice,
                     onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                    onOpenForecasters = onOpenForecasters,
+                    onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
                     onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
                     onDismissMqttError = onDismissMqttError,
                     onDismissCastError = onDismissCastError,
@@ -1268,6 +1300,8 @@ private fun TodayPage(
     onDismissPlayPromoCard: () -> Unit,
     onOpenVoice: () -> Unit,
     onDismissGeminiTtsPromoCard: () -> Unit,
+    onOpenForecasters: () -> Unit,
+    onDismissGoogleForecastPromoCard: () -> Unit,
     onDismissGeminiTtsLimitCard: () -> Unit,
 ) {
     val scrollScope = rememberCoroutineScope()
@@ -1296,6 +1330,8 @@ private fun TodayPage(
         onDismissPlayPromoCard = onDismissPlayPromoCard,
         onOpenVoice = onOpenVoice,
         onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+        onOpenForecasters = onOpenForecasters,
+        onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
         onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
         onNavigateToClothes = onNavigateToClothes,
         onDismissMqttError = onDismissMqttError,

@@ -295,6 +295,40 @@ class PromoBannersTest {
     }
 
     @Test
+    fun `google forecast promo shows once a forecast exists`() {
+        val args = { forecast: Boolean ->
+            promoBannersToShow(
+                locationActionRequired = false,
+                telemetryNoticeVisible = false,
+                clothesPromoEligible = false,
+                schedulePromoEligible = false,
+                playPromoEligible = false,
+                geminiPromoEligible = false,
+                celebrationEligible = false,
+                googleForecastPromoEligible = true,
+                hasForecast = forecast,
+            )
+        }
+        args(false) shouldBe emptySet()
+        args(true) shouldContainExactlyInAnyOrder listOf(PromoBanner.GOOGLE_FORECAST)
+    }
+
+    @Test
+    fun `google forecast promo comes last, after celebration`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = true,
+            celebrationEligible = true,
+            googleForecastPromoEligible = true,
+            hasForecast = true,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.GEMINI, PromoBanner.CELEBRATION)
+    }
+
+    @Test
     fun `gemini promo outranks celebration under the cap`() {
         promoBannersToShow(
             locationActionRequired = false,

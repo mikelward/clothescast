@@ -210,6 +210,7 @@ displayed label localizes.
     <string name="settings_tts_voice_locale_sw_ke">Svahili (Kenya)</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">ClothesCast ve Google sunucuları üzerinden yüksek kaliteli sesler.</string>
 
     <string name="settings_api_key_status_set">Bir Gemini anahtarı ayarlandı.</string>
     <string name="settings_api_key_placeholder">Gemini API anahtarını buraya yapıştırın</string>
@@ -250,6 +251,10 @@ displayed label localizes.
     <string name="settings_about_dontkillmyapp">Arka plan kısıtlamaları (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Hata raporunu paylaş</string>
     <string name="settings_about_version_copied">Sürüm panoya kopyalandı</string>
+    <string name="settings_about_licenses">Lisanslar</string>
+    <string name="settings_licenses_title">Açık kaynak lisansları</string>
+    <string name="settings_licenses_version">Sürüm %1$s</string>
+    <string name="settings_licenses_authors">Yapan: %1$s</string>
 
     <string name="today_title">Bugün</string>
     <string name="today_open_settings">Ayarları aç</string>
@@ -470,6 +475,10 @@ displayed label localizes.
     <string name="today_update_available_dismiss">Şimdi değil</string>
     <string name="today_update_downloaded_body">Güncelleme indirildi. Kurulumu tamamlamak için yeniden başlat.</string>
     <string name="today_update_downloaded_action">Yeniden başlat</string>
+    <string name="today_telemetry_invite_title">ClothesCast\'i geliştirmeye yardım eder misin?</string>
+    <string name="today_telemetry_invite_body">Hatalar bulunup düzeltilsin diye çökme raporları ve anonim kullanım istatistikleri gönderilsin mi?</string>
+    <string name="today_telemetry_invite_accept">Evet, lütfen</string>
+    <string name="today_telemetry_invite_decline">Hayır, teşekkürler</string>
 
     <string name="today_outfit_top_polo">Polo yaka</string>
     <string name="today_outfit_top_thin_jacket">İnce ceket</string>
@@ -540,6 +549,7 @@ displayed label localizes.
     <string name="bug_report_consent_dont_show_again">Tekrar gösterme</string>
     <string name="bug_report_consent_continue">Devam et</string>
     <string name="bug_report_consent_cancel">İptal</string>
+    <string name="bug_report_share_failed">Hata raporu paylaşılamadı</string>
 
     <string name="error_device_incompatible">ClothesCast bu cihazda çalıştırılamıyor — Android derlemeniz, uygulamanın kullanıcı arayüzünün ihtiyaç duyduğu bir özelliği eksik (Configuration.fontWeightAdjustment, Android 12 ve üzeri bekleniyor). Sistem güncellemesi için cihaz üreticinize başvurun.</string>
     <string name="today_forecast_air_section_title">Hava sıcaklığı</string>
@@ -552,6 +562,9 @@ displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Pembe, turuncu ve yeşil grafik çizgileri ile Material teal/kırmızı güven kartları. Varsayılan.</string>
     <string name="settings_display_palette_highlighter">Fosforlu kalem</string>
     <string name="settings_display_palette_highlighter_description">Macenta, sarı ve camgöbeği renkli grafik çizgileri — sayfa üzerindeki fosforlu kalem izi gibi. \"Gökkuşağı\"ndan ilk bakışta belirgin biçimde farklı; açık tema okunabilirlik için daha koyu varyantlar kullanır. Kırmızı-yeşil renk körlüğünde güvenli.</string>
+    <string name="settings_display_text_size_title">Metin boyutu</string>
+    <string name="settings_display_text_size_value">%%%1$d</string>
+    <string name="settings_display_text_size_pinch">Boyutlandırmak için iki parmakla sıkıştır</string>
     <string name="settings_display_home_layout_title">Ana ekran düzeni</string>
     <string name="settings_display_home_layout_description">Bu bölümlerin ana ekranda görünme sırasını değiştirmek için tutamaçları sürükleyin.</string>
     <string name="settings_display_home_layout_drag">%1$s sırasını değiştirmek için sürükleyin</string>
@@ -635,6 +648,8 @@ displayed label localizes.
     <string name="cast_error_no_insight_yet">Henüz tahmin yok. Bir sonraki zamanlanmış çalışmayı bekle veya Bugün ekranında Yenile\'ye dokun.</string>
     <string name="cast_error_no_route_picked">Önce bir akıllı ekran seç.</string>
     <string name="cast_error_unknown">Cast başarısız oldu.</string>
+    <string name="settings_smart_home_name">Ad</string>
+    <string name="settings_smart_home_name_hint">ör. Ali\'nin</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Tüm Azizler Günün kutlu olsun</string>
@@ -755,6 +770,8 @@ displayed label localizes.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">%1$s ClothesCast</string>
+    <string name="outfit_card_header_named">%1$s %2$s ClothesCast</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Gemini anahtarını değiştir</string>
@@ -971,6 +988,21 @@ displayed label localizes.
     <string name="holiday_banner_ca_labour_day">İşçi Bayramı kutlu olsun</string>
     <string name="holiday_banner_cinco_de_mayo">Cinco de Mayo kutlu olsun</string>
     <string name="holiday_banner_corpus_christi">İyi Bayramlar</string>
+    <string name="settings_tts_gemini_sign_in_reason">Ücretsiz Gemini sesi için Google ile oturum açman gerekir.</string>
+    <string name="settings_google_sign_in">Google ile oturum aç</string>
+    <string name="settings_google_signed_in_as">%1$s olarak oturum açıldı</string>
+    <string name="settings_google_signed_in">Google ile oturum açıldı</string>
+    <string name="settings_google_sign_out">Oturumu kapat</string>
+    <string name="settings_google_delete_account">Hesabı sil</string>
+    <string name="settings_google_delete_title">Hesap silinsin mi?</string>
+    <string name="settings_google_delete_body">Bu telefondaki ayarların kalır.</string>
+    <string name="settings_google_delete_confirm">Sil</string>
+    <string name="settings_google_no_account">Bu cihazda Google hesabı yok.</string>
+    <string name="settings_google_sign_in_failed">Oturum açılamadı. Tekrar dene.</string>
+    <string name="settings_google_delete_failed">Hesap silinemedi. Tekrar dene.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Kendi anahtarın olmadan Google\'ı kullanmak için Google ile oturum aç.</string>
+    <string name="notify_gemini_sign_in_title">Gemini sesi duraklatıldı</string>
+    <string name="notify_gemini_sign_in_text">Korumak için Ses ayarlarında Google ile oturum aç. Şimdilik cihaz sesi kullanılıyor.</string>
     <string name="holiday_banner_egypt_revolution_day">Devrim Günü kutlu olsun</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Sina Kurtuluş Günü kutlu olsun</string>
     <string name="holiday_banner_india_childrens_day">Çocuk Bayramı kutlu olsun</string>
@@ -1180,6 +1212,9 @@ displayed label localizes.
     <string name="today_gemini_promo_cta">Ses ayarları</string>
     <string name="today_gemini_promo_dismiss">Kapat</string>
     <string name="today_google_forecast_promo_dismiss">Kapat</string>
+    <string name="today_google_forecast_promo_title">Google tahminlerini dene</string>
+    <string name="today_google_forecast_promo_body">Daha isabetli sonuçlar için hava tahmini sağlayıcılarını seç.</string>
+    <string name="today_google_forecast_promo_cta">Tahmin modeli ayarları</string>
     <string name="today_clothes_promo_title">Kıyafetleri kendine göre ayarla</string>
     <string name="today_insight_format_link">Biçim</string>
     <string name="today_play">Oynat</string>
@@ -1266,6 +1301,8 @@ displayed label localizes.
     <string name="settings_holidays_calendar_source">Takvim: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Google\'ın gelişmiş yapay zekâ hava tahmini. Oturum açma veya API anahtarı gerekir.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Google\'ın gelişmiş yapay zekâ hava tahmini. API anahtarı gerekir.</string>
     <string name="settings_forecasters_aifs_subtitle">ECMWF\'nin YZ modeli — 15 güne kadar isabetli, bu yüzden ikinci hafta grafiklerini taşır. Bazı ayrıntılı grafiklerde bunun için bir çizgi görünmeyebilir.</string>
     <string name="settings_forecasters_google_key_header">Google API anahtarı</string>
     <string name="settings_forecasters_google_key_placeholder">Google API anahtarınızı yapıştırın</string>

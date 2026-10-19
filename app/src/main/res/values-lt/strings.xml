@@ -231,6 +231,10 @@ What is NOT overridden, by design:
     <string name="today_update_available_dismiss">Ne dabar</string>
     <string name="today_update_downloaded_body">Atnaujinimas atsisiųstas. Paleisk iš naujo, kad baigtum diegimą.</string>
     <string name="today_update_downloaded_action">Paleisti iš naujo</string>
+    <string name="today_telemetry_invite_title">Padėsi tobulinti ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Siųsti strigčių ataskaitas ir anoniminę naudojimo statistiką, kad klaidos būtų rastos ir ištaisytos?</string>
+    <string name="today_telemetry_invite_accept">Taip, prašau</string>
+    <string name="today_telemetry_invite_decline">Ne, ačiū</string>
 
     <!-- Telemetry notice banner. -->
     <string name="today_telemetry_notice_open_settings">Privatumo nustatymai</string>
@@ -292,6 +296,7 @@ What is NOT overridden, by design:
 
     <!-- API key screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Aukštos kokybės balsai per ClothesCast ir Google serverius.</string>
     <string name="settings_tts_device_header">Žemos kokybės balsai, įdiegti tavo telefone.</string>
     <string name="settings_api_key_status_set">Gemini raktas sukonfigūruotas.</string>
     <string name="settings_api_key_placeholder">Įklijuok Gemini API raktą</string>
@@ -538,6 +543,10 @@ What is NOT overridden, by design:
     <string name="settings_about_dontkillmyapp">Fono apribojimai (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Bendrinti klaidos ataskaitą</string>
     <string name="settings_about_version_copied">Versija nukopijuota į iškarpinę</string>
+    <string name="settings_about_licenses">Licencijos</string>
+    <string name="settings_licenses_title">Atvirojo kodo licencijos</string>
+    <string name="settings_licenses_version">Versija %1$s</string>
+    <string name="settings_licenses_authors">Autorius: %1$s</string>
 
     <!-- Bug report consent dialog. -->
     <string name="bug_report_consent_title">Bendrinti klaidos ataskaitą?</string>
@@ -546,6 +555,7 @@ What is NOT overridden, by design:
     <string name="bug_report_consent_dont_show_again">Nerodyti dar kartą</string>
     <string name="bug_report_consent_continue">Tęsti</string>
     <string name="bug_report_consent_cancel">Atšaukti</string>
+    <string name="bug_report_share_failed">Nepavyko bendrinti klaidos ataskaitos</string>
 
     <!-- Additional insight prose templates. -->
     <string name="insight_precip_chance">Gali būti %1$s.</string>
@@ -564,6 +574,9 @@ What is NOT overridden, by design:
     <string name="settings_display_palette_rainbow_description">Rožinės, oranžinės ir žalios diagramų linijos su Material žalsvomis/raudonomis patikimumo kortelėmis. Numatytoji.</string>
     <string name="settings_display_palette_highlighter">Žymeklis</string>
     <string name="settings_display_palette_highlighter_description">Purpurinės, geltonos ir žydros diagramos linijos — tarsi žymeklio brūkšnis ant puslapio. Iš pirmo žvilgsnio aiškiai skiriasi nuo \"Vaivorykštės\"; šviesi tema naudoja tamsesnius variantus, kad būtų geriau įskaitoma. Saugu esant raudonai-žaliai spalvinei aklumai.</string>
+    <string name="settings_display_text_size_title">Teksto dydis</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Suimk pirštais, kad pakeistum dydį</string>
     <string name="settings_display_home_layout_title">Pradžios ekrano išdėstymas</string>
     <string name="settings_display_home_layout_description">Vilkdami rankenėles pakeiskite, kokia tvarka šie skyriai rodomi pradžios ekrane.</string>
     <string name="settings_display_home_layout_drag">Vilkite, kad pertvarkytumėte %1$s</string>
@@ -745,6 +758,8 @@ What is NOT overridden, by design:
     <string name="holiday_banner_boxing_day">Linksmų Kalėdų</string>
     <string name="today_rationale_open_clothes_settings">Drabužių nustatymai</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast %2$s</string>
     <string name="today_celebration_card_title">Šventinės temos</string>
     <string name="today_celebration_card_body">Įjunk specialias spalvas ir žinutes švenčių ir gimtadienių proga.</string>
     <string name="today_celebration_card_cta">Kalendoriaus nustatymai</string>
@@ -773,6 +788,8 @@ What is NOT overridden, by design:
     <string name="cast_error_no_route_picked">Pirmiausia pasirink išmanųjį ekraną.</string>
     <string name="cast_error_no_insight_yet">Prognozė dar nepasiekiama. Palaukite kito suplanuoto paleidimo arba bakstelėkite Atnaujinti Šiandien ekrane.</string>
     <string name="cast_error_unknown">Transliacija nepavyko.</string>
+    <string name="settings_smart_home_name">Vardas</string>
+    <string name="settings_smart_home_name_hint">pvz., Onos</string>
     <string name="settings_smart_home_mqtt_title">Home Assistant tiltas (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Skelbti prognozę MQTT</string>
     <string name="settings_smart_home_mqtt_host">Tarpinio serverio adresas</string>
@@ -959,6 +976,21 @@ What is NOT overridden, by design:
     <string name="holiday_banner_ca_labour_day">Su Darbo diena</string>
     <string name="holiday_banner_cinco_de_mayo">Su Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Su Devintinėmis</string>
+    <string name="settings_tts_gemini_sign_in_reason">Nemokamam Gemini balsui reikia prisijungti per Google.</string>
+    <string name="settings_google_sign_in">Prisijungti per Google</string>
+    <string name="settings_google_signed_in_as">Prisijungta kaip %1$s</string>
+    <string name="settings_google_signed_in">Prisijungta per Google</string>
+    <string name="settings_google_sign_out">Atsijungti</string>
+    <string name="settings_google_delete_account">Pašalinti paskyrą</string>
+    <string name="settings_google_delete_title">Pašalinti paskyrą?</string>
+    <string name="settings_google_delete_body">Tavo nustatymai šiame telefone išliks.</string>
+    <string name="settings_google_delete_confirm">Pašalinti</string>
+    <string name="settings_google_no_account">Šiame įrenginyje nėra Google paskyros.</string>
+    <string name="settings_google_sign_in_failed">Nepavyko prisijungti. Bandyk dar kartą.</string>
+    <string name="settings_google_delete_failed">Nepavyko pašalinti paskyros. Bandyk dar kartą.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Prisijunk per Google, kad naudotum Google be savo rakto.</string>
+    <string name="notify_gemini_sign_in_title">Gemini balsas pristabdytas</string>
+    <string name="notify_gemini_sign_in_text">Prisijunk per Google balso nustatymuose, kad jį išsaugotum. Kol kas naudojamas įrenginio balsas.</string>
     <string name="holiday_banner_egypt_revolution_day">Su Revoliucijos diena</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Su Sinajaus išlaisvinimo diena</string>
     <string name="holiday_banner_india_childrens_day">Su Vaikų diena</string>
@@ -1170,6 +1202,9 @@ What is NOT overridden, by design:
     <string name="today_gemini_promo_cta">Balso nustatymai</string>
     <string name="today_gemini_promo_dismiss">Atmesti</string>
     <string name="today_google_forecast_promo_dismiss">Atmesti</string>
+    <string name="today_google_forecast_promo_title">Išbandyk Google prognozes</string>
+    <string name="today_google_forecast_promo_body">Pasirink orų prognozių teikėjus tikslesnėms prognozėms.</string>
+    <string name="today_google_forecast_promo_cta">Prognozuotojų nustatymai</string>
     <string name="today_clothes_promo_title">Pritaikyk drabužius sau</string>
     <string name="today_insight_format_link">Formatas</string>
     <string name="today_play">Leisti</string>
@@ -1256,6 +1291,8 @@ What is NOT overridden, by design:
     <string name="settings_holidays_calendar_source">Kalendorius: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Pažangi Google DI orų prognozė. Reikia prisijungti arba API rakto.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Pažangi Google DI orų prognozė. Reikia API rakto.</string>
     <string name="settings_forecasters_aifs_subtitle">„ECMWF“ DI modelis — patikimas iki 15 dienų, todėl juo remiasi antros savaitės diagramos. Kai kuriose išsamiose diagramose linija jam gali nebūti rodoma.</string>
     <string name="settings_forecasters_google_key_header">„Google“ API raktas</string>
     <string name="settings_forecasters_google_key_placeholder">Įklijuokite savo „Google“ API raktą</string>

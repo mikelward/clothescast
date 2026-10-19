@@ -225,6 +225,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_update_available_dismiss">Hindi ngayon</string>
     <string name="today_update_downloaded_body">Na-download ang update. I-restart para tapusin ang pag-install.</string>
     <string name="today_update_downloaded_action">I-restart</string>
+    <string name="today_telemetry_invite_title">Tumulong na pagandahin ang ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Magpadala ng mga crash report at anonymous na stats ng paggamit para mahanap at maayos ang mga bug?</string>
+    <string name="today_telemetry_invite_accept">Oo, sige</string>
+    <string name="today_telemetry_invite_decline">Huwag na</string>
 
     <!-- Telemetry notice banner -->
     <string name="today_telemetry_notice_open_settings">Mga setting ng Privacy</string>
@@ -297,6 +301,7 @@ The rest of the UI falls through to values/strings.xml (English).
          Settings — API key / Gemini
          ============================================================ -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">De-kalidad na boses sa pamamagitan ng mga server ng ClothesCast at Google.</string>
     <string name="settings_tts_device_header">Mga boses na may mababang kalidad na nakapaloob sa iyong telepono.</string>
     <string name="settings_api_key_status_set">May naka-configure na Gemini key.</string>
     <string name="settings_api_key_placeholder">I-paste ang iyong Gemini API key</string>
@@ -565,6 +570,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_about_dontkillmyapp">Mga paghihigpit sa background (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Ibahagi ang ulat ng bug</string>
     <string name="settings_about_version_copied">Kinopya ang bersyon sa clipboard</string>
+    <string name="settings_about_licenses">Mga lisensya</string>
+    <string name="settings_licenses_title">Mga open source na lisensya</string>
+    <string name="settings_licenses_version">Bersyon %1$s</string>
+    <string name="settings_licenses_authors">Gawa ni %1$s</string>
 
     <!-- ============================================================
          Bug report consent dialog
@@ -575,6 +584,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="bug_report_consent_dont_show_again">Huwag nang ipakita ito ulit</string>
     <string name="bug_report_consent_continue">Magpatuloy</string>
     <string name="bug_report_consent_cancel">Kanselahin</string>
+    <string name="bug_report_share_failed">Hindi maibahagi ang ulat ng bug</string>
 
     <!-- ============================================================
          Additional insight prose templates
@@ -595,6 +605,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_display_palette_rainbow_description">Pink, orange, at berdeng linya ng tsart na may teal/pulang confidence card na Material. Default.</string>
     <string name="settings_display_palette_highlighter">Highlighter</string>
     <string name="settings_display_palette_highlighter_description">Mga linya ng tsart sa magenta, dilaw, at cyan — parang gurit ng highlighter sa pahina. Madaling makita ang pagkaiba sa \"Bahaghari\"; gumagamit ang light theme ng mas matingkad na bersyon para sa kabasahan. Ligtas para sa pagkabulag sa pula-berde.</string>
+    <string name="settings_display_text_size_title">Laki ng teksto</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">I-pinch para baguhin ang laki</string>
     <string name="settings_display_home_layout_title">Layout ng home screen</string>
     <string name="settings_display_home_layout_description">I-drag ang mga hawakan para baguhin ang pagkakasunod-sunod ng mga seksyong ito sa home screen.</string>
     <string name="settings_display_home_layout_drag">I-drag para baguhin ang pagkakasunod-sunod ng %1$s</string>
@@ -767,6 +780,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="cast_error_no_insight_yet">Wala pang available na hula. Hintayin ang susunod na nakatakdang run, o i-tap ang I-refresh sa screen ng Ngayon.</string>
     <string name="cast_error_no_route_picked">Pumili muna ng smart display.</string>
     <string name="cast_error_unknown">Nabigo ang Cast.</string>
+    <string name="settings_smart_home_name">Pangalan</string>
+    <string name="settings_smart_home_name_hint">hal. ni Juan</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Maligayang Undas</string>
@@ -830,6 +845,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">%1$s ClothesCast</string>
+    <string name="outfit_card_header_named">%2$s ClothesCast %1$s</string>
 
     <!-- API key -->
     <string name="settings_api_key_replace">Palitan ang Gemini key</string>
@@ -1022,6 +1039,21 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_ca_labour_day">Maligayang Araw ng Manggagawa</string>
     <string name="holiday_banner_cinco_de_mayo">Maligayang Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Maligayang Corpus Christi</string>
+    <string name="settings_tts_gemini_sign_in_reason">Kailangang mag-sign in sa Google para sa libreng boses ng Gemini.</string>
+    <string name="settings_google_sign_in">Mag-sign in gamit ang Google</string>
+    <string name="settings_google_signed_in_as">Naka-sign in bilang %1$s</string>
+    <string name="settings_google_signed_in">Naka-sign in gamit ang Google</string>
+    <string name="settings_google_sign_out">Mag-sign out</string>
+    <string name="settings_google_delete_account">Burahin ang account</string>
+    <string name="settings_google_delete_title">Burahin ang account?</string>
+    <string name="settings_google_delete_body">Mananatili ang iyong mga setting sa teleponong ito.</string>
+    <string name="settings_google_delete_confirm">Burahin</string>
+    <string name="settings_google_no_account">Walang Google account sa device na ito.</string>
+    <string name="settings_google_sign_in_failed">Hindi makapag-sign in. Subukan ulit.</string>
+    <string name="settings_google_delete_failed">Hindi mabura ang account. Subukan ulit.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Mag-sign in gamit ang Google para magamit ang Google nang walang sariling key.</string>
+    <string name="notify_gemini_sign_in_title">Naka-pause ang boses ng Gemini</string>
+    <string name="notify_gemini_sign_in_text">Mag-sign in gamit ang Google sa Mga setting ng boses para manatili ito. Boses ng device muna ang ginagamit.</string>
     <string name="holiday_banner_egypt_revolution_day">Maligayang Araw ng Rebolusyon</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Maligayang Araw ng Paglaya ng Sinai</string>
     <string name="holiday_banner_india_childrens_day">Maligayang Araw ng mga Bata</string>
@@ -1231,6 +1263,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_gemini_promo_cta">Mga setting ng boses</string>
     <string name="today_gemini_promo_dismiss">Isara</string>
     <string name="today_google_forecast_promo_dismiss">Isara</string>
+    <string name="today_google_forecast_promo_title">Subukan ang mga forecast ng Google</string>
+    <string name="today_google_forecast_promo_body">Piliin ang iyong mga provider ng weather forecast para mas tumpak.</string>
+    <string name="today_google_forecast_promo_cta">Mga setting ng forecaster</string>
     <string name="today_clothes_promo_title">Gawing sariling iyo ang mga damit</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">I-play</string>
@@ -1317,6 +1352,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_holidays_calendar_source">Kalendaryo: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Advanced na AI weather forecast ng Google. Kailangang mag-log in o may API key.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Advanced na AI weather forecast ng Google. Kailangan ng API key.</string>
     <string name="settings_forecasters_aifs_subtitle">Ang AI model ng ECMWF — mahusay hanggang 15 araw, kaya ito ang bumubuhat sa mga chart ng ikalawang linggo. Maaaring hindi ipakita ng ilang detalyadong chart ang linya para dito.</string>
     <string name="settings_forecasters_google_key_header">Google API Key</string>
     <string name="settings_forecasters_google_key_placeholder">I-paste ang iyong Google API key</string>

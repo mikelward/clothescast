@@ -266,6 +266,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
 
     <!-- API keys screen. -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Kiváló minőségű hangok a ClothesCast és a Google szerverein keresztül.</string>
     <string name="settings_tts_device_header">A telefonodba beépített, gyenge minőségű hangok.</string>
     <string name="settings_api_key_status_set">Gemini-kulcs be van állítva.</string>
     <string name="settings_api_key_placeholder">Gemini API-kulcs beillesztése ide</string>
@@ -328,6 +329,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_about_dontkillmyapp">Háttér-korlátozások (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Hibajelentés megosztása</string>
     <string name="settings_about_version_copied">Verzió vágólapra másolva</string>
+    <string name="settings_about_licenses">Licencek</string>
+    <string name="settings_licenses_title">Nyílt forráskódú licencek</string>
+    <string name="settings_licenses_version">Verzió: %1$s</string>
+    <string name="settings_licenses_authors">Készítette: %1$s</string>
 
     <!-- Today screen. -->
     <string name="today_title">Ma</string>
@@ -442,6 +447,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_update_available_dismiss">Most nem</string>
     <string name="today_update_downloaded_body">Frissítés letöltve. Indítsd újra a telepítés befejezéséhez.</string>
     <string name="today_update_downloaded_action">Újraindítás</string>
+    <string name="today_telemetry_invite_title">Segítesz jobbá tenni a ClothesCastot?</string>
+    <string name="today_telemetry_invite_body">Küldhetünk összeomlási jelentéseket és névtelen használati statisztikákat, hogy megtaláljuk és kijavítsuk a hibákat?</string>
+    <string name="today_telemetry_invite_accept">Igen, szívesen</string>
+    <string name="today_telemetry_invite_decline">Nem, köszönöm</string>
 
     <!-- App widget. -->
     <string name="widget_label">Outfit</string>
@@ -496,6 +505,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="bug_report_consent_dont_show_again">Ne jelenjen meg újra</string>
     <string name="bug_report_consent_continue">Folytatás</string>
     <string name="bug_report_consent_cancel">Mégse</string>
+    <string name="bug_report_share_failed">Nem sikerült megosztani a hibajelentést</string>
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Ma</string>
@@ -565,6 +575,9 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_display_palette_rainbow_description">Rózsaszín, narancssárga és zöld diagramvonalak Material kékeszöld/piros megbízhatósági kártyákkal. Az alapértelmezett.</string>
     <string name="settings_display_palette_highlighter">Szövegkiemelő</string>
     <string name="settings_display_palette_highlighter_description">Magenta, sárga és ciánkék diagramvonalak — mint a szövegkiemelő nyoma a lapon. Első pillantásra láthatóan más, mint a \"Szivárvány\"; a világos téma mélyebb változatokat használ az olvashatóság érdekében. Biztonságos vörös-zöld színtévesztéshez.</string>
+    <string name="settings_display_text_size_title">Szövegméret</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Csippentés az átméretezéshez</string>
     <string name="settings_display_home_layout_title">Kezdőképernyő elrendezése</string>
     <string name="settings_display_home_layout_description">Húzd a fogantyúkat, hogy átrendezd, milyen sorrendben jelennek meg ezek a szakaszok a kezdőképernyőn.</string>
     <string name="settings_display_home_layout_drag">Húzd a(z) %1$s átrendezéséhez</string>
@@ -794,6 +807,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_root_smart_home_subtitle">Okos kijelzők és otthonautomatizálás</string>
     <string name="settings_api_key_replace">Gemini-kulcs cseréje</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">%1$s ClothesCast</string>
+    <string name="outfit_card_header_named">%1$s %2$s ClothesCastja</string>
     <string name="today_rationale_open_clothes_settings">Ruházati beállítások</string>
     <string name="today_celebration_card_title">Ünnepi témák</string>
     <string name="today_celebration_card_body">Különleges színek és üzenetek engedélyezése ünnepekre és születésnapokra.</string>
@@ -859,6 +874,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="cast_error_no_route_picked">Először válasszon okos kijelzőt.</string>
     <string name="cast_error_no_insight_yet">Még nem áll rendelkezésre előrejelzés. Várjon a következő ütemezett futásra, vagy koppintson a Frissítés gombra a Mai képernyőn.</string>
     <string name="cast_error_unknown">A közvetítés sikertelen volt.</string>
+    <string name="settings_smart_home_name">Név</string>
+    <string name="settings_smart_home_name_hint">pl. Alex</string>
     <string name="settings_calendar_birthdays">Naptárbeli születésnapok</string>
     <string name="settings_calendar_public_holidays">Naptárbeli ünnepek</string>
 
@@ -964,6 +981,21 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="holiday_banner_ca_labour_day">Boldog munka ünnepét</string>
     <string name="holiday_banner_cinco_de_mayo">Boldog Cinco de Mayo-t</string>
     <string name="holiday_banner_corpus_christi">Boldog Úrnapját</string>
+    <string name="settings_tts_gemini_sign_in_reason">Az ingyenes Gemini hanghoz Google-bejelentkezés szükséges.</string>
+    <string name="settings_google_sign_in">Bejelentkezés Google-fiókkal</string>
+    <string name="settings_google_signed_in_as">Bejelentkezve: %1$s</string>
+    <string name="settings_google_signed_in">Bejelentkezve Google-fiókkal</string>
+    <string name="settings_google_sign_out">Kijelentkezés</string>
+    <string name="settings_google_delete_account">Fiók törlése</string>
+    <string name="settings_google_delete_title">Törlöd a fiókot?</string>
+    <string name="settings_google_delete_body">A beállításaid ezen a telefonon megmaradnak.</string>
+    <string name="settings_google_delete_confirm">Törlés</string>
+    <string name="settings_google_no_account">Nincs Google-fiók ezen az eszközön.</string>
+    <string name="settings_google_sign_in_failed">Nem sikerült bejelentkezni. Próbáld újra.</string>
+    <string name="settings_google_delete_failed">Nem sikerült törölni a fiókot. Próbáld újra.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Jelentkezz be Google-fiókkal, és használd a Google-t saját kulcs nélkül.</string>
+    <string name="notify_gemini_sign_in_title">Gemini hang szüneteltetve</string>
+    <string name="notify_gemini_sign_in_text">Jelentkezz be Google-fiókkal a hangbeállításokban, hogy megtartsd. Addig az eszközhang szól.</string>
     <string name="holiday_banner_egypt_revolution_day">Boldog forradalom napját</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Boldog Sínai felszabadítás napját</string>
     <string name="holiday_banner_india_childrens_day">Boldog gyermeknapot</string>
@@ -1173,6 +1205,9 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_gemini_promo_cta">Hangbeállítások</string>
     <string name="today_gemini_promo_dismiss">Elvetés</string>
     <string name="today_google_forecast_promo_dismiss">Elvetés</string>
+    <string name="today_google_forecast_promo_title">Próbáld ki a Google előrejelzéseit</string>
+    <string name="today_google_forecast_promo_body">Válaszd ki az időjárás-előrejelzés szolgáltatóit a nagyobb pontosságért.</string>
+    <string name="today_google_forecast_promo_cta">Előrejelzők beállításai</string>
     <string name="today_clothes_promo_title">Tedd magadévá a ruhákat</string>
     <string name="today_insight_format_link">Formátum</string>
     <string name="today_play">Lejátszás</string>
@@ -1259,6 +1294,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_holidays_calendar_source">Naptár: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">A Google fejlett, MI-alapú időjárás-előrejelzése. Bejelentkezés vagy API-kulcs szükséges.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">A Google fejlett, MI-alapú időjárás-előrejelzése. API-kulcs szükséges.</string>
     <string name="settings_forecasters_aifs_subtitle">Az ECMWF mesterségesintelligencia-modellje — 15 napig megbízható, ezért ő hordozza a második hét diagramjait. Egyes részletes diagramok esetleg nem jelenítenek meg vonalat hozzá.</string>
     <string name="settings_forecasters_google_key_header">Google API-kulcs</string>
     <string name="settings_forecasters_google_key_placeholder">Illeszd be a Google API-kulcsodat</string>

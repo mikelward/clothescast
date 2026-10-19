@@ -65,7 +65,7 @@ voice and the Google Weather proxy.
 - [x] **Google gets its own switch**, independent of Auto, so it can be
       turned on with Auto on.
 - [x] **Reword the Google forecaster's subtitle** ("Requires log in or API
-      key"); its translations are cleared for the next translations pass.
+      key"), and translated.
 - [ ] **Reword the Google forecaster's key hint**, which still says a key is
       needed to turn Google on; with the proxy a key is optional.
 - [x] **Separate opt-ins, each needing sign-in:** the free voice (Voice
@@ -345,7 +345,7 @@ Open:
       deliberately-silent (event-free, `tonightNotifyOnlyOnEvents`) evening from
       an outage without parsing prose. `event_count` wasn't included — a boolean
       covered the use case; revisit if a count is ever needed.
-- [ ] **Translate the Smart Home Name and card-title strings.** The
+- [x] **Translate the Smart Home Name and card-title strings.** The
       maintainer-approved English `settings_smart_home_name`,
       `settings_smart_home_name_hint`, `outfit_card_header` and
       `outfit_card_header_named` shipped with `<!-- TODO: translate -->` and

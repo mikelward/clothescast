@@ -232,6 +232,10 @@ they work correctly in both the single-band and range templates.
     <string name="today_update_available_dismiss">ليس الآن</string>
     <string name="today_update_downloaded_body">تم تنزيل التحديث. أعد التشغيل لاستكمال التثبيت.</string>
     <string name="today_update_downloaded_action">إعادة التشغيل</string>
+    <string name="today_telemetry_invite_title">هل تساعد في تحسين ClothesCast؟</string>
+    <string name="today_telemetry_invite_body">هل نرسل تقارير الأعطال وإحصاءات استخدام مجهولة الهوية لاكتشاف الأخطاء وإصلاحها؟</string>
+    <string name="today_telemetry_invite_accept">نعم، من فضلك</string>
+    <string name="today_telemetry_invite_decline">لا، شكرًا</string>
 
     <!-- Today — telemetry notice -->
     <string name="today_telemetry_notice_open_settings">إعدادات الخصوصية</string>
@@ -291,6 +295,7 @@ they work correctly in both the single-band and range templates.
 
     <!-- Settings — API key / Gemini -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">أصوات عالية الجودة عبر خوادم ClothesCast وGoogle.</string>
     <string name="settings_tts_device_header">أصوات منخفضة الجودة مدمجة في هاتفك.</string>
     <string name="settings_api_key_status_set">تم تكوين مفتاح Gemini.</string>
     <string name="settings_api_key_placeholder">الصق مفتاح Gemini API</string>
@@ -403,6 +408,10 @@ they work correctly in both the single-band and range templates.
     <string name="settings_about_dontkillmyapp">قيود الخلفية (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">مشاركة تقرير الخطأ</string>
     <string name="settings_about_version_copied">تم نسخ الإصدار إلى الحافظة</string>
+    <string name="settings_about_licenses">التراخيص</string>
+    <string name="settings_licenses_title">تراخيص المصدر المفتوح</string>
+    <string name="settings_licenses_version">الإصدار %1$s</string>
+    <string name="settings_licenses_authors">من %1$s</string>
 
     <!-- Bug report consent dialog -->
     <string name="bug_report_consent_title">مشاركة تقرير الخطأ؟</string>
@@ -411,6 +420,7 @@ they work correctly in both the single-band and range templates.
     <string name="bug_report_consent_dont_show_again">لا تُظهر هذا مجددًا</string>
     <string name="bug_report_consent_continue">متابعة</string>
     <string name="bug_report_consent_cancel">إلغاء</string>
+    <string name="bug_report_share_failed">تعذّرت مشاركة تقرير الخطأ</string>
 
     <!-- Insight prose (additional templates) -->
     <string name="insight_precip_chance">احتمال %1$s.</string>
@@ -430,6 +440,9 @@ they work correctly in both the single-band and range templates.
     <string name="settings_display_palette_rainbow_description">خطوط مخطط وردي وبرتقالي وأخضر مع بطاقات ثقة Material باللون الفيروزي/الأحمر. الافتراضي.</string>
     <string name="settings_display_palette_highlighter">قلم تظليل</string>
     <string name="settings_display_palette_highlighter_description">خطوط رسم بياني بألوان أرجواني وأصفر وسماوي — كأثر قلم تظليل على الورق. تختلف عن \"قوس قزح\" بوضوح من النظرة الأولى؛ يستخدم الوضع الفاتح إصدارات أعمق لزيادة الوضوح. آمنة لعمى الألوان الأحمر-الأخضر.</string>
+    <string name="settings_display_text_size_title">حجم النص</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">قرّب إصبعيك أو باعدهما لتغيير الحجم</string>
     <string name="settings_display_home_layout_title">تخطيط الشاشة الرئيسية</string>
     <string name="settings_display_home_layout_description">اسحب المقابض لإعادة ترتيب طريقة ظهور هذه الأقسام على الشاشة الرئيسية.</string>
     <string name="settings_display_home_layout_drag">اسحب لإعادة ترتيب %1$s</string>
@@ -627,6 +640,8 @@ they work correctly in both the single-band and range templates.
     <string name="cast_error_no_insight_yet">لا توقعات متاحة بعد. انتظر حتى التشغيل المجدول القادم، أو اضغط على تحديث في شاشة اليوم.</string>
     <string name="cast_error_no_route_picked">اختر شاشة ذكية أولاً.</string>
     <string name="cast_error_unknown">فشل البث.</string>
+    <string name="settings_smart_home_name">الاسم</string>
+    <string name="settings_smart_home_name_hint">مثلًا: لسارة</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">عيد جميع القديسين المبارك</string>
@@ -747,6 +762,8 @@ they work correctly in both the single-band and range templates.
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %2$s %1$s</string>
 
     <!-- Settings — API key replace -->
     <string name="settings_api_key_replace">استبدال مفتاح Gemini</string>
@@ -967,6 +984,21 @@ they work correctly in both the single-band and range templates.
     <string name="holiday_banner_ca_labour_day">عيد العمال سعيد</string>
     <string name="holiday_banner_cinco_de_mayo">سينكو دي مايو سعيد</string>
     <string name="holiday_banner_corpus_christi">عيد جسد المسيح سعيد</string>
+    <string name="settings_tts_gemini_sign_in_reason">يتطلب صوت Gemini المجاني تسجيل الدخول باستخدام Google.</string>
+    <string name="settings_google_sign_in">تسجيل الدخول باستخدام Google</string>
+    <string name="settings_google_signed_in_as">تم تسجيل الدخول باسم %1$s</string>
+    <string name="settings_google_signed_in">تم تسجيل الدخول باستخدام Google</string>
+    <string name="settings_google_sign_out">تسجيل الخروج</string>
+    <string name="settings_google_delete_account">حذف الحساب</string>
+    <string name="settings_google_delete_title">حذف الحساب؟</string>
+    <string name="settings_google_delete_body">تبقى إعداداتك على هذا الهاتف.</string>
+    <string name="settings_google_delete_confirm">حذف</string>
+    <string name="settings_google_no_account">لا يوجد حساب Google على هذا الجهاز.</string>
+    <string name="settings_google_sign_in_failed">تعذّر تسجيل الدخول. أعد المحاولة.</string>
+    <string name="settings_google_delete_failed">تعذّر حذف الحساب. أعد المحاولة.</string>
+    <string name="settings_forecasters_google_sign_in_reason">سجّل الدخول باستخدام Google لاستخدام Google دون مفتاحك الخاص.</string>
+    <string name="notify_gemini_sign_in_title">تم إيقاف صوت Gemini مؤقتًا</string>
+    <string name="notify_gemini_sign_in_text">سجّل الدخول باستخدام Google في إعدادات الصوت للاحتفاظ به. يُستخدم صوت الجهاز حاليًا.</string>
     <string name="holiday_banner_egypt_revolution_day">ذكرى ثورة سعيدة</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">عيد تحرير سيناء سعيد</string>
     <string name="holiday_banner_india_childrens_day">يوم الطفل سعيد</string>
@@ -1180,6 +1212,9 @@ they work correctly in both the single-band and range templates.
     <string name="today_gemini_promo_cta">إعدادات الصوت</string>
     <string name="today_gemini_promo_dismiss">إغلاق</string>
     <string name="today_google_forecast_promo_dismiss">إغلاق</string>
+    <string name="today_google_forecast_promo_title">جرّب توقعات Google</string>
+    <string name="today_google_forecast_promo_body">اختر مزوّدي توقعات الطقس لدقة أعلى.</string>
+    <string name="today_google_forecast_promo_cta">إعدادات نماذج التنبؤ</string>
     <string name="today_clothes_promo_title">اجعل الملابس ملكك</string>
     <string name="today_insight_format_link">التنسيق</string>
     <string name="today_play">تشغيل</string>
@@ -1266,6 +1301,8 @@ they work correctly in both the single-band and range templates.
     <string name="settings_holidays_calendar_source">التقويم: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">توقعات الطقس المتقدمة من Google بالذكاء الاصطناعي. تتطلب تسجيل الدخول أو مفتاح API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">توقعات الطقس المتقدمة من Google بالذكاء الاصطناعي. تتطلب مفتاح API.</string>
     <string name="settings_forecasters_aifs_subtitle">نموذج الذكاء الاصطناعي من ECMWF — دقيق حتى 15 يومًا، لذا يتولى رسوم الأسبوع الثاني البيانية. قد لا تُظهر بعض الرسوم التفصيلية خطًا له.</string>
     <string name="settings_forecasters_google_key_header">مفتاح Google API</string>
     <string name="settings_forecasters_google_key_placeholder">الصق مفتاح Google API الخاص بك</string>

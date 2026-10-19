@@ -234,6 +234,7 @@ the displayed label localizes.
     API keys screen.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Stemmen van hoge kwaliteit via servers van ClothesCast en Google.</string>
     <string name="settings_api_key_status_set">Er is een Gemini-sleutel ingesteld.</string>
     <string name="settings_api_key_placeholder">Plak hier je Gemini-API-sleutel</string>
     <string name="settings_api_key_save">Gemini-sleutel opslaan</string>
@@ -285,6 +286,10 @@ the displayed label localizes.
     <string name="settings_about_dontkillmyapp">Achtergrondproblemen (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Bugrapport delen</string>
     <string name="settings_about_version_copied">Versie gekopieerd naar klembord</string>
+    <string name="settings_about_licenses">Licenties</string>
+    <string name="settings_licenses_title">Opensource-licenties</string>
+    <string name="settings_licenses_version">Versie %1$s</string>
+    <string name="settings_licenses_authors">Door %1$s</string>
 
     <!--
     Today screen.
@@ -524,6 +529,10 @@ the displayed label localizes.
     <string name="today_update_available_dismiss">Niet nu</string>
     <string name="today_update_downloaded_body">Update gedownload. Herstart om de installatie te voltooien.</string>
     <string name="today_update_downloaded_action">Herstarten</string>
+    <string name="today_telemetry_invite_title">ClothesCast helpen verbeteren?</string>
+    <string name="today_telemetry_invite_body">Crashrapporten en anonieme gebruiksstatistieken sturen zodat bugs gevonden en opgelost worden?</string>
+    <string name="today_telemetry_invite_accept">Ja, graag</string>
+    <string name="today_telemetry_invite_decline">Nee, bedankt</string>
 
     <!-- Outfit card labels — additional garments. -->
     <string name="today_outfit_top_polo">Poloshirt</string>
@@ -607,6 +616,7 @@ the displayed label localizes.
     <string name="bug_report_consent_dont_show_again">Niet meer weergeven</string>
     <string name="bug_report_consent_continue">Doorgaan</string>
     <string name="bug_report_consent_cancel">Annuleren</string>
+    <string name="bug_report_share_failed">Kan bugrapport niet delen</string>
 
     <!-- Device-incompatibility error screen. -->
     <string name="error_device_incompatible">ClothesCast kan niet worden uitgevoerd op dit apparaat — je Android-build mist een functie die de app-interface nodig heeft (Configuration.fontWeightAdjustment, verwacht vanaf Android 12 en hoger). Neem contact op met je apparaatfabrikant voor een systeemupdate.</string>
@@ -620,6 +630,9 @@ the displayed label localizes.
     <string name="settings_display_palette_rainbow_description">Roze, oranje en groene grafieklijnen met Material teal/rode betrouwbaarheidskaarten. De standaard.</string>
     <string name="settings_display_palette_highlighter">Markeerstift</string>
     <string name="settings_display_palette_highlighter_description">Magenta, gele en cyaan grafieklijnen — als markeerstift op de pagina. Op het eerste gezicht zichtbaar anders dan \"Regenboog\"; het lichte thema gebruikt diepere varianten voor leesbaarheid. Veilig bij rood-groen kleurenblindheid.</string>
+    <string name="settings_display_text_size_title">Tekstgrootte</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Knijp om de grootte te wijzigen</string>
     <string name="settings_display_home_layout_title">Indeling van startscherm</string>
     <string name="settings_display_home_layout_description">Sleep aan de handgrepen om de volgorde van deze secties op het startscherm te wijzigen.</string>
     <string name="settings_display_home_layout_drag">Sleep om %1$s opnieuw te ordenen</string>
@@ -805,6 +818,8 @@ the displayed label localizes.
     <string name="settings_root_smart_home_subtitle">Slimme schermen en huisautomatisering</string>
     <string name="settings_api_key_replace">Gemini-sleutel vervangen</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast van %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast van %2$s</string>
     <string name="today_rationale_open_clothes_settings">Kledinginstellingen</string>
     <string name="today_celebration_card_title">Festieve thema\'s</string>
     <string name="today_celebration_card_body">Schakel speciale kleuren en berichten in voor feestdagen en verjaardagen.</string>
@@ -871,6 +886,8 @@ the displayed label localizes.
     <string name="cast_error_no_route_picked">Kies eerst een slim scherm.</string>
     <string name="cast_error_no_insight_yet">Nog geen voorspelling beschikbaar. Wacht op de volgende geplande uitvoering of tik op Vernieuwen op het scherm Vandaag.</string>
     <string name="cast_error_unknown">Uitzending mislukt.</string>
+    <string name="settings_smart_home_name">Naam</string>
+    <string name="settings_smart_home_name_hint">bijv. Alex’</string>
     <!-- Holiday banners — missing entries. -->
     <string name="holiday_banner_anzac_day">Wij herdenken</string>
     <string name="holiday_banner_australia_day">Fijne Australiadag</string>
@@ -1019,6 +1036,21 @@ the displayed label localizes.
     <string name="holiday_banner_ca_labour_day">Fijne Dag van de Arbeid</string>
     <string name="holiday_banner_cinco_de_mayo">Fijne Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Fijne Sacramentsdag</string>
+    <string name="settings_tts_gemini_sign_in_reason">De gratis Gemini-stem vereist inloggen met Google.</string>
+    <string name="settings_google_sign_in">Inloggen met Google</string>
+    <string name="settings_google_signed_in_as">Ingelogd als %1$s</string>
+    <string name="settings_google_signed_in">Ingelogd met Google</string>
+    <string name="settings_google_sign_out">Uitloggen</string>
+    <string name="settings_google_delete_account">Account verwijderen</string>
+    <string name="settings_google_delete_title">Account verwijderen?</string>
+    <string name="settings_google_delete_body">Je instellingen op deze telefoon blijven behouden.</string>
+    <string name="settings_google_delete_confirm">Verwijderen</string>
+    <string name="settings_google_no_account">Geen Google-account op dit apparaat.</string>
+    <string name="settings_google_sign_in_failed">Inloggen mislukt. Probeer het opnieuw.</string>
+    <string name="settings_google_delete_failed">Account verwijderen mislukt. Probeer het opnieuw.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Log in met Google om Google te gebruiken zonder eigen sleutel.</string>
+    <string name="notify_gemini_sign_in_title">Gemini-stem gepauzeerd</string>
+    <string name="notify_gemini_sign_in_text">Log in met Google in de steminstellingen om hem te houden. Voorlopig wordt de apparaatstem gebruikt.</string>
     <string name="holiday_banner_egypt_revolution_day">Fijne Revolutiedag</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Fijne Sinai-bevrijdingsdag</string>
     <string name="holiday_banner_india_childrens_day">Fijne Kinderdag</string>
@@ -1228,6 +1260,9 @@ the displayed label localizes.
     <string name="today_gemini_promo_cta">Spraakinstellingen</string>
     <string name="today_gemini_promo_dismiss">Sluiten</string>
     <string name="today_google_forecast_promo_dismiss">Sluiten</string>
+    <string name="today_google_forecast_promo_title">Probeer Google-voorspellingen</string>
+    <string name="today_google_forecast_promo_body">Kies je weersvoorspellers voor een nauwkeurigere voorspelling.</string>
+    <string name="today_google_forecast_promo_cta">Instellingen voorspellingsmodellen</string>
     <string name="today_clothes_promo_title">Maak de kleding van jou</string>
     <string name="today_insight_format_link">Formaat</string>
     <string name="today_play">Afspelen</string>
@@ -1314,6 +1349,8 @@ the displayed label localizes.
     <string name="settings_holidays_calendar_source">Agenda: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Geavanceerde AI-weersvoorspelling van Google. Vereist inloggen of een API-sleutel.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Geavanceerde AI-weersvoorspelling van Google. Vereist een API-sleutel.</string>
     <string name="settings_forecasters_aifs_subtitle">Het AI-model van ECMWF — betrouwbaar tot 15 dagen vooruit, waardoor het de grafieken van de tweede week draagt. Sommige detailgrafieken tonen mogelijk geen lijn ervoor.</string>
     <string name="settings_forecasters_google_key_header">Google API-sleutel</string>
     <string name="settings_forecasters_google_key_placeholder">Plak je Google API-sleutel</string>

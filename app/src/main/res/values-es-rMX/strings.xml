@@ -43,4 +43,11 @@ that a Mexican speaker would notice as wrong is overridden here.
          bug reports / error reporting — both verb and noun forms. -->
     <string name="today_report_a_bug">Reportar un error</string>
     <string name="settings_about_share_bug_report">Compartir reporte de error</string>
+    <!-- New strings that embed "ajustes" or "informe de error" in the
+         es-ES base; same "configuración" / "reporte" rules as above. -->
+    <string name="today_google_forecast_promo_cta">Configuración de modelos de previsión</string>
+    <string name="settings_google_delete_body">Tu configuración en este teléfono se conserva.</string>
+    <string name="notify_gemini_sign_in_text">Inicia sesión con Google en la configuración de Voz para conservarla. Mientras tanto, se usa la voz del dispositivo.</string>
+    <string name="bug_report_share_failed">No se pudo compartir el reporte de error</string>
+    <string name="today_telemetry_invite_body">¿Enviar reportes de errores y estadísticas de uso anónimas para encontrar y corregir fallos?</string>
 </resources>

@@ -24,4 +24,6 @@ falls through to the base French translation.
     <!-- Quebec French spells the imperial mile "Mille" (plur. "Milles");
          France carries the English loan "Miles" since the unit is
          basically only used in en-imported software. -->
+    <string name="bug_report_share_failed">Impossible de partager le rapport de bogue</string>
+    <string name="today_telemetry_invite_body">Envoyer des rapports de plantage et des statistiques d\'utilisation anonymes pour trouver et corriger les bogues ?</string>
 </resources>

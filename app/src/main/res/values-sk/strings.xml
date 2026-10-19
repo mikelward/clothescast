@@ -269,6 +269,7 @@ What is NOT overridden, by design:
     API keys screen.
     -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Vysokokvalitné hlasy cez servery ClothesCast a Google.</string>
     <string name="settings_tts_device_header">Hlasy v nízkej kvalite zabudované v tvojom telefóne.</string>
     <string name="settings_api_key_status_set">Gemini kľúč je nastavený.</string>
     <string name="settings_api_key_placeholder">Vlož sem Gemini API kľúč</string>
@@ -337,6 +338,10 @@ What is NOT overridden, by design:
     <string name="settings_about_dontkillmyapp">Obmedzenia na pozadí (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Zdieľať hlásenie chyby</string>
     <string name="settings_about_version_copied">Verzia skopírovaná do schránky</string>
+    <string name="settings_about_licenses">Licencie</string>
+    <string name="settings_licenses_title">Licencie open source</string>
+    <string name="settings_licenses_version">Verzia %1$s</string>
+    <string name="settings_licenses_authors">Autor: %1$s</string>
 
     <!--
     Today screen.
@@ -448,6 +453,10 @@ What is NOT overridden, by design:
     <string name="today_update_available_dismiss">Teraz nie</string>
     <string name="today_update_downloaded_body">Aktualizácia stiahnutá. Reštartuj pre dokončenie inštalácie.</string>
     <string name="today_update_downloaded_action">Reštartovať</string>
+    <string name="today_telemetry_invite_title">Pomôžeš vylepšiť ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Posielať hlásenia o pádoch a anonymné štatistiky používania, aby sa chyby našli a opravili?</string>
+    <string name="today_telemetry_invite_accept">Áno, prosím</string>
+    <string name="today_telemetry_invite_decline">Nie, ďakujem</string>
 
     <!-- Telemetry notice. -->
     <string name="today_telemetry_notice_open_settings">Nastavenia súkromia</string>
@@ -508,6 +517,7 @@ What is NOT overridden, by design:
     <string name="bug_report_consent_dont_show_again">Nabudúce nezobrazovať</string>
     <string name="bug_report_consent_continue">Pokračovať</string>
     <string name="bug_report_consent_cancel">Zrušiť</string>
+    <string name="bug_report_share_failed">Hlásenie chyby sa nepodarilo zdieľať</string>
 
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Dnes</string>
@@ -576,6 +586,9 @@ What is NOT overridden, by design:
     <string name="settings_display_palette_rainbow_description">Ružové, oranžové a zelené čiary grafov s tyrkysovými/červenými kartami istoty Material. Predvolené.</string>
     <string name="settings_display_palette_highlighter">Zvýrazňovač</string>
     <string name="settings_display_palette_highlighter_description">Purpurové, žlté a azúrové čiary grafu — ako stopa zvýrazňovača na stránke. Na prvý pohľad viditeľne odlišné od \"Dúhy\"; svetlá téma používa hlbšie varianty pre čitateľnosť. Bezpečné pri červeno-zelenej farboslepote.</string>
+    <string name="settings_display_text_size_title">Veľkosť textu</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Roztiahni prstami na zmenu veľkosti</string>
     <string name="settings_display_home_layout_title">Rozloženie domovskej obrazovky</string>
     <string name="settings_display_home_layout_description">Potiahnutím úchytiek zmeň poradie, v ktorom sa tieto sekcie zobrazujú na domovskej obrazovke.</string>
     <string name="settings_display_home_layout_drag">Potiahnutím zmeň poradie: %1$s</string>
@@ -763,6 +776,8 @@ What is NOT overridden, by design:
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast o %1$s</string>
+    <string name="outfit_card_header_named">%1$s ClothesCast o %2$s</string>
 
     <!-- Today screen. -->
     <string name="today_rationale_open_clothes_settings">Nastavenia oblečenia</string>
@@ -845,6 +860,8 @@ What is NOT overridden, by design:
     <string name="cast_error_no_route_picked">Najprv vyberte inteligentný displej.</string>
     <string name="cast_error_no_insight_yet">Predpoveď zatiaľ nie je dostupná. Počkajte na ďalšie naplánované spustenie alebo ťuknite na Obnoviť na obrazovke Dnes.</string>
     <string name="cast_error_unknown">Prenos zlyhal.</string>
+    <string name="settings_smart_home_name">Meno</string>
+    <string name="settings_smart_home_name_hint">napr. Alexov</string>
 
     <!-- Holiday banners — missing entries. -->
     <string name="holiday_banner_japan_coming_of_age_day">Šťastný japonský Deň dospelosti</string>
@@ -993,6 +1010,21 @@ What is NOT overridden, by design:
     <string name="holiday_banner_ca_labour_day">Šťastný Sviatok práce</string>
     <string name="holiday_banner_cinco_de_mayo">Šťastné Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Šťastné Božie Telo</string>
+    <string name="settings_tts_gemini_sign_in_reason">Bezplatný hlas Gemini vyžaduje prihlásenie cez Google.</string>
+    <string name="settings_google_sign_in">Prihlásiť sa cez Google</string>
+    <string name="settings_google_signed_in_as">Prihlásený ako %1$s</string>
+    <string name="settings_google_signed_in">Prihlásený cez Google</string>
+    <string name="settings_google_sign_out">Odhlásiť sa</string>
+    <string name="settings_google_delete_account">Odstrániť účet</string>
+    <string name="settings_google_delete_title">Odstrániť účet?</string>
+    <string name="settings_google_delete_body">Tvoje nastavenia v tomto telefóne zostanú.</string>
+    <string name="settings_google_delete_confirm">Odstrániť</string>
+    <string name="settings_google_no_account">V tomto zariadení nie je účet Google.</string>
+    <string name="settings_google_sign_in_failed">Prihlásenie zlyhalo. Skús to znova.</string>
+    <string name="settings_google_delete_failed">Účet sa nepodarilo odstrániť. Skús to znova.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Prihlás sa cez Google a používaj Google bez vlastného kľúča.</string>
+    <string name="notify_gemini_sign_in_title">Hlas Gemini pozastavený</string>
+    <string name="notify_gemini_sign_in_text">Ak si ho chceš ponechať, prihlás sa cez Google v nastaveniach hlasu. Zatiaľ sa používa hlas zariadenia.</string>
     <string name="holiday_banner_egypt_revolution_day">Šťastný Deň revolúcie</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Šťastný Deň oslobodenia Sinaja</string>
     <string name="holiday_banner_india_childrens_day">Šťastný Deň detí</string>
@@ -1204,6 +1236,9 @@ What is NOT overridden, by design:
     <string name="today_gemini_promo_cta">Nastavenia hlasu</string>
     <string name="today_gemini_promo_dismiss">Zavrieť</string>
     <string name="today_google_forecast_promo_dismiss">Zavrieť</string>
+    <string name="today_google_forecast_promo_title">Vyskúšaj prognózy Google</string>
+    <string name="today_google_forecast_promo_body">Vyber si poskytovateľov predpovede počasia pre vyššiu presnosť.</string>
+    <string name="today_google_forecast_promo_cta">Nastavenia modelov prognóz</string>
     <string name="today_clothes_promo_title">Prispôsob si oblečenie</string>
     <string name="today_insight_format_link">Formát</string>
     <string name="today_play">Prehrať</string>
@@ -1290,6 +1325,8 @@ What is NOT overridden, by design:
     <string name="settings_holidays_calendar_source">Kalendár: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Pokročilá predpoveď počasia od Google s AI. Vyžaduje prihlásenie alebo API kľúč.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Pokročilá predpoveď počasia od Google s AI. Vyžaduje API kľúč.</string>
     <string name="settings_forecasters_aifs_subtitle">AI model spoločnosti ECMWF — spoľahlivý až na 15 dní, preto nesie grafy druhého týždňa. Niektoré podrobné grafy preň nemusia zobrazovať čiaru.</string>
     <string name="settings_forecasters_google_key_header">Kľúč API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Vložte svoj kľúč API Google</string>

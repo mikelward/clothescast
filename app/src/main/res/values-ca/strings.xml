@@ -124,6 +124,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_update_available_dismiss">Ara no</string>
     <string name="today_update_downloaded_body">Actualització descarregada. Reinicia per completar la instal·lació.</string>
     <string name="today_update_downloaded_action">Reinicia</string>
+    <string name="today_telemetry_invite_title">Vols ajudar a millorar ClothesCast?</string>
+    <string name="today_telemetry_invite_body">Vols enviar informes d\'errors i estadístiques d\'ús anònimes perquè es trobin i es corregeixin errors?</string>
+    <string name="today_telemetry_invite_accept">Sí, és clar</string>
+    <string name="today_telemetry_invite_decline">No, gràcies</string>
 
     <string name="today_telemetry_notice_open_settings">Configuració de privadesa</string>
     <string name="today_telemetry_notice_dismiss">Descarta</string>
@@ -177,6 +181,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_privacy_open_policy">Llegeix la política de privadesa completa</string>
 
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Veus d\'alta qualitat a través dels servidors de ClothesCast i Google.</string>
     <string name="settings_tts_device_header">Veus de baixa qualitat integrades al teu telèfon.</string>
     <string name="settings_api_key_status_set">Hi ha una clau de Gemini configurada.</string>
     <string name="settings_api_key_placeholder">Enganxa la teva clau API de Gemini</string>
@@ -438,6 +443,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_about_dontkillmyapp">Restriccions en segon pla (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Comparteix l\'informe d\'errors</string>
     <string name="settings_about_version_copied">Versió copiada al porta-retalls</string>
+    <string name="settings_about_licenses">Llicències</string>
+    <string name="settings_licenses_title">Llicències de codi obert</string>
+    <string name="settings_licenses_version">Versió %1$s</string>
+    <string name="settings_licenses_authors">De %1$s</string>
 
     <string name="bug_report_consent_title">Compartir l\'informe d\'errors?</string>
     <string name="bug_report_consent_body">Això ajuda a diagnosticar problemes. L\'informe conté informació personal sensible, com la teva ubicació, la configuració de l\'aplicació i l\'activitat recent. Podràs revisar-lo i editar-lo abans d\'enviar-lo.</string>
@@ -445,6 +454,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="bug_report_consent_dont_show_again">No tornis a mostrar-ho</string>
     <string name="bug_report_consent_continue">Continua</string>
     <string name="bug_report_consent_cancel">Cancel·la</string>
+    <string name="bug_report_share_failed">No s\'ha pogut compartir l\'informe d\'errors</string>
 
     <string name="insight_lead_today">Avui</string>
     <string name="insight_lead_tomorrow">Demà</string>
@@ -512,6 +522,9 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_display_palette_rainbow_description">Línies de gràfic rosa, taronja i verd amb targetes de confiança Material blau verdós/vermell. Per defecte.</string>
     <string name="settings_display_palette_highlighter">Marcador</string>
     <string name="settings_display_palette_highlighter_description">Línies de gràfic en magenta, groc i cian — com una pinzellada de marcador a la pàgina. Es distingeixen clarament de l\'\"Arc de Sant Martí\" d\'un cop d\'ull; el tema clar utilitza variants més profundes per a la llegibilitat. Segures per al daltonisme vermell-verd.</string>
+    <string name="settings_display_text_size_title">Mida del text</string>
+    <string name="settings_display_text_size_value">%1$d %%</string>
+    <string name="settings_display_text_size_pinch">Pessiga per canviar la mida</string>
     <string name="settings_display_home_layout_title">Disseny de la pantalla d\'inici</string>
     <string name="settings_display_home_layout_description">Arrossega les nanses per reordenar com apareixen aquestes seccions a la pantalla d\'inici.</string>
     <string name="settings_display_home_layout_drag">Arrossega per reordenar %1$s</string>
@@ -696,6 +709,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_boxing_day">Bon Sant Esteve</string>
     <string name="today_rationale_open_clothes_settings">Configuració de la roba</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast de les %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %1$s de les %2$s</string>
     <string name="today_celebration_card_title">Temes festius</string>
     <string name="today_celebration_card_body">Activa colors i missatges especials per a festes i aniversaris.</string>
     <string name="today_celebration_card_cta">Configuració del calendari</string>
@@ -724,6 +739,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="cast_error_no_route_picked">Primer tria una pantalla intel·ligent.</string>
     <string name="cast_error_no_insight_yet">Encara no hi ha cap previsió disponible. Espera la propera execució programada o toca Actualitza a la pantalla d\'avui.</string>
     <string name="cast_error_unknown">L\'emissió ha fallat.</string>
+    <string name="settings_smart_home_name">Nom</string>
+    <string name="settings_smart_home_name_hint">p. ex. de l’Alex</string>
     <string name="settings_smart_home_mqtt_title">Pont de Home Assistant (MQTT)</string>
     <string name="settings_smart_home_mqtt_label">Publicar la previsió a MQTT</string>
     <string name="settings_smart_home_mqtt_host">Servidor intermediari</string>
@@ -911,6 +928,21 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="holiday_banner_ca_labour_day">Bon Dia del Treball</string>
     <string name="holiday_banner_cinco_de_mayo">Bon Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Bon Corpus</string>
+    <string name="settings_tts_gemini_sign_in_reason">La veu gratuïta de Gemini requereix iniciar sessió amb Google.</string>
+    <string name="settings_google_sign_in">Inicia sessió amb Google</string>
+    <string name="settings_google_signed_in_as">Sessió iniciada com a %1$s</string>
+    <string name="settings_google_signed_in">Sessió iniciada amb Google</string>
+    <string name="settings_google_sign_out">Tanca la sessió</string>
+    <string name="settings_google_delete_account">Elimina el compte</string>
+    <string name="settings_google_delete_title">Vols eliminar el compte?</string>
+    <string name="settings_google_delete_body">La teva configuració en aquest telèfon es manté.</string>
+    <string name="settings_google_delete_confirm">Elimina</string>
+    <string name="settings_google_no_account">No hi ha cap compte de Google en aquest dispositiu.</string>
+    <string name="settings_google_sign_in_failed">No s\'ha pogut iniciar sessió. Torna-ho a intentar.</string>
+    <string name="settings_google_delete_failed">No s\'ha pogut eliminar el compte. Torna-ho a intentar.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Inicia sessió amb Google per utilitzar Google sense la teva pròpia clau.</string>
+    <string name="notify_gemini_sign_in_title">Veu de Gemini en pausa</string>
+    <string name="notify_gemini_sign_in_text">Inicia sessió amb Google a la configuració de Veu per mantenir-la. Mentrestant, s\'utilitza la veu del dispositiu.</string>
     <string name="holiday_banner_egypt_revolution_day">Bon Dia de la Revolució</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Bon Dia de l\'Alliberament del Sinaí</string>
     <string name="holiday_banner_india_childrens_day">Bon Dia dels Infants</string>
@@ -1121,6 +1153,9 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_gemini_promo_cta">Configuració de veu</string>
     <string name="today_gemini_promo_dismiss">Descarta</string>
     <string name="today_google_forecast_promo_dismiss">Descarta</string>
+    <string name="today_google_forecast_promo_title">Prova les previsions de Google</string>
+    <string name="today_google_forecast_promo_body">Tria els teus proveïdors de previsió del temps per a més precisió.</string>
+    <string name="today_google_forecast_promo_cta">Configuració dels models de previsió</string>
     <string name="today_clothes_promo_title">Fes teva la roba</string>
     <string name="today_insight_format_link">Format</string>
     <string name="today_play">Reprodueix</string>
@@ -1207,6 +1242,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_holidays_calendar_source">Calendari: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Previsió del temps avançada amb IA de Google. Cal iniciar sessió o una clau d\'API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Previsió del temps avançada amb IA de Google. Cal una clau d\'API.</string>
     <string name="settings_forecasters_aifs_subtitle">El model d\'IA d\'ECMWF — fiable fins a 15 dies, per la qual cosa sosté els gràfics de la segona setmana. Alguns gràfics detallats poden no mostrar-hi una línia.</string>
     <string name="settings_forecasters_google_key_header">Clau d\'API de Google</string>
     <string name="settings_forecasters_google_key_placeholder">Enganxa la teva clau d\'API de Google</string>

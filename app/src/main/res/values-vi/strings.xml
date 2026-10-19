@@ -232,6 +232,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_update_available_dismiss">Để sau</string>
     <string name="today_update_downloaded_body">Đã tải bản cập nhật. Khởi động lại để hoàn tất cài đặt.</string>
     <string name="today_update_downloaded_action">Khởi động lại</string>
+    <string name="today_telemetry_invite_title">Giúp ClothesCast tốt hơn?</string>
+    <string name="today_telemetry_invite_body">Gửi báo cáo sự cố và thống kê sử dụng ẩn danh để tìm và sửa lỗi?</string>
+    <string name="today_telemetry_invite_accept">Đồng ý</string>
+    <string name="today_telemetry_invite_decline">Không, cảm ơn</string>
 
     <!-- Telemetry notice -->
     <string name="today_telemetry_notice_open_settings">Cài đặt Quyền riêng tư</string>
@@ -303,6 +307,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
          Settings — Voice / API key
          ===================================================================== -->
     <string name="settings_api_key_gemini_label">Gemini</string>
+    <string name="settings_api_key_gemini_header">Giọng nói chất lượng cao qua máy chủ ClothesCast và Google.</string>
     <string name="settings_tts_device_header">Giọng nói chất lượng thấp tích hợp sẵn trong điện thoại của bạn.</string>
     <string name="settings_api_key_status_set">Đã cài đặt khóa Gemini.</string>
     <string name="settings_api_key_placeholder">Dán khóa API Gemini của bạn</string>
@@ -576,6 +581,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_about_dontkillmyapp">Hạn chế chạy nền (dontkillmyapp.com)</string>
     <string name="settings_about_share_bug_report">Chia sẻ báo cáo lỗi</string>
     <string name="settings_about_version_copied">Đã sao chép phiên bản vào clipboard</string>
+    <string name="settings_about_licenses">Giấy phép</string>
+    <string name="settings_licenses_title">Giấy phép nguồn mở</string>
+    <string name="settings_licenses_version">Phiên bản %1$s</string>
+    <string name="settings_licenses_authors">Tác giả: %1$s</string>
 
     <!-- =====================================================================
          Bug report consent dialog
@@ -586,6 +595,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="bug_report_consent_dont_show_again">Không hiện lại</string>
     <string name="bug_report_consent_continue">Tiếp tục</string>
     <string name="bug_report_consent_cancel">Hủy</string>
+    <string name="bug_report_share_failed">Không thể chia sẻ báo cáo lỗi</string>
 
     <!-- =====================================================================
          Insight prose — additional templates
@@ -606,6 +616,9 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_display_palette_rainbow_description">Đường biểu đồ màu hồng, cam và xanh lá với thẻ độ tin cậy Material xanh mòng két/đỏ. Mặc định.</string>
     <string name="settings_display_palette_highlighter">Bút dạ quang</string>
     <string name="settings_display_palette_highlighter_description">Các đường biểu đồ màu hồng cánh sen, vàng và xanh lơ — như nét bút dạ quang trên trang giấy. Khác biệt rõ rệt so với \"Cầu vồng\" ngay từ cái nhìn đầu tiên; chủ đề sáng dùng các biến thể đậm hơn để dễ đọc. An toàn cho người mù màu đỏ-xanh lục.</string>
+    <string name="settings_display_text_size_title">Cỡ chữ</string>
+    <string name="settings_display_text_size_value">%1$d%%</string>
+    <string name="settings_display_text_size_pinch">Chụm ngón tay để đổi cỡ</string>
     <string name="settings_display_home_layout_title">Bố cục màn hình chính</string>
     <string name="settings_display_home_layout_description">Kéo các tay cầm để sắp xếp lại thứ tự hiển thị của các phần này trên màn hình chính.</string>
     <string name="settings_display_home_layout_drag">Kéo để sắp xếp lại %1$s</string>
@@ -778,6 +791,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="cast_error_no_insight_yet">Chưa có dự báo. Chờ lần chạy tiếp theo hoặc nhấn Làm mới trên màn hình Hôm nay.</string>
     <string name="cast_error_no_route_picked">Chọn màn hình thông minh trước.</string>
     <string name="cast_error_unknown">Cast thất bại.</string>
+    <string name="settings_smart_home_name">Tên</string>
+    <string name="settings_smart_home_name_hint">VD: của Lan</string>
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Chúc mừng Lễ Các Thánh</string>
@@ -841,6 +856,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Outfit card -->
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
+    <string name="outfit_card_header">ClothesCast %1$s</string>
+    <string name="outfit_card_header_named">ClothesCast %2$s %1$s</string>
 
     <!-- Settings — API key -->
     <string name="settings_api_key_replace">Thay khóa Gemini</string>
@@ -1033,6 +1050,21 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_ca_labour_day">Chúc mừng Ngày Lao động</string>
     <string name="holiday_banner_cinco_de_mayo">Chúc mừng Cinco de Mayo</string>
     <string name="holiday_banner_corpus_christi">Chúc mừng Lễ Mình Máu Thánh Chúa</string>
+    <string name="settings_tts_gemini_sign_in_reason">Giọng Gemini miễn phí cần đăng nhập Google.</string>
+    <string name="settings_google_sign_in">Đăng nhập bằng Google</string>
+    <string name="settings_google_signed_in_as">Đã đăng nhập: %1$s</string>
+    <string name="settings_google_signed_in">Đã đăng nhập bằng Google</string>
+    <string name="settings_google_sign_out">Đăng xuất</string>
+    <string name="settings_google_delete_account">Xóa tài khoản</string>
+    <string name="settings_google_delete_title">Xóa tài khoản?</string>
+    <string name="settings_google_delete_body">Cài đặt trên điện thoại này vẫn được giữ.</string>
+    <string name="settings_google_delete_confirm">Xóa</string>
+    <string name="settings_google_no_account">Thiết bị này không có tài khoản Google.</string>
+    <string name="settings_google_sign_in_failed">Không thể đăng nhập. Hãy thử lại.</string>
+    <string name="settings_google_delete_failed">Không thể xóa tài khoản. Hãy thử lại.</string>
+    <string name="settings_forecasters_google_sign_in_reason">Đăng nhập bằng Google để dùng Google mà không cần khóa riêng.</string>
+    <string name="notify_gemini_sign_in_title">Đã tạm dừng giọng Gemini</string>
+    <string name="notify_gemini_sign_in_text">Đăng nhập bằng Google trong Cài đặt giọng nói để tiếp tục dùng. Tạm thời đang dùng giọng thiết bị.</string>
     <string name="holiday_banner_egypt_revolution_day">Chúc mừng Ngày Cách mạng</string>
     <string name="holiday_banner_egypt_sinai_liberation_day">Chúc mừng Ngày Giải phóng Sinai</string>
     <string name="holiday_banner_india_childrens_day">Chúc mừng Ngày Thiếu nhi</string>
@@ -1241,6 +1273,9 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_gemini_promo_cta">Cài đặt giọng nói</string>
     <string name="today_gemini_promo_dismiss">Bỏ qua</string>
     <string name="today_google_forecast_promo_dismiss">Bỏ qua</string>
+    <string name="today_google_forecast_promo_title">Thử dự báo của Google</string>
+    <string name="today_google_forecast_promo_body">Chọn nguồn dự báo thời tiết để chính xác hơn.</string>
+    <string name="today_google_forecast_promo_cta">Cài đặt nguồn dự báo</string>
     <string name="today_clothes_promo_title">Biến quần áo thành của riêng bạn</string>
     <string name="today_insight_format_link">Định dạng</string>
     <string name="today_play">Phát</string>
@@ -1327,6 +1362,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_holidays_calendar_source">Lịch: %1$s</string>
     <string name="settings_forecasters_aifs">AIFS</string>
     <string name="settings_forecasters_google">Google</string>
+    <string name="settings_forecasters_google_subtitle">Dự báo thời tiết AI tiên tiến của Google. Cần đăng nhập hoặc khóa API.</string>
+    <string name="settings_forecasters_google_subtitle_key_only">Dự báo thời tiết AI tiên tiến của Google. Cần khóa API.</string>
     <string name="settings_forecasters_aifs_subtitle">Mô hình AI của ECMWF — chính xác trong 15 ngày, nên đảm nhận các biểu đồ tuần thứ hai. Một số biểu đồ chi tiết có thể không hiển thị đường của mô hình này.</string>
     <string name="settings_forecasters_google_key_header">Khóa API Google</string>
     <string name="settings_forecasters_google_key_placeholder">Dán khóa API Google của bạn</string>

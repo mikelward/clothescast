@@ -37,4 +37,6 @@ full re-translation.
 
     <!-- "Personalise" with the British -ise ending. -->
     <string name="settings_calendar_master_description">Read your calendars to personalise forecasts and outfits. Nothing leaves your device by default.</string>
+    <string name="settings_about_licenses">Licences</string>
+    <string name="settings_licenses_title">Open source licences</string>
 </resources>

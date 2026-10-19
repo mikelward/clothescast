@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-10-18_
+_Last updated: 2026-10-19_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -13,7 +13,7 @@ have over it.
   a key of your own. Signing in gives ClothesCast your Google email
   address, name and profile photo URL so each feature's free daily limit
   counts per account. You can sign out or delete that account in
-  Settings → Voice or Forecasters at any time; without signing in, the
+  Settings → Speech or Forecasters at any time; without signing in, the
   app uses the on-device voice (or your own Gemini key) and leaves Google
   out of the forecast (unless you add your own Google key).
   The app can send anonymous crash reports and aggregate usage analytics
@@ -342,7 +342,7 @@ Online TTS (the Gemini voice) has two paths.
   sign in with Google; until you do, the app speaks with the device
   voice instead, and the first time that happens it tells you so in a
   notification.
-  - **Signing in.** **Sign in with Google** (Settings → Voice or
+  - **Signing in.** **Sign in with Google** (Settings → Speech or
     Forecasters) signs
     you in to Firebase Authentication (a Google service) with your
     Google account. Firebase stores your **email address, name and
@@ -373,20 +373,24 @@ Online TTS (the Gemini voice) has two paths.
     Installation ID. The proxy still accepts those from versions already
     installed, counting each anonymous identifier in a Firestore document
     with a first-use timestamp, a successful-call counter and a
-    most-recent-use timestamp. This version does not use them.
+    most-recent-use timestamp. This version does not use them. When the
+    proxy stops accepting those older versions, we delete every anonymous
+    sign-in and every one of these usage documents. The Installation ID
+    itself belongs to the Firebase libraries on the phone, not to us;
+    uninstalling the app removes it.
   - **Cloud Functions infrastructure logs** (operated by Google Cloud,
     not configured by us) record the client IP and HTTP status of
     each call. We do not associate the IP with your account.
-  - **Signing out and deleting your account.** Settings → Voice (or
+  - **Signing out and deleting your account.** Settings → Speech (or
     Forecasters) → **Sign out** signs you out on this device. **Delete account**
     deletes your Firebase account — email, name, photo URL, user ID and
     any limit set on it. Only that day's clip count, and that day's count
     of Google forecast requests if you used the weather proxy, survive,
     until they expire as above; they can't identify you without your
     Google account and are kept so that deleting and re-creating an
-    account doesn't reset the day's limits. To ask for deletion without the app, use the
-    contact details at the end of this policy.
-- **Your own key (BYOK).** Open Settings → Voice → Gemini API key and
+    account doesn't reset the day's limits. To ask for deletion without the app, follow
+    [Delete your ClothesCast account](docs/delete-account.md).
+- **Your own key (BYOK).** Open Settings → Speech → Gemini API key and
   paste your own key. Keys are stored on your device, encrypted at
   rest using a key sealed by the Android Keystore. With your own key
   set, online TTS requests skip the ClothesCast proxy entirely and
@@ -405,7 +409,7 @@ policies apply to anything they receive:
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
 | [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate, and your own Google API key if you set one | Only if you enable the "Google" forecaster on the Forecasters page, with your own key or through the ClothesCast weather proxy |
 | ClothesCast weather proxy (Cloud Function, ClothesCast-operated) | Coarse coordinate, your Firebase sign-in token and a Firebase App Check token | The Google forecaster without a key of your own, while signed in with Google |
-| Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Voice or Forecasters), then periodic token refreshes |
+| Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Speech or Forecasters), then periodic token refreshes |
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase sign-in token, a Firebase App Check token, and the Gemini model name | Online TTS with the free voice, while signed in with Google |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence; the outfit-card image, TTS audio, and muxed MP4 on sibling topics; an update timestamp; and a calendar-derived `has_events` boolean (no event titles, times, or locations) — all as retained MQTT messages | Only if you opt in to the Smart Home bridge and configure a broker |
@@ -441,13 +445,14 @@ terms.
   change / clear it in ClothesCast's Settings.
 - **Calendar:** Revoke `READ_CALENDAR` in Android Settings, or turn off
   "Use calendar events" in ClothesCast's Settings.
-- **Online TTS:** Switch the voice engine to "Device" in Settings → Voice
+- **Online TTS:** Switch the voice engine to "Device" in Settings → Speech
   to keep all spoken text on-device.
 - **API keys:** Clear them from Settings → API Keys at any time.
 - **Google account:** Sign out, or delete your ClothesCast account
-  (email, name, photo URL and user ID), in Settings → Voice or
+  (email, name, photo URL and user ID), in Settings → Speech or
   Forecasters. Uninstalling
-  doesn't delete it; use Delete account first, or contact us.
+  doesn't delete it; use Delete account first, or follow
+  [Delete your ClothesCast account](docs/delete-account.md).
 - **Everything:** Uninstalling the app deletes all locally stored data
   (settings, cached insight, API keys).
 
@@ -619,6 +624,10 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-10-19** — Added a [page for deleting your account](docs/delete-account.md)
+  without the app: email play@mikelward.com from the Google account you
+  signed in with. Older versions' anonymous sign-ins and their usage
+  documents are deleted when the proxy stops accepting those versions.
 - **2026-10-18** — The free online voice now needs **Sign in with
   Google**, as does the Google forecaster without a key of your own,
   which now goes through a ClothesCast weather proxy that receives your
@@ -626,7 +635,7 @@ email the address listed on the Play Store listing.
   photo URL and a Firebase user ID with Firebase Authentication, and the
   free daily limit now counts per Google account (a keyed hash of its ID,
   holding only today's count, deleted after the day). You can sign out or
-  delete the account in Settings → Voice. Older versions' anonymous
+  delete the account in Settings → Speech. Older versions' anonymous
   sign-in is no longer used by this version. Until you sign in, the app
   uses the on-device voice and tells you once in a notification.
 - **2026-10-14** — When your calendar theming fires for the day a forecast

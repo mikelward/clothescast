@@ -103,9 +103,8 @@ voice and the Google Weather proxy.
 - [x] **Account deletion** (Play requirement): an in-app delete that removes
       the Firebase user (and with it the email, name, photo URL and custom
       claims). Today's quota count outlives it until the day ends.
-- [ ] **Account deletion web link for Play's Data safety form**: Play wants a
-      URL where someone without the app can ask for deletion. `PRIVACY.md`
-      points at its contact section; a dedicated page would be clearer.
+- [x] **Account deletion web link for Play's Data safety form**:
+      `docs/delete-account.md`, linked from `PRIVACY.md`.
 - [ ] **Disclosure before the sign-in release:** `PRIVACY.md` (done with the
       sign-in), the Data Safety
       form (optional, account management: email, name, profile photo URL and
@@ -113,7 +112,12 @@ voice and the Google Weather proxy.
       processed ephemerally; the day's quota count after a deletion), and
       Play's App access instructions for reviewers.
 - [ ] **Cutover release:** anonymous tokens lose the free voice, and the
-      legacy `X-Install-Id` fallback goes with them.
+      legacy `X-Install-Id` fallback goes with them. Disable the Anonymous
+      sign-in provider (old installs sign in before reaching the proxy), then
+      delete every
+      anonymous Firebase user and every `quota` doc without `expireAt`
+      (`functions/scripts/purge-legacy-identities.js`), as
+      `docs/delete-account.md` and `PRIVACY.md` promise.
 
 ## Voice / TTS
 

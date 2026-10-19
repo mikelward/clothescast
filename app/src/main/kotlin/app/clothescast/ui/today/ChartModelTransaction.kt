@@ -23,6 +23,9 @@ import kotlinx.coroutines.runBlocking
  * built on a background thread that the pinned test clock cannot wait on, so
  * a snapshot could capture the card with its plot missing, twice in a row,
  * and keep it as settled.
+ *
+ * That `remember` returns [producer], now holding the model, so it caches
+ * the built producer per key set rather than a bare Unit side effect.
  */
 @Composable
 internal fun ChartModelTransaction(
@@ -31,7 +34,10 @@ internal fun ChartModelTransaction(
     block: CartesianChartModelProducer.Transaction.() -> Unit,
 ) {
     if (LocalInspectionMode.current) {
-        remember(producer, *keys) { runBlocking { producer.runTransaction(block) } }
+        remember(producer, *keys) {
+            runBlocking { producer.runTransaction(block) }
+            producer
+        }
     } else {
         LaunchedEffect(producer, *keys) { producer.runTransaction(block) }
     }

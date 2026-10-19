@@ -124,8 +124,10 @@ at the app's next ID-token refresh, within an hour. Claims on anonymous
 callers are ignored.
 
 Once the proxy stops accepting older app versions (the `TODO.md` cutover),
-delete what they left behind: every anonymous Firebase user and every `quota`
-doc without `expireAt`, as `docs/delete-account.md` promises.
+delete what they left behind: every anonymous Firebase user, every `quota` doc
+without `expireAt`, and every doc in `installs` (the first proxy's per-install
+counters, unused since they moved to `quota`), as `docs/delete-account.md`
+promises.
 
 ```sh
 npm run build

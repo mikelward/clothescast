@@ -46,3 +46,17 @@ test("a missing or malformed project is rejected", () => {
 test("an unknown argument is rejected", () => {
   assert.throws(() => parsePurgeArgs(["--project", "example-app", "--force"]), /unknown argument/);
 });
+
+// The purge deletes every doc in `installs` on the premise that nothing
+// writes there any more; this fails if a function starts writing it again.
+test("no function writes the legacy installs collection", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const srcDir = path.join(__dirname, "..", "src");
+  const sources = fs.readdirSync(srcDir).filter((f) => f.endsWith(".ts"));
+  assert.ok(sources.length > 0);
+  for (const file of sources) {
+    const text = fs.readFileSync(path.join(srcDir, file), "utf8");
+    assert.doesNotMatch(text, /collection\(\s*["'`]installs["'`]/, file);
+  }
+});

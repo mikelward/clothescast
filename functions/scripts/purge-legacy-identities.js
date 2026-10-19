@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 "use strict";
 // Deletes what older app versions left behind once the `tts` proxy stops
-// accepting them (the TODO.md cutover): every anonymous Firebase user, and
-// every `quota` doc without `expireAt` (anonymous uids and legacy
-// X-Install-Id keys). docs/delete-account.md and PRIVACY.md promise this.
+// accepting them (the TODO.md cutover): every anonymous Firebase user, every
+// `quota` doc without `expireAt` (anonymous uids and legacy X-Install-Id
+// keys), and every doc in `installs`, where the first proxy counted by
+// Firebase Installation ID. docs/delete-account.md and PRIVACY.md promise
+// this.
 //
 //   npm run build
 //   node scripts/purge-legacy-identities.js --project <id>           # dry run
@@ -23,6 +25,9 @@ const { getFirestore } = require("firebase-admin/firestore");
 const { isAnonymousUser, isLegacyQuotaDoc, parsePurgeArgs } = require(path.join(__dirname, "..", "lib", "legacy"));
 
 const QUOTA_COLLECTION = "quota"; // keep in step with src/index.ts
+// Nothing writes it since the counters moved to `quota` (2026-05-31), so
+// every doc in it is legacy.
+const INSTALLS_COLLECTION = "installs";
 const AUTH_BATCH = 1000; // deleteUsers() and listUsers() maximum
 const FIRESTORE_BATCH = 500; // a WriteBatch's maximum
 const AUTH_DELETE_INTERVAL_MS = 1000; // deleteUsers() is limited to 1 QPS
@@ -62,6 +67,10 @@ async function legacyQuotaRefs(db) {
   return snap.docs.filter((doc) => isLegacyQuotaDoc(doc.data())).map((doc) => doc.ref);
 }
 
+async function installRefs(db) {
+  return db.collection(INSTALLS_COLLECTION).listDocuments();
+}
+
 async function deleteDocs(db, refs) {
   for (let i = 0; i < refs.length; i += FIRESTORE_BATCH) {
     const batch = db.batch();
@@ -87,17 +96,22 @@ async function main() {
 
   const uids = await anonymousUids(auth);
   const refs = await legacyQuotaRefs(db);
+  const installs = await installRefs(db);
   console.log(`project: ${projectId}`);
   console.log(`anonymous users: ${uids.length}`);
   console.log(`legacy quota docs: ${refs.length}`);
+  console.log(`legacy install docs: ${installs.length}`);
   if (!apply) {
     console.log("dry run; pass --apply to delete them");
     return;
   }
 
   const failed = await deleteUsers(auth, uids);
-  await deleteDocs(db, refs);
-  console.log(`deleted ${uids.length - failed} anonymous users and ${refs.length} legacy quota docs`);
+  await deleteDocs(db, [...refs, ...installs]);
+  console.log(
+    `deleted ${uids.length - failed} anonymous users, ${refs.length} legacy quota docs ` +
+      `and ${installs.length} legacy install docs`,
+  );
   if (failed > 0) {
     console.error(`purge: ${failed} user deletes failed; run it again to retry them`);
     process.exit(1);

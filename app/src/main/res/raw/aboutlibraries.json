@@ -2660,7 +2660,7 @@
         },
         {
             "uniqueId": "com.google.android.datatransport:transport-api",
-            "artifactVersion": "3.2.0",
+            "artifactVersion": "5.0.0",
             "name": "com.google.android.datatransport:transport-api",
             "description": "",
             "developers": [
@@ -2679,7 +2679,7 @@
         },
         {
             "uniqueId": "com.google.android.datatransport:transport-backend-cct",
-            "artifactVersion": "3.3.0",
+            "artifactVersion": "5.0.0",
             "name": "com.google.android.datatransport:transport-backend-cct",
             "description": "",
             "developers": [
@@ -2698,7 +2698,7 @@
         },
         {
             "uniqueId": "com.google.android.datatransport:transport-runtime",
-            "artifactVersion": "3.3.0",
+            "artifactVersion": "5.0.0",
             "name": "com.google.android.datatransport:transport-runtime",
             "description": "",
             "developers": [
@@ -2897,7 +2897,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-measurement",
-            "artifactVersion": "23.2.0",
+            "artifactVersion": "24.0.0",
             "name": "play-services-measurement",
             "description": "",
             "developers": [
@@ -2912,7 +2912,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-measurement-api",
-            "artifactVersion": "23.2.0",
+            "artifactVersion": "24.0.0",
             "name": "play-services-measurement-api",
             "description": "",
             "developers": [
@@ -2927,7 +2927,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-measurement-base",
-            "artifactVersion": "23.2.0",
+            "artifactVersion": "24.0.0",
             "name": "play-services-measurement-base",
             "description": "",
             "developers": [
@@ -2942,7 +2942,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-measurement-impl",
-            "artifactVersion": "23.2.0",
+            "artifactVersion": "24.0.0",
             "name": "play-services-measurement-impl",
             "description": "",
             "developers": [
@@ -2957,7 +2957,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-measurement-sdk",
-            "artifactVersion": "23.2.0",
+            "artifactVersion": "24.0.0",
             "name": "play-services-measurement-sdk",
             "description": "",
             "developers": [
@@ -2972,7 +2972,7 @@
         },
         {
             "uniqueId": "com.google.android.gms:play-services-measurement-sdk-api",
-            "artifactVersion": "23.2.0",
+            "artifactVersion": "24.0.0",
             "name": "play-services-measurement-sdk-api",
             "description": "",
             "developers": [
@@ -3226,7 +3226,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-analytics",
-            "artifactVersion": "23.2.0",
+            "artifactVersion": "24.0.0",
             "name": "firebase-analytics",
             "description": "",
             "developers": [
@@ -3241,7 +3241,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-annotations",
-            "artifactVersion": "17.0.0",
+            "artifactVersion": "18.0.0",
             "name": "com.google.firebase:firebase-annotations",
             "description": "",
             "developers": [
@@ -3260,7 +3260,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-appcheck",
-            "artifactVersion": "19.4.1",
+            "artifactVersion": "20.0.0",
             "name": "com.google.firebase:firebase-appcheck",
             "description": "",
             "developers": [
@@ -3279,7 +3279,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-appcheck-interop",
-            "artifactVersion": "17.1.0",
+            "artifactVersion": "18.0.0",
             "name": "com.google.firebase:firebase-appcheck-interop",
             "description": "",
             "developers": [
@@ -3298,7 +3298,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-appcheck-playintegrity",
-            "artifactVersion": "19.4.1",
+            "artifactVersion": "20.0.0",
             "name": "com.google.firebase:firebase-appcheck-playintegrity",
             "description": "",
             "developers": [
@@ -3317,7 +3317,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-auth",
-            "artifactVersion": "24.2.0",
+            "artifactVersion": "25.0.0",
             "name": "firebase-auth",
             "description": "",
             "developers": [
@@ -3347,7 +3347,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-common",
-            "artifactVersion": "22.2.1",
+            "artifactVersion": "23.0.0",
             "name": "com.google.firebase:firebase-common",
             "description": "",
             "developers": [
@@ -3366,7 +3366,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-components",
-            "artifactVersion": "19.0.0",
+            "artifactVersion": "20.0.0",
             "name": "com.google.firebase:firebase-components",
             "description": "",
             "developers": [
@@ -3385,7 +3385,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-config-interop",
-            "artifactVersion": "16.0.1",
+            "artifactVersion": "17.0.0",
             "name": "com.google.firebase:firebase-config-interop",
             "description": "",
             "developers": [
@@ -3404,7 +3404,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-crashlytics",
-            "artifactVersion": "20.1.1",
+            "artifactVersion": "21.0.0",
             "name": "com.google.firebase:firebase-crashlytics",
             "description": "",
             "developers": [
@@ -3423,7 +3423,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-datatransport",
-            "artifactVersion": "19.0.0",
+            "artifactVersion": "21.0.0",
             "name": "com.google.firebase:firebase-datatransport",
             "description": "",
             "developers": [
@@ -3442,12 +3442,16 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-encoders",
-            "artifactVersion": "17.0.0",
-            "name": "firebase-encoders",
+            "artifactVersion": "18.0.0",
+            "name": "com.google.firebase:firebase-encoders",
             "description": "",
             "developers": [
                 
             ],
+            "scm": {
+                "connection": "scm:git:https://github.com/firebase/firebase-android-sdk.git",
+                "url": "https://github.com/firebase/firebase-android-sdk"
+            },
             "licenses": [
                 "Apache-2.0"
             ],
@@ -3457,7 +3461,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-encoders-json",
-            "artifactVersion": "18.0.1",
+            "artifactVersion": "19.0.0",
             "name": "com.google.firebase:firebase-encoders-json",
             "description": "",
             "developers": [
@@ -3476,12 +3480,16 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-encoders-proto",
-            "artifactVersion": "16.0.0",
-            "name": "firebase-encoders-proto",
+            "artifactVersion": "17.0.0",
+            "name": "com.google.firebase:firebase-encoders-proto",
             "description": "",
             "developers": [
                 
             ],
+            "scm": {
+                "connection": "scm:git:https://github.com/firebase/firebase-android-sdk.git",
+                "url": "https://github.com/firebase/firebase-android-sdk"
+            },
             "licenses": [
                 "Apache-2.0"
             ],
@@ -3491,7 +3499,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-installations",
-            "artifactVersion": "19.1.2",
+            "artifactVersion": "20.0.0",
             "name": "com.google.firebase:firebase-installations",
             "description": "",
             "developers": [
@@ -3510,7 +3518,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-installations-interop",
-            "artifactVersion": "17.3.0",
+            "artifactVersion": "18.0.0",
             "name": "com.google.firebase:firebase-installations-interop",
             "description": "",
             "developers": [
@@ -3544,7 +3552,7 @@
         },
         {
             "uniqueId": "com.google.firebase:firebase-sessions",
-            "artifactVersion": "3.0.8",
+            "artifactVersion": "4.0.0",
             "name": "com.google.firebase:firebase-sessions",
             "description": "",
             "developers": [
@@ -4822,7 +4830,7 @@
         },
         {
             "uniqueId": "org.jetbrains.kotlin:kotlin-stdlib-jdk7",
-            "artifactVersion": "1.9.0",
+            "artifactVersion": "2.1.21",
             "name": "Kotlin Stdlib Jdk7",
             "description": "Kotlin Standard Library JDK 7 extension",
             "website": "https://kotlinlang.org/",
@@ -4846,7 +4854,7 @@
         },
         {
             "uniqueId": "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
-            "artifactVersion": "1.9.0",
+            "artifactVersion": "2.1.21",
             "name": "Kotlin Stdlib Jdk8",
             "description": "Kotlin Standard Library JDK 8 extension",
             "website": "https://kotlinlang.org/",

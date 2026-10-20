@@ -23,6 +23,14 @@ Usage
   # only one locale:
   python3 scripts/eval-weather-report-style.py --filter en-AU
 
+  # the persona-eval candidates against the default (Despina), on the
+  # shipped en-GB and en-AU pairs, in their own directory so the rating pass
+  # sees only these five voices (--overwrite keeps a rerun fresh):
+  python3 scripts/eval-weather-report-style.py --out /tmp/tts-voice-trial --overwrite \
+      --filter en-GB-bare-weather-B2-with-emphasis --voices Despina Algenib Alnilam Enceladus Schedar
+  python3 scripts/eval-weather-report-style.py --out /tmp/tts-voice-trial --overwrite \
+      --filter en-AU-no-variety-weather-B3 --voices Despina Algenib Alnilam Enceladus Schedar
+
   # one candidate across all locales/voices:
   python3 scripts/eval-weather-report-style.py --filter weather-B2
 
@@ -35,7 +43,7 @@ Usage
 
 Output
 ------
-Writes .wav files to /tmp/tts-weather-style/<locale>/:
+Writes .wav files to /tmp/tts-weather-style/<locale>/ (or --out):
   en-US/<candidate>-<voice>.wav
   en-AU/<candidate>-<voice>.wav
   en-GB/<candidate>-<voice>.wav
@@ -221,6 +229,11 @@ CANDIDATES: list[tuple[str, str]] = [
 
 VOICES = ["Erinome", "Kore", "Aoede", "Despina", "Iapetus", "Charon", "Leda"]
 
+# Male voices that scored 10 as the Halloween vampire in
+# compare-persona-voices.py, trialed here for the everyday forecaster.
+PERSONA_CANDIDATES = ["Algenib", "Alnilam", "Enceladus", "Schedar"]
+VOICES += PERSONA_CANDIDATES
+
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -249,6 +262,13 @@ def synthesize(directive: str, accent: str, voice: str, sample: str) -> bytes:
         body = json.loads(resp.read())
     inline = body["candidates"][0]["content"]["parts"][0]["inlineData"]
     return base64.b64decode(inline["data"])
+
+
+def parse_voices(raw: list[str]) -> list[str]:
+    """Splits commas and restores the canonical capitalization ("algenib" -> "Algenib")."""
+    known = {v.lower(): v for v in VOICES}
+    names = [n.strip() for item in raw for n in item.split(",") if n.strip()]
+    return [known.get(n.lower(), n[:1].upper() + n[1:].lower()) for n in names]
 
 
 def write_wav(path: pathlib.Path, pcm: bytes) -> None:
@@ -282,7 +302,32 @@ def main() -> None:
             "the middle without treading on each other."
         ),
     )
+    parser.add_argument(
+        "--voices",
+        nargs="+",
+        metavar="VOICE",
+        help=(
+            "Only these voices, space- or comma-separated, any case "
+            "(e.g. --voices Algenib Despina, or --voices algenib,despina). Default: all."
+        ),
+    )
+    parser.add_argument(
+        "--out",
+        type=pathlib.Path,
+        default=pathlib.Path("/tmp/tts-weather-style"),
+        help="Output directory (default /tmp/tts-weather-style).",
+    )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Regenerate matching clips instead of skipping ones already on disk.",
+    )
     args = parser.parse_args()
+    if args.overwrite and args.reverse:
+        # The two-instance split relies on each worker skipping the other's
+        # clips; overwriting would make both render (and delete) everything.
+        parser.error("--overwrite can't be combined with --reverse")
+    voices = parse_voices(args.voices) if args.voices else VOICES
 
     if not API_KEY:
         raise SystemExit("Set GEMINI_API_KEY env var before running.")
@@ -292,7 +337,7 @@ def main() -> None:
         (locale, f"{label}-{voice.lower()}", directive, accent, voice, sample_text_for(locale))
         for locale, accent in LOCALES.items()
         for label, directive in CANDIDATES
-        for voice in VOICES
+        for voice in voices
         if args.filter in f"{locale}-{label}-{voice.lower()}"
     ]
     if not clips:
@@ -301,12 +346,12 @@ def main() -> None:
     if args.reverse:
         clips = list(reversed(clips))
 
-    out = pathlib.Path("/tmp/tts-weather-style")
+    out = args.out
     print(f"Writing {len(clips)} clip(s) to {out}/<locale>/\n")
 
     for locale, slug, directive, accent, voice, sample in clips:
         path = out / locale / f"{slug}.wav"
-        if path.exists():
+        if path.exists() and not args.overwrite:
             print(f"  {locale}/{slug} ... skip (already exists)")
             continue
         print(f"  {locale}/{slug} ...", end=" ", flush=True)
@@ -315,6 +360,11 @@ def main() -> None:
             write_wav(path, pcm)
             print(f"ok  ({len(pcm) // 2 / SAMPLE_RATE:.1f}s)")
         except Exception as exc:
+            # Under --overwrite (single worker: it refuses --reverse), don't
+            # leave the previous run's clip to be rated as this run's. Without
+            # it the clip didn't exist before, and a parallel worker may own it.
+            if args.overwrite:
+                path.unlink(missing_ok=True)
             print(f"FAIL  {exc}")
 
     print(f"\nDone. Rate with:")
@@ -323,7 +373,7 @@ def main() -> None:
     for locale in LOCALES:
         print(f"  python3 scripts/rate-tts-clips.py {out}/{locale}/")
     print(f"\nBy voice:")
-    for v in VOICES:
+    for v in voices:
         print(f"  python3 scripts/rate-tts-clips.py {out}/ --pattern {v.lower()}")
 
 

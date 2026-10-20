@@ -1184,7 +1184,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_tts_style_president">Predsednik</string>
     <string name="settings_tts_style_queen">Kraljica</string>
     <string name="settings_tts_style_scifi_narrator">Naučnofantastični pripovedač</string>
-    <string name="settings_tts_style_spooky_narrator">Jezivi pripovedač</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Prikaži sada</string>
     <string name="today_clothes_promo_body">ClothesCast bira odeću po pravilima. Promeni temperature i prilagodi svoju garderobu u podešavanjima Odeća.</string>

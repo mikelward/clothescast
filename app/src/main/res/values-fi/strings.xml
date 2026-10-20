@@ -1201,7 +1201,7 @@ displayed label localizes.
     <string name="settings_tts_style_president">Presidentti</string>
     <string name="settings_tts_style_queen">Kuningatar</string>
     <string name="settings_tts_style_scifi_narrator">Sci-fi-kertoja</string>
-    <string name="settings_tts_style_spooky_narrator">Aavemainen kertoja</string>
+    <string name="settings_tts_style_vampire">Vampyyri</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Näytä nyt</string>
     <string name="today_clothes_promo_body">ClothesCast valitsee asut sääntöjen perusteella. Säädä lämpötiloja ja mukauta vaatekaappiasi Vaatteet-asetuksissa.</string>

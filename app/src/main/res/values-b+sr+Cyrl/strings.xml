@@ -1172,7 +1172,7 @@ surfaces.
     <string name="settings_tts_style_president">Председник</string>
     <string name="settings_tts_style_queen">Краљица</string>
     <string name="settings_tts_style_scifi_narrator">Научнофантастични приповедач</string>
-    <string name="settings_tts_style_spooky_narrator">Језиви приповедач</string>
+    <string name="settings_tts_style_vampire">Вампир</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Прикажи сада</string>
     <string name="today_clothes_promo_body">ClothesCast бира одећу по правилима. Промени температуре и прилагоди своју гардеробу у подешавањима Одећа.</string>

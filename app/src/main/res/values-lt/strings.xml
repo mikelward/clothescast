@@ -1184,7 +1184,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_president">Prezidentas</string>
     <string name="settings_tts_style_queen">Karalienė</string>
     <string name="settings_tts_style_scifi_narrator">Fantastinis pasakotojas</string>
-    <string name="settings_tts_style_spooky_narrator">Šiurpus pasakotojas</string>
+    <string name="settings_tts_style_vampire">Vampyras</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Rodyti dabar</string>
     <string name="today_clothes_promo_body">ClothesCast renka aprangą pagal taisykles. Pakeisk temperatūras ir pritaikyk savo garderobą Drabužių nustatymuose.</string>

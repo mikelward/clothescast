@@ -1194,7 +1194,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_tts_style_president">رئيس</string>
     <string name="settings_tts_style_queen">ملكة</string>
     <string name="settings_tts_style_scifi_narrator">راوي خيال علمي</string>
-    <string name="settings_tts_style_spooky_narrator">راوي مخيف</string>
+    <string name="settings_tts_style_vampire">مصاص دماء</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">عرض الآن</string>
     <string name="today_clothes_promo_body">يختار ClothesCast الملابس بناءً على مجموعة قواعد. عدّل درجات الحرارة وخصّص خزانة ملابسك في إعدادات الملابس.</string>

@@ -1342,7 +1342,7 @@ the displayed label localizes.
     <string name="settings_tts_style_president">大統領</string>
     <string name="settings_tts_style_queen">女王</string>
     <string name="settings_tts_style_scifi_narrator">SFナレーター</string>
-    <string name="settings_tts_style_spooky_narrator">不気味なナレーター</string>
+    <string name="settings_tts_style_vampire">吸血鬼</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">現在を表示</string>
     <string name="today_clothes_promo_body">ClothesCastはルールに基づいて服装を選びます。設定の「服装」で温度を調整したり、ワードローブをカスタマイズしたりできます。</string>

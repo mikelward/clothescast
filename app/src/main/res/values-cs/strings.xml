@@ -1204,7 +1204,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_tts_style_president">Prezident</string>
     <string name="settings_tts_style_queen">Královna</string>
     <string name="settings_tts_style_scifi_narrator">Sci-fi vypravěč</string>
-    <string name="settings_tts_style_spooky_narrator">Strašidelný vypravěč</string>
+    <string name="settings_tts_style_vampire">Upír</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Zobrazit nyní</string>
     <string name="today_clothes_promo_body">ClothesCast vybírá outfity podle sady pravidel. Uprav teploty a přizpůsob si šatník v nastavení Oblečení.</string>

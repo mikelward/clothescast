@@ -1138,7 +1138,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_tts_style_president">President</string>
     <string name="settings_tts_style_queen">Kuninganna</string>
     <string name="settings_tts_style_scifi_narrator">Sci-fi jutustaja</string>
-    <string name="settings_tts_style_spooky_narrator">Õudne jutustaja</string>
+    <string name="settings_tts_style_vampire">Vampiir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Näita praegu</string>
     <string name="today_clothes_promo_body">ClothesCast valib riided reeglite järgi. Muuda temperatuure ja kohanda oma garderoobi Riiete seadetes.</string>

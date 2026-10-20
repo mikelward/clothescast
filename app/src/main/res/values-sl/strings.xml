@@ -1181,7 +1181,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_tts_style_president">Predsednik</string>
     <string name="settings_tts_style_queen">Kraljica</string>
     <string name="settings_tts_style_scifi_narrator">ZF pripovedovalec</string>
-    <string name="settings_tts_style_spooky_narrator">Strašljiv pripovedovalec</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Pokaži zdaj</string>
     <string name="today_clothes_promo_body">ClothesCast izbira obleke po pravilih. Prilagodi temperature in svojo garderobo v nastavitvah Oblačila.</string>

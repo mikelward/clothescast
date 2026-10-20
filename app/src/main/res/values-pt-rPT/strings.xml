@@ -1323,7 +1323,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_tts_style_president">Presidente</string>
     <string name="settings_tts_style_queen">Rainha</string>
     <string name="settings_tts_style_scifi_narrator">Narrador de ficção científica</string>
-    <string name="settings_tts_style_spooky_narrator">Narrador arrepiante</string>
+    <string name="settings_tts_style_vampire">Vampiro</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Mostrar agora</string>
     <string name="today_clothes_promo_body">ClothesCast escolhe os conjuntos a partir de um conjunto de regras. Ajusta as temperaturas e personaliza o teu guarda-roupa em definições de Roupa.</string>

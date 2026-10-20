@@ -583,7 +583,7 @@ private fun ttsStyleLabel(style: TtsStyle): Int = when (style) {
     TtsStyle.FITNESS_INSTRUCTOR -> R.string.settings_tts_style_fitness_instructor
     TtsStyle.MORNING_PRESENTER -> R.string.settings_tts_style_morning_presenter
     TtsStyle.FATHER_CHRISTMAS -> R.string.settings_tts_style_father_christmas
-    TtsStyle.SPOOKY_NARRATOR -> R.string.settings_tts_style_spooky_narrator
+    TtsStyle.VAMPIRE -> R.string.settings_tts_style_vampire
     TtsStyle.NEW_YEARS_HOST -> R.string.settings_tts_style_new_years_host
     TtsStyle.LEPRECHAUN -> R.string.settings_tts_style_leprechaun
     TtsStyle.KING -> R.string.settings_tts_style_king

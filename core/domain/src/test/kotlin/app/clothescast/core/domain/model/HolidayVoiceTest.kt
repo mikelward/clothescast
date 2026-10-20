@@ -11,7 +11,7 @@ class HolidayVoiceTest {
         holidayTtsStyle(HolidayId.TOWEL_DAY) shouldBe TtsStyle.SCIFI_NARRATOR
         holidayTtsStyle(HolidayId.TALK_LIKE_A_PIRATE_DAY) shouldBe TtsStyle.PIRATE
         holidayTtsStyle(HolidayId.ST_PATRICKS_DAY) shouldBe TtsStyle.LEPRECHAUN
-        holidayTtsStyle(HolidayId.HALLOWEEN) shouldBe TtsStyle.SPOOKY_NARRATOR
+        holidayTtsStyle(HolidayId.HALLOWEEN) shouldBe TtsStyle.VAMPIRE
         holidayTtsStyle(HolidayId.NEW_YEARS_DAY) shouldBe TtsStyle.NEW_YEARS_HOST
         holidayTtsStyle(HolidayId.UK_KINGS_BIRTHDAY) shouldBe TtsStyle.KING
         holidayTtsStyle(HolidayId.CHRISTMAS_DAY) shouldBe TtsStyle.FATHER_CHRISTMAS
@@ -38,9 +38,13 @@ class HolidayVoiceTest {
     }
 
     @Test
+    fun `halloween's vampire count is male`() {
+        TtsStyle.VAMPIRE.suggestedVoiceGender shouldBe VoiceGender.MALE
+    }
+
+    @Test
     fun `everyday registers leave the voice gender unconstrained`() {
         TtsStyle.WEATHER_FORECASTER.suggestedVoiceGender shouldBe VoiceGender.NEUTRAL
         TtsStyle.MORNING_PRESENTER.suggestedVoiceGender shouldBe VoiceGender.NEUTRAL
-        TtsStyle.SPOOKY_NARRATOR.suggestedVoiceGender shouldBe VoiceGender.NEUTRAL
     }
 }

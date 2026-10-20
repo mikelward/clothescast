@@ -1148,6 +1148,13 @@ class SettingsRepositoryTest {
     }
 
     @Test
+    fun `a stored spooky narrator pick reads back as the vampire`() = runTest {
+        dataStore.edit { it[stringPreferencesKey("tts_style")] = "SPOOKY_NARRATOR" }
+
+        subject.preferences.first().ttsStyle shouldBe TtsStyle.VAMPIRE
+    }
+
+    @Test
     fun `device voice defaults to null and round-trips`() = runTest {
         subject.preferences.first().deviceVoice shouldBe null
 

@@ -1224,7 +1224,7 @@ Not overridden by design:
     <string name="settings_tts_style_president">राष्ट्रपति</string>
     <string name="settings_tts_style_queen">रानी</string>
     <string name="settings_tts_style_scifi_narrator">साइ-फ़ाई वक्ता</string>
-    <string name="settings_tts_style_spooky_narrator">डरावना वक्ता</string>
+    <string name="settings_tts_style_vampire">पिशाच</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">अभी दिखाएँ</string>
     <string name="today_clothes_promo_body">ClothesCast नियमों के एक सेट से कपड़े चुनता है। तापमान बदलें और कपड़े सेटिंग्स में अपना वॉर्डरोब कस्टमाइज़ करें।</string>

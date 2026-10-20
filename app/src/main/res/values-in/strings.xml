@@ -1193,7 +1193,7 @@ to values/strings.xml (English).
     <string name="settings_tts_style_president">Presiden</string>
     <string name="settings_tts_style_queen">Ratu</string>
     <string name="settings_tts_style_scifi_narrator">Pencerita fiksi ilmiah</string>
-    <string name="settings_tts_style_spooky_narrator">Pencerita menyeramkan</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Tampilkan sekarang</string>
     <string name="today_clothes_promo_body">ClothesCast memilih pakaian berdasarkan serangkaian aturan. Ubah suhu dan sesuaikan lemari pakaianmu di pengaturan Pakaian.</string>

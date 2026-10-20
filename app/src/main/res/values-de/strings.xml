@@ -1351,7 +1351,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_president">Präsident</string>
     <string name="settings_tts_style_queen">Königin</string>
     <string name="settings_tts_style_scifi_narrator">Sci-Fi-Erzähler</string>
-    <string name="settings_tts_style_spooky_narrator">Gruseliger Erzähler</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Jetzt anzeigen</string>
     <string name="today_clothes_promo_body">ClothesCast wählt Outfits anhand von Regeln aus. Passe die Temperaturen und deine Garderobe in den Kleidungseinstellungen an.</string>

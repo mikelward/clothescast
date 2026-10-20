@@ -1218,7 +1218,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_president">Prezident</string>
     <string name="settings_tts_style_queen">Kráľovná</string>
     <string name="settings_tts_style_scifi_narrator">Sci-fi rozprávač</string>
-    <string name="settings_tts_style_spooky_narrator">Strašidelný rozprávač</string>
+    <string name="settings_tts_style_vampire">Upír</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Zobraziť teraz</string>
     <string name="today_clothes_promo_body">ClothesCast vyberá oblečenie podľa sady pravidiel. Uprav teploty a prispôsob si šatník v nastaveniach Oblečenia.</string>

@@ -365,8 +365,9 @@ enum class TtsEngine { DEVICE, GEMINI }
  *   registers; the playful ones permit brief in-character exclamations
  *   ("Arrr", "Howdy") and [SCIFI_NARRATOR] is a dry, deadpan British
  *   science-fiction guidebook voice (no named IP — just the register).
- * - [FATHER_CHRISTMAS], [SPOOKY_NARRATOR], [NEW_YEARS_HOST], [LEPRECHAUN],
- *   [KING], [QUEEN] and [PRESIDENT] are seasonal novelty registers ([KING] /
+ * - [FATHER_CHRISTMAS], [VAMPIRE], [NEW_YEARS_HOST], [LEPRECHAUN],
+ *   [KING], [QUEEN] and [PRESIDENT] are seasonal novelty registers ([VAMPIRE]
+ *   is a classic-horror Transylvanian count for Halloween; [KING] /
  *   [QUEEN] evoke King Charles III / Queen Elizabeth II for occasions with a
  *   royal in the name; [PRESIDENT] evokes the solemn oratory of George
  *   Washington / Abraham Lincoln for Presidents' Day and the like). They're
@@ -392,7 +393,7 @@ enum class TtsStyle {
     COWBOY,
     SCIFI_NARRATOR,
     FATHER_CHRISTMAS,
-    SPOOKY_NARRATOR,
+    VAMPIRE,
     NEW_YEARS_HOST,
     LEPRECHAUN,
     KING,

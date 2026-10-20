@@ -57,6 +57,20 @@ class HolidayVoiceTest {
     }
 
     @Test
+    fun `enceladus and rasalgethi count as male, so a male persona keeps them`() {
+        for (voice in listOf("Enceladus", "Rasalgethi")) {
+            resolveHolidayVoice(HolidayId.US_PRESIDENTS_DAY, voice, TtsStyle.WEATHER_FORECASTER) shouldBe
+                GeminiVoiceSelection(voice, TtsStyle.PRESIDENT)
+        }
+    }
+
+    @Test
+    fun `vindemiatrix counts as female, so a male persona switches it to charon`() {
+        resolveHolidayVoice(HolidayId.US_PRESIDENTS_DAY, "Vindemiatrix", TtsStyle.WEATHER_FORECASTER) shouldBe
+            GeminiVoiceSelection("Charon", TtsStyle.PRESIDENT)
+    }
+
+    @Test
     fun `a female voice still switches to charon, not algenib`() {
         resolveHolidayVoice(HolidayId.US_PRESIDENTS_DAY, "Despina", TtsStyle.WEATHER_FORECASTER)
             .voiceName shouldBe "Charon"

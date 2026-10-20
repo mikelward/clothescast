@@ -512,6 +512,7 @@ distribution but stays in the picker for users who want her character.
   better to ship a smaller picker of voices the eval has actually
   validated than carry voices forward unchecked. Re-add follows a
   sniff-test if a real use case surfaces.
+  *(Vindemiatrix came back in 2026-10; see "Picker additions" below.)*
 
 ### Shipped
 
@@ -614,6 +615,13 @@ from Leda (kept on preference despite a 5–8 en-AU spread). The
 maintainer added the top three (Vindemiatrix, Enceladus, Rasalgethi) to the
 picker anyway, as options rather than defaults (#1325). A multi-roll pass
 would firm up these numbers.
+
+### Picker additions (2026-10)
+
+The picker now lists eleven voices. Algenib (#1320) joined after the vampire
+rounds; Enceladus, Rasalgethi and Vindemiatrix (#1325) after this pass, each
+after the existing voices of its gender. Defaults are unchanged: Despina
+first, Charon the first male voice, the vampire pinned to Algenib.
 
 ---
 

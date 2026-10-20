@@ -34,8 +34,8 @@ data class TtsVoiceOption(
 // audio. She loses the default slot to Despina's tighter distribution but is
 // retained for users who want her character.
 //
-// Dropped from the previous 11-voice picker: Sadaltager, Vindemiatrix,
-// Algieba, Sulafat (untested under current shipping config — trimming the
+// Dropped from the previous 11-voice picker: Sadaltager, Vindemiatrix (since
+// re-added, below), Algieba, Sulafat (untested under current shipping config — trimming the
 // picker to voices the eval has actually validated). Earlier drops stand:
 // Orus (theatrical), Achird (vowel issues), Zephyr / Puck / Fenrir
 // (theatrical / excitable). See docs/voice-evals.md for the data.
@@ -43,15 +43,23 @@ data class TtsVoiceOption(
 // Algenib joined after topping the vampire persona rounds in
 // scripts/compare-persona-voices.py (it is that persona's pinned voice); it
 // sits after Charon so Charon stays the first male voice a holiday picks.
+//
+// Enceladus, Rasalgethi and Vindemiatrix came in on the maintainer's call after
+// the 2026-10 untried-voice pass on the shipped pairs (gut averages 7.7, 7.3
+// and 8.0; docs/voice-evals.md). Both go after the existing voices of their gender, so
+// Despina and Charon stay the defaults a holiday switches to.
 val GEMINI_VOICES: List<TtsVoiceOption> = listOf(
     TtsVoiceOption("Despina", "Despina — Smooth", VoiceGender.FEMALE),
     TtsVoiceOption("Charon", "Charon — Informative", VoiceGender.MALE),
     TtsVoiceOption("Iapetus", "Iapetus — Clear", VoiceGender.MALE),
     TtsVoiceOption("Algenib", "Algenib — Gravelly", VoiceGender.MALE),
+    TtsVoiceOption("Enceladus", "Enceladus — Breathy", VoiceGender.MALE),
+    TtsVoiceOption("Rasalgethi", "Rasalgethi — Informative", VoiceGender.MALE),
     TtsVoiceOption("Kore", "Kore — Firm", VoiceGender.FEMALE),
     TtsVoiceOption("Erinome", "Erinome — Clear", VoiceGender.FEMALE),
     TtsVoiceOption("Aoede", "Aoede — Breezy", VoiceGender.FEMALE),
     TtsVoiceOption("Leda", "Leda — Youthful", VoiceGender.FEMALE),
+    TtsVoiceOption("Vindemiatrix", "Vindemiatrix — Gentle", VoiceGender.FEMALE),
 )
 
 /** Gender of the named Gemini voice, or [VoiceGender.NEUTRAL] if unknown. */

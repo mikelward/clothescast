@@ -11,7 +11,14 @@ import {
   Timestamp,
 } from "firebase-admin/firestore";
 
-import { callerFromToken, DEFAULT_DAILY_LIMIT, TtsLimit } from "./caller";
+import {
+  callerFromToken,
+  DEFAULT_DAILY_LIMIT,
+  limitForPurpose,
+  quotaBucketKey,
+  TtsLimit,
+  ttsPurpose,
+} from "./caller";
 import { excerpt, responseHasAudio, structuralEnvelope } from "./envelope";
 import { weatherQuery } from "./weather-query";
 import { errorCode, headerValue } from "./narrow";
@@ -124,6 +131,12 @@ export const tts = onRequest(
       return;
     }
 
+    // Previews from Settings count in their own bucket (caller.ts →
+    // PREVIEW_DAILY_LIMIT) so trying voices doesn't spend the day's casts.
+    const purpose = ttsPurpose(headerValue(req.header("X-TTS-Purpose")));
+    quotaKey = quotaBucketKey(quotaKey, purpose);
+    limit = limitForPurpose(limit, purpose);
+
     const modelHeader = headerValue(req.header("X-Gemini-Model"));
     if (!modelHeader || !ALLOWED_MODELS.has(modelHeader)) {
       res.status(400).json({ error: "model_not_allowed" });
@@ -155,6 +168,7 @@ export const tts = onRequest(
       res.setHeader("X-Daily-Quota-Remaining", "0");
       res.status(429).json({
         error: "daily_quota_exhausted",
+        purpose,
         limit,
         resetAtUtc: nextUtcMidnightIso(now),
       });

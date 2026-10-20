@@ -24,6 +24,8 @@ class GeminiTtsSpeaker(
     private val client: GeminiTtsClient,
     private val voiceName: String = DEFAULT_GEMINI_TTS_VOICE,
     private val style: TtsStyle = TtsStyle.WEATHER_FORECASTER,
+    /** A Settings voice preview, counted in the proxy's separate preview bucket. */
+    private val preview: Boolean = false,
 ) : TtsSpeaker {
 
     suspend fun synthesize(text: String, locale: Locale = Locale.getDefault()): PcmAudio =
@@ -32,6 +34,7 @@ class GeminiTtsSpeaker(
             voiceName = voiceName,
             locale = locale,
             style = style,
+            preview = preview,
         )
 
     suspend fun play(audio: PcmAudio) {

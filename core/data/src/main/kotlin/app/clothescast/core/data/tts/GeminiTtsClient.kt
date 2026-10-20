@@ -5,6 +5,7 @@ import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.diag.ApiEndpoints
 import app.clothescast.core.data.diag.NoOpApiCallLogger
 import app.clothescast.core.data.insight.GeminiCallPlanner
+import app.clothescast.core.data.insight.GeminiEndpoint
 import app.clothescast.core.data.insight.InvalidApiKeyException
 import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.core.domain.model.TtsStyle
@@ -487,6 +488,8 @@ private val ACCENT_DIRECTIVES: Map<String, String> = mapOf(
  * vampire) can take longer than OkHttp's 10 s default, which timed out every
  * attempt and fell back to the device voice.
  */
+internal const val TTS_PURPOSE_HEADER = "X-TTS-Purpose"
+
 internal const val GEMINI_TTS_SOCKET_TIMEOUT_MS: Long = 45_000L
 
 /**
@@ -518,6 +521,7 @@ class GeminiTtsClient(
         voiceName: String = DEFAULT_GEMINI_TTS_VOICE,
         locale: Locale? = null,
         style: TtsStyle = TtsStyle.WEATHER_FORECASTER,
+        preview: Boolean = false,
     ): PcmAudio {
         val plan = callPlanner.plan()
 
@@ -555,6 +559,12 @@ class GeminiTtsClient(
                 }
                 timeout { socketTimeoutMillis = GEMINI_TTS_SOCKET_TIMEOUT_MS }
                 plan.applyAuth(this)
+                // The shared proxy counts Settings previews in their own daily
+                // bucket. Google's own endpoint doesn't know the header, so a
+                // BYOK call never sends it.
+                if (preview && plan.endpoint != GeminiEndpoint.Direct) {
+                    headers.append(TTS_PURPOSE_HEADER, "preview")
+                }
                 contentType(ContentType.Application.Json)
                 setBody(
                     TtsRequest(

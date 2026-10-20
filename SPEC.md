@@ -239,6 +239,12 @@ family access*).
   typically within a day (disclosed as retained for abuse prevention). Signing out returns to an anonymous uid, which gets
   no free voice once the rollout is over, so signing out doesn't reset the
   cap either.
+- **Voice previews have their own daily bucket** (maintainer, 2026-10-20):
+  10 previews a day on top of the 5 casts, so trying voices and styles in
+  Settings doesn't spend the day's casts. The app labels a Settings preview
+  with a header and the proxy trusts it: a modified app could get up to 15
+  clips a day, a bounded cost not worth server-side checks. Previews vary by
+  locale, format and forecast, so they aren't cached server-side either.
 - **Per-account limits live in Firebase custom claims.** No TTS claim: the
   default free cap. A number: that cap. `unlimited`: no per-account count. An
   admin script sets them by email; the list of people lives only in

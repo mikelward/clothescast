@@ -69,6 +69,12 @@ The reservation is transactional:
    transactionally decrement so a Gemini hiccup doesn't burn a
    slot.
 
+A request sent with `X-TTS-Purpose: preview` (Settings voice previews)
+counts against a separate `quota/<key>__preview` doc capped at 10 per
+day instead, and its 429 body carries `"purpose": "preview"`. The
+header is trusted as sent: mislabeling casts as previews gains at most
+10 more clips a day.
+
 Successful responses carry `X-Daily-Quota-Limit: 5` and
 `X-Daily-Quota-Remaining: <n>` headers. The Android client
 (`core/data/.../tts/GeminiTtsClient.kt`) throws

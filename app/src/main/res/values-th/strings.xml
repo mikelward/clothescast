@@ -1194,7 +1194,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_president">ประธานาธิบดี</string>
     <string name="settings_tts_style_queen">พระราชินี</string>
     <string name="settings_tts_style_scifi_narrator">ผู้บรรยายไซไฟ</string>
-    <string name="settings_tts_style_spooky_narrator">ผู้บรรยายน่าขนลุก</string>
+    <string name="settings_tts_style_vampire">แวมไพร์</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">แสดงตอนนี้</string>
     <string name="today_clothes_promo_body">ClothesCast เลือกชุดตามชุดของกฎ ปรับอุณหภูมิและปรับแต่งตู้เสื้อผ้าของคุณในการตั้งค่าเสื้อผ้า</string>

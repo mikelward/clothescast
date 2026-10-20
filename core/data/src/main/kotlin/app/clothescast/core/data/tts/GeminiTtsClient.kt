@@ -114,11 +114,13 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS: String =
         "Christmas'. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"
 
-internal const val GEMINI_TTS_STYLE_DIRECTIVE_SPOOKY_NARRATOR: String =
-    "Read the following as a spooky Halloween narrator — hushed, eerie, and " +
-        "theatrically sinister, savouring each ominous pause. Brief in-character " +
-        "interjections such as a low, ghostly laugh are fine. No audio effects, " +
-        "background noise, or vinyl-style texture.\n\n"
+internal const val GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE: String =
+    "Read the following as a suave, centuries-old vampire count from a classic " +
+        "horror film — a slow, velvety Transylvanian accent with rolled Rs, " +
+        "aristocratic and darkly amused, relishing every word with theatrical " +
+        "menace. You may add brief in-character touches such as 'Good evening' " +
+        "or a low, sinister chuckle. No audio effects, background noise, or " +
+        "vinyl-style texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST: String =
     "Read the following as an exuberant New Year's Eve party host counting down " +
@@ -205,7 +207,7 @@ internal fun styleDirectiveFor(style: TtsStyle): String = when (style) {
     TtsStyle.FITNESS_INSTRUCTOR -> GEMINI_TTS_STYLE_DIRECTIVE_FITNESS_INSTRUCTOR
     TtsStyle.MORNING_PRESENTER -> GEMINI_TTS_STYLE_DIRECTIVE_MORNING_PRESENTER
     TtsStyle.FATHER_CHRISTMAS -> GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS
-    TtsStyle.SPOOKY_NARRATOR -> GEMINI_TTS_STYLE_DIRECTIVE_SPOOKY_NARRATOR
+    TtsStyle.VAMPIRE -> GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE
     TtsStyle.NEW_YEARS_HOST -> GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST
     TtsStyle.LEPRECHAUN -> GEMINI_TTS_STYLE_DIRECTIVE_LEPRECHAUN
     TtsStyle.KING -> GEMINI_TTS_STYLE_DIRECTIVE_KING

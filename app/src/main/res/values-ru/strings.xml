@@ -1249,7 +1249,7 @@ only the displayed label localizes.
     <string name="settings_tts_style_president">Президент</string>
     <string name="settings_tts_style_queen">Королева</string>
     <string name="settings_tts_style_scifi_narrator">Рассказчик научной фантастики</string>
-    <string name="settings_tts_style_spooky_narrator">Жуткий рассказчик</string>
+    <string name="settings_tts_style_vampire">Вампир</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Сейчас</string>
     <string name="today_clothes_promo_body">ClothesCast подбирает наряды по набору правил. Настрой температуры и персонализируй свой гардероб в настройках одежды.</string>

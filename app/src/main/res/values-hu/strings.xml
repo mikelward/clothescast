@@ -1187,7 +1187,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_tts_style_president">Elnök</string>
     <string name="settings_tts_style_queen">Királynő</string>
     <string name="settings_tts_style_scifi_narrator">Sci-fi narrátor</string>
-    <string name="settings_tts_style_spooky_narrator">Hátborzongató narrátor</string>
+    <string name="settings_tts_style_vampire">Vámpír</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Most</string>
     <string name="today_clothes_promo_body">A ClothesCast szabályok alapján választ ruhákat. Állítsd be a hőmérsékleteket, és szabd testre a ruhatárad a Ruhák beállításokban.</string>

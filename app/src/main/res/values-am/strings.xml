@@ -1162,7 +1162,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_tts_style_president">ፕሬዝዳንት</string>
     <string name="settings_tts_style_queen">ንግሥት</string>
     <string name="settings_tts_style_scifi_narrator">የሳይንስ ልብወለድ ተራኪ</string>
-    <string name="settings_tts_style_spooky_narrator">አስፈሪ ተራኪ</string>
+    <string name="settings_tts_style_vampire">ቫምፓየር</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">አሁንን አሳይ</string>
     <string name="today_clothes_promo_body">ClothesCast ከደንቦች ስብስብ ልብሶችን ይመርጣል። የሙቀት መጠኖችን አስተካክል እና በልብስ ቅንብር ውስጥ ልብስህን አበጅ።</string>

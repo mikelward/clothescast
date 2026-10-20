@@ -1356,7 +1356,7 @@ label localises.
     <string name="settings_tts_style_president">總統</string>
     <string name="settings_tts_style_queen">女王</string>
     <string name="settings_tts_style_scifi_narrator">科幻旁白</string>
-    <string name="settings_tts_style_spooky_narrator">詭異旁白</string>
+    <string name="settings_tts_style_vampire">吸血鬼</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">顯示目前</string>
     <string name="today_clothes_promo_body">ClothesCast 根據一組規則挑選搭配。在服裝設定中調整溫度並自訂你的衣櫥。</string>

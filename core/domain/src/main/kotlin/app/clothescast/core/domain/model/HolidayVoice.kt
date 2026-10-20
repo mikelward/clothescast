@@ -25,7 +25,7 @@ fun holidayTtsStyle(id: HolidayId): TtsStyle? = when (id) {
     HolidayId.TOWEL_DAY -> TtsStyle.SCIFI_NARRATOR
     HolidayId.TALK_LIKE_A_PIRATE_DAY -> TtsStyle.PIRATE
     HolidayId.UK_KINGS_BIRTHDAY -> TtsStyle.KING
-    HolidayId.HALLOWEEN -> TtsStyle.SPOOKY_NARRATOR
+    HolidayId.HALLOWEEN -> TtsStyle.VAMPIRE
     HolidayId.CHRISTMAS_DAY, HolidayId.BOXING_DAY -> TtsStyle.FATHER_CHRISTMAS
     else -> null
 }
@@ -46,6 +46,7 @@ val TtsStyle.suggestedVoiceGender: VoiceGender
         TtsStyle.PIRATE,
         TtsStyle.COWBOY,
         TtsStyle.LEPRECHAUN,
+        TtsStyle.VAMPIRE,
         -> VoiceGender.MALE
         TtsStyle.QUEEN -> VoiceGender.FEMALE
         else -> VoiceGender.NEUTRAL

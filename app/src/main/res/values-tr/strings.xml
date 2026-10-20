@@ -1194,7 +1194,7 @@ displayed label localizes.
     <string name="settings_tts_style_president">Başkan</string>
     <string name="settings_tts_style_queen">Kraliçe</string>
     <string name="settings_tts_style_scifi_narrator">Bilim kurgu anlatıcısı</string>
-    <string name="settings_tts_style_spooky_narrator">Korkutucu anlatıcı</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Şu anı göster</string>
     <string name="today_clothes_promo_body">ClothesCast kıyafetleri bir dizi kurala göre seçer. Sıcaklıkları ayarla ve Kıyafet ayarlarından gardırobunu özelleştir.</string>

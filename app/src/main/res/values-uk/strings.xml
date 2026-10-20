@@ -1193,7 +1193,7 @@ only the displayed label localizes.
     <string name="settings_tts_style_president">Президент</string>
     <string name="settings_tts_style_queen">Королева</string>
     <string name="settings_tts_style_scifi_narrator">Розповідач наукової фантастики</string>
-    <string name="settings_tts_style_spooky_narrator">Моторошний розповідач</string>
+    <string name="settings_tts_style_vampire">Вампір</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Показати зараз</string>
     <string name="today_clothes_promo_body">ClothesCast обирає одяг за правилами. Зміни температури та персоналізуй свій гардероб у налаштуваннях Одяг.</string>

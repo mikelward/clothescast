@@ -1263,7 +1263,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_tts_style_president">Predsjednik</string>
     <string name="settings_tts_style_queen">Kraljica</string>
     <string name="settings_tts_style_scifi_narrator">Pripovjedač znanstvene fantastike</string>
-    <string name="settings_tts_style_spooky_narrator">Sablasni pripovjedač</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Prikaži sada</string>
     <string name="today_clothes_promo_body">ClothesCast bira outfite po skupu pravila. Podesi temperature i prilagodi svoju garderobu u postavkama Odjeće.</string>

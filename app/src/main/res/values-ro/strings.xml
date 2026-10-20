@@ -1172,7 +1172,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_tts_style_president">Președinte</string>
     <string name="settings_tts_style_queen">Regină</string>
     <string name="settings_tts_style_scifi_narrator">Narator SF</string>
-    <string name="settings_tts_style_spooky_narrator">Narator înfricoșător</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Acum</string>
     <string name="today_clothes_promo_body">ClothesCast alege ținute pe baza unui set de reguli. Modifică temperaturile și personalizează-ți garderoba în setările Haine.</string>

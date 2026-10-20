@@ -1181,7 +1181,7 @@ What is NOT overridden, by design:
     <string name="settings_tts_style_president">Президент</string>
     <string name="settings_tts_style_queen">Кралица</string>
     <string name="settings_tts_style_scifi_narrator">Научнофантастичен разказвач</string>
-    <string name="settings_tts_style_spooky_narrator">Зловещ разказвач</string>
+    <string name="settings_tts_style_vampire">Вампир</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Покажи сега</string>
     <string name="today_clothes_promo_body">ClothesCast избира облекло по правила. Промени температурите и персонализирай гардероба си в настройките за Дрехи.</string>

@@ -1135,7 +1135,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_tts_style_president">President</string>
     <string name="settings_tts_style_queen">Reina</string>
     <string name="settings_tts_style_scifi_narrator">Narrador de ciència-ficció</string>
-    <string name="settings_tts_style_spooky_narrator">Narrador esgarrifós</string>
+    <string name="settings_tts_style_vampire">Vampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Mostra ara</string>
     <string name="today_clothes_promo_body">ClothesCast tria conjunts a partir d\'unes regles. Ajusta les temperatures i personalitza el teu vestuari a la configuració de Roba.</string>

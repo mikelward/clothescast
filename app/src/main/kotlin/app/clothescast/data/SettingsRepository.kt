@@ -1240,7 +1240,7 @@ class SettingsRepository(
             ?: TtsEngine.DEVICE
         val geminiVoice = this[GEMINI_VOICE]?.takeIf { it.isNotBlank() }
             ?: UserPreferences.DEFAULT_GEMINI_VOICE
-        val ttsStyle = this[TTS_STYLE]?.let { runCatching { TtsStyle.valueOf(it) }.getOrNull() }
+        val ttsStyle = this[TTS_STYLE]?.let { parseTtsStyle(it) }
             ?: TtsStyle.WEATHER_FORECASTER
         val voiceLocale = this[VOICE_LOCALE]?.let { runCatching { VoiceLocale.valueOf(it) }.getOrNull() }
             ?: VoiceLocale.SYSTEM
@@ -2430,6 +2430,14 @@ private const val NEW_UMBRELLA_DEFAULT_PCT = 10.0
 // user can override via the unit picker if needed — not worth the extra surface.
 // Internal so SettingsState can mirror the repository's defaults at construction
 // time, before the first DataStore emission lands.
+/**
+ * Reads a persisted [TtsStyle] name. `SPOOKY_NARRATOR` was replaced by
+ * [TtsStyle.VAMPIRE]; mapping it keeps a deliberate Halloween pick instead of
+ * silently resetting it to the forecaster.
+ */
+internal fun parseTtsStyle(name: String): TtsStyle? =
+    if (name == "SPOOKY_NARRATOR") TtsStyle.VAMPIRE else runCatching { TtsStyle.valueOf(name) }.getOrNull()
+
 internal fun defaultTemperatureUnitFor(locale: Locale): TemperatureUnit =
     if (locale.country == "US") TemperatureUnit.FAHRENHEIT else TemperatureUnit.CELSIUS
 

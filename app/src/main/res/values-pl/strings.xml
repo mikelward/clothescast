@@ -1242,7 +1242,7 @@ is unchanged; only the displayed label localizes.
     <string name="settings_tts_style_president">Prezydent</string>
     <string name="settings_tts_style_queen">Królowa</string>
     <string name="settings_tts_style_scifi_narrator">Narrator science fiction</string>
-    <string name="settings_tts_style_spooky_narrator">Straszny narrator</string>
+    <string name="settings_tts_style_vampire">Wampir</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Pokaż teraz</string>
     <string name="today_clothes_promo_body">ClothesCast wybiera stroje na podstawie zestawu reguł. Dostosuj temperatury i spersonalizuj swoją garderobę w ustawieniach Ubrania.</string>

@@ -49,12 +49,23 @@ class HolidayVoiceTest {
     @Test
     fun `a neutral persona leaves the voice untouched`() {
         val selection = resolveHolidayVoice(
+            HolidayId.NEW_YEARS_DAY,
+            "Despina",
+            TtsStyle.WEATHER_FORECASTER,
+        )
+        selection.style shouldBe TtsStyle.NEW_YEARS_HOST
+        selection.voiceName shouldBe "Despina"
+    }
+
+    @Test
+    fun `halloween's vampire swaps a female voice for a male one`() {
+        val selection = resolveHolidayVoice(
             HolidayId.HALLOWEEN,
             "Despina",
             TtsStyle.WEATHER_FORECASTER,
         )
-        selection.style shouldBe TtsStyle.SPOOKY_NARRATOR
-        selection.voiceName shouldBe "Despina"
+        selection.style shouldBe TtsStyle.VAMPIRE
+        selection.voiceName shouldBe "Charon"
     }
 
     @Test

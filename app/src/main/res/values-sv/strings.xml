@@ -1223,7 +1223,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_tts_style_president">President</string>
     <string name="settings_tts_style_queen">Drottning</string>
     <string name="settings_tts_style_scifi_narrator">Sci-fi-berättare</string>
-    <string name="settings_tts_style_spooky_narrator">Kuslig berättare</string>
+    <string name="settings_tts_style_vampire">Vampyr</string>
     <string name="today_chart_readout">%1$s · %2$s</string>
     <string name="today_chart_reset_to_now">Visa nu</string>
     <string name="today_clothes_promo_body">ClothesCast väljer outfits utifrån en uppsättning regler. Justera temperaturerna och anpassa din garderob i Klädinställningar.</string>

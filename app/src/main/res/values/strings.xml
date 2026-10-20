@@ -819,7 +819,7 @@
          promising less and delivering more is the safe direction (one spare
          slot absorbs the odd retry / bug), and the cap can move quietly in
          the proxy without re-translating. -->
-    <string name="settings_api_key_status_unset">4 free each day, get a key for more.</string>
+    <string name="settings_api_key_status_unset">5 free each day, get a key for more.</string>
     <string name="settings_api_key_placeholder">Paste your Gemini API key</string>
     <string name="settings_api_key_save">Save Gemini key</string>
     <string name="settings_api_key_replace">Replace Gemini key</string>

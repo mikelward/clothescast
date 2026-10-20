@@ -69,9 +69,10 @@ def main() -> None:
     print(f"\nFound {len(files)} clip(s). Press Enter after aplay finishes.\n")
 
     for i, path in enumerate(files, 1):
-        # The relative path keeps the locale folder (en-GB-bare/...), which
-        # the bare file name drops: every locale's clip shares a name.
-        label = str(path.relative_to(directory))
+        # Label with the directory passed in plus the path under it, so the
+        # locale folder shows however deep the clip is or which folder was
+        # passed: every locale's clip shares a file name.
+        label = f"{directory.resolve().name}/{path.relative_to(directory)}"
         print(f"[{i}/{len(files)}] {label}")
         play(path)
         result = prompt_rating(path)

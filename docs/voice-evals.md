@@ -545,6 +545,51 @@ Tracked in `GeminiTtsClient.kt` next to `DEFAULT_GEMINI_TTS_VOICE`.
 
 ---
 
+## Algenib: vampire persona and forecaster (2026-10)
+
+Algenib had never been tried before this round. It came up in
+`scripts/compare-persona-voices.py` while picking a voice for the
+Halloween vampire, then got a forecaster spot check.
+
+### Vampire persona (pinned to Algenib in #1319)
+
+| Voice | en-GB (5 takes) | en-US (3 takes) |
+|---|---|---|
+| Algenib | 9.2 (9, 10, 9, 8, 10) | 9.3 (9, 9, 10) |
+| Schedar | 9.2 (9, 10, 8, 9, 10) | 3.3 (1, 2, 7) |
+| Iapetus (previous pin) | 8.8 (9, 9, 9, 9, 8) | 4.0 (4, 3, 5) |
+| Enceladus | 8.8 (9, 10, 8, 8, 9) | 6.7 (7, 7, 6) |
+| Alnilam | 8.2 (10, 8, 6, 8, 9) | not run |
+| Orus, Charon, Rasalgethi | dropped after round 1 | not run |
+
+Schedar tied Algenib on en-GB and collapsed on en-US, which is why the
+pin went to Algenib.
+
+### Forecaster (#1320 adds it to the picker)
+
+Shipped accent and directive per locale (Despina not re-rated; it already ships):
+
+| Locale | Pair | Algenib |
+|---|---|---|
+| en-AU | no-variety + B3 | **8.5–9** (two listens) |
+| en-US | General American + B2 | 7 |
+| en-GB | bare + B2 | 5 ("pretty average") |
+
+Off the shipped path, en-GB-no-variety + B3 scored **7–7.5**, so Algenib's
+en-GB weakness is mostly the B2 directive, not the voice. en-GB still ships
+B2 for every voice, because B3 hurt Despina there in May. Before moving en-GB
+to B3, re-rate Despina (and the other shipped voices) on both directives.
+- Full-grid pass across locales: B3 scored 8–9 throughout; B1 and B2 dipped to
+  4 in one block.
+- German: sounded good on a quick device listen; unscored.
+
+The scores were quick single listens, not the multi-roll distributions
+used for the Despina default decision, so treat Algenib as a strong
+male alternative (best on en-AU) rather than a default contender until it
+gets that treatment.
+
+---
+
 ## Scripts
 
 | Script | Purpose |
@@ -552,5 +597,6 @@ Tracked in `GeminiTtsClient.kt` next to `DEFAULT_GEMINI_TTS_VOICE`.
 | `scripts/compare-tts-directives.py` | Generate clips for multiple directives × 2 voices in en-GB |
 | `scripts/compare-gemini-voices.py` | Generate one clip per voice for a single directive |
 | `scripts/eval-weather-report-style.py` | Generate clips for 7 candidates × 7 voices × 9 locales |
+| `scripts/compare-persona-voices.py` | Render one persona's real prompt in several voices, N rolls each |
 | `scripts/rate-tts-clips.py` | Play each clip with `aplay`, prompt for a score + notes |
 | `scripts/say.py` | One-shot helper for rapid prompt iteration (prints / plays a single clip) |

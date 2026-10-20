@@ -129,7 +129,7 @@ test("previews count in their own bucket; casts keep the caller's", () => {
 });
 
 test("previews get their own cap, unlimited stays unlimited", () => {
-  assert.equal(PREVIEW_DAILY_LIMIT, 10);
+  assert.equal(PREVIEW_DAILY_LIMIT, 5);
   assert.equal(limitForPurpose(DEFAULT_DAILY_LIMIT, "cast"), DEFAULT_DAILY_LIMIT);
   assert.equal(limitForPurpose(DEFAULT_DAILY_LIMIT, "preview"), PREVIEW_DAILY_LIMIT);
   assert.equal(limitForPurpose(50, "preview"), PREVIEW_DAILY_LIMIT);

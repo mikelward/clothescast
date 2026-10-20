@@ -21,7 +21,7 @@ Check verifies the request came from a genuine install of the app.
   `functions/README.md` → "Quota enforcement" for the doc shape and
   rollback semantics.
 - Settings voice previews (`X-TTS-Purpose: preview`) count in a sibling
-  `quota/<key>__preview` doc, capped at 10 per UTC day, so trying voices
+  `quota/<key>__preview` doc, capped at 5 per UTC day, so trying voices
   doesn't spend the day's casts. The header is trusted as sent.
 - Firebase App Check (Play Integrity in release, Debug provider in
   debug) blocks scraping and modded clients without holding up

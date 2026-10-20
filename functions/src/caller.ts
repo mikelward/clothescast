@@ -17,7 +17,7 @@ export const DEFAULT_DAILY_LIMIT = 5;
  * client could label casts as previews: the worst case is
  * DEFAULT_DAILY_LIMIT + PREVIEW_DAILY_LIMIT clips a day, bounded.
  */
-export const PREVIEW_DAILY_LIMIT = 10;
+export const PREVIEW_DAILY_LIMIT = 5;
 
 /** What a TTS request is for; each purpose has its own daily bucket. */
 export type TtsPurpose = "cast" | "preview";

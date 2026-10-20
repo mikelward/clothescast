@@ -27,6 +27,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
+import java.util.concurrent.CopyOnWriteArrayList
 
 class OpenMeteoClientTest {
     private val london = Location(latitude = 51.5074, longitude = -0.1278, displayName = "London")
@@ -59,7 +60,10 @@ class OpenMeteoClientTest {
 
     @Test
     fun `request hits open-meteo with required parameters`() = runTest {
-        val captured = mutableListOf<HttpRequestData>()
+        // fetchForecast fires the primary and confidence calls concurrently,
+        // and MockEngine records them on its own threads; a plain ArrayList
+        // could drop one.
+        val captured = CopyOnWriteArrayList<HttpRequestData>()
         val client = OpenMeteoClient(mockClient { captured += it })
 
         client.fetchForecast(london)

@@ -590,6 +590,33 @@ gets that treatment.
 
 ---
 
+## Untried voices on the shipped forecaster pairs (2026-10)
+
+Every voice not in the picker and not already ruled out, rendered once on
+each locale's shipped pair: en-AU no-variety + B3, en-GB bare + B2, en-US
+General American + B2. Single listens, rated as gut scores: "roughly
+indicative", not precise. Despina wasn't re-rated.
+
+| Voice | en-AU | en-GB | en-US | avg |
+|---|---|---|---|---|
+| Vindemiatrix (F) | 8 | 7 | 9 | **8.0** |
+| Enceladus (M) | 7 | 8 | 8 | 7.7 |
+| Rasalgethi (M) | 7 | 7 | 8 | 7.3 |
+| Algenib (M, for comparison) | 8.5–9 | 5 | 7 | ~6.9 |
+| Algieba (M) | 6 | 7 | 7 | 6.7 |
+| Alnilam (M) | 7 | 6 | 7 | 6.7 |
+| Sulafat (F) | 6 | 6 | 8 | 6.7 |
+| Schedar (M) | 6 | 5 | 8 | 6.3 |
+| Sadaltager (M) | 6 | 5 | 6 | 5.7 |
+
+None clears 8 in every locale, which the May picker voices did apart
+from Leda (kept on preference despite a 5–8 en-AU spread). The
+maintainer added the top three (Vindemiatrix, Enceladus, Rasalgethi) to the
+picker anyway, as options rather than defaults (#1325). A multi-roll pass
+would firm up these numbers.
+
+---
+
 ## Scripts
 
 | Script | Purpose |

@@ -60,6 +60,7 @@ import app.clothescast.update.AppUpdateChecker
 import com.google.android.gms.cast.framework.CastContext
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.Flow
@@ -362,6 +363,8 @@ class ClothesCastApplication : Application() {
 
     private val httpClient: HttpClient by lazy {
         HttpClient(OkHttp) {
+            // No default timeouts; lets a request (Gemini TTS) set its own.
+            install(HttpTimeout)
             install(ContentNegotiation) {
                 json(Json { ignoreUnknownKeys = true })
             }

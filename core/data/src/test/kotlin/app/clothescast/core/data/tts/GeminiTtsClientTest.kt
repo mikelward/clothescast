@@ -12,6 +12,7 @@ import io.kotest.matchers.string.shouldNotContain
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.HttpTimeoutCapability
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestData
 import io.ktor.http.HttpHeaders
@@ -72,6 +73,21 @@ class GeminiTtsClientTest {
         req.url.host shouldBe GEMINI_HOST
         req.url.encodedPath shouldBe "/v1beta/models/gemini-2.5-flash-preview-tts:generateContent"
         req.headers["x-goog-api-key"] shouldBe "test-key"
+    }
+
+    @Test
+    fun `request allows a slow synthesis longer than the default read timeout`() = runTest {
+        var captured: HttpRequestData? = null
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) { captured = it },
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "hello", style = TtsStyle.VAMPIRE)
+
+        val timeout = checkNotNull(captured).getCapabilityOrNull(HttpTimeoutCapability)
+        checkNotNull(timeout).socketTimeoutMillis shouldBe GEMINI_TTS_SOCKET_TIMEOUT_MS
+        (GEMINI_TTS_SOCKET_TIMEOUT_MS > 10_000L) shouldBe true
     }
 
     @Test

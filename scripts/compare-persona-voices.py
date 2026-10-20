@@ -15,12 +15,13 @@ Usage
 
 Output
 ------
-Writes <style>-<voice>-<roll>.wav into /tmp/tts-persona-<style>/ and prints
+Writes <style>-<voice>-<roll>.wav into /tmp/tts-persona-<style>-<locale>/
+(each locale its own directory, so a run never clears another's clips) and prints
 each clip's synthesis time. The app gives up on a request after
 GEMINI_TTS_SOCKET_TIMEOUT_MS, so a slow voice is worth noting.
 
 Rate them with:
-  python3 scripts/rate-tts-clips.py /tmp/tts-persona-vampire/
+  python3 scripts/rate-tts-clips.py /tmp/tts-persona-vampire-en-GB/
 """
 
 import argparse
@@ -183,7 +184,7 @@ def main() -> int:
     except ValueError as exc:
         print(exc, file=sys.stderr)
         return 2
-    out = args.out or pathlib.Path(f"/tmp/tts-persona-{style.lower()}")
+    out = args.out or pathlib.Path(f"/tmp/tts-persona-{style.lower()}-{args.locale}")
     out.mkdir(parents=True, exist_ok=True)
     # Clear this style's earlier clips so a rating pass never mixes in stale
     # voices, rolls or locales, or a previous file where this run's call failed.

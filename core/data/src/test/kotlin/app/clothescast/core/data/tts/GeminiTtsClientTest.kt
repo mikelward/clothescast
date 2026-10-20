@@ -91,7 +91,7 @@ class GeminiTtsClientTest {
     }
 
     @Test
-    fun `the vampire always speaks in Iapetus`() = runTest {
+    fun `the vampire always speaks in Algenib`() = runTest {
         var body: String? = null
         val client = GeminiTtsClient(
             httpClient = mockClient(SUCCESS_BODY) {
@@ -103,7 +103,7 @@ class GeminiTtsClientTest {
         )
 
         client.synthesize(text = "hello", voiceName = "Charon", style = TtsStyle.VAMPIRE)
-        checkNotNull(body).shouldContain("\"voiceName\":\"Iapetus\"")
+        checkNotNull(body).shouldContain("\"voiceName\":\"Algenib\"")
 
         client.synthesize(text = "hello", voiceName = "Charon", style = TtsStyle.PIRATE)
         checkNotNull(body).shouldContain("\"voiceName\":\"Charon\"")

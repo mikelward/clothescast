@@ -42,14 +42,14 @@ CLIENT_KT = REPO / "core/data/src/main/kotlin/app/clothescast/core/data/tts/Gemi
 MODEL = "gemini-2.5-flash-preview-tts"
 SAMPLE_RATE = 24_000
 
-# Iapetus is the current vampire pin and Charon the old holiday default, as
+# Algenib is the current vampire pin and Charon the old holiday default, as
 # baselines. The rest are Gemini's deeper or more characterful male voices,
 # including ones the everyday picker dropped for being theatrical (Orus),
 # which is the point for a persona. Descriptors are Google's.
 DEFAULT_VOICES = [
-    "Iapetus",     # Clear (current vampire pin)
+    "Iapetus",     # Clear (previous vampire pin)
     "Charon",      # Informative (previous holiday default)
-    "Algenib",     # Gravelly
+    "Algenib",     # Gravelly (current vampire pin)
     "Orus",        # Firm
     "Enceladus",   # Breathy
     "Alnilam",     # Firm

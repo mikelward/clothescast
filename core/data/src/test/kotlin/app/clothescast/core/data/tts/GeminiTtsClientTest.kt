@@ -60,6 +60,38 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `a preview on the shared proxy is labeled, a cast is not`() = runTest {
+        val headers = mutableListOf<String?>()
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) { headers += it.headers[TTS_PURPOSE_HEADER] },
+            callPlanner = {
+                GeminiCallPlan(
+                    endpoint = GeminiEndpoint(host = "example-proxy.test", apiVersion = "v1"),
+                    applyAuth = {},
+                )
+            },
+        )
+
+        client.synthesize(text = "hello", preview = true)
+        client.synthesize(text = "hello")
+
+        headers shouldBe listOf("preview", null)
+    }
+
+    @Test
+    fun `a BYOK preview goes to Google without the purpose header`() = runTest {
+        var header: String? = "unset"
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) { header = it.headers[TTS_PURPOSE_HEADER] },
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "hello", preview = true)
+
+        header shouldBe null
+    }
+
+    @Test
     fun `posts to the default tts model endpoint with the api key header`() = runTest {
         var captured: HttpRequestData? = null
         val client = GeminiTtsClient(

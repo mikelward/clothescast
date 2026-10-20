@@ -10,6 +10,40 @@ import { createHmac } from "node:crypto";
 /** The free daily cap for anyone without a `ttsDailyLimit` claim. */
 export const DEFAULT_DAILY_LIMIT = 5;
 
+/**
+ * The separate daily cap for voice previews (the client sends
+ * `X-TTS-Purpose: preview` from Settings), so trying voices on day one
+ * doesn't spend the casts. The header is client-chosen, so a modified
+ * client could label casts as previews: the worst case is
+ * DEFAULT_DAILY_LIMIT + PREVIEW_DAILY_LIMIT clips a day, bounded.
+ */
+export const PREVIEW_DAILY_LIMIT = 10;
+
+/** What a TTS request is for; each purpose has its own daily bucket. */
+export type TtsPurpose = "cast" | "preview";
+
+/** Reads `X-TTS-Purpose`; anything but exactly "preview" is a cast. */
+export function ttsPurpose(header: string | null | undefined): TtsPurpose {
+  return header?.trim().toLowerCase() === "preview" ? "preview" : "cast";
+}
+
+/**
+ * The Firestore doc id for a caller's bucket. Casts keep the caller's own
+ * key, so existing counts carry over; previews get a suffixed sibling.
+ */
+export function quotaBucketKey(quotaKey: string, purpose: TtsPurpose): string {
+  return purpose === "preview" ? `${quotaKey}__preview` : quotaKey;
+}
+
+/**
+ * The daily cap for a purpose. An unlimited account stays unlimited for
+ * both; any numeric cast limit leaves previews at PREVIEW_DAILY_LIMIT.
+ */
+export function limitForPurpose(castLimit: TtsLimit, purpose: TtsPurpose): TtsLimit {
+  if (castLimit === "unlimited") return "unlimited";
+  return purpose === "preview" ? PREVIEW_DAILY_LIMIT : castLimit;
+}
+
 /** A daily cap, or no per-account count at all. */
 export type TtsLimit = number | "unlimited";
 

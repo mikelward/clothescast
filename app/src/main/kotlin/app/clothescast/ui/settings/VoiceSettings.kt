@@ -788,6 +788,7 @@ internal suspend fun runTtsPreview(
                             app.geminiTtsClient,
                             voiceName = geminiVoice,
                             style = ttsStyle,
+                            preview = true,
                         ).speak(utterance.text, utterance.locale)
                     TtsEngine.DEVICE ->
                         app.deviceTtsSpeaker(deviceVoice).speak(utterance.text, utterance.locale)

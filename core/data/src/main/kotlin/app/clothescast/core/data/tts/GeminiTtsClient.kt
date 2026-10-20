@@ -10,6 +10,7 @@ import app.clothescast.core.data.insight.MissingApiKeyException
 import app.clothescast.core.domain.model.TtsStyle
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.timeout
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -470,6 +471,14 @@ private val ACCENT_DIRECTIVES: Map<String, String> = mapOf(
 )
 
 /**
+ * Read timeout for a TTS request. generateContent returns nothing until the
+ * whole clip is synthesized, and a slow, drawn-out persona (the Halloween
+ * vampire) can take longer than OkHttp's 10 s default, which timed out every
+ * attempt and fell back to the device voice.
+ */
+internal const val GEMINI_TTS_SOCKET_TIMEOUT_MS: Long = 45_000L
+
+/**
  * Calls Gemini's audio-output model (e.g. `gemini-2.5-flash-preview-tts`). The
  * target host and request-time auth headers come from [callPlanner] — `:app`'s
  * planner picks between the developer's Cloud Function proxy (default) and the
@@ -533,6 +542,7 @@ class GeminiTtsClient(
                     host = plan.endpoint.host
                     path(plan.endpoint.apiVersion, "models", "$model:generateContent")
                 }
+                timeout { socketTimeoutMillis = GEMINI_TTS_SOCKET_TIMEOUT_MS }
                 plan.applyAuth(this)
                 contentType(ContentType.Application.Json)
                 setBody(

@@ -39,10 +39,15 @@ data class TtsVoiceOption(
 // picker to voices the eval has actually validated). Earlier drops stand:
 // Orus (theatrical), Achird (vowel issues), Zephyr / Puck / Fenrir
 // (theatrical / excitable). See docs/voice-evals.md for the data.
+//
+// Algenib joined after topping the vampire persona rounds in
+// scripts/compare-persona-voices.py (it is that persona's pinned voice); it
+// sits after Charon so Charon stays the first male voice a holiday picks.
 val GEMINI_VOICES: List<TtsVoiceOption> = listOf(
     TtsVoiceOption("Despina", "Despina — Smooth", VoiceGender.FEMALE),
     TtsVoiceOption("Charon", "Charon — Informative", VoiceGender.MALE),
     TtsVoiceOption("Iapetus", "Iapetus — Clear", VoiceGender.MALE),
+    TtsVoiceOption("Algenib", "Algenib — Gravelly", VoiceGender.MALE),
     TtsVoiceOption("Kore", "Kore — Firm", VoiceGender.FEMALE),
     TtsVoiceOption("Erinome", "Erinome — Clear", VoiceGender.FEMALE),
     TtsVoiceOption("Aoede", "Aoede — Breezy", VoiceGender.FEMALE),

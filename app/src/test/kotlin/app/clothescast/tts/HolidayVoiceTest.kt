@@ -47,6 +47,22 @@ class HolidayVoiceTest {
     }
 
     @Test
+    fun `algenib counts as male, so a male persona keeps it`() {
+        val selection = resolveHolidayVoice(
+            HolidayId.US_PRESIDENTS_DAY,
+            "Algenib",
+            TtsStyle.WEATHER_FORECASTER,
+        )
+        selection shouldBe GeminiVoiceSelection("Algenib", TtsStyle.PRESIDENT)
+    }
+
+    @Test
+    fun `a female voice still switches to charon, not algenib`() {
+        resolveHolidayVoice(HolidayId.US_PRESIDENTS_DAY, "Despina", TtsStyle.WEATHER_FORECASTER)
+            .voiceName shouldBe "Charon"
+    }
+
+    @Test
     fun `a neutral persona leaves the voice untouched`() {
         val selection = resolveHolidayVoice(
             HolidayId.NEW_YEARS_DAY,

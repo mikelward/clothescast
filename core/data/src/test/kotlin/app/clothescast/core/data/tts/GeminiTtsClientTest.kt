@@ -91,6 +91,25 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `the vampire always speaks in Iapetus`() = runTest {
+        var body: String? = null
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) {
+                body = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
+                    .bytes()
+                    .toString(Charsets.UTF_8)
+            },
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "hello", voiceName = "Charon", style = TtsStyle.VAMPIRE)
+        checkNotNull(body).shouldContain("\"voiceName\":\"Iapetus\"")
+
+        client.synthesize(text = "hello", voiceName = "Charon", style = TtsStyle.PIRATE)
+        checkNotNull(body).shouldContain("\"voiceName\":\"Charon\"")
+    }
+
+    @Test
     fun `request body includes responseModalities AUDIO`() = runTest {
         // Regression for the kotlinx.serialization `encodeDefaults = false` trap:
         // when the runtime value equals the declared default, the field is dropped

@@ -196,6 +196,17 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_SPORTSCASTER: String =
         "are fine. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"
 
+/**
+ * A voice a persona always speaks in, overriding the user's pick, or null to
+ * keep it. The vampire is pinned to Iapetus by listening preference: Charon,
+ * the first male voice the holiday switch would otherwise take, read the
+ * count less convincingly.
+ */
+internal fun pinnedVoiceFor(style: TtsStyle): String? = when (style) {
+    TtsStyle.VAMPIRE -> "Iapetus"
+    else -> null
+}
+
 internal fun styleDirectiveFor(style: TtsStyle): String = when (style) {
     TtsStyle.WEATHER_FORECASTER -> GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER
     TtsStyle.PIRATE -> GEMINI_TTS_STYLE_DIRECTIVE_PIRATE
@@ -554,7 +565,7 @@ class GeminiTtsClient(
                             responseModalities = listOf("AUDIO"),
                             speechConfig = SpeechConfig(
                                 voiceConfig = VoiceConfig(
-                                    prebuiltVoiceConfig = PrebuiltVoiceConfig(voiceName),
+                                    prebuiltVoiceConfig = PrebuiltVoiceConfig(pinnedVoiceFor(style) ?: voiceName),
                                 ),
                             ),
                         ),

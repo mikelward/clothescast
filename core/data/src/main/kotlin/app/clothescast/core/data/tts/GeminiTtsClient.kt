@@ -115,12 +115,13 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS: String =
         "texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE: String =
-    "Read the following as a suave, centuries-old vampire count from a classic " +
-        "horror film — a slow, velvety Transylvanian accent with rolled Rs, " +
-        "aristocratic and darkly amused, relishing every word with theatrical " +
-        "menace. You may add brief in-character touches such as 'Good evening' " +
-        "or a low, sinister chuckle. No audio effects, background noise, or " +
-        "vinyl-style texture.\n\n"
+    "Read the following as a gloriously over-the-top vampire count from an old " +
+        "black-and-white horror film — a thick, exaggerated Transylvanian accent " +
+        "with heavily rolled Rs and drawn-out vowels, dripping with theatrical " +
+        "menace and aristocratic relish, as if the weather were a delicious dark " +
+        "secret. Linger dramatically on ominous words. You may add brief " +
+        "in-character touches such as 'Goood eeevening' or a slow, sinister " +
+        "laugh. No audio effects, background noise, or vinyl-style texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST: String =
     "Read the following as an exuberant New Year's Eve party host counting down " +

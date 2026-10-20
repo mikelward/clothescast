@@ -198,12 +198,12 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_SPORTSCASTER: String =
 
 /**
  * A voice a persona always speaks in, overriding the user's pick, or null to
- * keep it. The vampire is pinned to Iapetus by listening preference: Charon,
- * the first male voice the holiday switch would otherwise take, read the
- * count less convincingly.
+ * keep it. The vampire is pinned to Algenib, the top-rated voice in
+ * scripts/compare-persona-voices.py's rounds. Charon, the first male voice
+ * the holiday switch would otherwise take, read the count less convincingly.
  */
 internal fun pinnedVoiceFor(style: TtsStyle): String? = when (style) {
-    TtsStyle.VAMPIRE -> "Iapetus"
+    TtsStyle.VAMPIRE -> "Algenib"
     else -> null
 }
 

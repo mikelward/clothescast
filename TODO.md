@@ -953,6 +953,16 @@ Open work:
 
 ## Decisions needing review
 
+- [ ] **Weather alerts proxy: no server cache, and a 120-a-day cap**
+      (autopilot, 2026-10-22). `weatherAlerts` forwards every lookup, because
+      the Maps Platform caching terms for alerts are unchecked and `SPEC.md`
+      requires checking them before any server-side cache. Its own cap is 120
+      lookups per account per UTC day: an hourly background check plus app
+      opens is about 48 a device at worst, so two devices fit. Alternative: the
+      15-minute in-memory cache in docs/ALERTS.md (fewer billed calls when
+      several people share a place), and a cap sized to one device (60).
+      Reversible: both are one constant or one wrapper in
+      `functions/src/index.ts`, redeployed.
 - [ ] **Smart Home: a broker change forgets the Home Assistant cleanup list** (autopilot, PR #1261). Saving MQTT settings with a different host or port empties the list of old topics to clear, so tombstones never go to a broker that didn't publish them (and can't delete another phone's configs there). The old broker keeps its device, as switching brokers always has. Alternative: record the broker with each topic and clear only there, which costs a storage format and still can't reach a broker you've left. Reversible: the set is a single preference, and recording brokers later only adds to it.
 - [ ] **Decide whether "we don't hold a user's data captive" belongs in this
       file's quality bar, not only in `MONETIZATION.md`.** Recorded 2026-09-03

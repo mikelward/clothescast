@@ -1347,4 +1347,68 @@ Not overridden by design:
     <string name="settings_forecasters_google_probe_failed_http">Google के पूर्वानुमान तक नहीं पहुंचा जा सका (HTTP %1$d)। जब तक यह ठीक नहीं होता, इसे बाहर रखा जाएगा।</string>
     <string name="settings_forecasters_google_probe_forbidden">Google ने आपकी कुंजी अस्वीकार कर दी। Google Cloud में, कुंजी के प्रोजेक्ट के लिए Weather API और बिलिंग सक्षम करें, और सुनिश्चित करें कि कुंजी इसे बाहर करने के लिए प्रतिबंधित नहीं है। तब तक, Google आपके पूर्वानुमान से बाहर रहेगा।</string>
     <string name="settings_forecasters_google_probe_retry">फिर से जांचें</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">चेतावनियाँ</string>
+    <string name="settings_root_alerts_subtitle">आधिकारिक मौसम चेतावनियाँ</string>
+    <string name="settings_page_alerts">चेतावनी सेटिंग</string>
+    <string name="settings_weather_alerts_title">मौसम चेतावनियाँ</string>
+    <string name="settings_weather_alerts_summary">आज स्क्रीन पर आपके स्थान की आधिकारिक चेतावनियाँ।</string>
+    <string name="settings_weather_alerts_sign_in">मौसम चेतावनियाँ पाने के लिए Google से साइन इन करें।</string>
+    <string name="settings_alerts_notify_title">मुझे सूचना दें</string>
+    <string name="settings_alerts_notify_red">केवल लाल</string>
+    <string name="settings_alerts_notify_orange_red">नारंगी और लाल</string>
+    <string name="settings_alerts_notify_all">सभी स्तर</string>
+    <string name="settings_alerts_notify_none">कोई नहीं</string>
+    <string name="settings_alerts_channel">चेतावनी ध्वनि और लॉक स्क्रीन</string>
+    <string name="settings_alerts_notification_permission">सूचना अनुमति के बिना, गंभीर मौसम चेतावनियाँ आप तक नहीं पहुंच सकतीं। अनुमति दें ताकि वे पहुंच सकें।</string>
+    <string name="settings_alerts_status_checked">पिछली जांच %1$s</string>
+    <string name="settings_alerts_status_unsupported">इस स्थान के लिए चेतावनियाँ उपलब्ध नहीं हैं।</string>
+    <string name="settings_alerts_status_failed">चेतावनियों की जांच नहीं हो सकी। जल्द ही फिर कोशिश होगी।</string>
+    <string name="settings_alerts_status_waiting">चेतावनियों की जांच हो रही है…</string>
+    <string name="today_alerts_promo_title">मौसम चेतावनियाँ पाएँ</string>
+    <string name="today_alerts_promo_body">आप जहाँ हैं वहाँ की आधिकारिक चेतावनियाँ, गंभीर चेतावनियों की सूचना के साथ।</string>
+    <string name="today_alerts_promo_cta">चेतावनी सेटिंग्स</string>
+    <string name="today_alerts_promo_dismiss">बंद करें</string>
+    <string name="notification_channel_weather_alerts_name">मौसम चेतावनियाँ</string>
+    <string name="notification_channel_weather_alerts_description">आधिकारिक मौसम सेवाओं से आपके स्थान के लिए गंभीर मौसम चेतावनियाँ।</string>
+    <!-- "तेज़ हवा की नारंगी चेतावनी": hazards take the oblique form before की;
+         levels agree with the feminine चेतावनी. -->
+    <string name="weather_alert_title">%2$s की %1$s चेतावनी</string>
+    <string name="weather_alert_level_yellow">पीली</string>
+    <string name="weather_alert_level_amber">नारंगी</string>
+    <string name="weather_alert_level_orange">नारंगी</string>
+    <string name="weather_alert_level_red">लाल</string>
+    <string name="weather_alert_hazard_wind">तेज़ हवा</string>
+    <string name="weather_alert_hazard_rain">बारिश</string>
+    <string name="weather_alert_hazard_snow_and_ice">बर्फ़ और पाले</string>
+    <string name="weather_alert_hazard_thunderstorm">गरज-चमक</string>
+    <string name="weather_alert_hazard_fog">कोहरे</string>
+    <string name="weather_alert_hazard_heat">गर्मी</string>
+    <string name="weather_alert_hazard_cold">ठंड</string>
+    <string name="weather_alert_hazard_coastal">तटीय ख़तरे</string>
+    <string name="weather_alert_hazard_flood">बाढ़</string>
+    <string name="weather_alert_hazard_wildfire">जंगल की आग</string>
+    <string name="weather_alert_hazard_avalanche">हिमस्खलन</string>
+    <string name="weather_alert_hazard_storm">तूफ़ान</string>
+    <string name="weather_alert_hazard_tornado">बवंडर</string>
+    <string name="weather_alert_hazard_hail">ओलावृष्टि</string>
+    <string name="weather_alert_hazard_dust">धूल भरी आंधी</string>
+    <string name="weather_alert_title_fallback">मौसम चेतावनी</string>
+    <string name="weather_alert_title_fallback_severe">गंभीर मौसम चेतावनी</string>
+    <string name="weather_alert_title_fallback_extreme">चरम मौसम चेतावनी</string>
+    <string name="weather_alert_level_info_description">मामूली मौसम चेतावनी</string>
+    <string name="weather_alert_level_yellow_description">मौसम चेतावनी</string>
+    <string name="weather_alert_level_orange_description">गंभीर मौसम चेतावनी</string>
+    <string name="weather_alert_level_red_description">चरम मौसम चेतावनी</string>
+    <string name="weather_alert_until">%1$s तक</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">%1$s खोलें</string>
+    <string name="weather_alert_open_source_fallback">विवरण</string>
+    <string name="weather_alert_expand">विवरण दिखाएँ</string>
+    <string name="weather_alert_collapse">विवरण छुपाएँ</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d और चेतावनी</item>
+        <item quantity="other">%d और चेतावनियाँ</item>
+    </plurals>
 </resources>

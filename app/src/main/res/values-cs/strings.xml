@@ -1327,4 +1327,70 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_forecasters_google_probe_failed_http">Předpověď Google se nepodařilo získat (HTTP %1$d). Bude vynechána, dokud se to nevyřeší.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google váš klíč odmítl. V Google Cloud povolte Weather API a fakturaci pro projekt klíče a ujistěte se, že klíč není omezen tak, aby jej vylučoval. Do té doby bude Google z vaší předpovědi vynechán.</string>
     <string name="settings_forecasters_google_probe_retry">Zkontrolovat znovu</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Výstrahy</string>
+    <string name="settings_root_alerts_subtitle">Oficiální meteorologické výstrahy</string>
+    <string name="settings_page_alerts">Nastavení výstrah</string>
+    <string name="settings_weather_alerts_title">Meteorologické výstrahy</string>
+    <string name="settings_weather_alerts_summary">Oficiální výstrahy pro tvou polohu na obrazovce Dnes.</string>
+    <string name="settings_weather_alerts_sign_in">Přihlas se přes Google a dostávej meteorologické výstrahy.</string>
+    <string name="settings_alerts_notify_title">Upozorňovat na</string>
+    <string name="settings_alerts_notify_red">Jen červené</string>
+    <string name="settings_alerts_notify_orange_red">Oranžové a červené</string>
+    <string name="settings_alerts_notify_all">Všechny stupně</string>
+    <string name="settings_alerts_notify_none">Neupozorňovat</string>
+    <string name="settings_alerts_channel">Zvuk výstrah a obrazovka uzamčení</string>
+    <string name="settings_alerts_notification_permission">Bez oprávnění k oznámením se k tobě výstrahy před nebezpečným počasím nedostanou. Povol ho, aby se dostaly.</string>
+    <string name="settings_alerts_status_checked">Poslední kontrola: %1$s</string>
+    <string name="settings_alerts_status_unsupported">Výstrahy pro tuto polohu nejsou k dispozici.</string>
+    <string name="settings_alerts_status_failed">Výstrahy se nepodařilo zkontrolovat. Brzy to zkusíme znovu.</string>
+    <string name="settings_alerts_status_waiting">Kontrola výstrah…</string>
+    <string name="today_alerts_promo_title">Dostávej meteorologické výstrahy</string>
+    <string name="today_alerts_promo_body">Oficiální výstrahy pro místo, kde jsi, a oznámení o nebezpečných.</string>
+    <string name="today_alerts_promo_cta">Nastavení výstrah</string>
+    <string name="today_alerts_promo_dismiss">Zavřít</string>
+    <string name="notification_channel_weather_alerts_name">Meteorologické výstrahy</string>
+    <string name="notification_channel_weather_alerts_description">Výstrahy před nebezpečným počasím pro tvou polohu od oficiálních meteorologických služeb.</string>
+    <!-- "Oranžová výstraha před větrem": the level is a feminine adjective
+         agreeing with "výstraha"; hazards are instrumental after "před". -->
+    <string name="weather_alert_title">%1$s výstraha před %2$s</string>
+    <string name="weather_alert_level_yellow">Žlutá</string>
+    <string name="weather_alert_level_amber">Oranžová</string>
+    <string name="weather_alert_level_orange">Oranžová</string>
+    <string name="weather_alert_level_red">Červená</string>
+    <string name="weather_alert_hazard_wind">větrem</string>
+    <string name="weather_alert_hazard_rain">deštěm</string>
+    <string name="weather_alert_hazard_snow_and_ice">sněhem a náledím</string>
+    <string name="weather_alert_hazard_thunderstorm">bouřkami</string>
+    <string name="weather_alert_hazard_fog">mlhou</string>
+    <string name="weather_alert_hazard_heat">vedrem</string>
+    <string name="weather_alert_hazard_cold">mrazem</string>
+    <string name="weather_alert_hazard_coastal">pobřežními jevy</string>
+    <string name="weather_alert_hazard_flood">povodněmi</string>
+    <string name="weather_alert_hazard_wildfire">požáry</string>
+    <string name="weather_alert_hazard_avalanche">lavinami</string>
+    <string name="weather_alert_hazard_storm">bouří</string>
+    <string name="weather_alert_hazard_tornado">tornádem</string>
+    <string name="weather_alert_hazard_hail">krupobitím</string>
+    <string name="weather_alert_hazard_dust">prachovou bouří</string>
+    <string name="weather_alert_title_fallback">Meteorologická výstraha</string>
+    <string name="weather_alert_title_fallback_severe">Výstraha před nebezpečným počasím</string>
+    <string name="weather_alert_title_fallback_extreme">Výstraha před velmi nebezpečným počasím</string>
+    <string name="weather_alert_level_info_description">Méně závažná meteorologická výstraha</string>
+    <string name="weather_alert_level_yellow_description">Meteorologická výstraha</string>
+    <string name="weather_alert_level_orange_description">Výstraha před nebezpečným počasím</string>
+    <string name="weather_alert_level_red_description">Výstraha před velmi nebezpečným počasím</string>
+    <string name="weather_alert_until">Do %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Otevřít %1$s</string>
+    <string name="weather_alert_open_source_fallback">Podrobnosti</string>
+    <string name="weather_alert_expand">Zobrazit podrobnosti</string>
+    <string name="weather_alert_collapse">Skrýt podrobnosti</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Ještě %d výstraha</item>
+        <item quantity="few">Ještě %d výstrahy</item>
+        <item quantity="many">Ještě %d výstrahy</item>
+        <item quantity="other">Ještě %d výstrah</item>
+    </plurals>
 </resources>

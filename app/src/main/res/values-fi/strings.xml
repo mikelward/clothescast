@@ -1324,4 +1324,67 @@ displayed label localizes.
     <string name="settings_forecasters_google_probe_failed_http">Googlen ennustetta ei tavoitettu (HTTP %1$d). Se jätetään pois, kunnes tämä korjaantuu.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google hylkäsi avaimesi. Ota Google Cloudissa käyttöön Weather API ja laskutus avaimen projektille, ja varmista, ettei avainta ole rajoitettu sulkemaan sitä pois. Siihen asti Google jätetään pois ennusteestasi.</string>
     <string name="settings_forecasters_google_probe_retry">Tarkista uudelleen</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Varoitukset</string>
+    <string name="settings_root_alerts_subtitle">Viralliset säävaroitukset</string>
+    <string name="settings_page_alerts">Varoitusasetukset</string>
+    <string name="settings_weather_alerts_title">Säävaroitukset</string>
+    <string name="settings_weather_alerts_summary">Sijaintisi viralliset varoitukset Tänään-näytöllä.</string>
+    <string name="settings_weather_alerts_sign_in">Kirjaudu Googlella, niin saat säävaroitukset.</string>
+    <string name="settings_alerts_notify_title">Ilmoita minulle</string>
+    <string name="settings_alerts_notify_red">Vain punaiset</string>
+    <string name="settings_alerts_notify_orange_red">Oranssit ja punaiset</string>
+    <string name="settings_alerts_notify_all">Kaikki tasot</string>
+    <string name="settings_alerts_notify_none">Ei mitään</string>
+    <string name="settings_alerts_channel">Varoitusten ääni ja lukitusnäyttö</string>
+    <string name="settings_alerts_notification_permission">Ilman ilmoituslupaa vakavat säävaroitukset eivät tavoita sinua. Salli se, jotta ne tavoittavat sinut.</string>
+    <string name="settings_alerts_status_checked">Viimeksi tarkistettu %1$s</string>
+    <string name="settings_alerts_status_unsupported">Varoitukset eivät ole käytettävissä tässä sijainnissa.</string>
+    <string name="settings_alerts_status_failed">Varoitusten tarkistus epäonnistui. Yritetään pian uudelleen.</string>
+    <string name="settings_alerts_status_waiting">Tarkistetaan varoituksia…</string>
+    <string name="today_alerts_promo_title">Ota säävaroitukset käyttöön</string>
+    <string name="today_alerts_promo_body">Sijaintisi viralliset varoitukset ja ilmoitukset vakavista.</string>
+    <string name="today_alerts_promo_cta">Varoitukset-asetukset</string>
+    <string name="today_alerts_promo_dismiss">Sulje</string>
+    <string name="notification_channel_weather_alerts_name">Säävaroitukset</string>
+    <string name="notification_channel_weather_alerts_description">Virallisten sääpalvelujen vakavat säävaroitukset sijainnillesi.</string>
+    <!-- "Oranssi tuulivaroitus": level adjective + hazard as compound stem, as FMI phrases it. -->
+    <string name="weather_alert_title">%1$s %2$svaroitus</string>
+    <string name="weather_alert_level_yellow">Keltainen</string>
+    <string name="weather_alert_level_amber">Oranssi</string>
+    <string name="weather_alert_level_orange">Oranssi</string>
+    <string name="weather_alert_level_red">Punainen</string>
+    <string name="weather_alert_hazard_wind">tuuli</string>
+    <string name="weather_alert_hazard_rain">sade</string>
+    <string name="weather_alert_hazard_snow_and_ice">lumi- ja liukkaus</string>
+    <string name="weather_alert_hazard_thunderstorm">ukkos</string>
+    <string name="weather_alert_hazard_fog">sumu</string>
+    <string name="weather_alert_hazard_heat">helle</string>
+    <string name="weather_alert_hazard_cold">pakkas</string>
+    <string name="weather_alert_hazard_coastal">rannikko</string>
+    <string name="weather_alert_hazard_flood">tulva</string>
+    <string name="weather_alert_hazard_wildfire">maastopalo</string>
+    <string name="weather_alert_hazard_avalanche">lumivyöry</string>
+    <string name="weather_alert_hazard_storm">myrsky</string>
+    <string name="weather_alert_hazard_tornado">tornado</string>
+    <string name="weather_alert_hazard_hail">rae</string>
+    <string name="weather_alert_hazard_dust">pöly</string>
+    <string name="weather_alert_title_fallback">Säävaroitus</string>
+    <string name="weather_alert_title_fallback_severe">Vakava säävaroitus</string>
+    <string name="weather_alert_title_fallback_extreme">Äärimmäinen säävaroitus</string>
+    <string name="weather_alert_level_info_description">Lievä säävaroitus</string>
+    <string name="weather_alert_level_yellow_description">Säävaroitus</string>
+    <string name="weather_alert_level_orange_description">Vakava säävaroitus</string>
+    <string name="weather_alert_level_red_description">Äärimmäinen säävaroitus</string>
+    <string name="weather_alert_until">%1$s asti</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Avaa %1$s</string>
+    <string name="weather_alert_open_source_fallback">Tiedot</string>
+    <string name="weather_alert_expand">Näytä tiedot</string>
+    <string name="weather_alert_collapse">Piilota tiedot</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d muu varoitus</item>
+        <item quantity="other">%d muuta varoitusta</item>
+    </plurals>
 </resources>

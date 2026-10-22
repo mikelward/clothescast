@@ -1372,4 +1372,70 @@ only the displayed label localizes.
     <string name="settings_forecasters_google_probe_failed_http">Не удалось получить прогноз Google (HTTP %1$d). Он будет исключён, пока проблема не устранится.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google отклонил ваш ключ. В Google Cloud включите Weather API и биллинг для проекта ключа и убедитесь, что ключ не ограничен так, чтобы исключать его. До тех пор Google исключён из вашего прогноза.</string>
     <string name="settings_forecasters_google_probe_retry">Проверить снова</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Предупреждения</string>
+    <string name="settings_root_alerts_subtitle">Официальные предупреждения о погоде</string>
+    <string name="settings_page_alerts">Настройки предупреждений</string>
+    <string name="settings_weather_alerts_title">Предупреждения о погоде</string>
+    <string name="settings_weather_alerts_summary">Официальные предупреждения для твоего местоположения на экране «Сегодня».</string>
+    <string name="settings_weather_alerts_sign_in">Войди через Google, чтобы получать предупреждения о погоде.</string>
+    <string name="settings_alerts_notify_title">Уведомлять</string>
+    <string name="settings_alerts_notify_red">Только о красных</string>
+    <string name="settings_alerts_notify_orange_red">Об оранжевых и красных</string>
+    <string name="settings_alerts_notify_all">Обо всех уровнях</string>
+    <string name="settings_alerts_notify_none">Никогда</string>
+    <string name="settings_alerts_channel">Звук предупреждений и экран блокировки</string>
+    <string name="settings_alerts_notification_permission">Без разрешения на уведомления предупреждения об опасной погоде до тебя не дойдут. Разреши уведомления, чтобы получать их.</string>
+    <string name="settings_alerts_status_checked">Последняя проверка: %1$s</string>
+    <string name="settings_alerts_status_unsupported">Для этого местоположения предупреждения недоступны.</string>
+    <string name="settings_alerts_status_failed">Не удалось проверить предупреждения. Скоро попробуем снова.</string>
+    <string name="settings_alerts_status_waiting">Проверка предупреждений…</string>
+    <string name="today_alerts_promo_title">Получай предупреждения о погоде</string>
+    <string name="today_alerts_promo_body">Официальные предупреждения для места, где ты находишься, с уведомлениями об опасных.</string>
+    <string name="today_alerts_promo_cta">Настройки предупреждений</string>
+    <string name="today_alerts_promo_dismiss">Скрыть</string>
+    <string name="notification_channel_weather_alerts_name">Предупреждения о погоде</string>
+    <string name="notification_channel_weather_alerts_description">Предупреждения об опасной погоде для твоего местоположения от официальных метеослужб.</string>
+    <!-- "Оранжевое предупреждение о ветре": the level is a neuter adjective
+         agreeing with "предупреждение"; each hazard carries its own "о". -->
+    <string name="weather_alert_title">%1$s предупреждение %2$s</string>
+    <string name="weather_alert_level_yellow">Жёлтое</string>
+    <string name="weather_alert_level_amber">Оранжевое</string>
+    <string name="weather_alert_level_orange">Оранжевое</string>
+    <string name="weather_alert_level_red">Красное</string>
+    <string name="weather_alert_hazard_wind">о ветре</string>
+    <string name="weather_alert_hazard_rain">о дожде</string>
+    <string name="weather_alert_hazard_snow_and_ice">о снеге и гололёде</string>
+    <string name="weather_alert_hazard_thunderstorm">о грозе</string>
+    <string name="weather_alert_hazard_fog">о тумане</string>
+    <string name="weather_alert_hazard_heat">о жаре</string>
+    <string name="weather_alert_hazard_cold">о холоде</string>
+    <string name="weather_alert_hazard_coastal">о прибрежных явлениях</string>
+    <string name="weather_alert_hazard_flood">о наводнении</string>
+    <string name="weather_alert_hazard_wildfire">о пожарной опасности</string>
+    <string name="weather_alert_hazard_avalanche">о лавинной опасности</string>
+    <string name="weather_alert_hazard_storm">о шторме</string>
+    <string name="weather_alert_hazard_tornado">о смерче</string>
+    <string name="weather_alert_hazard_hail">о граде</string>
+    <string name="weather_alert_hazard_dust">о пыльной буре</string>
+    <string name="weather_alert_title_fallback">Предупреждение о погоде</string>
+    <string name="weather_alert_title_fallback_severe">Предупреждение об опасной погоде</string>
+    <string name="weather_alert_title_fallback_extreme">Предупреждение об особо опасной погоде</string>
+    <string name="weather_alert_level_info_description">Незначительное предупреждение о погоде</string>
+    <string name="weather_alert_level_yellow_description">Предупреждение о погоде</string>
+    <string name="weather_alert_level_orange_description">Предупреждение об опасной погоде</string>
+    <string name="weather_alert_level_red_description">Предупреждение об особо опасной погоде</string>
+    <string name="weather_alert_until">До %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Открыть %1$s</string>
+    <string name="weather_alert_open_source_fallback">Подробнее</string>
+    <string name="weather_alert_expand">Показать подробности</string>
+    <string name="weather_alert_collapse">Скрыть подробности</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Ещё %d предупреждение</item>
+        <item quantity="few">Ещё %d предупреждения</item>
+        <item quantity="many">Ещё %d предупреждений</item>
+        <item quantity="other">Ещё %d предупреждения</item>
+    </plurals>
 </resources>

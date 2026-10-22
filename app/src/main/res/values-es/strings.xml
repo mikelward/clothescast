@@ -1445,4 +1445,71 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_forecasters_google_probe_failed_http">No se pudo acceder al pronóstico de Google (HTTP %1$d). Se omitirá hasta que esto se resuelva.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google rechazó tu clave. En Google Cloud, habilita la API de Weather y la facturación del proyecto de la clave, y asegúrate de que la clave no esté restringida para excluirla. Hasta entonces, Google queda fuera de tu pronóstico.</string>
     <string name="settings_forecasters_google_probe_retry">Comprobar de nuevo</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Avisos</string>
+    <string name="settings_root_alerts_subtitle">Avisos meteorológicos oficiales</string>
+    <string name="settings_page_alerts">Ajustes de avisos</string>
+    <string name="settings_weather_alerts_title">Avisos meteorológicos</string>
+    <string name="settings_weather_alerts_summary">Avisos oficiales para tu ubicación en la pantalla de Hoy.</string>
+    <string name="settings_weather_alerts_sign_in">Inicia sesión con Google para recibir avisos meteorológicos.</string>
+    <string name="settings_alerts_notify_title">Notificarme de</string>
+    <string name="settings_alerts_notify_red">Solo rojos</string>
+    <string name="settings_alerts_notify_orange_red">Naranjas y rojos</string>
+    <string name="settings_alerts_notify_all">Todos los niveles</string>
+    <string name="settings_alerts_notify_none">Ninguno</string>
+    <string name="settings_alerts_channel">Sonido de avisos y pantalla de bloqueo</string>
+    <string name="settings_alerts_notification_permission">Sin permiso de notificaciones, los avisos meteorológicos importantes no pueden llegarte. Concédelo para recibirlos.</string>
+    <string name="settings_alerts_status_checked">Última comprobación %1$s</string>
+    <string name="settings_alerts_status_unsupported">Los avisos no están disponibles para esta ubicación.</string>
+    <string name="settings_alerts_status_failed">No se pudieron comprobar los avisos. Se reintentará pronto.</string>
+    <string name="settings_alerts_status_waiting">Comprobando avisos…</string>
+
+    <string name="today_alerts_promo_title">Recibe avisos meteorológicos</string>
+    <string name="today_alerts_promo_body">Avisos oficiales para donde estés, con notificaciones para los importantes.</string>
+    <string name="today_alerts_promo_cta">Ajustes de Avisos</string>
+    <string name="today_alerts_promo_dismiss">Descartar</string>
+
+    <string name="notification_channel_weather_alerts_name">Avisos meteorológicos</string>
+    <string name="notification_channel_weather_alerts_description">Avisos meteorológicos importantes para tu ubicación, emitidos por servicios meteorológicos oficiales.</string>
+
+    <!-- "Aviso naranja por viento", as AEMET words its warnings. -->
+    <string name="weather_alert_title">Aviso %1$s por %2$s</string>
+    <string name="weather_alert_level_yellow">amarillo</string>
+    <string name="weather_alert_level_amber">naranja</string>
+    <string name="weather_alert_level_orange">naranja</string>
+    <string name="weather_alert_level_red">rojo</string>
+    <string name="weather_alert_hazard_wind">viento</string>
+    <string name="weather_alert_hazard_rain">lluvia</string>
+    <string name="weather_alert_hazard_snow_and_ice">nieve y hielo</string>
+    <string name="weather_alert_hazard_thunderstorm">tormentas</string>
+    <string name="weather_alert_hazard_fog">niebla</string>
+    <string name="weather_alert_hazard_heat">calor</string>
+    <string name="weather_alert_hazard_cold">frío</string>
+    <string name="weather_alert_hazard_coastal">fenómenos costeros</string>
+    <string name="weather_alert_hazard_flood">inundaciones</string>
+    <string name="weather_alert_hazard_wildfire">incendios forestales</string>
+    <string name="weather_alert_hazard_avalanche">aludes</string>
+    <string name="weather_alert_hazard_storm">temporal</string>
+    <string name="weather_alert_hazard_tornado">tornados</string>
+    <string name="weather_alert_hazard_hail">granizo</string>
+    <string name="weather_alert_hazard_dust">polvo</string>
+    <string name="weather_alert_title_fallback">Aviso meteorológico</string>
+    <string name="weather_alert_title_fallback_severe">Aviso meteorológico importante</string>
+    <string name="weather_alert_title_fallback_extreme">Aviso meteorológico extremo</string>
+    <string name="weather_alert_level_info_description">Aviso meteorológico leve</string>
+    <string name="weather_alert_level_yellow_description">Aviso meteorológico</string>
+    <string name="weather_alert_level_orange_description">Aviso meteorológico importante</string>
+    <string name="weather_alert_level_red_description">Aviso meteorológico extremo</string>
+    <string name="weather_alert_until">Hasta %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Abrir %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detalles</string>
+    <string name="weather_alert_expand">Mostrar detalles</string>
+    <string name="weather_alert_collapse">Ocultar detalles</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d aviso más</item>
+        <item quantity="many">%d avisos más</item>
+        <item quantity="other">%d avisos más</item>
+    </plurals>
 </resources>

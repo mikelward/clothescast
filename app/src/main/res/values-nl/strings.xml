@@ -1365,4 +1365,67 @@ the displayed label localizes.
     <string name="settings_forecasters_google_probe_failed_http">Google-voorspelling kon niet worden bereikt (HTTP %1$d). Deze wordt buiten beschouwing gelaten totdat dit is opgelost.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google heeft je sleutel geweigerd. Schakel in Google Cloud de Weather API en facturering in voor het project van de sleutel, en zorg dat de sleutel niet beperkt is zodat deze wordt uitgesloten. Tot dan blijft Google buiten je voorspelling.</string>
     <string name="settings_forecasters_google_probe_retry">Opnieuw controleren</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Waarschuwingen</string>
+    <string name="settings_root_alerts_subtitle">Officiële weerwaarschuwingen</string>
+    <string name="settings_page_alerts">Waarschuwingsinstellingen</string>
+    <string name="settings_weather_alerts_title">Weerwaarschuwingen</string>
+    <string name="settings_weather_alerts_summary">Officiële waarschuwingen voor je locatie op het scherm Vandaag.</string>
+    <string name="settings_weather_alerts_sign_in">Log in met Google om weerwaarschuwingen te krijgen.</string>
+    <string name="settings_alerts_notify_title">Meldingen voor</string>
+    <string name="settings_alerts_notify_red">Alleen rood</string>
+    <string name="settings_alerts_notify_orange_red">Oranje en rood</string>
+    <string name="settings_alerts_notify_all">Alle niveaus</string>
+    <string name="settings_alerts_notify_none">Geen</string>
+    <string name="settings_alerts_channel">Waarschuwingsgeluid en vergrendelscherm</string>
+    <string name="settings_alerts_notification_permission">Zonder toestemming voor meldingen kunnen waarschuwingen voor zwaar weer je niet bereiken. Sta ze toe zodat dat wel kan.</string>
+    <string name="settings_alerts_status_checked">Laatst gecontroleerd %1$s</string>
+    <string name="settings_alerts_status_unsupported">Waarschuwingen zijn niet beschikbaar voor deze locatie.</string>
+    <string name="settings_alerts_status_failed">Controleren op waarschuwingen mislukt. We proberen het zo opnieuw.</string>
+    <string name="settings_alerts_status_waiting">Controleren op waarschuwingen…</string>
+    <string name="today_alerts_promo_title">Ontvang weerwaarschuwingen</string>
+    <string name="today_alerts_promo_body">Officiële waarschuwingen voor waar je bent, met meldingen bij zwaar weer.</string>
+    <string name="today_alerts_promo_cta">Waarschuwingsinstellingen</string>
+    <string name="today_alerts_promo_dismiss">Sluiten</string>
+    <string name="notification_channel_weather_alerts_name">Weerwaarschuwingen</string>
+    <string name="notification_channel_weather_alerts_description">Waarschuwingen voor zwaar weer op je locatie, van officiële weerdiensten.</string>
+    <!-- "Code oranje voor wind", as KNMI phrases its color codes. -->
+    <string name="weather_alert_title">Code %1$s voor %2$s</string>
+    <string name="weather_alert_level_yellow">geel</string>
+    <string name="weather_alert_level_amber">oranje</string>
+    <string name="weather_alert_level_orange">oranje</string>
+    <string name="weather_alert_level_red">rood</string>
+    <string name="weather_alert_hazard_wind">wind</string>
+    <string name="weather_alert_hazard_rain">regen</string>
+    <string name="weather_alert_hazard_snow_and_ice">sneeuw en gladheid</string>
+    <string name="weather_alert_hazard_thunderstorm">onweer</string>
+    <string name="weather_alert_hazard_fog">mist</string>
+    <string name="weather_alert_hazard_heat">hitte</string>
+    <string name="weather_alert_hazard_cold">kou</string>
+    <string name="weather_alert_hazard_coastal">hoogwater</string>
+    <string name="weather_alert_hazard_flood">overstromingen</string>
+    <string name="weather_alert_hazard_wildfire">natuurbranden</string>
+    <string name="weather_alert_hazard_avalanche">lawines</string>
+    <string name="weather_alert_hazard_storm">storm</string>
+    <string name="weather_alert_hazard_tornado">tornado\'s</string>
+    <string name="weather_alert_hazard_hail">hagel</string>
+    <string name="weather_alert_hazard_dust">stofstormen</string>
+    <string name="weather_alert_title_fallback">Weerwaarschuwing</string>
+    <string name="weather_alert_title_fallback_severe">Waarschuwing voor zwaar weer</string>
+    <string name="weather_alert_title_fallback_extreme">Waarschuwing voor extreem weer</string>
+    <string name="weather_alert_level_info_description">Lichte weerwaarschuwing</string>
+    <string name="weather_alert_level_yellow_description">Weerwaarschuwing</string>
+    <string name="weather_alert_level_orange_description">Waarschuwing voor zwaar weer</string>
+    <string name="weather_alert_level_red_description">Waarschuwing voor extreem weer</string>
+    <string name="weather_alert_until">Tot %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">%1$s openen</string>
+    <string name="weather_alert_open_source_fallback">Details</string>
+    <string name="weather_alert_expand">Details weergeven</string>
+    <string name="weather_alert_collapse">Details verbergen</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Nog %d waarschuwing</item>
+        <item quantity="other">Nog %d waarschuwingen</item>
+    </plurals>
 </resources>

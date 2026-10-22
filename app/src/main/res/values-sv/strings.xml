@@ -1346,4 +1346,67 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_forecasters_google_probe_failed_http">Kunde inte nå Googles prognos (HTTP %1$d). Den utelämnas tills detta åtgärdas.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google avvisade din nyckel. Aktivera Weather API och fakturering för nyckelns projekt i Google Cloud, och se till att nyckeln inte är begränsad så att den utesluts. Fram tills dess utelämnas Google från din prognos.</string>
     <string name="settings_forecasters_google_probe_retry">Kontrollera igen</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Varningar</string>
+    <string name="settings_root_alerts_subtitle">Officiella vädervarningar</string>
+    <string name="settings_page_alerts">Varningsinställningar</string>
+    <string name="settings_weather_alerts_title">Vädervarningar</string>
+    <string name="settings_weather_alerts_summary">Officiella varningar för din plats på skärmen Idag.</string>
+    <string name="settings_weather_alerts_sign_in">Logga in med Google för att få vädervarningar.</string>
+    <string name="settings_alerts_notify_title">Avisera mig vid</string>
+    <string name="settings_alerts_notify_red">Endast röda</string>
+    <string name="settings_alerts_notify_orange_red">Orange och röda</string>
+    <string name="settings_alerts_notify_all">Alla nivåer</string>
+    <string name="settings_alerts_notify_none">Inga</string>
+    <string name="settings_alerts_channel">Varningsljud och låsskärm</string>
+    <string name="settings_alerts_notification_permission">Utan aviseringsbehörighet kan varningar om farligt väder inte nå dig. Tillåt det så att de kan.</string>
+    <string name="settings_alerts_status_checked">Senast kontrollerad %1$s</string>
+    <string name="settings_alerts_status_unsupported">Varningar är inte tillgängliga för den här platsen.</string>
+    <string name="settings_alerts_status_failed">Det gick inte att söka efter varningar. Försöker igen snart.</string>
+    <string name="settings_alerts_status_waiting">Söker efter varningar…</string>
+    <string name="today_alerts_promo_title">Få vädervarningar</string>
+    <string name="today_alerts_promo_body">Officiella varningar där du är, med aviseringar för de allvarliga.</string>
+    <string name="today_alerts_promo_cta">Varningsinställningar</string>
+    <string name="today_alerts_promo_dismiss">Stäng</string>
+    <string name="notification_channel_weather_alerts_name">Vädervarningar</string>
+    <string name="notification_channel_weather_alerts_description">Varningar om farligt väder på din plats från officiella vädertjänster.</string>
+    <!-- "Orange varning för vind", as SMHI phrases it. -->
+    <string name="weather_alert_title">%1$s varning för %2$s</string>
+    <string name="weather_alert_level_yellow">Gul</string>
+    <string name="weather_alert_level_amber">Orange</string>
+    <string name="weather_alert_level_orange">Orange</string>
+    <string name="weather_alert_level_red">Röd</string>
+    <string name="weather_alert_hazard_wind">vind</string>
+    <string name="weather_alert_hazard_rain">regn</string>
+    <string name="weather_alert_hazard_snow_and_ice">snö och halka</string>
+    <string name="weather_alert_hazard_thunderstorm">åska</string>
+    <string name="weather_alert_hazard_fog">dimma</string>
+    <string name="weather_alert_hazard_heat">värme</string>
+    <string name="weather_alert_hazard_cold">kyla</string>
+    <string name="weather_alert_hazard_coastal">högt vattenstånd</string>
+    <string name="weather_alert_hazard_flood">översvämning</string>
+    <string name="weather_alert_hazard_wildfire">brandrisk</string>
+    <string name="weather_alert_hazard_avalanche">laviner</string>
+    <string name="weather_alert_hazard_storm">storm</string>
+    <string name="weather_alert_hazard_tornado">tornado</string>
+    <string name="weather_alert_hazard_hail">hagel</string>
+    <string name="weather_alert_hazard_dust">dammstorm</string>
+    <string name="weather_alert_title_fallback">Vädervarning</string>
+    <string name="weather_alert_title_fallback_severe">Varning för farligt väder</string>
+    <string name="weather_alert_title_fallback_extreme">Varning för extremt väder</string>
+    <string name="weather_alert_level_info_description">Mindre vädervarning</string>
+    <string name="weather_alert_level_yellow_description">Vädervarning</string>
+    <string name="weather_alert_level_orange_description">Varning för farligt väder</string>
+    <string name="weather_alert_level_red_description">Varning för extremt väder</string>
+    <string name="weather_alert_until">Till %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Öppna %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detaljer</string>
+    <string name="weather_alert_expand">Visa detaljer</string>
+    <string name="weather_alert_collapse">Dölj detaljer</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d varning till</item>
+        <item quantity="other">%d varningar till</item>
+    </plurals>
 </resources>

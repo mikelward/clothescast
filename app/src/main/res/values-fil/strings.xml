@@ -1368,4 +1368,71 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_google_probe_failed_http">Hindi na-reach ang forecast ng Google (HTTP %1$d). Aalisin ito hanggang sa maayos ito.</string>
     <string name="settings_forecasters_google_probe_forbidden">Tinanggihan ng Google ang iyong key. Sa Google Cloud, i-enable ang Weather API at billing para sa project ng key, at tiyaking hindi restricted ang key sa paraang inaalis ito. Hanggang doon, aalisin ang Google sa iyong forecast.</string>
     <string name="settings_forecasters_google_probe_retry">Suriin ulit</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Mga Babala</string>
+    <string name="settings_root_alerts_subtitle">Mga opisyal na babala sa panahon</string>
+    <string name="settings_page_alerts">Mga setting ng babala</string>
+    <string name="settings_weather_alerts_title">Mga babala sa panahon</string>
+    <string name="settings_weather_alerts_summary">Mga opisyal na babala para sa iyong lokasyon sa screen ng Ngayon.</string>
+    <string name="settings_weather_alerts_sign_in">Mag-sign in gamit ang Google para makatanggap ng mga babala sa panahon.</string>
+    <string name="settings_alerts_notify_title">Mag-notify para sa</string>
+    <string name="settings_alerts_notify_red">Pula lamang</string>
+    <string name="settings_alerts_notify_orange_red">Kahel at pula</string>
+    <string name="settings_alerts_notify_all">Lahat ng antas</string>
+    <string name="settings_alerts_notify_none">Wala</string>
+    <string name="settings_alerts_channel">Tunog ng babala at lock screen</string>
+    <string name="settings_alerts_notification_permission">Kung walang pahintulot sa notipikasyon, hindi ka maaabot ng mga babala sa matinding panahon. Ibigay ito para maabot ka nila.</string>
+    <string name="settings_alerts_status_checked">Huling sinuri %1$s</string>
+    <string name="settings_alerts_status_unsupported">Hindi available ang mga babala sa lokasyong ito.</string>
+    <string name="settings_alerts_status_failed">Hindi masuri ang mga babala. Susubukan ulit maya-maya.</string>
+    <string name="settings_alerts_status_waiting">Sinusuri ang mga babala…</string>
+
+    <string name="today_alerts_promo_title">Makatanggap ng mga babala sa panahon</string>
+    <string name="today_alerts_promo_body">Mga opisyal na babala para sa kinaroroonan mo, may notipikasyon para sa matitindi.</string>
+    <string name="today_alerts_promo_cta">Mga setting ng babala</string>
+    <string name="today_alerts_promo_dismiss">Isara</string>
+
+    <string name="notification_channel_weather_alerts_name">Mga babala sa panahon</string>
+    <string name="notification_channel_weather_alerts_description">Mga babala sa matinding panahon para sa iyong lokasyon mula sa mga opisyal na serbisyo ng panahon.</string>
+
+    <!-- "Babalang kahel sa hangin": babala + linker -ng, the level, then the
+         hazard (the -ng linker works after every level word). -->
+    <string name="weather_alert_title">Babalang %1$s sa %2$s</string>
+    <string name="weather_alert_level_yellow">dilaw</string>
+    <string name="weather_alert_level_amber">kahel</string>
+    <string name="weather_alert_level_orange">kahel</string>
+    <string name="weather_alert_level_red">pula</string>
+    <string name="weather_alert_hazard_wind">hangin</string>
+    <string name="weather_alert_hazard_rain">ulan</string>
+    <string name="weather_alert_hazard_snow_and_ice">niyebe at yelo</string>
+    <string name="weather_alert_hazard_thunderstorm">kulog at kidlat</string>
+    <string name="weather_alert_hazard_fog">hamog</string>
+    <string name="weather_alert_hazard_heat">init</string>
+    <string name="weather_alert_hazard_cold">lamig</string>
+    <string name="weather_alert_hazard_coastal">baybayin</string>
+    <string name="weather_alert_hazard_flood">baha</string>
+    <string name="weather_alert_hazard_wildfire">sunog sa kagubatan</string>
+    <string name="weather_alert_hazard_avalanche">pagguho ng niyebe</string>
+    <string name="weather_alert_hazard_storm">bagyo</string>
+    <string name="weather_alert_hazard_tornado">buhawi</string>
+    <string name="weather_alert_hazard_hail">graniso</string>
+    <string name="weather_alert_hazard_dust">alikabok</string>
+    <string name="weather_alert_title_fallback">Babala sa panahon</string>
+    <string name="weather_alert_title_fallback_severe">Babala sa matinding panahon</string>
+    <string name="weather_alert_title_fallback_extreme">Babala sa napakatinding panahon</string>
+    <string name="weather_alert_level_info_description">Banayad na babala sa panahon</string>
+    <string name="weather_alert_level_yellow_description">Babala sa panahon</string>
+    <string name="weather_alert_level_orange_description">Babala sa matinding panahon</string>
+    <string name="weather_alert_level_red_description">Babala sa napakatinding panahon</string>
+    <string name="weather_alert_until">Hanggang %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Buksan ang %1$s</string>
+    <string name="weather_alert_open_source_fallback">Mga detalye</string>
+    <string name="weather_alert_expand">Ipakita ang mga detalye</string>
+    <string name="weather_alert_collapse">Itago ang mga detalye</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d pang babala</item>
+        <item quantity="other">%d pang babala</item>
+    </plurals>
 </resources>

@@ -1286,4 +1286,68 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_google_probe_failed_http">Imeshindwa kufikia utabiri wa Google (HTTP %1$d). Utaachwa nje hadi hili litakapotatuliwa.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google imekataa ufunguo wako. Katika Google Cloud, washa Weather API na malipo kwa ajili ya mradi wa ufunguo huo, na hakikisha ufunguo haujazuiliwa kwa njia inayoutenga. Hadi wakati huo, Google ataachwa nje ya utabiri wako.</string>
     <string name="settings_forecasters_google_probe_retry">Kagua tena</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Tahadhari</string>
+    <string name="settings_root_alerts_subtitle">Tahadhari rasmi za hali ya hewa</string>
+    <string name="settings_page_alerts">Mipangilio ya tahadhari</string>
+    <string name="settings_weather_alerts_title">Tahadhari za hali ya hewa</string>
+    <string name="settings_weather_alerts_summary">Tahadhari rasmi za mahali pako kwenye skrini ya Leo.</string>
+    <string name="settings_weather_alerts_sign_in">Ingia kwa Google ili kupata tahadhari za hali ya hewa.</string>
+    <string name="settings_alerts_notify_title">Nijulishe kuhusu</string>
+    <string name="settings_alerts_notify_red">Nyekundu pekee</string>
+    <string name="settings_alerts_notify_orange_red">Machungwa na nyekundu</string>
+    <string name="settings_alerts_notify_all">Viwango vyote</string>
+    <string name="settings_alerts_notify_none">Hakuna</string>
+    <string name="settings_alerts_channel">Sauti ya tahadhari na skrini iliyofungwa</string>
+    <string name="settings_alerts_notification_permission">Bila ruhusa ya arifa, tahadhari za hali mbaya ya hewa haziwezi kukufikia. Itoe ili ziweze kukufikia.</string>
+    <string name="settings_alerts_status_checked">Imekaguliwa mwisho %1$s</string>
+    <string name="settings_alerts_status_unsupported">Tahadhari hazipatikani kwa mahali hapa.</string>
+    <string name="settings_alerts_status_failed">Imeshindwa kukagua tahadhari. Itajaribu tena hivi karibuni.</string>
+    <string name="settings_alerts_status_waiting">Inakagua tahadhari…</string>
+    <string name="today_alerts_promo_title">Pata tahadhari za hali ya hewa</string>
+    <string name="today_alerts_promo_body">Tahadhari rasmi za mahali ulipo, pamoja na arifa kwa zile kali.</string>
+    <string name="today_alerts_promo_cta">Mipangilio ya tahadhari</string>
+    <string name="today_alerts_promo_dismiss">Funga</string>
+    <string name="notification_channel_weather_alerts_name">Tahadhari za hali ya hewa</string>
+    <string name="notification_channel_weather_alerts_description">Tahadhari za hali mbaya ya hewa kwa mahali pako kutoka kwa huduma rasmi za hali ya hewa.</string>
+    <!-- "Tahadhari ya machungwa ya upepo mkali": levels agree with tahadhari
+         (N-class), so a color takes "ya" except the adjective nyekundu. -->
+    <string name="weather_alert_title">Tahadhari %1$s ya %2$s</string>
+    <string name="weather_alert_level_yellow">ya manjano</string>
+    <string name="weather_alert_level_amber">ya machungwa</string>
+    <string name="weather_alert_level_orange">ya machungwa</string>
+    <string name="weather_alert_level_red">nyekundu</string>
+    <string name="weather_alert_hazard_wind">upepo mkali</string>
+    <string name="weather_alert_hazard_rain">mvua</string>
+    <string name="weather_alert_hazard_snow_and_ice">theluji na barafu</string>
+    <string name="weather_alert_hazard_thunderstorm">dhoruba ya radi</string>
+    <string name="weather_alert_hazard_fog">ukungu</string>
+    <string name="weather_alert_hazard_heat">joto kali</string>
+    <string name="weather_alert_hazard_cold">baridi kali</string>
+    <string name="weather_alert_hazard_coastal">pwani</string>
+    <string name="weather_alert_hazard_flood">mafuriko</string>
+    <string name="weather_alert_hazard_wildfire">moto wa nyika</string>
+    <string name="weather_alert_hazard_avalanche">maporomoko ya theluji</string>
+    <string name="weather_alert_hazard_storm">dhoruba</string>
+    <string name="weather_alert_hazard_tornado">kimbunga</string>
+    <string name="weather_alert_hazard_hail">mvua ya mawe</string>
+    <string name="weather_alert_hazard_dust">vumbi</string>
+    <string name="weather_alert_title_fallback">Tahadhari ya hali ya hewa</string>
+    <string name="weather_alert_title_fallback_severe">Tahadhari ya hali mbaya ya hewa</string>
+    <string name="weather_alert_title_fallback_extreme">Tahadhari ya hali mbaya sana ya hewa</string>
+    <string name="weather_alert_level_info_description">Tahadhari ndogo ya hali ya hewa</string>
+    <string name="weather_alert_level_yellow_description">Tahadhari ya hali ya hewa</string>
+    <string name="weather_alert_level_orange_description">Tahadhari ya hali mbaya ya hewa</string>
+    <string name="weather_alert_level_red_description">Tahadhari ya hali mbaya sana ya hewa</string>
+    <string name="weather_alert_until">Hadi %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Fungua %1$s</string>
+    <string name="weather_alert_open_source_fallback">Maelezo</string>
+    <string name="weather_alert_expand">Onyesha maelezo</string>
+    <string name="weather_alert_collapse">Ficha maelezo</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Tahadhari nyingine %d</item>
+        <item quantity="other">Tahadhari nyingine %d</item>
+    </plurals>
 </resources>

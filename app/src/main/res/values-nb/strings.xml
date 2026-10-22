@@ -1346,4 +1346,67 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_forecasters_google_probe_failed_http">Fikk ikke kontakt med Googles prognose (HTTP %1$d). Den utelates til dette er løst.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google avviste nøkkelen din. Aktiver Weather API og fakturering for nøkkelens prosjekt i Google Cloud, og sørg for at nøkkelen ikke er begrenset slik at den utelukkes. Frem til da utelates Google fra prognosen din.</string>
     <string name="settings_forecasters_google_probe_retry">Sjekk igjen</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Farevarsler</string>
+    <string name="settings_root_alerts_subtitle">Offisielle farevarsler</string>
+    <string name="settings_page_alerts">Farevarselinnstillinger</string>
+    <string name="settings_weather_alerts_title">Farevarsler</string>
+    <string name="settings_weather_alerts_summary">Offisielle farevarsler for stedet ditt på I dag-skjermen.</string>
+    <string name="settings_weather_alerts_sign_in">Logg inn med Google for å få farevarsler.</string>
+    <string name="settings_alerts_notify_title">Varsle meg ved</string>
+    <string name="settings_alerts_notify_red">Kun rødt</string>
+    <string name="settings_alerts_notify_orange_red">Oransje og rødt</string>
+    <string name="settings_alerts_notify_all">Alle nivåer</string>
+    <string name="settings_alerts_notify_none">Ingen</string>
+    <string name="settings_alerts_channel">Lyd og låseskjerm for farevarsler</string>
+    <string name="settings_alerts_notification_permission">Uten varseltillatelse kan ikke farevarsler nå deg. Tillat det slik at de kan.</string>
+    <string name="settings_alerts_status_checked">Sist sjekket %1$s</string>
+    <string name="settings_alerts_status_unsupported">Farevarsler er ikke tilgjengelige for dette stedet.</string>
+    <string name="settings_alerts_status_failed">Kunne ikke se etter farevarsler. Prøver igjen snart.</string>
+    <string name="settings_alerts_status_waiting">Ser etter farevarsler…</string>
+    <string name="today_alerts_promo_title">Få farevarsler</string>
+    <string name="today_alerts_promo_body">Offisielle farevarsler der du er, med varsler for de alvorlige.</string>
+    <string name="today_alerts_promo_cta">Farevarselinnstillinger</string>
+    <string name="today_alerts_promo_dismiss">Avvis</string>
+    <string name="notification_channel_weather_alerts_name">Farevarsler</string>
+    <string name="notification_channel_weather_alerts_description">Farevarsler for stedet ditt fra offisielle værtjenester.</string>
+    <!-- "Oransje farevarsel for vind", as MET/Yr phrase it. "Farevarsel", since "varsel" here means a notification. -->
+    <string name="weather_alert_title">%1$s farevarsel for %2$s</string>
+    <string name="weather_alert_level_yellow">Gult</string>
+    <string name="weather_alert_level_amber">Oransje</string>
+    <string name="weather_alert_level_orange">Oransje</string>
+    <string name="weather_alert_level_red">Rødt</string>
+    <string name="weather_alert_hazard_wind">vind</string>
+    <string name="weather_alert_hazard_rain">regn</string>
+    <string name="weather_alert_hazard_snow_and_ice">snø og is</string>
+    <string name="weather_alert_hazard_thunderstorm">torden</string>
+    <string name="weather_alert_hazard_fog">tåke</string>
+    <string name="weather_alert_hazard_heat">hete</string>
+    <string name="weather_alert_hazard_cold">kulde</string>
+    <string name="weather_alert_hazard_coastal">stormflo</string>
+    <string name="weather_alert_hazard_flood">flom</string>
+    <string name="weather_alert_hazard_wildfire">skogbrannfare</string>
+    <string name="weather_alert_hazard_avalanche">snøskred</string>
+    <string name="weather_alert_hazard_storm">storm</string>
+    <string name="weather_alert_hazard_tornado">tornado</string>
+    <string name="weather_alert_hazard_hail">hagl</string>
+    <string name="weather_alert_hazard_dust">støvstorm</string>
+    <string name="weather_alert_title_fallback">Farevarsel</string>
+    <string name="weather_alert_title_fallback_severe">Alvorlig farevarsel</string>
+    <string name="weather_alert_title_fallback_extreme">Ekstremværvarsel</string>
+    <string name="weather_alert_level_info_description">Mindre farevarsel</string>
+    <string name="weather_alert_level_yellow_description">Farevarsel</string>
+    <string name="weather_alert_level_orange_description">Alvorlig farevarsel</string>
+    <string name="weather_alert_level_red_description">Ekstremværvarsel</string>
+    <string name="weather_alert_until">Til %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Åpne %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detaljer</string>
+    <string name="weather_alert_expand">Vis detaljer</string>
+    <string name="weather_alert_collapse">Skjul detaljer</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d farevarsel til</item>
+        <item quantity="other">%d farevarsler til</item>
+    </plurals>
 </resources>

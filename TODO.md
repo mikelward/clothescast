@@ -187,11 +187,8 @@ voice and the Google Weather proxy.
       the proxy first, free government feeds by cron if it needs to scale.
       Shipped on Google: Settings → Alerts, cards and the strip icon on
       Today, the conditions widget, and notifications for severe alerts.
-- [ ] **Translate the weather alerts text.** The block from
-      `settings_root_alerts` to the end of `values/strings.xml` shipped in
-      English (and en-GB "warning") under `TODO: translate` with
-      `tools:ignore="MissingTranslation"`; fill every `values-<lang>` and drop
-      both marks, keeping "warning" where a locale's services say it.
+- [x] **Translate the weather alerts text.** Every `values-<lang>` carries
+      the alerts block, in each locale's own weather-service term.
 - [ ] **Find when UK warnings start.** Alert notifications wait for the
       alert's start time (maintainer, 2026-10-22: no notification today for a
       warning tomorrow), but Google's `startTime` for Met Office warnings looks

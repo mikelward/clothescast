@@ -1317,4 +1317,74 @@ they work correctly in both the single-band and range templates.
     <string name="settings_forecasters_google_probe_failed_http">تعذّر الوصول إلى توقعات Google (HTTP %1$d). سيتم استبعادها إلى أن يُحل هذا.</string>
     <string name="settings_forecasters_google_probe_forbidden">رفض Google مفتاحك. في Google Cloud، فعِّل Weather API والفوترة لمشروع المفتاح، وتأكد من أن المفتاح غير مقيَّد بحيث يستبعده. حتى ذلك الحين، سيبقى Google مستبعدًا من توقعاتك.</string>
     <string name="settings_forecasters_google_probe_retry">التحقق مرة أخرى</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">التنبيهات</string>
+    <string name="settings_root_alerts_subtitle">تنبيهات الطقس الرسمية</string>
+    <string name="settings_page_alerts">إعدادات التنبيهات</string>
+    <string name="settings_weather_alerts_title">تنبيهات الطقس</string>
+    <string name="settings_weather_alerts_summary">تنبيهات رسمية لموقعك في شاشة اليوم.</string>
+    <string name="settings_weather_alerts_sign_in">سجّل الدخول باستخدام Google لتلقي تنبيهات الطقس.</string>
+    <string name="settings_alerts_notify_title">تلقي إشعارات عن</string>
+    <string name="settings_alerts_notify_red">الأحمر فقط</string>
+    <string name="settings_alerts_notify_orange_red">البرتقالي والأحمر</string>
+    <string name="settings_alerts_notify_all">كل المستويات</string>
+    <string name="settings_alerts_notify_none">لا شيء</string>
+    <string name="settings_alerts_channel">صوت التنبيهات وشاشة القفل</string>
+    <string name="settings_alerts_notification_permission">بدون إذن الإشعارات، لن تصلك تنبيهات الطقس الشديد. امنحه حتى تصلك.</string>
+    <string name="settings_alerts_status_checked">آخر تحقق %1$s</string>
+    <string name="settings_alerts_status_unsupported">التنبيهات غير متاحة لهذا الموقع.</string>
+    <string name="settings_alerts_status_failed">تعذّر التحقق من التنبيهات. ستتم إعادة المحاولة قريبًا.</string>
+    <string name="settings_alerts_status_waiting">جارٍ التحقق من التنبيهات…</string>
+
+    <string name="today_alerts_promo_title">احصل على تنبيهات الطقس</string>
+    <string name="today_alerts_promo_body">تنبيهات رسمية لمكان وجودك، مع إشعارات بالشديدة منها.</string>
+    <string name="today_alerts_promo_cta">إعدادات التنبيهات</string>
+    <string name="today_alerts_promo_dismiss">إغلاق</string>
+
+    <string name="notification_channel_weather_alerts_name">تنبيهات الطقس</string>
+    <string name="notification_channel_weather_alerts_description">تنبيهات الطقس الشديد لموقعك من خدمات الأرصاد الجوية الرسمية.</string>
+
+    <!-- "تنبيه برتقالي بشأن الرياح": the color agrees with the masculine noun. -->
+    <string name="weather_alert_title">تنبيه %1$s بشأن %2$s</string>
+    <string name="weather_alert_level_yellow">أصفر</string>
+    <string name="weather_alert_level_amber">برتقالي</string>
+    <string name="weather_alert_level_orange">برتقالي</string>
+    <string name="weather_alert_level_red">أحمر</string>
+    <string name="weather_alert_hazard_wind">الرياح</string>
+    <string name="weather_alert_hazard_rain">الأمطار</string>
+    <string name="weather_alert_hazard_snow_and_ice">الثلوج والجليد</string>
+    <string name="weather_alert_hazard_thunderstorm">العواصف الرعدية</string>
+    <string name="weather_alert_hazard_fog">الضباب</string>
+    <string name="weather_alert_hazard_heat">الحر الشديد</string>
+    <string name="weather_alert_hazard_cold">البرد الشديد</string>
+    <string name="weather_alert_hazard_coastal">المخاطر الساحلية</string>
+    <string name="weather_alert_hazard_flood">الفيضانات</string>
+    <string name="weather_alert_hazard_wildfire">حرائق الغابات</string>
+    <string name="weather_alert_hazard_avalanche">الانهيارات الثلجية</string>
+    <string name="weather_alert_hazard_storm">العواصف</string>
+    <string name="weather_alert_hazard_tornado">الأعاصير القمعية</string>
+    <string name="weather_alert_hazard_hail">تساقط البَرَد</string>
+    <string name="weather_alert_hazard_dust">الغبار</string>
+    <string name="weather_alert_title_fallback">تنبيه طقس</string>
+    <string name="weather_alert_title_fallback_severe">تنبيه طقس شديد</string>
+    <string name="weather_alert_title_fallback_extreme">تنبيه طقس متطرف</string>
+    <string name="weather_alert_level_info_description">تنبيه طقس بسيط</string>
+    <string name="weather_alert_level_yellow_description">تنبيه طقس</string>
+    <string name="weather_alert_level_orange_description">تنبيه طقس شديد</string>
+    <string name="weather_alert_level_red_description">تنبيه طقس متطرف</string>
+    <string name="weather_alert_until">حتى %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">فتح %1$s</string>
+    <string name="weather_alert_open_source_fallback">التفاصيل</string>
+    <string name="weather_alert_expand">إظهار التفاصيل</string>
+    <string name="weather_alert_collapse">إخفاء التفاصيل</string>
+    <plurals name="weather_alert_more">
+        <item quantity="zero">لا تنبيهات إضافية</item>
+        <item quantity="one">تنبيه إضافي واحد</item>
+        <item quantity="two">تنبيهان إضافيان</item>
+        <item quantity="few">%d تنبيهات إضافية</item>
+        <item quantity="many">%d تنبيهًا إضافيًا</item>
+        <item quantity="other">%d تنبيه إضافي</item>
+    </plurals>
 </resources>

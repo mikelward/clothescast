@@ -1285,4 +1285,67 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_google_probe_failed_http">የGoogle ትንበያ ላይ መድረስ አልተቻለም (HTTP %1$d)። ይህ እስኪስተካከል ድረስ ይተዋል።</string>
     <string name="settings_forecasters_google_probe_forbidden">Google ቁልፍዎን ውድቅ አድርጓል። በGoogle Cloud ውስጥ ለቁልፉ ፕሮጀክት Weather API እና ክፍያን ያንቁ፣ እንዲሁም ቁልፉ ይህንን የሚያገልል መገደብ እንደሌለበት ያረጋግጡ። እስከዚያ ድረስ Google ከትንበያዎ ውጭ ይሆናል።</string>
     <string name="settings_forecasters_google_probe_retry">እንደገና ይፈትሹ</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">ማስጠንቀቂያዎች</string>
+    <string name="settings_root_alerts_subtitle">ይፋዊ የአየር ሁኔታ ማስጠንቀቂያዎች</string>
+    <string name="settings_page_alerts">የማስጠንቀቂያ ቅንብሮች</string>
+    <string name="settings_weather_alerts_title">የአየር ሁኔታ ማስጠንቀቂያዎች</string>
+    <string name="settings_weather_alerts_summary">ለቦታዎ ይፋዊ ማስጠንቀቂያዎች በዛሬ ማያ ላይ።</string>
+    <string name="settings_weather_alerts_sign_in">የአየር ሁኔታ ማስጠንቀቂያዎችን ለማግኘት በGoogle ይግቡ።</string>
+    <string name="settings_alerts_notify_title">አሳውቀኝ</string>
+    <string name="settings_alerts_notify_red">ቀይ ብቻ</string>
+    <string name="settings_alerts_notify_orange_red">ብርቱካናማ እና ቀይ</string>
+    <string name="settings_alerts_notify_all">ሁሉም ደረጃዎች</string>
+    <string name="settings_alerts_notify_none">ምንም</string>
+    <string name="settings_alerts_channel">የማስጠንቀቂያ ድምፅ እና የቁልፍ ማያ</string>
+    <string name="settings_alerts_notification_permission">ያለ ማሳወቂያ ፍቃድ ከባድ የአየር ሁኔታ ማስጠንቀቂያዎች ሊደርሱዎት አይችሉም። እንዲደርሱዎት ፍቃዱን ይስጡ።</string>
+    <string name="settings_alerts_status_checked">በመጨረሻ የተፈተሸው %1$s</string>
+    <string name="settings_alerts_status_unsupported">ለዚህ ቦታ ማስጠንቀቂያዎች አይገኙም።</string>
+    <string name="settings_alerts_status_failed">ማስጠንቀቂያዎችን መፈተሽ አልተቻለም። በቅርቡ እንደገና ይሞከራል።</string>
+    <string name="settings_alerts_status_waiting">ማስጠንቀቂያዎችን በመፈተሽ ላይ…</string>
+    <string name="today_alerts_promo_title">የአየር ሁኔታ ማስጠንቀቂያዎችን ያግኙ</string>
+    <string name="today_alerts_promo_body">ላሉበት ቦታ ይፋዊ ማስጠንቀቂያዎች፣ ለከባዶቹ ማሳወቂያ ጭምር።</string>
+    <string name="today_alerts_promo_cta">የማስጠንቀቂያ ቅንብር</string>
+    <string name="today_alerts_promo_dismiss">ዝጋ</string>
+    <string name="notification_channel_weather_alerts_name">የአየር ሁኔታ ማስጠንቀቂያዎች</string>
+    <string name="notification_channel_weather_alerts_description">ከይፋዊ የአየር ሁኔታ አገልግሎቶች ለቦታዎ የሚወጡ ከባድ የአየር ሁኔታ ማስጠንቀቂያዎች።</string>
+    <!-- "ብርቱካናማ የንፋስ ማስጠንቀቂያ": hazards carry the genitive የ-. -->
+    <string name="weather_alert_title">%1$s %2$s ማስጠንቀቂያ</string>
+    <string name="weather_alert_level_yellow">ቢጫ</string>
+    <string name="weather_alert_level_amber">ብርቱካናማ</string>
+    <string name="weather_alert_level_orange">ብርቱካናማ</string>
+    <string name="weather_alert_level_red">ቀይ</string>
+    <string name="weather_alert_hazard_wind">የንፋስ</string>
+    <string name="weather_alert_hazard_rain">የዝናብ</string>
+    <string name="weather_alert_hazard_snow_and_ice">የበረዶና የውርጭ</string>
+    <string name="weather_alert_hazard_thunderstorm">የነጎድጓድ</string>
+    <string name="weather_alert_hazard_fog">የጭጋግ</string>
+    <string name="weather_alert_hazard_heat">የከፍተኛ ሙቀት</string>
+    <string name="weather_alert_hazard_cold">የቅዝቃዜ</string>
+    <string name="weather_alert_hazard_coastal">የባህር ዳርቻ</string>
+    <string name="weather_alert_hazard_flood">የጎርፍ</string>
+    <string name="weather_alert_hazard_wildfire">የሰደድ እሳት</string>
+    <string name="weather_alert_hazard_avalanche">የበረዶ ናዳ</string>
+    <string name="weather_alert_hazard_storm">የአውሎ ንፋስ</string>
+    <string name="weather_alert_hazard_tornado">የቶርናዶ</string>
+    <string name="weather_alert_hazard_hail">የበረዶ ድንጋይ</string>
+    <string name="weather_alert_hazard_dust">የአቧራ</string>
+    <string name="weather_alert_title_fallback">የአየር ሁኔታ ማስጠንቀቂያ</string>
+    <string name="weather_alert_title_fallback_severe">ከባድ የአየር ሁኔታ ማስጠንቀቂያ</string>
+    <string name="weather_alert_title_fallback_extreme">እጅግ ከባድ የአየር ሁኔታ ማስጠንቀቂያ</string>
+    <string name="weather_alert_level_info_description">ቀላል የአየር ሁኔታ ማስጠንቀቂያ</string>
+    <string name="weather_alert_level_yellow_description">የአየር ሁኔታ ማስጠንቀቂያ</string>
+    <string name="weather_alert_level_orange_description">ከባድ የአየር ሁኔታ ማስጠንቀቂያ</string>
+    <string name="weather_alert_level_red_description">እጅግ ከባድ የአየር ሁኔታ ማስጠንቀቂያ</string>
+    <string name="weather_alert_until">እስከ %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">%1$sን ክፈት</string>
+    <string name="weather_alert_open_source_fallback">ዝርዝሮች</string>
+    <string name="weather_alert_expand">ዝርዝሮችን አሳይ</string>
+    <string name="weather_alert_collapse">ዝርዝሮችን ደብቅ</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d ተጨማሪ ማስጠንቀቂያ</item>
+        <item quantity="other">%d ተጨማሪ ማስጠንቀቂያዎች</item>
+    </plurals>
 </resources>

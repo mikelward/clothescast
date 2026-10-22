@@ -1310,4 +1310,71 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_forecasters_google_probe_failed_http">A Google előrejelzését nem sikerült elérni (HTTP %1$d). Kimarad, amíg ez nem oldódik meg.</string>
     <string name="settings_forecasters_google_probe_forbidden">A Google elutasította a kulcsodat. A Google Cloudban engedélyezd a Weather API-t és a számlázást a kulcs projektjéhez, és győződj meg róla, hogy a kulcs nincs úgy korlátozva, hogy kizárja azt. Addig a Google kimarad az előrejelzésedből.</string>
     <string name="settings_forecasters_google_probe_retry">Ellenőrzés újra</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Figyelmeztetések</string>
+    <string name="settings_root_alerts_subtitle">Hivatalos időjárási figyelmeztetések</string>
+    <string name="settings_page_alerts">Figyelmeztetési beállítások</string>
+    <string name="settings_weather_alerts_title">Időjárási figyelmeztetések</string>
+    <string name="settings_weather_alerts_summary">Hivatalos figyelmeztetések a helyszínedre a Mai képernyőn.</string>
+    <string name="settings_weather_alerts_sign_in">Jelentkezz be Google-fiókkal az időjárási figyelmeztetésekhez.</string>
+    <string name="settings_alerts_notify_title">Értesítés ezekről</string>
+    <string name="settings_alerts_notify_red">Csak piros</string>
+    <string name="settings_alerts_notify_orange_red">Narancs és piros</string>
+    <string name="settings_alerts_notify_all">Minden szint</string>
+    <string name="settings_alerts_notify_none">Egyik sem</string>
+    <string name="settings_alerts_channel">Figyelmeztetések hangja és lezárási képernyő</string>
+    <string name="settings_alerts_notification_permission">Értesítési engedély nélkül a súlyos időjárási figyelmeztetések nem jutnak el hozzád. Engedélyezd, hogy eljussanak.</string>
+    <string name="settings_alerts_status_checked">Utoljára ellenőrizve: %1$s</string>
+    <string name="settings_alerts_status_unsupported">A figyelmeztetések ezen a helyszínen nem érhetők el.</string>
+    <string name="settings_alerts_status_failed">Nem sikerült ellenőrizni a figyelmeztetéseket. Hamarosan újrapróbáljuk.</string>
+    <string name="settings_alerts_status_waiting">Figyelmeztetések ellenőrzése…</string>
+
+    <string name="today_alerts_promo_title">Kapj időjárási figyelmeztetéseket</string>
+    <string name="today_alerts_promo_body">Hivatalos figyelmeztetések ott, ahol vagy, értesítéssel a súlyosakról.</string>
+    <string name="today_alerts_promo_cta">Figyelmeztetések beállításai</string>
+    <string name="today_alerts_promo_dismiss">Elvetés</string>
+
+    <string name="notification_channel_weather_alerts_name">Időjárási figyelmeztetések</string>
+    <string name="notification_channel_weather_alerts_description">Súlyos időjárási figyelmeztetések a helyszínedre hivatalos meteorológiai szolgálatoktól.</string>
+
+    <!-- "Narancs figyelmeztetés szél miatt": "miatt" takes the bare noun, so
+         the hazards need no suffix. -->
+    <string name="weather_alert_title">%1$s figyelmeztetés %2$s miatt</string>
+    <string name="weather_alert_level_yellow">Sárga</string>
+    <string name="weather_alert_level_amber">Narancs</string>
+    <string name="weather_alert_level_orange">Narancs</string>
+    <string name="weather_alert_level_red">Piros</string>
+    <string name="weather_alert_hazard_wind">szél</string>
+    <string name="weather_alert_hazard_rain">eső</string>
+    <string name="weather_alert_hazard_snow_and_ice">havazás és jegesedés</string>
+    <string name="weather_alert_hazard_thunderstorm">zivatar</string>
+    <string name="weather_alert_hazard_fog">köd</string>
+    <string name="weather_alert_hazard_heat">hőség</string>
+    <string name="weather_alert_hazard_cold">hideg</string>
+    <string name="weather_alert_hazard_coastal">part menti veszélyek</string>
+    <string name="weather_alert_hazard_flood">árvíz</string>
+    <string name="weather_alert_hazard_wildfire">erdőtűz</string>
+    <string name="weather_alert_hazard_avalanche">lavina</string>
+    <string name="weather_alert_hazard_storm">vihar</string>
+    <string name="weather_alert_hazard_tornado">tornádó</string>
+    <string name="weather_alert_hazard_hail">jégeső</string>
+    <string name="weather_alert_hazard_dust">por</string>
+    <string name="weather_alert_title_fallback">Időjárási figyelmeztetés</string>
+    <string name="weather_alert_title_fallback_severe">Súlyos időjárási figyelmeztetés</string>
+    <string name="weather_alert_title_fallback_extreme">Rendkívüli időjárási figyelmeztetés</string>
+    <string name="weather_alert_level_info_description">Enyhe időjárási figyelmeztetés</string>
+    <string name="weather_alert_level_yellow_description">Időjárási figyelmeztetés</string>
+    <string name="weather_alert_level_orange_description">Súlyos időjárási figyelmeztetés</string>
+    <string name="weather_alert_level_red_description">Rendkívüli időjárási figyelmeztetés</string>
+    <string name="weather_alert_until">%1$s-ig</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">%1$s megnyitása</string>
+    <string name="weather_alert_open_source_fallback">Részletek</string>
+    <string name="weather_alert_expand">Részletek megjelenítése</string>
+    <string name="weather_alert_collapse">Részletek elrejtése</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d további figyelmeztetés</item>
+        <item quantity="other">%d további figyelmeztetés</item>
+    </plurals>
 </resources>

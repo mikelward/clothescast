@@ -1258,4 +1258,71 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_forecasters_google_probe_failed_http">No s\'ha pogut accedir a la predicció de Google (HTTP %1$d). Es deixarà fora fins que això se solucioni.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google ha rebutjat la teva clau. A Google Cloud, activa l\'API de Weather i la facturació per al projecte de la clau, i assegura\'t que la clau no estigui restringida de manera que l\'exclogui. Fins llavors, Google queda fora de la teva predicció.</string>
     <string name="settings_forecasters_google_probe_retry">Torna a comprovar</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Avisos</string>
+    <string name="settings_root_alerts_subtitle">Avisos meteorològics oficials</string>
+    <string name="settings_page_alerts">Configuració d\'avisos</string>
+    <string name="settings_weather_alerts_title">Avisos meteorològics</string>
+    <string name="settings_weather_alerts_summary">Avisos oficials per a la teva ubicació a la pantalla d\'avui.</string>
+    <string name="settings_weather_alerts_sign_in">Inicia sessió amb Google per rebre avisos meteorològics.</string>
+    <string name="settings_alerts_notify_title">Avisa\'m de</string>
+    <string name="settings_alerts_notify_red">Només vermell</string>
+    <string name="settings_alerts_notify_orange_red">Taronja i vermell</string>
+    <string name="settings_alerts_notify_all">Tots els nivells</string>
+    <string name="settings_alerts_notify_none">Cap</string>
+    <string name="settings_alerts_channel">So dels avisos i pantalla de bloqueig</string>
+    <string name="settings_alerts_notification_permission">Sense permís de notificació, els avisos meteorològics importants no et poden arribar. Concedeix-lo per rebre\'ls.</string>
+    <string name="settings_alerts_status_checked">Última comprovació %1$s</string>
+    <string name="settings_alerts_status_unsupported">Els avisos no estan disponibles per a aquesta ubicació.</string>
+    <string name="settings_alerts_status_failed">No s\'han pogut comprovar els avisos. Es tornarà a provar aviat.</string>
+    <string name="settings_alerts_status_waiting">Comprovant els avisos…</string>
+
+    <string name="today_alerts_promo_title">Rep avisos meteorològics</string>
+    <string name="today_alerts_promo_body">Avisos oficials allà on siguis, amb notificacions per als importants.</string>
+    <string name="today_alerts_promo_cta">Configuració d\'Avisos</string>
+    <string name="today_alerts_promo_dismiss">Descarta</string>
+
+    <string name="notification_channel_weather_alerts_name">Avisos meteorològics</string>
+    <string name="notification_channel_weather_alerts_description">Avisos meteorològics importants per a la teva ubicació, emesos pels serveis meteorològics oficials.</string>
+
+    <!-- "Avís taronja per vent", as Meteocat and AEMET word their warnings. -->
+    <string name="weather_alert_title">Avís %1$s per %2$s</string>
+    <string name="weather_alert_level_yellow">groc</string>
+    <string name="weather_alert_level_amber">taronja</string>
+    <string name="weather_alert_level_orange">taronja</string>
+    <string name="weather_alert_level_red">vermell</string>
+    <string name="weather_alert_hazard_wind">vent</string>
+    <string name="weather_alert_hazard_rain">pluja</string>
+    <string name="weather_alert_hazard_snow_and_ice">neu i gel</string>
+    <string name="weather_alert_hazard_thunderstorm">tempestes</string>
+    <string name="weather_alert_hazard_fog">boira</string>
+    <string name="weather_alert_hazard_heat">calor</string>
+    <string name="weather_alert_hazard_cold">fred</string>
+    <string name="weather_alert_hazard_coastal">fenòmens costaners</string>
+    <string name="weather_alert_hazard_flood">inundacions</string>
+    <string name="weather_alert_hazard_wildfire">incendis forestals</string>
+    <string name="weather_alert_hazard_avalanche">allaus</string>
+    <string name="weather_alert_hazard_storm">temporal</string>
+    <string name="weather_alert_hazard_tornado">tornados</string>
+    <string name="weather_alert_hazard_hail">calamarsa</string>
+    <string name="weather_alert_hazard_dust">pols</string>
+    <string name="weather_alert_title_fallback">Avís meteorològic</string>
+    <string name="weather_alert_title_fallback_severe">Avís meteorològic important</string>
+    <string name="weather_alert_title_fallback_extreme">Avís meteorològic extrem</string>
+    <string name="weather_alert_level_info_description">Avís meteorològic lleu</string>
+    <string name="weather_alert_level_yellow_description">Avís meteorològic</string>
+    <string name="weather_alert_level_orange_description">Avís meteorològic important</string>
+    <string name="weather_alert_level_red_description">Avís meteorològic extrem</string>
+    <string name="weather_alert_until">Fins a %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Obre %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detalls</string>
+    <string name="weather_alert_expand">Mostra els detalls</string>
+    <string name="weather_alert_collapse">Amaga els detalls</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d avís més</item>
+        <item quantity="many">%d avisos més</item>
+        <item quantity="other">%d avisos més</item>
+    </plurals>
 </resources>

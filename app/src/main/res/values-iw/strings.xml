@@ -1312,4 +1312,72 @@ standard in Israeli digital communication.
     <string name="settings_forecasters_google_probe_failed_http">לא ניתן היה להגיע לתחזית של Google (HTTP %1$d). היא תושמט עד שהבעיה תיפתר.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google דחה את המפתח שלך. ב-Google Cloud, הפעל את Weather API ואת החיוב עבור הפרויקט של המפתח, וודא שהמפתח אינו מוגבל באופן שמחריג אותו. עד אז, Google יישאר מחוץ לתחזית שלך.</string>
     <string name="settings_forecasters_google_probe_retry">בדוק שוב</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">אזהרות</string>
+    <string name="settings_root_alerts_subtitle">אזהרות מזג אוויר רשמיות</string>
+    <string name="settings_page_alerts">הגדרות האזהרות</string>
+    <string name="settings_weather_alerts_title">אזהרות מזג אוויר</string>
+    <string name="settings_weather_alerts_summary">אזהרות רשמיות למיקום שלך במסך היום.</string>
+    <string name="settings_weather_alerts_sign_in">התחבר/י עם Google כדי לקבל אזהרות מזג אוויר.</string>
+    <string name="settings_alerts_notify_title">התראות עבור</string>
+    <string name="settings_alerts_notify_red">אדומות בלבד</string>
+    <string name="settings_alerts_notify_orange_red">כתומות ואדומות</string>
+    <string name="settings_alerts_notify_all">כל הרמות</string>
+    <string name="settings_alerts_notify_none">ללא</string>
+    <string name="settings_alerts_channel">צליל אזהרות ומסך נעילה</string>
+    <string name="settings_alerts_notification_permission">ללא הרשאת התראות, אזהרות על מזג אוויר קשה לא יוכלו להגיע אליך. הענק/י אותה כדי שיגיעו.</string>
+    <string name="settings_alerts_status_checked">נבדק לאחרונה %1$s</string>
+    <string name="settings_alerts_status_unsupported">אזהרות אינן זמינות למיקום זה.</string>
+    <string name="settings_alerts_status_failed">לא ניתן היה לבדוק אזהרות. ננסה שוב בקרוב.</string>
+    <string name="settings_alerts_status_waiting">בודק אזהרות…</string>
+
+    <string name="today_alerts_promo_title">קבלת אזהרות מזג אוויר</string>
+    <string name="today_alerts_promo_body">אזהרות רשמיות למיקום שלך, עם התראות על החמורות שבהן.</string>
+    <string name="today_alerts_promo_cta">הגדרות אזהרות</string>
+    <string name="today_alerts_promo_dismiss">סגור</string>
+
+    <string name="notification_channel_weather_alerts_name">אזהרות מזג אוויר</string>
+    <string name="notification_channel_weather_alerts_description">אזהרות על מזג אוויר קשה למיקום שלך משירותים מטאורולוגיים רשמיים.</string>
+
+    <!-- "אזהרה כתומה מפני רוחות": "אזהרה" rather than "התראה", which this
+         file uses for notifications; the color agrees with the feminine noun. -->
+    <string name="weather_alert_title">אזהרה %1$s מפני %2$s</string>
+    <string name="weather_alert_level_yellow">צהובה</string>
+    <string name="weather_alert_level_amber">כתומה</string>
+    <string name="weather_alert_level_orange">כתומה</string>
+    <string name="weather_alert_level_red">אדומה</string>
+    <string name="weather_alert_hazard_wind">רוחות</string>
+    <string name="weather_alert_hazard_rain">גשם</string>
+    <string name="weather_alert_hazard_snow_and_ice">שלג וקרח</string>
+    <string name="weather_alert_hazard_thunderstorm">סופות רעמים</string>
+    <string name="weather_alert_hazard_fog">ערפל</string>
+    <string name="weather_alert_hazard_heat">עומס חום</string>
+    <string name="weather_alert_hazard_cold">קור</string>
+    <string name="weather_alert_hazard_coastal">סכנות בחופים</string>
+    <string name="weather_alert_hazard_flood">שיטפונות</string>
+    <string name="weather_alert_hazard_wildfire">שריפות יער</string>
+    <string name="weather_alert_hazard_avalanche">מפולות שלגים</string>
+    <string name="weather_alert_hazard_storm">סערה</string>
+    <string name="weather_alert_hazard_tornado">טורנדו</string>
+    <string name="weather_alert_hazard_hail">ברד</string>
+    <string name="weather_alert_hazard_dust">אבק</string>
+    <string name="weather_alert_title_fallback">אזהרת מזג אוויר</string>
+    <string name="weather_alert_title_fallback_severe">אזהרה על מזג אוויר קשה</string>
+    <string name="weather_alert_title_fallback_extreme">אזהרה על מזג אוויר קיצוני</string>
+    <string name="weather_alert_level_info_description">אזהרת מזג אוויר קלה</string>
+    <string name="weather_alert_level_yellow_description">אזהרת מזג אוויר</string>
+    <string name="weather_alert_level_orange_description">אזהרה על מזג אוויר קשה</string>
+    <string name="weather_alert_level_red_description">אזהרה על מזג אוויר קיצוני</string>
+    <string name="weather_alert_until">עד %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">פתח/י את %1$s</string>
+    <string name="weather_alert_open_source_fallback">פרטים</string>
+    <string name="weather_alert_expand">הצג/י פרטים</string>
+    <string name="weather_alert_collapse">הסתר/י פרטים</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">עוד אזהרה אחת</item>
+        <item quantity="two">עוד שתי אזהרות</item>
+        <item quantity="other">עוד %d אזהרות</item>
+    </plurals>
 </resources>

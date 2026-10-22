@@ -186,6 +186,11 @@ voice and the Google Weather proxy.
       [docs/ALERTS.md](docs/ALERTS.md): Google `publicAlerts:lookup` through
       the proxy first, free government feeds by cron if it needs to scale.
       Its "Before building" checklist comes first.
+- [ ] **Weather alerts on by default.** They ship off by default behind
+      Google sign-in (docs/ALERTS.md → Settings). Find a way to turn them
+      on for everyone without a sign-in prompt at an acceptable cost, for
+      example the server CAP ingester with the location checked on the
+      device, or proxy access with App Check alone.
 - [ ] **Keep Google's `RAIN_AND_SNOW` as mixed.** `GoogleConditionMapper`
       folds it into `WeatherCondition.SNOW`, so a mixed hour titles the
       precipitation card "Chance of snow" rather than "Chance of rain or snow"

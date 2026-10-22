@@ -182,10 +182,29 @@ voice and the Google Weather proxy.
 
 ## Forecast & alerts
 
-- [ ] **Severe weather alerts.** Proposal, sources, costs and strings in
+- [x] **Severe weather alerts.** Proposal, sources, costs and strings in
       [docs/ALERTS.md](docs/ALERTS.md): Google `publicAlerts:lookup` through
       the proxy first, free government feeds by cron if it needs to scale.
-      Its "Before building" checklist comes first.
+      Shipped on Google: Settings → Alerts, cards and the strip icon on
+      Today, the conditions widget, and notifications for severe alerts.
+- [ ] **Translate the weather alerts text.** The block from
+      `settings_root_alerts` to the end of `values/strings.xml` shipped in
+      English (and en-GB "warning") under `TODO: translate` with
+      `tools:ignore="MissingTranslation"`; fill every `values-<lang>` and drop
+      both marks, keeping "warning" where a locale's services say it.
+- [ ] **Find when UK warnings start.** Alert notifications wait for the
+      alert's start time (maintainer, 2026-10-22: no notification today for a
+      warning tomorrow), but Google's `startTime` for Met Office warnings looks
+      like the issue time, so UK ones still notify at issue. Run
+      `functions/scripts/check-alert-coverage.sh` while a UK warning is out:
+      it prints every field and the description's start. If the onset is in
+      neither, the Met Office's own feed is the source (docs/ALERTS.md →
+      Before building).
+- [ ] **Alert icon on the outfit card.** Today's band and the conditions
+      widget head the strip with the alert level; the Cast / Home Assistant
+      card image (`renderOutfitCard`) still draws without it. Its callers
+      (worker, Play, Cast test) would read `WeatherAlertsStore` as the widget
+      does.
 - [ ] **Weather alerts on by default.** They ship off by default behind
       Google sign-in (docs/ALERTS.md → Settings). Find a way to turn them
       on for everyone without a sign-in prompt at an acceptable cost, for
@@ -953,6 +972,29 @@ Open work:
 
 ## Decisions needing review
 
+- [ ] **Weather alerts in the app: the calls made building it** (autopilot,
+      2026-10-22). Each is a constant or a line to change:
+      - *"Looks severe" for the hourly check:* wind ≥ 50 km/h, rain ≥ 10 mm in
+        an hour or 30 mm in total, any thunderstorm or snow hour, feels-like
+        ≥ 35 °C or ≤ −15 °C over the hours ahead (`WeatherAlertRules`).
+        Alternative: key off the forecast's own condition codes only.
+      - *Not weather, never shown:* earthquake, tsunami, volcano, landslide,
+        air quality and smoke, child-abduction, civil and test alerts
+        (`AlertHazards.isExcluded`). Tsunami and landslide are the
+        arguable ones.
+      - *Titles:* "Amber wind warning" only when the issuer's own title leads
+        with a color word and the hazard is known; otherwise the issuer's
+        title as written (`AlertTitles`).
+      - *What shows where:* the strip and widget show yellow and up; a minor
+        or unknown-severity alert, or one whose area spans over 1000 km,
+        shows only as a card at the neutral level and never notifies. Cards
+        and the strip icon sit on the current period's page only; the
+        promo shows on every page.
+      - *Placement:* Alerts sits after Calendar in the Settings list; its
+        promo ranks right after the clothes promo.
+      - *Background check:* a periodic WorkManager job every hour that looks
+        up only when the 3-hour (or 1-hour) interval is due, rather than
+        rescheduling a one-off job after each check.
 - [ ] **Weather alerts proxy: no server cache, and a 120-a-day cap**
       (autopilot, 2026-10-22). `weatherAlerts` forwards every lookup, because
       the Maps Platform caching terms for alerts are unchecked and `SPEC.md`

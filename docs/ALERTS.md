@@ -70,9 +70,11 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   | Yellow | `#B58800` | `#FFD54F` |
   | Neutral | `#6E6A75` | `#CAC4D0` |
 
-  The same icon marks the insight card's header (highest level), each alert
-  card, the notification (small icon and accent), and later the widget.
-  Its content description names the level ("Severe weather alert").
+  The same icon marks each alert card, the notification (small icon and
+  accent), and the head of the conditions strip on Today and in the
+  conditions widget (the highest level in force, yellow and up). Its content
+  description names the level ("Severe weather alert"). The outfit card
+  image doesn't draw it yet (`TODO.md`).
 - **Today**: one single-row card per alert at the top of the page: the
   severity icon, the title, the end time ("Until Sat 9 AM"; "From 6 PM"
   before it starts only once start times are known to be onset, see
@@ -82,7 +84,8 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   the color (the yellow tint can't be read on a yellow card). More than
   three alerts collapse behind "2 more alerts".
 - **Titles**: "{level} {hazard} warning" ("Amber wind warning") where the
-  issuer grades by color (MeteoAlarm members, including the UK), with
+  issuer grades by color (MeteoAlarm members, including the UK: in practice,
+  where the issuer's own title leads with a color word), with
   "Amber" for UK issuers and "Orange" for the rest of Europe; the issuer's
   own event name elsewhere ("High Wind Warning" from NWS, which has no
   colors). Maintainer's choice (2026-10-22) over the Met Office's verbatim
@@ -90,6 +93,15 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   headline and text stay verbatim in the expanded card.
 - **Notifications** (Severe and Extreme only), on their own channel at
   default importance (sound, no heads-up):
+  - Only once the warning is in force: one that starts tomorrow notifies
+    when it starts, not when it's issued (maintainer, 2026-10-22). Today's
+    card shows it meanwhile. This rests on the alert's start time: where
+    `startTime` is the issue time (the UK so far, see "Before building"),
+    the notification still goes at issue until the onset is found.
+  - Decided in one place, `WeatherAlertShade`, from the stored alerts, the
+    settings and the permission, and settled after every check, settings
+    change, app resume and alert start (maintainer, 2026-10-22). Nothing else
+    posts or cancels an alert notification.
   - Title: the same title as the card ("Amber wind warning"). The issuer's
     name stays out of the title.
   - Text: time range and issuer ("Until Sat 9 AM · Met Office"); expanded
@@ -193,9 +205,10 @@ An alert for somewhere 50 miles away is wrong, not just noisy. Rules:
   neutral icon and never notifies, whatever its severity. Met Office
   warnings, a few hundred km across, stay well inside the limit.
 - **Event types can be wrong**: Google reported freezing rain in São Paulo
-  in October. Titles are composed from the event type only where the source
-  is MeteoAlarm, whose hazard types are reliable; elsewhere the card shows
-  the issuer's own title.
+  in October. Titles are composed from the event type only where the
+  issuer's own title leads with a color word (MeteoAlarm members, whose
+  hazard types are reliable); elsewhere the card shows the issuer's own
+  title.
 - **Region-sized polygons are the real risk.** A warning drawn around one
   corner of a region but attached to the whole region contains the user
   while the hazard is far away. How each source draws areas decides
@@ -645,14 +658,19 @@ the nominal one whatever we choose.
 - [ ] UK polygon point counts: traced regions would mean the Met Office's
       own API for the UK (see "Location").
 - [ ] Whether `startTime` is issue time or onset: compare with the Met
-      Office page's "valid from" for the same warning.
+      Office page's "valid from" for the same warning. The Birmingham run
+      (2026-10-22) gave 09:03 on the 22nd for a warning the Met Office had for
+      the 23rd, so issue time. The coverage script now prints every field and
+      the description's start, to find the onset elsewhere; notifications wait
+      for the start time, so the UK needs it to stop notifying at issue.
 - [ ] VicEmergency: the feed is public, carries the Bureau's severe weather
       warnings with polygons, and the Bureau's content in it may be
       republished under EMV's CC BY 3.0 AU notice.
 - [ ] Catch an amber or red warning to confirm Met Office levels map to
       Severe and Extreme, and see the title wording at each level.
-- [ ] Which event types to show (weather, flood, fire, coastal; not AMBER
-      alerts, earthquakes or air quality).
+- [x] Which event types to show (weather, flood, fire, coastal; not AMBER
+      alerts, earthquakes or air quality): `AlertHazards.isExcluded`, logged
+      in `TODO.md` → Decisions needing review.
 - [ ] Billing → Reports by SKU after a few calls: which SKU alerts bill
       under, and whether they share the forecast's free calls.
 - [ ] Maps Platform caching terms for alerts.

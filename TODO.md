@@ -182,6 +182,10 @@ voice and the Google Weather proxy.
 
 ## Forecast & alerts
 
+- [ ] **Severe weather alerts.** Proposal, sources, costs and strings in
+      [docs/ALERTS.md](docs/ALERTS.md): Google `publicAlerts:lookup` through
+      the proxy first, free government feeds by cron if it needs to scale.
+      Its "Before building" checklist comes first.
 - [ ] **Keep Google's `RAIN_AND_SNOW` as mixed.** `GoogleConditionMapper`
       folds it into `WeatherCondition.SNOW`, so a mixed hour titles the
       precipitation card "Chance of snow" rather than "Chance of rain or snow"

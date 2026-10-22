@@ -1,7 +1,7 @@
 ---
 trigger: always_on
 alwaysApply: true
-last_modified: 2026-10-17
+last_modified: 2026-10-22
 ---
 
 # Agent guide for clothescast
@@ -197,8 +197,8 @@ than append, and delete rules that stopped biting.
   acknowledgment isn't an answer.
 - **Judge comments on merit.** A cited rule is a reading — check what it says; over-strict
   privacy readings quietly cost needed capability. Quote and decline, then `@codex review`
-  once (or let the next push do it); escalate if it re-raises or stays silent. Genuine
-  rule-vs-need conflicts go to the maintainer.
+  (or let the next push do it); escalate if it re-raises. Genuine rule-vs-need conflicts
+  go to the maintainer.
 - **A second verified finding in the same mechanism is a design question**: look for the
   shape elsewhere and ask whether a design change deletes the class (maintainer's call).
 - **Defer an out-of-scope finding** by pushing a `TODO.md` entry, replying with that sha,
@@ -207,7 +207,10 @@ than append, and delete rules that stopped biting.
   clean, revoked on push; `+1` + green CI = merge), plus `get_review_comments`,
   `get_comments` and `get_reviews` to the last page and the `codex` status (`updated_at`
   moving with no reaction usually means unread findings). Findings block the merge until
-  fixed, rebutted or deferred. Nothing five minutes after a push: `@codex review`, once. Leave PR-body reactions to Codex.
+  fixed, rebutted or deferred. A hung review — nothing back five minutes after a push or
+  poke, or stuck at running (👀) ten minutes on — gets `@codex review`; a poke that hangs
+  the same way gets a second an hour later, and only a second that hangs too is
+  escalated, never the first (maintainer, 2026-10-22). Leave PR-body reactions to Codex.
 - **Once Codex +1s a head, make no unnecessary change without asking** (maintainer,
   2026-10-13); required rebases, red-CI fixes and drive/autopilot steps proceed unasked.
 - **Report each review in your next message**: commit read (say if it's no longer the

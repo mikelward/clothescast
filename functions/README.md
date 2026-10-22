@@ -44,9 +44,15 @@ curl -i -X POST "http://127.0.0.1:5001/<project-id>/us-central1/tts" \
 
 ## Deploy
 
+From the repository root:
+
 ```sh
-npm run deploy
+make deploy PROJECT=<projectId>
 ```
+
+It reinstalls these dependencies, builds and tests them, then deploys every
+function and the Firestore rules with the npm Firebase CLI through `npx`
+(`scripts/deploy-firebase.sh`; `npm run deploy -- <projectId>` runs the same).
 
 ## Quota enforcement
 

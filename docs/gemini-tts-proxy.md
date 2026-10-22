@@ -146,12 +146,13 @@ firebase login
 firebase use --add                    # pick the project from step 1
 ```
 
-Install the CLI through npm, **not** as the standalone binary. The
-standalone build (firepit) prepends its own `node` and `npm` shims to
-`PATH` and points npm's `script-shell` at a third shim, none of which
-carry a shebang line — so the `predeploy` hook dies with
-`/bin/sh: --: invalid option` before `tsc` ever runs. `firebase
---version` reports the same number either way; check for
+Prefer the CLI through npm to the standalone binary. The standalone
+build (firepit) points npm's `script-shell` at a shim it never unpacks,
+so any `npm run` inside a deploy hook dies with
+`/bin/sh: 0: Illegal option --` (exit code 2). The `predeploy` hook
+therefore calls `tsc` with `node` rather than `npm run build`, and
+`make deploy` runs the npm CLI through `npx` whichever is installed.
+`firebase --version` reports the same number either way; check for
 `~/.cache/firebase/runtime` to tell them apart.
 
 On a headless machine (a cloud VM over SSH), `firebase login`'s
@@ -197,6 +198,11 @@ worse.
 ```sh
 firebase deploy --only functions:tts,firestore
 ```
+
+Once every function's secrets exist, `make deploy PROJECT=<projectId>`
+redeploys all of them and the Firestore rules from your checkout: it
+reinstalls the functions' dependencies, builds and tests them first
+(`scripts/deploy-firebase.sh`).
 
 First deploy prompts to enable a few APIs in your GCP project
 (Artifact Registry, Cloud Build, Cloud Run); click through. After

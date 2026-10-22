@@ -12,6 +12,8 @@ import androidx.core.graphics.PathParser as AndroidPathParser
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withTranslation
 import app.clothescast.R
+import app.clothescast.alerts.AlertIcon
+import app.clothescast.core.domain.model.AlertLevel
 import app.clothescast.core.domain.model.ForecastPeriod
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HourlyForecast
@@ -814,6 +816,7 @@ internal fun renderOutfitCard(
         interiorArgb = palette.iconInterior,
         outlineArgb = palette.iconOutline,
         center = false,
+        darkTheme = darkTheme,
     )
     // Centered on the strip as drawn, then kept inside the text column: under a
     // short strip (just the temperature, say) the line is the wider of the two,
@@ -1217,6 +1220,16 @@ private fun drawSolidGlyph(
     }
 }
 
+/** Draws [pathData] (a 24×24 viewport) filled with [fillArgb] at ([x], [y]), [size] square. */
+private fun drawFilledGlyph(canvas: Canvas, x: Int, y: Int, size: Int, pathData: String, fillArgb: Int) {
+    val path = AndroidPathParser.createPathFromPathData(pathData)
+    val scale = size.toFloat() / 24f
+    canvas.withTranslation(x.toFloat(), y.toFloat()) {
+        scale(scale, scale)
+        drawPath(path, Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = fillArgb })
+    }
+}
+
 /**
  * Computes the two info-row strings shown beneath the prose on the outfit
  * card. Pulled out so [MainActivity] and [FetchAndNotifyWorker] share the
@@ -1246,6 +1259,11 @@ internal data class OutfitCardInfoLines(
     val windMaxKmh: Double? = null,
     val uvLabel: String? = null,
     val uvMax: Double? = null,
+    // The highest official alert in force where the forecast is for, drawn as
+    // its level icon at the head of the strip. Null when there's none, or for
+    // surfaces that don't read alerts; set by the caller, not
+    // [outfitCardInfoLines], since alerts aren't part of the forecast.
+    val alertLevel: AlertLevel? = null,
 )
 
 /**
@@ -1443,18 +1461,21 @@ internal fun outfitCardInfoLines(
 }
 
 /** Which glyph a [ConditionsCell] draws. */
-internal enum class ConditionsGlyph { THERMOMETER, DROPLET, WIND, UV }
+internal enum class ConditionsGlyph { ALERT, THERMOMETER, DROPLET, WIND, UV }
 
 /**
  * One indicator on the conditions strip: a glyph plus its label. Thermometer /
  * droplet read [fillFraction] (a partial fill); the solid wind / UV glyphs read
  * [tintArgb] (their Beaufort / WHO scale colour, null → theme outline colour).
+ * The alert glyph reads [alertLevel] and has no label: its shape and tint say
+ * the level (docs/ALERTS.md → What the user sees).
  */
 internal data class ConditionsCell(
     val glyph: ConditionsGlyph,
     val label: String,
     val fillFraction: Float = 0f,
     val tintArgb: Int? = null,
+    val alertLevel: AlertLevel? = null,
 )
 
 /**
@@ -1515,6 +1536,7 @@ internal fun renderConditionsStripBitmap(
         interiorArgb = interiorArgb,
         outlineArgb = outlineArgb,
         center = true,
+        darkTheme = darkTheme,
     )
     conditionsStripCache[key] = bitmap
     return bitmap
@@ -1528,6 +1550,8 @@ internal fun renderConditionsStripBitmap(
  * same set in the same order.
  */
 internal fun conditionsCells(info: OutfitCardInfoLines): List<ConditionsCell> = buildList {
+    // First, so an official warning is the first thing read.
+    info.alertLevel?.let { add(ConditionsCell(ConditionsGlyph.ALERT, label = "", alertLevel = it)) }
     add(ConditionsCell(ConditionsGlyph.THERMOMETER, info.tempLine, fillFraction = info.tempFillFraction))
     info.rainLineShort?.let {
         add(ConditionsCell(ConditionsGlyph.DROPLET, it, fillFraction = info.rainFillFraction ?: 0f))
@@ -1539,6 +1563,19 @@ internal fun conditionsCells(info: OutfitCardInfoLines): List<ConditionsCell> = 
         add(ConditionsCell(ConditionsGlyph.UV, it, tintArgb = uvScaleColorArgb(info.uvMax ?: 0.0)))
     }
 }
+
+/**
+ * The spoken label for the strip's present cells, comma-joined, the alert's
+ * level first as the strip draws it. Shared by Today's band and the widget.
+ */
+internal fun conditionsStripDescription(context: Context, info: OutfitCardInfoLines): String =
+    listOfNotNull(
+        info.alertLevel?.let { context.getString(AlertIcon.of(it).description) },
+        info.tempLine.takeIf { it.isNotBlank() },
+        info.rainLineShort,
+        info.windLabel,
+        info.uvLabel,
+    ).joinToString(", ")
 
 /**
  * Lays [cells] in one horizontal row, glyph + label per cell, vertically
@@ -1564,15 +1601,19 @@ private fun drawConditionsRow(
     interiorArgb: Int,
     outlineArgb: Int,
     center: Boolean,
+    darkTheme: Boolean,
 ): ClosedFloatingPointRange<Float>? {
     if (cells.isEmpty()) return null
     var iconPx = baseIconPx
     var iconGap = iconPx * STRIP_ICON_TEXT_GAP_FRACTION
     var sectionGap = iconPx * STRIP_SECTION_GAP_FRACTION
 
+    // A label-less cell (the alert icon) takes no icon-to-label gap.
+    fun cellWidth(cell: ConditionsCell): Float =
+        if (cell.label.isEmpty()) iconPx.toFloat() else iconPx + iconGap + textPaint.measureText(cell.label)
+
     fun contentWidth(): Float =
-        cells.sumOf { (iconPx + iconGap + textPaint.measureText(it.label)).toDouble() }.toFloat() +
-            sectionGap * (cells.size - 1)
+        cells.sumOf { cellWidth(it).toDouble() }.toFloat() + sectionGap * (cells.size - 1)
 
     val fitScale = (areaWidth / contentWidth()).coerceIn(STRIP_MIN_FIT_SCALE, 1f)
     if (fitScale < 1f) {
@@ -1582,7 +1623,7 @@ private fun drawConditionsRow(
         textPaint.textSize *= fitScale
     }
 
-    val cellWidths = cells.map { iconPx + iconGap + textPaint.measureText(it.label) }
+    val cellWidths = cells.map(::cellWidth)
     val totalWidth = cellWidths.sum() + sectionGap * (cells.size - 1)
     var x = if (center) areaX + (areaWidth - totalWidth) / 2f else areaX
     x = x.coerceAtLeast(areaX)
@@ -1593,6 +1634,12 @@ private fun drawConditionsRow(
     cells.forEachIndexed { i, cell ->
         val ix = x.roundToInt()
         when (cell.glyph) {
+            ConditionsGlyph.ALERT -> cell.alertLevel?.let { level ->
+                // Fill only: an outline would thicken the triangle's "!" and
+                // the outlined yellow icon's thin edge out of shape.
+                val icon = AlertIcon.of(level)
+                drawFilledGlyph(canvas, ix, iconTop, iconPx, icon.pathData, icon.argb(darkTheme))
+            }
             ConditionsGlyph.THERMOMETER ->
                 drawThermometerIcon(canvas, ix, iconTop, iconPx, cell.fillFraction, interiorArgb, outlineArgb)
             ConditionsGlyph.DROPLET ->
@@ -1608,7 +1655,7 @@ private fun drawConditionsRow(
                     outlineWidth = THIN_GLYPH_STROKE_WIDTH,
                 )
         }
-        canvas.drawText(cell.label, ix + iconPx + iconGap, baseline, textPaint)
+        if (cell.label.isNotEmpty()) canvas.drawText(cell.label, ix + iconPx + iconGap, baseline, textPaint)
         x += cellWidths[i] + sectionGap
     }
     return rowStart..(rowStart + totalWidth)

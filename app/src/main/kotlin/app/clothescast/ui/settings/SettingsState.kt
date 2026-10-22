@@ -1,7 +1,9 @@
 package app.clothescast.ui.settings
 
 import app.clothescast.data.SignedInGoogleAccount
+import app.clothescast.data.WeatherAlertsState
 import app.clothescast.core.domain.model.AccessoriesFormat
+import app.clothescast.core.domain.model.AlertNotifyLevel
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaFormat
@@ -265,6 +267,12 @@ data class SettingsState(
     val forecastModels: Set<ForecastModel>? = null,
     /** The Google forecaster's switch; see [UserPreferences.googleForecast]. */
     val googleForecast: Boolean = false,
+    /** The weather alerts switch; see [UserPreferences.weatherAlerts]. */
+    val weatherAlerts: Boolean = false,
+    /** Which alert levels notify; see [UserPreferences.weatherAlertsNotifyLevel]. */
+    val weatherAlertsNotifyLevel: AlertNotifyLevel = AlertNotifyLevel.DEFAULT,
+    /** The last alerts check, for the Alerts page's status line. */
+    val weatherAlertsStatus: WeatherAlertsState = WeatherAlertsState(),
     /**
      * True while a one-shot Google Weather connectivity probe is in flight.
      * The Forecasters page kicks one when the Google forecaster is enabled (or

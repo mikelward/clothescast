@@ -386,4 +386,31 @@ class PromoBannersTest {
             hasForecast = true,
         ) shouldBe emptySet()
     }
+
+    @Test
+    fun `the weather alerts promo follows clothes and outranks the later setup nudges`() {
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = true,
+            playPromoEligible = true,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            weatherAlertsPromoEligible = true,
+            hasForecast = true,
+        ) shouldContainExactlyInAnyOrder listOf(PromoBanner.WEATHER_ALERTS, PromoBanner.PLAY)
+        // Held back like the others until a forecast exists.
+        promoBannersToShow(
+            locationActionRequired = false,
+            telemetryNoticeVisible = false,
+            clothesPromoEligible = false,
+            schedulePromoEligible = false,
+            playPromoEligible = false,
+            geminiPromoEligible = false,
+            celebrationEligible = false,
+            weatherAlertsPromoEligible = true,
+            hasForecast = false,
+        ) shouldBe emptySet()
+    }
 }

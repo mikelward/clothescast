@@ -39,4 +39,33 @@ full re-translation.
     <string name="settings_calendar_master_description">Read your calendars to personalise forecasts and outfits. Nothing leaves your device by default.</string>
     <string name="settings_about_licenses">Licences</string>
     <string name="settings_licenses_title">Open source licences</string>
+    <!-- Weather alerts: "warning", as UK services and users call them. -->
+    <string name="settings_root_alerts">Warnings</string>
+    <string name="settings_root_alerts_subtitle">Official Weather Warnings</string>
+    <string name="settings_page_alerts">Warnings settings</string>
+    <string name="settings_weather_alerts_title">Weather warnings</string>
+    <string name="settings_weather_alerts_summary">Official warnings for your location on Today.</string>
+    <string name="settings_weather_alerts_sign_in">Sign in with Google to get weather warnings.</string>
+    <string name="settings_alerts_notify_orange_red">Amber and red</string>
+    <string name="settings_alerts_channel">Warning sound and lock screen</string>
+    <string name="settings_alerts_notification_permission">Without notification permission, severe weather warnings can\'t reach you. Grant it so they can.</string>
+    <string name="settings_alerts_status_unsupported">Warnings aren\'t available for this location.</string>
+    <string name="settings_alerts_status_failed">Couldn\'t check for warnings. Trying again soon.</string>
+    <string name="settings_alerts_status_waiting">Checking for warnings…</string>
+    <string name="today_alerts_promo_title">Get weather warnings</string>
+    <string name="today_alerts_promo_body">Official warnings for where you are, with notifications for severe ones.</string>
+    <string name="today_alerts_promo_cta">Warnings settings</string>
+    <string name="notification_channel_weather_alerts_name">Weather warnings</string>
+    <string name="notification_channel_weather_alerts_description">Severe weather warnings for your location from official weather services.</string>
+    <string name="weather_alert_title_fallback">Weather warning</string>
+    <string name="weather_alert_title_fallback_severe">Severe weather warning</string>
+    <string name="weather_alert_title_fallback_extreme">Extreme weather warning</string>
+    <string name="weather_alert_level_info_description">Minor weather warning</string>
+    <string name="weather_alert_level_yellow_description">Weather warning</string>
+    <string name="weather_alert_level_orange_description">Severe weather warning</string>
+    <string name="weather_alert_level_red_description">Extreme weather warning</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d more warning</item>
+        <item quantity="other">%d more warnings</item>
+    </plurals>
 </resources>

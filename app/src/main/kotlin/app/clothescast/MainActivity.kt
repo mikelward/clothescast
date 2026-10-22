@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import app.clothescast.alerts.WeatherAlertsScheduler
 import app.clothescast.core.domain.model.DEFAULT_APP_FONT_SCALE
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.core.domain.model.UserPreferences
@@ -33,6 +34,7 @@ import app.clothescast.ui.theme.ClothesCastTheme
 import app.clothescast.work.FetchAndNotifyWorker
 import com.mikelward.androidzoom.FontSizeSettings
 import com.mikelward.androidzoom.compose.rememberFontSizeState
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -224,6 +226,41 @@ class MainActivity : ComponentActivity() {
                 }
             if (!FetchAndNotifyWorker.shouldSilentlyRefresh(snapshot, Instant.now())) return@launch
             FetchAndNotifyWorker.enqueueSilentRefresh(applicationContext)
+        }
+        // Weather alerts follow the forecast's on-screen rule: an app open
+        // checks again once the last check is an hour old (docs/ALERTS.md →
+        // Cadence). The worker applies the hour itself.
+        lifecycleScope.launch {
+            try {
+                if (app.settingsRepository.preferences.first().weatherAlerts) {
+                    WeatherAlertsScheduler.refreshOnScreen(applicationContext)
+                } else {
+                    // A check that was in flight when alerts went off may
+                    // have stored alerts after they were cleared.
+                    app.weatherAlertsRefresher.turnedOff()
+                }
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                DiagLog.w(TAG, e, "Couldn't read the alerts setting; skipping the alerts check.")
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // A resume is when the notification permission may have changed (the
+        // prompt, or system Settings): settle the alert shade, which also
+        // posts anything a missing permission held back (WeatherAlertShade).
+        val app = application as ClothesCastApplication
+        lifecycleScope.launch {
+            try {
+                app.weatherAlertShade.reconcile()
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                DiagLog.w(TAG, e, "Settling weather alert notifications on resume failed.")
+            }
         }
     }
 

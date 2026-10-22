@@ -156,6 +156,7 @@ import app.clothescast.ui.garment.WIND_NOTABLE_KMH
 import app.clothescast.ui.garment.uvScaleColorArgb
 import app.clothescast.ui.garment.windScaleColorArgb
 import app.clothescast.ui.garment.conditionsCells
+import app.clothescast.ui.garment.conditionsStripDescription
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.thermometerFillFractionFor
 import app.clothescast.ui.garment.outfitGarmentCaption
@@ -167,6 +168,7 @@ import app.clothescast.location.hasCoarseLocationPermission
 import app.clothescast.ui.settings.NotificationPermissionBanner
 import app.clothescast.ui.theme.AppTheme
 import app.clothescast.work.FetchAndNotifyWorker
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -193,6 +195,7 @@ fun TodayScreen(
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
     onNavigateToVoice: () -> Unit = onNavigateToSettings,
     onNavigateToForecasters: () -> Unit = onNavigateToSettings,
+    onNavigateToAlerts: () -> Unit = onNavigateToSettings,
     // Pager page to open on, from the Today deep link's `?page=` query. The
     // feels-like home-screen widgets deep-link to page 0 (current period) and
     // page 2 (7-day). rememberPagerState only reads this on first composition,
@@ -201,6 +204,7 @@ fun TodayScreen(
     startPage: Int = 0,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val alerts by viewModel.alerts.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     // Both Running (fresh enqueue) and Retrying (post-failure backoff) suppress
@@ -230,6 +234,15 @@ fun TodayScreen(
         }
     }
 
+    val alertsUi = TodayAlertsUi(
+        state = alerts,
+        onOpenSettings = {
+            // Following the CTA retires the promo, as the other promos' do.
+            viewModel.dismissWeatherAlertsPromoCard()
+            onNavigateToAlerts()
+        },
+        onDismissPromo = viewModel::dismissWeatherAlertsPromoCard,
+    )
     Scaffold(
         // Drop the default `safeDrawing` content insets so the pager extends
         // edge-to-edge under the (transparent) nav bar. The padding lambda
@@ -365,40 +378,42 @@ fun TodayScreen(
             )
         },
     ) { padding ->
-        TodayContent(
-            state = state,
-            padding = padding,
-            isWorking = isWorking,
-            pagerState = pagerState,
-            onRefresh = { triggerRefresh(context, state.morningTime, state.tonightTime) },
-            onSetUpLocation = onNavigateToLocation,
-            onDismissMqttError = viewModel::dismissMqttPublishError,
-            onDismissCastError = viewModel::dismissCastPublishError,
-            onOpenPrivacy = onNavigateToPrivacy,
-            onOpenCalendarSettings = onNavigateToCalendar,
-            onOpenSchedule = {
-                // Following the CTA retires the promo too — see
-                // [TodayViewModel.dismissSchedulePromoCard].
-                viewModel.dismissSchedulePromoCard()
-                onNavigateToSchedule()
-            },
-            onDismissCelebrationCard = viewModel::dismissCelebrationCard,
-            onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
-            onDismissSchedulePromoCard = viewModel::dismissSchedulePromoCard,
-            onDismissPlayPromoCard = viewModel::dismissPlayPromoCard,
-            onOpenVoice = onNavigateToVoice,
-            onDismissGeminiTtsPromoCard = viewModel::dismissGeminiTtsPromoCard,
-            onOpenForecasters = onNavigateToForecasters,
-            onDismissGoogleForecastPromoCard = viewModel::dismissGoogleForecastPromoCard,
-            onDismissGeminiTtsLimitCard = viewModel::dismissGeminiTtsLimitCard,
-            onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
-            onNavigateToClothes = onNavigateToClothes,
-            onNavigateToFormat = onNavigateToFormat,
-            onToggleModelSpread = viewModel::toggleModelSpread,
-            onRevealModelSpread = viewModel::revealModelSpread,
-            onHideModelSpread = viewModel::hideModelSpread,
-            onLongPressDate = onNavigateToDeveloper,
-        )
+        CompositionLocalProvider(LocalTodayAlerts provides alertsUi) {
+            TodayContent(
+                state = state,
+                padding = padding,
+                isWorking = isWorking,
+                pagerState = pagerState,
+                onRefresh = { triggerRefresh(context, state.morningTime, state.tonightTime) },
+                onSetUpLocation = onNavigateToLocation,
+                onDismissMqttError = viewModel::dismissMqttPublishError,
+                onDismissCastError = viewModel::dismissCastPublishError,
+                onOpenPrivacy = onNavigateToPrivacy,
+                onOpenCalendarSettings = onNavigateToCalendar,
+                onOpenSchedule = {
+                    // Following the CTA retires the promo too — see
+                    // [TodayViewModel.dismissSchedulePromoCard].
+                    viewModel.dismissSchedulePromoCard()
+                    onNavigateToSchedule()
+                },
+                onDismissCelebrationCard = viewModel::dismissCelebrationCard,
+                onDismissClothesPromoCard = viewModel::dismissClothesPromoCard,
+                onDismissSchedulePromoCard = viewModel::dismissSchedulePromoCard,
+                onDismissPlayPromoCard = viewModel::dismissPlayPromoCard,
+                onOpenVoice = onNavigateToVoice,
+                onDismissGeminiTtsPromoCard = viewModel::dismissGeminiTtsPromoCard,
+                onOpenForecasters = onNavigateToForecasters,
+                onDismissGoogleForecastPromoCard = viewModel::dismissGoogleForecastPromoCard,
+                onDismissGeminiTtsLimitCard = viewModel::dismissGeminiTtsLimitCard,
+                onCalendarPermissionChanged = viewModel::notifyCalendarPermissionChanged,
+                onNavigateToClothes = onNavigateToClothes,
+                onNavigateToFormat = onNavigateToFormat,
+                onToggleModelSpread = viewModel::toggleModelSpread,
+                onRevealModelSpread = viewModel::revealModelSpread,
+                onHideModelSpread = viewModel::hideModelSpread,
+                onLongPressDate = onNavigateToDeveloper,
+            )
+        }
     }
 }
 
@@ -550,6 +565,7 @@ private fun TodayContent(
             // lands on the same row: reading the rain chart on Today and swiping
             // to Tonight keeps you on the rain chart rather than snapping to top.
             var sharedScrollValue by rememberSaveable { mutableIntStateOf(0) }
+            val pageAlerts = LocalTodayAlerts.current
             // Placeholder period for page 1 when its slot is empty —
             // whatever the next 12-hour window after `thisPeriodInsight` is.
             // The worker writes [InsightCache.Slot.NEXT_PERIOD] paired with
@@ -612,49 +628,119 @@ private fun TodayContent(
                     } else {
                         listOfNotNull(currentDay) + upcoming.take(6)
                     }
-                    SevenDayPage(
-                        days = weekDays,
-                        // The second week's headline compares against today (the
-                        // user's anchor) rather than against day 8.
-                        weekAheadBaseline = if (isFollowingWeek) currentDay else null,
-                        titleRes = if (isFollowingWeek) {
-                            R.string.today_title_following_week
-                        } else {
-                            R.string.today_title_week
-                        },
+                    // Alerts are about now: they show on the current
+                    // period's page only (the promo stays on every page).
+                    CompositionLocalProvider(LocalTodayAlerts provides pageAlerts.withoutAlerts()) {
+                        SevenDayPage(
+                            days = weekDays,
+                            // The second week's headline compares against today (the
+                            // user's anchor) rather than against day 8.
+                            weekAheadBaseline = if (isFollowingWeek) currentDay else null,
+                            titleRes = if (isFollowingWeek) {
+                                R.string.today_title_following_week
+                            } else {
+                                R.string.today_title_week
+                            },
+                            state = state,
+                            weekPerModelHourly = state.thisPeriodInsight.weekPerModelHourly,
+                            // Second week only: let the diagnostic deck render even
+                            // when models cover just part of days 8-14 (they thin
+                            // out past day 7). The near-week page keeps the strict
+                            // all-days gate so a stale cache there stays hidden.
+                            allowPartialModelCoverage = isFollowingWeek,
+                            scrollState = pageScrollState,
+                            workStatusToShow = workStatusToShow,
+                            locationActionRequired = locationActionRequired,
+                            onChevronTap = {
+                                // Left chevron steps back one page (3 → 2, 2 → 1).
+                                pagerScope.launch {
+                                    pagerState.animateScrollToPage(if (isFollowingWeek) 2 else 1)
+                                }
+                            },
+                            // Forward chevron only on page 2, advancing to page 3.
+                            onForwardChevronTap = if (isFollowingWeek) {
+                                null
+                            } else {
+                                { pagerScope.launch { pagerState.animateScrollToPage(3) } }
+                            },
+                            onToggleModelSpread = onToggleModelSpread,
+                            onRevealModelSpread = onRevealModelSpread,
+                            onHideModelSpread = onHideModelSpread,
+                            forecastZone = state.thisPeriodInsight.forecastZone,
+                            location = state.thisPeriodInsight.location,
+                            onNavigateToLocation = onSetUpLocation,
+                            // Same outfit pair pages 0 / 1 show. Pinning it at
+                            // the top of every page keeps the rest of the
+                            // content from jumping when the user swipes.
+                            outfitInsight = state.thisPeriodInsight,
+                            onNavigateToClothes = onNavigateToClothes,
+                            onOpenPrivacy = onOpenPrivacy,
+                            onOpenCalendarSettings = onOpenCalendarSettings,
+                            onOpenSchedule = onOpenSchedule,
+                            onDismissCelebrationCard = onDismissCelebrationCard,
+                            onDismissClothesPromoCard = onDismissClothesPromoCard,
+                            onDismissSchedulePromoCard = onDismissSchedulePromoCard,
+                            onDismissPlayPromoCard = onDismissPlayPromoCard,
+                            onOpenVoice = onOpenVoice,
+                            onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
+                            onOpenForecasters = onOpenForecasters,
+                            onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
+                            onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
+                            onDismissMqttError = onDismissMqttError,
+                            onDismissCastError = onDismissCastError,
+                        )
+                    }
+                    return@HorizontalPager
+                }
+                val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
+                val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
+                CompositionLocalProvider(
+                    LocalTodayAlerts provides if (page == 0) pageAlerts else pageAlerts.withoutAlerts(),
+                ) {
+                    TodayPage(
+                        insight = pageInsight,
+                        fallbackPeriod = pagePeriod,
                         state = state,
-                        weekPerModelHourly = state.thisPeriodInsight.weekPerModelHourly,
-                        // Second week only: let the diagnostic deck render even
-                        // when models cover just part of days 8-14 (they thin
-                        // out past day 7). The near-week page keeps the strict
-                        // all-days gate so a stale cache there stays hidden.
-                        allowPartialModelCoverage = isFollowingWeek,
                         scrollState = pageScrollState,
+                        // Same outfit row on all three pages — pages 0 / 1 and
+                        // the 7-day page all show this period's pair, not the
+                        // current page's period's pair. Pinning the row at the
+                        // top of every page keeps the rest of the content from
+                        // jumping when the user swipes; it also stays the
+                        // at-a-glance today+tonight summary rather than
+                        // morphing into a 7-day outfit timeline on page 2.
+                        outfitInsight = state.thisPeriodInsight,
+                        // Chevron layout across the three pages:
+                        //   page 0 (this period) — right chevron → page 1
+                        //   page 1 (next period) — left chevron → page 0,
+                        //                          right chevron → page 2
+                        //   page 2 (7-day overview) — its own back chevron → page 1
+                        // The 7-day page has a left chevron that doesn't surface
+                        // here (SevenDayPage owns its own header), so we only
+                        // wire chevrons for pages 0 and 1 in this block.
+                        showChevronRight = (page == 0 || page == 1),
+                        showChevronLeft = (page == 1),
                         workStatusToShow = workStatusToShow,
                         locationActionRequired = locationActionRequired,
                         onChevronTap = {
-                            // Left chevron steps back one page (3 → 2, 2 → 1).
+                            // Left chevron on page 1 → back to page 0.
+                            // Right chevron on page 0 → forward to page 1.
                             pagerScope.launch {
-                                pagerState.animateScrollToPage(if (isFollowingWeek) 2 else 1)
+                                pagerState.animateScrollToPage(if (page == 0) 1 else 0)
                             }
                         },
-                        // Forward chevron only on page 2, advancing to page 3.
-                        onForwardChevronTap = if (isFollowingWeek) {
-                            null
+                        onChevronRightTap = if (page == 1) {
+                            { pagerScope.launch { pagerState.animateScrollToPage(2) } }
                         } else {
-                            { pagerScope.launch { pagerState.animateScrollToPage(3) } }
+                            null
                         },
+                        onNavigateToClothes = onNavigateToClothes,
+                        onNavigateToFormat = onNavigateToFormat,
                         onToggleModelSpread = onToggleModelSpread,
                         onRevealModelSpread = onRevealModelSpread,
                         onHideModelSpread = onHideModelSpread,
-                        forecastZone = state.thisPeriodInsight.forecastZone,
-                        location = state.thisPeriodInsight.location,
-                        onNavigateToLocation = onSetUpLocation,
-                        // Same outfit pair pages 0 / 1 show. Pinning it at
-                        // the top of every page keeps the rest of the
-                        // content from jumping when the user swipes.
-                        outfitInsight = state.thisPeriodInsight,
-                        onNavigateToClothes = onNavigateToClothes,
+                        onLongPressDate = onLongPressDate,
+                        onSetUpLocation = onSetUpLocation,
                         onOpenPrivacy = onOpenPrivacy,
                         onOpenCalendarSettings = onOpenCalendarSettings,
                         onOpenSchedule = onOpenSchedule,
@@ -667,72 +753,10 @@ private fun TodayContent(
                         onOpenForecasters = onOpenForecasters,
                         onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
                         onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
-                    onDismissMqttError = onDismissMqttError,
-                    onDismissCastError = onDismissCastError,
+                        onDismissMqttError = onDismissMqttError,
+                        onDismissCastError = onDismissCastError,
                     )
-                    return@HorizontalPager
                 }
-                val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
-                val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
-                TodayPage(
-                    insight = pageInsight,
-                    fallbackPeriod = pagePeriod,
-                    state = state,
-                    scrollState = pageScrollState,
-                    // Same outfit row on all three pages — pages 0 / 1 and
-                    // the 7-day page all show this period's pair, not the
-                    // current page's period's pair. Pinning the row at the
-                    // top of every page keeps the rest of the content from
-                    // jumping when the user swipes; it also stays the
-                    // at-a-glance today+tonight summary rather than
-                    // morphing into a 7-day outfit timeline on page 2.
-                    outfitInsight = state.thisPeriodInsight,
-                    // Chevron layout across the three pages:
-                    //   page 0 (this period) — right chevron → page 1
-                    //   page 1 (next period) — left chevron → page 0,
-                    //                          right chevron → page 2
-                    //   page 2 (7-day overview) — its own back chevron → page 1
-                    // The 7-day page has a left chevron that doesn't surface
-                    // here (SevenDayPage owns its own header), so we only
-                    // wire chevrons for pages 0 and 1 in this block.
-                    showChevronRight = (page == 0 || page == 1),
-                    showChevronLeft = (page == 1),
-                    workStatusToShow = workStatusToShow,
-                    locationActionRequired = locationActionRequired,
-                    onChevronTap = {
-                        // Left chevron on page 1 → back to page 0.
-                        // Right chevron on page 0 → forward to page 1.
-                        pagerScope.launch {
-                            pagerState.animateScrollToPage(if (page == 0) 1 else 0)
-                        }
-                    },
-                    onChevronRightTap = if (page == 1) {
-                        { pagerScope.launch { pagerState.animateScrollToPage(2) } }
-                    } else {
-                        null
-                    },
-                    onNavigateToClothes = onNavigateToClothes,
-                    onNavigateToFormat = onNavigateToFormat,
-                    onToggleModelSpread = onToggleModelSpread,
-                    onRevealModelSpread = onRevealModelSpread,
-                    onHideModelSpread = onHideModelSpread,
-                    onLongPressDate = onLongPressDate,
-                    onSetUpLocation = onSetUpLocation,
-                    onOpenPrivacy = onOpenPrivacy,
-                    onOpenCalendarSettings = onOpenCalendarSettings,
-                    onOpenSchedule = onOpenSchedule,
-                    onDismissCelebrationCard = onDismissCelebrationCard,
-                    onDismissClothesPromoCard = onDismissClothesPromoCard,
-                    onDismissSchedulePromoCard = onDismissSchedulePromoCard,
-                    onDismissPlayPromoCard = onDismissPlayPromoCard,
-                    onOpenVoice = onOpenVoice,
-                    onDismissGeminiTtsPromoCard = onDismissGeminiTtsPromoCard,
-                    onOpenForecasters = onOpenForecasters,
-                    onDismissGoogleForecastPromoCard = onDismissGoogleForecastPromoCard,
-                    onDismissGeminiTtsLimitCard = onDismissGeminiTtsLimitCard,
-                    onDismissMqttError = onDismissMqttError,
-                    onDismissCastError = onDismissCastError,
-                )
             }
         }
     }
@@ -774,6 +798,7 @@ private fun BannerStack(
     onDismissCastError: () -> Unit,
 ) {
     val bannerModifier = Modifier.fillMaxWidth()
+    val alertsUi = LocalTodayAlerts.current
     // Cap the setup/promo stack so a fresh user isn't buried under "set this
     // up" cards. Only the top [maxVisible] eligible promos render (priority
     // location > privacy > clothes > schedule > play > celebration); the rest
@@ -793,6 +818,7 @@ private fun BannerStack(
         playPromoEligible = state.playPromoCardVisible,
         geminiPromoEligible = state.geminiTtsPromoCardVisible,
         googleForecastPromoEligible = state.googleForecastPromoCardVisible,
+        weatherAlertsPromoEligible = alertsUi.state.promoVisible,
         celebrationEligible = state.celebrationCardVisible,
         hasForecast = state.thisPeriodInsight != null,
     )
@@ -811,11 +837,17 @@ private fun BannerStack(
     LastCrashBanner(modifier = bannerModifier)
     // Scheduled notifications silently won't post until POST_NOTIFICATIONS is
     // granted (Android 13+). Only surfaced when the user has actually enabled a
-    // notify-posting schedule — there's nothing to warn about when every
-    // schedule is off, SILENT, or TTS-only. The banner renders nothing once the
+    // notify-posting schedule or notifying weather alerts — there's nothing to
+    // warn about when every schedule is off, SILENT, or TTS-only and alerts
+    // don't notify. The schedule's wording wins when both apply. The banner renders nothing once the
     // permission is granted or on pre-Android-13, so it's safe to keep mounted.
     if (state.notifyScheduleEnabled) {
         NotificationPermissionBanner(modifier = bannerModifier)
+    } else if (alertsUi.state.notifies) {
+        NotificationPermissionBanner(
+            modifier = bannerModifier,
+            description = R.string.settings_alerts_notification_permission,
+        )
     }
     // One-shot privacy disclosure for the default-on Firebase telemetry,
     // so the default isn't silent. Auto-hides once the user dismisses it
@@ -840,6 +872,16 @@ private fun BannerStack(
             onOpenClothes()
         },
         onDismiss = onDismissClothesPromoCard,
+        modifier = bannerModifier,
+    )
+    // "Get weather alerts": for a user signed in with Google (the alerts
+    // proxy's requirement) with alerts still off. Right after the clothes
+    // promo: official warnings matter more than the setup nudges below. The
+    // CTA opens Alerts settings and retires the card.
+    WeatherAlertsPromoCard(
+        visible = PromoBanner.WEATHER_ALERTS in shownPromos,
+        onOpenAlerts = alertsUi.onOpenSettings,
+        onDismiss = alertsUi.onDismissPromo,
         modifier = bannerModifier,
     )
     // "Preview your ClothesCast" nudge — let the user hear the cast on demand
@@ -1146,6 +1188,12 @@ internal fun HomePageScaffold(
                     onDismissCelebrationCard = onDismissCelebrationCard,
                     onSetUpLocation = onSetUpLocation,
                 )
+                // Official alerts in force sit above the reorderable sections:
+                // they outrank anything the user arranged (docs/ALERTS.md).
+                // Only the current period's page carries them; see
+                // [LocalTodayAlerts].
+                val alertsState = LocalTodayAlerts.current.state
+                WeatherAlertCards(alerts = alertsState.alerts, now = Instant.now())
                 // The conditions strip, outfit row, insight ([insightSlot]),
                 // confidence chip ([confidenceSlot]), and chart deck
                 // ([chartsSlot]) are the user-reorderable sections;
@@ -1171,7 +1219,7 @@ internal fun HomePageScaffold(
                         // cached; before then the strip would be blank.
                         HomeSection.CONDITIONS ->
                             conditionsInfo?.takeIf { it.tempLine.isNotBlank() }?.let { info ->
-                                ConditionsStrip(info = info)
+                                ConditionsStrip(info = info.copy(alertLevel = alertsState.stripLevel))
                             }
                         HomeSection.OUTFIT -> if (outfitInsight != null) {
                             OutfitPreviewRow(
@@ -1225,7 +1273,7 @@ private fun ConditionsStrip(
     val surface = MaterialTheme.colorScheme.surfaceVariant
     val darkTheme = surface.luminance() < 0.5f
     val cells = remember(info) { conditionsCells(info) }
-    val description = remember(info) { conditionsStripDescription(info) }
+    val description = remember(info) { conditionsStripDescription(context, info) }
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
@@ -1246,15 +1294,6 @@ private fun ConditionsStrip(
         )
     }
 }
-
-/** Comma-joined accessibility label for the conditions strip's present cells. */
-private fun conditionsStripDescription(info: OutfitCardInfoLines): String =
-    listOfNotNull(
-        info.tempLine.takeIf { it.isNotBlank() },
-        info.rainLineShort,
-        info.windLabel,
-        info.uvLabel,
-    ).joinToString(", ")
 
 /**
  * One page inside the Today pager. When [insight] is non-null it renders the

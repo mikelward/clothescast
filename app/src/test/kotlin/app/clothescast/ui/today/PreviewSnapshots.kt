@@ -36,6 +36,8 @@ import app.clothescast.ui.garment.ClothingThickCoatPreview
 import app.clothescast.ui.garment.ClothingThickJacketPreview
 import app.clothescast.ui.garment.ClothingThinJacketPreview
 import app.clothescast.ui.garment.ClothingRainJacketPreview
+import app.clothescast.ui.settings.SettingsAlertsPreview
+import app.clothescast.ui.settings.SettingsAlertsSignedOutPreview
 import app.clothescast.ui.settings.SettingsCalendarPreview
 import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
@@ -617,6 +619,11 @@ class PreviewSnapshots {
     @Test fun play_promo_card() = capture { PlayPromoCardPreview() }
     @Test fun gemini_tts_promo_card() = capture { GeminiTtsPromoCardPreview() }
     @Test fun google_forecast_promo_card() = capture { GoogleForecastPromoCardPreview() }
+    @Test fun weather_alerts_promo_card() = capture { WeatherAlertsPromoCardPreview() }
+    @Test fun weather_alert_cards() = capture { WeatherAlertCardsPreview() }
+    @Test fun weather_alert_cards_dark() = capture { WeatherAlertCardsDarkPreview() }
+    @Test fun weather_alert_levels() = capture { WeatherAlertLevelsPreview() }
+    @Test fun weather_alert_card_expanded() = capture { WeatherAlertCardExpandedPreview() }
     @Test fun gemini_tts_limit_card() = capture { GeminiTtsLimitCardPreview() }
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 
@@ -789,6 +796,12 @@ class PreviewSnapshots {
     @Config(qualifiers = "w360dp-h2400dp-xhdpi")
     fun settings_forecasters_google_signed_in() = capture { SettingsForecastersGoogleSignedInPreview() }
 
+    @Test
+    fun settings_alerts() = capture { SettingsAlertsPreview() }
+
+    @Test
+    fun settings_alerts_signed_out() = capture { SettingsAlertsSignedOutPreview() }
+
     // The merged Calendar page renders the permission + feature toggle cards,
     // the celebration sources card, the two calendar listings, one collapsible
     // per country (15), and a flat "All" collapsible — well past the
@@ -828,6 +841,7 @@ class PreviewSnapshots {
             "app.clothescast.ui.LauncherIconPreviewsKt",
             "app.clothescast.ui.MenuPreviewsKt",
             "app.clothescast.ui.today.TodayPreviewsKt",
+            "app.clothescast.ui.today.TodayAlertsPreviewsKt",
             "app.clothescast.ui.settings.SettingsPreviewsKt",
             "app.clothescast.ui.garment.GarmentDrawablePreviewsKt",
             "app.clothescast.notification.NotificationIconPreviewsKt",

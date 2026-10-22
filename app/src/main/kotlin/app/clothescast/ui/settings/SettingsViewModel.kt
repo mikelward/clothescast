@@ -9,6 +9,7 @@ import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.AccessoriesFormat
+import app.clothescast.core.domain.model.AlertNotifyLevel
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaFormat
@@ -39,6 +40,7 @@ import app.clothescast.data.InsightCache
 import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.data.SignedInGoogleAccount
+import app.clothescast.data.WeatherAlertsState
 import app.clothescast.cast.CastRouteDiscovery
 import app.clothescast.cast.CastTestOutcome
 import app.clothescast.cast.DiscoveredCastRoute
@@ -209,6 +211,14 @@ class SettingsViewModel(
      * then no-ops and the status stays unset.
      */
     private val googleWeatherProbe: (suspend () -> GoogleWeatherProbe)? = null,
+    /** The last alerts check, mirrored into [SettingsState.weatherAlertsStatus]. */
+    private val weatherAlertsStatus: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
+    /**
+     * Starts or stops the alerts check after the switch flips (the background
+     * schedule, an immediate check, or forgetting the alerts). A no-op in
+     * pure-VM tests.
+     */
+    private val weatherAlertsChanged: (Boolean) -> Unit = {},
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -252,6 +262,11 @@ class SettingsViewModel(
     private var lastEnumeratedLocale: Locale? = null
 
     init {
+        viewModelScope.launch {
+            weatherAlertsStatus.collect { status ->
+                _state.update { it.copy(weatherAlertsStatus = status) }
+            }
+        }
         viewModelScope.launch {
             googleAccount.collect { account ->
                 _state.update {
@@ -328,6 +343,8 @@ class SettingsViewModel(
                         telemetryEnabled = prefs.telemetryEnabled,
                         forecastModels = prefs.forecastModels,
                         googleForecast = prefs.googleForecast,
+                        weatherAlerts = prefs.weatherAlerts,
+                        weatherAlertsNotifyLevel = prefs.weatherAlertsNotifyLevel,
                         mqttBridgeEnabled = prefs.mqttBridgeEnabled,
                         mqttHost = prefs.mqttHost.orEmpty(),
                         mqttPort = prefs.mqttPort,
@@ -1034,6 +1051,25 @@ class SettingsViewModel(
         viewModelScope.launch { settingsRepository.setGoogleForecast(enabled) }
     }
 
+    /** The weather alerts switch; the check starts or stops once it's saved. */
+    fun setWeatherAlerts(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setWeatherAlerts(enabled)
+            weatherAlertsChanged(enabled)
+        }
+    }
+
+    /** Signed in from the Alerts page: the check waiting on a route can run now. */
+    fun onWeatherAlertsSignedIn() {
+        onGoogleSignedIn()
+        if (_state.value.weatherAlerts) weatherAlertsChanged(true)
+    }
+
+    // The shade follows on its own (WeatherAlertShade watches the setting).
+    fun setWeatherAlertsNotifyLevel(level: AlertNotifyLevel) {
+        viewModelScope.launch { settingsRepository.setWeatherAlertsNotifyLevel(level) }
+    }
+
     /**
      * Runs a one-shot Google Weather connectivity probe and surfaces the result
      * on the Forecasters page. The page calls this when the Google forecaster
@@ -1409,6 +1445,8 @@ class SettingsViewModel(
         private val calendarEventReader: CalendarEventReader? = null,
         private val insightCache: InsightCache? = null,
         private val googleWeatherProbe: (suspend () -> GoogleWeatherProbe)? = null,
+        private val weatherAlertsStatus: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
+        private val weatherAlertsChanged: (Boolean) -> Unit = {},
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -1438,6 +1476,8 @@ class SettingsViewModel(
                 calendarEventReader = calendarEventReader,
                 insightCache = insightCache,
                 googleWeatherProbe = googleWeatherProbe,
+                weatherAlertsStatus = weatherAlertsStatus,
+                weatherAlertsChanged = weatherAlertsChanged,
             ) as T
         }
     }

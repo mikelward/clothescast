@@ -722,6 +722,12 @@ data class UserPreferences(
      */
     val googleForecastPromoCardDismissed: Boolean = false,
     /**
+     * True once the user has dismissed the Today-screen weather alerts promo
+     * card or followed it to Alerts settings. It shows only to Google-signed-in
+     * users with alerts off (docs/ALERTS.md → Settings).
+     */
+    val weatherAlertsPromoCardDismissed: Boolean = false,
+    /**
      * True once the scheduled run has told a signed-out user that the free
      * Gemini voice now needs Google sign-in (and spoke with the device voice
      * instead). Shown once, so the notice doesn't repeat every run; reset by
@@ -1005,6 +1011,14 @@ data class UserPreferences(
      * Auto never turns it on by itself.
      */
     val googleForecast: Boolean = false,
+    /**
+     * Official weather alerts on Today, with notifications (docs/ALERTS.md).
+     * Off by default (maintainer, 2026-10-22): turning it on needs a route to
+     * Google — Google sign-in, or a key of the user's own.
+     */
+    val weatherAlerts: Boolean = false,
+    /** Which alert levels post a notification; see [AlertNotifyLevel]. */
+    val weatherAlertsNotifyLevel: AlertNotifyLevel = AlertNotifyLevel.DEFAULT,
     /**
      * Optional Smart Home / Home Assistant MQTT bridge. When [mqttBridgeEnabled]
      * is true and [mqttHost] is set, the worker publishes the rendered insight

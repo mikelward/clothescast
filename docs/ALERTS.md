@@ -20,9 +20,10 @@ unreachable); confirm them before building on them.
    MeteoAlarm regions, the UK comes from the Met Office's own API instead
    (see "Location").
 2. **Fetch alerts with every forecast refresh** (the app's 1-hour rule), plus
-   a background check for notifications whose cadence is still open (3
-   hours, adaptive or hourly; see "Cadence, freshness and cost"). Keep a
-   short in-memory cache on the proxy; store nothing.
+   an adaptive background check for notifications: every 3 hours, hourly
+   while the forecast looks severe or an alert is active (maintainer,
+   2026-10-22; see "Cadence, freshness and cost"). The proxy stores nothing
+   and, until the caching terms are checked, caches nothing either.
 3. **Fill Google's gaps later with one generic CAP ingester** on a server
    cron, reading the WMO/Alert-Hub directory of 231 national feeds rather
    than integrating authorities one by one (see "One integration for many
@@ -503,14 +504,16 @@ its terms apply directly; revisit the titles then.
   coordinate stays out of request logs), App Check, Google sign-in (403
   `sign_in_required` for anonymous tokens). Forwards only latitude,
   longitude, a validated language code and a bounded page size. Its own daily
-  cap per account (`weatherAlertsQuota/g_<hex>`, about 30 a day) so forecast
+  cap per account (`weatherAlertsQuota/g_<hex>`, 120 a day) so forecast
   walks can't starve it. Never logs or stores the coordinate.
-- **Server cache**: in memory per instance, keyed by the 2-decimal
-  coordinate the app already sends, 15-minute TTL, never written anywhere.
-  It helps exactly when traffic is high (warm instances, many users per
-  cell) and costs nothing when it's low. A coarser key would save more calls
-  but miss small polygons (US storm-based warnings), so it isn't used. Check
-  the caching terms first (`SPEC.md` requires it).
+- **Server cache**: none at first; the Maps Platform caching terms for
+  alerts are unchecked and `SPEC.md` requires checking them before any
+  server-side cache (`TODO.md` → Decisions needing review). Once they allow
+  it: in memory per instance, keyed by the 2-decimal coordinate the app
+  already sends, 15-minute TTL, never written anywhere. It helps exactly when
+  traffic is high (warm instances, many users per cell) and costs nothing
+  when it's low. A coarser key would save more calls but miss small polygons
+  (US storm-based warnings), so it isn't used.
 - **Client**: `:core:domain` gets a `WeatherAlert` model with CAP severity
   and the pure-Kotlin filters (point in polygon, event type, expiry);
   `:core:data` a client over `GoogleWeatherAccess` (own key or proxy) that
@@ -655,7 +658,7 @@ the nominal one whatever we choose.
 - [ ] Maps Platform caching terms for alerts.
 - [x] Opt-in: its own "Alerts" settings section, off by default (see
       "Settings").
-- [ ] Background check cadence: 3 hours, adaptive or hourly (see "Cadence,
-      freshness and cost").
+- [x] Background check cadence: adaptive (maintainer, 2026-10-22; see
+      "Cadence, freshness and cost").
 - [ ] Whether alerts also open the morning and evening insight ("Amber
       wind warning until 9 AM.") and the spoken forecast.

@@ -1237,6 +1237,7 @@
     <string name="weather_alert_expand">Shfaq detajet</string>
     <string name="weather_alert_collapse">Fshih detajet</string>
     <string name="weather_alert_dismiss">Hiq</string>
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Edhe %d paralajmërim</item>
         <item quantity="other">Edhe %d paralajmërime</item>

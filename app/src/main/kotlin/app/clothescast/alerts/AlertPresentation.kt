@@ -1,6 +1,7 @@
 package app.clothescast.alerts
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import app.clothescast.R
@@ -79,18 +80,21 @@ internal enum class AlertIcon(
  * otherwise the issuer's own title ("High Wind Warning"); otherwise a plain
  * fallback by level.
  */
-internal fun alertTitle(context: Context, alert: WeatherAlert): String {
+internal fun alertTitle(context: Context, alert: WeatherAlert): String = alertTitle(context.resources, alert)
+
+/** [alertTitle] in [resources]' language, for prose spoken in a voice locale. */
+internal fun alertTitle(resources: Resources, alert: WeatherAlert): String {
     val color = AlertTitles.colorGraded(alert.issuerTitle)
     val hazard = alert.hazard
     if (color != null && hazard != null) {
-        return context.getString(
+        return resources.getString(
             R.string.weather_alert_title,
-            context.getString(colorWord(color)),
-            context.getString(hazardWord(hazard)),
+            resources.getString(colorWord(color)),
+            resources.getString(hazardWord(hazard)),
         )
     }
     if (alert.issuerTitle.isNotBlank()) return alert.issuerTitle
-    return context.getString(
+    return resources.getString(
         when (alert.level) {
             AlertLevel.RED -> R.string.weather_alert_title_fallback_extreme
             AlertLevel.ORANGE -> R.string.weather_alert_title_fallback_severe

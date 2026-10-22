@@ -1501,6 +1501,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_expand">Εμφάνιση λεπτομερειών</string>
     <string name="weather_alert_collapse">Απόκρυψη λεπτομερειών</string>
     <string name="weather_alert_dismiss">Απόρριψη</string>
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d ακόμη προειδοποίηση</item>
         <item quantity="other">%d ακόμη προειδοποιήσεις</item>

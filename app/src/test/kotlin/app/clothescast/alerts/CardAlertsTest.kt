@@ -54,6 +54,15 @@ class CardAlertsTest {
     }
 
     @Test
+    fun `an insight carries the yellow-and-up warnings over its window, most severe first`() {
+        val red = alert(AlertSeverity.EXTREME, start = null, end = "2026-10-23T20:00:00Z")
+        val yellow = alert(AlertSeverity.MODERATE, start = null, end = "2026-10-23T20:00:00Z")
+        val minor = alert(AlertSeverity.MINOR, start = null, end = "2026-10-23T20:00:00Z")
+        val endsTonight = alert(AlertSeverity.SEVERE, start = null, end = "2026-10-22T23:00:00Z")
+        insightAlerts(listOf(red, yellow, minor, endsTonight), tomorrow) shouldBe listOf(red, yellow)
+    }
+
+    @Test
     fun `nothing heads the card when alerts are off, elsewhere, or minor`() {
         val severe = alert(AlertSeverity.SEVERE, start = null, end = "2026-10-23T20:00:00Z")
         val elsewhere = Location(latitude = 10.0, longitude = 10.0, displayName = "City B")

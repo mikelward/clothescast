@@ -1368,6 +1368,7 @@ default English (matching values-pl / values-uk).
     <string name="weather_alert_expand">Prikaži detalje</string>
     <string name="weather_alert_collapse">Sakrij detalje</string>
     <string name="weather_alert_dismiss">Odbaci</string>
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Još %d upozorenje</item>
         <item quantity="few">Još %d upozorenja</item>

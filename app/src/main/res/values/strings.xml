@@ -2116,6 +2116,8 @@
     <string name="weather_alert_expand">Show details</string>
     <string name="weather_alert_collapse">Hide details</string>
     <string name="weather_alert_dismiss">Dismiss</string>
+    <!-- A warning title closing the insight: "… Wear a thick jacket. Amber wind warning." -->
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d more alert</item>
         <item quantity="other">%d more alerts</item>

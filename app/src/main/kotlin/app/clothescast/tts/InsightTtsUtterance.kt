@@ -11,6 +11,7 @@ import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.insight.InsightSurface
 import java.util.Locale
@@ -29,6 +30,8 @@ internal data class InsightTtsUtterance(
  * On a themed day [holidayTheme] prepends a spoken greeting ("Merry Christmas!
  * Today, it will be …") localised to the same voice locale. See
  * [holidayTtsGreeting] for the privacy rules around calendar-sourced titles.
+ * The warnings in force over the insight ([alerts]) close it, their titles
+ * in the voice locale too ("… Amber wind warning.").
  */
 internal fun insightTtsUtterance(
     context: Context,
@@ -44,6 +47,7 @@ internal fun insightTtsUtterance(
     wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     fallbackLocale: Locale = Locale.getDefault(),
     holidayTheme: HolidayTheme? = null,
+    alerts: List<RelevantAlert> = emptyList(),
 ): InsightTtsUtterance {
     val regionLocale = region.toJavaLocale() ?: fallbackLocale
     val locale = voiceLocale.resolve(regionLocale)
@@ -54,7 +58,7 @@ internal fun insightTtsUtterance(
         // Spoken playback stays silent when nothing fired — no "it will be the
         // same as yesterday." filler read aloud — unlike the display surfaces.
         // SPEECH surface so Speech-only preambles are spoken (kept) here.
-        .format(summary, placeholderWhenEmpty = false, surface = InsightSurface.SPEECH)
+        .format(summary, placeholderWhenEmpty = false, surface = InsightSurface.SPEECH, alerts = alerts)
     // Override country tracks the app region (mirrors HolidayBanner) while the
     // greeting's language follows the voice locale.
     val greeting = holidayTtsGreeting(context, holidayTheme, locale, regionLocale.country)

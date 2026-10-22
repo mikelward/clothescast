@@ -296,8 +296,9 @@ The source code is at <https://github.com/mikelward/clothescast>.
   same bytes the phone speaks, Gemini engine only), and a combined MP4
   that simply muxes that image and audio together for one-shot casting.
   With weather alerts on, the image's conditions row starts with the
-  warning icon (its level only, no text) while an official alert covers the
-  card's forecast window.
+  warning icon (its level only) while an official alert covers the
+  card's forecast window, and the sentence ends with each such warning's
+  title ("Amber wind warning").
   The image and audio carry the same insight — the card renders the
   sentence, the audio speaks it — so the MP4 introduces no new data; it
   only repackages what the image and audio topics already publish. A
@@ -366,7 +367,10 @@ Online TTS (the Gemini voice) has two paths.
   ClothesCast-operated Cloud Function instead of directly to Google.
   The function holds a Google Gemini API key paid for by the developer,
   forwards your request to Google, and returns the audio. It does not
-  log the spoken prose or the audio response. This path needs you to
+  log the spoken prose or the audio response. With weather alerts on, that
+  prose ends with the title of each official warning in force for it
+  ("Amber wind warning"), so on either path the title goes to Google with
+  it. This path needs you to
   sign in with Google; until you do, the app speaks with the device
   voice instead, and the first time that happens it tells you so in a
   notification.
@@ -660,7 +664,10 @@ email the address listed on the Play Store listing.
   and when you open the app, either with your own Google key or, signed in
   with Google, through a new ClothesCast alerts proxy that doesn't log or
   store either and counts only today's requests per account. Severe alerts
-  where you are post a notification built on your device.
+  where you are post a notification built on your device. The daily
+  ClothesCast ends with the title of each warning in force for it, so the
+  online voice and your Smart Home broker receive that title with the rest
+  of the sentence.
 - **2026-10-19** — Added a [page for deleting your account](docs/delete-account.md)
   without the app: email play@mikelward.com from the Google account you
   signed in with. Older versions' anonymous sign-ins and their usage

@@ -1386,6 +1386,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="weather_alert_expand">Tunjukkan butiran</string>
     <string name="weather_alert_collapse">Sembunyikan butiran</string>
     <string name="weather_alert_dismiss">Tutup</string>
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="other">%d amaran lagi</item>
     </plurals>

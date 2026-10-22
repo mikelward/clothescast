@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import app.clothescast.R
+import app.clothescast.alerts.alertTitle
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
@@ -26,6 +27,7 @@ import app.clothescast.core.domain.model.WeekAheadClause
 import app.clothescast.core.domain.model.WeekAheadInsight
 import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.warrantsRainAccessory
+import app.clothescast.core.domain.usecase.RelevantAlert
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.TextStyle
@@ -161,12 +163,30 @@ class InsightFormatter(
      * it, and the Format-settings preview shows it parenthesised ("(Today, it
      * will be) 14° to 20°."). Dropping / parenthesising applies in every locale
      * — each ships its own `insight_*_no_lead` templates.
+     *
+     * Each of [alerts] (the warnings in force over this insight's window,
+     * [app.clothescast.alerts.insightAlerts]) closes the prose with its title
+     * as a sentence of its own ("… Amber wind warning."), in this formatter's
+     * language; a title two alerts share is said once.
      */
     fun format(
         summary: InsightSummary,
         isFutureDay: Boolean = false,
         placeholderWhenEmpty: Boolean = true,
         surface: InsightSurface = InsightSurface.VISUAL,
+        alerts: List<RelevantAlert> = emptyList(),
+    ): String {
+        val body = formatBody(summary, isFutureDay, placeholderWhenEmpty, surface)
+        val warnings = alerts.map { alertTitle(resources, it.alert) }.distinct()
+            .map { resources.getString(R.string.insight_alert_sentence, it) }
+        return (listOf(body) + warnings).filter { it.isNotBlank() }.joinToString(" ")
+    }
+
+    private fun formatBody(
+        summary: InsightSummary,
+        isFutureDay: Boolean,
+        placeholderWhenEmpty: Boolean,
+        surface: InsightSurface,
     ): String {
         val wearMode = wearMode(surface)
         return when (leadMode(surface)) {

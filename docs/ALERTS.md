@@ -85,6 +85,15 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   Cards are outlined and neutral so the icon carries the color (the yellow
   tint can't be read on a yellow card). More than three alerts collapse
   behind "2 more alerts".
+- **The daily ClothesCast** ends with the title of each warning in force
+  over its forecast window, yellow and up (the icon's rule), a sentence
+  each: "… Wear a thick jacket. Amber wind warning." That covers Today's
+  insight card (the current period's page, as the strip), the
+  notification, the spoken briefing (titles in the voice's language) and
+  the smart-display card and Smart Home text (maintainer, 2026-10-22: at
+  the end). The title rides the prose to the online voice and the user's
+  broker; the app adds no area name to it, though an issuer's own title
+  (used where it doesn't grade by color) is sent as written.
 - **Dismiss** hides that alert's card until the issuer changes anything the
   app shows of it (title, level, area, text, link or times); a reissued or
   new alert gets its own card (maintainer, 2026-10-22). The strip, widget,

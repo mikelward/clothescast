@@ -1466,6 +1466,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_expand">Mostrar detalhes</string>
     <string name="weather_alert_collapse">Ocultar detalhes</string>
     <string name="weather_alert_dismiss">Dispensar</string>
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Mais %d alerta</item>
         <item quantity="many">Mais %d alertas</item>

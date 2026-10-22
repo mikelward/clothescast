@@ -1408,6 +1408,7 @@ Not overridden by design:
     <string name="weather_alert_expand">विवरण दिखाएँ</string>
     <string name="weather_alert_collapse">विवरण छुपाएँ</string>
     <string name="weather_alert_dismiss">बंद करें</string>
+    <string name="insight_alert_sentence">%1$s।</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d और चेतावनी</item>
         <item quantity="other">%d और चेतावनियाँ</item>

@@ -661,7 +661,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Calendar settings — master switch + per-feature toggles -->
     <string name="settings_calendar_master">Meinen Kalender verwenden</string>
-    <string name="settings_calendar_master_description">Liest deine Kalender, um Vorhersagen und Outfits zu personalisieren. Standardmäßig verlässt nichts dein Gerät.</string>
+    <string name="settings_calendar_master_description">Liest deine Kalender, um Vorhersagen und Outfits zu personalisieren. Standardmässig verlässt nichts dein Gerät.</string>
     <string name="settings_calendar_features_title">Persönliche Kalender</string>
     <string name="settings_evening_extras">Extras für den Abend</string>
     <string name="settings_evening_extras_description">Wenn du abends ausgehst, sagt dir die Morgenvorhersage, ob du etwas mitnehmen solltest.</string>
@@ -688,4 +688,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_display_text_size_title">Textgrösse</string>
     <string name="settings_google_delete_body">Deine Einstellungen auf diesem Natel bleiben erhalten.</string>
     <string name="settings_display_text_size_pinch">Zum Ändern der Grösse zoomen</string>
+
+    <!-- Weather alerts (docs/ALERTS.md): only the ß → ss string; the rest
+         falls back to values-de. -->
+    <string name="today_alerts_promo_dismiss" tools:ignore="Typos">Schliessen</string>
 </resources>

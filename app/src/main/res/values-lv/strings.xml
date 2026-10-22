@@ -1259,4 +1259,72 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_forecasters_google_probe_failed_http">Neizdevās sasniegt Google prognozi (HTTP %1$d). Tā tiks izlaista, līdz šī problēma tiks novērsta.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google noraidīja jūsu atslēgu. Google Cloud iespējojiet Weather API un norēķinus atslēgas projektam un pārliecinieties, ka atslēga nav ierobežota tā, lai to izslēgtu. Līdz tam Google netiek iekļauts jūsu prognozē.</string>
     <string name="settings_forecasters_google_probe_retry">Pārbaudīt vēlreiz</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Brīdinājumi</string>
+    <string name="settings_root_alerts_subtitle">Oficiālie laikapstākļu brīdinājumi</string>
+    <string name="settings_page_alerts">Brīdinājumu iestatījumi</string>
+    <string name="settings_weather_alerts_title">Laikapstākļu brīdinājumi</string>
+    <string name="settings_weather_alerts_summary">Oficiālie brīdinājumi tavai atrašanās vietai Šodienas ekrānā.</string>
+    <string name="settings_weather_alerts_sign_in">Pieraksties ar Google, lai saņemtu laikapstākļu brīdinājumus.</string>
+    <string name="settings_alerts_notify_title">Paziņot par</string>
+    <string name="settings_alerts_notify_red">Tikai sarkanajiem</string>
+    <string name="settings_alerts_notify_orange_red">Oranžajiem un sarkanajiem</string>
+    <string name="settings_alerts_notify_all">Visiem līmeņiem</string>
+    <string name="settings_alerts_notify_none">Nepaziņot</string>
+    <string name="settings_alerts_channel">Brīdinājumu skaņa un bloķēšanas ekrāns</string>
+    <string name="settings_alerts_notification_permission">Bez paziņojumu atļaujas brīdinājumi par bīstamiem laikapstākļiem tevi nesasniegs. Piešķir to, lai tie tevi sasniegtu.</string>
+    <string name="settings_alerts_status_checked">Pēdējā pārbaude %1$s</string>
+    <string name="settings_alerts_status_unsupported">Brīdinājumi šai atrašanās vietai nav pieejami.</string>
+    <string name="settings_alerts_status_failed">Neizdevās pārbaudīt brīdinājumus. Drīz mēģināsim vēlreiz.</string>
+    <string name="settings_alerts_status_waiting">Pārbauda brīdinājumus…</string>
+
+    <string name="today_alerts_promo_title">Saņem laikapstākļu brīdinājumus</string>
+    <string name="today_alerts_promo_body">Oficiālie brīdinājumi tur, kur esi, ar paziņojumiem par bīstamajiem.</string>
+    <string name="today_alerts_promo_cta">Brīdinājumu iestatījumi</string>
+    <string name="today_alerts_promo_dismiss">Aizvērt</string>
+
+    <string name="notification_channel_weather_alerts_name">Laikapstākļu brīdinājumi</string>
+    <string name="notification_channel_weather_alerts_description">Oficiālo meteoroloģisko dienestu brīdinājumi par bīstamiem laikapstākļiem tavā atrašanās vietā.</string>
+
+    <!-- "Oranžais brīdinājums par vēju", as LVĢMC words them: definite
+         adjectives; hazards accusative singular or dative plural after "par". -->
+    <string name="weather_alert_title">%1$s brīdinājums par %2$s</string>
+    <string name="weather_alert_level_yellow">Dzeltenais</string>
+    <string name="weather_alert_level_amber">Oranžais</string>
+    <string name="weather_alert_level_orange">Oranžais</string>
+    <string name="weather_alert_level_red">Sarkanais</string>
+    <string name="weather_alert_hazard_wind">vēju</string>
+    <string name="weather_alert_hazard_rain">lietu</string>
+    <string name="weather_alert_hazard_snow_and_ice">sniegu un apledojumu</string>
+    <string name="weather_alert_hazard_thunderstorm">pērkona negaisu</string>
+    <string name="weather_alert_hazard_fog">miglu</string>
+    <string name="weather_alert_hazard_heat">karstumu</string>
+    <string name="weather_alert_hazard_cold">aukstumu</string>
+    <string name="weather_alert_hazard_coastal">apdraudējumu piekrastē</string>
+    <string name="weather_alert_hazard_flood">plūdiem</string>
+    <string name="weather_alert_hazard_wildfire">meža ugunsgrēkiem</string>
+    <string name="weather_alert_hazard_avalanche">lavīnām</string>
+    <string name="weather_alert_hazard_storm">vētru</string>
+    <string name="weather_alert_hazard_tornado">viesuli</string>
+    <string name="weather_alert_hazard_hail">krusu</string>
+    <string name="weather_alert_hazard_dust">putekļiem</string>
+    <string name="weather_alert_title_fallback">Laikapstākļu brīdinājums</string>
+    <string name="weather_alert_title_fallback_severe">Brīdinājums par bīstamiem laikapstākļiem</string>
+    <string name="weather_alert_title_fallback_extreme">Brīdinājums par ekstremāliem laikapstākļiem</string>
+    <string name="weather_alert_level_info_description">Neliels laikapstākļu brīdinājums</string>
+    <string name="weather_alert_level_yellow_description">Laikapstākļu brīdinājums</string>
+    <string name="weather_alert_level_orange_description">Brīdinājums par bīstamiem laikapstākļiem</string>
+    <string name="weather_alert_level_red_description">Brīdinājums par ekstremāliem laikapstākļiem</string>
+    <string name="weather_alert_until">Līdz %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Atvērt %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detaļas</string>
+    <string name="weather_alert_expand">Rādīt detaļas</string>
+    <string name="weather_alert_collapse">Slēpt detaļas</string>
+    <plurals name="weather_alert_more">
+        <item quantity="zero">Vēl %d brīdinājumu</item>
+        <item quantity="one">Vēl %d brīdinājums</item>
+        <item quantity="other">Vēl %d brīdinājumi</item>
+    </plurals>
 </resources>

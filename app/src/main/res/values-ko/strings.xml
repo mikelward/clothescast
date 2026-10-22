@@ -1469,4 +1469,69 @@ displayed label localizes.
     <string name="settings_forecasters_google_probe_failed_http">Google 예보에 연결할 수 없습니다(HTTP %1$d). 해결될 때까지 제외됩니다.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google가 키를 거부했습니다. Google Cloud에서 키의 프로젝트에 대해 Weather API와 결제를 사용 설정하고, 키가 이를 제외하도록 제한되어 있지 않은지 확인하세요. 그때까지 Google은 예보에서 제외됩니다.</string>
     <string name="settings_forecasters_google_probe_retry">다시 확인</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">특보</string>
+    <string name="settings_root_alerts_subtitle">공식 기상특보</string>
+    <string name="settings_page_alerts">특보 설정</string>
+    <string name="settings_weather_alerts_title">기상특보</string>
+    <string name="settings_weather_alerts_summary">현재 위치의 공식 특보를 「오늘」 화면에 표시해요.</string>
+    <string name="settings_weather_alerts_sign_in">Google로 로그인하면 기상특보를 받을 수 있어요.</string>
+    <string name="settings_alerts_notify_title">알림 받을 단계</string>
+    <string name="settings_alerts_notify_red">적색만</string>
+    <string name="settings_alerts_notify_orange_red">주황색 및 적색</string>
+    <string name="settings_alerts_notify_all">모든 단계</string>
+    <string name="settings_alerts_notify_none">없음</string>
+    <string name="settings_alerts_channel">특보 알림음 및 잠금 화면</string>
+    <string name="settings_alerts_notification_permission">알림 권한이 없으면 위험기상 특보를 받을 수 없어요. 허용하면 받을 수 있어요.</string>
+    <string name="settings_alerts_status_checked">마지막 확인: %1$s</string>
+    <string name="settings_alerts_status_unsupported">이 위치에서는 특보를 이용할 수 없어요.</string>
+    <string name="settings_alerts_status_failed">특보를 확인하지 못했어요. 곧 다시 시도할게요.</string>
+    <string name="settings_alerts_status_waiting">특보 확인 중…</string>
+
+    <string name="today_alerts_promo_title">기상특보 받기</string>
+    <string name="today_alerts_promo_body">현재 위치의 공식 특보를 보여 드리고, 위험한 특보는 알림으로 알려 드려요.</string>
+    <string name="today_alerts_promo_cta">특보 설정</string>
+    <string name="today_alerts_promo_dismiss">닫기</string>
+
+    <string name="notification_channel_weather_alerts_name">기상특보</string>
+    <string name="notification_channel_weather_alerts_description">공식 기상 기관에서 발표한 현재 위치의 위험기상 특보를 알려 드립니다.</string>
+
+    <!-- "강풍 주황색 경보": color-graded tiers read as 경보 in Korean. -->
+    <string name="weather_alert_title">%2$s %1$s 경보</string>
+    <string name="weather_alert_level_yellow">황색</string>
+    <string name="weather_alert_level_amber">주황색</string>
+    <string name="weather_alert_level_orange">주황색</string>
+    <string name="weather_alert_level_red">적색</string>
+    <string name="weather_alert_hazard_wind">강풍</string>
+    <string name="weather_alert_hazard_rain">호우</string>
+    <string name="weather_alert_hazard_snow_and_ice">대설·결빙</string>
+    <string name="weather_alert_hazard_thunderstorm">뇌우</string>
+    <string name="weather_alert_hazard_fog">안개</string>
+    <string name="weather_alert_hazard_heat">폭염</string>
+    <string name="weather_alert_hazard_cold">한파</string>
+    <string name="weather_alert_hazard_coastal">풍랑·해일</string>
+    <string name="weather_alert_hazard_flood">홍수</string>
+    <string name="weather_alert_hazard_wildfire">산불</string>
+    <string name="weather_alert_hazard_avalanche">눈사태</string>
+    <string name="weather_alert_hazard_storm">폭풍</string>
+    <string name="weather_alert_hazard_tornado">토네이도</string>
+    <string name="weather_alert_hazard_hail">우박</string>
+    <string name="weather_alert_hazard_dust">모래먼지</string>
+    <string name="weather_alert_title_fallback">기상특보</string>
+    <string name="weather_alert_title_fallback_severe">위험기상 특보</string>
+    <string name="weather_alert_title_fallback_extreme">극한 기상특보</string>
+    <string name="weather_alert_level_info_description">경미한 기상특보</string>
+    <string name="weather_alert_level_yellow_description">기상특보</string>
+    <string name="weather_alert_level_orange_description">위험기상 특보</string>
+    <string name="weather_alert_level_red_description">극한 기상특보</string>
+    <string name="weather_alert_until">%1$s까지</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">%1$s 열기</string>
+    <string name="weather_alert_open_source_fallback">세부정보</string>
+    <string name="weather_alert_expand">자세히 보기</string>
+    <string name="weather_alert_collapse">자세히 숨기기</string>
+    <plurals name="weather_alert_more">
+        <item quantity="other">특보 %d건 더</item>
+    </plurals>
 </resources>

@@ -1323,4 +1323,69 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_forecasters_google_probe_failed_http">Tidak dapat mencapai ramalan Google (HTTP %1$d). Ia akan ditinggalkan sehingga ini diselesaikan.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google menolak kunci anda. Dalam Google Cloud, dayakan Weather API dan pengebilan untuk projek kunci tersebut, dan pastikan kunci itu tidak dihadkan sehingga mengecualikannya. Sehingga itu, Google ditinggalkan daripada ramalan anda.</string>
     <string name="settings_forecasters_google_probe_retry">Semak semula</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Amaran</string>
+    <string name="settings_root_alerts_subtitle">Amaran cuaca rasmi</string>
+    <string name="settings_page_alerts">Tetapan amaran</string>
+    <string name="settings_weather_alerts_title">Amaran cuaca</string>
+    <string name="settings_weather_alerts_summary">Amaran rasmi untuk lokasi anda pada skrin Hari Ini.</string>
+    <string name="settings_weather_alerts_sign_in">Log masuk dengan Google untuk mendapatkan amaran cuaca.</string>
+    <string name="settings_alerts_notify_title">Beritahu untuk</string>
+    <string name="settings_alerts_notify_red">Merah sahaja</string>
+    <string name="settings_alerts_notify_orange_red">Jingga dan merah</string>
+    <string name="settings_alerts_notify_all">Semua tahap</string>
+    <string name="settings_alerts_notify_none">Tiada</string>
+    <string name="settings_alerts_channel">Bunyi dan skrin kunci amaran</string>
+    <string name="settings_alerts_notification_permission">Tanpa kebenaran pemberitahuan, amaran cuaca buruk tidak dapat sampai kepada anda. Benarkan supaya amaran dapat sampai.</string>
+    <string name="settings_alerts_status_checked">Terakhir disemak %1$s</string>
+    <string name="settings_alerts_status_unsupported">Amaran tidak tersedia untuk lokasi ini.</string>
+    <string name="settings_alerts_status_failed">Tidak dapat menyemak amaran. Akan cuba semula sebentar lagi.</string>
+    <string name="settings_alerts_status_waiting">Menyemak amaran…</string>
+
+    <string name="today_alerts_promo_title">Dapatkan amaran cuaca</string>
+    <string name="today_alerts_promo_body">Amaran rasmi untuk tempat anda berada, dengan pemberitahuan untuk cuaca buruk.</string>
+    <string name="today_alerts_promo_cta">Tetapan amaran</string>
+    <string name="today_alerts_promo_dismiss">Tutup</string>
+
+    <string name="notification_channel_weather_alerts_name">Amaran cuaca</string>
+    <string name="notification_channel_weather_alerts_description">Amaran cuaca buruk untuk lokasi anda daripada perkhidmatan cuaca rasmi.</string>
+
+    <!-- "Amaran angin kencang tahap jingga": warning, hazard, then the level. -->
+    <string name="weather_alert_title">Amaran %2$s tahap %1$s</string>
+    <string name="weather_alert_level_yellow">kuning</string>
+    <string name="weather_alert_level_amber">jingga</string>
+    <string name="weather_alert_level_orange">jingga</string>
+    <string name="weather_alert_level_red">merah</string>
+    <string name="weather_alert_hazard_wind">angin kencang</string>
+    <string name="weather_alert_hazard_rain">hujan lebat</string>
+    <string name="weather_alert_hazard_snow_and_ice">salji dan ais</string>
+    <string name="weather_alert_hazard_thunderstorm">ribut petir</string>
+    <string name="weather_alert_hazard_fog">kabus</string>
+    <string name="weather_alert_hazard_heat">cuaca panas</string>
+    <string name="weather_alert_hazard_cold">cuaca sejuk</string>
+    <string name="weather_alert_hazard_coastal">air pasang besar</string>
+    <string name="weather_alert_hazard_flood">banjir</string>
+    <string name="weather_alert_hazard_wildfire">kebakaran hutan</string>
+    <string name="weather_alert_hazard_avalanche">runtuhan salji</string>
+    <string name="weather_alert_hazard_storm">ribut</string>
+    <string name="weather_alert_hazard_tornado">puting beliung</string>
+    <string name="weather_alert_hazard_hail">hujan batu</string>
+    <string name="weather_alert_hazard_dust">ribut debu</string>
+    <string name="weather_alert_title_fallback">Amaran cuaca</string>
+    <string name="weather_alert_title_fallback_severe">Amaran cuaca buruk</string>
+    <string name="weather_alert_title_fallback_extreme">Amaran cuaca ekstrem</string>
+    <string name="weather_alert_level_info_description">Amaran cuaca ringan</string>
+    <string name="weather_alert_level_yellow_description">Amaran cuaca</string>
+    <string name="weather_alert_level_orange_description">Amaran cuaca buruk</string>
+    <string name="weather_alert_level_red_description">Amaran cuaca ekstrem</string>
+    <string name="weather_alert_until">Hingga %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Buka %1$s</string>
+    <string name="weather_alert_open_source_fallback">Butiran</string>
+    <string name="weather_alert_expand">Tunjukkan butiran</string>
+    <string name="weather_alert_collapse">Sembunyikan butiran</string>
+    <plurals name="weather_alert_more">
+        <item quantity="other">%d amaran lagi</item>
+    </plurals>
 </resources>

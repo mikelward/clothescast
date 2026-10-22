@@ -1389,4 +1389,67 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_forecasters_google_probe_failed_http">Google-এর পূর্বাভাসে পৌঁছানো যায়নি (HTTP %1$d)। এটি ঠিক না হওয়া পর্যন্ত বাদ রাখা হবে।</string>
     <string name="settings_forecasters_google_probe_forbidden">Google আপনার কী প্রত্যাখ্যান করেছে। Google Cloud-এ, কী-এর প্রজেক্টের জন্য Weather API এবং বিলিং সক্ষম করুন এবং নিশ্চিত করুন কী-টি এটিকে বাদ দেওয়ার মতো সীমাবদ্ধ নয়। ততক্ষণ পর্যন্ত, Google আপনার পূর্বাভাস থেকে বাদ থাকবে।</string>
     <string name="settings_forecasters_google_probe_retry">আবার পরীক্ষা করুন</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">সতর্কতা</string>
+    <string name="settings_root_alerts_subtitle">অফিসিয়াল আবহাওয়া সতর্কতা</string>
+    <string name="settings_page_alerts">সতর্কতা সেটিংস</string>
+    <string name="settings_weather_alerts_title">আবহাওয়া সতর্কতা</string>
+    <string name="settings_weather_alerts_summary">আজকের স্ক্রিনে আপনার অবস্থানের অফিসিয়াল সতর্কতা।</string>
+    <string name="settings_weather_alerts_sign_in">আবহাওয়া সতর্কতা পেতে Google দিয়ে সাইন ইন করুন।</string>
+    <string name="settings_alerts_notify_title">আমাকে জানান</string>
+    <string name="settings_alerts_notify_red">শুধু লাল</string>
+    <string name="settings_alerts_notify_orange_red">কমলা ও লাল</string>
+    <string name="settings_alerts_notify_all">সব স্তর</string>
+    <string name="settings_alerts_notify_none">কোনোটিই নয়</string>
+    <string name="settings_alerts_channel">সতর্কতার শব্দ ও লক স্ক্রিন</string>
+    <string name="settings_alerts_notification_permission">বিজ্ঞপ্তির অনুমতি ছাড়া গুরুতর আবহাওয়া সতর্কতা আপনার কাছে পৌঁছাতে পারবে না। সেগুলো যাতে পৌঁছায়, অনুমতি দিন।</string>
+    <string name="settings_alerts_status_checked">শেষ পরীক্ষা %1$s</string>
+    <string name="settings_alerts_status_unsupported">এই অবস্থানের জন্য সতর্কতা উপলব্ধ নয়।</string>
+    <string name="settings_alerts_status_failed">সতর্কতা পরীক্ষা করা যায়নি। শীঘ্রই আবার চেষ্টা করা হবে।</string>
+    <string name="settings_alerts_status_waiting">সতর্কতা পরীক্ষা করা হচ্ছে…</string>
+    <string name="today_alerts_promo_title">আবহাওয়া সতর্কতা পান</string>
+    <string name="today_alerts_promo_body">আপনি যেখানে আছেন সেখানকার অফিসিয়াল সতর্কতা, গুরুতরগুলোর জন্য বিজ্ঞপ্তিসহ।</string>
+    <string name="today_alerts_promo_cta">সতর্কতা সেটিংস</string>
+    <string name="today_alerts_promo_dismiss">বন্ধ</string>
+    <string name="notification_channel_weather_alerts_name">আবহাওয়া সতর্কতা</string>
+    <string name="notification_channel_weather_alerts_description">অফিসিয়াল আবহাওয়া পরিষেবা থেকে আপনার অবস্থানের গুরুতর আবহাওয়া সতর্কতা।</string>
+    <!-- "প্রবল বাতাসের কমলা সতর্কতা": hazards are in the genitive. -->
+    <string name="weather_alert_title">%2$s %1$s সতর্কতা</string>
+    <string name="weather_alert_level_yellow">হলুদ</string>
+    <string name="weather_alert_level_amber">কমলা</string>
+    <string name="weather_alert_level_orange">কমলা</string>
+    <string name="weather_alert_level_red">লাল</string>
+    <string name="weather_alert_hazard_wind">প্রবল বাতাসের</string>
+    <string name="weather_alert_hazard_rain">বৃষ্টির</string>
+    <string name="weather_alert_hazard_snow_and_ice">তুষার ও বরফের</string>
+    <string name="weather_alert_hazard_thunderstorm">বজ্রঝড়ের</string>
+    <string name="weather_alert_hazard_fog">কুয়াশার</string>
+    <string name="weather_alert_hazard_heat">তাপপ্রবাহের</string>
+    <string name="weather_alert_hazard_cold">শৈত্যপ্রবাহের</string>
+    <string name="weather_alert_hazard_coastal">উপকূলীয় বিপদের</string>
+    <string name="weather_alert_hazard_flood">বন্যার</string>
+    <string name="weather_alert_hazard_wildfire">দাবানলের</string>
+    <string name="weather_alert_hazard_avalanche">তুষারধসের</string>
+    <string name="weather_alert_hazard_storm">ঝড়ের</string>
+    <string name="weather_alert_hazard_tornado">টর্নেডোর</string>
+    <string name="weather_alert_hazard_hail">শিলাবৃষ্টির</string>
+    <string name="weather_alert_hazard_dust">ধূলিঝড়ের</string>
+    <string name="weather_alert_title_fallback">আবহাওয়া সতর্কতা</string>
+    <string name="weather_alert_title_fallback_severe">গুরুতর আবহাওয়া সতর্কতা</string>
+    <string name="weather_alert_title_fallback_extreme">চরম আবহাওয়া সতর্কতা</string>
+    <string name="weather_alert_level_info_description">মৃদু আবহাওয়া সতর্কতা</string>
+    <string name="weather_alert_level_yellow_description">আবহাওয়া সতর্কতা</string>
+    <string name="weather_alert_level_orange_description">গুরুতর আবহাওয়া সতর্কতা</string>
+    <string name="weather_alert_level_red_description">চরম আবহাওয়া সতর্কতা</string>
+    <string name="weather_alert_until">%1$s পর্যন্ত</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">%1$s খুলুন</string>
+    <string name="weather_alert_open_source_fallback">বিবরণ</string>
+    <string name="weather_alert_expand">বিবরণ দেখুন</string>
+    <string name="weather_alert_collapse">বিবরণ লুকান</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">আরও %dটি সতর্কতা</item>
+        <item quantity="other">আরও %dটি সতর্কতা</item>
+    </plurals>
 </resources>

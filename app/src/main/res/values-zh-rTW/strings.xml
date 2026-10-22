@@ -1479,4 +1479,69 @@ label localises.
     <string name="settings_forecasters_google_probe_failed_http">無法連上 Google 的預測（HTTP %1$d）。在此問題解決前將不予採用。</string>
     <string name="settings_forecasters_google_probe_forbidden">Google 拒絕了您的金鑰。請在 Google Cloud 中為該金鑰所屬專案啟用 Weather API 和帳單功能，並確保該金鑰未受限而排除此 API。在此之前，Google 將不會計入您的預測。</string>
     <string name="settings_forecasters_google_probe_retry">重新檢查</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">特報</string>
+    <string name="settings_root_alerts_subtitle">官方天氣特報</string>
+    <string name="settings_page_alerts">特報設定</string>
+    <string name="settings_weather_alerts_title">天氣特報</string>
+    <string name="settings_weather_alerts_summary">在「今天」頁面顯示你所在位置的官方特報。</string>
+    <string name="settings_weather_alerts_sign_in">使用 Google 登入即可接收天氣特報。</string>
+    <string name="settings_alerts_notify_title">通知等級</string>
+    <string name="settings_alerts_notify_red">僅紅色</string>
+    <string name="settings_alerts_notify_orange_red">橙色和紅色</string>
+    <string name="settings_alerts_notify_all">所有等級</string>
+    <string name="settings_alerts_notify_none">無</string>
+    <string name="settings_alerts_channel">特報提示音和鎖定畫面</string>
+    <string name="settings_alerts_notification_permission">沒有通知權限，你就收不到嚴重天氣特報。授予權限即可接收。</string>
+    <string name="settings_alerts_status_checked">上次檢查：%1$s</string>
+    <string name="settings_alerts_status_unsupported">此位置目前不提供特報。</string>
+    <string name="settings_alerts_status_failed">無法檢查特報，稍後將重試。</string>
+    <string name="settings_alerts_status_waiting">正在檢查特報…</string>
+
+    <string name="today_alerts_promo_title">接收天氣特報</string>
+    <string name="today_alerts_promo_body">顯示你所在位置的官方特報，嚴重特報還會傳送通知。</string>
+    <string name="today_alerts_promo_cta">特報設定</string>
+    <string name="today_alerts_promo_dismiss">關閉</string>
+
+    <string name="notification_channel_weather_alerts_name">天氣特報</string>
+    <string name="notification_channel_weather_alerts_description">官方氣象機關發布的、你所在位置的嚴重天氣特報。</string>
+
+    <!-- "強風橙色特報": hazard, level, 特報. -->
+    <string name="weather_alert_title">%2$s%1$s特報</string>
+    <string name="weather_alert_level_yellow">黃色</string>
+    <string name="weather_alert_level_amber">橙色</string>
+    <string name="weather_alert_level_orange">橙色</string>
+    <string name="weather_alert_level_red">紅色</string>
+    <string name="weather_alert_hazard_wind">強風</string>
+    <string name="weather_alert_hazard_rain">大雨</string>
+    <string name="weather_alert_hazard_snow_and_ice">冰雪</string>
+    <string name="weather_alert_hazard_thunderstorm">雷雨</string>
+    <string name="weather_alert_hazard_fog">濃霧</string>
+    <string name="weather_alert_hazard_heat">高溫</string>
+    <string name="weather_alert_hazard_cold">低溫</string>
+    <string name="weather_alert_hazard_coastal">暴潮</string>
+    <string name="weather_alert_hazard_flood">淹水</string>
+    <string name="weather_alert_hazard_wildfire">野火</string>
+    <string name="weather_alert_hazard_avalanche">雪崩</string>
+    <string name="weather_alert_hazard_storm">暴風雨</string>
+    <string name="weather_alert_hazard_tornado">龍捲風</string>
+    <string name="weather_alert_hazard_hail">冰雹</string>
+    <string name="weather_alert_hazard_dust">沙塵暴</string>
+    <string name="weather_alert_title_fallback">天氣特報</string>
+    <string name="weather_alert_title_fallback_severe">嚴重天氣特報</string>
+    <string name="weather_alert_title_fallback_extreme">極端天氣特報</string>
+    <string name="weather_alert_level_info_description">輕微天氣特報</string>
+    <string name="weather_alert_level_yellow_description">天氣特報</string>
+    <string name="weather_alert_level_orange_description">嚴重天氣特報</string>
+    <string name="weather_alert_level_red_description">極端天氣特報</string>
+    <string name="weather_alert_until">至%1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">開啟%1$s</string>
+    <string name="weather_alert_open_source_fallback">詳細資料</string>
+    <string name="weather_alert_expand">顯示詳細資料</string>
+    <string name="weather_alert_collapse">隱藏詳細資料</string>
+    <plurals name="weather_alert_more">
+        <item quantity="other">還有 %d 則特報</item>
+    </plurals>
 </resources>

@@ -1317,4 +1317,69 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_forecasters_google_probe_failed_http">ไม่สามารถเข้าถึงการพยากรณ์ของ Google ได้ (HTTP %1$d) จะถูกงดใช้จนกว่าปัญหาจะได้รับการแก้ไข</string>
     <string name="settings_forecasters_google_probe_forbidden">Google ปฏิเสธคีย์ของคุณ ใน Google Cloud ให้เปิดใช้งาน Weather API และการเรียกเก็บเงินสำหรับโปรเจ็กต์ของคีย์นั้น และตรวจสอบว่าคีย์ไม่ได้ถูกจำกัดจนกีดกัน API นี้ออกไป จนกว่าจะแก้ไข Google จะไม่ถูกนับรวมในการพยากรณ์ของคุณ</string>
     <string name="settings_forecasters_google_probe_retry">ตรวจสอบอีกครั้ง</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">การเตือนภัย</string>
+    <string name="settings_root_alerts_subtitle">การเตือนภัยสภาพอากาศอย่างเป็นทางการ</string>
+    <string name="settings_page_alerts">การตั้งค่าการเตือนภัย</string>
+    <string name="settings_weather_alerts_title">การเตือนภัยสภาพอากาศ</string>
+    <string name="settings_weather_alerts_summary">แสดงการเตือนภัยอย่างเป็นทางการสำหรับตำแหน่งของคุณบนหน้าวันนี้</string>
+    <string name="settings_weather_alerts_sign_in">ลงชื่อเข้าใช้ด้วย Google เพื่อรับการเตือนภัยสภาพอากาศ</string>
+    <string name="settings_alerts_notify_title">ระดับที่จะแจ้งเตือน</string>
+    <string name="settings_alerts_notify_red">สีแดงเท่านั้น</string>
+    <string name="settings_alerts_notify_orange_red">สีส้มและสีแดง</string>
+    <string name="settings_alerts_notify_all">ทุกระดับ</string>
+    <string name="settings_alerts_notify_none">ไม่มี</string>
+    <string name="settings_alerts_channel">เสียงและหน้าจอล็อกของการเตือนภัย</string>
+    <string name="settings_alerts_notification_permission">หากไม่มีสิทธิ์การแจ้งเตือน การเตือนภัยสภาพอากาศรุนแรงจะส่งถึงคุณไม่ได้ อนุญาตเพื่อให้ส่งถึงคุณได้</string>
+    <string name="settings_alerts_status_checked">ตรวจสอบล่าสุด %1$s</string>
+    <string name="settings_alerts_status_unsupported">ไม่มีบริการเตือนภัยสำหรับตำแหน่งนี้</string>
+    <string name="settings_alerts_status_failed">ตรวจสอบการเตือนภัยไม่ได้ จะลองอีกครั้งเร็วๆ นี้</string>
+    <string name="settings_alerts_status_waiting">กำลังตรวจสอบการเตือนภัย…</string>
+
+    <string name="today_alerts_promo_title">รับการเตือนภัยสภาพอากาศ</string>
+    <string name="today_alerts_promo_body">การเตือนภัยอย่างเป็นทางการสำหรับที่ที่คุณอยู่ พร้อมการแจ้งเตือนเมื่อรุนแรง</string>
+    <string name="today_alerts_promo_cta">การตั้งค่าการเตือนภัย</string>
+    <string name="today_alerts_promo_dismiss">ปิด</string>
+
+    <string name="notification_channel_weather_alerts_name">การเตือนภัยสภาพอากาศ</string>
+    <string name="notification_channel_weather_alerts_description">การเตือนภัยสภาพอากาศรุนแรงสำหรับตำแหน่งของคุณจากหน่วยงานอุตุนิยมวิทยาอย่างเป็นทางการ</string>
+
+    <!-- "เตือนภัยลมแรงระดับสีส้ม": warning, hazard, then the level. -->
+    <string name="weather_alert_title">เตือนภัย%2$sระดับ%1$s</string>
+    <string name="weather_alert_level_yellow">สีเหลือง</string>
+    <string name="weather_alert_level_amber">สีส้ม</string>
+    <string name="weather_alert_level_orange">สีส้ม</string>
+    <string name="weather_alert_level_red">สีแดง</string>
+    <string name="weather_alert_hazard_wind">ลมแรง</string>
+    <string name="weather_alert_hazard_rain">ฝนตกหนัก</string>
+    <string name="weather_alert_hazard_snow_and_ice">หิมะและน้ำแข็ง</string>
+    <string name="weather_alert_hazard_thunderstorm">พายุฝนฟ้าคะนอง</string>
+    <string name="weather_alert_hazard_fog">หมอกหนา</string>
+    <string name="weather_alert_hazard_heat">อากาศร้อนจัด</string>
+    <string name="weather_alert_hazard_cold">อากาศหนาวจัด</string>
+    <string name="weather_alert_hazard_coastal">คลื่นซัดฝั่ง</string>
+    <string name="weather_alert_hazard_flood">น้ำท่วม</string>
+    <string name="weather_alert_hazard_wildfire">ไฟป่า</string>
+    <string name="weather_alert_hazard_avalanche">หิมะถล่ม</string>
+    <string name="weather_alert_hazard_storm">พายุ</string>
+    <string name="weather_alert_hazard_tornado">พายุทอร์นาโด</string>
+    <string name="weather_alert_hazard_hail">ลูกเห็บ</string>
+    <string name="weather_alert_hazard_dust">พายุฝุ่น</string>
+    <string name="weather_alert_title_fallback">การเตือนภัยสภาพอากาศ</string>
+    <string name="weather_alert_title_fallback_severe">การเตือนภัยสภาพอากาศรุนแรง</string>
+    <string name="weather_alert_title_fallback_extreme">การเตือนภัยสภาพอากาศรุนแรงมาก</string>
+    <string name="weather_alert_level_info_description">การเตือนภัยสภาพอากาศเล็กน้อย</string>
+    <string name="weather_alert_level_yellow_description">การเตือนภัยสภาพอากาศ</string>
+    <string name="weather_alert_level_orange_description">การเตือนภัยสภาพอากาศรุนแรง</string>
+    <string name="weather_alert_level_red_description">การเตือนภัยสภาพอากาศรุนแรงมาก</string>
+    <string name="weather_alert_until">ถึง %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">เปิด %1$s</string>
+    <string name="weather_alert_open_source_fallback">รายละเอียด</string>
+    <string name="weather_alert_expand">แสดงรายละเอียด</string>
+    <string name="weather_alert_collapse">ซ่อนรายละเอียด</string>
+    <plurals name="weather_alert_more">
+        <item quantity="other">การเตือนภัยอีก %d รายการ</item>
+    </plurals>
 </resources>

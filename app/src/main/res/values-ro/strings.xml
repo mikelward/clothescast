@@ -1295,4 +1295,72 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_forecasters_google_probe_failed_http">Prognoza Google nu a putut fi accesată (HTTP %1$d). Va fi exclusă până la rezolvarea acestei probleme.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google a respins cheia ta. În Google Cloud, activează Weather API și facturarea pentru proiectul cheii și asigură-te că cheia nu este restricționată să o excludă. Până atunci, Google este exclus din prognoza ta.</string>
     <string name="settings_forecasters_google_probe_retry">Verifică din nou</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Avertizări</string>
+    <string name="settings_root_alerts_subtitle">Avertizări meteo oficiale</string>
+    <string name="settings_page_alerts">Setări de avertizări</string>
+    <string name="settings_weather_alerts_title">Avertizări meteo</string>
+    <string name="settings_weather_alerts_summary">Avertizări oficiale pentru locația ta, pe ecranul Astăzi.</string>
+    <string name="settings_weather_alerts_sign_in">Conectează-te cu Google pentru a primi avertizări meteo.</string>
+    <string name="settings_alerts_notify_title">Notifică-mă pentru</string>
+    <string name="settings_alerts_notify_red">Doar cod roșu</string>
+    <string name="settings_alerts_notify_orange_red">Cod portocaliu și roșu</string>
+    <string name="settings_alerts_notify_all">Toate nivelurile</string>
+    <string name="settings_alerts_notify_none">Niciunul</string>
+    <string name="settings_alerts_channel">Sunetul avertizărilor și ecranul de blocare</string>
+    <string name="settings_alerts_notification_permission">Fără permisiunea de notificare, avertizările meteo severe nu ajung la tine. Acordă permisiunea ca să le primești.</string>
+    <string name="settings_alerts_status_checked">Ultima verificare %1$s</string>
+    <string name="settings_alerts_status_unsupported">Avertizările nu sunt disponibile pentru această locație.</string>
+    <string name="settings_alerts_status_failed">Avertizările nu au putut fi verificate. Se încearcă din nou în curând.</string>
+    <string name="settings_alerts_status_waiting">Se verifică avertizările…</string>
+
+    <string name="today_alerts_promo_title">Primește avertizări meteo</string>
+    <string name="today_alerts_promo_body">Avertizări oficiale pentru locul în care ești, cu notificări pentru cele severe.</string>
+    <string name="today_alerts_promo_cta">Setări avertizări</string>
+    <string name="today_alerts_promo_dismiss">Închide</string>
+
+    <string name="notification_channel_weather_alerts_name">Avertizări meteo</string>
+    <string name="notification_channel_weather_alerts_description">Avertizări meteo severe pentru locația ta, de la serviciile meteo oficiale.</string>
+
+    <!-- "Cod portocaliu de vânt": how ANM and Romanian users name a
+         color-graded warning, so the title needs no "avertizare". -->
+    <string name="weather_alert_title">Cod %1$s de %2$s</string>
+    <string name="weather_alert_level_yellow">galben</string>
+    <string name="weather_alert_level_amber">portocaliu</string>
+    <string name="weather_alert_level_orange">portocaliu</string>
+    <string name="weather_alert_level_red">roșu</string>
+    <string name="weather_alert_hazard_wind">vânt</string>
+    <string name="weather_alert_hazard_rain">ploi</string>
+    <string name="weather_alert_hazard_snow_and_ice">ninsori și polei</string>
+    <string name="weather_alert_hazard_thunderstorm">furtuni</string>
+    <string name="weather_alert_hazard_fog">ceață</string>
+    <string name="weather_alert_hazard_heat">caniculă</string>
+    <string name="weather_alert_hazard_cold">ger</string>
+    <string name="weather_alert_hazard_coastal">fenomene costiere</string>
+    <string name="weather_alert_hazard_flood">inundații</string>
+    <string name="weather_alert_hazard_wildfire">incendii de vegetație</string>
+    <string name="weather_alert_hazard_avalanche">avalanșe</string>
+    <string name="weather_alert_hazard_storm">vijelii</string>
+    <string name="weather_alert_hazard_tornado">tornade</string>
+    <string name="weather_alert_hazard_hail">grindină</string>
+    <string name="weather_alert_hazard_dust">praf</string>
+    <string name="weather_alert_title_fallback">Avertizare meteo</string>
+    <string name="weather_alert_title_fallback_severe">Avertizare meteo severă</string>
+    <string name="weather_alert_title_fallback_extreme">Avertizare meteo extremă</string>
+    <string name="weather_alert_level_info_description">Avertizare meteo minoră</string>
+    <string name="weather_alert_level_yellow_description">Avertizare meteo</string>
+    <string name="weather_alert_level_orange_description">Avertizare meteo severă</string>
+    <string name="weather_alert_level_red_description">Avertizare meteo extremă</string>
+    <string name="weather_alert_until">Până la %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Deschide %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detalii</string>
+    <string name="weather_alert_expand">Arată detalii</string>
+    <string name="weather_alert_collapse">Ascunde detalii</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Încă %d avertizare</item>
+        <item quantity="few">Încă %d avertizări</item>
+        <item quantity="other">Încă %d de avertizări</item>
+    </plurals>
 </resources>

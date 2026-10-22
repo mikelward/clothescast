@@ -1261,4 +1261,67 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_forecasters_google_probe_failed_http">Google\'i prognoosi ei õnnestunud kätte saada (HTTP %1$d). See jäetakse kõrvale, kuni probleem laheneb.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google lükkas su võtme tagasi. Luba Google Cloud\'is Weather API ja arveldus võtme projekti jaoks ning veendu, et võti pole piiratud viisil, mis selle välistab. Kuni selleni jääb Google su prognoosist välja.</string>
     <string name="settings_forecasters_google_probe_retry">Kontrolli uuesti</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Hoiatused</string>
+    <string name="settings_root_alerts_subtitle">Ametlikud ilmahoiatused</string>
+    <string name="settings_page_alerts">Hoiatuste seaded</string>
+    <string name="settings_weather_alerts_title">Ilmahoiatused</string>
+    <string name="settings_weather_alerts_summary">Ametlikud hoiatused sinu asukoha kohta Tänasel ekraanil.</string>
+    <string name="settings_weather_alerts_sign_in">Logi Google\'iga sisse, et saada ilmahoiatusi.</string>
+    <string name="settings_alerts_notify_title">Teavita mind</string>
+    <string name="settings_alerts_notify_red">Ainult punased</string>
+    <string name="settings_alerts_notify_orange_red">Oranžid ja punased</string>
+    <string name="settings_alerts_notify_all">Kõik tasemed</string>
+    <string name="settings_alerts_notify_none">Mitte ühtegi</string>
+    <string name="settings_alerts_channel">Hoiatuste heli ja lukustuskuva</string>
+    <string name="settings_alerts_notification_permission">Teavitusloata ei jõua ohtliku ilma hoiatused sinuni. Anna luba, et need jõuaksid.</string>
+    <string name="settings_alerts_status_checked">Viimati kontrollitud %1$s</string>
+    <string name="settings_alerts_status_unsupported">Hoiatused pole selle asukoha jaoks saadaval.</string>
+    <string name="settings_alerts_status_failed">Hoiatusi ei õnnestunud kontrollida. Proovime varsti uuesti.</string>
+    <string name="settings_alerts_status_waiting">Hoiatuste kontrollimine…</string>
+    <string name="today_alerts_promo_title">Saa ilmahoiatusi</string>
+    <string name="today_alerts_promo_body">Ametlikud hoiatused sinu asukoha kohta, ohtlike puhul ka teavitused.</string>
+    <string name="today_alerts_promo_cta">Hoiatuste seaded</string>
+    <string name="today_alerts_promo_dismiss">Sulge</string>
+    <string name="notification_channel_weather_alerts_name">Ilmahoiatused</string>
+    <string name="notification_channel_weather_alerts_description">Ametlike ilmateenistuste ohtliku ilma hoiatused sinu asukoha kohta.</string>
+    <!-- "Oranž tuulehoiatus": level adjective + hazard as compound stem. -->
+    <string name="weather_alert_title">%1$s %2$shoiatus</string>
+    <string name="weather_alert_level_yellow">Kollane</string>
+    <string name="weather_alert_level_amber">Oranž</string>
+    <string name="weather_alert_level_orange">Oranž</string>
+    <string name="weather_alert_level_red">Punane</string>
+    <string name="weather_alert_hazard_wind">tuule</string>
+    <string name="weather_alert_hazard_rain">vihma</string>
+    <string name="weather_alert_hazard_snow_and_ice">lume- ja libedus</string>
+    <string name="weather_alert_hazard_thunderstorm">äikese</string>
+    <string name="weather_alert_hazard_fog">udu</string>
+    <string name="weather_alert_hazard_heat">kuuma</string>
+    <string name="weather_alert_hazard_cold">külma</string>
+    <string name="weather_alert_hazard_coastal">kõrgvee</string>
+    <string name="weather_alert_hazard_flood">üleujutus</string>
+    <string name="weather_alert_hazard_wildfire">tuleohu</string>
+    <string name="weather_alert_hazard_avalanche">laviini</string>
+    <string name="weather_alert_hazard_storm">tormi</string>
+    <string name="weather_alert_hazard_tornado">tornaado</string>
+    <string name="weather_alert_hazard_hail">rahe</string>
+    <string name="weather_alert_hazard_dust">tolmu</string>
+    <string name="weather_alert_title_fallback">Ilmahoiatus</string>
+    <string name="weather_alert_title_fallback_severe">Ohtliku ilma hoiatus</string>
+    <string name="weather_alert_title_fallback_extreme">Väga ohtliku ilma hoiatus</string>
+    <string name="weather_alert_level_info_description">Kerge ilmahoiatus</string>
+    <string name="weather_alert_level_yellow_description">Ilmahoiatus</string>
+    <string name="weather_alert_level_orange_description">Ohtliku ilma hoiatus</string>
+    <string name="weather_alert_level_red_description">Väga ohtliku ilma hoiatus</string>
+    <string name="weather_alert_until">Kuni %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Ava %1$s</string>
+    <string name="weather_alert_open_source_fallback">Üksikasjad</string>
+    <string name="weather_alert_expand">Näita üksikasju</string>
+    <string name="weather_alert_collapse">Peida üksikasjad</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Veel %d hoiatus</item>
+        <item quantity="other">Veel %d hoiatust</item>
+    </plurals>
 </resources>

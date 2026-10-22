@@ -1378,4 +1378,69 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_forecasters_google_probe_failed_http">Không thể truy cập dự báo của Google (HTTP %1$d). Nó sẽ bị bỏ qua cho đến khi vấn đề này được khắc phục.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google đã từ chối khóa của bạn. Trong Google Cloud, hãy bật Weather API và tính năng thanh toán cho dự án của khóa đó, đồng thời đảm bảo khóa không bị giới hạn để loại trừ API này. Cho đến lúc đó, Google sẽ bị loại khỏi dự báo của bạn.</string>
     <string name="settings_forecasters_google_probe_retry">Kiểm tra lại</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Cảnh báo</string>
+    <string name="settings_root_alerts_subtitle">Cảnh báo thời tiết chính thức</string>
+    <string name="settings_page_alerts">Cài đặt cảnh báo</string>
+    <string name="settings_weather_alerts_title">Cảnh báo thời tiết</string>
+    <string name="settings_weather_alerts_summary">Cảnh báo chính thức cho vị trí của bạn trên màn hình Hôm nay.</string>
+    <string name="settings_weather_alerts_sign_in">Đăng nhập bằng Google để nhận cảnh báo thời tiết.</string>
+    <string name="settings_alerts_notify_title">Thông báo cho</string>
+    <string name="settings_alerts_notify_red">Chỉ mức đỏ</string>
+    <string name="settings_alerts_notify_orange_red">Mức cam và đỏ</string>
+    <string name="settings_alerts_notify_all">Tất cả các mức</string>
+    <string name="settings_alerts_notify_none">Không có</string>
+    <string name="settings_alerts_channel">Âm thanh và màn hình khóa cho cảnh báo</string>
+    <string name="settings_alerts_notification_permission">Nếu không có quyền thông báo, cảnh báo thời tiết nguy hiểm không thể đến với bạn. Hãy cấp quyền để nhận được.</string>
+    <string name="settings_alerts_status_checked">Kiểm tra lần cuối %1$s</string>
+    <string name="settings_alerts_status_unsupported">Cảnh báo không khả dụng cho vị trí này.</string>
+    <string name="settings_alerts_status_failed">Không thể kiểm tra cảnh báo. Sẽ sớm thử lại.</string>
+    <string name="settings_alerts_status_waiting">Đang kiểm tra cảnh báo…</string>
+
+    <string name="today_alerts_promo_title">Nhận cảnh báo thời tiết</string>
+    <string name="today_alerts_promo_body">Cảnh báo chính thức cho nơi bạn đang ở, kèm thông báo khi có cảnh báo nguy hiểm.</string>
+    <string name="today_alerts_promo_cta">Cài đặt cảnh báo</string>
+    <string name="today_alerts_promo_dismiss">Bỏ qua</string>
+
+    <string name="notification_channel_weather_alerts_name">Cảnh báo thời tiết</string>
+    <string name="notification_channel_weather_alerts_description">Cảnh báo thời tiết nguy hiểm cho vị trí của bạn từ các cơ quan khí tượng chính thức.</string>
+
+    <!-- "Cảnh báo gió mạnh mức cam": warning, hazard, then the level. -->
+    <string name="weather_alert_title">Cảnh báo %2$s mức %1$s</string>
+    <string name="weather_alert_level_yellow">vàng</string>
+    <string name="weather_alert_level_amber">cam</string>
+    <string name="weather_alert_level_orange">cam</string>
+    <string name="weather_alert_level_red">đỏ</string>
+    <string name="weather_alert_hazard_wind">gió mạnh</string>
+    <string name="weather_alert_hazard_rain">mưa lớn</string>
+    <string name="weather_alert_hazard_snow_and_ice">tuyết và băng</string>
+    <string name="weather_alert_hazard_thunderstorm">giông</string>
+    <string name="weather_alert_hazard_fog">sương mù</string>
+    <string name="weather_alert_hazard_heat">nắng nóng</string>
+    <string name="weather_alert_hazard_cold">rét</string>
+    <string name="weather_alert_hazard_coastal">nước dâng ven biển</string>
+    <string name="weather_alert_hazard_flood">lũ lụt</string>
+    <string name="weather_alert_hazard_wildfire">cháy rừng</string>
+    <string name="weather_alert_hazard_avalanche">tuyết lở</string>
+    <string name="weather_alert_hazard_storm">bão</string>
+    <string name="weather_alert_hazard_tornado">lốc xoáy</string>
+    <string name="weather_alert_hazard_hail">mưa đá</string>
+    <string name="weather_alert_hazard_dust">bão bụi</string>
+    <string name="weather_alert_title_fallback">Cảnh báo thời tiết</string>
+    <string name="weather_alert_title_fallback_severe">Cảnh báo thời tiết nguy hiểm</string>
+    <string name="weather_alert_title_fallback_extreme">Cảnh báo thời tiết cực kỳ nguy hiểm</string>
+    <string name="weather_alert_level_info_description">Cảnh báo thời tiết nhẹ</string>
+    <string name="weather_alert_level_yellow_description">Cảnh báo thời tiết</string>
+    <string name="weather_alert_level_orange_description">Cảnh báo thời tiết nguy hiểm</string>
+    <string name="weather_alert_level_red_description">Cảnh báo thời tiết cực kỳ nguy hiểm</string>
+    <string name="weather_alert_until">Đến %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Mở %1$s</string>
+    <string name="weather_alert_open_source_fallback">Chi tiết</string>
+    <string name="weather_alert_expand">Xem chi tiết</string>
+    <string name="weather_alert_collapse">Ẩn chi tiết</string>
+    <plurals name="weather_alert_more">
+        <item quantity="other">%d cảnh báo khác</item>
+    </plurals>
 </resources>

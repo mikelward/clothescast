@@ -1316,4 +1316,69 @@ to values/strings.xml (English).
     <string name="settings_forecasters_google_probe_failed_http">Tidak dapat menjangkau prakiraan Google (HTTP %1$d). Prakiraan ini akan dikecualikan hingga masalah ini teratasi.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google menolak kunci Anda. Di Google Cloud, aktifkan Weather API dan penagihan untuk proyek kunci tersebut, dan pastikan kunci tidak dibatasi sehingga mengecualikannya. Hingga saat itu, Google dikecualikan dari perkiraan Anda.</string>
     <string name="settings_forecasters_google_probe_retry">Periksa lagi</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Peringatan</string>
+    <string name="settings_root_alerts_subtitle">Peringatan cuaca resmi</string>
+    <string name="settings_page_alerts">Pengaturan peringatan</string>
+    <string name="settings_weather_alerts_title">Peringatan cuaca</string>
+    <string name="settings_weather_alerts_summary">Peringatan resmi untuk lokasi Anda di layar Hari ini.</string>
+    <string name="settings_weather_alerts_sign_in">Login dengan Google untuk mendapatkan peringatan cuaca.</string>
+    <string name="settings_alerts_notify_title">Beri tahu untuk</string>
+    <string name="settings_alerts_notify_red">Hanya merah</string>
+    <string name="settings_alerts_notify_orange_red">Oranye dan merah</string>
+    <string name="settings_alerts_notify_all">Semua level</string>
+    <string name="settings_alerts_notify_none">Tidak ada</string>
+    <string name="settings_alerts_channel">Suara dan layar kunci peringatan</string>
+    <string name="settings_alerts_notification_permission">Tanpa izin notifikasi, peringatan cuaca buruk tidak dapat sampai ke Anda. Izinkan agar peringatan bisa sampai.</string>
+    <string name="settings_alerts_status_checked">Terakhir diperiksa %1$s</string>
+    <string name="settings_alerts_status_unsupported">Peringatan tidak tersedia untuk lokasi ini.</string>
+    <string name="settings_alerts_status_failed">Tidak dapat memeriksa peringatan. Akan segera dicoba lagi.</string>
+    <string name="settings_alerts_status_waiting">Memeriksa peringatan…</string>
+
+    <string name="today_alerts_promo_title">Dapatkan peringatan cuaca</string>
+    <string name="today_alerts_promo_body">Peringatan resmi untuk tempat Anda berada, dengan notifikasi untuk cuaca buruk.</string>
+    <string name="today_alerts_promo_cta">Pengaturan peringatan</string>
+    <string name="today_alerts_promo_dismiss">Tutup</string>
+
+    <string name="notification_channel_weather_alerts_name">Peringatan cuaca</string>
+    <string name="notification_channel_weather_alerts_description">Peringatan cuaca buruk untuk lokasi Anda dari layanan cuaca resmi.</string>
+
+    <!-- "Peringatan angin kencang level oranye": warning, hazard, then the level. -->
+    <string name="weather_alert_title">Peringatan %2$s level %1$s</string>
+    <string name="weather_alert_level_yellow">kuning</string>
+    <string name="weather_alert_level_amber">oranye</string>
+    <string name="weather_alert_level_orange">oranye</string>
+    <string name="weather_alert_level_red">merah</string>
+    <string name="weather_alert_hazard_wind">angin kencang</string>
+    <string name="weather_alert_hazard_rain">hujan lebat</string>
+    <string name="weather_alert_hazard_snow_and_ice">salju dan es</string>
+    <string name="weather_alert_hazard_thunderstorm">badai petir</string>
+    <string name="weather_alert_hazard_fog">kabut</string>
+    <string name="weather_alert_hazard_heat">cuaca panas</string>
+    <string name="weather_alert_hazard_cold">cuaca dingin</string>
+    <string name="weather_alert_hazard_coastal">banjir pesisir</string>
+    <string name="weather_alert_hazard_flood">banjir</string>
+    <string name="weather_alert_hazard_wildfire">kebakaran hutan</string>
+    <string name="weather_alert_hazard_avalanche">longsoran salju</string>
+    <string name="weather_alert_hazard_storm">badai</string>
+    <string name="weather_alert_hazard_tornado">puting beliung</string>
+    <string name="weather_alert_hazard_hail">hujan es</string>
+    <string name="weather_alert_hazard_dust">badai debu</string>
+    <string name="weather_alert_title_fallback">Peringatan cuaca</string>
+    <string name="weather_alert_title_fallback_severe">Peringatan cuaca buruk</string>
+    <string name="weather_alert_title_fallback_extreme">Peringatan cuaca ekstrem</string>
+    <string name="weather_alert_level_info_description">Peringatan cuaca ringan</string>
+    <string name="weather_alert_level_yellow_description">Peringatan cuaca</string>
+    <string name="weather_alert_level_orange_description">Peringatan cuaca buruk</string>
+    <string name="weather_alert_level_red_description">Peringatan cuaca ekstrem</string>
+    <string name="weather_alert_until">Hingga %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Buka %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detail</string>
+    <string name="weather_alert_expand">Tampilkan detail</string>
+    <string name="weather_alert_collapse">Sembunyikan detail</string>
+    <plurals name="weather_alert_more">
+        <item quantity="other">%d peringatan lainnya</item>
+    </plurals>
 </resources>

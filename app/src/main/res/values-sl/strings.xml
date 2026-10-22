@@ -1304,4 +1304,70 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_forecasters_google_probe_failed_http">Googlove napovedi ni bilo mogoče doseči (HTTP %1$d). Izpuščena bo, dokler se to ne razreši.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google je zavrnil vaš ključ. V Google Cloud omogočite Weather API in obračunavanje za projekt ključa ter se prepričajte, da ključ ni omejen tako, da ga izključuje. Do takrat Google ostaja izpuščen iz vaše napovedi.</string>
     <string name="settings_forecasters_google_probe_retry">Preveri znova</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Opozorila</string>
+    <string name="settings_root_alerts_subtitle">Uradna vremenska opozorila</string>
+    <string name="settings_page_alerts">Nastavitve opozoril</string>
+    <string name="settings_weather_alerts_title">Vremenska opozorila</string>
+    <string name="settings_weather_alerts_summary">Uradna opozorila za tvojo lokacijo na zaslonu Danes.</string>
+    <string name="settings_weather_alerts_sign_in">Za vremenska opozorila se prijavi z Googlom.</string>
+    <string name="settings_alerts_notify_title">Obvesti me za</string>
+    <string name="settings_alerts_notify_red">Samo rdeča</string>
+    <string name="settings_alerts_notify_orange_red">Oranžna in rdeča</string>
+    <string name="settings_alerts_notify_all">Vse stopnje</string>
+    <string name="settings_alerts_notify_none">Brez obvestil</string>
+    <string name="settings_alerts_channel">Zvok opozoril in zaklenjen zaslon</string>
+    <string name="settings_alerts_notification_permission">Brez dovoljenja za obvestila opozorila o nevarnem vremenu ne pridejo do tebe. Dovoli jih, da bodo prišla.</string>
+    <string name="settings_alerts_status_checked">Zadnje preverjanje: %1$s</string>
+    <string name="settings_alerts_status_unsupported">Opozorila za to lokacijo niso na voljo.</string>
+    <string name="settings_alerts_status_failed">Opozoril ni bilo mogoče preveriti. Kmalu bomo poskusili znova.</string>
+    <string name="settings_alerts_status_waiting">Preverjanje opozoril…</string>
+    <string name="today_alerts_promo_title">Prejemaj vremenska opozorila</string>
+    <string name="today_alerts_promo_body">Uradna opozorila za kraj, kjer si, z obvestili za nevarna.</string>
+    <string name="today_alerts_promo_cta">Nastavitve opozoril</string>
+    <string name="today_alerts_promo_dismiss">Zapri</string>
+    <string name="notification_channel_weather_alerts_name">Vremenska opozorila</string>
+    <string name="notification_channel_weather_alerts_description">Opozorila o nevarnem vremenu za tvojo lokacijo od uradnih vremenskih služb.</string>
+    <!-- "Oranžno opozorilo za veter": the level is a neuter adjective
+         agreeing with "opozorilo"; hazards are accusative after "za". -->
+    <string name="weather_alert_title">%1$s opozorilo za %2$s</string>
+    <string name="weather_alert_level_yellow">Rumeno</string>
+    <string name="weather_alert_level_amber">Oranžno</string>
+    <string name="weather_alert_level_orange">Oranžno</string>
+    <string name="weather_alert_level_red">Rdeče</string>
+    <string name="weather_alert_hazard_wind">veter</string>
+    <string name="weather_alert_hazard_rain">dež</string>
+    <string name="weather_alert_hazard_snow_and_ice">sneg in poledico</string>
+    <string name="weather_alert_hazard_thunderstorm">nevihte</string>
+    <string name="weather_alert_hazard_fog">meglo</string>
+    <string name="weather_alert_hazard_heat">vročino</string>
+    <string name="weather_alert_hazard_cold">mraz</string>
+    <string name="weather_alert_hazard_coastal">obalne pojave</string>
+    <string name="weather_alert_hazard_flood">poplave</string>
+    <string name="weather_alert_hazard_wildfire">gozdne požare</string>
+    <string name="weather_alert_hazard_avalanche">snežne plazove</string>
+    <string name="weather_alert_hazard_storm">vihar</string>
+    <string name="weather_alert_hazard_tornado">tornado</string>
+    <string name="weather_alert_hazard_hail">točo</string>
+    <string name="weather_alert_hazard_dust">prašne viharje</string>
+    <string name="weather_alert_title_fallback">Vremensko opozorilo</string>
+    <string name="weather_alert_title_fallback_severe">Opozorilo o nevarnem vremenu</string>
+    <string name="weather_alert_title_fallback_extreme">Opozorilo o zelo nevarnem vremenu</string>
+    <string name="weather_alert_level_info_description">Manj resno vremensko opozorilo</string>
+    <string name="weather_alert_level_yellow_description">Vremensko opozorilo</string>
+    <string name="weather_alert_level_orange_description">Opozorilo o nevarnem vremenu</string>
+    <string name="weather_alert_level_red_description">Opozorilo o zelo nevarnem vremenu</string>
+    <string name="weather_alert_until">Do %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Odpri %1$s</string>
+    <string name="weather_alert_open_source_fallback">Podrobnosti</string>
+    <string name="weather_alert_expand">Prikaži podrobnosti</string>
+    <string name="weather_alert_collapse">Skrij podrobnosti</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Še %d opozorilo</item>
+        <item quantity="two">Še %d opozorili</item>
+        <item quantity="few">Še %d opozorila</item>
+        <item quantity="other">Še %d opozoril</item>
+    </plurals>
 </resources>

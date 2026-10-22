@@ -1464,4 +1464,69 @@ label localizes.
     <string name="settings_forecasters_google_probe_failed_http">无法访问 Google 的预报（HTTP %1$d）。在此问题解决前将不予采用。</string>
     <string name="settings_forecasters_google_probe_forbidden">Google 拒绝了您的密钥。请在 Google Cloud 中为该密钥所属项目启用 Weather API 和结算功能，并确保该密钥没有被限制排除该 API。在此之前，Google 将不会计入您的预报。</string>
     <string name="settings_forecasters_google_probe_retry">重新检查</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">预警</string>
+    <string name="settings_root_alerts_subtitle">官方天气预警</string>
+    <string name="settings_page_alerts">预警设置</string>
+    <string name="settings_weather_alerts_title">天气预警</string>
+    <string name="settings_weather_alerts_summary">在“今天”页面显示你所在位置的官方预警。</string>
+    <string name="settings_weather_alerts_sign_in">使用 Google 登录即可接收天气预警。</string>
+    <string name="settings_alerts_notify_title">通知级别</string>
+    <string name="settings_alerts_notify_red">仅红色</string>
+    <string name="settings_alerts_notify_orange_red">橙色和红色</string>
+    <string name="settings_alerts_notify_all">所有级别</string>
+    <string name="settings_alerts_notify_none">无</string>
+    <string name="settings_alerts_channel">预警提示音和锁屏</string>
+    <string name="settings_alerts_notification_permission">没有通知权限，你就收不到严重天气预警。授予权限即可接收。</string>
+    <string name="settings_alerts_status_checked">上次检查：%1$s</string>
+    <string name="settings_alerts_status_unsupported">此位置暂不提供预警。</string>
+    <string name="settings_alerts_status_failed">无法检查预警，稍后将重试。</string>
+    <string name="settings_alerts_status_waiting">正在检查预警…</string>
+
+    <string name="today_alerts_promo_title">接收天气预警</string>
+    <string name="today_alerts_promo_body">显示你所在位置的官方预警，严重预警还会发送通知。</string>
+    <string name="today_alerts_promo_cta">预警设置</string>
+    <string name="today_alerts_promo_dismiss">关闭</string>
+
+    <string name="notification_channel_weather_alerts_name">天气预警</string>
+    <string name="notification_channel_weather_alerts_description">官方气象机构发布的、你所在位置的严重天气预警。</string>
+
+    <!-- "大风橙色预警": hazard, level, 预警, as CMA names its warnings. -->
+    <string name="weather_alert_title">%2$s%1$s预警</string>
+    <string name="weather_alert_level_yellow">黄色</string>
+    <string name="weather_alert_level_amber">橙色</string>
+    <string name="weather_alert_level_orange">橙色</string>
+    <string name="weather_alert_level_red">红色</string>
+    <string name="weather_alert_hazard_wind">大风</string>
+    <string name="weather_alert_hazard_rain">暴雨</string>
+    <string name="weather_alert_hazard_snow_and_ice">冰雪</string>
+    <string name="weather_alert_hazard_thunderstorm">雷暴</string>
+    <string name="weather_alert_hazard_fog">大雾</string>
+    <string name="weather_alert_hazard_heat">高温</string>
+    <string name="weather_alert_hazard_cold">低温</string>
+    <string name="weather_alert_hazard_coastal">风暴潮</string>
+    <string name="weather_alert_hazard_flood">洪水</string>
+    <string name="weather_alert_hazard_wildfire">森林火险</string>
+    <string name="weather_alert_hazard_avalanche">雪崩</string>
+    <string name="weather_alert_hazard_storm">风暴</string>
+    <string name="weather_alert_hazard_tornado">龙卷风</string>
+    <string name="weather_alert_hazard_hail">冰雹</string>
+    <string name="weather_alert_hazard_dust">沙尘暴</string>
+    <string name="weather_alert_title_fallback">天气预警</string>
+    <string name="weather_alert_title_fallback_severe">严重天气预警</string>
+    <string name="weather_alert_title_fallback_extreme">极端天气预警</string>
+    <string name="weather_alert_level_info_description">轻微天气预警</string>
+    <string name="weather_alert_level_yellow_description">天气预警</string>
+    <string name="weather_alert_level_orange_description">严重天气预警</string>
+    <string name="weather_alert_level_red_description">极端天气预警</string>
+    <string name="weather_alert_until">至%1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">打开%1$s</string>
+    <string name="weather_alert_open_source_fallback">详情</string>
+    <string name="weather_alert_expand">显示详情</string>
+    <string name="weather_alert_collapse">隐藏详情</string>
+    <plurals name="weather_alert_more">
+        <item quantity="other">另有 %d 条预警</item>
+    </plurals>
 </resources>

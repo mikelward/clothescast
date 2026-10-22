@@ -1304,4 +1304,69 @@ What is NOT overridden, by design:
     <string name="settings_forecasters_google_probe_failed_http">Прогнозата на Google не можа да бъде достигната (HTTP %1$d). Ще бъде пропускана, докато проблемът не се отстрани.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google отхвърли вашия ключ. В Google Cloud активирайте Weather API и таксуването за проекта на ключа и се уверете, че ключът не е ограничен така, че да я изключва. Дотогава Google е изключен от вашата прогноза.</string>
     <string name="settings_forecasters_google_probe_retry">Проверка отново</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Предупреждения</string>
+    <string name="settings_root_alerts_subtitle">Официални предупреждения за времето</string>
+    <string name="settings_page_alerts">Настройки на предупрежденията</string>
+    <string name="settings_weather_alerts_title">Предупреждения за времето</string>
+    <string name="settings_weather_alerts_summary">Официални предупреждения за местоположението ти на екрана Днес.</string>
+    <string name="settings_weather_alerts_sign_in">Влез с Google, за да получаваш предупреждения за времето.</string>
+    <string name="settings_alerts_notify_title">Известявай ме за</string>
+    <string name="settings_alerts_notify_red">Само червени</string>
+    <string name="settings_alerts_notify_orange_red">Оранжеви и червени</string>
+    <string name="settings_alerts_notify_all">Всички нива</string>
+    <string name="settings_alerts_notify_none">Без известия</string>
+    <string name="settings_alerts_channel">Звук на предупрежденията и заключен екран</string>
+    <string name="settings_alerts_notification_permission">Без разрешение за известия предупрежденията за опасно време няма да стигат до теб. Разреши известията, за да ги получаваш.</string>
+    <string name="settings_alerts_status_checked">Последна проверка: %1$s</string>
+    <string name="settings_alerts_status_unsupported">Предупрежденията не са достъпни за това местоположение.</string>
+    <string name="settings_alerts_status_failed">Проверката за предупреждения не успя. Скоро ще опитаме отново.</string>
+    <string name="settings_alerts_status_waiting">Проверка за предупреждения…</string>
+    <string name="today_alerts_promo_title">Получавай предупреждения за времето</string>
+    <string name="today_alerts_promo_body">Официални предупреждения за мястото, където си, с известия за опасните.</string>
+    <string name="today_alerts_promo_cta">Настройки за предупреждения</string>
+    <string name="today_alerts_promo_dismiss">Затвори</string>
+    <string name="notification_channel_weather_alerts_name">Предупреждения за времето</string>
+    <string name="notification_channel_weather_alerts_description">Предупреждения за опасно време за местоположението ти от официалните метеорологични служби.</string>
+    <!-- "Оранжев код за вятър": the color code, as Bulgarian forecasts
+         name a graded warning; the level is a masculine adjective agreeing
+         with "код". -->
+    <string name="weather_alert_title">%1$s код за %2$s</string>
+    <string name="weather_alert_level_yellow">Жълт</string>
+    <string name="weather_alert_level_amber">Оранжев</string>
+    <string name="weather_alert_level_orange">Оранжев</string>
+    <string name="weather_alert_level_red">Червен</string>
+    <string name="weather_alert_hazard_wind">вятър</string>
+    <string name="weather_alert_hazard_rain">дъжд</string>
+    <string name="weather_alert_hazard_snow_and_ice">сняг и поледица</string>
+    <string name="weather_alert_hazard_thunderstorm">гръмотевични бури</string>
+    <string name="weather_alert_hazard_fog">мъгла</string>
+    <string name="weather_alert_hazard_heat">високи температури</string>
+    <string name="weather_alert_hazard_cold">ниски температури</string>
+    <string name="weather_alert_hazard_coastal">крайбрежни явления</string>
+    <string name="weather_alert_hazard_flood">наводнения</string>
+    <string name="weather_alert_hazard_wildfire">горски пожари</string>
+    <string name="weather_alert_hazard_avalanche">лавини</string>
+    <string name="weather_alert_hazard_storm">буря</string>
+    <string name="weather_alert_hazard_tornado">торнадо</string>
+    <string name="weather_alert_hazard_hail">градушка</string>
+    <string name="weather_alert_hazard_dust">прашни бури</string>
+    <string name="weather_alert_title_fallback">Предупреждение за времето</string>
+    <string name="weather_alert_title_fallback_severe">Предупреждение за опасно време</string>
+    <string name="weather_alert_title_fallback_extreme">Предупреждение за много опасно време</string>
+    <string name="weather_alert_level_info_description">Незначително предупреждение за времето</string>
+    <string name="weather_alert_level_yellow_description">Предупреждение за времето</string>
+    <string name="weather_alert_level_orange_description">Предупреждение за опасно време</string>
+    <string name="weather_alert_level_red_description">Предупреждение за много опасно време</string>
+    <string name="weather_alert_until">До %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Отвори %1$s</string>
+    <string name="weather_alert_open_source_fallback">Подробности</string>
+    <string name="weather_alert_expand">Покажи подробности</string>
+    <string name="weather_alert_collapse">Скрий подробности</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Още %d предупреждение</item>
+        <item quantity="other">Още %d предупреждения</item>
+    </plurals>
 </resources>

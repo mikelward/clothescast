@@ -1317,4 +1317,71 @@ displayed label localizes.
     <string name="settings_forecasters_google_probe_failed_http">Google tahminine ulaşılamadı (HTTP %1$d). Bu düzelene kadar dışarıda bırakılacak.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google anahtarınızı reddetti. Google Cloud\'da anahtarın projesi için Weather API ve faturalandırmayı etkinleştirin ve anahtarın bunu dışlayacak şekilde kısıtlanmadığından emin olun. O zamana kadar Google tahmininizin dışında kalır.</string>
     <string name="settings_forecasters_google_probe_retry">Tekrar kontrol et</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Uyarılar</string>
+    <string name="settings_root_alerts_subtitle">Resmi hava durumu uyarıları</string>
+    <string name="settings_page_alerts">Uyarı ayarları</string>
+    <string name="settings_weather_alerts_title">Hava durumu uyarıları</string>
+    <string name="settings_weather_alerts_summary">Konumun için resmi uyarılar, Bugün ekranında.</string>
+    <string name="settings_weather_alerts_sign_in">Hava durumu uyarılarını almak için Google ile oturum aç.</string>
+    <string name="settings_alerts_notify_title">Şunlar için bildir</string>
+    <string name="settings_alerts_notify_red">Yalnızca kırmızı</string>
+    <string name="settings_alerts_notify_orange_red">Turuncu ve kırmızı</string>
+    <string name="settings_alerts_notify_all">Tüm seviyeler</string>
+    <string name="settings_alerts_notify_none">Hiçbiri</string>
+    <string name="settings_alerts_channel">Uyarı sesi ve kilit ekranı</string>
+    <string name="settings_alerts_notification_permission">Bildirim izni olmadan şiddetli hava uyarıları sana ulaşamaz. Ulaşabilmeleri için izin ver.</string>
+    <string name="settings_alerts_status_checked">Son kontrol %1$s</string>
+    <string name="settings_alerts_status_unsupported">Bu konum için uyarılar kullanılamıyor.</string>
+    <string name="settings_alerts_status_failed">Uyarılar kontrol edilemedi. Birazdan tekrar denenecek.</string>
+    <string name="settings_alerts_status_waiting">Uyarılar kontrol ediliyor…</string>
+
+    <string name="today_alerts_promo_title">Hava durumu uyarıları al</string>
+    <string name="today_alerts_promo_body">Bulunduğun yer için resmi uyarılar, şiddetli olanlar için bildirimlerle.</string>
+    <string name="today_alerts_promo_cta">Uyarı ayarları</string>
+    <string name="today_alerts_promo_dismiss">Kapat</string>
+
+    <string name="notification_channel_weather_alerts_name">Hava durumu uyarıları</string>
+    <string name="notification_channel_weather_alerts_description">Resmi meteoroloji kurumlarından konumun için şiddetli hava uyarıları.</string>
+
+    <!-- "Turuncu rüzgar uyarısı", as MGM words them. -->
+    <string name="weather_alert_title">%1$s %2$s uyarısı</string>
+    <string name="weather_alert_level_yellow">Sarı</string>
+    <string name="weather_alert_level_amber">Turuncu</string>
+    <string name="weather_alert_level_orange">Turuncu</string>
+    <string name="weather_alert_level_red">Kırmızı</string>
+    <string name="weather_alert_hazard_wind">rüzgar</string>
+    <string name="weather_alert_hazard_rain">yağmur</string>
+    <string name="weather_alert_hazard_snow_and_ice">kar ve buzlanma</string>
+    <string name="weather_alert_hazard_thunderstorm">gök gürültülü fırtına</string>
+    <string name="weather_alert_hazard_fog">sis</string>
+    <string name="weather_alert_hazard_heat">sıcak hava</string>
+    <string name="weather_alert_hazard_cold">soğuk hava</string>
+    <string name="weather_alert_hazard_coastal">kıyı</string>
+    <string name="weather_alert_hazard_flood">sel</string>
+    <string name="weather_alert_hazard_wildfire">orman yangını</string>
+    <string name="weather_alert_hazard_avalanche">çığ</string>
+    <string name="weather_alert_hazard_storm">fırtına</string>
+    <string name="weather_alert_hazard_tornado">hortum</string>
+    <string name="weather_alert_hazard_hail">dolu</string>
+    <string name="weather_alert_hazard_dust">toz</string>
+    <string name="weather_alert_title_fallback">Hava durumu uyarısı</string>
+    <string name="weather_alert_title_fallback_severe">Şiddetli hava uyarısı</string>
+    <string name="weather_alert_title_fallback_extreme">Aşırı hava uyarısı</string>
+    <string name="weather_alert_level_info_description">Hafif hava uyarısı</string>
+    <string name="weather_alert_level_yellow_description">Hava durumu uyarısı</string>
+    <string name="weather_alert_level_orange_description">Şiddetli hava uyarısı</string>
+    <string name="weather_alert_level_red_description">Aşırı hava uyarısı</string>
+    <!-- A label, not a suffix: "%1$s'e kadar" would need vowel harmony with the time. -->
+    <string name="weather_alert_until">Bitiş: %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">%1$s sayfasını aç</string>
+    <string name="weather_alert_open_source_fallback">Ayrıntılar</string>
+    <string name="weather_alert_expand">Ayrıntıları göster</string>
+    <string name="weather_alert_collapse">Ayrıntıları gizle</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">%d uyarı daha</item>
+        <item quantity="other">%d uyarı daha</item>
+    </plurals>
 </resources>

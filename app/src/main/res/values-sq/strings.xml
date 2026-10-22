@@ -1173,4 +1173,71 @@
     <string name="settings_forecasters_google_probe_failed_http">Nuk u arrit parashikimi i Google (HTTP %1$d). Do të përjashtohet derisa kjo të zgjidhet.</string>
     <string name="settings_forecasters_google_probe_forbidden">Google refuzoi çelësin tuaj. Në Google Cloud, aktivizoni Weather API dhe faturimin për projektin e çelësit, dhe sigurohuni që çelësi të mos jetë i kufizuar në mënyrë që ta përjashtojë atë. Deri atëherë, Google mbetet jashtë parashikimit tuaj.</string>
     <string name="settings_forecasters_google_probe_retry">Kontrollo përsëri</string>
+
+    <!-- Weather alerts (docs/ALERTS.md). -->
+    <string name="settings_root_alerts">Paralajmërimet</string>
+    <string name="settings_root_alerts_subtitle">Paralajmërimet zyrtare të motit</string>
+    <string name="settings_page_alerts">Cilësimet e paralajmërimeve</string>
+    <string name="settings_weather_alerts_title">Paralajmërimet e motit</string>
+    <string name="settings_weather_alerts_summary">Paralajmërime zyrtare për vendndodhjen tënde në ekranin Sot.</string>
+    <string name="settings_weather_alerts_sign_in">Hyr me Google për të marrë paralajmërimet e motit.</string>
+    <string name="settings_alerts_notify_title">Më njofto për</string>
+    <string name="settings_alerts_notify_red">Vetëm të kuqe</string>
+    <string name="settings_alerts_notify_orange_red">Portokalli dhe të kuqe</string>
+    <string name="settings_alerts_notify_all">Të gjitha nivelet</string>
+    <string name="settings_alerts_notify_none">Asnjë</string>
+    <string name="settings_alerts_channel">Tingulli i paralajmërimeve dhe ekrani i kyçjes</string>
+    <string name="settings_alerts_notification_permission">Pa lejen e njoftimeve, paralajmërimet për mot të rrezikshëm s\'mund të të arrijnë. Jepe që të të arrijnë.</string>
+    <string name="settings_alerts_status_checked">Kontrolluar së fundi %1$s</string>
+    <string name="settings_alerts_status_unsupported">Paralajmërimet nuk ofrohen për këtë vendndodhje.</string>
+    <string name="settings_alerts_status_failed">Paralajmërimet nuk u kontrolluan dot. Do të provojmë sërish së shpejti.</string>
+    <string name="settings_alerts_status_waiting">Po kontrollohen paralajmërimet…</string>
+
+    <string name="today_alerts_promo_title">Merr paralajmërimet e motit</string>
+    <string name="today_alerts_promo_body">Paralajmërime zyrtare për vendin ku je, me njoftime për ato të rënda.</string>
+    <string name="today_alerts_promo_cta">Cilësimet e paralajmërimeve</string>
+    <string name="today_alerts_promo_dismiss">Hiq</string>
+
+    <string name="notification_channel_weather_alerts_name">Paralajmërimet e motit</string>
+    <string name="notification_channel_weather_alerts_description">Paralajmërime për mot të rrezikshëm në vendndodhjen tënde nga shërbimet zyrtare meteorologjike.</string>
+
+    <!-- "Paralajmërim portokalli për erë": the color follows the noun, with
+         its article ("i verdhë", "i kuq"; "portokalli" takes none). -->
+    <string name="weather_alert_title">Paralajmërim %1$s për %2$s</string>
+    <string name="weather_alert_level_yellow">i verdhë</string>
+    <string name="weather_alert_level_amber">portokalli</string>
+    <string name="weather_alert_level_orange">portokalli</string>
+    <string name="weather_alert_level_red">i kuq</string>
+    <string name="weather_alert_hazard_wind">erë</string>
+    <string name="weather_alert_hazard_rain">shi</string>
+    <string name="weather_alert_hazard_snow_and_ice">borë dhe akull</string>
+    <string name="weather_alert_hazard_thunderstorm">stuhi me bubullima</string>
+    <string name="weather_alert_hazard_fog">mjegull</string>
+    <string name="weather_alert_hazard_heat">të nxehtë</string>
+    <string name="weather_alert_hazard_cold">të ftohtë</string>
+    <string name="weather_alert_hazard_coastal">rreziqe bregdetare</string>
+    <string name="weather_alert_hazard_flood">përmbytje</string>
+    <string name="weather_alert_hazard_wildfire">zjarre në pyje</string>
+    <string name="weather_alert_hazard_avalanche">orteqe</string>
+    <string name="weather_alert_hazard_storm">stuhi</string>
+    <string name="weather_alert_hazard_tornado">tornado</string>
+    <string name="weather_alert_hazard_hail">breshër</string>
+    <string name="weather_alert_hazard_dust">pluhur</string>
+    <string name="weather_alert_title_fallback">Paralajmërim moti</string>
+    <string name="weather_alert_title_fallback_severe">Paralajmërim për mot të rrezikshëm</string>
+    <string name="weather_alert_title_fallback_extreme">Paralajmërim për mot ekstrem</string>
+    <string name="weather_alert_level_info_description">Paralajmërim i lehtë moti</string>
+    <string name="weather_alert_level_yellow_description">Paralajmërim moti</string>
+    <string name="weather_alert_level_orange_description">Paralajmërim për mot të rrezikshëm</string>
+    <string name="weather_alert_level_red_description">Paralajmërim për mot ekstrem</string>
+    <string name="weather_alert_until">Deri në %1$s</string>
+    <string name="weather_alert_detail">%1$s · %2$s</string>
+    <string name="weather_alert_open_source">Hap %1$s</string>
+    <string name="weather_alert_open_source_fallback">Detajet</string>
+    <string name="weather_alert_expand">Shfaq detajet</string>
+    <string name="weather_alert_collapse">Fshih detajet</string>
+    <plurals name="weather_alert_more">
+        <item quantity="one">Edhe %d paralajmërim</item>
+        <item quantity="other">Edhe %d paralajmërime</item>
+    </plurals>
 </resources>

@@ -2115,6 +2115,7 @@
     <string name="weather_alert_open_source_fallback">Details</string>
     <string name="weather_alert_expand">Show details</string>
     <string name="weather_alert_collapse">Hide details</string>
+    <string name="weather_alert_dismiss">Dismiss</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d more alert</item>
         <item quantity="other">%d more alerts</item>

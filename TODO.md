@@ -990,6 +990,11 @@ Open work:
       - *Background check:* a periodic WorkManager job every hour that looks
         up only when the 3-hour (or 1-hour) interval is due, rather than
         rescheduling a one-off job after each check.
+      - *Dismissing an alert* hides only its Today card: the strip, widget,
+        outfit card and notification keep the level while it's in force.
+        Dismiss sits in the expanded card, beside the issuer link. Alternative:
+        hide the level everywhere, or an X on the collapsed row. One filter
+        (`undismissed`) and one button to move.
 - [ ] **Weather alerts proxy: no server cache, and a 120-a-day cap**
       (autopilot, 2026-10-22). `weatherAlerts` forwards every lookup, because
       the Maps Platform caching terms for alerts are unchecked and `SPEC.md`

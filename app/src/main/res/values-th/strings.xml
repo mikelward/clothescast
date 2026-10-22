@@ -1379,6 +1379,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_open_source_fallback">รายละเอียด</string>
     <string name="weather_alert_expand">แสดงรายละเอียด</string>
     <string name="weather_alert_collapse">ซ่อนรายละเอียด</string>
+    <string name="weather_alert_dismiss">ปิด</string>
     <plurals name="weather_alert_more">
         <item quantity="other">การเตือนภัยอีก %d รายการ</item>
     </plurals>

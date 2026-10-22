@@ -1446,6 +1446,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="weather_alert_open_source_fallback">Detalji</string>
     <string name="weather_alert_expand">Prikaži detalje</string>
     <string name="weather_alert_collapse">Sakrij detalje</string>
+    <string name="weather_alert_dismiss">Odbaci</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Još %d upozorenje</item>
         <item quantity="few">Još %d upozorenja</item>

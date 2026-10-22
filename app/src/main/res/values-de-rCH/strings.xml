@@ -692,4 +692,5 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Weather alerts (docs/ALERTS.md): only the ß → ss string; the rest
          falls back to values-de. -->
     <string name="today_alerts_promo_dismiss" tools:ignore="Typos">Schliessen</string>
+    <string name="weather_alert_dismiss" tools:ignore="Typos">Schliessen</string>
 </resources>

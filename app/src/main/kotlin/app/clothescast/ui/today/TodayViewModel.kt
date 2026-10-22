@@ -28,13 +28,16 @@ import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.HolidayResolver
+import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.tts.toJavaLocale
 import java.util.Locale
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
 import app.clothescast.data.WeatherAlertsState
+import app.clothescast.diag.DiagLog
 import app.clothescast.work.FetchAndNotifyWorker
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -526,6 +529,8 @@ class TodayViewModel(
      * alerts proxy built in. Gates the alerts promo card.
      */
     private val weatherAlertsReachableBySignIn: Flow<Boolean> = flowOf(false),
+    /** Records a dismissed alert card ([app.clothescast.data.WeatherAlertsStore.dismiss]). */
+    private val onDismissWeatherAlert: suspend (RelevantAlert) -> Unit = {},
 ) : ViewModel() {
     /**
      * Session-scoped "show model spread" flag. Held in the ViewModel rather
@@ -833,16 +838,32 @@ class TodayViewModel(
         insightCache.thisPeriod,
         weatherAlertsReachableBySignIn,
     ) { alerts, prefs, thisPeriod, reachableBySignIn ->
+        val onScreen = alerts.onScreen(
+            enabled = prefs.weatherAlerts,
+            location = thisPeriod?.location ?: prefs.location,
+            now = clock.instant(),
+        )
         TodayAlertsState(
-            alerts = alerts.onScreen(
-                enabled = prefs.weatherAlerts,
-                location = thisPeriod?.location ?: prefs.location,
-                now = clock.instant(),
-            ),
+            alerts = onScreen,
+            cards = alerts.undismissed(onScreen),
             promoVisible = reachableBySignIn && !prefs.weatherAlerts && !prefs.weatherAlertsPromoCardDismissed,
             notifies = prefs.weatherAlerts && prefs.weatherAlertsNotifyLevel != AlertNotifyLevel.NONE,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayAlertsState())
+
+    /** Hides [alert]'s card until the alert changes; the strip still shows its level. */
+    fun dismissWeatherAlert(alert: RelevantAlert) {
+        viewModelScope.launch {
+            try {
+                onDismissWeatherAlert(alert)
+            } catch (ce: CancellationException) {
+                throw ce
+            } catch (e: Exception) {
+                // The card stays up; tapping Dismiss again retries.
+                DiagLog.w("TodayViewModel", e, "Couldn't record a dismissed alert card.")
+            }
+        }
+    }
 
     /** Retires the alerts promo card, from its X or its CTA, as the other promos do. */
     fun dismissWeatherAlertsPromoCard() {
@@ -1019,6 +1040,7 @@ class TodayViewModel(
         private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
         private val weatherAlerts: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
         private val weatherAlertsReachableBySignIn: Flow<Boolean> = flowOf(false),
+        private val onDismissWeatherAlert: suspend (RelevantAlert) -> Unit = {},
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -1035,6 +1057,7 @@ class TodayViewModel(
                 geminiKeyNeedsReentry = geminiKeyNeedsReentry,
                 weatherAlerts = weatherAlerts,
                 weatherAlertsReachableBySignIn = weatherAlertsReachableBySignIn,
+                onDismissWeatherAlert = onDismissWeatherAlert,
             ) as T
         }
     }

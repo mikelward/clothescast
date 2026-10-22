@@ -242,6 +242,7 @@ fun TodayScreen(
             onNavigateToAlerts()
         },
         onDismissPromo = viewModel::dismissWeatherAlertsPromoCard,
+        onDismissAlert = viewModel::dismissWeatherAlert,
     )
     Scaffold(
         // Drop the default `safeDrawing` content insets so the pager extends
@@ -1192,8 +1193,13 @@ internal fun HomePageScaffold(
                 // they outrank anything the user arranged (docs/ALERTS.md).
                 // Only the current period's page carries them; see
                 // [LocalTodayAlerts].
-                val alertsState = LocalTodayAlerts.current.state
-                WeatherAlertCards(alerts = alertsState.alerts, now = Instant.now())
+                val alertsUi = LocalTodayAlerts.current
+                val alertsState = alertsUi.state
+                WeatherAlertCards(
+                    alerts = alertsState.cards,
+                    now = Instant.now(),
+                    onDismiss = alertsUi.onDismissAlert,
+                )
                 // The conditions strip, outfit row, insight ([insightSlot]),
                 // confidence chip ([confidenceSlot]), and chart deck
                 // ([chartsSlot]) are the user-reorderable sections;

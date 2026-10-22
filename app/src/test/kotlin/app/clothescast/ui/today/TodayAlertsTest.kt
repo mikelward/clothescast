@@ -8,6 +8,7 @@ import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.data.AlertsCheckOutcome
 import app.clothescast.data.WeatherAlertsState
+import app.clothescast.data.dismissKey
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
@@ -71,5 +72,39 @@ class TodayAlertsTest {
             alerts = listOf(relevant(AlertSeverity.MODERATE), relevant(AlertSeverity.SEVERE)),
         ).stripLevel shouldBe AlertLevel.ORANGE
         TodayAlertsState().stripLevel shouldBe null
+    }
+
+    @Test
+    fun `a dismissed card stays hidden until the alert changes`() {
+        val wind = relevant(AlertSeverity.SEVERE)
+        val fog = relevant(AlertSeverity.MODERATE)
+        val state = stored(wind, fog).let { it.copy(dismissed = mapOf(wind.alert.id to wind.dismissKey())) }
+        state.undismissed(listOf(wind, fog)) shouldBe listOf(fog)
+
+        // Any change the issuer makes brings the card back: a later end, new
+        // text, a higher level.
+        val later = wind.copy(alert = wind.alert.copy(endTime = now.plus(Duration.ofHours(9))))
+        val reworded = wind.copy(alert = wind.alert.copy(description = "Gusts now up to 80 mph."))
+        val raised = wind.copy(alert = wind.alert.copy(severity = AlertSeverity.EXTREME))
+        listOf(later, reworded, raised).forEach { changed ->
+            state.undismissed(listOf(changed, fog)) shouldBe listOf(changed, fog)
+        }
+    }
+
+    @Test
+    fun `a card dismissed at the neutral level returns when its area narrows`() {
+        // Too broad to notify, so drawn neutral; then the issuer narrows the
+        // area and the same text is drawn at its own level.
+        val broad = relevant(AlertSeverity.SEVERE, notifiable = false)
+        val narrowed = broad.copy(notifiable = true)
+        val state = stored(broad).copy(dismissed = mapOf(broad.alert.id to broad.dismissKey()))
+        state.undismissed(listOf(broad)).shouldBeEmpty()
+        state.undismissed(listOf(narrowed)) shouldBe listOf(narrowed)
+    }
+
+    @Test
+    fun `dismissing a card leaves the strip's level`() {
+        val wind = relevant(AlertSeverity.SEVERE)
+        TodayAlertsState(alerts = listOf(wind), cards = emptyList()).stripLevel shouldBe AlertLevel.ORANGE
     }
 }

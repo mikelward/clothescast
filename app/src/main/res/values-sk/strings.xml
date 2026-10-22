@@ -1401,6 +1401,7 @@ What is NOT overridden, by design:
     <string name="weather_alert_open_source_fallback">Podrobnosti</string>
     <string name="weather_alert_expand">Zobraziť podrobnosti</string>
     <string name="weather_alert_collapse">Skryť podrobnosti</string>
+    <string name="weather_alert_dismiss">Zavrieť</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Ešte %d výstraha</item>
         <item quantity="few">Ešte %d výstrahy</item>

@@ -350,6 +350,7 @@ private fun todayViewModelFactory(app: ClothesCastApplication) =
         weatherAlertsReachableBySignIn = app.googleAccount.account.map { account ->
             account != null && app.googleWeatherProxyConfigured
         },
+        onDismissWeatherAlert = app.weatherAlertsStore::dismiss,
     )
 
 private fun settingsViewModelFactory(app: ClothesCastApplication) =

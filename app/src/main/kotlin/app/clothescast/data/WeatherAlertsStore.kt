@@ -16,7 +16,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.security.MessageDigest
 import java.time.Instant
+import java.util.Locale
 
 /**
  * How the last alerts check went. [OK] means [WeatherAlertsState.alerts] is
@@ -44,10 +46,18 @@ data class WeatherAlertsState(
     val alerts: List<RelevantAlert> = emptyList(),
     /** Alert IDs already notified, with the level notified at, so a rise notifies again. */
     val notified: Map<String, AlertLevel> = emptyMap(),
+    /**
+     * Alert IDs whose Today card the user dismissed, each with the
+     * [dismissKey] of the alert as it read then: any change brings it back.
+     */
+    val dismissed: Map<String, String> = emptyMap(),
 ) {
     /** The alerts still in force at [now]. */
     fun active(now: Instant): List<RelevantAlert> =
         alerts.filter { relevant -> relevant.alert.endTime?.isAfter(now) != false }
+
+    /** Whether [relevant]'s card was dismissed and the alert hasn't changed since. */
+    fun isDismissed(relevant: RelevantAlert): Boolean = dismissed[relevant.alert.id] == relevant.dismissKey()
 
     /** The highest level in force at [now], or null when nothing is. */
     fun highestLevel(now: Instant): AlertLevel? = active(now).maxOfOrNull { it.level }
@@ -77,6 +87,11 @@ class WeatherAlertsStore(
         }
     }
 
+    /** Hides [relevant]'s card on Today until the alert changes. */
+    suspend fun dismiss(relevant: RelevantAlert) {
+        update { it.copy(dismissed = it.dismissed + (relevant.alert.id to relevant.dismissKey())) }
+    }
+
     /** Forgets everything: alerts turned off, or the user signed out. */
     suspend fun clear() {
         dataStore.edit { it.remove(STATE_KEY) }
@@ -93,6 +108,7 @@ class WeatherAlertsStore(
         val pointLon: Double? = null,
         val alerts: List<AlertDto> = emptyList(),
         val notified: Map<String, String> = emptyMap(),
+        val dismissed: Map<String, String> = emptyMap(),
     ) {
         fun toDomain() = WeatherAlertsState(
             checkedAt = checkedAtMs?.let(Instant::ofEpochMilli),
@@ -102,6 +118,7 @@ class WeatherAlertsStore(
             notified = notified.mapNotNull { (id, level) ->
                 AlertLevel.entries.firstOrNull { it.name == level }?.let { id to it }
             }.toMap(),
+            dismissed = dismissed,
         )
     }
 
@@ -168,6 +185,7 @@ class WeatherAlertsStore(
             )
         },
         notified = notified.mapValues { it.value.name },
+        dismissed = dismissed,
     )
 
     companion object {
@@ -175,6 +193,33 @@ class WeatherAlertsStore(
 
         fun create(context: Context): WeatherAlertsStore = WeatherAlertsStore(context.weatherAlertsDataStore)
     }
+}
+
+/**
+ * A digest of everything the app shows of an alert (its title, the level it's
+ * drawn at, hazard, area, the issuer's text and link, its times), so a
+ * dismissed card returns when any of it changes. The drawn level covers an
+ * area narrowed from too broad to notify (neutral) to the alert's own. The
+ * traced area itself is left out: it isn't stored, and it isn't shown.
+ */
+fun RelevantAlert.dismissKey(): String {
+    val fields = listOf(
+        alert.issuerTitle,
+        alert.eventType,
+        alert.severity.name,
+        // As drawn: neutral while the area is too broad.
+        level.name,
+        alert.areaName,
+        alert.description,
+        alert.instruction,
+        alert.startTime?.toEpochMilli()?.toString(),
+        alert.endTime?.toEpochMilli()?.toString(),
+        alert.issuer,
+        alert.issuerUrl,
+    )
+    val digest = MessageDigest.getInstance("SHA-256")
+        .digest(fields.joinToString("\u0000") { it ?: "\u0001" }.toByteArray(Charsets.UTF_8))
+    return digest.joinToString("") { "%02x".format(Locale.ROOT, it) }
 }
 
 private val Context.weatherAlertsDataStore: DataStore<Preferences> by preferencesDataStore(name = "weather_alerts")

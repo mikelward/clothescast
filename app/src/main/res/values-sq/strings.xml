@@ -1236,6 +1236,7 @@
     <string name="weather_alert_open_source_fallback">Detajet</string>
     <string name="weather_alert_expand">Shfaq detajet</string>
     <string name="weather_alert_collapse">Fshih detajet</string>
+    <string name="weather_alert_dismiss">Hiq</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Edhe %d paralajmërim</item>
         <item quantity="other">Edhe %d paralajmërime</item>

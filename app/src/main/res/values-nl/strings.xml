@@ -1424,6 +1424,7 @@ the displayed label localizes.
     <string name="weather_alert_open_source_fallback">Details</string>
     <string name="weather_alert_expand">Details weergeven</string>
     <string name="weather_alert_collapse">Details verbergen</string>
+    <string name="weather_alert_dismiss">Sluiten</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Nog %d waarschuwing</item>
         <item quantity="other">Nog %d waarschuwingen</item>

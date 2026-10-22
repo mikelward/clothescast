@@ -445,4 +445,40 @@ class WeatherAlertsRefresherTest {
         val posted = shadeNow().single()
         (posted.flags and android.app.Notification.FLAG_ONLY_ALERT_ONCE != 0) shouldBe true
     }
+
+    @Test
+    fun `a dismissed card stays dismissed across checks, until the alert changes`() = runTest {
+        refresh()
+        store.dismiss(store.current().alerts.single())
+        store.current().let { it.isDismissed(it.alerts.single()) } shouldBe true
+
+        // The same alert again: still dismissed.
+        now = t0.plus(Duration.ofHours(1))
+        refresh()
+        store.current().let { it.isDismissed(it.alerts.single()) } shouldBe true
+
+        // The issuer extends it: the card is back.
+        body = page(expires = "2026-10-24T10:00:00Z")
+        now = t0.plus(Duration.ofHours(2))
+        refresh()
+        store.current().let { it.isDismissed(it.alerts.single()) } shouldBe false
+    }
+
+    @Test
+    fun `a dismissal is forgotten with its alert, and at a new place`() = runTest {
+        refresh()
+        store.dismiss(store.current().alerts.single())
+
+        body = """{"weatherAlerts": []}"""
+        now = t0.plus(Duration.ofHours(1))
+        refresh()
+        store.current().dismissed shouldBe emptyMap()
+
+        body = page()
+        now = t0.plus(Duration.ofHours(2))
+        refresh()
+        store.dismiss(store.current().alerts.single())
+        refresh(location = placeB)
+        store.current().dismissed shouldBe emptyMap()
+    }
 }

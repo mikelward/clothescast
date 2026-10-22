@@ -1387,6 +1387,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="weather_alert_open_source_fallback">Podrobnosti</string>
     <string name="weather_alert_expand">Zobrazit podrobnosti</string>
     <string name="weather_alert_collapse">Skrýt podrobnosti</string>
+    <string name="weather_alert_dismiss">Zavřít</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Ještě %d výstraha</item>
         <item quantity="few">Ještě %d výstrahy</item>

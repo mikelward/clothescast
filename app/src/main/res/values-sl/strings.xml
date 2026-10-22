@@ -1364,6 +1364,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="weather_alert_open_source_fallback">Podrobnosti</string>
     <string name="weather_alert_expand">Prikaži podrobnosti</string>
     <string name="weather_alert_collapse">Skrij podrobnosti</string>
+    <string name="weather_alert_dismiss">Zapri</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Še %d opozorilo</item>
         <item quantity="two">Še %d opozorili</item>

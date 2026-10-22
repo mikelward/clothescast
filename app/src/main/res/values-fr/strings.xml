@@ -1506,6 +1506,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_open_source_fallback">Détails</string>
     <string name="weather_alert_expand">Afficher les détails</string>
     <string name="weather_alert_collapse">Masquer les détails</string>
+    <string name="weather_alert_dismiss">Ignorer</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d autre alerte</item>
         <item quantity="many">%d autres alertes</item>

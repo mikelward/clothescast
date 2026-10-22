@@ -71,10 +71,11 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   | Neutral | `#6E6A75` | `#CAC4D0` |
 
   The same icon marks each alert card, the notification (small icon and
-  accent), and the head of the conditions strip on Today and in the
-  conditions widget (the highest level in force, yellow and up). Its content
-  description names the level ("Severe weather alert"). The outfit card
-  image doesn't draw it yet (`TODO.md`).
+  accent), and the head of the conditions strip on Today, in the conditions
+  widget and on the outfit card sent to Cast and Home Assistant (the highest
+  level, yellow and up; on a card, of the alerts overlapping its own
+  forecast window). Its content description names the level ("Severe
+  weather alert").
 - **Today**: one single-row card per alert at the top of the page: the
   severity icon, the title, the end time ("Until Sat 9 AM"; "From 6 PM"
   before it starts only once start times are known to be onset, see

@@ -7,7 +7,7 @@ const path = require("node:path");
 
 const config = require(path.join(__dirname, "..", "..", "firestore.indexes.json"));
 
-for (const collection of ["quota", "weatherQuota"]) {
+for (const collection of ["quota", "weatherQuota", "weatherAlertsQuota"]) {
   test(`${collection}.expireAt has a TTL policy`, () => {
     assert.ok(Array.isArray(config.fieldOverrides) && config.fieldOverrides.length > 0);
     const ttl = config.fieldOverrides.find(

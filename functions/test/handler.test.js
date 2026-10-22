@@ -21,7 +21,7 @@ process.env.FIREBASE_CONFIG =
   process.env.FIREBASE_CONFIG || JSON.stringify({ projectId: "demo-clothescast" });
 
 const express = require(path.join(__dirname, "..", "node_modules", "express"));
-const { tts, weather } = require("../lib/index");
+const { tts, weather, weatherAlerts } = require("../lib/index");
 
 let server;
 let base;
@@ -79,30 +79,33 @@ test("answers JSON, so the client can read the error code", async () => {
   assert.match(res.headers.get("content-type") || "", /application\/json/);
 });
 
-test("weather: rejects every method but POST, then requires App Check", async () => {
-  // POST only, so the coordinate travels in the body and never in the URL
-  // Cloud Run logs.
-  const app = express();
-  app.use(express.urlencoded({ extended: false })); // as the Functions Framework does
-  app.use(weather);
-  const srv = http.createServer(app);
-  await new Promise((resolve) => srv.listen(0, "127.0.0.1", resolve));
-  const url = `http://127.0.0.1:${srv.address().port}/`;
-  try {
-    for (const method of ["GET", "PUT", "DELETE", "PATCH"]) {
-      const res = await fetch(url, { method });
-      assert.equal(res.status, 405, `${method} should be 405`);
-      assert.deepEqual(await res.json(), { error: "method_not_allowed" });
-    }
+// The Google Weather proxies share one handler; each export must still answer
+// with its guards in order: POST only, so the coordinate travels in the body
+// and never in the URL Cloud Run logs, then App Check before anything else.
+for (const [name, handler] of [["weather", weather], ["weatherAlerts", weatherAlerts]]) {
+  test(`${name}: rejects every method but POST, then requires App Check`, async () => {
+    const app = express();
+    app.use(express.urlencoded({ extended: false })); // as the Functions Framework does
+    app.use(handler);
+    const srv = http.createServer(app);
+    await new Promise((resolve) => srv.listen(0, "127.0.0.1", resolve));
+    const url = `http://127.0.0.1:${srv.address().port}/`;
+    try {
+      for (const method of ["GET", "PUT", "DELETE", "PATCH"]) {
+        const res = await fetch(url, { method });
+        assert.equal(res.status, 405, `${method} should be 405`);
+        assert.deepEqual(await res.json(), { error: "method_not_allowed" });
+      }
 
-    const post = await fetch(url, {
-      method: "POST",
-      headers: { "content-type": "application/x-www-form-urlencoded" },
-      body: "location.latitude=0&location.longitude=0",
-    });
-    assert.equal(post.status, 401);
-    assert.deepEqual(await post.json(), { error: "missing_app_check_token" });
-  } finally {
-    srv.close();
-  }
-});
+      const post = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: "location.latitude=0&location.longitude=0",
+      });
+      assert.equal(post.status, 401);
+      assert.deepEqual(await post.json(), { error: "missing_app_check_token" });
+    } finally {
+      srv.close();
+    }
+  });
+}

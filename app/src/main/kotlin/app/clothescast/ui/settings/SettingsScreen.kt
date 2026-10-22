@@ -72,6 +72,7 @@ internal enum class SettingsDest(
     VOICE(R.string.settings_root_voice, R.string.settings_root_voice_subtitle),
     DISPLAY(R.string.settings_root_display, R.string.settings_root_display_subtitle),
     CALENDAR(R.string.settings_root_calendar, R.string.settings_root_calendar_subtitle),
+    ALERTS(R.string.settings_root_alerts, R.string.settings_root_alerts_subtitle),
     FORECASTERS(R.string.settings_root_forecasters, R.string.settings_root_forecasters_subtitle),
     SMART_HOME(R.string.settings_root_smart_home, R.string.settings_root_smart_home_subtitle),
     PRIVACY(R.string.settings_root_privacy, R.string.settings_root_privacy_subtitle),

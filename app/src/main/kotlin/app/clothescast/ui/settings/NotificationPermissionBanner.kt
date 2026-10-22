@@ -1,6 +1,7 @@
 package app.clothescast.ui.settings
 
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.annotation.StringRes
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,13 +30,17 @@ import app.clothescast.notification.NotificationPermission
 
 /**
  * Banner shown when POST_NOTIFICATIONS is required (Android 13+) but not yet granted.
- * Renders nothing on older platforms or once permission is granted.
+ * Renders nothing on older platforms or once permission is granted. [description]
+ * says what goes missing without it: the daily ClothesCast by default.
  *
  * Re-checks permission on resume so toggling it from system Settings is reflected
  * without requiring an in-app action.
  */
 @Composable
-fun NotificationPermissionBanner(modifier: Modifier = Modifier) {
+fun NotificationPermissionBanner(
+    modifier: Modifier = Modifier,
+    @StringRes description: Int = R.string.settings_notification_permission_description,
+) {
     if (!NotificationPermission.isRequired()) return
 
     val context = LocalContext.current
@@ -76,7 +81,7 @@ fun NotificationPermissionBanner(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.titleMedium,
             )
             Text(
-                text = stringResource(R.string.settings_notification_permission_description),
+                text = stringResource(description),
                 style = MaterialTheme.typography.bodyMedium,
             )
             Button(

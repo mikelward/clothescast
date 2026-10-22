@@ -16,6 +16,7 @@ import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.clothescast.core.domain.model.AccessoriesFormat
+import app.clothescast.core.domain.model.AlertNotifyLevel
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.DeltaFormat
@@ -462,6 +463,10 @@ class SettingsRepository(
 
     suspend fun setGoogleForecastPromoCardDismissed(dismissed: Boolean) {
         dataStore.edit { it[GOOGLE_FORECAST_PROMO_CARD_DISMISSED] = dismissed }
+    }
+
+    suspend fun setWeatherAlertsPromoCardDismissed(dismissed: Boolean) {
+        dataStore.edit { it[WEATHER_ALERTS_PROMO_CARD_DISMISSED] = dismissed }
     }
 
     suspend fun setGeminiSignInNoticeShown(shown: Boolean) {
@@ -1025,6 +1030,15 @@ class SettingsRepository(
         dataStore.edit { it[GOOGLE_FORECAST] = enabled }
     }
 
+    /** Turns weather alerts on or off (Settings → Alerts). */
+    suspend fun setWeatherAlerts(enabled: Boolean) {
+        dataStore.edit { it[WEATHER_ALERTS] = enabled }
+    }
+
+    suspend fun setWeatherAlertsNotifyLevel(level: AlertNotifyLevel) {
+        dataStore.edit { it[WEATHER_ALERTS_NOTIFY_LEVEL] = level.name }
+    }
+
     /**
      * Sets the per-icon fill colour for [top]. `null` clears any override —
      * the icon then falls back to the baked-in XML colour. Read-modify-write
@@ -1261,6 +1275,7 @@ class SettingsRepository(
         val playCardDismissed = this[PLAY_CARD_DISMISSED] == true
         val geminiPromoCardDismissed = this[GEMINI_PROMO_CARD_DISMISSED] == true
         val googleForecastPromoCardDismissed = this[GOOGLE_FORECAST_PROMO_CARD_DISMISSED] == true
+        val weatherAlertsPromoCardDismissed = this[WEATHER_ALERTS_PROMO_CARD_DISMISSED] == true
         val geminiSignInNoticeShown = this[GEMINI_SIGN_IN_NOTICE_SHOWN] == true
         val calendarPermissionRecheckTick = this[CALENDAR_PERMISSION_RECHECK_TICK] ?: 0L
         val tonightTime = this[TONIGHT_TIME]?.let { runCatching { LocalTime.parse(it, TIME_FORMAT) }.getOrNull() }
@@ -1440,6 +1455,7 @@ class SettingsRepository(
             playCardDismissed = playCardDismissed,
             geminiPromoCardDismissed = geminiPromoCardDismissed,
             googleForecastPromoCardDismissed = googleForecastPromoCardDismissed,
+            weatherAlertsPromoCardDismissed = weatherAlertsPromoCardDismissed,
             geminiSignInNoticeShown = geminiSignInNoticeShown,
             calendarPermissionRecheckTick = calendarPermissionRecheckTick,
             dailyEnabled = dailyEnabled,
@@ -1475,6 +1491,8 @@ class SettingsRepository(
             // Older builds kept Google inside the picks; carry that over until
             // the switch is first written.
             googleForecast = this[GOOGLE_FORECAST] ?: storedGoogle,
+            weatherAlerts = this[WEATHER_ALERTS] == true,
+            weatherAlertsNotifyLevel = AlertNotifyLevel.parse(this[WEATHER_ALERTS_NOTIFY_LEVEL]),
             forecasterColorSlots = parseForecasterColorSlots(this[FORECASTER_COLOR_SLOTS]),
             mqttBridgeEnabled = mqttBridgeEnabled,
             mqttHost = mqttHost,
@@ -1762,6 +1780,7 @@ class SettingsRepository(
         private val PLAY_CARD_DISMISSED = booleanPreferencesKey("play_card_dismissed")
         private val GEMINI_PROMO_CARD_DISMISSED = booleanPreferencesKey("gemini_promo_card_dismissed")
         private val GOOGLE_FORECAST_PROMO_CARD_DISMISSED = booleanPreferencesKey("google_forecast_promo_card_dismissed")
+        private val WEATHER_ALERTS_PROMO_CARD_DISMISSED = booleanPreferencesKey("weather_alerts_promo_card_dismissed")
         private val GEMINI_SIGN_IN_NOTICE_SHOWN = booleanPreferencesKey("gemini_sign_in_notice_shown")
         private val GEMINI_TTS_LIMIT_AT_MS = longPreferencesKey("gemini_tts_limit_at_ms")
         private val GEMINI_TTS_LIMIT_RESET_AT_MS = longPreferencesKey("gemini_tts_limit_reset_at_ms")
@@ -1831,6 +1850,8 @@ class SettingsRepository(
         private val HOLIDAY_COUNTRY_OVERRIDES = stringSetPreferencesKey("holiday_country_overrides")
         private val FORECAST_MODELS = stringSetPreferencesKey("forecast_models")
         private val GOOGLE_FORECAST = booleanPreferencesKey("google_forecast")
+        private val WEATHER_ALERTS = booleanPreferencesKey("weather_alerts")
+        private val WEATHER_ALERTS_NOTIFY_LEVEL = stringPreferencesKey("weather_alerts_notify_level")
         private val FORECASTER_COLOR_SLOTS = stringPreferencesKey("forecaster_color_slots_json")
         // Legacy persisted name for the ECMWF model, retired when Open-Meteo
         // moved the IFS open feed from 0.4° to 0.25° (ecmwf_ifs04 →

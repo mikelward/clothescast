@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.clothescast.core.domain.model.AlertLevel
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestName
@@ -51,7 +52,14 @@ class ConditionsStripSnapshotTest {
     private fun uv(label: String, index: Double) =
         ConditionsCell(ConditionsGlyph.UV, label, tintArgb = uvScaleColorArgb(index))
 
-    private fun write(cells: List<ConditionsCell>, widthPx: Int, darkTheme: Boolean) {
+    private fun alert(level: AlertLevel) = ConditionsCell(ConditionsGlyph.ALERT, label = "", alertLevel = level)
+
+    private fun write(
+        cells: List<ConditionsCell>,
+        widthPx: Int,
+        darkTheme: Boolean,
+        name: String = testName.methodName,
+    ) {
         val strip = renderConditionsStripBitmap(
             context = ctx,
             cells = cells,
@@ -72,7 +80,7 @@ class ConditionsStripSnapshotTest {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             out.toByteArray()
         }
-        File("$outputDir/${testName.methodName}.png")
+        File("$outputDir/$name.png")
             .also { it.parentFile?.mkdirs() }
             .writeBytes(png)
     }
@@ -118,5 +126,31 @@ class ConditionsStripSnapshotTest {
             widthPx = 720,
             darkTheme = true,
         )
+    }
+
+    // Each level's icon at the head of the strip, as an official alert in
+    // force draws it: shape and tint per level, no label.
+    @Test
+    fun conditions_strip_alerts_light() {
+        for (level in listOf(AlertLevel.YELLOW, AlertLevel.ORANGE, AlertLevel.RED)) {
+            write(
+                listOf(alert(level), thermo("4–9°C", 9.0), rain("80%", 0.80f), wind("65 km/h", 65.0)),
+                widthPx = 720,
+                darkTheme = false,
+                name = "conditions_strip_alert_${level.name.lowercase()}_light",
+            )
+        }
+    }
+
+    @Test
+    fun conditions_strip_alerts_dark() {
+        for (level in listOf(AlertLevel.YELLOW, AlertLevel.ORANGE, AlertLevel.RED)) {
+            write(
+                listOf(alert(level), thermo("4–9°C", 9.0), rain("80%", 0.80f), wind("65 km/h", 65.0)),
+                widthPx = 720,
+                darkTheme = true,
+                name = "conditions_strip_alert_${level.name.lowercase()}_dark",
+            )
+        }
     }
 }

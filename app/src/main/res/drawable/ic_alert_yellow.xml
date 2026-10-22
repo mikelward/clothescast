@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Weather alert icon, yellow level: Material warning_amber, an outlined triangle. Each level has its own
+    shape so the icon reads without color or text (docs/ALERTS.md). White, so
+    it doubles as a notification small icon; tinted per level everywhere else.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,5.99L19.53,19H4.47L12,5.99M12,2L1,21h22L12,2zM13,16h-2v2h2v-2zM13,10h-2v4h2v-4z" />
+</vector>

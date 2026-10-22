@@ -22,6 +22,10 @@ internal const val CHANNEL_SCHEDULED_INSIGHT = "scheduled_insight_v2"
 // the forecast" channel would otherwise also lose the new schedule-fired
 // confirmation post.
 internal const val CHANNEL_PLAYBACK = "playback_v2"
+// Weather alerts (docs/ALERTS.md). Not `weather_alerts_v1`: that ID belongs to
+// the removed first attempt and is deleted below on every start, and
+// recreating a deleted ID would restore whatever settings it had.
+internal const val CHANNEL_WEATHER_ALERTS = "weather_alerts_v2"
 
 // Retired channel IDs to delete on upgrade. Android persists channels by ID
 // until the app explicitly deletes them, so dropping the create call alone
@@ -60,7 +64,7 @@ private const val CHANNEL_PLAYBACK_RETIRED_V1 = "playback_v1"
  * Registers the notification channel(s) used by the app. Idempotent — safe to call from
  * Application.onCreate on every cold start.
  *
- * Two channels:
+ * Three channels:
  * - **Scheduled ClothesCast** (LOW, silent): the morning *and* evening forecast
  *   summaries the user opted into. Posted at the same importance for both
  *   periods so a night-worker primary tonight slot reads exactly as well as
@@ -70,6 +74,9 @@ private const val CHANNEL_PLAYBACK_RETIRED_V1 = "playback_v1"
  *   notification shown while the run prepares + delivers (see
  *   [ScheduledDeliveryService]). A policy requirement for the background
  *   FGS, not a user-actionable post — stays silent and unobtrusive.
+ * - **Weather alerts** (DEFAULT: sound, no heads-up): official warnings at the
+ *   levels the user picked, orange and red by default ([WeatherAlertNotifier]).
+ *   Private on the lock screen, which shows a public version without the area.
  */
 object NotificationChannelRegistrar {
     fun register(context: Context) {
@@ -129,7 +136,20 @@ object NotificationChannelRegistrar {
             lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
         }
 
+        // DEFAULT: an alert worth notifying is worth a sound (maintainer,
+        // 2026-10-22); the levels that reach here are the user's choice.
+        val weatherAlerts = NotificationChannel(
+            CHANNEL_WEATHER_ALERTS,
+            context.getString(R.string.notification_channel_weather_alerts_name),
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            description = context.getString(R.string.notification_channel_weather_alerts_description)
+            setShowBadge(true)
+            lockscreenVisibility = android.app.Notification.VISIBILITY_PRIVATE
+        }
+
         manager.createNotificationChannel(scheduled)
         manager.createNotificationChannel(playback)
+        manager.createNotificationChannel(weatherAlerts)
     }
 }

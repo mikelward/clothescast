@@ -7,6 +7,7 @@ import androidx.work.Data
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.domain.model.AccessoriesFormat
+import app.clothescast.core.domain.model.AlertNotifyLevel
 import app.clothescast.core.domain.model.BottomsFormat
 import app.clothescast.core.domain.model.ClothesFormat
 import app.clothescast.core.domain.model.ClothesRule
@@ -32,6 +33,7 @@ import app.clothescast.tts.toJavaLocale
 import java.util.Locale
 import app.clothescast.data.InsightCache
 import app.clothescast.data.SettingsRepository
+import app.clothescast.data.WeatherAlertsState
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -46,6 +48,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -112,7 +115,8 @@ data class TodayState(
      * notification-posting mode. The Today screen reads this to decide whether
      * the missing-notification-permission warning is worth surfacing: a user
      * whose schedules are all off, SILENT, or TTS-only won't have a notification
-     * dropped, so there's nothing to warn about. The permission state itself is
+     * dropped, so there's nothing to warn about (weather alerts have their own
+     * flag, [TodayAlertsState.notifies]). The permission state itself is
      * checked live in the banner composable (it needs Context + an on-resume
      * re-check), so this is just the prefs side of the gate.
      */
@@ -515,6 +519,13 @@ class TodayViewModel(
      */
     private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
     private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
+    /** The last weather alerts check, from [app.clothescast.data.WeatherAlertsStore]. */
+    private val weatherAlerts: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
+    /**
+     * Whether alerts are one switch away: signed in with Google and the
+     * alerts proxy built in. Gates the alerts promo card.
+     */
+    private val weatherAlertsReachableBySignIn: Flow<Boolean> = flowOf(false),
 ) : ViewModel() {
     /**
      * Session-scoped "show model spread" flag. Held in the ViewModel rather
@@ -800,6 +811,47 @@ class TodayViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayState())
 
     /**
+     * Re-emits the stored alerts state when the next alert in force ends, so a
+     * screen left open drops an ended alert without waiting on another input.
+     */
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    private val weatherAlertsTicking: Flow<WeatherAlertsState> = weatherAlerts.flatMapLatest { alerts ->
+        flow {
+            while (true) {
+                emit(alerts)
+                val now = clock.instant()
+                val nextEnd = alerts.active(now).mapNotNull { it.alert.endTime }.minOrNull() ?: break
+                delay(Duration.between(now, nextEnd).toMillis().coerceAtLeast(MIN_DATE_TICK_MS))
+            }
+        }
+    }
+
+    /** Today's alerts and the alerts promo; kept apart from [state], whose combine is at its cap. */
+    val alerts: StateFlow<TodayAlertsState> = combine(
+        weatherAlertsTicking,
+        settingsRepository.preferences,
+        insightCache.thisPeriod,
+        weatherAlertsReachableBySignIn,
+    ) { alerts, prefs, thisPeriod, reachableBySignIn ->
+        TodayAlertsState(
+            alerts = alerts.onScreen(
+                enabled = prefs.weatherAlerts,
+                location = thisPeriod?.location ?: prefs.location,
+                now = clock.instant(),
+            ),
+            promoVisible = reachableBySignIn && !prefs.weatherAlerts && !prefs.weatherAlertsPromoCardDismissed,
+            notifies = prefs.weatherAlerts && prefs.weatherAlertsNotifyLevel != AlertNotifyLevel.NONE,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayAlertsState())
+
+    /** Retires the alerts promo card, from its X or its CTA, as the other promos do. */
+    fun dismissWeatherAlertsPromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setWeatherAlertsPromoCardDismissed(true)
+        }
+    }
+
+    /**
      * Persists the user's dismissal of the Today-screen "Celebration
      * themes" promo card. The card hides immediately on the next state
      * emission. Mirrors [SettingsRepository.setTelemetryNoticeAcked]'s
@@ -965,6 +1017,8 @@ class TodayViewModel(
         private val calendarEventReader: CalendarEventReader? = null,
         private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
         private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
+        private val weatherAlerts: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
+        private val weatherAlertsReachableBySignIn: Flow<Boolean> = flowOf(false),
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -979,6 +1033,8 @@ class TodayViewModel(
                 calendarEventReader = calendarEventReader,
                 geminiKeyConfigured = geminiKeyConfigured,
                 geminiKeyNeedsReentry = geminiKeyNeedsReentry,
+                weatherAlerts = weatherAlerts,
+                weatherAlertsReachableBySignIn = weatherAlertsReachableBySignIn,
             ) as T
         }
     }

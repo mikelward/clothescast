@@ -6,6 +6,9 @@ import android.content.Context
 import android.os.Bundle
 import app.clothescast.alarm.DailyAlarmScheduler
 import app.clothescast.alarm.reconcileWidgetRefreshChain
+import app.clothescast.alerts.WeatherAlertShade
+import app.clothescast.alerts.WeatherAlertsRefresher
+import app.clothescast.alerts.WeatherAlertsScheduler
 import app.clothescast.calendar.CalendarContractEventReader
 import app.clothescast.cast.CastInsightController
 import app.clothescast.cast.CastRouteDiscovery
@@ -16,6 +19,7 @@ import app.clothescast.core.data.tts.DEFAULT_GEMINI_TTS_MODEL
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.GoogleWeatherAccess
+import app.clothescast.core.data.weather.GoogleWeatherAlertsClient
 import app.clothescast.core.data.weather.GoogleWeatherModelClient
 import app.clothescast.core.data.weather.OpenMeteoClient
 import app.clothescast.core.data.weather.ZonedHourlySeries
@@ -30,6 +34,7 @@ import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.GenerateDailyInsight
 import app.clothescast.data.AppCheckGeminiCallPlanner
 import app.clothescast.data.DailyHistoryStore
+import app.clothescast.data.WeatherAlertsStore
 import app.clothescast.data.provideAppCheckProviderFactory
 import app.clothescast.data.GoogleAccount
 import app.clothescast.data.GoogleForecastCache
@@ -39,6 +44,7 @@ import app.clothescast.data.SecureKeyStore
 import app.clothescast.data.SettingsRepository
 import app.clothescast.diag.DiagLog
 import app.clothescast.diag.logRecentProcessExits
+import app.clothescast.notification.WeatherAlertNotifier
 import app.clothescast.work.FetchAndNotifyWorker
 import app.clothescast.discovery.HomeAssistantDiscovery
 import app.clothescast.discovery.NsdHomeAssistantDiscovery
@@ -74,6 +80,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import java.lang.ref.WeakReference
 import java.time.LocalTime
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.drop
@@ -252,6 +259,21 @@ class ClothesCastApplication : Application() {
     }
 
     /**
+     * How to reach Google's weather alerts right now: the same route as the
+     * forecast ([googleWeatherAccessWithFingerprint]), with the proxy's
+     * `weatherAlerts` function in place of `weather`.
+     */
+    suspend fun googleWeatherAlertsAccess(): GoogleWeatherAccess? =
+        when (val access = googleWeatherAccessWithFingerprint().first) {
+            is GoogleWeatherAccess.Proxy -> GoogleWeatherAccess.Proxy(
+                host = access.host,
+                path = GoogleWeatherAlertsClient.PROXY_FUNCTION,
+                authorize = access.authorize,
+            )
+            else -> access
+        }
+
+    /**
      * [googleWeatherAccessWithFingerprint]'s fingerprint without decrypting
      * the key: the key's ciphertext hash, else the proxy's constant while
      * signed in, else null.
@@ -390,6 +412,42 @@ class ClothesCastApplication : Application() {
                 DiagLog.w("GoogleWeather", throwable, "%s", message)
             },
             apiCallLogger = apiCallLogger,
+        )
+    }
+
+    /** Google's public weather alerts, on the same client and logging as the forecast. */
+    private val googleWeatherAlertsClient: GoogleWeatherAlertsClient by lazy {
+        GoogleWeatherAlertsClient(
+            httpClient = httpClient,
+            logger = ConfidenceFetchLogger { message, throwable ->
+                DiagLog.w("WeatherAlerts", throwable, "%s", message)
+            },
+            apiCallLogger = apiCallLogger,
+        )
+    }
+
+    val weatherAlertsStore: WeatherAlertsStore by lazy { WeatherAlertsStore.create(this) }
+
+    /** Decides the alert notifications from the store and settings; see [WeatherAlertShade]. */
+    val weatherAlertShade: WeatherAlertShade by lazy {
+        WeatherAlertShade(
+            store = weatherAlertsStore,
+            notifier = WeatherAlertNotifier(this),
+            preferences = { settingsRepository.preferences.first() },
+            scheduleWake = { at -> WeatherAlertsScheduler.wakeAt(this, at) },
+        )
+    }
+
+    val weatherAlertsRefresher: WeatherAlertsRefresher by lazy {
+        WeatherAlertsRefresher(
+            store = weatherAlertsStore,
+            client = googleWeatherAlertsClient,
+            access = ::googleWeatherAlertsAccess,
+            onChanged = {
+                weatherAlertShade.reconcile()
+                updateAllClothesCastWidgets(this)
+            },
+            stillEnabled = { settingsRepository.preferences.first().weatherAlerts },
         )
     }
 
@@ -701,6 +759,52 @@ class ClothesCastApplication : Application() {
                     _scheduleBoundariesHandled.value = prefs.schedule.time to prefs.tonightSchedule.time
                 }
         }
+        applicationScope.launch {
+            // Alerts follow the forecast: each new forecast (a refresh, or one
+            // for another place) asks for an alerts check under the on-screen
+            // rule, so alerts are never staler than the forecast beside them
+            // (docs/ALERTS.md → Cadence, Location). The refresher decides: a
+            // new place is due at once, which also clears the old place's
+            // notifications; the same place only once the last check is an
+            // hour old. An app open can check before the new forecast lands;
+            // this catches the forecast when it does.
+            combine(
+                settingsRepository.preferences.map { it.weatherAlerts },
+                insightCache.thisPeriod.map { snapshot -> snapshot?.let { it.location to it.generatedAt } },
+            ) { on, forecast -> on to forecast }
+                .distinctUntilChanged()
+                .collect { (on, forecast) ->
+                    try {
+                        if (on && forecast?.first != null) {
+                            WeatherAlertsScheduler.refreshOnScreen(this@ClothesCastApplication)
+                        }
+                    } catch (c: CancellationException) {
+                        throw c
+                    } catch (t: Throwable) {
+                        // The hourly check picks the new place up anyway.
+                        DiagLog.w(TAG, t, "Alerts check after a new forecast failed to start")
+                    }
+                }
+        }
+        applicationScope.launch {
+            // The alert settings are one of the shade's inputs: turning alerts
+            // on or off, or a new "Notify me for", settles it at once
+            // (WeatherAlertShade). Runs at start too, which covers a process
+            // that died between a store write and its reconcile.
+            settingsRepository.preferences
+                .map { Triple(it.weatherAlerts, it.weatherAlertsNotifyLevel, it.timeFormat) }
+                .distinctUntilChanged()
+                .collect {
+                    try {
+                        weatherAlertShade.reconcile()
+                    } catch (c: CancellationException) {
+                        throw c
+                    } catch (t: Throwable) {
+                        // The next check or app resume settles it anyway.
+                        DiagLog.w(TAG, t, "Weather alert notifications after a settings change failed")
+                    }
+                }
+        }
         initialSchedulingJob = applicationScope.launch {
             try {
                 val prefs = settingsRepository.preferences.first()
@@ -723,6 +827,8 @@ class ClothesCastApplication : Application() {
                 // but is gated on widgets being placed, not on the delivery
                 // toggles — see WidgetRefreshScheduler.
                 reconcileWidgetRefreshChain(this@ClothesCastApplication, prefs)
+                // The hourly weather alerts check runs only while alerts are on.
+                WeatherAlertsScheduler.sync(this@ClothesCastApplication, prefs.weatherAlerts)
             } catch (t: Throwable) {
                 DiagLog.e(TAG, t, "Initial alarm scheduling failed")
             }

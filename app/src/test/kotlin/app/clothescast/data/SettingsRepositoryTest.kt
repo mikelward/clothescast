@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.mutablePreferencesOf
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import app.clothescast.core.domain.model.AlertNotifyLevel
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
@@ -1684,6 +1685,23 @@ class SettingsRepositoryTest {
         subject.preferences.first().googleForecastPromoCardDismissed shouldBe false
         subject.setGoogleForecastPromoCardDismissed(true)
         subject.preferences.first().googleForecastPromoCardDismissed shouldBe true
+    }
+
+    @Test
+    fun `weather alerts start off, orange and red, and round-trip`() = runTest {
+        val before = subject.preferences.first()
+        before.weatherAlerts shouldBe false
+        before.weatherAlertsNotifyLevel shouldBe AlertNotifyLevel.ORANGE_AND_RED
+        before.weatherAlertsPromoCardDismissed shouldBe false
+
+        subject.setWeatherAlerts(true)
+        subject.setWeatherAlertsNotifyLevel(AlertNotifyLevel.RED_ONLY)
+        subject.setWeatherAlertsPromoCardDismissed(true)
+
+        val after = subject.preferences.first()
+        after.weatherAlerts shouldBe true
+        after.weatherAlertsNotifyLevel shouldBe AlertNotifyLevel.RED_ONLY
+        after.weatherAlertsPromoCardDismissed shouldBe true
     }
 
     @Test

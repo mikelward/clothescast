@@ -19,6 +19,7 @@ import androidx.navigation.toRoute
 import androidx.work.WorkManager
 import app.clothescast.ClothesCastApplication
 import app.clothescast.MainActivity
+import app.clothescast.alerts.WeatherAlertsScheduler
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.castCurrentInsight
 import app.clothescast.core.data.weather.GoogleWeatherProbe
@@ -37,6 +38,7 @@ import app.clothescast.ui.garment.renderOutfitCard
 import app.clothescast.ui.pairing.PairingScreen
 import app.clothescast.ui.pairing.PairingViewModel
 import app.clothescast.ui.settings.AboutPage
+import app.clothescast.ui.settings.AlertsPage
 import app.clothescast.ui.settings.CalendarPage
 import app.clothescast.ui.settings.ClothesPage
 import app.clothescast.ui.settings.DeveloperPage
@@ -60,6 +62,8 @@ import app.clothescast.ui.today.TodayViewModel
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
@@ -86,6 +90,7 @@ import kotlinx.serialization.serializer
 @Serializable internal object DisplayDest
 @Serializable internal object LocationDest
 @Serializable internal object CalendarDest
+@Serializable internal object AlertsDest
 @Serializable internal object ForecastersDest
 @Serializable internal object SmartHomeDest
 @Serializable internal object PrivacyDest
@@ -148,6 +153,7 @@ fun ClothesCastNavHost(
                 onNavigateToFormat = { nav.navigate(FormatDest) },
                 onNavigateToVoice = { nav.navigate(VoiceDest) },
                 onNavigateToForecasters = { nav.navigate(ForecastersDest) },
+                onNavigateToAlerts = { nav.navigate(AlertsDest) },
             )
         }
 
@@ -223,6 +229,7 @@ private fun NavGraphBuilder.settingsGraph(nav: NavController, app: ClothesCastAp
                 )
             }
         }
+        composable<AlertsDest> { e -> SettingsSubPage(nav, e) { AlertsPage(e.settingsViewModel(nav, app), onBack) } }
         composable<ForecastersDest> { e -> SettingsSubPage(nav, e) { ForecastersPage(e.settingsViewModel(nav, app), onBack) } }
         composable<SmartHomeDest> { e ->
             SettingsSubPage(nav, e) {
@@ -305,6 +312,7 @@ private fun NavController.openSettingsDest(dest: SettingsDest) = when (dest) {
     SettingsDest.VOICE -> navigate(VoiceDest)
     SettingsDest.DISPLAY -> navigate(DisplayDest)
     SettingsDest.CALENDAR -> navigate(CalendarDest)
+    SettingsDest.ALERTS -> navigate(AlertsDest)
     SettingsDest.FORECASTERS -> navigate(ForecastersDest)
     SettingsDest.SMART_HOME -> navigate(SmartHomeDest)
     SettingsDest.PRIVACY -> navigate(PrivacyDest)
@@ -337,6 +345,10 @@ private fun todayViewModelFactory(app: ClothesCastApplication) =
         calendarEventReader = app.calendarEventReader,
         geminiKeyConfigured = app.secureKeyStore.geminiKeyConfiguredFlow,
         geminiKeyNeedsReentry = app.secureKeyStore.geminiKeyNeedsReentryFlow,
+        weatherAlerts = app.weatherAlertsStore.state,
+        weatherAlertsReachableBySignIn = app.googleAccount.account.map { account ->
+            account != null && app.googleWeatherProxyConfigured
+        },
     )
 
 private fun settingsViewModelFactory(app: ClothesCastApplication) =
@@ -477,6 +489,26 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                 // than guess coordinates; the status line invites a retry.
                 location == null -> GoogleWeatherProbe.Failed(httpStatus = null)
                 else -> app.googleWeatherClient.probe(location, access)
+            }
+        },
+        weatherAlertsStatus = app.weatherAlertsStore.state,
+        weatherAlertsChanged = { enabled ->
+            WeatherAlertsScheduler.sync(app, enabled)
+            if (enabled) {
+                WeatherAlertsScheduler.refreshOnScreen(app)
+            } else {
+                // Off: forget the alerts and clear the shade now, not at the
+                // next periodic run (which no longer comes).
+                app.applicationScope.launch {
+                    try {
+                        app.weatherAlertsRefresher.turnedOff()
+                    } catch (c: CancellationException) {
+                        throw c
+                    } catch (e: Exception) {
+                        // The next app start clears them (MainActivity.onStart).
+                        DiagLog.w("Settings", e, "Clearing weather alerts failed")
+                    }
+                }
             }
         },
     )

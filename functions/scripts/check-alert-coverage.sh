@@ -3,8 +3,10 @@
 # cities, using the weather proxy's Maps Platform key, and prints what comes
 # back: the region, then per alert its severity, event type, issuing agency,
 # title, validity, area name, and its polygon's size, point count and whether
-# it contains the test city (the app must keep only alerts that do). See
-# docs/ALERTS.md → Coverage and → Location.
+# it contains the test city (the app must keep only alerts that do), then
+# every field the alert carries and the start of its description, to find
+# when a warning takes effect (Google's startTime looks like the issue time).
+# See docs/ALERTS.md → Coverage and → Location.
 #
 # An empty answer means no active alert *or* no coverage there. Run it while a
 # national warning map shows something at a test point to tell them apart.
@@ -76,7 +78,9 @@ while IFS=, read -r city lat lon; do
           + "\(.dataSource.name // .dataSource.publisher // "?") · "
           + "\(.alertTitle.text // "?")\n"
           + "    \(.startTime // "?") to \(.expirationTime // "?") (UTC)\n"
-          + "    area: \(.areaName // "?" | short) · \(area)")
+          + "    area: \(.areaName // "?" | short) · \(area)\n"
+          + "    fields: \(keys | join(", "))\n"
+          + "    description: \(.description // "" | tostring | gsub("\\s+"; " ") | .[0:200])")
     end'
 done <<'EOF'
 Oklahoma City US,35.47,-97.52

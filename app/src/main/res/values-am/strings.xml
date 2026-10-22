@@ -1345,6 +1345,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_expand">ዝርዝሮችን አሳይ</string>
     <string name="weather_alert_collapse">ዝርዝሮችን ደብቅ</string>
     <string name="weather_alert_dismiss">ዝጋ</string>
+    <string name="insight_alert_sentence">%1$s።</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d ተጨማሪ ማስጠንቀቂያ</item>
         <item quantity="other">%d ተጨማሪ ማስጠንቀቂያዎች</item>

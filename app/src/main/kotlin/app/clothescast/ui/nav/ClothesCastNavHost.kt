@@ -20,7 +20,7 @@ import androidx.work.WorkManager
 import app.clothescast.ClothesCastApplication
 import app.clothescast.MainActivity
 import app.clothescast.alerts.WeatherAlertsScheduler
-import app.clothescast.alerts.cardAlertLevel
+import app.clothescast.alerts.insightAlerts
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.cast.castCurrentInsight
 import app.clothescast.core.data.weather.GoogleWeatherProbe
@@ -392,13 +392,14 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
                 prefs.periodPreamble,
                 prefs.wearPreamble,
             )
-            val prose = formatter.format(insight.summary)
+            val alerts = insightAlerts(app, prefs, insight)
+            val prose = formatter.format(insight.summary, alerts = alerts)
             // By the insight's own date, as the worker's card is. Resolved
             // outside the render's runCatching so leaving the screen cancels
             // the publish here rather than becoming a null image; the
             // resolver already contains a failed calendar read.
             val theme = resolveHolidayTheme(prefs, app.calendarEventReader, today = insight.forDate)
-            val alertLevel = cardAlertLevel(app, prefs, insight)
+            val alertLevel = alerts.maxOfOrNull { it.level }
             val png: ByteArray? = insight.outfit?.let { outfit ->
                 runCatching {
                     val info = outfitCardInfoLines(

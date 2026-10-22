@@ -2,6 +2,7 @@ package app.clothescast.tts
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.ClothesClause
@@ -15,6 +16,8 @@ import app.clothescast.core.domain.model.RangeFormat
 import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.VoiceLocale
+import app.clothescast.core.domain.model.WeatherAlert
+import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.core.domain.usecase.ThemeForToday
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotContain
@@ -56,6 +59,43 @@ class InsightTtsUtteranceTest {
 
         utterance.locale.toLanguageTag() shouldBe "en-GB"
         utterance.text shouldBe "Today, it will be 8° to 15°. Wear a jumper and jacket."
+    }
+
+    @Test
+    fun `a warning in force closes the briefing, in the voice locale`() {
+        val amberWind = RelevantAlert(
+            alert = WeatherAlert(
+                id = "amber-wind",
+                issuerTitle = "Amber warning of wind",
+                eventType = "WIND",
+                severity = AlertSeverity.SEVERE,
+                areaName = null,
+                description = null,
+                instruction = null,
+                startTime = null,
+                endTime = null,
+                issuer = "Met Office",
+                issuerUrl = null,
+                area = null,
+            ),
+            notifiable = true,
+        )
+        insightTtsUtterance(
+            context = context,
+            summary = sampleSummary,
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.SYSTEM,
+            fallbackLocale = Locale.US,
+            alerts = listOf(amberWind),
+        ).text shouldBe "Today, it will be 8° to 15°. Wear a jumper and jacket. Amber wind warning."
+        insightTtsUtterance(
+            context = context,
+            summary = sampleSummary,
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.DE_AT,
+            fallbackLocale = Locale.US,
+            alerts = listOf(amberWind),
+        ).text shouldBe "Heute wird es 8° bis 15°. Trag Pullover und Jacke. Orange Windwarnung."
     }
 
     @Test

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ServiceInfo
 import android.location.LocationManager
 import app.clothescast.alerts.cardAlertLevel
+import app.clothescast.alerts.insightAlerts
 import app.clothescast.diag.DiagLog
 import com.mikelward.androidlog.sensitive
 import androidx.annotation.StringRes
@@ -2085,7 +2086,8 @@ class FetchAndNotifyWorker(
     // Region-language prose for notification text and the audit log. Spoken
     // playback is rendered separately through ttsUtterance() so explicit voice
     // locales like de-AT speak German even when the app UI remains English.
-    private fun formatProse(insight: Insight, prefs: UserPreferences): String =
+    // Both close on the warnings in force over the insight (insightAlerts).
+    private suspend fun formatProse(insight: Insight, prefs: UserPreferences): String =
         InsightFormatter.forRegion(
             applicationContext,
             prefs.region,
@@ -2096,7 +2098,7 @@ class FetchAndNotifyWorker(
             prefs.accessoriesFormat,
             prefs.periodPreamble,
             prefs.wearPreamble,
-        ).format(insight.summary)
+        ).format(insight.summary, alerts = insightAlerts(applicationContext, prefs, insight))
 
     // TODO(brand-intro): consider prepending "Today's ClothesCast: " / "Tonight's ClothesCast: "
     // here (and mirror it in the SAMPLE_SUMMARY render used by the top-level
@@ -2104,7 +2106,7 @@ class FetchAndNotifyWorker(
     // preview's phrasing settles — the brand-name pronunciation check that the
     // per-locale settings_tts_test_sample used to give us is currently absent
     // from both the preview and the real briefing.
-    private fun ttsUtterance(
+    private suspend fun ttsUtterance(
         insight: Insight,
         prefs: UserPreferences,
         theme: HolidayTheme?,
@@ -2122,6 +2124,7 @@ class FetchAndNotifyWorker(
             periodPreamble = prefs.periodPreamble,
             wearPreamble = prefs.wearPreamble,
             holidayTheme = theme,
+            alerts = insightAlerts(applicationContext, prefs, insight),
         )
 
     companion object {

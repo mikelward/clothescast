@@ -3,6 +3,7 @@ package app.clothescast.insight
 import android.content.res.Configuration
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.AccessoriesFormat
 import app.clothescast.core.domain.model.BottomsFormat
@@ -22,7 +23,9 @@ import app.clothescast.core.domain.model.Region
 import app.clothescast.core.domain.model.TemperatureBand
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WeekAheadClause
+import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeekAheadInsight
+import app.clothescast.core.domain.usecase.RelevantAlert
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotContain
 import org.junit.Test
@@ -65,6 +68,63 @@ class InsightFormatterTest {
     ) = InsightSummary(
         period, band, delta, clothes, precip, calendarExtras, eveningEventExtras, carriedAccessories, overnight,
     )
+
+    private fun warning(
+        issuerTitle: String = "Amber warning of wind",
+        eventType: String = "WIND",
+        severity: AlertSeverity = AlertSeverity.SEVERE,
+        id: String = issuerTitle,
+    ) = RelevantAlert(
+        alert = WeatherAlert(
+            id = id,
+            issuerTitle = issuerTitle,
+            eventType = eventType,
+            severity = severity,
+            areaName = null,
+            description = null,
+            instruction = null,
+            startTime = null,
+            endTime = null,
+            issuer = null,
+            issuerUrl = null,
+            area = null,
+        ),
+        notifiable = true,
+    )
+
+    @Test
+    fun `warnings in force close the prose, a sentence each`() {
+        subject.format(summary(), alerts = listOf(warning())) shouldBe "Today, it will be 21°. Amber wind warning."
+        // An issuer that doesn't grade by color keeps its own title.
+        subject.format(
+            summary(),
+            alerts = listOf(warning(), warning(issuerTitle = "High Wind Warning", id = "nws")),
+        ) shouldBe "Today, it will be 21°. Amber wind warning. High Wind Warning."
+    }
+
+    @Test
+    fun `a title two warnings share is said once`() {
+        subject.format(
+            summary(),
+            alerts = listOf(warning(id = "north"), warning(id = "south")),
+        ) shouldBe "Today, it will be 21°. Amber wind warning."
+    }
+
+    @Test
+    fun `a warning is spoken even when the forecast has nothing to say`() {
+        // Speech stays silent rather than read the "same as yesterday" filler,
+        // but a warning still goes out.
+        InsightFormatter.forContext(context, Locale.ENGLISH, rangeFormat = RangeFormat.NONE)
+            .format(summary(), placeholderWhenEmpty = false, alerts = listOf(warning())) shouldBe
+            "Amber wind warning."
+    }
+
+    @Test
+    fun `the warning sentence ends the way the locale ends one`() {
+        InsightFormatter.forContext(context, Locale.JAPANESE)
+            .format(summary(), alerts = listOf(warning()))
+            .endsWith("強風の橙色警報。") shouldBe true
+    }
 
     @Test
     fun `band-only insight emits the lead-in and single feels-like temp`() {

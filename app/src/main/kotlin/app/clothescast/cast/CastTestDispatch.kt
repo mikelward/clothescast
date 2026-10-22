@@ -1,7 +1,7 @@
 package app.clothescast.cast
 
 import android.content.Context
-import app.clothescast.alerts.cardAlertLevel
+import app.clothescast.alerts.insightAlerts
 import app.clothescast.R
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -93,14 +93,15 @@ internal suspend fun castCurrentInsight(
     // Compared in the forecast location's zone (see InsightCard) — the
     // device's own date mislabels the current day when the two differ.
     val isFutureDay = insight.forDate.isAfter(LocalDate.now(insight.forecastZone ?: ZoneId.systemDefault()))
-    val prose = formatter.format(insight.summary, isFutureDay = isFutureDay)
+    val alerts = insightAlerts(context, prefs, insight)
+    val prose = formatter.format(insight.summary, isFutureDay = isFutureDay, alerts = alerts)
     val info = outfitCardInfoLines(
         context = context,
         formatter = formatter,
         hourly = insight.hourly,
         temperatureUnit = prefs.temperatureUnit,
         windSpeedUnit = prefs.windSpeedUnit,
-    ).copy(alertLevel = cardAlertLevel(context, prefs, insight))
+    ).copy(alertLevel = alerts.maxOfOrNull { it.level })
     val header = outfitCardHeader(context, insight.period, prefs, formatter.locale)
 
     // By the insight's own date, as the worker's card is: overnight the current

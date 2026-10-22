@@ -39,6 +39,9 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import app.clothescast.alerts.insightAlerts
+import app.clothescast.alerts.insightWindow
+import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.ui.isTelevision
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -1402,6 +1405,13 @@ private fun TodayPage(
                     accessoriesFormat = state.accessoriesFormat,
                     periodPreamble = state.periodPreamble,
                     wearPreamble = state.wearPreamble,
+                    // The warnings this page's strip shows that cover this
+                    // insight's hours, closing its prose as they close the
+                    // notification and the spoken briefing.
+                    alerts = insightAlerts(
+                        LocalTodayAlerts.current.state.alerts,
+                        insightWindow(insight, state.tonightTime),
+                    ),
                     showChevronRight = showChevronRight,
                     showChevronLeft = showChevronLeft,
                     onChevronTap = onChevronTap,
@@ -2556,6 +2566,8 @@ internal fun InsightCard(
      */
     periodPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
     wearPreamble: PreambleVisibility = PreambleVisibility.ALWAYS,
+    /** The warnings whose titles close the prose ([InsightFormatter.format]). */
+    alerts: List<RelevantAlert> = emptyList(),
     /**
      * Right-edge chevron affordance. On page 0 it points to the next-period
      * page; on page 1 (paired with [showChevronLeft]) it points to the
@@ -2689,7 +2701,7 @@ internal fun InsightCard(
             // own period header already supplies. The user's Lead-in setting
             // can override (Always shows the lead here too; Never drops it
             // from the spoken briefing as well).
-            text = formatter.format(insight.summary, isFutureDay = isFutureDay),
+            text = formatter.format(insight.summary, isFutureDay = isFutureDay, alerts = alerts),
             // titleLarge rather than headlineSmall: with the app's text size
             // starting at 115%, this lands the forecast where headlineSmall at
             // 100% did, and still grows and shrinks with the slider.

@@ -1441,6 +1441,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="weather_alert_expand">Xem chi tiết</string>
     <string name="weather_alert_collapse">Ẩn chi tiết</string>
     <string name="weather_alert_dismiss">Bỏ qua</string>
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="other">%d cảnh báo khác</item>
     </plurals>

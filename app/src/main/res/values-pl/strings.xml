@@ -1427,6 +1427,7 @@ is unchanged; only the displayed label localizes.
     <string name="weather_alert_expand">Pokaż szczegóły</string>
     <string name="weather_alert_collapse">Ukryj szczegóły</string>
     <string name="weather_alert_dismiss">Odrzuć</string>
+    <string name="insight_alert_sentence">%1$s.</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Jeszcze %d ostrzeżenie</item>
         <item quantity="few">Jeszcze %d ostrzeżenia</item>

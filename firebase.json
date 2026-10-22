@@ -13,7 +13,7 @@
         "*.local",
         "scripts"
       ],
-      "predeploy": ["cd \"$RESOURCE_DIR\" && npm run build"]
+      "predeploy": ["cd \"$RESOURCE_DIR\" && node node_modules/typescript/bin/tsc"]
     }
   ],
   "firestore": {

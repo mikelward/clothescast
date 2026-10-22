@@ -27,11 +27,8 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import app.clothescast.ClothesCastApplication
 import app.clothescast.R
-import app.clothescast.core.domain.model.AlertLevel
-import app.clothescast.core.domain.model.Location
-import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.alerts.cardAlertLevel
 import app.clothescast.diag.DiagLog
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.ui.garment.OutfitCardInfoLines
@@ -41,9 +38,6 @@ import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.conditionsStripDescription
 import app.clothescast.ui.garment.outfitCardInfoLines
 import app.clothescast.ui.garment.renderConditionsStripBitmap
-import app.clothescast.ui.today.TodayAlertsState
-import app.clothescast.ui.today.onScreen
-import java.time.Instant
 import kotlin.math.roundToInt
 
 /**
@@ -103,7 +97,7 @@ class ConditionsWidget : GlanceAppWidget() {
                     hourly = insight.hourly,
                     temperatureUnit = prefs.temperatureUnit,
                     windSpeedUnit = prefs.windSpeedUnit,
-                ).copy(alertLevel = alertLevel(context, prefs, insight.location ?: prefs.location))
+                ).copy(alertLevel = cardAlertLevel(context, prefs, insight))
             }.onFailure {
                 // A formatter / strip-math failure blanks the widget to its
                 // empty state; without a log that's indistinguishable from
@@ -116,17 +110,6 @@ class ConditionsWidget : GlanceAppWidget() {
         val darkTheme = prefs?.let { resolveDarkTheme(context, it.themeMode) } ?: false
         return ConditionsWidgetData(info, darkTheme)
     }
-}
-
-/**
- * The level the strip heads with: the highest alert in force for the
- * forecast's place, as Today's band shows it (docs/ALERTS.md). The refresher
- * redraws the widgets after each check.
- */
-private suspend fun alertLevel(context: Context, prefs: UserPreferences, location: Location?): AlertLevel? {
-    val app = context.applicationContext as? ClothesCastApplication ?: return null
-    val alerts = app.weatherAlertsStore.current().onScreen(prefs.weatherAlerts, location, Instant.now())
-    return TodayAlertsState(alerts = alerts).stripLevel
 }
 
 @Composable

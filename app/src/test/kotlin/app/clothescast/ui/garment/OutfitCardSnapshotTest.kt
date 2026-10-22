@@ -126,6 +126,31 @@ class OutfitCardSnapshotTest {
         )
     }
 
+    // An amber warning in force heads the conditions row, as on Today's band.
+    @Test
+    fun outfit_card_with_alert() {
+        val ctx = ApplicationProvider.getApplicationContext<Context>()
+        writeCard(
+            renderOutfitCard(
+                context = ctx,
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.LONG_PANTS),
+                header = "7am ClothesCast",
+                prose = "Today, windy and cold with rain. Wear a thick jacket and long pants.",
+                info = OutfitCardInfoLines(
+                    tempLine = "3–8°C",
+                    tempFillFraction = thermometerFillFractionFor(8.0),
+                    rainFillFraction = 0.8f,
+                    rainLineShort = "80%",
+                    windLabel = "65 km/h",
+                    windMaxKmh = 65.0,
+                    alertLevel = app.clothescast.core.domain.model.AlertLevel.ORANGE,
+                ),
+                topColors = emptyMap(),
+                bottomColors = emptyMap(),
+            ),
+        )
+    }
+
     @Test
     fun outfit_card_today_jacket_jeans_custom_colors() {
         val ctx = ApplicationProvider.getApplicationContext<Context>()

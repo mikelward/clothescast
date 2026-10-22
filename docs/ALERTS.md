@@ -19,8 +19,10 @@ unreachable); confirm them before building on them.
    contains the user's point; if Google's UK alerts turn out to be whole
    MeteoAlarm regions, the UK comes from the Met Office's own API instead
    (see "Location").
-2. **Poll from the device every 3 hours** and when the app opens (30-minute
-   client cache). Keep a short in-memory cache on the proxy; store nothing.
+2. **Fetch alerts with every forecast refresh** (the app's 1-hour rule), plus
+   a background check for notifications whose cadence is still open (3
+   hours, adaptive or hourly; see "Cadence, freshness and cost"). Keep a
+   short in-memory cache on the proxy; store nothing.
 3. **Fill Google's gaps later with one generic CAP ingester** on a server
    cron, reading the WMO/Alert-Hub directory of 231 national feeds rather
    than integrating authorities one by one (see "One integration for many
@@ -106,6 +108,28 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   into an empty list (the bug that hid the last attempt).
 - **Signed out, no own key**: no alerts. Settings says how to get them.
 
+### Settings
+
+Maintainer's design (2026-10-22):
+
+- **A new "Alerts" section in Settings**, its own page like Forecasters.
+- **Master switch "Weather alerts", off by default.** Turning it on while
+  signed out starts Google sign-in, as the free voice and Google forecast
+  switches do; signing in alone doesn't turn it on. Users with their own key
+  need no sign-in.
+- **"Notify me for"**: which levels post a notification, defaulting to
+  orange and red. Options, each shown with its severity icon: red only;
+  orange and red; all levels (yellow too); none. Today shows every level
+  whatever this says.
+- **"Alert sound and lock screen"** opens Android's settings for the alerts
+  channel.
+- **A promo card on Today** once the user is signed in with Google and
+  alerts are off: "Get weather alerts", opening the Alerts settings,
+  dismissible, shown until followed or dismissed (like "Try Google
+  forecasts").
+- **Later: on by default**, if it can be done without a sign-in prompt and
+  at an acceptable cost (`TODO.md`).
+
 ### Strings
 
 Base `values/strings.xml` (en-US); `values-en-rGB` overrides say "warning"
@@ -130,9 +154,19 @@ are the issuer's text, shown unedited and possibly not translated.
 | `weather_alert_range` | %1$s to %2$s | |
 | `weather_alert_open_source` | Open %1$s *(issuer)* | |
 | `weather_alert_more` (plural) | %d more alerts | %d more warnings |
+| `settings_alerts_section` | Alerts | Warnings |
 | `settings_weather_alerts_title` | Weather alerts | Weather warnings |
-| `settings_weather_alerts_summary` | Official alerts on Today. Notifications for severe ones. | Official warnings on Today. Notifications for severe ones. |
+| `settings_weather_alerts_summary` | Official alerts for your location on Today. | Official warnings for your location on Today. |
 | `settings_weather_alerts_sign_in` | Sign in with Google to get weather alerts. | Sign in with Google to get weather warnings. |
+| `settings_alerts_notify_title` | Notify me for | |
+| `settings_alerts_notify_red` | Red only | |
+| `settings_alerts_notify_orange_red` | Orange and red | Amber and red |
+| `settings_alerts_notify_all` | All levels | |
+| `settings_alerts_notify_none` | None | |
+| `settings_alerts_channel` | Alert sound and lock screen | Warning sound and lock screen |
+| `alerts_promo_title` | Get weather alerts | Get weather warnings |
+| `alerts_promo_body` | Official alerts for where you are, with notifications for severe ones. | Official warnings for where you are, with notifications for severe ones. |
+| `alerts_promo_action` | Alerts settings | Warnings settings |
 
 Times: time only for today, weekday and time otherwise ("Sat 9 AM"), in the
 device's 12/24-hour setting.
@@ -481,7 +515,8 @@ its terms apply directly; revisit the titles then.
   and the pure-Kotlin filters (point in polygon, event type, expiry);
   `:core:data` a client over `GoogleWeatherAccess` (own key or proxy) that
   returns success or a logged failure, never an empty list on failure;
-  `:app` a periodic worker (every 3 hours, network required), a cache of
+  `:app` a periodic worker (cadence per "Cadence, freshness and cost",
+  network required), a cache of
   alerts plus which IDs were notified at which severity, the notifier and
   the Today card.
 - **GCP setup**: none beyond what the forecast proxy has. The proxy uses the
@@ -534,18 +569,50 @@ lookups at our scale.
 Warnings in Europe are issued hours to days ahead (Met Office yellow up to
 7 days, red usually closer to the event); US warnings such as tornado and flash
 flood have minutes to an hour of lead time, which cell broadcast covers
-better than any app. A 3-hour poll suits the first kind.
+better than any app.
 
-| Device poll | Calls per device a month | Cost per device a month past the free tier |
+The app's existing freshness rules, for comparison:
+
+| What | Freshness | Where |
 |---|---|---|
-| Every 3 hours + opens | ~270 | ~$0.04 |
-| Every hour + opens | ~750 | ~$0.11 |
-| Every 30 minutes | ~1,470 | ~$0.22 |
+| Open-Meteo forecast | 1-hour in-memory cache | `CachingWeatherRepository` |
+| App open | Silent refresh when the snapshot is 1 hour old | `FetchAndNotifyWorker.SILENT_REFRESH_MIN_AGE` |
+| Widgets | Repaint hourly from the cache; refetch when 6 hours old; refresh at each window boundary | `WidgetRefreshReceiver`, `WidgetRefreshScheduler` |
+| Scheduled briefings | Exact alarms at the user's times | `DailyAlarmScheduler` |
+| Google 7-day forecast | 12 hours (7 billed calls a walk), refetched only on app open | `GoogleForecastCache` |
+| Location | Last-known fix up to 1 hour old (5 minutes for the at-home voice check) | `LocationResolver` |
+
+Alerts differ from the forecast in one way that matters: their whole point
+is to reach someone who isn't looking. So the forecast's on-screen rules
+(app open, widget ticks) are necessary but not enough; notifications need a
+background check of their own. One alert lookup is a single billed call,
+against seven for a Google forecast walk.
+
+- **On screen**: fetch alerts with every forecast refresh, under the same
+  1-hour rule as app open, so Today is never staler than the forecast. An
+  alert past its end time disappears locally without a fetch.
+- **In the background**, the options:
+
+  | Background check | Calls per device a month (with opens) | Cost per device a month past the free tier | A warning issued at 22:00 notifies by |
+  |---|---|---|---|
+  | Every 3 hours | ~270 | ~$0.04 | 01:00 at worst |
+  | Adaptive: 3 hours, hourly while the next 48 hours look severe or an alert is active | ~320 | ~$0.05 | 23:00 on a bad-weather day, 01:00 otherwise |
+  | Every hour | ~750 | ~$0.11 | 23:00 |
+  | Every 30 minutes | ~1,470 | ~$0.22 | 22:30 |
+
+  "Look severe" reads the forecast we already have: gusts, heavy rain or
+  snow, thunderstorm codes, or extreme feels-like temperatures in the next
+  48 hours. Warnings mostly follow the forecast, so the adaptive check gets
+  the hourly freshness on the days it matters for about the 3-hour cost. It
+  can miss hazards the forecast doesn't show (river floods from upstream
+  rain, fire danger), which the 3-hour baseline still catches.
 
 At $0.15 per 1,000, before the proxy cache and assuming alerts bill as
 Weather Usage (*unverified*). 1,000 signed-in devices at 3 hours: about
-270,000 calls, roughly $35 a month. Android may defer periodic work for
-rarely used apps, so the real interval can stretch past 3 hours.
+270,000 calls, roughly $35 a month; hourly, about 750,000 calls, roughly $85
+with the volume tiers. Android may defer
+periodic work for rarely used apps, so the real interval can stretch past
+the nominal one whatever we choose.
 
 | Path | Issuance to server | Server to device | Typical total |
 |---|---|---|---|
@@ -586,7 +653,9 @@ rarely used apps, so the real interval can stretch past 3 hours.
 - [ ] Billing → Reports by SKU after a few calls: which SKU alerts bill
       under, and whether they share the forecast's free calls.
 - [ ] Maps Platform caching terms for alerts.
-- [ ] Opt-in: a separate Settings switch, or part of the Google forecast
-      switch (maintainer's call).
+- [x] Opt-in: its own "Alerts" settings section, off by default (see
+      "Settings").
+- [ ] Background check cadence: 3 hours, adaptive or hourly (see "Cadence,
+      freshness and cost").
 - [ ] Whether alerts also open the morning and evening insight ("Amber
       wind warning until 9 AM.") and the spoken forecast.

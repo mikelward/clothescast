@@ -1346,6 +1346,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_open_source_fallback">Maelezo</string>
     <string name="weather_alert_expand">Onyesha maelezo</string>
     <string name="weather_alert_collapse">Ficha maelezo</string>
+    <string name="weather_alert_dismiss">Funga</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Tahadhari nyingine %d</item>
         <item quantity="other">Tahadhari nyingine %d</item>

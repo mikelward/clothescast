@@ -80,10 +80,17 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   severity icon, the title, the end time ("Until Sat 9 AM"; "From 6 PM"
   before it starts only once start times are known to be onset, see
   "Coverage") and an expand arrow. Tapping expands the full time range
-  and issuer, the area, the issuer's description and instruction, and a link
-  to the issuer's page. Cards are outlined and neutral so the icon carries
-  the color (the yellow tint can't be read on a yellow card). More than
-  three alerts collapse behind "2 more alerts".
+  and issuer, the area, the issuer's description and instruction (web
+  addresses in them tappable), a link to the issuer's page, and Dismiss.
+  Cards are outlined and neutral so the icon carries the color (the yellow
+  tint can't be read on a yellow card). More than three alerts collapse
+  behind "2 more alerts".
+- **Dismiss** hides that alert's card until the issuer changes anything the
+  app shows of it (title, level, area, text, link or times); a reissued or
+  new alert gets its own card (maintainer, 2026-10-22). The strip, widget,
+  outfit card and any notification keep the level while the warning is in
+  force. Dismissals live in the alerts store, so turning alerts off or a
+  new place forgets them.
 - **Titles**: "{level} {hazard} warning" ("Amber wind warning") where the
   issuer grades by color (MeteoAlarm members, including the UK: in practice,
   where the issuer's own title leads with a color word), with

@@ -1322,6 +1322,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="weather_alert_open_source_fallback">Detaļas</string>
     <string name="weather_alert_expand">Rādīt detaļas</string>
     <string name="weather_alert_collapse">Slēpt detaļas</string>
+    <string name="weather_alert_dismiss">Aizvērt</string>
     <plurals name="weather_alert_more">
         <item quantity="zero">Vēl %d brīdinājumu</item>
         <item quantity="one">Vēl %d brīdinājums</item>

@@ -50,7 +50,8 @@ private val SAMPLE_ALERTS = listOf(
         "RAIN",
         AlertSeverity.SEVERE,
         "2026-10-23T18:00:00Z",
-        description = "Persistent heavy rain may bring flooding and travel disruption.",
+        description = "Persistent heavy rain may bring flooding and travel disruption. " +
+            "Flood updates at www.example.com/floods.",
         instruction = "Avoid driving through flood water.",
     ),
     sampleAlert("yellow", "Yellow warning of fog", "FOG", AlertSeverity.MODERATE, "2026-10-23T09:00:00Z"),
@@ -70,6 +71,7 @@ internal fun WeatherAlertCardsPreview() {
                 "2026-10-23T11:00:00Z",
             ),
             now = PREVIEW_NOW,
+            onDismiss = {},
             zone = ZoneOffset.UTC,
         )
     }
@@ -79,7 +81,7 @@ internal fun WeatherAlertCardsPreview() {
 @Composable
 internal fun WeatherAlertCardsDarkPreview() {
     Frame(darkTheme = true) {
-        WeatherAlertCards(alerts = SAMPLE_ALERTS, now = PREVIEW_NOW, zone = ZoneOffset.UTC)
+        WeatherAlertCards(alerts = SAMPLE_ALERTS, now = PREVIEW_NOW, onDismiss = {}, zone = ZoneOffset.UTC)
     }
 }
 
@@ -99,7 +101,7 @@ internal fun WeatherAlertLevelsPreview() {
                     "2026-10-24T00:00:00Z",
                     notifiable = false,
                 )
-                ).forEach { WeatherAlertCard(it, PREVIEW_NOW, zone = ZoneOffset.UTC) }
+                ).forEach { WeatherAlertCard(it, PREVIEW_NOW, onDismiss = {}, zone = ZoneOffset.UTC) }
         }
     }
 }
@@ -108,7 +110,13 @@ internal fun WeatherAlertLevelsPreview() {
 @Composable
 internal fun WeatherAlertCardExpandedPreview() {
     Frame {
-        WeatherAlertCard(SAMPLE_ALERTS[1], PREVIEW_NOW, zone = ZoneOffset.UTC, initiallyExpanded = true)
+        WeatherAlertCard(
+            SAMPLE_ALERTS[1],
+            PREVIEW_NOW,
+            onDismiss = {},
+            zone = ZoneOffset.UTC,
+            initiallyExpanded = true,
+        )
     }
 }
 

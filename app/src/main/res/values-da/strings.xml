@@ -1406,6 +1406,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="weather_alert_open_source_fallback">Detaljer</string>
     <string name="weather_alert_expand">Vis detaljer</string>
     <string name="weather_alert_collapse">Skjul detaljer</string>
+    <string name="weather_alert_dismiss">Afvis</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d varsel mere</item>
         <item quantity="other">%d varsler mere</item>

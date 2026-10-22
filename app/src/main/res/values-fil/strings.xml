@@ -1431,6 +1431,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_open_source_fallback">Mga detalye</string>
     <string name="weather_alert_expand">Ipakita ang mga detalye</string>
     <string name="weather_alert_collapse">Itago ang mga detalye</string>
+    <string name="weather_alert_dismiss">Isara</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d pang babala</item>
         <item quantity="other">%d pang babala</item>

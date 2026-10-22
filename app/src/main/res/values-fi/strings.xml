@@ -1383,6 +1383,7 @@ displayed label localizes.
     <string name="weather_alert_open_source_fallback">Tiedot</string>
     <string name="weather_alert_expand">Näytä tiedot</string>
     <string name="weather_alert_collapse">Piilota tiedot</string>
+    <string name="weather_alert_dismiss">Sulje</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d muu varoitus</item>
         <item quantity="other">%d muuta varoitusta</item>

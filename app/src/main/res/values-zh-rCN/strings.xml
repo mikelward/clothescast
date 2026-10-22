@@ -1526,6 +1526,7 @@ label localizes.
     <string name="weather_alert_open_source_fallback">详情</string>
     <string name="weather_alert_expand">显示详情</string>
     <string name="weather_alert_collapse">隐藏详情</string>
+    <string name="weather_alert_dismiss">关闭</string>
     <plurals name="weather_alert_more">
         <item quantity="other">另有 %d 条预警</item>
     </plurals>

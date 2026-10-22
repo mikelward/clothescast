@@ -1380,6 +1380,7 @@ displayed label localizes.
     <string name="weather_alert_open_source_fallback">Ayrıntılar</string>
     <string name="weather_alert_expand">Ayrıntıları göster</string>
     <string name="weather_alert_collapse">Ayrıntıları gizle</string>
+    <string name="weather_alert_dismiss">Kapat</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d uyarı daha</item>
         <item quantity="other">%d uyarı daha</item>

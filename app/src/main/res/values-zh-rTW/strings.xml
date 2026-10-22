@@ -1541,6 +1541,7 @@ label localises.
     <string name="weather_alert_open_source_fallback">詳細資料</string>
     <string name="weather_alert_expand">顯示詳細資料</string>
     <string name="weather_alert_collapse">隱藏詳細資料</string>
+    <string name="weather_alert_dismiss">關閉</string>
     <plurals name="weather_alert_more">
         <item quantity="other">還有 %d 則特報</item>
     </plurals>

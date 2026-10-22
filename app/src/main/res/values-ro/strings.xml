@@ -1358,6 +1358,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="weather_alert_open_source_fallback">Detalii</string>
     <string name="weather_alert_expand">Arată detalii</string>
     <string name="weather_alert_collapse">Ascunde detalii</string>
+    <string name="weather_alert_dismiss">Închide</string>
     <plurals name="weather_alert_more">
         <item quantity="one">Încă %d avertizare</item>
         <item quantity="few">Încă %d avertizări</item>

@@ -135,8 +135,16 @@ class WeatherAlertsRefresher(
         when (result) {
             is AlertsLookup.Found -> {
                 val relevant = WeatherAlertRules.relevant(result.alerts, point, now)
+                val ids = relevant.map { it.alert.id }.toSet()
                 store.update { current ->
-                    samePlaceOr(current).copy(checkedAt = now, outcome = AlertsCheckOutcome.OK, alerts = relevant)
+                    val kept = samePlaceOr(current)
+                    kept.copy(
+                        checkedAt = now,
+                        outcome = AlertsCheckOutcome.OK,
+                        alerts = relevant,
+                        // A dismissal outlives no alert it was for.
+                        dismissed = kept.dismissed.filterKeys { it in ids },
+                    )
                 }
                 DiagLog.i(TAG, "Alerts check: %s returned, %s apply here.", result.alerts.size, relevant.size)
             }

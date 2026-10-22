@@ -1373,6 +1373,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="weather_alert_open_source_fallback">Részletek</string>
     <string name="weather_alert_expand">Részletek megjelenítése</string>
     <string name="weather_alert_collapse">Részletek elrejtése</string>
+    <string name="weather_alert_dismiss">Elvetés</string>
     <plurals name="weather_alert_more">
         <item quantity="one">%d további figyelmeztetés</item>
         <item quantity="other">%d további figyelmeztetés</item>

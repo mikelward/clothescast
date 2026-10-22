@@ -200,11 +200,9 @@ voice and the Google Weather proxy.
       it prints every field and the description's start. If the onset is in
       neither, the Met Office's own feed is the source (docs/ALERTS.md →
       Before building).
-- [ ] **Alert icon on the outfit card.** Today's band and the conditions
-      widget head the strip with the alert level; the Cast / Home Assistant
-      card image (`renderOutfitCard`) still draws without it. Its callers
-      (worker, Play, Cast test) would read `WeatherAlertsStore` as the widget
-      does.
+- [x] **Alert icon on the outfit card.** The Cast / Home Assistant card
+      heads its conditions row with the level of the alerts overlapping its
+      own window (`cardAlertLevel`), as the widget does.
 - [ ] **Weather alerts on by default.** They ship off by default behind
       Google sign-in (docs/ALERTS.md → Settings). Find a way to turn them
       on for everyone without a sign-in prompt at an acceptable cost, for

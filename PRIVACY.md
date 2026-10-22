@@ -295,6 +295,9 @@ The source code is at <https://github.com/mikelward/clothescast>.
   800 × 480 PNG shown on a Nest Hub), the spoken TTS audio clip (the
   same bytes the phone speaks, Gemini engine only), and a combined MP4
   that simply muxes that image and audio together for one-shot casting.
+  With weather alerts on, the image's conditions row starts with the
+  warning icon (its level only, no text) while an official alert covers the
+  card's forecast window.
   The image and audio carry the same insight — the card renders the
   sentence, the audio speaks it — so the MP4 introduces no new data; it
   only repackages what the image and audio topics already publish. A

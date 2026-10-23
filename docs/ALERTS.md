@@ -419,6 +419,46 @@ The paths, cheapest first:
 With any of them, ask the Bureau in writing whether a free app may use the
 anonymous-FTP CAP feed.
 
+**Deferred (maintainer, 2026-10-23)**: no route to the Bureau's weather
+warnings works without paying or asking, so Australia waits. Checked that
+day with the pages open:
+
+- **Xweather works but may not be shown.** With a free key, one
+  `alerts/closest?p=-26,134&radius=3500km&limit=250` call returned every
+  current Bureau warning (53, `dataSource: aubom`, with polygons), matching
+  its own national count; country, state and box searches need a paid
+  plan. Vaisala's [General Conditions of Subscription
+  Services](https://docs.vaisala.com/api/khub/documents/_2cuASo637CBKluQEurbLA/content),
+  which Xweather's legal page points to, license the data "for your
+  internal business purposes" (§2.2), forbid making it "available … to
+  third parties" (§2.3), and say of the free tier "Commercial use of
+  Freemiums and Trials is prohibited" (§17.1). Only a product's Service
+  Description can widen that, and none was found for the Weather API.
+- **The Bureau's RSS warnings are "for personal and non-commercial use
+  only"** ([RSS terms](https://www.bom.gov.au/rss/)), titles only with no
+  areas, and "should not be used as the sole source of information during
+  Warning events". The anonymous FTP and the free text products carry the
+  default terms: personal or in-organization use, "not for commercial
+  use", and "Users intending to publish Bureau data should do so as
+  Registered Users". The [copyright notice](https://www.bom.gov.au/copyright)
+  licenses CC BY 4.0 only where a page says so, and no warning product does.
+- **The free state feeds carry no Bureau warnings.** VicEmergency's public
+  feed (`emergency.vic.gov.au/public/osom-geojson.json`) held 38 fire,
+  burn and SES incidents and none of the 6 Bureau warnings then out for
+  Victoria; Emergency WA's CAP feed held 8 DFES alerts. Other state feeds
+  are fire or emergency-service only, several with unclear licences: NSW
+  RFS (CC BY 3.0 AU) and SES HazardWatch (not specified), Queensland QFD
+  storm, flood and cyclone CAP-AU and bushfire feeds (CC BY 4.0 on
+  data.qld.gov.au, not specified on data.gov.au), SA CFS (CC BY-NC-ND or
+  not specified), Tasmania's TasAlert polygons (none stated) and TFS
+  incident summaries (CC BY-SA 3.0 AU, not real time).
+
+The Registered User licence is ruled out on cost while the app has no
+revenue (maintainer). What would reopen it: a free or cheap written app
+licence from a vendor (Xweather, WillyWeather), the Bureau opening its
+warnings under CC BY, or a decision to show state fire and emergency
+alerts without the Bureau's.
+
 ### One integration for many countries
 
 Nearly every national service publishes CAP 1.2, and others already

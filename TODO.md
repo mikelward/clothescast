@@ -216,7 +216,16 @@ voice and the Google Weather proxy.
       own window (`cardAlertLevel`), as the widget does.
 - [ ] **Weather alerts on by default.** They ship off by default
       (docs/ALERTS.md → Settings). Off Google, they need no sign-in; turn
-      them on, or bring back a Today promo, once enough places are covered.
+      them on once enough places are covered.
+- [ ] **Bring back the Today alerts promo, only where alerts work**
+      (maintainer, 2026-10-23). It went with Google's alerts. Show it only
+      when a source covers the user's location (the location's country
+      against the index's `sources[].countries`), so nobody is invited to
+      turn on alerts that can't work there. Work out the best trigger and
+      how it's dismissed.
+- [ ] **Say which countries are covered in Settings → Alerts**
+      (maintainer, 2026-10-23), from the index's sources, so someone
+      deciding whether to turn alerts on can see whether theirs is.
 - [ ] **Keep the Google forecast within its terms.** Google's Weather API
       terms (§21.2.1) allow caching hourly forecast values for one hour; the
       app keeps the Google hourly forecast for 12 hours

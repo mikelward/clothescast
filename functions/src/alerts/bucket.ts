@@ -5,13 +5,22 @@
  */
 import { getStorage } from "firebase-admin/storage";
 
-import { INDEX_PATH, STATE_PATH, TILES_PREFIX, type AlertStore, type IngestState } from "./ingest";
+import {
+  INDEX_PATH,
+  STATE_PATH,
+  TILES_PREFIX,
+  type AlertStore,
+  type IngestState,
+  type ZoneFile,
+} from "./ingest";
 
 // The index is short-lived, so a phone sees a new alert within a minute of a
 // run and Google's edge caches don't hold a removed one long. A tile file
 // never changes (its name is its contents' hash), so it can be cached long.
 const INDEX_CACHE_CONTROL = "public, max-age=60";
 const TILE_CACHE_CONTROL = "public, max-age=86400, immutable";
+// Zone shapes are the ingester's own cache; nothing reads them but it.
+const ZONE_CACHE_CONTROL = "no-store";
 
 /** The bucket's name for [projectId]: one per project, by convention. */
 export function alertsBucketName(projectId: string): string {
@@ -85,6 +94,18 @@ export function bucketStore(bucketName: string): AlertStore {
     },
     async delete(path) {
       await bucket.file(path).delete({ ignoreNotFound: true });
+    },
+    async readZone(path) {
+      try {
+        const [contents] = await bucket.file(path).download();
+        return JSON.parse(contents.toString("utf8")) as ZoneFile;
+      } catch (err) {
+        if (isNotFound(err)) return null;
+        throw err;
+      }
+    },
+    async writeZone(path, zone) {
+      await saveJson(path, zone, ZONE_CACHE_CONTROL);
     },
   };
 }

@@ -724,13 +724,34 @@ and every path carries the format version:
   names them; a file is deleted an hour after the last index that named it,
   so a phone holding any index from the last hour finds every tile it names.
 
-What it serves at first: MeteoAlarm's feeds that carry polygons, the UK,
-Norway, Sweden, Switzerland, Slovenia and Ukraine. The other MeteoAlarm
-countries name EMMA regions instead, and need boundary data first. A test
-run on 2026-10-23 published 121 alerts in 244 tiles in about 6 seconds;
-the index was 3.4 KB gzipped, the median tile 4 KB, the largest
-(Switzerland's municipal polygons) 79 KB. A run that only rereads the
-feeds takes about 2 seconds.
+What it serves: MeteoAlarm's feeds that carry polygons, the UK, Norway,
+Sweden, Switzerland, Slovenia and Ukraine; and the US with its territories
+from NWS (`api.weather.gov/alerts/active`, actual alerts and updates). The
+other MeteoAlarm countries name EMMA regions instead, and need boundary data
+first. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
+tiles in about 6 seconds; the index was 3.4 KB gzipped, the median tile
+4 KB, the largest (Switzerland's municipal polygons) 79 KB. A run that only
+rereads the feeds takes about 2 seconds.
+
+**NWS.** Storm-based warnings carry a polygon; most other alerts name
+forecast or fire zones instead. Their shapes come from
+`api.weather.gov/zones/<type>/<id>`, simplified to within 0.002° (about
+200 m, inside the app's 1 km containment slack), kept in the bucket under
+`zones/v1/` and refetched after a month; a stale copy stands in when a
+refetch fails, and a zone that can't be had marks the check incomplete.
+Only api.weather.gov zone addresses are followed. Marine zones are left
+out, and an alert naming only them (most small-craft and gale alerts) with
+them. An alert that another in the response updates is left out as
+superseded, and an alert's end is NWS's `ends` (the hazard's end) where it
+gives one, not the message's `expires`. NWS wraps its text at a fixed
+width; the ingester rejoins those lines so it flows on a phone, keeping
+paragraphs and list lines, and changes no words. A test run on 2026-10-23, with
+NWS added: 300 alerts (180 from NWS, 312 marine-only left out) in 885
+tiles in about 18 seconds, 421 zone shapes fetched once (2.5 MB); a rerun
+took about 4 seconds. The index was 12 KB gzipped, the median tile 7 KB,
+the 90th percentile 34 KB and the largest 190 KB, where many zoned alerts
+overlap; the run's state was 1.4 MB gzipped. The feed itself is about
+2 MB a run.
 
 Only public data goes in the bucket, the run's own state
 (`ingest-state/v1.json`: what each feed listed, so unchanged documents

@@ -1,0 +1,105 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.polygon.001.1",
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[-111.5, 35.0], [-111.0, 35.0], [-111.0, 35.5], [-111.5, 35.5], [-111.5, 35.0]]]},
+      "properties": {
+        "id": "urn:oid:2.49.0.1.840.0.polygon.001.1",
+        "areaDesc": "Coconino, AZ",
+        "affectedZones": ["https://api.weather.gov/zones/county/AZC005"],
+        "references": [{"identifier": "urn:oid:2.49.0.1.840.0.older.001.1"}],
+        "sent": "2026-10-23T04:39:00-07:00",
+        "effective": "2026-10-23T04:39:00-07:00",
+        "onset": "2026-10-23T04:39:00-07:00",
+        "expires": "2026-10-23T07:45:00-07:00",
+        "ends": "2026-10-23T09:45:00-07:00",
+        "status": "Actual",
+        "messageType": "Update",
+        "severity": "Severe",
+        "certainty": "Likely",
+        "urgency": "Immediate",
+        "event": "Flood Warning",
+        "senderName": "NWS Flagstaff AZ",
+        "headline": "Flood Warning issued October 23 by NWS Flagstaff AZ",
+        "description": "Flooding is ongoing.",
+        "instruction": "Turn around, don't drown.",
+        "web": "http://www.weather.gov"
+      }
+    },
+    {
+      "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.older.001.1",
+      "type": "Feature",
+      "geometry": {"type": "Polygon", "coordinates": [[[-111.5, 35.0], [-111.0, 35.0], [-111.0, 35.5], [-111.5, 35.0]]]},
+      "properties": {
+        "id": "urn:oid:2.49.0.1.840.0.older.001.1",
+        "affectedZones": [],
+        "sent": "2026-10-23T03:00:00-07:00",
+        "expires": "2026-10-23T09:00:00-07:00",
+        "status": "Actual",
+        "messageType": "Alert",
+        "severity": "Severe",
+        "event": "Flood Warning"
+      }
+    },
+    {
+      "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.zoned.002.1",
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "id": "urn:oid:2.49.0.1.840.0.zoned.002.1",
+        "areaDesc": "Zone A; Zone B",
+        "affectedZones": [
+          "https://api.weather.gov/zones/forecast/MNZ060",
+          "https://api.weather.gov/zones/forecast/MNZ061",
+          "https://api.weather.gov/zones/forecast/LSZ162"
+        ],
+        "references": [],
+        "sent": "2026-10-23T03:15:00-05:00",
+        "onset": "2026-10-23T18:00:00-05:00",
+        "expires": "2026-10-23T12:00:00-05:00",
+        "ends": "2026-10-24T06:00:00-05:00",
+        "status": "Actual",
+        "messageType": "Alert",
+        "severity": "Moderate",
+        "certainty": "Likely",
+        "urgency": "Expected",
+        "event": "Wind Advisory",
+        "senderName": "NWS Twin Cities/Chanhassen MN",
+        "headline": "Wind Advisory issued October 23",
+        "description": "Gusts up to 50 mph.",
+        "instruction": "Secure outdoor objects."
+      }
+    },
+    {
+      "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.marine.003.1",
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "id": "urn:oid:2.49.0.1.840.0.marine.003.1",
+        "affectedZones": ["https://api.weather.gov/zones/forecast/ANZ530", "https://api.weather.gov/zones/forecast/PZZ110"],
+        "sent": "2026-10-23T03:00:00-04:00",
+        "expires": "2026-10-23T22:00:00-04:00",
+        "status": "Actual",
+        "messageType": "Alert",
+        "severity": "Minor",
+        "event": "Small Craft Advisory"
+      }
+    },
+    {
+      "id": "https://api.weather.gov/alerts/urn:oid:2.49.0.1.840.0.test.004.1",
+      "type": "Feature",
+      "geometry": null,
+      "properties": {
+        "id": "urn:oid:2.49.0.1.840.0.test.004.1",
+        "affectedZones": ["https://api.weather.gov/zones/forecast/MNZ060"],
+        "sent": "2026-10-23T03:00:00-04:00",
+        "expires": "2026-10-23T22:00:00-04:00",
+        "status": "Test",
+        "messageType": "Alert",
+        "event": "Test Message"
+      }
+    }
+  ]
+}

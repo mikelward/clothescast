@@ -46,8 +46,19 @@ data class WeatherAlert(
     val hazard: AlertHazard? get() = AlertHazards.of(eventType)
 }
 
-/** Who to credit for an alert, and where the credit links. */
-data class AlertAttribution(val name: String, val url: String)
+/**
+ * Who to credit for an alert, where the credit links, and the source's own
+ * disclaimer, which the card links after ClothesCast's under its author's
+ * name ("MeteoAlarm disclaimer"), with its wording where the source's terms
+ * require it shown ([disclaimerText], verbatim).
+ */
+data class AlertAttribution(
+    val name: String,
+    val url: String,
+    val disclaimerUrl: String? = null,
+    val disclaimerName: String? = null,
+    val disclaimerText: String? = null,
+)
 
 /** CAP severity, as the source reports it. */
 enum class AlertSeverity {

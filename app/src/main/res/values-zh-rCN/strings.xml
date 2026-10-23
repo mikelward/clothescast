@@ -1518,6 +1518,12 @@ label localizes.
     <string name="weather_alert_level_red_description">极端天气预警</string>
     <string name="weather_alert_until">至%1$s</string>
     <string name="weather_alert_issued">%1$s发布</string>
+    <string name="weather_alert_disclaimer">预警来自官方气象机构。ClothesCast 不保证其准确、完整或及时，也可能遗漏部分预警。采取行动前请向发布机构核实，紧急情况下请听从当地政府部门的指示。因依赖这些预警而造成的任何损失，ClothesCast 概不负责。</string>
+    <string name="weather_alert_disclaimer_short">不作保证，不承担责任。</string>
+    <string name="weather_alert_disclaimer_show">显示详情</string>
+    <string name="weather_alert_disclaimer_hide">隐藏详情</string>
+    <string name="weather_alert_source_disclaimer">来源免责声明</string>
+    <string name="weather_alert_named_disclaimer">%1$s 免责声明</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">打开%1$s</string>
     <string name="weather_alert_open_source_fallback">详情</string>

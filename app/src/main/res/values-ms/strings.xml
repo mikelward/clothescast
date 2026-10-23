@@ -1377,6 +1377,12 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="weather_alert_level_red_description">Amaran cuaca ekstrem</string>
     <string name="weather_alert_until">Hingga %1$s</string>
     <string name="weather_alert_issued">Dikeluarkan %1$s</string>
+    <string name="weather_alert_disclaimer">Amaran datang daripada perkhidmatan cuaca rasmi. ClothesCast tidak menjamin amaran itu tepat, lengkap atau terkini, dan sesetengahnya mungkin terlepas. Semak dengan perkhidmatan yang mengeluarkannya sebelum anda bertindak, dan dalam kecemasan ikut arahan pihak berkuasa tempatan. ClothesCast tidak bertanggungjawab atas sebarang kerugian akibat bergantung pada amaran itu.</string>
+    <string name="weather_alert_disclaimer_short">Tiada jaminan, tiada liabiliti.</string>
+    <string name="weather_alert_disclaimer_show">Tunjukkan butiran</string>
+    <string name="weather_alert_disclaimer_hide">Sembunyikan butiran</string>
+    <string name="weather_alert_source_disclaimer">Penafian sumber</string>
+    <string name="weather_alert_named_disclaimer">Penafian %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Buka %1$s</string>
     <string name="weather_alert_open_source_fallback">Butiran</string>

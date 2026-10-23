@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.clothescast.alerts.AlertDisclaimer
 import app.clothescast.core.domain.model.AlertAttribution
 import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.WeatherAlert
@@ -126,7 +127,8 @@ internal fun WeatherAlertCardExpandedPreview() {
 }
 
 // From ClothesCast's own source: the issue time and the source's credit,
-// which its terms ask for, under the issuer's text.
+// which its terms ask for, under the issuer's text, then ClothesCast's
+// disclaimer, collapsed to one line.
 @Preview(name = "Alerts · card expanded with credit", widthDp = 360)
 @Composable
 internal fun WeatherAlertCardCreditedPreview() {
@@ -139,11 +141,33 @@ internal fun WeatherAlertCardCreditedPreview() {
                 AlertSeverity.SEVERE,
                 "2026-10-23T18:00:00Z",
                 issuedAt = Instant.parse("2026-10-22T09:02:00Z"),
-                attribution = AlertAttribution("Met Office via MeteoAlarm", "https://example.com/credit"),
+                attribution = AlertAttribution(
+                    "Met Office via MeteoAlarm",
+                    "https://example.com/credit",
+                    disclaimerUrl = "https://example.com/disclaimer",
+                    disclaimerName = "MeteoAlarm",
+                ),
             ),
             PREVIEW_NOW,
             onDismiss = {},
             zone = ZoneOffset.UTC,
+            initiallyExpanded = true,
+        )
+    }
+}
+
+// The disclaimer opened: ClothesCast's full text, MeteoAlarm's required
+// wording and the link to its terms.
+@Preview(name = "Alerts · disclaimer expanded", widthDp = 360)
+@Composable
+internal fun AlertDisclaimerExpandedPreview() {
+    Frame {
+        AlertDisclaimer(
+            sourceDisclaimerUrl = "https://example.com/disclaimer",
+            sourceDisclaimerName = "MeteoAlarm",
+            sourceDisclaimerText = "Time delays between this website and the www.meteoalarm.org website are " +
+                "possible. For the most up-to-date awareness information as published by the participating " +
+                "National Meteorological and Hydrological Services, please refer to www.meteoalarm.org.",
             initiallyExpanded = true,
         )
     }

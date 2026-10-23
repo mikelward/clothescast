@@ -1370,6 +1370,12 @@ to values/strings.xml (English).
     <string name="weather_alert_level_red_description">Peringatan cuaca ekstrem</string>
     <string name="weather_alert_until">Hingga %1$s</string>
     <string name="weather_alert_issued">Diterbitkan %1$s</string>
+    <string name="weather_alert_disclaimer">Peringatan berasal dari layanan cuaca resmi. ClothesCast tidak menjamin peringatan tersebut akurat, lengkap, atau terkini, dan mungkin ada yang terlewat. Periksa layanan penerbitnya sebelum bertindak, dan dalam keadaan darurat ikuti arahan pihak berwenang setempat. ClothesCast tidak bertanggung jawab atas kerugian apa pun akibat mengandalkan peringatan tersebut.</string>
+    <string name="weather_alert_disclaimer_short">Tanpa jaminan, tanpa tanggung jawab.</string>
+    <string name="weather_alert_disclaimer_show">Tampilkan detail</string>
+    <string name="weather_alert_disclaimer_hide">Sembunyikan detail</string>
+    <string name="weather_alert_source_disclaimer">Penafian sumber</string>
+    <string name="weather_alert_named_disclaimer">Penafian %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Buka %1$s</string>
     <string name="weather_alert_open_source_fallback">Detail</string>

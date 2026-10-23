@@ -1228,6 +1228,12 @@
     <string name="weather_alert_level_red_description">Paralajmërim për mot ekstrem</string>
     <string name="weather_alert_until">Deri në %1$s</string>
     <string name="weather_alert_issued">Lëshuar %1$s</string>
+    <string name="weather_alert_disclaimer">Paralajmërimet vijnë nga shërbimet zyrtare meteorologjike. ClothesCast nuk garanton që janë të sakta, të plota ose të përditësuara, dhe disa mund të mungojnë. Para se të veprosh, kontrolloji te shërbimi që i lëshon, dhe në rast emergjence ndiq udhëzimet e autoriteteve vendore. ClothesCast nuk mban asnjë përgjegjësi për humbje që vijnë nga mbështetja te këto paralajmërime.</string>
+    <string name="weather_alert_disclaimer_short">Pa garanci, pa përgjegjësi.</string>
+    <string name="weather_alert_disclaimer_show">Shfaq detajet</string>
+    <string name="weather_alert_disclaimer_hide">Fshih detajet</string>
+    <string name="weather_alert_source_disclaimer">Mohimi i përgjegjësisë nga burimi</string>
+    <string name="weather_alert_named_disclaimer">Mohimi i përgjegjësisë: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Hap %1$s</string>
     <string name="weather_alert_open_source_fallback">Detajet</string>

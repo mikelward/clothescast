@@ -1393,6 +1393,12 @@ What is NOT overridden, by design:
     <string name="weather_alert_level_red_description">Výstraha pred veľmi nebezpečným počasím</string>
     <string name="weather_alert_until">Do %1$s</string>
     <string name="weather_alert_issued">Vydané %1$s</string>
+    <string name="weather_alert_disclaimer">Výstrahy pochádzajú z oficiálnych meteorologických služieb. ClothesCast nezaručuje, že sú presné, úplné alebo aktuálne, a niektoré môžu chýbať. Skôr než začneš konať, over si ich v službe, ktorá ich vydala, a v núdzi sa riaď pokynmi miestnych úradov. ClothesCast nenesie zodpovednosť za žiadne škody vzniknuté spoliehaním sa na tieto výstrahy.</string>
+    <string name="weather_alert_disclaimer_short">Bez záruk a bez zodpovednosti.</string>
+    <string name="weather_alert_disclaimer_show">Zobraziť podrobnosti</string>
+    <string name="weather_alert_disclaimer_hide">Skryť podrobnosti</string>
+    <string name="weather_alert_source_disclaimer">Vyhlásenie zdroja o zodpovednosti</string>
+    <string name="weather_alert_named_disclaimer">Vyhlásenie o zodpovednosti: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Otvoriť %1$s</string>
     <string name="weather_alert_open_source_fallback">Podrobnosti</string>

@@ -1432,6 +1432,12 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="weather_alert_level_red_description">Cảnh báo thời tiết cực kỳ nguy hiểm</string>
     <string name="weather_alert_until">Đến %1$s</string>
     <string name="weather_alert_issued">Phát hành %1$s</string>
+    <string name="weather_alert_disclaimer">Cảnh báo được lấy từ các cơ quan khí tượng chính thức. ClothesCast không đảm bảo chúng chính xác, đầy đủ hay cập nhật, và có thể bỏ sót một số cảnh báo. Hãy kiểm tra với cơ quan phát hành trước khi hành động, và trong trường hợp khẩn cấp, hãy làm theo hướng dẫn của chính quyền địa phương. ClothesCast không chịu trách nhiệm về bất kỳ thiệt hại nào do việc dựa vào các cảnh báo này.</string>
+    <string name="weather_alert_disclaimer_short">Không bảo đảm, không chịu trách nhiệm.</string>
+    <string name="weather_alert_disclaimer_show">Xem chi tiết</string>
+    <string name="weather_alert_disclaimer_hide">Ẩn chi tiết</string>
+    <string name="weather_alert_source_disclaimer">Tuyên bố miễn trừ của nguồn</string>
+    <string name="weather_alert_named_disclaimer">Tuyên bố miễn trừ của %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Mở %1$s</string>
     <string name="weather_alert_open_source_fallback">Chi tiết</string>

@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.alerts.AlertDisclaimer
 import app.clothescast.alerts.AlertLevelIcon
 import app.clothescast.alerts.WeatherAlertsRefresher
 import app.clothescast.alerts.alertIssued
@@ -234,6 +235,13 @@ internal fun WeatherAlertCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+                // ClothesCast's own disclaimer on every alert, the source's
+                // linked inside it (maintainer, 2026-10-23).
+                AlertDisclaimer(
+                    sourceDisclaimerUrl = alert.attribution?.disclaimerUrl,
+                    sourceDisclaimerName = alert.attribution?.disclaimerName,
+                    sourceDisclaimerText = alert.attribution?.disclaimerText,
+                )
                 // Wraps rather than squeezing Dismiss out beside a long
                 // issuer name or at a large font size.
                 FlowRow {

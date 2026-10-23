@@ -2107,6 +2107,12 @@
     <!-- "Issued 9:02 AM", "Issued Fri 9:02 AM": when the issuer sent the alert,
          beside its source's credit. -->
     <string name="weather_alert_issued">Issued %1$s</string>
+    <string name="weather_alert_disclaimer">Alerts come from official weather services. ClothesCast doesn\'t guarantee they\'re accurate, complete or up to date, and may miss some. Check the issuing service before you act, and in an emergency follow your local authorities. ClothesCast accepts no liability for any loss from relying on these alerts.</string>
+    <string name="weather_alert_disclaimer_short">No guarantees, no liability.</string>
+    <string name="weather_alert_disclaimer_show">Show details</string>
+    <string name="weather_alert_disclaimer_hide">Hide details</string>
+    <string name="weather_alert_source_disclaimer">Source disclaimer</string>
+    <string name="weather_alert_named_disclaimer">%1$s disclaimer</string>
     <!-- "Until Fri 9 PM · Met Office". -->
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Open %1$s</string>

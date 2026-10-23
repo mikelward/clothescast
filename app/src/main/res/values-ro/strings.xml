@@ -1350,6 +1350,12 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="weather_alert_level_red_description">Avertizare meteo extremă</string>
     <string name="weather_alert_until">Până la %1$s</string>
     <string name="weather_alert_issued">Emis %1$s</string>
+    <string name="weather_alert_disclaimer">Avertizările provin de la servicii meteorologice oficiale. ClothesCast nu garantează că sunt corecte, complete sau actuale și unele pot lipsi. Verifică la serviciul care le emite înainte să acționezi, iar în caz de urgență urmează indicațiile autorităților locale. ClothesCast nu își asumă răspunderea pentru pierderi cauzate de bizuirea pe aceste avertizări.</string>
+    <string name="weather_alert_disclaimer_short">Fără garanții, fără răspundere.</string>
+    <string name="weather_alert_disclaimer_show">Arată detalii</string>
+    <string name="weather_alert_disclaimer_hide">Ascunde detalii</string>
+    <string name="weather_alert_source_disclaimer">Declinarea responsabilității sursei</string>
+    <string name="weather_alert_named_disclaimer">Declinarea responsabilității: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Deschide %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalii</string>

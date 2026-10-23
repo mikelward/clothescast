@@ -1371,6 +1371,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_level_red_description">การเตือนภัยสภาพอากาศรุนแรงมาก</string>
     <string name="weather_alert_until">ถึง %1$s</string>
     <string name="weather_alert_issued">ออกเมื่อ %1$s</string>
+    <string name="weather_alert_disclaimer">การเตือนภัยมาจากหน่วยงานอุตุนิยมวิทยาอย่างเป็นทางการ ClothesCast ไม่รับประกันว่าข้อมูลถูกต้อง ครบถ้วน หรือเป็นปัจจุบัน และอาจตกหล่นบางรายการ โปรดตรวจสอบกับหน่วยงานที่ออกประกาศก่อนดำเนินการ และในกรณีฉุกเฉินให้ปฏิบัติตามคำแนะนำของหน่วยงานท้องถิ่น ClothesCast ไม่รับผิดชอบต่อความเสียหายใด ๆ ที่เกิดจากการอาศัยการเตือนภัยเหล่านี้</string>
+    <string name="weather_alert_disclaimer_short">ไม่มีการรับประกัน ไม่รับผิดชอบ</string>
+    <string name="weather_alert_disclaimer_show">แสดงรายละเอียด</string>
+    <string name="weather_alert_disclaimer_hide">ซ่อนรายละเอียด</string>
+    <string name="weather_alert_source_disclaimer">ข้อจำกัดความรับผิดชอบของแหล่งข้อมูล</string>
+    <string name="weather_alert_named_disclaimer">ข้อจำกัดความรับผิดชอบของ %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">เปิด %1$s</string>
     <string name="weather_alert_open_source_fallback">รายละเอียด</string>

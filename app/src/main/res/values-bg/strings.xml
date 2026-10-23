@@ -1357,6 +1357,12 @@ What is NOT overridden, by design:
     <string name="weather_alert_level_red_description">Предупреждение за много опасно време</string>
     <string name="weather_alert_until">До %1$s</string>
     <string name="weather_alert_issued">Издадено %1$s</string>
+    <string name="weather_alert_disclaimer">Предупрежденията идват от официални метеорологични служби. ClothesCast не гарантира, че са точни, пълни или актуални, и може да пропусне някои. Преди да предприемеш нещо, провери при службата, която ги издава, а при извънредна ситуация следвай указанията на местните власти. ClothesCast не носи отговорност за загуби, произтичащи от разчитането на тези предупреждения.</string>
+    <string name="weather_alert_disclaimer_short">Без гаранции, без отговорност.</string>
+    <string name="weather_alert_disclaimer_show">Покажи подробности</string>
+    <string name="weather_alert_disclaimer_hide">Скрий подробности</string>
+    <string name="weather_alert_source_disclaimer">Отказ от отговорност на източника</string>
+    <string name="weather_alert_named_disclaimer">Отказ от отговорност на %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Отвори %1$s</string>
     <string name="weather_alert_open_source_fallback">Подробности</string>

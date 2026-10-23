@@ -624,6 +624,7 @@ class PreviewSnapshots {
     @Test fun weather_alert_levels() = capture { WeatherAlertLevelsPreview() }
     @Test fun weather_alert_card_expanded() = capture { WeatherAlertCardExpandedPreview() }
     @Test fun weather_alert_card_credited() = capture { WeatherAlertCardCreditedPreview() }
+    @Test fun alert_disclaimer_expanded() = capture { AlertDisclaimerExpandedPreview() }
     @Test fun gemini_tts_limit_card() = capture { GeminiTtsLimitCardPreview() }
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 

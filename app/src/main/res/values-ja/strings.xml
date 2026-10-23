@@ -1519,6 +1519,12 @@ the displayed label localizes.
     <string name="weather_alert_level_red_description">極めて重大な気象警報</string>
     <string name="weather_alert_until">%1$sまで</string>
     <string name="weather_alert_issued">%1$s発表</string>
+    <string name="weather_alert_disclaimer">警報は公式の気象機関から提供されています。ClothesCast は、その正確性、完全性、最新性を保証せず、一部が表示されない場合もあります。行動する前に発表元の機関で確認し、緊急時は地元当局の指示に従ってください。ClothesCast は、これらの警報に依拠したことによるいかなる損害についても責任を負いません。</string>
+    <string name="weather_alert_disclaimer_short">無保証・免責。</string>
+    <string name="weather_alert_disclaimer_show">詳細を表示</string>
+    <string name="weather_alert_disclaimer_hide">詳細を隠す</string>
+    <string name="weather_alert_source_disclaimer">提供元の免責事項</string>
+    <string name="weather_alert_named_disclaimer">%1$s の免責事項</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$sを開く</string>
     <string name="weather_alert_open_source_fallback">詳細</string>

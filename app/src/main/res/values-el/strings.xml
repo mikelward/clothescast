@@ -1492,6 +1492,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_level_red_description">Προειδοποίηση για ακραία καιρικά φαινόμενα</string>
     <string name="weather_alert_until">Έως %1$s</string>
     <string name="weather_alert_issued">Εκδόθηκε %1$s</string>
+    <string name="weather_alert_disclaimer">Οι προειδοποιήσεις προέρχονται από επίσημες μετεωρολογικές υπηρεσίες. Το ClothesCast δεν εγγυάται ότι είναι ακριβείς, πλήρεις ή ενημερωμένες, και κάποιες μπορεί να λείπουν. Έλεγξε την υπηρεσία που τις εκδίδει πριν κάνεις κάτι, και σε έκτακτη ανάγκη ακολούθησε τις τοπικές αρχές. Το ClothesCast δεν φέρει καμία ευθύνη για οποιαδήποτε ζημία προκύψει από την εμπιστοσύνη σε αυτές τις προειδοποιήσεις.</string>
+    <string name="weather_alert_disclaimer_short">Χωρίς εγγυήσεις, χωρίς ευθύνη.</string>
+    <string name="weather_alert_disclaimer_show">Εμφάνιση λεπτομερειών</string>
+    <string name="weather_alert_disclaimer_hide">Απόκρυψη λεπτομερειών</string>
+    <string name="weather_alert_source_disclaimer">Αποποίηση ευθύνης της πηγής</string>
+    <string name="weather_alert_named_disclaimer">Αποποίηση ευθύνης: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Άνοιγμα %1$s</string>
     <string name="weather_alert_open_source_fallback">Λεπτομέρειες</string>

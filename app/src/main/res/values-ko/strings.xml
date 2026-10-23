@@ -1523,6 +1523,12 @@ displayed label localizes.
     <string name="weather_alert_level_red_description">극한 기상특보</string>
     <string name="weather_alert_until">%1$s까지</string>
     <string name="weather_alert_issued">%1$s 발표</string>
+    <string name="weather_alert_disclaimer">특보는 공식 기상 기관에서 제공돼요. ClothesCast는 특보가 정확하거나 완전하거나 최신이라고 보장하지 않으며, 일부를 놓칠 수 있어요. 행동하기 전에 발표 기관에서 확인하고, 비상시에는 지역 당국의 안내를 따르세요. ClothesCast는 특보에 의존해 생긴 손해에 대해 책임지지 않아요.</string>
+    <string name="weather_alert_disclaimer_short">보증 없음, 책임 없음.</string>
+    <string name="weather_alert_disclaimer_show">자세히 보기</string>
+    <string name="weather_alert_disclaimer_hide">자세히 숨기기</string>
+    <string name="weather_alert_source_disclaimer">출처 면책 조항</string>
+    <string name="weather_alert_named_disclaimer">%1$s 면책 조항</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s 열기</string>
     <string name="weather_alert_open_source_fallback">세부정보</string>

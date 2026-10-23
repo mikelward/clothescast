@@ -102,6 +102,7 @@ const SOURCE = {
   url: "https://api.weather.gov/alerts/active?status=actual",
   countries: ["US"],
   attribution: { name: "US National Weather Service", url: "https://www.weather.gov" },
+  disclaimer: { name: "NWS", url: "https://www.weather.gov/disclaimer" },
 };
 const quiet = { info() {}, warn() {}, error() {} };
 const ZONE_URL = (id) => `https://api.weather.gov/zones/forecast/${id}`;

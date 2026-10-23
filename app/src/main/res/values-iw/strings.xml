@@ -1367,6 +1367,12 @@ standard in Israeli digital communication.
     <string name="weather_alert_level_red_description">אזהרה על מזג אוויר קיצוני</string>
     <string name="weather_alert_until">עד %1$s</string>
     <string name="weather_alert_issued">פורסם %1$s</string>
+    <string name="weather_alert_disclaimer">האזהרות מגיעות משירותים מטאורולוגיים רשמיים. ClothesCast אינה מתחייבת שהן מדויקות, שלמות או עדכניות, וייתכן שחלקן יחסרו. לפני שפועלים, כדאי לבדוק מול השירות שפרסם אותן, ובמצב חירום יש לפעול לפי הנחיות הרשויות המקומיות. ClothesCast אינה נושאת באחריות לכל נזק שייגרם מהסתמכות על אזהרות אלה.</string>
+    <string name="weather_alert_disclaimer_short">ללא אחריות וללא חבות.</string>
+    <string name="weather_alert_disclaimer_show">הצג/י פרטים</string>
+    <string name="weather_alert_disclaimer_hide">הסתר/י פרטים</string>
+    <string name="weather_alert_source_disclaimer">כתב ויתור של המקור</string>
+    <string name="weather_alert_named_disclaimer">כתב ויתור של %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">פתח/י את %1$s</string>
     <string name="weather_alert_open_source_fallback">פרטים</string>

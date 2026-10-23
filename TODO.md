@@ -1048,7 +1048,8 @@ Open work:
       it can be placed, from its polygon or its zones' shapes. Alternative:
       the rest of Europe (MeteoAlarm needs EMMA region boundaries, source
       not yet found), Canada (ECCC; Datamart unreachable from the sandbox)
-      or Australia (Xweather; needs a key and its terms in writing).
+      or Australia (deferred 2026-10-23: no free route to the Bureau's
+      warnings; docs/ALERTS.md → Australia).
       Reversible: a source is one entry in `functions/src/alerts/sources.ts`.
 - [ ] **Weather alerts in the app: the calls made building it** (autopilot,
       2026-10-22). Each is a constant or a line to change:

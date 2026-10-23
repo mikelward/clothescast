@@ -283,6 +283,7 @@ An alert for somewhere 50 miles away is wrong, not just noisy. Rules:
   | Google | Whatever its source sent; the UK and most of Europe via MeteoAlarm | Check with the script |
   | DWD (direct to Google) | District-level or polygons (*unverified*) | Likely fine |
   | Environment Canada | Forecast regions, each with its polygon (checked 2026-10-23): a county or a few towns in the south, far larger in the north | Fine |
+  | MetService (NZ) | Drawn polygons per warning (checked 2026-10-23): 70 to 320 km across, a district or a range's headwaters | Fine |
 
   If Google's UK alerts come back with region-sized boxes (the script
   prints each polygon's size), the Met Office's own API becomes the UK
@@ -528,7 +529,7 @@ are covered there):
 | KMA (Korea) | KOGL Type 1: credit the source, commercial use and changes allowed; the CAP feed's own marking *unverified* | Probably fine |
 | Roshydromet | Feed says "public domain"; the site requires a link to meteoinfo.ru | Probably fine; check sanctions exposure |
 | SMN (Argentina) | Feed says CC BY 4.0; an older legal page reserves graphics rights | Fine with credit |
-| MetService (NZ) | Code of Practice: pass on unmodified within 10 minutes of receipt, credit the alerting authority | Fine, at push speed |
+| MetService (NZ) | Feed says CC BY 4.0; Code of Practice: pass on unmodified within 10 minutes of receipt, credit the alerting authority | Fine: the ingester relays within 5 minutes, as for MeteoAlarm |
 | NEMA (NZ) | Public for "smartphone apps, websites or other alerting hubs"; no licence found | Intent favorable; ask |
 | Environment Agency | Flood-monitoring API: Open Government Licence; the CAP Atom feed's own licence contradicts itself | API fine |
 | CMA (China) | Only a "public domain" string in the feed; no terms found | Ask |
@@ -819,7 +820,7 @@ polygons or from MeteoAlarm's region shapes where they name regions, and
 for Croatia from county shapes the ingester carries (all of MeteoAlarm but
 Germany, Bosnia and Herzegovina, Andorra and Israel); the US with its territories from NWS
 (`api.weather.gov/alerts/active`, actual alerts and updates); Germany
-from DWD; and Canada from ECCC. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
+from DWD; Canada from ECCC; and New Zealand from MetService. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
 tiles in about 6 seconds; the index was 3.4 KB gzipped, the median tile
 4 KB, the largest (Switzerland's municipal polygons) 79 KB. A run that only
 rereads the feeds takes about 2 seconds.
@@ -888,6 +889,31 @@ complete run's alerts stay, and the index reports the error. A live run on
 2026-10-23: 17 alerts (10 ended regions left out) in 292 tiles in about
 1.4 seconds, 0.7 on a rerun; the median tile 3 KB gzipped, the largest
 52 KB.
+
+**MetService.** New Zealand comes from MetService's CAP feed
+(`alerts.metservice.com/cap/atom`, CC BY 4.0 by its `<rights>`): an Atom
+entry per watch and warning in force, identified by its `<id>` and linking
+its CAP document, each with drawn polygons (checked 2026-10-23: 70 to
+320 km across, a district or a range's headwaters, up to about 300
+points). It carries severe weather and thunderstorm watches and warnings
+and road snowfall warnings, in English, but no marine warnings. MetService
+grades by color, sent as the `ColourCode` parameter, while its CAP
+severity sits a step below the color it shows (a yellow watch is `Minor`,
+an orange warning `Moderate`), so the color is read instead: yellow,
+orange and red as the app's three levels. Its `<event>` is the bare
+hazard ("rain"), so the title is its headline ("Heavy Rain Warning -
+Orange"); the text is otherwise as sent. MetService offers its warnings
+on its Code of Practice (*unverified*, from search excerpts of
+metservice.com, which the sandbox can't reach): pass them on unmodified,
+as top priority and within 10 minutes of receipt, credit the Official
+Alerting Authority, and don't detract from its or the Crown's
+reputation. The ingester relays within 5 minutes of a change, as for
+MeteoAlarm; a phone still reads them at its own pace (every 3 hours,
+hourly while the forecast looks severe or an alert is active). Credit "MetService, CC BY 4.0", and the
+disclaimer links the licence, whose §5 disclaims warranties. A live run
+on 2026-10-23: 9 alerts (4 orange warnings, 5 yellow watches) in 32
+tiles in about 3 seconds, 0.3 on a rerun; the median tile 1 KB gzipped,
+the largest 3.4 KB.
 
 **MeteoAlarm regions.** Most MeteoAlarm countries name regions instead of
 drawing areas: by `EMMA_ID`, or by NUTS or FIPS code (France, Ireland,

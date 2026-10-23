@@ -20,6 +20,7 @@ import { bundledRegion } from "./bundled-regions";
 import { DWD_PROFILE } from "./dwd";
 import { parseEcccAlerts } from "./eccc";
 import { geoJsonPolygons, simplifyRing } from "./geo";
+import { METSERVICE_PROFILE } from "./metservice";
 import { parseNwsAlerts, type NwsAlert } from "./nws";
 import { REGIONS_PAGE_URL, REGION_TYPES, parseRegionAliases, parseRegionShapes, regionLinks } from "./regions";
 import { serve, type CapProfile, type ServedAlert, type Skip } from "./served";
@@ -28,7 +29,10 @@ import { threadIds } from "./threads";
 import { MAX_CLIPPED_SPAN_KM, TILE_DEGREES, clipToTile, spanKm, tilesFor } from "./tiles";
 import { unzip } from "./unzip";
 
-const PROFILES: Record<NonNullable<AlertSource["profile"]>, CapProfile> = { dwd: DWD_PROFILE };
+const PROFILES: Record<NonNullable<AlertSource["profile"]>, CapProfile> = {
+  dwd: DWD_PROFILE,
+  metservice: METSERVICE_PROFILE,
+};
 
 /** Bump when a file's shape changes incompatibly; it's in every path. */
 export const FORMAT_VERSION = 1;
@@ -457,6 +461,7 @@ async function refreshCapSource(
     return feedFailed(deps, source, previous, now, err);
   }
 
+  const profile = source.profile ? PROFILES[source.profile] : {};
   const entries: Record<string, CachedEntry> = {};
   let documentErrors = 0;
   let regionErrors = 0;
@@ -476,7 +481,7 @@ async function refreshCapSource(
       }
       entries[entry.identifier] = {
         updated: unknownRegions > 0 ? null : entry.updated,
-        result: serve(source.id, cap, now),
+        result: serve(source.id, cap, now, profile),
         identifier: cap.identifier,
         references: cap.references,
       };

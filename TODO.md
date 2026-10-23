@@ -204,9 +204,6 @@ voice and the Google Weather proxy.
       but MeteoAlarm removed their region shapes (Israel's 2026-07-31);
       Andorra's feed was empty. Needed: shapes for whatever codes their
       warnings name, from MeteoAlarm or the national service.
-- [ ] **New Zealand.** MetService's CAP feed (`alerts.metservice.com/cap/
-      atom`, CC BY 4.0) was empty when checked; add it once a warning in
-      force shows its entry and area format.
 - [x] **Clip tile rings to their tile.** Each tile carries its part of an
       area, cut 2 km past the tile (docs/ALERTS.md → The published files):
       the median tile went from 7.2 to 1.9 KB gzipped, the largest from 178

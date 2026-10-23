@@ -1484,6 +1484,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_level_red_description">Allerta meteo estrema</string>
     <string name="weather_alert_until">Fino a %1$s</string>
     <string name="weather_alert_issued">Emessa %1$s</string>
+    <string name="weather_alert_disclaimer">Le allerte provengono da servizi meteorologici ufficiali. ClothesCast non garantisce che siano accurate, complete o aggiornate, e alcune potrebbero mancare. Verifica con il servizio che le emette prima di agire e, in caso di emergenza, segui le indicazioni delle autorità locali. ClothesCast non si assume alcuna responsabilità per eventuali danni derivanti dall\'affidamento su queste allerte.</string>
+    <string name="weather_alert_disclaimer_short">Nessuna garanzia, nessuna responsabilità.</string>
+    <string name="weather_alert_disclaimer_show">Mostra dettagli</string>
+    <string name="weather_alert_disclaimer_hide">Nascondi dettagli</string>
+    <string name="weather_alert_source_disclaimer">Esclusione di responsabilità della fonte</string>
+    <string name="weather_alert_named_disclaimer">Esclusione di responsabilità di %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Apri %1$s</string>
     <string name="weather_alert_open_source_fallback">Dettagli</string>

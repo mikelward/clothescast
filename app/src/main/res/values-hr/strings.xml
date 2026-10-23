@@ -1438,6 +1438,12 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="weather_alert_level_red_description">Upozorenje na vrlo opasno vrijeme</string>
     <string name="weather_alert_until">Do %1$s</string>
     <string name="weather_alert_issued">Izdano %1$s</string>
+    <string name="weather_alert_disclaimer">Upozorenja dolaze od službenih meteoroloških službi. ClothesCast ne jamči da su točna, potpuna ili ažurna, a neka mogu nedostajati. Prije nego što nešto poduzmeš, provjeri kod službe koja ih izdaje, a u hitnim slučajevima slijedi upute lokalnih vlasti. ClothesCast ne preuzima odgovornost ni za kakvu štetu nastalu oslanjanjem na ova upozorenja.</string>
+    <string name="weather_alert_disclaimer_short">Bez jamstava, bez odgovornosti.</string>
+    <string name="weather_alert_disclaimer_show">Prikaži detalje</string>
+    <string name="weather_alert_disclaimer_hide">Sakrij detalje</string>
+    <string name="weather_alert_source_disclaimer">Izjava o odricanju odgovornosti izvora</string>
+    <string name="weather_alert_named_disclaimer">Izjava o odricanju odgovornosti: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Otvori %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalji</string>

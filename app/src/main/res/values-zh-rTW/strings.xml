@@ -1533,6 +1533,12 @@ label localises.
     <string name="weather_alert_level_red_description">極端天氣特報</string>
     <string name="weather_alert_until">至%1$s</string>
     <string name="weather_alert_issued">%1$s發布</string>
+    <string name="weather_alert_disclaimer">特報來自官方氣象機構。ClothesCast 不保證其準確、完整或即時，也可能遺漏部分特報。採取行動前請向發布機構確認，緊急情況下請遵從當地政府機關的指示。因依賴這些特報而造成的任何損失，ClothesCast 概不負責。</string>
+    <string name="weather_alert_disclaimer_short">不作保證，不負任何責任。</string>
+    <string name="weather_alert_disclaimer_show">顯示詳細資料</string>
+    <string name="weather_alert_disclaimer_hide">隱藏詳細資料</string>
+    <string name="weather_alert_source_disclaimer">來源免責聲明</string>
+    <string name="weather_alert_named_disclaimer">%1$s 免責聲明</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">開啟%1$s</string>
     <string name="weather_alert_open_source_fallback">詳細資料</string>

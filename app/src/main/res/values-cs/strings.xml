@@ -1379,6 +1379,12 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="weather_alert_level_red_description">Výstraha před velmi nebezpečným počasím</string>
     <string name="weather_alert_until">Do %1$s</string>
     <string name="weather_alert_issued">Vydáno %1$s</string>
+    <string name="weather_alert_disclaimer">Výstrahy pocházejí od oficiálních meteorologických služeb. ClothesCast nezaručuje, že jsou přesné, úplné nebo aktuální, a některé mohou chybět. Než začneš jednat, ověř si je u služby, která je vydala, a v nouzi se řiď pokyny místních úřadů. ClothesCast nenese odpovědnost za žádné škody vzniklé spoléháním na tyto výstrahy.</string>
+    <string name="weather_alert_disclaimer_short">Bez záruk a bez odpovědnosti.</string>
+    <string name="weather_alert_disclaimer_show">Zobrazit podrobnosti</string>
+    <string name="weather_alert_disclaimer_hide">Skrýt podrobnosti</string>
+    <string name="weather_alert_source_disclaimer">Prohlášení zdroje o odpovědnosti</string>
+    <string name="weather_alert_named_disclaimer">Prohlášení o odpovědnosti: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Otevřít %1$s</string>
     <string name="weather_alert_open_source_fallback">Podrobnosti</string>

@@ -31,10 +31,12 @@ class ServedAlertsClientTest {
         tiles: String = """{"55/-5": "abc123"}""",
         error: String? = null,
         countries: String = """["GB"]""",
+        disclaimer: String = "https://meteoalarm.example/terms",
     ) = """
         {"v": 1, "generatedAt": "$generatedAt", "tileDegrees": 1,
          "sources": [{"id": "meteoalarm-gb", "countries": $countries,
                       "attribution": {"name": "Met Office via MeteoAlarm", "url": "https://meteoalarm.org"},
+                      "disclaimer": {"name": "MeteoAlarm", "url": "$disclaimer", "text": "Delays are possible."},
                       "lastSuccessAt": "2026-10-23T11:58:00Z", "error": ${error?.let { "\"$it\"" } ?: "null"}}],
          "tiles": $tiles}
     """.trimIndent()
@@ -89,9 +91,23 @@ class ServedAlertsClientTest {
         alert.issuedAt shouldBe Instant.parse("2026-10-23T09:02:39Z")
         alert.issuer shouldBe "UK Met Office"
         alert.issuerUrl shouldBe "https://example.com/warnings"
-        alert.attribution shouldBe AlertAttribution("Met Office via MeteoAlarm", "https://meteoalarm.org")
+        alert.attribution shouldBe AlertAttribution(
+            "Met Office via MeteoAlarm",
+            "https://meteoalarm.org",
+            disclaimerUrl = "https://meteoalarm.example/terms",
+            disclaimerName = "MeteoAlarm",
+            disclaimerText = "Delays are possible.",
+        )
         alert.area!!.contains(GeoPoint(55.86, -4.25)) shouldBe true
         requested shouldBe listOf("v1/index.json", "v1/tiles/55/-5/abc123.json")
+    }
+
+    @Test
+    fun `a disclaimer link that isn't https is dropped, the credit kept`() = runTest {
+        val index = index(disclaimer = "http://meteoalarm.example/terms")
+        val alert = client(mapOf("v1/index.json" to index, "v1/tiles/55/-5/abc123.json" to tile))
+            .lookup(place, "en").shouldBeInstanceOf<AlertsLookup.Found>().alerts.single()
+        alert.attribution shouldBe AlertAttribution("Met Office via MeteoAlarm", "https://meteoalarm.org")
     }
 
     @Test

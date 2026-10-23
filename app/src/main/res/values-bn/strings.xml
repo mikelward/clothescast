@@ -1440,6 +1440,12 @@ West Bengal vocabulary differences in a future PR.
     <string name="weather_alert_level_red_description">চরম আবহাওয়া সতর্কতা</string>
     <string name="weather_alert_until">%1$s পর্যন্ত</string>
     <string name="weather_alert_issued">জারি করা হয়েছে %1$s</string>
+    <string name="weather_alert_disclaimer">সতর্কতাগুলো সরকারি আবহাওয়া পরিষেবা থেকে আসে। ClothesCast এগুলো নির্ভুল, সম্পূর্ণ বা হালনাগাদ হওয়ার নিশ্চয়তা দেয় না, এবং কিছু সতর্কতা বাদ পড়তে পারে। কিছু করার আগে জারিকারী পরিষেবার কাছ থেকে যাচাই করুন, আর জরুরি অবস্থায় স্থানীয় কর্তৃপক্ষের নির্দেশ মেনে চলুন। এই সতর্কতাগুলোর উপর নির্ভর করে কোনো ক্ষতি হলে ClothesCast তার দায় নেয় না।</string>
+    <string name="weather_alert_disclaimer_short">কোনো নিশ্চয়তা নেই, কোনো দায় নেই।</string>
+    <string name="weather_alert_disclaimer_show">বিবরণ দেখুন</string>
+    <string name="weather_alert_disclaimer_hide">বিবরণ লুকান</string>
+    <string name="weather_alert_source_disclaimer">উৎসের দায়মুক্তি</string>
+    <string name="weather_alert_named_disclaimer">%1$s-এর দায়মুক্তি</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s খুলুন</string>
     <string name="weather_alert_open_source_fallback">বিবরণ</string>

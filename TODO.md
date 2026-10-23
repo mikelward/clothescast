@@ -200,11 +200,10 @@ voice and the Google Weather proxy.
       each ring to the tile plus a 1 km margin, and send the alert's full
       bounding box beside it, since the app's "too broad to notify" rule
       (`AlertArea.spanKm`) measures the whole area.
-- [ ] **Publish MeteoAlarm's disclaimer.** Its terms (§5) ask redistributors
-      to publish a disclaimer beside the credit; the wording wasn't readable
-      from the sandbox (docs/ALERTS.md → Sources). Read
-      meteoalarm.org/en/live/page/terms-and-conditions and add it where the
-      app credits MeteoAlarm.
+- [x] **Publish MeteoAlarm's disclaimer.** Its terms (§5) ask redistributors
+      to publish a disclaimer beside the credit. Every alert card now shows
+      ClothesCast's own and, behind "Show details", MeteoAlarm's required
+      wording verbatim and a link to its terms (maintainer, 2026-10-23).
 - [x] **Translate the weather alerts text.** Every `values-<lang>` carries
       the alerts block, in each locale's own weather-service term.
 - [x] **Find when UK warnings start.** Alert notifications wait for the

@@ -137,6 +137,9 @@ class WeatherAlertsStore(
         val issuedMs: Long? = null,
         val attributionName: String? = null,
         val attributionUrl: String? = null,
+        val attributionDisclaimerUrl: String? = null,
+        val attributionDisclaimerName: String? = null,
+        val attributionDisclaimerText: String? = null,
         val notifiable: Boolean = true,
     ) {
         fun toDomain(): RelevantAlert? {
@@ -156,7 +159,13 @@ class WeatherAlertsStore(
                     issuerUrl = issuerUrl,
                     issuedAt = issuedMs?.let(Instant::ofEpochMilli),
                     attribution = if (attributionName != null && attributionUrl != null) {
-                        AlertAttribution(attributionName, attributionUrl)
+                        AlertAttribution(
+                            attributionName,
+                            attributionUrl,
+                            attributionDisclaimerUrl,
+                            attributionDisclaimerName,
+                            attributionDisclaimerText,
+                        )
                     } else {
                         null
                     },
@@ -192,6 +201,9 @@ class WeatherAlertsStore(
                 issuedMs = a.issuedAt?.toEpochMilli(),
                 attributionName = a.attribution?.name,
                 attributionUrl = a.attribution?.url,
+                attributionDisclaimerUrl = a.attribution?.disclaimerUrl,
+                attributionDisclaimerName = a.attribution?.disclaimerName,
+                attributionDisclaimerText = a.attribution?.disclaimerText,
                 notifiable = relevant.notifiable,
             )
         },

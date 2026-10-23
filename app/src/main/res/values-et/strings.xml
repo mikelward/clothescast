@@ -1312,6 +1312,12 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="weather_alert_level_red_description">Väga ohtliku ilma hoiatus</string>
     <string name="weather_alert_until">Kuni %1$s</string>
     <string name="weather_alert_issued">Välja antud %1$s</string>
+    <string name="weather_alert_disclaimer">Hoiatused pärinevad ametlikelt ilmateenistustelt. ClothesCast ei garanteeri, et need on täpsed, täielikud või ajakohased, ja mõni võib puududa. Enne tegutsemist kontrolli neid väljaandvalt teenistuselt ning hädaolukorras järgi kohalike ametiasutuste juhiseid. ClothesCast ei vastuta kahjude eest, mis tekivad nendele hoiatustele tuginemisest.</string>
+    <string name="weather_alert_disclaimer_short">Garantiita, vastutuseta.</string>
+    <string name="weather_alert_disclaimer_show">Näita üksikasju</string>
+    <string name="weather_alert_disclaimer_hide">Peida üksikasjad</string>
+    <string name="weather_alert_source_disclaimer">Allika lahtiütlus</string>
+    <string name="weather_alert_named_disclaimer">Lahtiütlus: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Ava %1$s</string>
     <string name="weather_alert_open_source_fallback">Üksikasjad</string>

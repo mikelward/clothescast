@@ -1423,6 +1423,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_level_red_description">Babala sa napakatinding panahon</string>
     <string name="weather_alert_until">Hanggang %1$s</string>
     <string name="weather_alert_issued">Inilabas %1$s</string>
+    <string name="weather_alert_disclaimer">Galing ang mga babala sa mga opisyal na serbisyo ng panahon. Hindi ginagarantiya ng ClothesCast na tumpak, kumpleto, o napapanahon ang mga ito, at maaaring may makaligtaan. Tingnan muna sa serbisyong naglabas nito bago kumilos, at sa isang emergency, sundin ang mga lokal na awtoridad. Walang pananagutan ang ClothesCast sa anumang pinsalang dulot ng pag-asa sa mga babalang ito.</string>
+    <string name="weather_alert_disclaimer_short">Walang garantiya, walang pananagutan.</string>
+    <string name="weather_alert_disclaimer_show">Ipakita ang mga detalye</string>
+    <string name="weather_alert_disclaimer_hide">Itago ang mga detalye</string>
+    <string name="weather_alert_source_disclaimer">Disclaimer ng pinagmulan</string>
+    <string name="weather_alert_named_disclaimer">Disclaimer ng %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Buksan ang %1$s</string>
     <string name="weather_alert_open_source_fallback">Mga detalye</string>

@@ -1359,6 +1359,12 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="weather_alert_level_red_description">هشدار هواشناسی بسیار شدید</string>
     <string name="weather_alert_until">تا %1$s</string>
     <string name="weather_alert_issued">صادر شده %1$s</string>
+    <string name="weather_alert_disclaimer">هشدارها از سازمان‌های رسمی هواشناسی می‌آیند. ClothesCast دقیق، کامل یا به‌روز بودن آن‌ها را تضمین نمی‌کند و ممکن است برخی از آن‌ها از قلم بیفتند. پیش از هر اقدامی، آن را با سازمان صادرکننده بررسی کنید و در شرایط اضطراری از دستورهای مقامات محلی پیروی کنید. ClothesCast هیچ مسئولیتی در قبال زیان ناشی از اتکا به این هشدارها نمی‌پذیرد.</string>
+    <string name="weather_alert_disclaimer_short">بدون هیچ تضمین و مسئولیتی.</string>
+    <string name="weather_alert_disclaimer_show">نمایش جزئیات</string>
+    <string name="weather_alert_disclaimer_hide">پنهان کردن جزئیات</string>
+    <string name="weather_alert_source_disclaimer">سلب مسئولیت منبع</string>
+    <string name="weather_alert_named_disclaimer">سلب مسئولیت %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">باز کردن %1$s</string>
     <string name="weather_alert_open_source_fallback">جزئیات</string>

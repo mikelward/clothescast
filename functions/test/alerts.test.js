@@ -7,6 +7,7 @@ const path = require("node:path");
 const { parseCapAlert, parseCapFeed, parseCircle, parsePolygon } = require("../lib/alerts/cap");
 const { serve } = require("../lib/alerts/served");
 const { MAX_TILES_PER_ALERT, tileKey, tilesFor } = require("../lib/alerts/tiles");
+const { METEOALARM_DISCLAIMER, SOURCES } = require("../lib/alerts/sources");
 const { INDEX_PATH, USER_AGENT, ingest, tilePath } = require("../lib/alerts/ingest");
 const { fakeStore: makeStore } = require("./support/fake-store");
 
@@ -49,6 +50,21 @@ test("a CAP document keeps the issuer's text, parameters and area", () => {
   assert.deepEqual(info.parameters.impacts, ["Flying debris is likely", "Some roads and bridges likely to close"]);
   assert.equal(info.areas[0].areaDesc, "Strathclyde | SW Scotland, Lothian Borders");
   assert.equal(info.areas[0].rings[0].length, 5);
+});
+
+test("every source has a unique id, countries, and a named https credit and disclaimer", () => {
+  assert.equal(new Set(SOURCES.map((s) => s.id)).size, SOURCES.length);
+  for (const source of SOURCES) {
+    assert.ok(source.countries.length > 0, source.id);
+    assert.ok(source.attribution.name, source.id);
+    assert.match(source.attribution.url, /^https:\/\//, source.id);
+    assert.ok(source.disclaimer.name, source.id);
+    assert.match(source.disclaimer.url, /^https:\/\//, source.id);
+  }
+  // MeteoAlarm's terms (§5) require its wording, not just a link.
+  for (const source of SOURCES.filter((s) => s.id.startsWith("meteoalarm-"))) {
+    assert.equal(source.disclaimer.text, METEOALARM_DISCLAIMER, source.id);
+  }
 });
 
 test("XML that isn't a CAP alert or an Atom feed is refused", () => {
@@ -155,6 +171,7 @@ const SOURCE = {
   url: "https://feeds.example.org/feeds/united-kingdom",
   countries: ["GB"],
   attribution: { name: "Met Office via MeteoAlarm", url: "https://meteoalarm.org" },
+  disclaimer: { name: "MeteoAlarm", url: "https://meteoalarm.example/terms" },
 };
 const CAP_URL = "https://feeds.example.org/api/v1/warnings/feeds-united-kingdom/amber-wind";
 const quiet = { info() {}, warn() {}, error() {} };
@@ -178,6 +195,7 @@ test("a run publishes each tile, then an index naming them", async () => {
     id: "meteoalarm-gb",
     countries: ["GB"],
     attribution: SOURCE.attribution,
+    disclaimer: SOURCE.disclaimer,
     lastSuccessAt: NOW.toISOString(),
     error: null,
   }]);

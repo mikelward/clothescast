@@ -1397,6 +1397,12 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="weather_alert_level_red_description">Ekstremværvarsel</string>
     <string name="weather_alert_until">Til %1$s</string>
     <string name="weather_alert_issued">Utstedt %1$s</string>
+    <string name="weather_alert_disclaimer">Farevarslene kommer fra offisielle værtjenester. ClothesCast garanterer ikke at de er riktige, fullstendige eller oppdaterte, og noen kan mangle. Sjekk med tjenesten som har sendt dem ut før du handler, og følg lokale myndigheter i en nødsituasjon. ClothesCast tar ikke ansvar for tap som følge av at man stoler på disse farevarslene.</string>
+    <string name="weather_alert_disclaimer_short">Ingen garantier, intet ansvar.</string>
+    <string name="weather_alert_disclaimer_show">Vis detaljer</string>
+    <string name="weather_alert_disclaimer_hide">Skjul detaljer</string>
+    <string name="weather_alert_source_disclaimer">Kildens ansvarsfraskrivelse</string>
+    <string name="weather_alert_named_disclaimer">Ansvarsfraskrivelse fra %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Åpne %1$s</string>
     <string name="weather_alert_open_source_fallback">Detaljer</string>

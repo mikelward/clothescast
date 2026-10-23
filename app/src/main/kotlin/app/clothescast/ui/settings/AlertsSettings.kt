@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.clothescast.R
+import app.clothescast.alerts.AlertDisclaimer
 import app.clothescast.alerts.AlertIcon
 import app.clothescast.alerts.AlertLevelIcon
 import app.clothescast.core.domain.model.AlertNotifyLevel
@@ -140,6 +141,9 @@ internal fun AlertsContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+                // Shown before alerts go on, too; each alert's card links the
+                // source's own.
+                AlertDisclaimer(sourceDisclaimerUrl = null)
             }
             SectionCard(title = stringResource(R.string.settings_alerts_notify_title)) {
                 Column {

@@ -1500,6 +1500,12 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="weather_alert_level_red_description">Aviso meteorológico extremo</string>
     <string name="weather_alert_until">Até %1$s</string>
     <string name="weather_alert_issued">Emitido %1$s</string>
+    <string name="weather_alert_disclaimer">Os avisos vêm de serviços meteorológicos oficiais. O ClothesCast não garante que sejam exatos, completos ou atualizados, e alguns podem faltar. Confirma junto do serviço que os emitiu antes de agires e, numa emergência, segue as indicações das autoridades locais. O ClothesCast não se responsabiliza por perdas resultantes de confiar nestes avisos.</string>
+    <string name="weather_alert_disclaimer_short">Sem garantias, sem responsabilidade.</string>
+    <string name="weather_alert_disclaimer_show">Mostrar detalhes</string>
+    <string name="weather_alert_disclaimer_hide">Ocultar detalhes</string>
+    <string name="weather_alert_source_disclaimer">Aviso legal da fonte</string>
+    <string name="weather_alert_named_disclaimer">Aviso legal de %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Abrir %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalhes</string>

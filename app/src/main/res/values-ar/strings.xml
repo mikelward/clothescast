@@ -1371,6 +1371,12 @@ they work correctly in both the single-band and range templates.
     <string name="weather_alert_level_red_description">تنبيه طقس متطرف</string>
     <string name="weather_alert_until">حتى %1$s</string>
     <string name="weather_alert_issued">صدر %1$s</string>
+    <string name="weather_alert_disclaimer">تأتي التنبيهات من خدمات الأرصاد الجوية الرسمية. لا يضمن ClothesCast أنها دقيقة أو كاملة أو محدّثة، وقد يفوته بعضها. تحقّق من الجهة المُصدِرة قبل أن تتصرف، وفي حالات الطوارئ اتّبع تعليمات السلطات المحلية. لا يتحمّل ClothesCast أي مسؤولية عن أي خسارة ناتجة عن الاعتماد على هذه التنبيهات.</string>
+    <string name="weather_alert_disclaimer_short">لا ضمانات ولا مسؤولية.</string>
+    <string name="weather_alert_disclaimer_show">إظهار التفاصيل</string>
+    <string name="weather_alert_disclaimer_hide">إخفاء التفاصيل</string>
+    <string name="weather_alert_source_disclaimer">إخلاء مسؤولية المصدر</string>
+    <string name="weather_alert_named_disclaimer">إخلاء مسؤولية %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">فتح %1$s</string>
     <string name="weather_alert_open_source_fallback">التفاصيل</string>

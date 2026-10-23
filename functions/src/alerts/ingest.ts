@@ -83,6 +83,8 @@ export interface IndexSource {
   id: string;
   countries: string[];
   attribution: { name: string; url: string };
+  /** The source's own disclaimer, linked after ClothesCast's under its author's name. */
+  disclaimer: { name: string; url: string; text?: string };
   /** When the feed and every document it listed last loaded; null if never. */
   lastSuccessAt: string | null;
   /**
@@ -424,6 +426,7 @@ export async function ingest(deps: IngestDeps): Promise<IngestSummary> {
       id: source.id,
       countries: source.countries,
       attribution: source.attribution,
+      disclaimer: source.disclaimer,
       lastSuccessAt: sourceStates[i].lastSuccessAt,
       error: sourceStates[i].error,
     })),

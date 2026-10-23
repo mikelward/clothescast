@@ -1375,6 +1375,12 @@ displayed label localizes.
     <string name="weather_alert_level_red_description">Äärimmäinen säävaroitus</string>
     <string name="weather_alert_until">%1$s asti</string>
     <string name="weather_alert_issued">Annettu %1$s</string>
+    <string name="weather_alert_disclaimer">Varoitukset tulevat virallisilta sääpalveluilta. ClothesCast ei takaa, että ne ovat oikeita, täydellisiä tai ajan tasalla, ja joitakin voi puuttua. Tarkista asia varoituksen antaneelta palvelulta ennen kuin toimit, ja noudata hätätilanteessa paikallisten viranomaisten ohjeita. ClothesCast ei vastaa mistään menetyksistä, jotka johtuvat näihin varoituksiin luottamisesta.</string>
+    <string name="weather_alert_disclaimer_short">Ei takuita, ei vastuuta.</string>
+    <string name="weather_alert_disclaimer_show">Näytä tiedot</string>
+    <string name="weather_alert_disclaimer_hide">Piilota tiedot</string>
+    <string name="weather_alert_source_disclaimer">Lähteen vastuuvapauslauseke</string>
+    <string name="weather_alert_named_disclaimer">Vastuuvapauslauseke: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Avaa %1$s</string>
     <string name="weather_alert_open_source_fallback">Tiedot</string>

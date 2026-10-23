@@ -91,7 +91,19 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   before it starts only once start times are known to be onset, see
   "Coverage") and an expand arrow. Tapping expands the full time range
   and issuer, the area, the issuer's description and instruction (web
-  addresses in them tappable), a link to the issuer's page, and Dismiss.
+  addresses in them tappable), the issue time, ClothesCast's disclaimer, a
+  link to the issuer's page, the source's credit, and Dismiss. Every source
+  gets both disclaimers (maintainer, 2026-10-23), kept to one line ("No
+  guarantees, no liability.") until "Show details" opens ours in full (no
+  guarantee alerts are accurate, complete or up to date, no liability for
+  relying on them) and a link to the source's, named for its author
+  ("MeteoAlarm disclaimer", which isn't always the issuer) from the index
+  (`disclaimer`). Where a source's terms require its wording shown, it
+  comes first, verbatim: MeteoAlarm's §5 requires every redistributor to
+  publish "Time delays between this website and the www.meteoalarm.org
+  website are possible. For the most up-to-date awareness information as
+  published by the participating National Meteorological and Hydrological
+  Services, please refer to www.meteoalarm.org." (read 2026-10-23).
   Cards are outlined and neutral so the icon carries the color (the yellow
   tint can't be read on a yellow card). More than three alerts collapse
   behind "2 more alerts".
@@ -168,6 +180,9 @@ Maintainer's design (2026-10-22):
   no source covers it (maintainer, 2026-10-23: the rule now, with Google,
   and once the ingester replaces it), or that a check failed or is on its
   way.
+- **ClothesCast's disclaimer** under the switch, shown whether alerts are
+  on or off: the same one line and "Show details" as on each card, without
+  a source link.
 - **No promo card on Today**: the "Get weather alerts" card shown to
   signed-in users with alerts off was removed (maintainer, 2026-10-23).
 - **Later: on by default**, if it can be done without a sign-in prompt and
@@ -200,7 +215,6 @@ are the issuer's text, shown unedited and possibly not translated.
 | `settings_alerts_section` | Alerts | Warnings |
 | `settings_weather_alerts_title` | Weather alerts | Weather warnings |
 | `settings_weather_alerts_summary` | Official alerts for your location on Today. | Official warnings for your location on Today. |
-| `settings_weather_alerts_sign_in` | Sign in with Google to get weather alerts. | Sign in with Google to get weather warnings. |
 | `settings_alerts_notify_title` | Notify me for | |
 | `settings_alerts_notify_red` | Red only | |
 | `settings_alerts_notify_orange_red` | Orange and red | Amber and red |
@@ -208,6 +222,12 @@ are the issuer's text, shown unedited and possibly not translated.
 | `settings_alerts_notify_none` | None | |
 | `settings_alerts_channel` | Alert sound and lock screen | Warning sound and lock screen |
 | `settings_alerts_status_none` | No alerts for this location. Last checked %1$s | No warnings for this location. Last checked %1$s |
+| `weather_alert_issued` | Issued %1$s | |
+| `weather_alert_disclaimer_short` | No guarantees, no liability. | |
+| `weather_alert_disclaimer_show`, `_hide` | Show details, Hide details | |
+| `weather_alert_disclaimer` | Alerts come from official weather services. ClothesCast doesn't guarantee they're accurate, complete or up to date, and may miss some. Check the issuing service before you act, and in an emergency follow your local authorities. ClothesCast accepts no liability for any loss from relying on these alerts. | Warnings come from… these warnings. |
+| `weather_alert_named_disclaimer` | %1$s disclaimer *(links the source's own: "MeteoAlarm disclaimer")* | |
+| `weather_alert_source_disclaimer` | Source disclaimer *(the same, when the index gives no name)* | |
 
 Times: time only for today, weekday and time otherwise ("Sat 9 AM"), in the
 device's 12/24-hour setting.
@@ -696,7 +716,10 @@ and every path carries the format version:
 
 - **`v1/index.json`**, rewritten every run, `Cache-Control: public,
   max-age=60`: `generatedAt`, `tileDegrees` (1), each source's `id`,
-  `countries` (ISO 3166-1 alpha-2), `attribution` (name and link to show
+  `countries` (ISO 3166-1 alpha-2), `disclaimer` (`name` of its author,
+  `url` of the source's own, linked after ClothesCast's, and `text` where
+  the source's terms require its wording shown), `attribution`
+  (name and link to show
   beside its alerts), `lastSuccessAt` (when the feed and every document it
   listed last loaded) and `error` (why the latest check was incomplete, or
   null), and `tiles`, mapping each tile that has alerts to its file's hash.

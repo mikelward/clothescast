@@ -75,8 +75,8 @@ class ServedAlertsClient(
                 return if (covering.isEmpty()) AlertsLookup.Unsupported else AlertsLookup.Found(emptyList())
             }
             val tile = json.decodeFromString<TileDto>(fetch("v$FORMAT_VERSION/tiles/$key/$hash.json"))
-            val credits = index.sources.associate { it.id to it.attribution }
-            val alerts = tile.alerts.mapNotNull { it.toDomain(languageTag, credits[it.source]) }
+            val sources = index.sources.associateBy { it.id }
+            val alerts = tile.alerts.mapNotNull { it.toDomain(languageTag, sources[it.source]) }
             if (covering.isEmpty()) {
                 // A neighbor's alert elsewhere in the tile says nothing about here.
                 val here = GeoPoint(location.latitude, location.longitude)
@@ -108,7 +108,7 @@ class ServedAlertsClient(
             httpClient.get("$baseUrl/$path") { expectSuccess = true }.bodyAsText()
         }
 
-    private fun AlertDto.toDomain(languageTag: String, credit: AttributionDto?): WeatherAlert? {
+    private fun AlertDto.toDomain(languageTag: String, source: SourceDto?): WeatherAlert? {
         if (id.isBlank()) return null
         val text = pickText(texts, languageTag) ?: return null
         fun ringOf(raw: List<List<Double>>): List<GeoPoint>? = raw.mapNotNull { point ->
@@ -136,8 +136,17 @@ class ServedAlertsClient(
             issuerUrl = text.web?.takeIf { it.startsWith("https://") || it.startsWith("http://") },
             area = polygons.takeIf { it.isNotEmpty() }?.let(::AlertArea),
             issuedAt = parseInstant(sent),
-            attribution = credit?.takeIf { it.name.isNotBlank() && it.url.startsWith("https://") }
-                ?.let { AlertAttribution(it.name, it.url) },
+            attribution = source?.attribution?.takeIf { it.name.isNotBlank() && it.url.startsWith("https://") }
+                ?.let { credit ->
+                    val disclaimer = source.disclaimer?.takeIf { it.url.startsWith("https://") }
+                    AlertAttribution(
+                        name = credit.name,
+                        url = credit.url,
+                        disclaimerUrl = disclaimer?.url,
+                        disclaimerName = disclaimer?.name?.takeIf { it.isNotBlank() },
+                        disclaimerText = disclaimer?.text?.takeIf { it.isNotBlank() },
+                    )
+                },
         )
     }
 
@@ -198,11 +207,15 @@ private data class SourceDto(
     val id: String,
     val countries: List<String> = emptyList(),
     val attribution: AttributionDto? = null,
+    val disclaimer: DisclaimerDto? = null,
     val error: String? = null,
 )
 
 @Serializable
 private data class AttributionDto(val name: String = "", val url: String = "")
+
+@Serializable
+private data class DisclaimerDto(val name: String = "", val url: String = "", val text: String? = null)
 
 @Serializable
 private data class TileDto(val alerts: List<AlertDto> = emptyList())

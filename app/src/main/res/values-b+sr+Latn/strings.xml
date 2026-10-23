@@ -1359,6 +1359,12 @@ default English (matching values-pl / values-uk).
     <string name="weather_alert_level_red_description">Upozorenje na veoma opasno vreme</string>
     <string name="weather_alert_until">Do %1$s</string>
     <string name="weather_alert_issued">Izdato %1$s</string>
+    <string name="weather_alert_disclaimer">Upozorenja dolaze od zvaničnih meteoroloških službi. ClothesCast ne garantuje da su tačna, potpuna ili ažurna i neko može da propusti. Pre nego što nešto preduzmeš, proveri kod službe koja ih izdaje, a u hitnim slučajevima prati uputstva lokalnih vlasti. ClothesCast ne preuzima odgovornost ni za kakvu štetu nastalu oslanjanjem na ova upozorenja.</string>
+    <string name="weather_alert_disclaimer_short">Bez garancija, bez odgovornosti.</string>
+    <string name="weather_alert_disclaimer_show">Prikaži detalje</string>
+    <string name="weather_alert_disclaimer_hide">Sakrij detalje</string>
+    <string name="weather_alert_source_disclaimer">Odricanje odgovornosti izvora</string>
+    <string name="weather_alert_named_disclaimer">Odricanje odgovornosti: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Otvori %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalji</string>

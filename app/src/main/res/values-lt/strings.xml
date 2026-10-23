@@ -1362,6 +1362,12 @@ What is NOT overridden, by design:
     <string name="weather_alert_level_red_description">Įspėjimas apie ekstremalius orus</string>
     <string name="weather_alert_until">Iki %1$s</string>
     <string name="weather_alert_issued">Paskelbta %1$s</string>
+    <string name="weather_alert_disclaimer">Įspėjimai gaunami iš oficialių meteorologijos tarnybų. ClothesCast negarantuoja, kad jie tikslūs, išsamūs ar naujausi, ir kai kurių gali trūkti. Prieš imantis veiksmų, pasitikrink juos paskelbusioje tarnyboje, o ekstremalioje situacijoje vadovaukis vietos valdžios nurodymais. ClothesCast neatsako už jokius nuostolius, patirtus pasikliaujant šiais įspėjimais.</string>
+    <string name="weather_alert_disclaimer_short">Be garantijų, be atsakomybės.</string>
+    <string name="weather_alert_disclaimer_show">Rodyti išsamią informaciją</string>
+    <string name="weather_alert_disclaimer_hide">Slėpti išsamią informaciją</string>
+    <string name="weather_alert_source_disclaimer">Šaltinio atsakomybės apribojimas</string>
+    <string name="weather_alert_named_disclaimer">Atsakomybės apribojimas: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Atidaryti %1$s</string>
     <string name="weather_alert_open_source_fallback">Išsami informacija</string>

@@ -65,4 +65,5 @@ full re-translation.
         <item quantity="one">%d more warning</item>
         <item quantity="other">%d more warnings</item>
     </plurals>
+    <string name="weather_alert_disclaimer">Warnings come from official weather services. ClothesCast doesn\'t guarantee they\'re accurate, complete or up to date, and may miss some. Check the issuing service before you act, and in an emergency follow your local authorities. ClothesCast accepts no liability for any loss from relying on these warnings.</string>
 </resources>

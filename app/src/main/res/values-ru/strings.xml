@@ -1424,6 +1424,12 @@ only the displayed label localizes.
     <string name="weather_alert_level_red_description">Предупреждение об особо опасной погоде</string>
     <string name="weather_alert_until">До %1$s</string>
     <string name="weather_alert_issued">Выпущено %1$s</string>
+    <string name="weather_alert_disclaimer">Предупреждения поступают от официальных метеослужб. ClothesCast не гарантирует, что они точные, полные или актуальные, и некоторые могут отсутствовать. Прежде чем что-то делать, проверь информацию у выпустившей их службы, а в чрезвычайной ситуации следуй указаниям местных властей. ClothesCast не несёт ответственности за ущерб, возникший из-за того, что на эти предупреждения полагались.</string>
+    <string name="weather_alert_disclaimer_short">Без гарантий и ответственности.</string>
+    <string name="weather_alert_disclaimer_show">Показать подробности</string>
+    <string name="weather_alert_disclaimer_hide">Скрыть подробности</string>
+    <string name="weather_alert_source_disclaimer">Отказ от ответственности источника</string>
+    <string name="weather_alert_named_disclaimer">Отказ от ответственности: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Открыть %1$s</string>
     <string name="weather_alert_open_source_fallback">Подробнее</string>

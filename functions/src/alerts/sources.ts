@@ -19,7 +19,21 @@ export interface AlertSource {
   countries: string[];
   /** The credit and link the app shows beside each alert (the feed's terms). */
   attribution: { name: string; url: string };
+  /**
+   * The source's own disclaimer, which the app links after ClothesCast's
+   * (maintainer, 2026-10-23: every source gets both), named for whoever
+   * wrote it ("MeteoAlarm disclaimer"), which isn't always the issuer.
+   * [text], where the source's terms require its wording shown, is shown
+   * verbatim above the link.
+   */
+  disclaimer: { name: string; url: string; text?: string };
 }
+
+/** MeteoAlarm's terms §5, read 2026-10-23: "All redistributors must publish the following disclaimer". */
+export const METEOALARM_DISCLAIMER =
+  "Time delays between this website and the www.meteoalarm.org website are possible. For the most " +
+  "up-to-date awareness information as published by the participating National Meteorological and " +
+  "Hydrological Services, please refer to www.meteoalarm.org.";
 
 // MeteoAlarm's terms (docs/ALERTS.md → Sources): credit the national
 // service for one country's warnings and link to meteoalarm.org. Only the
@@ -32,6 +46,13 @@ function meteoalarm(id: string, slug: string, country: string, issuer: string): 
     url: `https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-${slug}`,
     countries: [country],
     attribution: { name: `${issuer} via MeteoAlarm`, url: "https://meteoalarm.org" },
+    // Its terms (§5) require every redistributor to publish this wording;
+    // its own liability exclusions are in the same terms.
+    disclaimer: {
+      name: "MeteoAlarm",
+      url: "https://www.meteoalarm.org/en/live/page/terms-and-conditions",
+      text: METEOALARM_DISCLAIMER,
+    },
   };
 }
 
@@ -45,6 +66,7 @@ const NWS: AlertSource = {
   // The 50 states and DC, and the territories NWS forecasts for.
   countries: ["US", "PR", "VI", "GU", "AS", "MP"],
   attribution: { name: "US National Weather Service", url: "https://www.weather.gov" },
+  disclaimer: { name: "NWS", url: "https://www.weather.gov/disclaimer" },
 };
 
 export const SOURCES: AlertSource[] = [

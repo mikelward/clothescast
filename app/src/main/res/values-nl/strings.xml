@@ -1416,6 +1416,12 @@ the displayed label localizes.
     <string name="weather_alert_level_red_description">Waarschuwing voor extreem weer</string>
     <string name="weather_alert_until">Tot %1$s</string>
     <string name="weather_alert_issued">Uitgegeven %1$s</string>
+    <string name="weather_alert_disclaimer">Waarschuwingen komen van officiële weerdiensten. ClothesCast garandeert niet dat ze juist, volledig of actueel zijn, en sommige kunnen ontbreken. Controleer ze bij de dienst die ze uitgeeft voordat je iets doet, en volg in een noodsituatie de lokale autoriteiten. ClothesCast aanvaardt geen aansprakelijkheid voor schade doordat je op deze waarschuwingen vertrouwt.</string>
+    <string name="weather_alert_disclaimer_short">Geen garanties, geen aansprakelijkheid.</string>
+    <string name="weather_alert_disclaimer_show">Details weergeven</string>
+    <string name="weather_alert_disclaimer_hide">Details verbergen</string>
+    <string name="weather_alert_source_disclaimer">Disclaimer van de bron</string>
+    <string name="weather_alert_named_disclaimer">Disclaimer van %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s openen</string>
     <string name="weather_alert_open_source_fallback">Details</string>

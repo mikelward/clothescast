@@ -1314,6 +1314,12 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="weather_alert_level_red_description">Brīdinājums par ekstremāliem laikapstākļiem</string>
     <string name="weather_alert_until">Līdz %1$s</string>
     <string name="weather_alert_issued">Izdots %1$s</string>
+    <string name="weather_alert_disclaimer">Brīdinājumi tiek saņemti no oficiālajiem meteoroloģiskajiem dienestiem. ClothesCast negarantē, ka tie ir precīzi, pilnīgi vai aktuāli, un daži var trūkt. Pirms rīkojies, pārbaudi tos dienestā, kas tos izdevis, un ārkārtas situācijā seko vietējo iestāžu norādījumiem. ClothesCast neuzņemas atbildību par zaudējumiem, kas radušies, paļaujoties uz šiem brīdinājumiem.</string>
+    <string name="weather_alert_disclaimer_short">Bez garantijām, bez atbildības.</string>
+    <string name="weather_alert_disclaimer_show">Rādīt detaļas</string>
+    <string name="weather_alert_disclaimer_hide">Slēpt detaļas</string>
+    <string name="weather_alert_source_disclaimer">Avota atruna</string>
+    <string name="weather_alert_named_disclaimer">Atruna: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Atvērt %1$s</string>
     <string name="weather_alert_open_source_fallback">Detaļas</string>

@@ -1347,6 +1347,12 @@ surfaces.
     <string name="weather_alert_level_red_description">Упозорење на веома опасно време</string>
     <string name="weather_alert_until">До %1$s</string>
     <string name="weather_alert_issued">Издато %1$s</string>
+    <string name="weather_alert_disclaimer">Упозорења долазе од званичних метеоролошких служби. ClothesCast не гарантује да су тачна, потпуна или ажурна и неко може да пропусти. Пре него што нешто предузмеш, провери код службе која их издаје, а у хитним случајевима прати упутства локалних власти. ClothesCast не преузима одговорност ни за какву штету насталу ослањањем на ова упозорења.</string>
+    <string name="weather_alert_disclaimer_short">Без гаранција, без одговорности.</string>
+    <string name="weather_alert_disclaimer_show">Прикажи детаље</string>
+    <string name="weather_alert_disclaimer_hide">Сакриј детаље</string>
+    <string name="weather_alert_source_disclaimer">Одрицање одговорности извора</string>
+    <string name="weather_alert_named_disclaimer">Одрицање одговорности: %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Отвори %1$s</string>
     <string name="weather_alert_open_source_fallback">Детаљи</string>

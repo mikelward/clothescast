@@ -1399,6 +1399,12 @@ Not overridden by design:
     <string name="weather_alert_level_red_description">चरम मौसम चेतावनी</string>
     <string name="weather_alert_until">%1$s तक</string>
     <string name="weather_alert_issued">जारी %1$s</string>
+    <string name="weather_alert_disclaimer">चेतावनियाँ आधिकारिक मौसम सेवाओं से आती हैं। ClothesCast इनके सटीक, पूर्ण या अद्यतन होने की गारंटी नहीं देता, और कुछ छूट भी सकती हैं। कोई कदम उठाने से पहले जारी करने वाली सेवा से पुष्टि करें, और आपात स्थिति में स्थानीय अधिकारियों के निर्देशों का पालन करें। इन चेतावनियों पर निर्भर रहने से होने वाली किसी भी हानि के लिए ClothesCast कोई दायित्व स्वीकार नहीं करता।</string>
+    <string name="weather_alert_disclaimer_short">कोई गारंटी नहीं, कोई दायित्व नहीं।</string>
+    <string name="weather_alert_disclaimer_show">विवरण दिखाएँ</string>
+    <string name="weather_alert_disclaimer_hide">विवरण छुपाएँ</string>
+    <string name="weather_alert_source_disclaimer">स्रोत का अस्वीकरण</string>
+    <string name="weather_alert_named_disclaimer">%1$s का अस्वीकरण</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s खोलें</string>
     <string name="weather_alert_open_source_fallback">विवरण</string>

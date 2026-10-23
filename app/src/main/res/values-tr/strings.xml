@@ -1372,6 +1372,12 @@ displayed label localizes.
     <!-- A label, not a suffix: "%1$s'e kadar" would need vowel harmony with the time. -->
     <string name="weather_alert_until">Bitiş: %1$s</string>
     <string name="weather_alert_issued">Yayımlandı: %1$s</string>
+    <string name="weather_alert_disclaimer">Uyarılar resmî meteoroloji servislerinden gelir. ClothesCast bunların doğru, eksiksiz veya güncel olduğunu garanti etmez ve bazıları gözden kaçabilir. Harekete geçmeden önce yayımlayan servisle doğrula, acil durumda yerel yetkililerin talimatlarına uy. ClothesCast, bu uyarılara güvenilmesinden doğan hiçbir zarardan sorumlu değildir.</string>
+    <string name="weather_alert_disclaimer_short">Garanti yok, sorumluluk yok.</string>
+    <string name="weather_alert_disclaimer_show">Ayrıntıları göster</string>
+    <string name="weather_alert_disclaimer_hide">Ayrıntıları gizle</string>
+    <string name="weather_alert_source_disclaimer">Kaynağın sorumluluk reddi</string>
+    <string name="weather_alert_named_disclaimer">%1$s sorumluluk reddi</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s sayfasını aç</string>
     <string name="weather_alert_open_source_fallback">Ayrıntılar</string>

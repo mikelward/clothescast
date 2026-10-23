@@ -1312,6 +1312,12 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="weather_alert_level_red_description">Avís meteorològic extrem</string>
     <string name="weather_alert_until">Fins a %1$s</string>
     <string name="weather_alert_issued">Emès %1$s</string>
+    <string name="weather_alert_disclaimer">Els avisos provenen de serveis meteorològics oficials. ClothesCast no garanteix que siguin exactes, complets ni actualitzats, i en pot faltar algun. Comprova-ho amb el servei que els emet abans d\'actuar i, en una emergència, segueix les indicacions de les autoritats locals. ClothesCast no accepta cap responsabilitat per cap pèrdua derivada de confiar en aquests avisos.</string>
+    <string name="weather_alert_disclaimer_short">Sense garanties ni responsabilitat.</string>
+    <string name="weather_alert_disclaimer_show">Mostra els detalls</string>
+    <string name="weather_alert_disclaimer_hide">Amaga els detalls</string>
+    <string name="weather_alert_source_disclaimer">Avís legal de la font</string>
+    <string name="weather_alert_named_disclaimer">Avís legal de %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Obre %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalls</string>

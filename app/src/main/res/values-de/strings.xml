@@ -1523,6 +1523,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_level_red_description">Extreme Unwetterwarnung</string>
     <string name="weather_alert_until">Bis %1$s</string>
     <string name="weather_alert_issued">Ausgegeben %1$s</string>
+    <string name="weather_alert_disclaimer">Warnungen stammen von offiziellen Wetterdiensten. ClothesCast garantiert nicht, dass sie richtig, vollständig oder aktuell sind, und einige können fehlen. Prüfe sie beim ausgebenden Dienst, bevor du handelst, und folge im Notfall den Anweisungen der örtlichen Behörden. ClothesCast haftet nicht für Schäden, die daraus entstehen, dass man sich auf diese Warnungen verlässt.</string>
+    <string name="weather_alert_disclaimer_short">Ohne Gewähr, ohne Haftung.</string>
+    <string name="weather_alert_disclaimer_show">Details anzeigen</string>
+    <string name="weather_alert_disclaimer_hide">Details ausblenden</string>
+    <string name="weather_alert_source_disclaimer">Haftungsausschluss der Quelle</string>
+    <string name="weather_alert_named_disclaimer">Haftungsausschluss von %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s öffnen</string>
     <string name="weather_alert_open_source_fallback">Details</string>

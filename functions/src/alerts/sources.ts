@@ -13,9 +13,10 @@ export interface AlertSource {
    * CAP document. `cap-zip`: a zip of every alert in force, one CAP document
    * per file, named by its identifier (DWD). `nws`: the NWS active-alerts
    * GeoJSON, with zone shapes fetched from `api.weather.gov/zones` for
-   * alerts without a polygon.
+   * alerts without a polygon. `eccc`: ECCC's `weather-alerts` collection,
+   * a GeoJSON feature per region an alert covers.
    */
-  kind: "cap-atom" | "cap-zip" | "nws";
+  kind: "cap-atom" | "cap-zip" | "nws" | "eccc";
   /** How the source's CAP differs from the norm (served.ts → CapProfile). */
   profile?: "dwd";
   url: string;
@@ -95,6 +96,21 @@ const DWD: AlertSource = {
   disclaimer: { name: "DWD", url: "https://www.dwd.de/EN/service/legal_notice/legal_notice_node.html" },
 };
 
+// ECCC's End-use Licence: commercial use allowed if an alert's content and
+// intent aren't altered; credit "Data Source: Environment and Climate
+// Change Canada" and, where possible, link the licence, which carries its
+// no-warranty terms. A meaningful User-Agent; contact ECCC above 86,400
+// requests a day (one every 5 minutes is 288). All of Canada, every alert
+// type, in English and French.
+const ECCC: AlertSource = {
+  id: "eccc",
+  kind: "eccc",
+  url: "https://api.weather.gc.ca/collections/weather-alerts/items?f=json&limit=10000",
+  countries: ["CA"],
+  attribution: { name: "Data Source: Environment and Climate Change Canada", url: "https://weather.gc.ca" },
+  disclaimer: { name: "ECCC", url: "https://eccc-msc.github.io/open-data/licence/readme_en/" },
+};
+
 export const SOURCES: AlertSource[] = [
   meteoalarm("meteoalarm-gb", "united-kingdom", "GB", "Met Office"),
   meteoalarm("meteoalarm-no", "norway", "NO", "MET Norway"),
@@ -133,4 +149,5 @@ export const SOURCES: AlertSource[] = [
   meteoalarm("meteoalarm-hr", "croatia", "HR", "DHMZ"),
   NWS,
   DWD,
+  ECCC,
 ];

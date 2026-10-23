@@ -204,10 +204,6 @@ voice and the Google Weather proxy.
       but MeteoAlarm removed their region shapes (Israel's 2026-07-31);
       Andorra's feed was empty. Needed: shapes for whatever codes their
       warnings name, from MeteoAlarm or the national service.
-- [ ] **Canada.** ECCC's current-alerts collection on `api.weather.gc.ca`
-      returns every alert in force with its polygon in one call, like
-      NWS; it needs that host allowlisted. Datamart (`dd.weather.gc.ca`)
-      has only the individual messages by hour.
 - [ ] **New Zealand.** MetService's CAP feed (`alerts.metservice.com/cap/
       atom`, CC BY 4.0) was empty when checked; add it once a warning in
       force shows its entry and area format.

@@ -211,6 +211,27 @@ What the app's bug report shows for `GoogleWeather`:
 - JSON `{"error":"…"}`: the function itself refused (App Check, sign-in or
   quota), as listed above.
 
+## Alerts ingester
+
+`alertsIngest` runs every 5 minutes on Cloud Scheduler: it reads the
+official feeds in `src/alerts/sources.ts`, fetches the CAP documents that
+are new or changed, and publishes the alerts in force to the public
+`<projectId>-alerts` bucket as one gzipped JSON file per 1° tile plus
+`v1/index.json`. It takes no request and sees no user data. The file
+format is in `docs/ALERTS.md` → Architecture → "The published files".
+
+Create the bucket once before the first deploy (it needs `gcloud` signed in
+as a project owner):
+
+```sh
+make alerts-bucket PROJECT=<projectId>
+```
+
+That makes every file readable by name (not listable) and lets the
+functions' runtime account write. Logs: `firebase functions:log --only
+alertsIngest`; each run ends with an "Alerts ingested" line counting
+alerts, tiles written and deleted, and feeds that failed.
+
 ## Weather alerts proxy
 
 `weatherAlerts` forwards one page of Google's public weather alerts

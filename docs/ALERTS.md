@@ -31,7 +31,8 @@ unreachable); confirm them before building on them.
    precision. Victoria needs VicEmergency, which isn't CAP; it can follow
    later (maintainer, 2026-10-22). The same cron can take over NWS,
    MeteoAlarm and Environment Canada if cost or scale matters, since its
-   cost doesn't grow with users.
+   cost doesn't grow with users. Since 2026-10-23 it replaces Google
+   instead (maintainer): built, with no Google in it (Architecture B).
 4. **If notifications need to be minutes-fresh, push instead of poll**:
    the cron (or a feed listener) sends FCM messages to coarse-area topics.
    This is the only change that improves freshness; a server cron alone
@@ -633,12 +634,14 @@ its terms apply directly; revisit the titles then.
 
 ### B. Server cron over free feeds (phase 2)
 
-- Cloud Scheduler triggers a function every 5 minutes that pulls NWS (all
-  active alerts), MeteoAlarm (which carries the Met Office), Environment
-  Canada and the gap-fillers (VicEmergency first), normalizes them to CAP
-  fields, and writes one compact index (alerts plus polygons) to Cloud
-  Storage. The lookup function loads it and answers point-in-polygon
-  queries; Google handles the countries the feeds don't cover.
+- Cloud Scheduler triggers a function every 5 minutes that pulls the
+  vetted feeds (MeteoAlarm, which carries the Met Office, first; then NWS,
+  Environment Canada and the gap-fillers), normalizes them from CAP, and
+  publishes them to a public Cloud Storage bucket as one file per 1° tile
+  plus an index (see "The published files"). The phone downloads its own
+  tile and checks containment itself, so no coordinate leaves it. It
+  replaces Google rather than filling its gaps (maintainer, 2026-10-23):
+  no Google in it, and a place no source covers reads as unavailable.
 - **Cost**: effectively nil. Cloud Scheduler includes 3 free jobs per
   billing account, then $0.10 a job a month; invocations, compute and storage
   sit in free tiers. It does not grow with users.
@@ -666,11 +669,65 @@ its terms apply directly; revisit the titles then.
 - **Feed rules that shape it**: a User-Agent with a contact on every fetch
   (NWS, ECCC, DWD); NWS no more than every 30 seconds; ECCC by AMQPS rather
   than polling; JMA's per-minute feed without re-fetching files; MeteoAlarm by
-  WebSub or a poll every 3 minutes, to stay under its 5-minute average relay.
-  Keep each warning's original text, issuer, issue time and link.
+  WebSub or a poll every 5 minutes at most, which keeps its relay delay near
+  2.5 minutes on average and under its 10-minute cap. Keep each warning's
+  original text, issuer, issue time and link.
 - **Freshness**: no better than A on its own, because the device still polls.
 - **Effort**: one parser per feed, region-code geometry for MeteoAlarm and
   NWS zones, and per-feed terms to honor.
+
+#### The published files
+
+Built 2026-10-23 as `alertsIngest` (`functions/src/alerts/`); the bucket is
+`<projectId>-alerts`, made once with `make alerts-bucket PROJECT=…`. Files
+are gzipped JSON, readable by name by anyone (the bucket can't be listed),
+and every path carries the format version:
+
+- **`v1/index.json`**, rewritten every run, `Cache-Control: public,
+  max-age=60`: `generatedAt`, `tileDegrees` (1), each source's `id`,
+  `countries` (ISO 3166-1 alpha-2), `attribution` (name and link to show
+  beside its alerts), `lastSuccessAt` (when the feed and every document it
+  listed last loaded) and `error` (why the latest check was incomplete, or
+  null), and `tiles`, mapping each tile that has alerts to its file's hash.
+  A tile not listed has none. The app trusts the server for a country only
+  when a source lists it, and treats a source with an `error`, or an index
+  whose `generatedAt` is old, as unknown, not quiet.
+- **`v1/tiles/<lat>/<lon>/<hash>.json`**, keyed by the tile's south-west
+  corner (`51/-1` holds 51–52°N, 1°W–0°) and named by the first 16 hex
+  digits of its contents' SHA-256, so a file never changes once written
+  (`Cache-Control: public, max-age=86400, immutable`): `tile` and
+  `alerts`. Each alert carries
+  `id` (`<source>:<CAP identifier>`), `source`, `sent` (issue time), `onset`,
+  `expires`, `severity` (CAP's, or MeteoAlarm's color grade where it sends
+  one), `certainty`, `urgency`, `eventType` (a hazard keyword such as
+  `WIND`, the vocabulary `AlertHazards` reads), `issuer`, `polygons` (the
+  area is their union, as `AlertArea` reads it, since CAP shapes may
+  overlap; each is closed `[lat, lon]` rings, the outer boundary then any
+  holes, even-odd) and `texts`, one per language the issuer sent: `title`
+  (CAP `event`), `headline`, `description`, `instruction`, `areaName` and
+  `web`, all verbatim. An alert sits in every tile its bounding box touches,
+  widened by the app's 1 km containment slack so a phone just outside its
+  edge, across a tile line, still finds it; one wider than 1,000 tiles is
+  left out and logged.
+- A run writes only tile files that don't exist yet, then the index that
+  names them; a file is deleted an hour after the last index that named it,
+  so a phone holding any index from the last hour finds every tile it names.
+
+What it serves at first: MeteoAlarm's feeds that carry polygons, the UK,
+Norway, Sweden, Switzerland, Slovenia and Ukraine. The other MeteoAlarm
+countries name EMMA regions instead, and need boundary data first. A test
+run on 2026-10-23 published 121 alerts in 244 tiles in about 6 seconds;
+the index was 3.4 KB gzipped, the median tile 4 KB, the largest
+(Switzerland's municipal polygons) 79 KB. A run that only rereads the
+feeds takes about 2 seconds.
+
+Only public data goes in the bucket, the run's own state
+(`ingest-state/v1.json`: what each feed listed, so unchanged documents
+aren't fetched again, and when each tile file was last named) included. A feed that fails keeps its last alerts
+until they expire, and the index says so; so does a document that won't
+load, which is retried next run. The index is written with a generation
+precondition: a run that overlaps a newer one is refused before it
+publishes or deletes anything, and the newer view stands.
 
 ### C. Push (phase 3)
 

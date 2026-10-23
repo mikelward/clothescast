@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<!-- Trimmed from a MeteoAlarm CAP document for a Met Office warning, 2026-10-23 (terms equivalent to CC BY 4.0). -->
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>2.49.0.0.826.0.GB_261023090239_34b39a5a.v1.0.W</identifier>
+  <sender>https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings</sender>
+  <sent>2026-10-23T09:02:39+00:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>en-GB</language>
+    <category>Met</category>
+    <event>Amber wind warning</event>
+    <urgency>Future</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <onset>2026-10-24T20:00:00+00:00</onset>
+    <expires>2026-10-25T21:00:00+00:00</expires>
+    <senderName>UK Met Office</senderName>
+    <headline>The strongest winds are expected from Saturday evening.</headline>
+    <description>Very strong westerly winds are expected &amp; gusts to 80 mph in exposed coastal areas.
+
+For further details see https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings</description>
+    <instruction>Stay indoors as much as possible.</instruction>
+    <web>https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings</web>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>3; Orange; Severe</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>1; Wind</value>
+    </parameter>
+    <parameter>
+      <valueName>impacts</valueName>
+      <value>Flying debris is likely</value>
+    </parameter>
+    <parameter>
+      <valueName>impacts</valueName>
+      <value>Some roads and bridges likely to close</value>
+    </parameter>
+    <area>
+      <areaDesc>Strathclyde | SW Scotland, Lothian Borders</areaDesc>
+      <polygon>55.0,-4.5 55.0,-2.5 56.5,-2.5 56.5,-4.5 55.0,-4.5</polygon>
+    </area>
+  </info>
+</alert>

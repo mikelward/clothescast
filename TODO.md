@@ -244,16 +244,13 @@ voice and the Google Weather proxy.
       `functions/test/firestore-config.test.js`) a day or more after the
       deploy that removes the `weatherAlerts` proxy, once its last counters
       have expired.
-- [ ] **Design push for weather alerts.** Write up how an alert the server
-      finds reaches the device by FCM, for docs/ALERTS.md → Architecture → C
-      (maintainer, 2026-10-23). Settle: the topic per cell and the cell size
-      (privacy against FCM demoting high-priority messages that show no
-      notification, which coarse cells invite); the payload under 2 KB and
-      what the device fetches after; the catch-up pull when a device changes
-      cell, since alerts sent before it joined never arrive; subscribe and
-      unsubscribe on location change, with hysteresis; what Google keeps
-      (a coarse cell per install, dated); devices without Play services;
-      adding the FCM SDK; and the `PRIVACY.md` change.
+- [ ] **Decide and build push for weather alerts.** Designed in
+      docs/ALERTS.md → Architecture → C → Design: a topic per geohash-4
+      cell, sent only when an orange or red alert begins, waking the
+      phone's usual tile check; pull stays the backstop. Maintainer's
+      calls first: a separate "Faster alerts" switch (proposed, off by
+      default) or the alerts switch, and the cell size. Then the server
+      sends, the app subscribes, and `PRIVACY.md` says so.
 - [ ] **Try Xweather as a forecaster** (maintainer, 2026-10-23). Its Weather
       API has hourly, day/night and daily forecasts to 15 days, 5-minute
       steps for the next 2 hours, an Xcast feed with confidence ranges for

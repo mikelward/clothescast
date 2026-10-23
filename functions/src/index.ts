@@ -3,8 +3,9 @@ import {
   type Request,
   type Response as ExpressResponse,
 } from "firebase-functions/v2/https";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 import { setGlobalOptions } from "firebase-functions/v2";
-import { defineSecret } from "firebase-functions/params";
+import { defineSecret, projectID } from "firebase-functions/params";
 import { logger } from "firebase-functions";
 import { initializeApp } from "firebase-admin/app";
 import { getAppCheck } from "firebase-admin/app-check";
@@ -25,6 +26,9 @@ import {
 } from "./caller";
 import { excerpt, responseHasAudio, structuralEnvelope } from "./envelope";
 import { alertsQuery } from "./alerts-query";
+import { alertsBucketName, bucketStore } from "./alerts/bucket";
+import { ingest } from "./alerts/ingest";
+import { SOURCES } from "./alerts/sources";
 import { weatherQuery } from "./weather-query";
 import { errorCode, headerValue } from "./narrow";
 import { nextUtcMidnight, nextUtcMidnightIso, utcDayKey } from "./utc-day";
@@ -463,6 +467,32 @@ export const weatherAlerts = onRequest(
     quotaCollection: WEATHER_ALERTS_QUOTA_COLLECTION,
     dailyLimit: WEATHER_ALERTS_DAILY_LIMIT,
   }),
+);
+
+/**
+ * The alerts ingester (docs/ALERTS.md → Architecture → B): every 5 minutes,
+ * reads the official feeds in `alerts/sources.ts` and publishes the alerts
+ * in force to the public `<project>-alerts` bucket, one file per 1° tile
+ * plus an index. Takes no request and sees no user data. A run that
+ * overlaps a newer one is refused at the index, before it publishes or
+ * deletes anything; the next run starts clean.
+ */
+export const alertsIngest = onSchedule(
+  {
+    schedule: "every 5 minutes",
+    timeoutSeconds: 240,
+    memory: "512MiB",
+    retryCount: 0,
+  },
+  async () => {
+    await ingest({
+      sources: SOURCES,
+      store: bucketStore(alertsBucketName(projectID.value())),
+      fetch,
+      now: () => new Date(),
+      log: logger,
+    });
+  },
 );
 
 async function proxyGoogleWeather(

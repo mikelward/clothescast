@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Trimmed from MeteoAlarm's United Kingdom feed, 2026-10-23 (terms equivalent to CC BY 4.0). -->
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <id>tag:meteoalarm.org,2021-02-19:UK</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-10-23T10:06:28.683863Z</updated>
+  <entry>
+    <cap:polygon>55.0,-4.5 55.0,-2.5 56.5,-2.5 56.5,-4.5 55.0,-4.5</cap:polygon>
+    <cap:areaDesc>Strathclyde | SW Scotland, Lothian Borders</cap:areaDesc>
+    <cap:event>Amber wind warning</cap:event>
+    <cap:identifier>2.49.0.0.826.0.GB_261023090239_34b39a5a.v1.0.W</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.example.org/api/v1/warnings/feeds-united-kingdom/amber-wind"/>
+    <link title="United Kingdom" rel="related" href="https://meteoalarm.org?region=UK" hreflang="en"/>
+    <id>https://feeds.example.org/api/v1/warnings/feeds-united-kingdom/amber-wind?index_info=0&amp;index_area=0&amp;index_polygon=0</id>
+    <updated>2026-10-23T09:02:39Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>55.0,-4.5 55.0,-2.5 56.5,-2.5 56.5,-4.5 55.0,-4.5</cap:polygon>
+    <cap:identifier>2.49.0.0.826.0.GB_261023090239_34b39a5a.v1.0.W</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.example.org/api/v1/warnings/feeds-united-kingdom/amber-wind"/>
+    <id>https://feeds.example.org/api/v1/warnings/feeds-united-kingdom/amber-wind?index_info=0&amp;index_area=0&amp;index_polygon=1</id>
+    <updated>2026-10-23T09:02:39Z</updated>
+  </entry>
+  <entry>
+    <cap:identifier>2.49.0.0.826.0.GB_no_link</cap:identifier>
+    <id>https://feeds.example.org/api/v1/warnings/feeds-united-kingdom/no-link</id>
+    <updated>2026-10-23T09:00:00Z</updated>
+  </entry>
+</feed>

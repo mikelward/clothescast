@@ -1,7 +1,7 @@
 ---
 trigger: always_on
 alwaysApply: true
-last_modified: 2026-10-22
+last_modified: 2026-10-23
 ---
 
 # Agent guide for clothescast
@@ -111,10 +111,12 @@ than append, and delete rules that stopped biting.
 
 - **Every commit subject ships verbatim to Play's "What's new"** (`whatsnew-en-US`):
   CI bullets (`• `) the subjects since the last successful `main` run, oldest first, a
-  repeat shown once at its first position. So each subject is end-user copy: sentence
-  case, no jargon or scope prefix, ≤ ~80 chars (`Bigger outfit icons on the Today
-  screen`, not `:app + :core — glanceable outfit-preview icons`); module names, file
-  paths, reasoning and "fixes #123" go in the body.
+  repeat shown once at its first position. So title each like a changelog line
+  (maintainer, 2026-10-23): an imperative verb, then the feature in the user's words,
+  sentence case, ≤ ~80 chars, e.g. `Fix …`, `Improve …`, `Add …` (`Show bigger outfit
+  icons on the Today screen`, not `:app + :core — glanceable outfit-preview icons`), with
+  an optional parenthetical saying how. Scenario, mechanism, module names, file paths and
+  "fixes #123" go in the body. PR titles match.
 - **Prefix what ships nothing user-visible**; CI filters these out ("Prepare release
   notes" in `ci.yml`): `ci:`, `test:` (only tests/fixtures/snapshots — `src/test/`,
   `src/androidTest/`, `app/snapshots/`), `internal:` (tooling, project meta), `docs:`
@@ -225,9 +227,9 @@ than append, and delete rules that stopped biting.
   (Codex cloud), say it couldn't be verified.
 - **"Release notes since N"**: up to five `• ` end-user bullets in one code block for
   commits N+1..`origin/main` (freshly fetched; offline only from a complete local `main`,
-  saying they may be behind — a shallow one can't answer), ranked by what a user would
-  notice. Read bodies where a subject is unclear; one feature
-  per bullet; skip prefixed/docs/CI commits, dependency bumps (unless nothing else
+  saying they may be behind — a shallow one can't answer), worded as titles, ranked by
+  what the user risks without it (broken or wrong first, polish last). Read bodies where
+  unclear; one feature per bullet; skip prefixed/docs/CI commits, dependency bumps (unless nothing else
   changed — then one bullet says libraries were updated) and anything the range added then
   undid; describe a reworked feature by its final state. Range above, one line below naming what was omitted.
 - Skip your own webhook echoes silently (did *I* just post this body?).

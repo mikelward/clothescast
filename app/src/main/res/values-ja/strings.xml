@@ -1489,6 +1489,10 @@ the displayed label localizes.
     <string name="settings_alerts_countries_failed">リストを読み込めませんでした。</string>
     <string name="settings_alerts_countries_caveat">このリストは、完全な対応や今後の対応を保証するものではありません。</string>
     <string name="settings_alerts_status_waiting">警報を確認中…</string>
+    <string name="today_alerts_promo_title">気象警報を受け取る</string>
+    <string name="today_alerts_promo_body">現在地の公式警報を表示し、重大な警報は通知でお知らせします。</string>
+    <string name="today_alerts_promo_cta">警報の設定</string>
+    <string name="today_alerts_promo_dismiss">閉じる</string>
 
 
     <string name="notification_channel_weather_alerts_name">気象警報</string>

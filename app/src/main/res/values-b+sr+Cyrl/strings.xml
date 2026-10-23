@@ -1319,6 +1319,10 @@ surfaces.
     <string name="settings_alerts_countries_failed">Учитавање листе није успело.</string>
     <string name="settings_alerts_countries_caveat">Ова листа не гарантује потпуну ни будућу покривеност.</string>
     <string name="settings_alerts_status_waiting">Провера упозорења…</string>
+    <string name="today_alerts_promo_title">Добијај временска упозорења</string>
+    <string name="today_alerts_promo_body">Званична упозорења за место где се налазиш, уз обавештења за опасна.</string>
+    <string name="today_alerts_promo_cta">Подешавања упозорења</string>
+    <string name="today_alerts_promo_dismiss">Одбаци</string>
     <string name="notification_channel_weather_alerts_name">Временска упозорења</string>
     <string name="notification_channel_weather_alerts_description">Упозорења на опасно време за твоју локацију од званичних метеоролошких служби.</string>
     <!-- "Наранџасто упозорење на ветар": the level is a neuter adjective

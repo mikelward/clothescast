@@ -1470,6 +1470,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_alerts_countries_failed">Não foi possível carregar a lista.</string>
     <string name="settings_alerts_countries_caveat">Esta lista não garante cobertura completa nem futura.</string>
     <string name="settings_alerts_status_waiting">A verificar avisos…</string>
+    <string name="today_alerts_promo_title">Recebe avisos meteorológicos</string>
+    <string name="today_alerts_promo_body">Avisos oficiais para onde estiveres, com notificações para os graves.</string>
+    <string name="today_alerts_promo_cta">Definições de Avisos</string>
+    <string name="today_alerts_promo_dismiss">Dispensar</string>
 
 
     <string name="notification_channel_weather_alerts_name">Avisos meteorológicos</string>

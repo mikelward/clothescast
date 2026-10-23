@@ -153,6 +153,7 @@ fun ClothesCastNavHost(
                 onNavigateToFormat = { nav.navigate(FormatDest) },
                 onNavigateToVoice = { nav.navigate(VoiceDest) },
                 onNavigateToForecasters = { nav.navigate(ForecastersDest) },
+                onNavigateToAlerts = { nav.navigate(AlertsDest) },
             )
         }
 
@@ -345,6 +346,7 @@ private fun todayViewModelFactory(app: ClothesCastApplication) =
         geminiKeyConfigured = app.secureKeyStore.geminiKeyConfiguredFlow,
         geminiKeyNeedsReentry = app.secureKeyStore.geminiKeyNeedsReentryFlow,
         weatherAlerts = app.weatherAlertsStore.state,
+        alertsCoverage = { app.alertsCoverage()?.countries?.toSet() },
         onDismissWeatherAlert = app.weatherAlertsStore::dismiss,
     )
 

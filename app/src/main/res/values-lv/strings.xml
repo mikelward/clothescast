@@ -1283,6 +1283,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_alerts_countries_failed">Neizdevās ielādēt sarakstu.</string>
     <string name="settings_alerts_countries_caveat">Šis saraksts negarantē pilnu vai turpmāku pārklājumu.</string>
     <string name="settings_alerts_status_waiting">Pārbauda brīdinājumus…</string>
+    <string name="today_alerts_promo_title">Saņem laikapstākļu brīdinājumus</string>
+    <string name="today_alerts_promo_body">Oficiālie brīdinājumi tur, kur esi, ar paziņojumiem par bīstamajiem.</string>
+    <string name="today_alerts_promo_cta">Brīdinājumu iestatījumi</string>
+    <string name="today_alerts_promo_dismiss">Aizvērt</string>
 
 
     <string name="notification_channel_weather_alerts_name">Laikapstākļu brīdinājumi</string>

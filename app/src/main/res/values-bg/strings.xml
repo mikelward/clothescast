@@ -1328,6 +1328,10 @@ What is NOT overridden, by design:
     <string name="settings_alerts_countries_failed">Списъкът не можа да се зареди.</string>
     <string name="settings_alerts_countries_caveat">Този списък не гарантира пълно или бъдещо покритие.</string>
     <string name="settings_alerts_status_waiting">Проверка за предупреждения…</string>
+    <string name="today_alerts_promo_title">Получавай предупреждения за времето</string>
+    <string name="today_alerts_promo_body">Официални предупреждения за мястото, където си, с известия за опасните.</string>
+    <string name="today_alerts_promo_cta">Настройки за предупреждения</string>
+    <string name="today_alerts_promo_dismiss">Затвори</string>
     <string name="notification_channel_weather_alerts_name">Предупреждения за времето</string>
     <string name="notification_channel_weather_alerts_description">Предупреждения за опасно време за местоположението ти от официалните метеорологични служби.</string>
     <!-- "Оранжев код за вятър": the color code, as Bulgarian forecasts

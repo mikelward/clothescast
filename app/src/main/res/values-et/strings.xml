@@ -1285,6 +1285,10 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_alerts_countries_failed">Loendit ei õnnestunud laadida.</string>
     <string name="settings_alerts_countries_caveat">See loend ei taga täielikku ega tulevast katvust.</string>
     <string name="settings_alerts_status_waiting">Hoiatuste kontrollimine…</string>
+    <string name="today_alerts_promo_title">Saa ilmahoiatusi</string>
+    <string name="today_alerts_promo_body">Ametlikud hoiatused sinu asukoha kohta, ohtlike puhul ka teavitused.</string>
+    <string name="today_alerts_promo_cta">Hoiatuste seaded</string>
+    <string name="today_alerts_promo_dismiss">Sulge</string>
     <string name="notification_channel_weather_alerts_name">Ilmahoiatused</string>
     <string name="notification_channel_weather_alerts_description">Ametlike ilmateenistuste ohtliku ilma hoiatused sinu asukoha kohta.</string>
     <!-- "Oranž tuulehoiatus": level adjective + hazard as compound stem. -->

@@ -1396,6 +1396,10 @@ only the displayed label localizes.
     <string name="settings_alerts_countries_failed">Не удалось загрузить список.</string>
     <string name="settings_alerts_countries_caveat">Этот список не гарантирует полного или будущего охвата.</string>
     <string name="settings_alerts_status_waiting">Проверка предупреждений…</string>
+    <string name="today_alerts_promo_title">Получай предупреждения о погоде</string>
+    <string name="today_alerts_promo_body">Официальные предупреждения для места, где ты находишься, с уведомлениями об опасных.</string>
+    <string name="today_alerts_promo_cta">Настройки предупреждений</string>
+    <string name="today_alerts_promo_dismiss">Скрыть</string>
     <string name="notification_channel_weather_alerts_name">Предупреждения о погоде</string>
     <string name="notification_channel_weather_alerts_description">Предупреждения об опасной погоде для твоего местоположения от официальных метеослужб.</string>
     <!-- "Оранжевое предупреждение о ветре": the level is a neuter adjective

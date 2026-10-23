@@ -1389,6 +1389,10 @@ is unchanged; only the displayed label localizes.
     <string name="settings_alerts_countries_failed">Nie udało się wczytać listy.</string>
     <string name="settings_alerts_countries_caveat">Ta lista nie gwarantuje pełnego ani przyszłego zasięgu.</string>
     <string name="settings_alerts_status_waiting">Sprawdzanie ostrzeżeń…</string>
+    <string name="today_alerts_promo_title">Otrzymuj ostrzeżenia pogodowe</string>
+    <string name="today_alerts_promo_body">Oficjalne ostrzeżenia dla miejsca, w którym jesteś, z powiadomieniami o niebezpiecznych.</string>
+    <string name="today_alerts_promo_cta">Ustawienia ostrzeżeń</string>
+    <string name="today_alerts_promo_dismiss">Odrzuć</string>
     <string name="notification_channel_weather_alerts_name">Ostrzeżenia pogodowe</string>
     <string name="notification_channel_weather_alerts_description">Ostrzeżenia przed niebezpieczną pogodą dla Twojej lokalizacji od oficjalnych służb meteorologicznych.</string>
     <!-- "Pomarańczowe ostrzeżenie przed wiatrem": the level is a neuter

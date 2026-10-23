@@ -1389,6 +1389,10 @@ the displayed label localizes.
     <string name="settings_alerts_countries_failed">De lijst kon niet worden geladen.</string>
     <string name="settings_alerts_countries_caveat">Deze lijst garandeert geen volledige of toekomstige dekking.</string>
     <string name="settings_alerts_status_waiting">Controleren op waarschuwingen…</string>
+    <string name="today_alerts_promo_title">Ontvang weerwaarschuwingen</string>
+    <string name="today_alerts_promo_body">Officiële waarschuwingen voor waar je bent, met meldingen bij zwaar weer.</string>
+    <string name="today_alerts_promo_cta">Waarschuwingsinstellingen</string>
+    <string name="today_alerts_promo_dismiss">Sluiten</string>
     <string name="notification_channel_weather_alerts_name">Weerwaarschuwingen</string>
     <string name="notification_channel_weather_alerts_description">Waarschuwingen voor zwaar weer op je locatie, van officiële weerdiensten.</string>
     <!-- "Code oranje voor wind", as KNMI phrases its color codes. -->

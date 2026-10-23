@@ -1413,6 +1413,10 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_alerts_countries_failed">তালিকা লোড করা যায়নি।</string>
     <string name="settings_alerts_countries_caveat">এই তালিকা সম্পূর্ণ বা ভবিষ্যৎ কভারেজের নিশ্চয়তা দেয় না।</string>
     <string name="settings_alerts_status_waiting">সতর্কতা পরীক্ষা করা হচ্ছে…</string>
+    <string name="today_alerts_promo_title">আবহাওয়া সতর্কতা পান</string>
+    <string name="today_alerts_promo_body">আপনি যেখানে আছেন সেখানকার অফিসিয়াল সতর্কতা, গুরুতরগুলোর জন্য বিজ্ঞপ্তিসহ।</string>
+    <string name="today_alerts_promo_cta">সতর্কতা সেটিংস</string>
+    <string name="today_alerts_promo_dismiss">বন্ধ</string>
     <string name="notification_channel_weather_alerts_name">আবহাওয়া সতর্কতা</string>
     <string name="notification_channel_weather_alerts_description">অফিসিয়াল আবহাওয়া পরিষেবা থেকে আপনার অবস্থানের গুরুতর আবহাওয়া সতর্কতা।</string>
     <!-- "প্রবল বাতাসের কমলা সতর্কতা": hazards are in the genitive. -->

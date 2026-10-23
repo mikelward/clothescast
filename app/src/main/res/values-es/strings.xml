@@ -1469,6 +1469,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_countries_failed">No se pudo cargar la lista.</string>
     <string name="settings_alerts_countries_caveat">Esta lista no garantiza una cobertura completa ni futura.</string>
     <string name="settings_alerts_status_waiting">Comprobando avisos…</string>
+    <string name="today_alerts_promo_title">Recibe avisos meteorológicos</string>
+    <string name="today_alerts_promo_body">Avisos oficiales para donde estés, con notificaciones para los importantes.</string>
+    <string name="today_alerts_promo_cta">Ajustes de Avisos</string>
+    <string name="today_alerts_promo_dismiss">Descartar</string>
 
 
     <string name="notification_channel_weather_alerts_name">Avisos meteorológicos</string>

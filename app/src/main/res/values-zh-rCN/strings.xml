@@ -1488,6 +1488,10 @@ label localizes.
     <string name="settings_alerts_countries_failed">无法加载列表。</string>
     <string name="settings_alerts_countries_caveat">此列表不保证完整或未来的覆盖范围。</string>
     <string name="settings_alerts_status_waiting">正在检查预警…</string>
+    <string name="today_alerts_promo_title">接收天气预警</string>
+    <string name="today_alerts_promo_body">显示你所在位置的官方预警，严重预警还会发送通知。</string>
+    <string name="today_alerts_promo_cta">预警设置</string>
+    <string name="today_alerts_promo_dismiss">关闭</string>
 
 
     <string name="notification_channel_weather_alerts_name">天气预警</string>

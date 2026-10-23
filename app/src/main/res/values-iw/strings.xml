@@ -1336,6 +1336,10 @@ standard in Israeli digital communication.
     <string name="settings_alerts_countries_failed">לא ניתן היה לטעון את הרשימה.</string>
     <string name="settings_alerts_countries_caveat">רשימה זו אינה מבטיחה כיסוי מלא או עתידי.</string>
     <string name="settings_alerts_status_waiting">בודק אזהרות…</string>
+    <string name="today_alerts_promo_title">קבלת אזהרות מזג אוויר</string>
+    <string name="today_alerts_promo_body">אזהרות רשמיות למיקום שלך, עם התראות על החמורות שבהן.</string>
+    <string name="today_alerts_promo_cta">הגדרות אזהרות</string>
+    <string name="today_alerts_promo_dismiss">סגור</string>
 
 
     <string name="notification_channel_weather_alerts_name">אזהרות מזג אוויר</string>

@@ -1341,6 +1341,10 @@ they work correctly in both the single-band and range templates.
     <string name="settings_alerts_countries_failed">تعذّر تحميل القائمة.</string>
     <string name="settings_alerts_countries_caveat">لا تضمن هذه القائمة تغطية كاملة أو مستقبلية.</string>
     <string name="settings_alerts_status_waiting">جارٍ التحقق من التنبيهات…</string>
+    <string name="today_alerts_promo_title">احصل على تنبيهات الطقس</string>
+    <string name="today_alerts_promo_body">تنبيهات رسمية لمكان وجودك، مع إشعارات بالشديدة منها.</string>
+    <string name="today_alerts_promo_cta">إعدادات التنبيهات</string>
+    <string name="today_alerts_promo_dismiss">إغلاق</string>
 
 
     <string name="notification_channel_weather_alerts_name">تنبيهات الطقس</string>

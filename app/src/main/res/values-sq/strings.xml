@@ -1197,6 +1197,10 @@
     <string name="settings_alerts_countries_failed">Lista nuk u ngarkua dot.</string>
     <string name="settings_alerts_countries_caveat">Kjo listë nuk garanton mbulim të plotë apo të ardhshëm.</string>
     <string name="settings_alerts_status_waiting">Po kontrollohen paralajmërimet…</string>
+    <string name="today_alerts_promo_title">Merr paralajmërimet e motit</string>
+    <string name="today_alerts_promo_body">Paralajmërime zyrtare për vendin ku je, me njoftime për ato të rënda.</string>
+    <string name="today_alerts_promo_cta">Cilësimet e paralajmërimeve</string>
+    <string name="today_alerts_promo_dismiss">Hiq</string>
 
 
     <string name="notification_channel_weather_alerts_name">Paralajmërimet e motit</string>

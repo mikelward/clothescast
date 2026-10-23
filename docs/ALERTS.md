@@ -6,8 +6,9 @@ off it a day later (maintainer): Google's terms allow caching alerts for an
 hour and may bar weather apps outright (Sources → Google). The app now
 reads only the server ingester's files (Architecture B; "The published
 files"), with no Google anywhere: a place no source covers says alerts
-aren't available. The `weatherAlerts` proxy and the Today alerts promo are
-gone, and alerts need no sign-in.
+aren't available. The `weatherAlerts` proxy is gone, and alerts need no
+sign-in; the Today alerts promo is back, only where a source covers the
+place.
 
 Proposal, 2026-10-22. An earlier attempt called an
 Open-Meteo `/v1/warnings` endpoint that does not exist; every fetch 404'd into
@@ -183,8 +184,16 @@ Maintainer's design (2026-10-22):
 - **ClothesCast's disclaimer** under the switch, shown whether alerts are
   on or off: the same one line and "Show details" as on each card, without
   a source link.
-- **No promo card on Today**: the "Get weather alerts" card shown to
-  signed-in users with alerts off was removed (maintainer, 2026-10-23).
+- **A promo card on Today**, "Get weather alerts", opening the Alerts
+  settings: shown while alerts are off and only where a source covers the
+  forecast place's country (maintainer, 2026-10-23: nobody is invited
+  where alerts can't work), so an unknown country or an index that can't
+  be read shows none. The covered countries are read from the index as
+  Settings' "Current countries and regions" list reads them (only sources
+  whose last check succeeded), at most once a Today screen and only while
+  the card could show; nothing about the location is sent. Its X or its
+  button retires it for good (like "Try Google forecasts"). It was dropped
+  with Google's alerts, when it was shown to anyone signed in with Google.
 - **Later: on by default**, if it can be done without a sign-in prompt and
   at an acceptable cost (`TODO.md`).
 
@@ -222,6 +231,10 @@ are the issuer's text, shown unedited and possibly not translated.
 | `settings_alerts_notify_none` | None | |
 | `settings_alerts_channel` | Alert sound and lock screen | Warning sound and lock screen |
 | `settings_alerts_status_none` | No alerts for this location. Last checked %1$s | No warnings for this location. Last checked %1$s |
+| `today_alerts_promo_title` | Get weather alerts | Get weather warnings |
+| `today_alerts_promo_body` | Official alerts for where you are, with notifications for severe ones. | Official warnings for where you are, with notifications for severe ones. |
+| `today_alerts_promo_cta` | Alerts settings | Warnings settings |
+| `today_alerts_promo_dismiss` | Dismiss | |
 | `weather_alert_issued` | Issued %1$s | |
 | `weather_alert_disclaimer_short` | No guarantees, no liability. | |
 | `weather_alert_disclaimer_show`, `_hide` | Show details, Hide details | |

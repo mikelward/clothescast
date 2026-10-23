@@ -1331,6 +1331,10 @@ default English (matching values-pl / values-uk).
     <string name="settings_alerts_countries_failed">Učitavanje liste nije uspelo.</string>
     <string name="settings_alerts_countries_caveat">Ova lista ne garantuje potpunu ni buduću pokrivenost.</string>
     <string name="settings_alerts_status_waiting">Provera upozorenja…</string>
+    <string name="today_alerts_promo_title">Dobijaj vremenska upozorenja</string>
+    <string name="today_alerts_promo_body">Zvanična upozorenja za mesto gde se nalaziš, uz obaveštenja za opasna.</string>
+    <string name="today_alerts_promo_cta">Podešavanja upozorenja</string>
+    <string name="today_alerts_promo_dismiss">Odbaci</string>
     <string name="notification_channel_weather_alerts_name">Vremenska upozorenja</string>
     <string name="notification_channel_weather_alerts_description">Upozorenja na opasno vreme za tvoju lokaciju od zvaničnih meteoroloških službi.</string>
     <!-- "Narandžasto upozorenje na vetar": the level is a neuter adjective

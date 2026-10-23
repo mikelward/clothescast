@@ -1282,6 +1282,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_alerts_countries_failed">No s\'ha pogut carregar la llista.</string>
     <string name="settings_alerts_countries_caveat">Aquesta llista no garanteix una cobertura completa ni futura.</string>
     <string name="settings_alerts_status_waiting">Comprovant els avisos…</string>
+    <string name="today_alerts_promo_title">Rep avisos meteorològics</string>
+    <string name="today_alerts_promo_body">Avisos oficials allà on siguis, amb notificacions per als importants.</string>
+    <string name="today_alerts_promo_cta">Configuració d\'Avisos</string>
+    <string name="today_alerts_promo_dismiss">Descarta</string>
 
 
     <string name="notification_channel_weather_alerts_name">Avisos meteorològics</string>

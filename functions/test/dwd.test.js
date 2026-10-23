@@ -40,7 +40,7 @@ test("DWD's excluded parts and event codes are read", () => {
   const [event, communeA] = info.areas;
   assert.equal(event.rings.length, 1);
   assert.deepEqual(event.holes, [[[50.4, 8.4], [50.4, 8.6], [50.6, 8.6], [50.6, 8.4], [50.4, 8.4]]]);
-  assert.deepEqual(communeA, { areaDesc: "Gemeinde A", rings: [], holes: [] });
+  assert.deepEqual(communeA, { areaDesc: "Gemeinde A", rings: [], holes: [], geocodes: { WARNCELLID: ["806411000"] } });
 });
 
 test("a DWD warning is served a grade up, with its hazard group and its hole", () => {

@@ -20,6 +20,8 @@ export interface CapArea {
    * geocodes (islands, lakes), holes in the polygon around them.
    */
   holes: LatLon[][];
+  /** `<geocode>` values by name, in document order (MeteoAlarm's `EMMA_ID`). */
+  geocodes: Record<string, string[]>;
 }
 
 export interface CapInfo {
@@ -145,13 +147,14 @@ function parseArea(node: Node): CapArea {
     const ring = parseCircle(raw);
     if (ring) rings.push(ring);
   }
+  const geocodes = valuesByName(nodes(node.geocode));
   const holes: LatLon[][] = [];
-  for (const geocode of nodes(node.geocode)) {
-    const raw = text(geocode.valueName) === "EXCLUDE_POLYGON" ? text(geocode.value) : null;
-    const ring = raw ? parsePolygon(raw) : null;
+  for (const raw of geocodes.EXCLUDE_POLYGON ?? []) {
+    const ring = parsePolygon(raw);
     if (ring) holes.push(ring);
   }
-  return { areaDesc: text(node.areaDesc), rings, holes };
+  delete geocodes.EXCLUDE_POLYGON;
+  return { areaDesc: text(node.areaDesc), rings, holes, geocodes };
 }
 
 function valuesByName(list: Node[]): Record<string, string[]> {

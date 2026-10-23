@@ -194,6 +194,32 @@ voice and the Google Weather proxy.
       card shows the issue time and the source's credit, and a stale index
       or an incomplete source reads as unknown, not quiet. No Google: a
       place no source covers reads as unavailable (maintainer, 2026-10-23).
+- [ ] **Croatia's warnings.** Its MeteoAlarm feed names county regions
+      (EMMA_ID HR011–HR031) that neither MeteoAlarm's region shapes nor its
+      aliases table has; the shapes list only HR001–HR008 and the marine
+      HR801–HR806, so every Croatian warning would be unplaceable. Needed,
+      either: MeteoAlarm publishing shapes or aliases for HR011–HR031 (ask
+      meteoalarm@geosphere.at, its Redistribution Hub contact), or county
+      boundaries from an open source whose licence allows republishing
+      (Croatia's State Geodetic Administration), matched by county name.
+      Then add `meteoalarm("meteoalarm-hr", "croatia", "HR", "DHMZ")`.
+- [ ] **Bosnia and Herzegovina's warnings.** Its MeteoAlarm feed comes from
+      Republika Srpska's service only, so listing the country would read
+      "no alerts" across the Federation of Bosnia and Herzegovina whatever
+      its service (FHMZ) warns. Needed: FHMZ's own warnings feed (check the
+      WMO alerting-authority register) with terms that allow use, or
+      coverage the index can declare per region rather than per country.
+- [ ] **Andorra's and Israel's warnings.** Their MeteoAlarm feeds exist,
+      but MeteoAlarm removed their region shapes (Israel's 2026-07-31);
+      Andorra's feed was empty. Needed: shapes for whatever codes their
+      warnings name, from MeteoAlarm or the national service.
+- [ ] **Canada.** ECCC's current-alerts collection on `api.weather.gc.ca`
+      returns every alert in force with its polygon in one call, like
+      NWS; it needs that host allowlisted. Datamart (`dd.weather.gc.ca`)
+      has only the individual messages by hour.
+- [ ] **New Zealand.** MetService's CAP feed (`alerts.metservice.com/cap/
+      atom`, CC BY 4.0) was empty when checked; add it once a warning in
+      force shows its entry and area format.
 - [ ] **Clip tile rings to their tile.** Each tile file carries every
       alert's whole area, so where many zoned NWS alerts overlap a tile
       reaches 190 KB gzipped (docs/ALERTS.md → The published files). Clip

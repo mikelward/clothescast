@@ -747,11 +747,12 @@ and every path carries the format version:
   names them; a file is deleted an hour after the last index that named it,
   so a phone holding any index from the last hour finds every tile it names.
 
-What it serves: MeteoAlarm's feeds that carry polygons, the UK, Norway,
-Sweden, Switzerland, Slovenia and Ukraine; and the US with its territories
-from NWS (`api.weather.gov/alerts/active`, actual alerts and updates); and
-Germany from DWD. The other MeteoAlarm countries name EMMA regions instead,
-and need boundary data first. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
+What it serves: MeteoAlarm's feeds for 34 countries, placed from their
+polygons or from MeteoAlarm's region shapes where they name regions (all
+of MeteoAlarm but Germany, Croatia, Bosnia and Herzegovina, Andorra and
+Israel); the US with its territories from NWS
+(`api.weather.gov/alerts/active`, actual alerts and updates); and Germany
+from DWD. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
 tiles in about 6 seconds; the index was 3.4 KB gzipped, the median tile
 4 KB, the largest (Switzerland's municipal polygons) 79 KB. A run that only
 rereads the feeds takes about 2 seconds.
@@ -793,6 +794,27 @@ data. A test run on 2026-10-23: 46 warnings (7 coastal left out) in 65
 tiles in about 5 seconds, 2 on a rerun; the median tile 28 KB gzipped
 (about 20 overlapping wind warnings, each in eight languages), the
 largest 55 KB.
+
+**MeteoAlarm regions.** Most MeteoAlarm countries name regions instead of
+drawing areas: by `EMMA_ID`, or by NUTS or FIPS code (France, Ireland,
+Belgium, Bulgaria, Hungary, North Macedonia, Romania). MeteoAlarm's
+Redistribution Hub page (read through its CMS,
+`cms-visualization.meteoalarm.org/api/v1/content-pages/redistribution-hub`)
+links the current files: the region shapes on GitLab
+(`MeteoAlarm_Geocodes_<date>.json`: 33 MB, 2,006 regions in 30 countries)
+and an aliases table on Google Drive mapping NUTS and FIPS codes to them.
+The shapes are simplified to within 0.002° (143,000 points, a median of 34
+a region) and kept in the bucket by geocode type and code
+(`regions/v1/<type>/<code>.json`, 2,773 in all), refreshed after a month.
+The files are downloaded at most once a day, so a region missing from them
+marks the check incomplete without a download every run; the download
+peaks near 360 MB of memory, hence the function's 1 GiB. Left out
+(`TODO.md`): Croatia names county regions (HR011–HR031) the shapes don't
+have; Bosnia and Herzegovina's feed is one entity's service only; Andorra
+and Israel have no shapes. A live run of every source on 2026-10-23: 596
+alerts in 1,256 tiles in about 29 seconds (with the region download), 7
+on a rerun; the median tile 10 KB gzipped, the 90th percentile 34 KB, the
+largest 190 KB (NWS); the index 18 KB gzipped and the state 1.7 MB.
 
 Only public data goes in the bucket, the run's own state
 (`ingest-state/v1.json`: what each feed listed, so unchanged documents

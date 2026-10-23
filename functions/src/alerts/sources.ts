@@ -42,11 +42,11 @@ export const METEOALARM_DISCLAIMER =
 // MeteoAlarm's terms (docs/ALERTS.md → Sources): credit the national
 // service for one country's warnings and link to meteoalarm.org. Listed are
 // the countries whose feeds draw polygons or name regions whose shapes
-// MeteoAlarm publishes, by EMMA, NUTS or FIPS code (regions.ts). Left out
-// (TODO.md): Germany, which comes from DWD and its own drawn areas; Croatia,
-// whose feed names county regions the shapes lack; Bosnia and Herzegovina,
-// whose feed is one entity's service; and Andorra and Israel, which have no
-// shapes.
+// MeteoAlarm publishes, by EMMA, NUTS or FIPS code (regions.ts), plus
+// Croatia, whose county codes the shapes lack and ClothesCast carries
+// (bundled-regions.ts). Left out (TODO.md): Germany, which comes from DWD
+// and its own drawn areas; Bosnia and Herzegovina, whose feed is one
+// entity's service; and Andorra and Israel, which have no shapes.
 function meteoalarm(id: string, slug: string, country: string, issuer: string): AlertSource {
   return {
     id,
@@ -130,6 +130,7 @@ export const SOURCES: AlertSource[] = [
   meteoalarm("meteoalarm-mt", "malta", "MT", "Malta Met Office"),
   meteoalarm("meteoalarm-pl", "poland", "PL", "IMGW-PIB"),
   meteoalarm("meteoalarm-sk", "slovakia", "SK", "SHMU"),
+  meteoalarm("meteoalarm-hr", "croatia", "HR", "DHMZ"),
   NWS,
   DWD,
 ];

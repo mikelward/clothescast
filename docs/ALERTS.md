@@ -792,10 +792,10 @@ and every path carries the format version:
   names them; a file is deleted an hour after the last index that named it,
   so a phone holding any index from the last hour finds every tile it names.
 
-What it serves: MeteoAlarm's feeds for 34 countries, placed from their
-polygons or from MeteoAlarm's region shapes where they name regions (all
-of MeteoAlarm but Germany, Croatia, Bosnia and Herzegovina, Andorra and
-Israel); the US with its territories from NWS
+What it serves: MeteoAlarm's feeds for 35 countries, placed from their
+polygons or from MeteoAlarm's region shapes where they name regions, and
+for Croatia from county shapes the ingester carries (all of MeteoAlarm but
+Germany, Bosnia and Herzegovina, Andorra and Israel); the US with its territories from NWS
 (`api.weather.gov/alerts/active`, actual alerts and updates); and Germany
 from DWD. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
 tiles in about 6 seconds; the index was 3.4 KB gzipped, the median tile
@@ -853,9 +853,15 @@ a region) and kept in the bucket by geocode type and code
 (`regions/v1/<type>/<code>.json`, 2,773 in all), refreshed after a month.
 The files are downloaded at most once a day, so a region missing from them
 marks the check incomplete without a download every run; the download
-peaks near 360 MB of memory, hence the function's 1 GiB. Left out
-(`TODO.md`): Croatia names county regions (HR011–HR031) the shapes don't
-have; Bosnia and Herzegovina's feed is one entity's service only; Andorra
+peaks near 360 MB of memory, hence the function's 1 GiB. Croatia names
+county regions (EMMA_ID HR011–HR031, or their NUTS3 codes) the shapes
+don't have, so the ingester carries those 21 counties itself
+(`bundled-regions.ts`, 17 KB gzipped): Natural Earth's public-domain 1:10m
+admin-1 boundaries, matched by ISO 3166-2 number (EMMA_ID HR0xx is HR-(xx −
+10)), with its mislabeled Požega-Slavonia corrected, rebuilt by
+`functions/scripts/make-croatia-regions.js`. Its coastline sits up to about
+0.5 km off the real one, inside the app's 1 km slack. Left out
+(`TODO.md`): Bosnia and Herzegovina's feed is one entity's service only; Andorra
 and Israel have no shapes. A live run of every source on 2026-10-23: 596
 alerts in 1,256 tiles in about 29 seconds (with the region download), 7
 on a rerun; the median tile 10 KB gzipped, the 90th percentile 34 KB, the

@@ -1348,6 +1348,10 @@ displayed label localizes.
     <string name="settings_alerts_countries_failed">Luettelon lataus epäonnistui.</string>
     <string name="settings_alerts_countries_caveat">Tämä luettelo ei takaa täyttä eikä tulevaa kattavuutta.</string>
     <string name="settings_alerts_status_waiting">Tarkistetaan varoituksia…</string>
+    <string name="today_alerts_promo_title">Ota säävaroitukset käyttöön</string>
+    <string name="today_alerts_promo_body">Sijaintisi viralliset varoitukset ja ilmoitukset vakavista.</string>
+    <string name="today_alerts_promo_cta">Varoitukset-asetukset</string>
+    <string name="today_alerts_promo_dismiss">Sulje</string>
     <string name="notification_channel_weather_alerts_name">Säävaroitukset</string>
     <string name="notification_channel_weather_alerts_description">Virallisten sääpalvelujen vakavat säävaroitukset sijainnillesi.</string>
     <!-- "Oranssi tuulivaroitus": level adjective + hazard as compound stem, as FMI phrases it. -->

@@ -1503,6 +1503,10 @@ label localises.
     <string name="settings_alerts_countries_failed">無法載入清單。</string>
     <string name="settings_alerts_countries_caveat">此清單不保證完整或未來的涵蓋範圍。</string>
     <string name="settings_alerts_status_waiting">正在檢查特報…</string>
+    <string name="today_alerts_promo_title">接收天氣特報</string>
+    <string name="today_alerts_promo_body">顯示你所在位置的官方特報，嚴重特報還會傳送通知。</string>
+    <string name="today_alerts_promo_cta">特報設定</string>
+    <string name="today_alerts_promo_dismiss">關閉</string>
 
 
     <string name="notification_channel_weather_alerts_name">天氣特報</string>

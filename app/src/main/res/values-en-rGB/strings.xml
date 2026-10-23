@@ -57,6 +57,9 @@ full re-translation.
     <string name="settings_alerts_countries_failed">Couldn\'t load the list.</string>
     <string name="settings_alerts_countries_caveat">This list doesn\'t guarantee full or future coverage.</string>
     <string name="settings_alerts_status_waiting">Checking for warnings…</string>
+    <string name="today_alerts_promo_title">Get weather warnings</string>
+    <string name="today_alerts_promo_body">Official warnings for where you are, with notifications for severe ones.</string>
+    <string name="today_alerts_promo_cta">Warnings settings</string>
     <string name="notification_channel_weather_alerts_name">Weather warnings</string>
     <string name="notification_channel_weather_alerts_description">Severe weather warnings for your location from official weather services.</string>
     <string name="weather_alert_title_fallback">Weather warning</string>

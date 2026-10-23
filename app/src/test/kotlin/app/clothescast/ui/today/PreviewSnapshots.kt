@@ -620,6 +620,7 @@ class PreviewSnapshots {
     @Test fun play_promo_card() = capture { PlayPromoCardPreview() }
     @Test fun gemini_tts_promo_card() = capture { GeminiTtsPromoCardPreview() }
     @Test fun google_forecast_promo_card() = capture { GoogleForecastPromoCardPreview() }
+    @Test fun weather_alerts_promo_card() = capture { WeatherAlertsPromoCardPreview() }
     @Test fun weather_alert_cards() = capture { WeatherAlertCardsPreview() }
     @Test fun weather_alert_cards_dark() = capture { WeatherAlertCardsDarkPreview() }
     @Test fun weather_alert_levels() = capture { WeatherAlertLevelsPreview() }

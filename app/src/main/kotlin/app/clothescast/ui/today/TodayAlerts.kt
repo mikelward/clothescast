@@ -57,8 +57,18 @@ import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.data.WeatherAlertsState
 import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.settings.openUrl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import java.time.Instant
 import java.time.ZoneId
+import java.util.Locale
 
 /** What Today shows of weather alerts (docs/ALERTS.md → What the user sees). */
 data class TodayAlertsState(
@@ -66,6 +76,8 @@ data class TodayAlertsState(
     val alerts: List<RelevantAlert> = emptyList(),
     /** Those with a card on Today: [alerts] less the ones dismissed unchanged. */
     val cards: List<RelevantAlert> = alerts,
+    /** Alerts off, the promo not yet dismissed, and a source covering the place's country. */
+    val promoVisible: Boolean = false,
     /** Alerts on at a level that posts notifications, so the permission matters. */
     val notifies: Boolean = false,
 ) {
@@ -97,14 +109,52 @@ internal fun WeatherAlertsState.onScreen(
 internal fun WeatherAlertsState.undismissed(alerts: List<RelevantAlert>): List<RelevantAlert> =
     alerts.filterNot { isDismissed(it) }
 
+/**
+ * Whether the "Get weather alerts" promo shows: alerts off, not dismissed,
+ * and [location]'s country among those some source [covered] (maintainer,
+ * 2026-10-23: only where alerts work). An unknown country or unread
+ * coverage invites nobody.
+ */
+internal fun alertsPromoVisible(
+    alertsOn: Boolean,
+    dismissed: Boolean,
+    location: Location?,
+    covered: Set<String>?,
+): Boolean {
+    if (alertsOn || dismissed) return false
+    val country = location?.countryCode?.uppercase(Locale.ROOT) ?: return false
+    return covered?.contains(country) == true
+}
+
+/**
+ * The covered countries while [couldShow] (the promo could show), else null:
+ * null at first, then what [read] returns. [read] runs at most once in this
+ * scope, the first time it's needed, so the index is fetched only for
+ * someone the promo might invite.
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+internal fun CoroutineScope.coverageWhile(
+    couldShow: Flow<Boolean>,
+    read: suspend () -> Set<String>?,
+): Flow<Set<String>?> {
+    val once = async(start = CoroutineStart.LAZY) { read() }
+    return couldShow.distinctUntilChanged().flatMapLatest { could ->
+        if (could) flow { emit(null); emit(once.await()) } else flowOf(null)
+    }
+}
+
 /** Today's alerts plus the actions its cards take, for the pages that draw them. */
 internal class TodayAlertsUi(
     val state: TodayAlertsState,
+    val onOpenSettings: () -> Unit,
+    val onDismissPromo: () -> Unit,
     val onDismissAlert: (RelevantAlert) -> Unit,
 ) {
     /** The same, minus the alerts: for pages past the current period. */
     fun withoutAlerts(): TodayAlertsUi = TodayAlertsUi(
         state.copy(alerts = emptyList(), cards = emptyList()),
+        onOpenSettings,
+        onDismissPromo,
         onDismissAlert,
     )
 }
@@ -113,7 +163,7 @@ internal class TodayAlertsUi(
  * Provided once by [TodayScreen] so the banner stack, the alert cards and the
  * conditions strip read one view without threading it through every page.
  */
-internal val LocalTodayAlerts = compositionLocalOf { TodayAlertsUi(TodayAlertsState(), {}) }
+internal val LocalTodayAlerts = compositionLocalOf { TodayAlertsUi(TodayAlertsState(), {}, {}, {}) }
 
 /** How many alert cards show before the rest fold behind "N more alerts". */
 private const val ALERTS_SHOWN = 3
@@ -284,5 +334,64 @@ private fun linkified(text: String, linkColor: Color): AnnotatedString {
             at = link.range.last + 1
         }
         append(text, at, text.length)
+    }
+}
+
+/**
+ * "Get weather alerts": shown while alerts are off where a source covers
+ * the place's country ([TodayAlertsState.promoVisible]), until dismissed or
+ * followed.
+ * The CTA opens Alerts settings, where the switch lives.
+ */
+@Composable
+internal fun WeatherAlertsPromoCard(
+    visible: Boolean,
+    onOpenAlerts: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (!visible) return
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 4.dp, bottom = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.today_alerts_promo_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = onDismiss) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.today_alerts_promo_dismiss),
+                    )
+                }
+            }
+            Text(
+                text = stringResource(R.string.today_alerts_promo_body),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(end = 12.dp),
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = onOpenAlerts) {
+                    Text(stringResource(R.string.today_alerts_promo_cta))
+                }
+            }
+        }
     }
 }

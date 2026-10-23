@@ -198,6 +198,7 @@ fun TodayScreen(
     onNavigateToFormat: () -> Unit = onNavigateToSettings,
     onNavigateToVoice: () -> Unit = onNavigateToSettings,
     onNavigateToForecasters: () -> Unit = onNavigateToSettings,
+    onNavigateToAlerts: () -> Unit = onNavigateToSettings,
     // Pager page to open on, from the Today deep link's `?page=` query. The
     // feels-like home-screen widgets deep-link to page 0 (current period) and
     // page 2 (7-day). rememberPagerState only reads this on first composition,
@@ -238,6 +239,12 @@ fun TodayScreen(
 
     val alertsUi = TodayAlertsUi(
         state = alerts,
+        onOpenSettings = {
+            // Following the CTA retires the promo, as the other promos' do.
+            viewModel.dismissWeatherAlertsPromoCard()
+            onNavigateToAlerts()
+        },
+        onDismissPromo = viewModel::dismissWeatherAlertsPromoCard,
         onDismissAlert = viewModel::dismissWeatherAlert,
     )
     Scaffold(
@@ -815,6 +822,7 @@ private fun BannerStack(
         playPromoEligible = state.playPromoCardVisible,
         geminiPromoEligible = state.geminiTtsPromoCardVisible,
         googleForecastPromoEligible = state.googleForecastPromoCardVisible,
+        weatherAlertsPromoEligible = alertsUi.state.promoVisible,
         celebrationEligible = state.celebrationCardVisible,
         hasForecast = state.thisPeriodInsight != null,
     )
@@ -868,6 +876,17 @@ private fun BannerStack(
             onOpenClothes()
         },
         onDismiss = onDismissClothesPromoCard,
+        modifier = bannerModifier,
+    )
+    // "Get weather alerts": with alerts still off, where a source covers the
+    // place's country, so nobody is invited where they can't work (maintainer,
+    // 2026-10-23). Right after the clothes promo: official warnings matter
+    // more than the setup nudges below. The CTA opens Alerts settings and
+    // retires the card.
+    WeatherAlertsPromoCard(
+        visible = PromoBanner.WEATHER_ALERTS in shownPromos,
+        onOpenAlerts = alertsUi.onOpenSettings,
+        onDismiss = alertsUi.onDismissPromo,
         modifier = bannerModifier,
     )
     // "Preview your ClothesCast" nudge — let the user hear the cast on demand

@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
@@ -524,6 +525,13 @@ class TodayViewModel(
     private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
     /** The last weather alerts check, from [app.clothescast.data.WeatherAlertsStore]. */
     private val weatherAlerts: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
+    /**
+     * The countries whose alert source answered in full at the ingester's last
+     * run ([app.clothescast.ClothesCastApplication.alertsCoverage]); null when
+     * the index can't be read. Gates the alerts promo card: it invites only
+     * where alerts work (maintainer, 2026-10-23).
+     */
+    private val alertsCoverage: suspend () -> Set<String>? = { null },
     /** Records a dismissed alert card ([app.clothescast.data.WeatherAlertsStore.dismiss]). */
     private val onDismissWeatherAlert: suspend (RelevantAlert) -> Unit = {},
 ) : ViewModel() {
@@ -826,20 +834,46 @@ class TodayViewModel(
         }
     }
 
+    /**
+     * The covered countries while the promo could show (alerts off, not
+     * dismissed), read at most once this VM; a failed read (null) keeps the
+     * promo hidden until the next VM tries again.
+     */
+    private val coveredCountries: Flow<Set<String>?> = viewModelScope.coverageWhile(
+        couldShow = settingsRepository.preferences.map { !it.weatherAlerts && !it.weatherAlertsPromoCardDismissed },
+    ) {
+        try {
+            alertsCoverage()
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Exception) {
+            DiagLog.w("TodayViewModel", e, "Couldn't read which countries alerts cover.")
+            null
+        }
+    }
+
     /** Today's alerts and the alerts promo; kept apart from [state], whose combine is at its cap. */
     val alerts: StateFlow<TodayAlertsState> = combine(
         weatherAlertsTicking,
         settingsRepository.preferences,
         insightCache.thisPeriod,
-    ) { alerts, prefs, thisPeriod ->
+        coveredCountries,
+    ) { alerts, prefs, thisPeriod, covered ->
+        val location = thisPeriod?.location ?: prefs.location
         val onScreen = alerts.onScreen(
             enabled = prefs.weatherAlerts,
-            location = thisPeriod?.location ?: prefs.location,
+            location = location,
             now = clock.instant(),
         )
         TodayAlertsState(
             alerts = onScreen,
             cards = alerts.undismissed(onScreen),
+            promoVisible = alertsPromoVisible(
+                alertsOn = prefs.weatherAlerts,
+                dismissed = prefs.weatherAlertsPromoCardDismissed,
+                location = location,
+                covered = covered,
+            ),
             notifies = prefs.weatherAlerts && prefs.weatherAlertsNotifyLevel != AlertNotifyLevel.NONE,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayAlertsState())
@@ -855,6 +889,13 @@ class TodayViewModel(
                 // The card stays up; tapping Dismiss again retries.
                 DiagLog.w("TodayViewModel", e, "Couldn't record a dismissed alert card.")
             }
+        }
+    }
+
+    /** Retires the alerts promo card, from its X or its CTA, as the other promos do. */
+    fun dismissWeatherAlertsPromoCard() {
+        viewModelScope.launch {
+            settingsRepository.setWeatherAlertsPromoCardDismissed(true)
         }
     }
 
@@ -1025,6 +1066,7 @@ class TodayViewModel(
         private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
         private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
         private val weatherAlerts: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
+        private val alertsCoverage: suspend () -> Set<String>? = { null },
         private val onDismissWeatherAlert: suspend (RelevantAlert) -> Unit = {},
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -1041,6 +1083,7 @@ class TodayViewModel(
                 geminiKeyConfigured = geminiKeyConfigured,
                 geminiKeyNeedsReentry = geminiKeyNeedsReentry,
                 weatherAlerts = weatherAlerts,
+                alertsCoverage = alertsCoverage,
                 onDismissWeatherAlert = onDismissWeatherAlert,
             ) as T
         }

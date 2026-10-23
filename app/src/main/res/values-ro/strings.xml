@@ -1319,6 +1319,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_alerts_countries_failed">Lista nu a putut fi încărcată.</string>
     <string name="settings_alerts_countries_caveat">Această listă nu garantează o acoperire completă sau viitoare.</string>
     <string name="settings_alerts_status_waiting">Se verifică avertizările…</string>
+    <string name="today_alerts_promo_title">Primește avertizări meteo</string>
+    <string name="today_alerts_promo_body">Avertizări oficiale pentru locul în care ești, cu notificări pentru cele severe.</string>
+    <string name="today_alerts_promo_cta">Setări avertizări</string>
+    <string name="today_alerts_promo_dismiss">Închide</string>
 
 
     <string name="notification_channel_weather_alerts_name">Avertizări meteo</string>

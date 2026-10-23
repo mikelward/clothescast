@@ -1365,6 +1365,10 @@ What is NOT overridden, by design:
     <string name="settings_alerts_countries_failed">Zoznam sa nepodarilo načítať.</string>
     <string name="settings_alerts_countries_caveat">Tento zoznam nezaručuje úplné ani budúce pokrytie.</string>
     <string name="settings_alerts_status_waiting">Kontrola výstrah…</string>
+    <string name="today_alerts_promo_title">Dostávaj meteorologické výstrahy</string>
+    <string name="today_alerts_promo_body">Oficiálne výstrahy pre miesto, kde si, a upozornenia na nebezpečné.</string>
+    <string name="today_alerts_promo_cta">Nastavenia výstrah</string>
+    <string name="today_alerts_promo_dismiss">Zavrieť</string>
     <string name="notification_channel_weather_alerts_name">Meteorologické výstrahy</string>
     <string name="notification_channel_weather_alerts_description">Výstrahy pred nebezpečným počasím pre tvoju polohu od oficiálnych meteorologických služieb.</string>
     <!-- "Oranžová výstraha pred vetrom": the level is a feminine adjective

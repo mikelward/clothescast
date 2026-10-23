@@ -1329,6 +1329,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_alerts_countries_failed">فهرست بارگیری نشد.</string>
     <string name="settings_alerts_countries_caveat">این فهرست پوشش کامل یا آینده را تضمین نمی‌کند.</string>
     <string name="settings_alerts_status_waiting">در حال بررسی هشدارها…</string>
+    <string name="today_alerts_promo_title">دریافت هشدارهای هواشناسی</string>
+    <string name="today_alerts_promo_body">هشدارهای رسمی برای جایی که هستید، با اعلان برای موارد شدید.</string>
+    <string name="today_alerts_promo_cta">تنظیمات هشدار</string>
+    <string name="today_alerts_promo_dismiss">رد کردن</string>
 
 
     <string name="notification_channel_weather_alerts_name">هشدارهای هواشناسی</string>

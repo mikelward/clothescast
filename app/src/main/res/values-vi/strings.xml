@@ -1402,6 +1402,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_alerts_countries_failed">Không thể tải danh sách.</string>
     <string name="settings_alerts_countries_caveat">Danh sách này không đảm bảo phạm vi đầy đủ hoặc trong tương lai.</string>
     <string name="settings_alerts_status_waiting">Đang kiểm tra cảnh báo…</string>
+    <string name="today_alerts_promo_title">Nhận cảnh báo thời tiết</string>
+    <string name="today_alerts_promo_body">Cảnh báo chính thức cho nơi bạn đang ở, kèm thông báo khi có cảnh báo nguy hiểm.</string>
+    <string name="today_alerts_promo_cta">Cài đặt cảnh báo</string>
+    <string name="today_alerts_promo_dismiss">Bỏ qua</string>
 
 
     <string name="notification_channel_weather_alerts_name">Cảnh báo thời tiết</string>

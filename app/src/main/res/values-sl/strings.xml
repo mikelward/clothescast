@@ -1328,6 +1328,10 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_alerts_countries_failed">Seznama ni bilo mogoče naložiti.</string>
     <string name="settings_alerts_countries_caveat">Ta seznam ne zagotavlja popolne ali prihodnje pokritosti.</string>
     <string name="settings_alerts_status_waiting">Preverjanje opozoril…</string>
+    <string name="today_alerts_promo_title">Prejemaj vremenska opozorila</string>
+    <string name="today_alerts_promo_body">Uradna opozorila za kraj, kjer si, z obvestili za nevarna.</string>
+    <string name="today_alerts_promo_cta">Nastavitve opozoril</string>
+    <string name="today_alerts_promo_dismiss">Zapri</string>
     <string name="notification_channel_weather_alerts_name">Vremenska opozorila</string>
     <string name="notification_channel_weather_alerts_description">Opozorila o nevarnem vremenu za tvojo lokacijo od uradnih vremenskih služb.</string>
     <!-- "Oranžno opozorilo za veter": the level is a neuter adjective

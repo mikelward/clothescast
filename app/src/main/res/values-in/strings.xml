@@ -1340,6 +1340,10 @@ to values/strings.xml (English).
     <string name="settings_alerts_countries_failed">Tidak dapat memuat daftar.</string>
     <string name="settings_alerts_countries_caveat">Daftar ini tidak menjamin cakupan penuh atau di masa mendatang.</string>
     <string name="settings_alerts_status_waiting">Memeriksa peringatan…</string>
+    <string name="today_alerts_promo_title">Dapatkan peringatan cuaca</string>
+    <string name="today_alerts_promo_body">Peringatan resmi untuk tempat Anda berada, dengan notifikasi untuk cuaca buruk.</string>
+    <string name="today_alerts_promo_cta">Pengaturan peringatan</string>
+    <string name="today_alerts_promo_dismiss">Tutup</string>
 
 
     <string name="notification_channel_weather_alerts_name">Peringatan cuaca</string>

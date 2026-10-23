@@ -1461,6 +1461,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_countries_failed">Δεν ήταν δυνατή η φόρτωση της λίστας.</string>
     <string name="settings_alerts_countries_caveat">Αυτή η λίστα δεν εγγυάται πλήρη ή μελλοντική κάλυψη.</string>
     <string name="settings_alerts_status_waiting">Έλεγχος για προειδοποιήσεις…</string>
+    <string name="today_alerts_promo_title">Λάβε προειδοποιήσεις καιρού</string>
+    <string name="today_alerts_promo_body">Επίσημες προειδοποιήσεις για εκεί που βρίσκεσαι, με ειδοποιήσεις για τις σοβαρές.</string>
+    <string name="today_alerts_promo_cta">Ρυθμίσεις Προειδοποιήσεων</string>
+    <string name="today_alerts_promo_dismiss">Απόρριψη</string>
 
 
     <string name="notification_channel_weather_alerts_name">Προειδοποιήσεις καιρού</string>

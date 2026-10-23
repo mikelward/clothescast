@@ -1340,6 +1340,10 @@ only the displayed label localizes.
     <string name="settings_alerts_countries_failed">Не вдалося завантажити список.</string>
     <string name="settings_alerts_countries_caveat">Цей список не гарантує повного чи майбутнього охоплення.</string>
     <string name="settings_alerts_status_waiting">Перевірка попереджень…</string>
+    <string name="today_alerts_promo_title">Отримуйте попередження про погоду</string>
+    <string name="today_alerts_promo_body">Офіційні попередження для місця, де ви перебуваєте, зі сповіщеннями про небезпечні.</string>
+    <string name="today_alerts_promo_cta">Налаштування попереджень</string>
+    <string name="today_alerts_promo_dismiss">Закрити</string>
     <string name="notification_channel_weather_alerts_name">Попередження про погоду</string>
     <string name="notification_channel_weather_alerts_description">Попередження про небезпечну погоду для вашого місцезнаходження від офіційних метеослужб.</string>
     <!-- "Помаранчеве попередження про вітер": the level is a neuter adjective

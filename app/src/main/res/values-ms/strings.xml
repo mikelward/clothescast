@@ -1347,6 +1347,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_alerts_countries_failed">Tidak dapat memuatkan senarai.</string>
     <string name="settings_alerts_countries_caveat">Senarai ini tidak menjamin liputan penuh atau akan datang.</string>
     <string name="settings_alerts_status_waiting">Menyemak amaran…</string>
+    <string name="today_alerts_promo_title">Dapatkan amaran cuaca</string>
+    <string name="today_alerts_promo_body">Amaran rasmi untuk tempat anda berada, dengan pemberitahuan untuk cuaca buruk.</string>
+    <string name="today_alerts_promo_cta">Tetapan amaran</string>
+    <string name="today_alerts_promo_dismiss">Tutup</string>
 
 
     <string name="notification_channel_weather_alerts_name">Amaran cuaca</string>

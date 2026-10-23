@@ -10,6 +10,7 @@ internal enum class PromoBanner {
     LOCATION,
     TELEMETRY,
     CLOTHES,
+    WEATHER_ALERTS,
     PLAY,
     GEMINI,
     SCHEDULE,
@@ -20,11 +21,12 @@ internal enum class PromoBanner {
 /**
  * Decides which promo cards the Today screen shows, capping the stack so a
  * fresh user isn't buried under "set this up" noise. Eligible cards are taken
- * in priority order (location > privacy > clothes > play > gemini >
- * schedule > celebration > google forecast) up to [maxVisible]; the
+ * in priority order (location > privacy > clothes > weather alerts > play >
+ * gemini > schedule > celebration > google forecast) up to [maxVisible]; the
  * rest wait until a higher one is resolved or dismissed.
  *
- * The six customization nudges — clothes ([clothesPromoEligible]),
+ * The seven customization nudges — clothes ([clothesPromoEligible]),
+ * weather alerts ([weatherAlertsPromoEligible]),
  * schedule ([schedulePromoEligible]), play ([playPromoEligible]),
  * Gemini voices ([geminiPromoEligible]), the Google forecast
  * ([googleForecastPromoEligible]), and
@@ -56,6 +58,7 @@ internal fun promoBannersToShow(
     geminiPromoEligible: Boolean,
     celebrationEligible: Boolean,
     googleForecastPromoEligible: Boolean = false,
+    weatherAlertsPromoEligible: Boolean = false,
     hasForecast: Boolean,
     maxVisible: Int = 2,
 ): Set<PromoBanner> {
@@ -65,6 +68,7 @@ internal fun promoBannersToShow(
             add(PromoBanner.TELEMETRY)
         }
         if (clothesPromoEligible && hasForecast) add(PromoBanner.CLOTHES)
+        if (weatherAlertsPromoEligible && hasForecast) add(PromoBanner.WEATHER_ALERTS)
         if (playPromoEligible && hasForecast) add(PromoBanner.PLAY)
         if (geminiPromoEligible && hasForecast) add(PromoBanner.GEMINI)
         if (schedulePromoEligible && hasForecast) add(PromoBanner.SCHEDULE)

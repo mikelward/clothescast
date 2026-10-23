@@ -1331,6 +1331,10 @@ What is NOT overridden, by design:
     <string name="settings_alerts_countries_failed">Nepavyko įkelti sąrašo.</string>
     <string name="settings_alerts_countries_caveat">Šis sąrašas negarantuoja visiškos ar būsimos aprėpties.</string>
     <string name="settings_alerts_status_waiting">Tikrinami įspėjimai…</string>
+    <string name="today_alerts_promo_title">Gauk orų įspėjimus</string>
+    <string name="today_alerts_promo_body">Oficialūs įspėjimai ten, kur esi, su pranešimais apie pavojingus.</string>
+    <string name="today_alerts_promo_cta">Įspėjimų nustatymai</string>
+    <string name="today_alerts_promo_dismiss">Atmesti</string>
 
 
     <string name="notification_channel_weather_alerts_name">Orų įspėjimai</string>

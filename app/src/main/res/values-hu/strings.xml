@@ -1334,6 +1334,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_alerts_countries_failed">Nem sikerült betölteni a listát.</string>
     <string name="settings_alerts_countries_caveat">Ez a lista nem garantál teljes vagy jövőbeli lefedettséget.</string>
     <string name="settings_alerts_status_waiting">Figyelmeztetések ellenőrzése…</string>
+    <string name="today_alerts_promo_title">Kapj időjárási figyelmeztetéseket</string>
+    <string name="today_alerts_promo_body">Hivatalos figyelmeztetések ott, ahol vagy, értesítéssel a súlyosakról.</string>
+    <string name="today_alerts_promo_cta">Figyelmeztetések beállításai</string>
+    <string name="today_alerts_promo_dismiss">Elvetés</string>
 
 
     <string name="notification_channel_weather_alerts_name">Időjárási figyelmeztetések</string>

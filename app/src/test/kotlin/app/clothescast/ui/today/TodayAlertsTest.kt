@@ -11,6 +11,11 @@ import app.clothescast.data.WeatherAlertsState
 import app.clothescast.data.dismissKey
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.Instant
@@ -106,5 +111,43 @@ class TodayAlertsTest {
     fun `dismissing a card leaves the strip's level`() {
         val wind = relevant(AlertSeverity.SEVERE)
         TodayAlertsState(alerts = listOf(wind), cards = emptyList()).stripLevel shouldBe AlertLevel.ORANGE
+    }
+
+    @Test
+    fun `the alerts promo invites only where a source covers the country`() {
+        val gb = here.copy(countryCode = "gb")
+        val covered = setOf("GB", "US")
+        alertsPromoVisible(alertsOn = false, dismissed = false, location = gb, covered = covered) shouldBe true
+        // Not covered, not yet read, or the country unknown: nobody is invited.
+        alertsPromoVisible(false, false, here.copy(countryCode = "AU"), covered) shouldBe false
+        alertsPromoVisible(false, false, gb, covered = null) shouldBe false
+        alertsPromoVisible(false, false, here, covered) shouldBe false
+        alertsPromoVisible(false, false, location = null, covered = covered) shouldBe false
+        // Already on, or dismissed.
+        alertsPromoVisible(alertsOn = true, dismissed = false, location = gb, covered = covered) shouldBe false
+        alertsPromoVisible(alertsOn = false, dismissed = true, location = gb, covered = covered) shouldBe false
+    }
+
+    @Test
+    fun `coverage is read once, and only while the promo could show`() = runTest(UnconfinedTestDispatcher()) {
+        var reads = 0
+        val couldShow = MutableStateFlow(false)
+        val seen = mutableListOf<Set<String>?>()
+        backgroundScope.coverageWhile(couldShow) { reads++; setOf("GB") }
+            .onEach { seen += it }
+            .launchIn(backgroundScope)
+        reads shouldBe 0
+        seen shouldBe listOf(null)
+
+        couldShow.value = true
+        reads shouldBe 1
+        seen.last() shouldBe setOf("GB")
+
+        // Alerts turned on, then off again: the same answer, not a second read.
+        couldShow.value = false
+        seen.last() shouldBe null
+        couldShow.value = true
+        reads shouldBe 1
+        seen.last() shouldBe setOf("GB")
     }
 }

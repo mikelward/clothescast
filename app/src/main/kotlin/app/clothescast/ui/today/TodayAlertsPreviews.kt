@@ -172,3 +172,11 @@ internal fun AlertDisclaimerExpandedPreview() {
         )
     }
 }
+
+@Preview(name = "Banner · weather alerts promo", widthDp = 360)
+@Composable
+internal fun WeatherAlertsPromoCardPreview() {
+    Frame {
+        WeatherAlertsPromoCard(visible = true, onOpenAlerts = {}, onDismiss = {})
+    }
+}

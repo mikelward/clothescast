@@ -1493,6 +1493,10 @@ displayed label localizes.
     <string name="settings_alerts_countries_failed">목록을 불러오지 못했어요.</string>
     <string name="settings_alerts_countries_caveat">이 목록이 전체 또는 향후 지원을 보장하지는 않아요.</string>
     <string name="settings_alerts_status_waiting">특보 확인 중…</string>
+    <string name="today_alerts_promo_title">기상특보 받기</string>
+    <string name="today_alerts_promo_body">현재 위치의 공식 특보를 보여 드리고, 위험한 특보는 알림으로 알려 드려요.</string>
+    <string name="today_alerts_promo_cta">특보 설정</string>
+    <string name="today_alerts_promo_dismiss">닫기</string>
 
 
     <string name="notification_channel_weather_alerts_name">기상특보</string>

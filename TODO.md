@@ -194,15 +194,6 @@ voice and the Google Weather proxy.
       card shows the issue time and the source's credit, and a stale index
       or an incomplete source reads as unknown, not quiet. No Google: a
       place no source covers reads as unavailable (maintainer, 2026-10-23).
-- [ ] **Croatia's warnings.** Its MeteoAlarm feed names county regions
-      (EMMA_ID HR011–HR031) that neither MeteoAlarm's region shapes nor its
-      aliases table has; the shapes list only HR001–HR008 and the marine
-      HR801–HR806, so every Croatian warning would be unplaceable. Needed,
-      either: MeteoAlarm publishing shapes or aliases for HR011–HR031 (ask
-      meteoalarm@geosphere.at, its Redistribution Hub contact), or county
-      boundaries from an open source whose licence allows republishing
-      (Croatia's State Geodetic Administration), matched by county name.
-      Then add `meteoalarm("meteoalarm-hr", "croatia", "HR", "DHMZ")`.
 - [ ] **Bosnia and Herzegovina's warnings.** Its MeteoAlarm feed comes from
       Republika Srpska's service only, so listing the country would read
       "no alerts" across the Federation of Bosnia and Herzegovina whatever

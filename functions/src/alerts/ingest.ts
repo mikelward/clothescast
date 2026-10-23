@@ -16,6 +16,7 @@
 import { createHash } from "node:crypto";
 
 import { parseCapAlert, parseCapFeed, type CapAlert, type LatLon } from "./cap";
+import { bundledRegion } from "./bundled-regions";
 import { DWD_PROFILE } from "./dwd";
 import { geoJsonPolygons, simplifyRing } from "./geo";
 import { parseNwsAlerts, type NwsAlert } from "./nws";
@@ -271,6 +272,11 @@ function regionResolver(deps: IngestDeps, fetchedAt: string | null, now: Date): 
       const found = new Map<string, LatLon[][][]>();
       let stale = false;
       for (const key of keys) {
+        const bundled = bundledRegion(key);
+        if (bundled) {
+          found.set(key, bundled);
+          continue;
+        }
         if (!cached.has(key)) cached.set(key, deps.store.readZone(regionPath(key)));
         const file = await cached.get(key);
         if (file) found.set(key, file.polygons);

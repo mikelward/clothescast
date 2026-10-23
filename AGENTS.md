@@ -36,7 +36,7 @@ than append, and delete rules that stopped biting.
   progress (a client's nudge doesn't count), a review or push alone (its report rides the
   next message), routine machinery, or a mistake caught and fixed before reaching the
   repo. The session-start `AGENTS.md` line still opens every session.
-- **Keep replies short**: lead with the most important point; ask before unloading more.
+- **Keep replies short**: lead with the key point; ask before saying more.
 - **End the turn by restating any pending decision** — the last line is the question you
   are waiting on (or an autopilot guess awaiting review), written out, every turn until
   answered. Nothing pending, no line. A scheduled check that finds nothing new re-arms
@@ -100,8 +100,7 @@ than append, and delete rules that stopped biting.
   (above) and carry on there instead. Without a remote, say a synced checkout is needed rather
   than branching off a stale `main`.
 - **Committer line**: the agent authors; rebase/squash merges rewrite the committer to the
-  merger — expected. Never re-author or amend merged commits to "fix" it, and never raise
-  it: no PR note, chat caveat, or offer.
+  merger — expected. Never re-author merged commits to "fix" it, nor mention it.
 - **Unshallow before history-depth queries** (`git rev-list --count`, versionCode): if
   `git rev-parse --is-shallow-repository` is `true`, run `scripts/unshallow.sh` (or add
   `--unshallow` to the refspec fetch — only while shallow; it fails on a complete repo) and
@@ -338,10 +337,13 @@ than append, and delete rules that stopped biting.
 
 ## Cost and reliability
 
-Call out cost and reliability up front for new infrastructure or external calls (another
-Open-Meteo request, a Gemini model or endpoint, a third-party API, Firebase usage): $/month
-vs free tier, failure modes, rate limits, latency, what the user sees when it's down. BYOK
-costs land on the user's key, so the estimate matters more. Say so if nil.
+Flag cost and reliability up front for new infrastructure or external calls
+(Open-Meteo, Gemini, third-party APIs, Firebase): $/month vs free tier, failure modes,
+rate limits, latency, what users see when it's down. BYOK costs land on the user's key,
+so estimates matter more. Say so if nil.
+
+**Delete a backend function only once the app update that stops calling it has
+rolled out**; a same-PR delete breaks old installs.
 
 ## Cursor Cloud
 

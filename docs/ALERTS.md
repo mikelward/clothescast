@@ -269,7 +269,7 @@ An alert for somewhere 50 miles away is wrong, not just noisy. Rules:
   | MeteoAlarm | Whole EMMA regions: French départements; for the UK, regions like "South East England" (*unverified*) | Too coarse where regions are large |
   | Google | Whatever its source sent; the UK and most of Europe via MeteoAlarm | Check with the script |
   | DWD (direct to Google) | District-level or polygons (*unverified*) | Likely fine |
-  | Environment Canada | Forecast regions with polygons (*unverified*) | Likely fine |
+  | Environment Canada | Forecast regions, each with its polygon (checked 2026-10-23): a county or a few towns in the south, far larger in the north | Fine |
 
   If Google's UK alerts come back with region-sized boxes (the script
   prints each polygon's size), the Met Office's own API becomes the UK
@@ -618,7 +618,7 @@ points to drawn areas; the point count would confirm it.
 | Met Office RSS | UK, per region | Pull: RSS summaries | Free; website terms | As issued | The API suits apps better. |
 | MeteoAlarm | ~38 European countries (EUMETNET) | Pull: per-country Atom and JSON feeds, open, no key, WebSub; the EDR API is for members and redistributors on request | Free; "terms equivalent to CC BY 4.0" plus its T&C §5: keep the unmodified original with any changed version, show the issue time, link to meteoalarm.org, publish a disclaimer, redistribute within 5 minutes on average and 10 at most | As issued by each member | Credit "EUMETNET – MeteoAlarm", or the national service for one country's warnings. Warnings reference EMMA region codes, so geometry may need a separate lookup (the UK's carry polygons). Color levels yellow, orange, red. |
 | MET Norway MetAlerts 2.0 | Norway | Pull: `/current`, lat/lon queries; CAP, GeoJSON, RSS | Free; User-Agent required; licence *unverified* | As issued | GeoJSON was beta at launch. Also in MeteoAlarm. |
-| ECCC (Canada) | Canada | Pull CAP files from Datamart, or push over AMQPS (`anonymous` at `dd.weather.gc.ca:5671`) | Free; End-use Licence v2.1.1 allows commercial use if alerts aren't altered; contact them above 86,400 requests a day, use AMQPS for real time, send a User-Agent | Push: seconds | "Data Source: Environment and Climate Change Canada"; no logos. Only free push feed found that needs no sign-up besides WIS2. |
+| ECCC (Canada) | Canada | Pull: every alert in force with its regions' polygons in one call (MSC GeoMet's `weather-alerts` collection, GeoJSON); CAP files from Datamart, or push over AMQPS (`anonymous` at `dd.weather.gc.ca:5671`) | Free; End-use Licence v2.1.1 allows commercial use if alerts aren't altered; contact them above 86,400 requests a day, use AMQPS for real time, send a User-Agent | Push: seconds | "Data Source: Environment and Climate Change Canada"; no logos. Only free push feed found that needs no sign-up besides WIS2. |
 | JMA | Japan (a Google gap) | Pull: XML feeds (high-frequency one updated every minute) and per-prefecture JSON | Free; Public Data License 1.0 (CC BY 4.0-compatible); an IP pulling 10 GB a day is blocked, don't re-fetch files | As issued | "Source: Japan Meteorological Agency website". Japanese text. One client library reports the Atom feeds drop older in-force warnings. |
 | WMO WIS2 Global Broker | Members publishing CAP through WIS2 (partial, growing) | Push over MQTT (`origin/a/wis2/#`, public read-only login) | Free; "core" data unrestricted | Seconds | Coverage depends on each country adopting WIS2; check which publish alerts. |
 | WMO Alert Hub / Alert-Hub.org | ~500 alerting authorities' CAP feeds | Registry of feed URLs; aggregated display (SWIC); ESRI republishes it as a GIS feature service | Free. SWIC: "free for re-use by media or other websites", crediting the issuing service; a mirror doesn't relicense, so each issuer's terms govern | Per feed | Google Public Alerts and AccuWeather use a subset of the same list. A feed directory more than an API. SWIC's `/v2/cap-alerts/` RSS mirrors are being retired (most 404 since 2026-10-08). |
@@ -738,8 +738,9 @@ its terms apply directly; revisit the titles then.
   $36). Firebase Hosting clears its CDN cache on every deploy. Pub/Sub would
   be free but isn't needed.
 - **Feed rules that shape it**: a User-Agent with a contact on every fetch
-  (NWS, ECCC, DWD); NWS no more than every 30 seconds; ECCC by AMQPS rather
-  than polling; JMA's per-minute feed without re-fetching files; MeteoAlarm by
+  (NWS, ECCC, DWD); NWS no more than every 30 seconds; ECCC's Datamart by
+  AMQPS rather than polling (its GeoMet API may be polled under 86,400
+  requests a day); JMA's per-minute feed without re-fetching files; MeteoAlarm by
   WebSub or a poll every 5 minutes at most, which keeps its relay delay near
   2.5 minutes on average and under its 10-minute cap. Keep each warning's
   original text, issuer, issue time and link.
@@ -797,8 +798,8 @@ What it serves: MeteoAlarm's feeds for 35 countries, placed from their
 polygons or from MeteoAlarm's region shapes where they name regions, and
 for Croatia from county shapes the ingester carries (all of MeteoAlarm but
 Germany, Bosnia and Herzegovina, Andorra and Israel); the US with its territories from NWS
-(`api.weather.gov/alerts/active`, actual alerts and updates); and Germany
-from DWD. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
+(`api.weather.gov/alerts/active`, actual alerts and updates); Germany
+from DWD; and Canada from ECCC. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
 tiles in about 6 seconds; the index was 3.4 KB gzipped, the median tile
 4 KB, the largest (Switzerland's municipal polygons) 79 KB. A run that only
 rereads the feeds takes about 2 seconds.
@@ -840,6 +841,33 @@ data. A test run on 2026-10-23: 46 warnings (7 coastal left out) in 65
 tiles in about 5 seconds, 2 on a rerun; the median tile 28 KB gzipped
 (about 20 overlapping wind warnings, each in eight languages), the
 largest 55 KB.
+
+**ECCC.** Canada comes from MSC GeoMet's `weather-alerts` collection
+(`api.weather.gc.ca/collections/weather-alerts/items`): one GeoJSON
+feature per forecast region an alert covers, each with the region's
+polygon, the alert's English and French text, ECCC's risk color and a
+status, about 2.4 MB a run. A feature's ID is the alert's, then the
+region's; the regions of one alert in one province make one served
+alert, since the text can differ by province (each names its own
+storm-report address). Its ID is the alert's, then that province, each
+region's own (`eccc:<alert>:MB`; `AB-SK` for a region on the border), so
+it stays the same through text updates and whatever happens to other
+regions, and the app keeps its dismissals and notifications; two texts
+in one province (an older version still listed) are served as one, with
+the newest text. A region whose part is over ("ended")
+stays listed for a while and is left out. Severity is ECCC's color
+(yellow, orange, red as the app's three levels); a statement has none
+and reads as information. The end is the hazard's (`event_end_datetime`),
+not the message's. ECCC's alert names are lower case ("wind warning"),
+so a title gets a capital; the text is otherwise as sent, which its
+End-use Licence requires of alerts. Credit "Data Source: Environment and
+Climate Change Canada", and the disclaimer links the licence, whose
+"No Warranty" section is ECCC's disclaimer. A response cut short (fewer
+features than `numberMatched`) is treated as a failed one: the last
+complete run's alerts stay, and the index reports the error. A live run on
+2026-10-23: 17 alerts (10 ended regions left out) in 292 tiles in about
+1.4 seconds, 0.7 on a rerun; the median tile 3 KB gzipped, the largest
+52 KB.
 
 **MeteoAlarm regions.** Most MeteoAlarm countries name regions instead of
 drawing areas: by `EMMA_ID`, or by NUTS or FIPS code (France, Ireland,

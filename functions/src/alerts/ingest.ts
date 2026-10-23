@@ -18,6 +18,7 @@ import { createHash } from "node:crypto";
 import { parseCapAlert, parseCapFeed, type CapAlert, type CapReference, type LatLon } from "./cap";
 import { bundledRegion } from "./bundled-regions";
 import { DWD_PROFILE } from "./dwd";
+import { parseEcccAlerts } from "./eccc";
 import { geoJsonPolygons, simplifyRing } from "./geo";
 import { parseNwsAlerts, type NwsAlert } from "./nws";
 import { REGIONS_PAGE_URL, REGION_TYPES, parseRegionAliases, parseRegionShapes, regionLinks } from "./regions";
@@ -381,6 +382,9 @@ async function refreshSource(
     case "cap-zip":
       state = await refreshZipSource(deps, source, previous, now);
       break;
+    case "eccc":
+      state = await refreshEcccSource(deps, source, previous, now);
+      break;
     default:
       state = await refreshCapSource(deps, source, previous, now, regions);
   }
@@ -563,6 +567,32 @@ async function refreshZipSource(
       entries,
     };
   }
+  return { checkedAt, lastSuccessAt: checkedAt, error: null, servingLastSuccess: true, entries };
+}
+
+/**
+ * ECCC's alerts in force: one response carries every alert with its
+ * regions' polygons and text, so nothing else is fetched. A response cut
+ * short is treated as a failed one: what it lacks may be an alert still in
+ * force, so the last complete run's alerts stay.
+ */
+async function refreshEcccSource(
+  deps: IngestDeps,
+  source: AlertSource,
+  previous: SourceState | undefined,
+  now: Date,
+): Promise<SourceState> {
+  const checkedAt = now.toISOString();
+  let parsed;
+  try {
+    parsed = parseEcccAlerts(await fetchText(deps, source.url), source.id, now);
+    if (parsed.missing > 0) throw new Error(`${parsed.missing} regions not returned`);
+  } catch (err) {
+    return feedFailed(deps, source, previous, now, err);
+  }
+  deps.log.info("ECCC alerts read", { source: source.id, alerts: parsed.alerts.length, skipped: parsed.skipped });
+  const entries: Record<string, CachedEntry> = {};
+  for (const alert of parsed.alerts) entries[alert.id] = { updated: alert.sent, result: simplified(alert) };
   return { checkedAt, lastSuccessAt: checkedAt, error: null, servingLastSuccess: true, entries };
 }
 

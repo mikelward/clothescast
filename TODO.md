@@ -249,9 +249,6 @@ voice and the Google Weather proxy.
       against the index's `sources[].countries`), so nobody is invited to
       turn on alerts that can't work there. Work out the best trigger and
       how it's dismissed.
-- [ ] **Say which countries are covered in Settings → Alerts**
-      (maintainer, 2026-10-23), from the index's sources, so someone
-      deciding whether to turn alerts on can see whether theirs is.
 - [ ] **Keep the Google forecast within its terms.** Google's Weather API
       terms (§21.2.1) allow caching hourly forecast values for one hour; the
       app keeps the Google hourly forecast for 12 hours

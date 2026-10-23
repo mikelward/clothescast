@@ -1277,6 +1277,11 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_alerts_status_unsupported">Brīdinājumi šai atrašanās vietai nav pieejami.</string>
     <string name="settings_alerts_status_none">Šai atrašanās vietai brīdinājumu nav. Pēdējā pārbaude %1$s</string>
     <string name="settings_alerts_status_failed">Neizdevās pārbaudīt brīdinājumus. Drīz mēģināsim vēlreiz.</string>
+    <string name="settings_alerts_countries_title">Pašreizējās valstis</string>
+    <string name="settings_alerts_countries_as_of">Uz %1$s %2$s brīdinājumu sniedzēji atbildēja uz mūsu pieprasījumiem par:</string>
+    <string name="settings_alerts_countries_loading">Notiek ielāde…</string>
+    <string name="settings_alerts_countries_failed">Neizdevās ielādēt sarakstu.</string>
+    <string name="settings_alerts_countries_caveat">Šis saraksts negarantē pilnu vai turpmāku pārklājumu.</string>
     <string name="settings_alerts_status_waiting">Pārbauda brīdinājumus…</string>
 
 

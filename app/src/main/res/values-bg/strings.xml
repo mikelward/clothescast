@@ -1322,6 +1322,11 @@ What is NOT overridden, by design:
     <string name="settings_alerts_status_unsupported">Предупрежденията не са достъпни за това местоположение.</string>
     <string name="settings_alerts_status_none">Няма предупреждения за това местоположение. Последна проверка: %1$s</string>
     <string name="settings_alerts_status_failed">Проверката за предупреждения не успя. Скоро ще опитаме отново.</string>
+    <string name="settings_alerts_countries_title">Текущи държави</string>
+    <string name="settings_alerts_countries_as_of">Към %1$s %2$s доставчиците на предупреждения отговориха на заявките ни за:</string>
+    <string name="settings_alerts_countries_loading">Зарежда се…</string>
+    <string name="settings_alerts_countries_failed">Списъкът не можа да се зареди.</string>
+    <string name="settings_alerts_countries_caveat">Този списък не гарантира пълно или бъдещо покритие.</string>
     <string name="settings_alerts_status_waiting">Проверка за предупреждения…</string>
     <string name="notification_channel_weather_alerts_name">Предупреждения за времето</string>
     <string name="notification_channel_weather_alerts_description">Предупреждения за опасно време за местоположението ти от официалните метеорологични служби.</string>

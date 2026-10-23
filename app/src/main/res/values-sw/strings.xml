@@ -1304,6 +1304,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_status_unsupported">Tahadhari hazipatikani kwa mahali hapa.</string>
     <string name="settings_alerts_status_none">Hakuna tahadhari kwa mahali hapa. Imekaguliwa mwisho %1$s</string>
     <string name="settings_alerts_status_failed">Imeshindwa kukagua tahadhari. Itajaribu tena hivi karibuni.</string>
+    <string name="settings_alerts_countries_title">Nchi za sasa</string>
+    <string name="settings_alerts_countries_as_of">Kufikia %1$s %2$s, watoa tahadhari walijibu maombi yetu kwa:</string>
+    <string name="settings_alerts_countries_loading">Inapakia…</string>
+    <string name="settings_alerts_countries_failed">Imeshindwa kupakia orodha.</string>
+    <string name="settings_alerts_countries_caveat">Orodha hii haihakikishi huduma kamili au ya baadaye.</string>
     <string name="settings_alerts_status_waiting">Inakagua tahadhari…</string>
     <string name="notification_channel_weather_alerts_name">Tahadhari za hali ya hewa</string>
     <string name="notification_channel_weather_alerts_description">Tahadhari za hali mbaya ya hewa kwa mahali pako kutoka kwa huduma rasmi za hali ya hewa.</string>

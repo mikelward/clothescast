@@ -49,7 +49,9 @@ have over it.
   around your location. No coordinate is sent; your phone checks whether
   an alert covers you. It checks about every 3 hours (hourly while the
   forecast looks severe or an alert is in force) and when you open the
-  app after an hour or more.
+  app after an hour or more. Opening **Current countries** on the Alerts
+  page downloads the same index, with alerts on or off, to list the
+  countries alerts come from; nothing about your location goes with it.
 - If you opt in to **online text-to-speech**, the short spoken sentence
   (e.g. _"50% chance of rain at 3pm — take an umbrella"_) is sent to the
   TTS provider you chose (Google Gemini) so it can return the audio.
@@ -125,7 +127,8 @@ The source code is at <https://github.com/mikelward/clothescast>.
       Cloud, not configured by us) record the client IP and HTTP status
       of each call; we do not associate the IP with your account.
   - **ClothesCast's alert files, on Google Cloud Storage** — **only if**
-    you turn on weather alerts in Settings → Alerts. Off by default. The
+    you turn on weather alerts in Settings → Alerts, or open its Current
+    countries list (the index alone). Off by default. The
     app downloads a public index and, when it lists alerts in the 1°
     square (roughly 100 km across) around your location, that square's
     file. The square is in the file's address, so Google Cloud Storage
@@ -440,7 +443,7 @@ policies apply to anything they receive:
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
 | [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate, and your own Google API key if you set one | Only if you enable the "Google" forecaster on the Forecasters page, with your own key or through the ClothesCast weather proxy |
 | ClothesCast weather proxy (Cloud Function, ClothesCast-operated) | Coarse coordinate, your Firebase sign-in token and a Firebase App Check token | The Google forecaster without a key of your own, while signed in with Google |
-| ClothesCast alert files (a public Google Cloud Storage bucket, ClothesCast-operated), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Which 1° square's file the app downloads (it's in the address), and the IP address any download carries | Only if you turn on weather alerts on the Alerts page |
+| ClothesCast alert files (a public Google Cloud Storage bucket, ClothesCast-operated), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Which 1° square's file the app downloads (it's in the address), and the IP address any download carries | Only if you turn on weather alerts on the Alerts page, or open its Current countries list (the index only) |
 | Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Speech or Forecasters), then periodic token refreshes |
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase sign-in token, a Firebase App Check token, and the Gemini model name | Online TTS with the free voice, while signed in with Google |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
@@ -658,6 +661,10 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-10-23** — Opening **Current countries** on the Alerts page
+  downloads the public alerts index to list the countries alerts come
+  from, even with alerts off. It carries your IP address, as any download
+  does, but no location or square.
 - **2026-10-23** — Weather alerts no longer come from Google: the app
   stops sending your coarse coordinate and language to Google's Weather
   API or the ClothesCast alerts proxy, which is removed, and alerts no

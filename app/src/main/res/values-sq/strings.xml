@@ -1191,6 +1191,11 @@
     <string name="settings_alerts_status_unsupported">Paralajmërimet nuk ofrohen për këtë vendndodhje.</string>
     <string name="settings_alerts_status_none">Nuk ka paralajmërime për këtë vendndodhje. Kontrolluar së fundi %1$s</string>
     <string name="settings_alerts_status_failed">Paralajmërimet nuk u kontrolluan dot. Do të provojmë sërish së shpejti.</string>
+    <string name="settings_alerts_countries_title">Vendet aktuale</string>
+    <string name="settings_alerts_countries_as_of">Më %1$s %2$s, ofruesit e paralajmërimeve iu përgjigjën kërkesave tona për:</string>
+    <string name="settings_alerts_countries_loading">Po ngarkohet…</string>
+    <string name="settings_alerts_countries_failed">Lista nuk u ngarkua dot.</string>
+    <string name="settings_alerts_countries_caveat">Kjo listë nuk garanton mbulim të plotë apo të ardhshëm.</string>
     <string name="settings_alerts_status_waiting">Po kontrollohen paralajmërimet…</string>
 
 

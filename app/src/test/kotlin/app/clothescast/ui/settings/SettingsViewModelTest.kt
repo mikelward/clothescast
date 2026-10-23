@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.data.weather.AlertsCoverage
 import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.CalendarEvent
@@ -40,6 +41,7 @@ import com.google.crypto.tink.Aead
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.respondError
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -320,6 +322,32 @@ class SettingsViewModelTest {
 
         vm.state.first { it.googleProbeResult == GoogleWeatherProbe.Forbidden }
         vm.state.first { !it.googleProbeRunning }
+    }
+
+    @Test
+    fun `opening the countries list downloads it once, and retries after a failure`() = runTest {
+        val coverage = AlertsCoverage(asOf = null, countries = listOf("GB"))
+        val answers = ArrayDeque(listOf<AlertsCoverage?>(null, coverage))
+        var calls = 0
+        val vm = track(
+            SettingsViewModel(
+                settingsRepository,
+                keyStore,
+                rearmAlarm = { _, _ -> },
+                cancelAlarm = { _ -> },
+                geocodingClient = OpenMeteoGeocodingClient(HttpClient(MockEngine { respondError(HttpStatusCode.NotFound) })),
+                voiceEnumerator = EmptyVoiceEnumerator,
+                voiceEnumerationDispatcher = dispatcher,
+                alertsCoverage = { calls++; answers.removeFirst() },
+            ),
+        )
+
+        vm.loadAlertsCoverage()
+        vm.state.first { it.alertsCoverage == AlertsCoverageState.Failed }
+        vm.loadAlertsCoverage()
+        vm.state.first { it.alertsCoverage == AlertsCoverageState.Loaded(coverage) }
+        vm.loadAlertsCoverage()
+        calls shouldBe 2
     }
 
     @Test

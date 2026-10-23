@@ -112,6 +112,32 @@ class ServedAlertsClient(
         }
     }
 
+    /**
+     * The countries whose source answered in full at the index's last run,
+     * read from the index alone: no location is involved. A source whose
+     * check failed or was incomplete is left out until it answers again.
+     * Null when the index can't be had or read.
+     */
+    suspend fun coveredCountries(): AlertsCoverage? {
+        try {
+            val index = json.decodeFromString<IndexDto>(fetch(INDEX_PATH))
+            if (index.v != FORMAT_VERSION) {
+                logger.log("Served alerts: unknown format v${index.v}")
+                return null
+            }
+            return AlertsCoverage(
+                asOf = parseInstant(index.generatedAt),
+                countries = index.sources.filter { it.error == null }.flatMap { it.countries }.map { it.uppercase(Locale.ROOT) }.distinct().sorted(),
+            )
+        } catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Exception) {
+            // HTTP, network or unreadable JSON alike: the caller says the list couldn't load.
+            logger.log("Served alerts: covered countries unavailable", e)
+            return null
+        }
+    }
+
     private suspend fun fetch(path: String): String =
         apiCallLogger.instrument(ApiEndpoints.SERVED_ALERTS) {
             httpClient.get("$baseUrl/$path") { expectSuccess = true }.bodyAsText()
@@ -208,6 +234,14 @@ class ServedAlertsClient(
         }
     }
 }
+
+/** The countries whose alert sources answered the ingester's last run, at [asOf]. */
+data class AlertsCoverage(
+    /** When the index was written; null if it didn't say. */
+    val asOf: Instant?,
+    /** ISO 3166-1 alpha-2 codes, uppercase and sorted. */
+    val countries: List<String>,
+)
 
 @Serializable
 private data class IndexDto(

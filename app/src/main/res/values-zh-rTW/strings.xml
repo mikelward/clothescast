@@ -1497,6 +1497,11 @@ label localises.
     <string name="settings_alerts_status_unsupported">此位置目前不提供特報。</string>
     <string name="settings_alerts_status_none">此位置目前沒有特報。上次檢查：%1$s</string>
     <string name="settings_alerts_status_failed">無法檢查特報，稍後將重試。</string>
+    <string name="settings_alerts_countries_title">目前的國家/地區</string>
+    <string name="settings_alerts_countries_as_of">截至 %1$s %2$s，特報提供者已回應我們請求的國家/地區：</string>
+    <string name="settings_alerts_countries_loading">載入中…</string>
+    <string name="settings_alerts_countries_failed">無法載入清單。</string>
+    <string name="settings_alerts_countries_caveat">此清單不保證完整或未來的涵蓋範圍。</string>
     <string name="settings_alerts_status_waiting">正在檢查特報…</string>
 
 

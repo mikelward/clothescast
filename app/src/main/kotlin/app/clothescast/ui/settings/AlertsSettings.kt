@@ -19,6 +19,12 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
@@ -26,7 +32,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -39,6 +49,7 @@ import app.clothescast.R
 import app.clothescast.alerts.AlertDisclaimer
 import app.clothescast.alerts.AlertIcon
 import app.clothescast.alerts.AlertLevelIcon
+import app.clothescast.core.data.weather.AlertsCoverage
 import app.clothescast.core.domain.model.AlertNotifyLevel
 import app.clothescast.data.AlertsCheckOutcome
 import app.clothescast.data.WeatherAlertsState
@@ -52,6 +63,9 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.text.Collator
+import java.util.Locale
 
 @Composable
 internal fun AlertsPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
@@ -62,9 +76,11 @@ internal fun AlertsPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
                 enabled = state.weatherAlerts,
                 notifyLevel = state.weatherAlertsNotifyLevel,
                 status = state.weatherAlertsStatus,
+                coverage = state.alertsCoverage,
                 padding = padding,
                 onSetEnabled = viewModel::setWeatherAlerts,
                 onSetNotifyLevel = viewModel::setWeatherAlertsNotifyLevel,
+                onOpenCoverage = viewModel::loadAlertsCoverage,
             )
         }
     }
@@ -80,9 +96,13 @@ internal fun AlertsContent(
     enabled: Boolean,
     notifyLevel: AlertNotifyLevel,
     status: WeatherAlertsState,
+    coverage: AlertsCoverageState,
     padding: PaddingValues,
     onSetEnabled: (Boolean) -> Unit,
     onSetNotifyLevel: (AlertNotifyLevel) -> Unit,
+    onOpenCoverage: () -> Unit,
+    initiallyShowCoverage: Boolean = false,
+    zone: ZoneId = ZoneId.systemDefault(),
 ) {
     // Alert notifications need POST_NOTIFICATIONS (Android 13+): asked for
     // when alerts go on or a notifying level is picked; the banner below
@@ -165,8 +185,88 @@ internal fun AlertsContent(
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(stringResource(R.string.settings_alerts_channel)) }
             }
+            CoverageCard(coverage, onOpenCoverage, initiallyShowCoverage, zone)
         }
     }
+}
+
+/**
+ * Which countries have warning data, so someone deciding whether to turn
+ * alerts on can see whether theirs does. Collapsed by default; opening it
+ * downloads the index (no location goes with it).
+ */
+@Composable
+private fun CoverageCard(coverage: AlertsCoverageState, onOpen: () -> Unit, initiallyOpen: Boolean, zone: ZoneId) {
+    var open by rememberSaveable { mutableStateOf(initiallyOpen) }
+    // Whenever the list is open, including after the card is restored open
+    // with a fresh view model; the view model keeps a loaded or loading list.
+    LaunchedEffect(open) { if (open) onOpen() }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_alerts_countries_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f),
+                )
+                IconButton(onClick = { open = !open }) {
+                    Icon(
+                        imageVector = if (open) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                        contentDescription = stringResource(
+                            if (open) R.string.settings_holidays_collapse else R.string.settings_holidays_expand,
+                        ),
+                    )
+                }
+            }
+            if (open) {
+                Column(
+                    modifier = Modifier.padding(bottom = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    when (coverage) {
+                        AlertsCoverageState.Idle, AlertsCoverageState.Loading -> CoverageNote(
+                            stringResource(R.string.settings_alerts_countries_loading),
+                        )
+                        AlertsCoverageState.Failed -> CoverageNote(stringResource(R.string.settings_alerts_countries_failed))
+                        is AlertsCoverageState.Loaded -> CoverageList(coverage.coverage, zone)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CoverageNote(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+@Composable
+private fun CoverageList(coverage: AlertsCoverage, zone: ZoneId) {
+    val locale = LocalConfiguration.current.locales[0]
+    val asOf = coverage.asOf?.atZone(zone)
+    if (asOf != null) {
+        CoverageNote(
+            stringResource(
+                R.string.settings_alerts_countries_as_of,
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).format(asOf),
+                formatHourMinute(asOf.toLocalTime()),
+            ),
+        )
+    }
+    val collator = Collator.getInstance(locale)
+    coverage.countries
+        .map { Locale("", it).getDisplayCountry(locale) }
+        .sortedWith(collator)
+        .forEach { Text(text = it, style = MaterialTheme.typography.bodyMedium) }
+    CoverageNote(stringResource(R.string.settings_alerts_countries_caveat))
 }
 
 /** One "Notify me for" choice: its label and the level icons it covers. */

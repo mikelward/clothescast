@@ -1313,6 +1313,11 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_alerts_status_unsupported">Avertizările nu sunt disponibile pentru această locație.</string>
     <string name="settings_alerts_status_none">Nu există avertizări pentru această locație. Ultima verificare %1$s</string>
     <string name="settings_alerts_status_failed">Avertizările nu au putut fi verificate. Se încearcă din nou în curând.</string>
+    <string name="settings_alerts_countries_title">Țări actuale</string>
+    <string name="settings_alerts_countries_as_of">La %1$s %2$s, furnizorii de avertizări au răspuns solicitărilor noastre pentru:</string>
+    <string name="settings_alerts_countries_loading">Se încarcă…</string>
+    <string name="settings_alerts_countries_failed">Lista nu a putut fi încărcată.</string>
+    <string name="settings_alerts_countries_caveat">Această listă nu garantează o acoperire completă sau viitoare.</string>
     <string name="settings_alerts_status_waiting">Se verifică avertizările…</string>
 
 

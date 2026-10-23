@@ -1407,6 +1407,11 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_alerts_status_unsupported">এই অবস্থানের জন্য সতর্কতা উপলব্ধ নয়।</string>
     <string name="settings_alerts_status_none">এই অবস্থানের জন্য কোনো সতর্কতা নেই। শেষ পরীক্ষা %1$s</string>
     <string name="settings_alerts_status_failed">সতর্কতা পরীক্ষা করা যায়নি। শীঘ্রই আবার চেষ্টা করা হবে।</string>
+    <string name="settings_alerts_countries_title">বর্তমান দেশগুলো</string>
+    <string name="settings_alerts_countries_as_of">%1$s %2$s অনুযায়ী, সতর্কতা প্রদানকারীরা এই দেশগুলোর জন্য আমাদের অনুরোধে সাড়া দিয়েছে:</string>
+    <string name="settings_alerts_countries_loading">লোড হচ্ছে…</string>
+    <string name="settings_alerts_countries_failed">তালিকা লোড করা যায়নি।</string>
+    <string name="settings_alerts_countries_caveat">এই তালিকা সম্পূর্ণ বা ভবিষ্যৎ কভারেজের নিশ্চয়তা দেয় না।</string>
     <string name="settings_alerts_status_waiting">সতর্কতা পরীক্ষা করা হচ্ছে…</string>
     <string name="notification_channel_weather_alerts_name">আবহাওয়া সতর্কতা</string>
     <string name="notification_channel_weather_alerts_description">অফিসিয়াল আবহাওয়া পরিষেবা থেকে আপনার অবস্থানের গুরুতর আবহাওয়া সতর্কতা।</string>

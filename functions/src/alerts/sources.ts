@@ -10,10 +10,14 @@ export interface AlertSource {
   id: string;
   /**
    * `cap-atom`: an Atom feed with an entry per alert in force, linking its
-   * CAP document. `nws`: the NWS active-alerts GeoJSON, with zone shapes
-   * fetched from `api.weather.gov/zones` for alerts without a polygon.
+   * CAP document. `cap-zip`: a zip of every alert in force, one CAP document
+   * per file, named by its identifier (DWD). `nws`: the NWS active-alerts
+   * GeoJSON, with zone shapes fetched from `api.weather.gov/zones` for
+   * alerts without a polygon.
    */
-  kind: "cap-atom" | "nws";
+  kind: "cap-atom" | "cap-zip" | "nws";
+  /** How the source's CAP differs from the norm (served.ts → CapProfile). */
+  profile?: "dwd";
   url: string;
   /** ISO 3166-1 alpha-2 codes of the countries the feed fully covers. */
   countries: string[];
@@ -69,6 +73,24 @@ const NWS: AlertSource = {
   disclaimer: { name: "NWS", url: "https://www.weather.gov/disclaimer" },
 };
 
+// CC BY 4.0 with the source named (dwd.de legal notice); the warning areas
+// are drawn on the federal mapping agency's data, which each document
+// credits as "© GeoBasis-DE / BKG". The commune-level file carries the
+// drawn warning polygons, with islands and lakes left out as holes, and
+// every warning in German, English, French, Spanish, Arabic, Russian,
+// Turkish and Polish.
+const DWD: AlertSource = {
+  id: "dwd",
+  kind: "cap-zip",
+  profile: "dwd",
+  url:
+    "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_DWD_STAT/" +
+    "Z_CAP_C_EDZW_LATEST_PVW_STATUS_PREMIUMDWD_COMMUNEUNION_MUL.zip",
+  countries: ["DE"],
+  attribution: { name: "Deutscher Wetterdienst, © GeoBasis-DE / BKG", url: "https://www.dwd.de" },
+  disclaimer: { name: "DWD", url: "https://www.dwd.de/EN/service/legal_notice/legal_notice_node.html" },
+};
+
 export const SOURCES: AlertSource[] = [
   meteoalarm("meteoalarm-gb", "united-kingdom", "GB", "Met Office"),
   meteoalarm("meteoalarm-no", "norway", "NO", "MET Norway"),
@@ -77,4 +99,5 @@ export const SOURCES: AlertSource[] = [
   meteoalarm("meteoalarm-si", "slovenia", "SI", "ARSO"),
   meteoalarm("meteoalarm-ua", "ukraine", "UA", "Ukrhydrometcenter"),
   NWS,
+  DWD,
 ];

@@ -49,6 +49,18 @@ export function geoJsonPolygons(geometry: unknown): LatLon[][][] {
   }
 }
 
+/** Whether [point] is inside [ring], by the even-odd rule. */
+export function ringContains(ring: LatLon[], point: LatLon): boolean {
+  const [lat, lon] = point;
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [aLat, aLon] = ring[i];
+    const [bLat, bLon] = ring[j];
+    if (aLat > lat !== bLat > lat && lon < ((bLon - aLon) * (lat - aLat)) / (bLat - aLat) + aLon) inside = !inside;
+  }
+  return inside;
+}
+
 function distanceToSegment(p: LatLon, a: LatLon, b: LatLon): number {
   const [x, y] = p;
   const [x1, y1] = a;

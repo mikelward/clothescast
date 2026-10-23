@@ -749,9 +749,9 @@ and every path carries the format version:
 
 What it serves: MeteoAlarm's feeds that carry polygons, the UK, Norway,
 Sweden, Switzerland, Slovenia and Ukraine; and the US with its territories
-from NWS (`api.weather.gov/alerts/active`, actual alerts and updates). The
-other MeteoAlarm countries name EMMA regions instead, and need boundary data
-first. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
+from NWS (`api.weather.gov/alerts/active`, actual alerts and updates); and
+Germany from DWD. The other MeteoAlarm countries name EMMA regions instead,
+and need boundary data first. A test run on 2026-10-23 published 121 MeteoAlarm alerts in 244
 tiles in about 6 seconds; the index was 3.4 KB gzipped, the median tile
 4 KB, the largest (Switzerland's municipal polygons) 79 KB. A run that only
 rereads the feeds takes about 2 seconds.
@@ -775,6 +775,24 @@ took about 4 seconds. The index was 12 KB gzipped, the median tile 7 KB,
 the 90th percentile 34 KB and the largest 190 KB, where many zoned alerts
 overlap; the run's state was 1.4 MB gzipped. The feed itself is about
 2 MB a run.
+
+**DWD.** Germany comes straight from DWD's open data rather than
+MeteoAlarm, whose German feed names regions: the commune-level zip of
+every warning in force (`COMMUNEUNION_DWD_STAT`, the `MUL` file with all
+eight languages), about 2 MB a run. Each warning carries its drawn
+polygon, with islands and lakes left out as holes (`EXCLUDE_POLYGON`
+geocodes), simplified like zone shapes. A file seen before keeps its
+alert, and one gone from the zip is over. DWD grades a step below CAP's
+usual meaning (its yellow, "level 1 of 4", is `Minor`), so severities are
+read up a step; the hazard comes from its `GROUP` event code. The commune
+list (often thousands) isn't shown as the area name past five. Coastal-
+waters warnings from its marine service carry no polygon and are left
+out. Credit "Deutscher Wetterdienst, © GeoBasis-DE / BKG": CC BY 4.0 with
+the source named, and the areas are drawn on the federal mapping agency's
+data. A test run on 2026-10-23: 46 warnings (7 coastal left out) in 65
+tiles in about 5 seconds, 2 on a rerun; the median tile 28 KB gzipped
+(about 20 overlapping wind warnings, each in eight languages), the
+largest 55 KB.
 
 Only public data goes in the bucket, the run's own state
 (`ingest-state/v1.json`: what each feed listed, so unchanged documents

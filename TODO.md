@@ -207,12 +207,11 @@ voice and the Google Weather proxy.
 - [ ] **New Zealand.** MetService's CAP feed (`alerts.metservice.com/cap/
       atom`, CC BY 4.0) was empty when checked; add it once a warning in
       force shows its entry and area format.
-- [ ] **Clip tile rings to their tile.** Each tile file carries every
-      alert's whole area, so where many zoned NWS alerts overlap a tile
-      reaches 190 KB gzipped (docs/ALERTS.md → The published files). Clip
-      each ring to the tile plus a 1 km margin, and send the alert's full
-      bounding box beside it, since the app's "too broad to notify" rule
-      (`AlertArea.spanKm`) measures the whole area.
+- [x] **Clip tile rings to their tile.** Each tile carries its part of an
+      area, cut 2 km past the tile (docs/ALERTS.md → The published files):
+      the median tile went from 7.2 to 1.9 KB gzipped, the largest from 178
+      to 76 KB. An area over 900 km across stays whole, so the app's "too
+      broad to notify" rule (`AlertArea.spanKm`) needs no bounding box.
 - [x] **Publish MeteoAlarm's disclaimer.** Its terms (§5) ask redistributors
       to publish a disclaimer beside the credit. Every alert card now shows
       ClothesCast's own and, behind "Show details", MeteoAlarm's required

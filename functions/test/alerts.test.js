@@ -6,7 +6,8 @@ const path = require("node:path");
 
 const { parseCapAlert, parseCapFeed, parseCircle, parsePolygon } = require("../lib/alerts/cap");
 const { serve } = require("../lib/alerts/served");
-const { MAX_TILES_PER_ALERT, tileKey, tilesFor } = require("../lib/alerts/tiles");
+const { MAX_TILES_PER_ALERT, clipToTile, spanKm, tileKey, tilesFor } = require("../lib/alerts/tiles");
+const { ringContains } = require("../lib/alerts/geo");
 const { METEOALARM_DISCLAIMER, SOURCES } = require("../lib/alerts/sources");
 const { INDEX_PATH, USER_AGENT, ingest, tilePath } = require("../lib/alerts/ingest");
 const { fakeStore: makeStore } = require("./support/fake-store");
@@ -148,6 +149,66 @@ test("an alert too broad to mean anything at a point isn't tiled", () => {
   assert.equal(tilesFor([[[[0, 0], [side, 0], [side, side], [0, 0]]]]), null);
 });
 
+// ---- A tile's part of each area ----
+
+// How the app reads an area (`AlertArea`, `WeatherAlertRules.relevant`):
+// inside a polygon by the even-odd rule, or within 1 km of an edge on a
+// flat projection around the point.
+function appCovers(polygons, point) {
+  const inside = polygons.some((rings) => rings.reduce((odd, ring) => odd !== ringContains(ring, point), false));
+  if (inside) return true;
+  const kmPerLon = 111.2 * Math.cos((point[0] * Math.PI) / 180);
+  const xy = ([lat, lon]) => [(lon - point[1]) * kmPerLon, (lat - point[0]) * 111.2];
+  return polygons.flat().some((ring) => ring.some((a, i) => {
+    const [ax, ay] = xy(a);
+    const [bx, by] = xy(ring[(i + 1) % ring.length]);
+    const [dx, dy] = [bx - ax, by - ay];
+    const t = dx === 0 && dy === 0 ? 0 : Math.max(0, Math.min(1, -(ax * dx + ay * dy) / (dx * dx + dy * dy)));
+    return Math.hypot(ax + t * dx, ay + t * dy) <= 1;
+  }));
+}
+
+const box = (south, west, north, east) => [[south, west], [south, east], [north, east], [north, west], [south, west]];
+
+test("a tile's part of an area reads as the whole area everywhere in the tile", () => {
+  const shapes = {
+    // Two arms reaching north out of the tile, joined beyond it: the cut
+    // joins them along the margin, which must not cover the gap between.
+    arms: [[[[10.5, 20.2], [11.5, 20.2], [11.5, 20.8], [10.5, 20.8], [10.5, 20.6],
+      [11.3, 20.6], [11.3, 20.4], [10.5, 20.4], [10.5, 20.2]]]],
+    // Over the whole tile, with a hole in it.
+    holed: [[box(9, 19, 12, 22), box(10.4, 20.4, 10.6, 20.6)]],
+    // Across the tile's south-west corner.
+    corner: [[[[9.5, 19.5], [10.5, 19.5], [9.5, 20.5], [9.5, 19.5]]]],
+    // Just outside the tile, inside the app's slack along its west edge.
+    near: [[box(10.2, 19.9, 10.4, 19.995)]],
+  };
+  for (const [name, polygons] of Object.entries(shapes)) {
+    const part = clipToTile(polygons, "10/20");
+    for (let lat = 10; lat < 11; lat += 0.01) {
+      for (let lon = 20; lon < 21; lon += 0.01) {
+        assert.equal(appCovers(part, [lat, lon]), appCovers(polygons, [lat, lon]), `${name} at ${lat}, ${lon}`);
+      }
+    }
+  }
+  // The hole stays; the arms' far ends and joining bar go.
+  assert.deepEqual(clipToTile(shapes.holed, "10/20")[0][1], shapes.holed[0][1]);
+  assert.ok(clipToTile(shapes.arms, "10/20")[0][0].every(([lat]) => lat <= 11.0181));
+});
+
+test("an area whose box touches a tile but not the area itself has no part in it", () => {
+  // An L around the tile's north-west corner, beyond the margin.
+  const l = [[[[11.5, 19.5], [11.5, 21.5], [11.1, 21.5], [11.1, 19.9], [9.5, 19.9], [9.5, 19.5], [11.5, 19.5]]]];
+  assert.deepEqual(clipToTile(l, "10/20"), []);
+});
+
+test("an area's span is measured as the app measures it", () => {
+  assert.equal(spanKm([[box(10, 20, 12, 20.5)]]), 2 * 111.2);
+  assert.equal(spanKm([]), 0);
+  // Across the antimeridian, the long way round, as the app takes longitudes.
+  assert.ok(spanKm([[[[-17.5, 179.5], [-17.5, -179.5], [-16.5, -179.5], [-17.5, 179.5]]]]) > 30_000);
+});
+
 // ---- One ingester run, against a fake network and bucket ----
 
 const fakeStore = (clock = () => NOW) => makeStore(clock);
@@ -203,8 +264,20 @@ test("a run publishes each tile, then an index naming them", async () => {
   const tile = store.files.get(tilePath("55/-5", index.tiles["55/-5"]));
   assert.equal(tile.tile, "55/-5");
   assert.equal(tile.alerts[0].texts[0].title, "Amber wind warning");
+  // Its part of the area: 55–56.5°N, 4.5–2.5°W cut to 55–56°N, 5–4°W and the margin.
+  assert.deepEqual(tile.alerts[0].polygons, [[[[56.018, -3.9678], [56.018, -4.5], [55, -4.5], [55, -3.9678], [56.018, -3.9678]]]]);
   assert.match(index.tiles["55/-5"], /^[0-9a-f]{16}$/);
   assert.ok(fetch.calls.every((c) => c.userAgent === USER_AGENT));
+});
+
+test("an alert the app measures as too broad to notify keeps its whole area in every tile", async () => {
+  // 55–64°N: about 1,000 km, over the app's limit for notifying.
+  const broad = ALERT.replace(/<polygon>[^<]*<\/polygon>/, "<polygon>55.0,-4.5 55.0,-2.5 64.0,-2.5 64.0,-4.5 55.0,-4.5</polygon>");
+  const store = fakeStore();
+  await run(store, { [SOURCE.url]: FEED, [CAP_URL]: broad });
+  const index = store.files.get(INDEX_PATH);
+  const tile = store.files.get(tilePath("60/-4", index.tiles["60/-4"]));
+  assert.deepEqual(tile.alerts[0].polygons, [[[[55, -4.5], [55, -2.5], [64, -2.5], [64, -4.5], [55, -4.5]]]]);
 });
 
 test("each host's feeds are read side by side with other hosts'", async () => {

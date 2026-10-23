@@ -16,11 +16,15 @@
 import { createHash } from "node:crypto";
 
 import { parseCapAlert, parseCapFeed, type LatLon } from "./cap";
+import { DWD_PROFILE } from "./dwd";
 import { geoJsonPolygons, simplifyRing } from "./geo";
 import { parseNwsAlerts, type NwsAlert } from "./nws";
-import { serve, type ServedAlert, type Skip } from "./served";
+import { serve, type CapProfile, type ServedAlert, type Skip } from "./served";
 import type { AlertSource } from "./sources";
 import { TILE_DEGREES, tilesFor } from "./tiles";
+import { unzip } from "./unzip";
+
+const PROFILES: Record<NonNullable<AlertSource["profile"]>, CapProfile> = { dwd: DWD_PROFILE };
 
 /** Bump when a file's shape changes incompatibly; it's in every path. */
 export const FORMAT_VERSION = 1;
@@ -175,6 +179,15 @@ async function fetchText(deps: IngestDeps, url: string): Promise<string> {
   return await response.text();
 }
 
+async function fetchBytes(deps: IngestDeps, url: string): Promise<Buffer> {
+  const response = await deps.fetch(url, {
+    headers: { "User-Agent": USER_AGENT },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return Buffer.from(await response.arrayBuffer());
+}
+
 /** Runs [work] over [items], at most [limit] at a time. */
 async function pool<T, R>(items: T[], limit: number, work: (item: T) => Promise<R>): Promise<R[]> {
   const results: R[] = new Array(items.length);
@@ -204,9 +217,14 @@ function refreshSource(
   previous: SourceState | undefined,
   now: Date,
 ): Promise<SourceState> {
-  return source.kind === "nws"
-    ? refreshNwsSource(deps, source, previous, now)
-    : refreshCapSource(deps, source, previous, now);
+  switch (source.kind) {
+    case "nws":
+      return refreshNwsSource(deps, source, previous, now);
+    case "cap-zip":
+      return refreshZipSource(deps, source, previous, now);
+    default:
+      return refreshCapSource(deps, source, previous, now);
+  }
 }
 
 // Keep serving what the feed last listed until those alerts expire; the index
@@ -262,6 +280,63 @@ async function refreshCapSource(
       checkedAt,
       lastSuccessAt: previous?.lastSuccessAt ?? null,
       error: `${documentErrors} of ${feed.length} documents failed`,
+      entries,
+    };
+  }
+  return { checkedAt, lastSuccessAt: checkedAt, error: null, entries };
+}
+
+/**
+ * [result] with every ring simplified as zone shapes are: DWD draws its
+ * warnings along commune boundaries, hundreds of points that would
+ * otherwise dominate the tile files.
+ */
+function simplified(result: ServedAlert | Skip): ServedAlert | Skip {
+  if (typeof result === "string") return result;
+  return { ...result, polygons: result.polygons.map((rings) => rings.map((r) => simplifyRing(r, ZONE_TOLERANCE))) };
+}
+
+/**
+ * A zip of every alert in force (DWD): each file is one CAP document named
+ * by its identifier, which changes with every update, so a file seen before
+ * keeps the alert served for it and one gone from the zip is over.
+ */
+async function refreshZipSource(
+  deps: IngestDeps,
+  source: AlertSource,
+  previous: SourceState | undefined,
+  now: Date,
+): Promise<SourceState> {
+  const checkedAt = now.toISOString();
+  let files;
+  try {
+    files = unzip(await fetchBytes(deps, source.url)).filter((f) => f.name.endsWith(".xml"));
+  } catch (err) {
+    return feedFailed(deps, source, previous, now, err);
+  }
+  const profile = source.profile ? PROFILES[source.profile] : {};
+  const entries: Record<string, CachedEntry> = {};
+  let documentErrors = 0;
+  for (const file of files) {
+    const cached = previous?.entries[file.name];
+    if (cached) {
+      entries[file.name] = cached;
+      continue;
+    }
+    try {
+      const cap = parseCapAlert(file.data.toString("utf8"));
+      entries[file.name] = { updated: cap.sent, result: simplified(serve(source.id, cap, now, profile)) };
+    } catch (err) {
+      // A document that won't parse is left out and tried again next run.
+      documentErrors++;
+      deps.log.warn("Alert document failed", { source: source.id, error: describe(err) });
+    }
+  }
+  if (documentErrors > 0) {
+    return {
+      checkedAt,
+      lastSuccessAt: previous?.lastSuccessAt ?? null,
+      error: `${documentErrors} of ${files.length} documents failed`,
       entries,
     };
   }

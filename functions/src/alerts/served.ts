@@ -3,7 +3,8 @@
  * the shape the app reads from the tile files (docs/ALERTS.md → Architecture
  * → B). Pure, so it's unit testable.
  */
-import type { CapAlert, CapInfo, LatLon } from "./cap";
+import type { CapAlert, CapArea, CapInfo, LatLon } from "./cap";
+import { ringContains } from "./geo";
 
 export type Severity = "MINOR" | "MODERATE" | "SEVERE" | "EXTREME" | "UNKNOWN";
 
@@ -104,19 +105,41 @@ function hasPassed(iso: string | null, now: Date): boolean {
 export type Skip = "not_actual" | "cancel" | "not_public" | "no_info" | "expired" | "no_area";
 
 /**
+ * How a source's CAP differs from the norm, for the fields the app grades
+ * and names by. [severity] and [eventType] return null to fall back to the
+ * standard reading; [areaName], when given, replaces it.
+ */
+export interface CapProfile {
+  severity?: (info: CapInfo) => Severity | null;
+  eventType?: (info: CapInfo) => string | null;
+  areaName?: (info: CapInfo) => string | null;
+}
+
+/**
+ * An area's polygons, each with the holes inside it: a hole goes to the
+ * first polygon holding its first point, and one inside none is dropped.
+ */
+function areaPolygons(area: CapArea): LatLon[][][] {
+  const polygons = area.rings.map((ring) => [ring]);
+  for (const hole of area.holes) polygons.find(([outer]) => ringContains(outer, hole[0]))?.push(hole);
+  return polygons;
+}
+
+/**
  * The alert to serve for [cap] from [source], or why it isn't served: only
  * real, public, unexpired alerts with an area. The first `<info>` sets the
  * times, severity and area; every `<info>` contributes its language's text.
  */
-export function serve(source: string, cap: CapAlert, now: Date): ServedAlert | Skip {
+export function serve(source: string, cap: CapAlert, now: Date, profile: CapProfile = {}): ServedAlert | Skip {
   if (cap.status !== "Actual") return "not_actual";
   if (cap.msgType === "Cancel") return "cancel";
   if (cap.scope && cap.scope !== "Public") return "not_public";
   const primary = cap.infos[0];
   if (!primary) return "no_info";
   if (hasPassed(primary.expires, now)) return "expired";
-  // Each CAP polygon or circle is a polygon of its own: CAP has no holes.
-  const polygons = primary.areas.flatMap((a) => a.rings.map((ring) => [ring]));
+  // Each CAP polygon or circle is a polygon of its own; CAP itself has no
+  // holes, only DWD's excluded parts.
+  const polygons = primary.areas.flatMap(areaPolygons);
   if (polygons.length === 0) return "no_area";
   return {
     id: `${source}:${cap.identifier}`,
@@ -124,10 +147,10 @@ export function serve(source: string, cap: CapAlert, now: Date): ServedAlert | S
     sent: cap.sent,
     onset: primary.onset ?? primary.effective,
     expires: primary.expires,
-    severity: severityOf(primary),
+    severity: profile.severity?.(primary) ?? severityOf(primary),
     certainty: primary.certainty,
     urgency: primary.urgency,
-    eventType: eventTypeOf(primary),
+    eventType: profile.eventType?.(primary) ?? eventTypeOf(primary),
     issuer: primary.senderName,
     polygons,
     texts: cap.infos.map((info) => ({
@@ -136,7 +159,7 @@ export function serve(source: string, cap: CapAlert, now: Date): ServedAlert | S
       headline: info.headline,
       description: info.description,
       instruction: info.instruction,
-      areaName: areaNameOf(info),
+      areaName: profile.areaName ? profile.areaName(info) : areaNameOf(info),
       web: info.web,
     })),
   };

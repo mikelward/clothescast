@@ -15,6 +15,11 @@ export interface CapArea {
   areaDesc: string | null;
   /** Each `<polygon>`, plus each `<circle>` drawn as one, as closed rings. */
   rings: LatLon[][];
+  /**
+   * Parts of the area left out, as closed rings: DWD's `EXCLUDE_POLYGON`
+   * geocodes (islands, lakes), holes in the polygon around them.
+   */
+  holes: LatLon[][];
 }
 
 export interface CapInfo {
@@ -33,6 +38,8 @@ export interface CapInfo {
   expires: string | null;
   /** `<parameter>` values by name, in document order. */
   parameters: Record<string, string[]>;
+  /** `<eventCode>` values by name, in document order (DWD's `GROUP`, `II`). */
+  eventCodes: Record<string, string[]>;
   areas: CapArea[];
 }
 
@@ -54,7 +61,7 @@ export interface FeedEntry {
   capUrl: string;
 }
 
-const ARRAYS = new Set(["info", "area", "polygon", "circle", "parameter", "entry", "link"]);
+const ARRAYS = new Set(["info", "area", "polygon", "circle", "geocode", "parameter", "eventCode", "entry", "link"]);
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -138,16 +145,26 @@ function parseArea(node: Node): CapArea {
     const ring = parseCircle(raw);
     if (ring) rings.push(ring);
   }
-  return { areaDesc: text(node.areaDesc), rings };
+  const holes: LatLon[][] = [];
+  for (const geocode of nodes(node.geocode)) {
+    const raw = text(geocode.valueName) === "EXCLUDE_POLYGON" ? text(geocode.value) : null;
+    const ring = raw ? parsePolygon(raw) : null;
+    if (ring) holes.push(ring);
+  }
+  return { areaDesc: text(node.areaDesc), rings, holes };
+}
+
+function valuesByName(list: Node[]): Record<string, string[]> {
+  const values: Record<string, string[]> = {};
+  for (const item of list) {
+    const name = text(item.valueName);
+    const value = text(item.value);
+    if (name && value) (values[name] ??= []).push(value);
+  }
+  return values;
 }
 
 function parseInfo(node: Node): CapInfo {
-  const parameters: Record<string, string[]> = {};
-  for (const p of nodes(node.parameter)) {
-    const name = text(p.valueName);
-    const value = text(p.value);
-    if (name && value) (parameters[name] ??= []).push(value);
-  }
   return {
     language: text(node.language) ?? "en-US",
     event: text(node.event),
@@ -162,7 +179,8 @@ function parseInfo(node: Node): CapInfo {
     effective: text(node.effective),
     onset: text(node.onset),
     expires: text(node.expires),
-    parameters,
+    parameters: valuesByName(nodes(node.parameter)),
+    eventCodes: valuesByName(nodes(node.eventCode)),
     areas: nodes(node.area).map(parseArea),
   };
 }

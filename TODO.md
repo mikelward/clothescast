@@ -194,6 +194,12 @@ voice and the Google Weather proxy.
       card shows the issue time and the source's credit, and a stale index
       or an incomplete source reads as unknown, not quiet. No Google: a
       place no source covers reads as unavailable (maintainer, 2026-10-23).
+- [ ] **Clip tile rings to their tile.** Each tile file carries every
+      alert's whole area, so where many zoned NWS alerts overlap a tile
+      reaches 190 KB gzipped (docs/ALERTS.md → The published files). Clip
+      each ring to the tile plus a 1 km margin, and send the alert's full
+      bounding box beside it, since the app's "too broad to notify" rule
+      (`AlertArea.spanKm`) measures the whole area.
 - [ ] **Publish MeteoAlarm's disclaimer.** Its terms (§5) ask redistributors
       to publish a disclaimer beside the credit; the wording wasn't readable
       from the sandbox (docs/ALERTS.md → Sources). Read
@@ -1005,6 +1011,14 @@ Open work:
 
 ## Decisions needing review
 
+- [ ] **Alert coverage after the first six countries: the US first**
+      (autopilot, 2026-10-23). NWS is the largest source with clear terms
+      (public domain) reachable from the sandbox, and every land alert in
+      it can be placed, from its polygon or its zones' shapes. Alternative:
+      the rest of Europe (MeteoAlarm needs EMMA region boundaries, source
+      not yet found), Canada (ECCC; Datamart unreachable from the sandbox)
+      or Australia (Xweather; needs a key and its terms in writing).
+      Reversible: a source is one entry in `functions/src/alerts/sources.ts`.
 - [ ] **Weather alerts in the app: the calls made building it** (autopilot,
       2026-10-22). Each is a constant or a line to change:
       - *"Looks severe" for the hourly check:* wind ≥ 50 km/h, rain ≥ 10 mm in

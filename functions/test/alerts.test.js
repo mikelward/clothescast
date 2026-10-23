@@ -8,6 +8,7 @@ const { parseCapAlert, parseCapFeed, parseCircle, parsePolygon } = require("../l
 const { serve } = require("../lib/alerts/served");
 const { MAX_TILES_PER_ALERT, tileKey, tilesFor } = require("../lib/alerts/tiles");
 const { INDEX_PATH, USER_AGENT, ingest, tilePath } = require("../lib/alerts/ingest");
+const { fakeStore: makeStore } = require("./support/fake-store");
 
 const fixture = (name) => readFileSync(path.join(__dirname, "fixtures", name), "utf8");
 const FEED = fixture("meteoalarm-feed.atom");
@@ -133,37 +134,7 @@ test("an alert too broad to mean anything at a point isn't tiled", () => {
 
 // ---- One ingester run, against a fake network and bucket ----
 
-function fakeStore(clock = () => NOW) {
-  const files = new Map();
-  const created = new Map();
-  let state = null;
-  let stateGeneration = 0;
-  let indexGeneration = 0;
-  return {
-    files,
-    get state() { return state; },
-    async readState() { return { state, generation: state ? String(stateGeneration) : null }; },
-    async writeState(next, expected) {
-      if ((state ? String(stateGeneration) : null) !== expected) throw new Error("precondition failed");
-      state = JSON.parse(JSON.stringify(next));
-      stateGeneration++;
-    },
-    async indexGeneration() { return files.has(INDEX_PATH) ? String(indexGeneration) : null; },
-    async writeIndex(index, expected) {
-      if ((files.has(INDEX_PATH) ? String(indexGeneration) : null) !== expected) throw new Error("precondition failed");
-      files.set(INDEX_PATH, JSON.parse(JSON.stringify(index)));
-      indexGeneration++;
-    },
-    async listTiles() {
-      return [...files.keys()].filter((p) => p !== INDEX_PATH).map((p) => ({ path: p, createdAt: created.get(p) }));
-    },
-    async writeTile(p, body) {
-      files.set(p, JSON.parse(JSON.stringify(body)));
-      created.set(p, clock());
-    },
-    async delete(p) { files.delete(p); created.delete(p); },
-  };
-}
+const fakeStore = (clock = () => NOW) => makeStore(clock);
 
 function fakeFetch(routes) {
   const calls = [];

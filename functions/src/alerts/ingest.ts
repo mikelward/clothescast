@@ -15,7 +15,9 @@
  */
 import { createHash } from "node:crypto";
 
-import { parseCapAlert, parseCapFeed } from "./cap";
+import { parseCapAlert, parseCapFeed, type LatLon } from "./cap";
+import { geoJsonPolygons, simplifyRing } from "./geo";
+import { parseNwsAlerts, type NwsAlert } from "./nws";
 import { serve, type ServedAlert, type Skip } from "./served";
 import type { AlertSource } from "./sources";
 import { TILE_DEGREES, tilesFor } from "./tiles";
@@ -29,6 +31,18 @@ export const TILES_PREFIX = `v${FORMAT_VERSION}/tiles/`;
 export const tilePath = (key: string, hash: string): string => `${TILES_PREFIX}${key}/${hash}.json`;
 export const STATE_PATH = `ingest-state/v${FORMAT_VERSION}.json`;
 export const HASH_LENGTH = 16;
+
+// NWS zone shapes: fetched once from api.weather.gov, simplified, and kept in
+// the bucket; refetched after a month, since zones change a few times a year.
+const NWS_ZONE = /^https:\/\/api\.weather\.gov\/zones\/(forecast|fire|county)\/([A-Z]{2}[ZC]\d{3})$/;
+export const zonePath = (type: string, id: string): string => `zones/v${FORMAT_VERSION}/${type}/${id}.json`;
+const ZONE_MAX_AGE_MS = 30 * 24 * 60 * 60_000;
+/**
+ * How far a simplified zone outline may stray, in degrees (about 200 m),
+ * well inside the app's 1 km containment slack.
+ */
+export const ZONE_TOLERANCE = 0.002;
+const ZONE_CONCURRENCY = 4;
 
 /**
  * How long a tile file is kept after the last index that named it: a phone
@@ -96,6 +110,13 @@ export interface TileFile {
   alerts: ServedAlert[];
 }
 
+/** A zone's simplified shape, as kept in the bucket. */
+export interface ZoneFile {
+  v: number;
+  fetchedAt: string;
+  polygons: LatLon[][][];
+}
+
 export interface Logger {
   info(message: string, fields?: Record<string, unknown>): void;
   warn(message: string, fields?: Record<string, unknown>): void;
@@ -121,6 +142,9 @@ export interface AlertStore {
   listTiles(): Promise<StoredFile[]>;
   writeTile(path: string, body: TileFile): Promise<void>;
   delete(path: string): Promise<void>;
+  /** A cached zone shape, or null when there's none. */
+  readZone(path: string): Promise<ZoneFile | null>;
+  writeZone(path: string, zone: ZoneFile): Promise<void>;
 }
 
 export interface IngestDeps {
@@ -172,7 +196,30 @@ function describe(err: unknown): string {
 }
 
 /** One source's entries this run; on a feed failure, the last run's. */
-async function refreshSource(
+function refreshSource(
+  deps: IngestDeps,
+  source: AlertSource,
+  previous: SourceState | undefined,
+  now: Date,
+): Promise<SourceState> {
+  return source.kind === "nws"
+    ? refreshNwsSource(deps, source, previous, now)
+    : refreshCapSource(deps, source, previous, now);
+}
+
+// Keep serving what the feed last listed until those alerts expire; the index
+// reports the failure so the app can tell stale from quiet.
+function feedFailed(deps: IngestDeps, source: AlertSource, previous: SourceState | undefined, now: Date, err: unknown) {
+  deps.log.warn("Alert feed failed; keeping its last alerts", { source: source.id, error: describe(err) });
+  return {
+    checkedAt: now.toISOString(),
+    lastSuccessAt: previous?.lastSuccessAt ?? null,
+    error: describe(err),
+    entries: previous?.entries ?? {},
+  };
+}
+
+async function refreshCapSource(
   deps: IngestDeps,
   source: AlertSource,
   previous: SourceState | undefined,
@@ -183,15 +230,7 @@ async function refreshSource(
   try {
     feed = parseCapFeed(await fetchText(deps, source.url));
   } catch (err) {
-    // Keep serving what it last listed until those alerts expire; the index
-    // reports the failure so the app can tell stale from quiet.
-    deps.log.warn("Alert feed failed; keeping its last alerts", { source: source.id, error: describe(err) });
-    return {
-      checkedAt,
-      lastSuccessAt: previous?.lastSuccessAt ?? null,
-      error: describe(err),
-      entries: previous?.entries ?? {},
-    };
+    return feedFailed(deps, source, previous, now, err);
   }
 
   const entries: Record<string, CachedEntry> = {};
@@ -225,6 +264,99 @@ async function refreshSource(
     };
   }
   return { checkedAt, lastSuccessAt: checkedAt, error: null, entries };
+}
+
+/**
+ * The NWS feed's alerts: each carries its text, so only the zones of an
+ * alert without a polygon need fetching, and an alert seen before keeps the
+ * area it was given then.
+ */
+async function refreshNwsSource(
+  deps: IngestDeps,
+  source: AlertSource,
+  previous: SourceState | undefined,
+  now: Date,
+): Promise<SourceState> {
+  const checkedAt = now.toISOString();
+  let parsed;
+  try {
+    parsed = parseNwsAlerts(await fetchText(deps, source.url), source.id, now);
+  } catch (err) {
+    return feedFailed(deps, source, previous, now, err);
+  }
+  deps.log.info("NWS alerts read", { source: source.id, alerts: parsed.alerts.length, skipped: parsed.skipped });
+
+  const entries: Record<string, CachedEntry> = {};
+  const pending: NwsAlert[] = [];
+  for (const nws of parsed.alerts) {
+    const cached = previous?.entries[nws.alert.id];
+    if (cached && cached.updated !== null && cached.updated === nws.alert.sent) {
+      entries[nws.alert.id] = cached;
+    } else if (nws.zones.length === 0) {
+      entries[nws.alert.id] = { updated: nws.alert.sent, result: nws.alert };
+    } else {
+      pending.push(nws);
+    }
+  }
+
+  const needed = [...new Set(pending.flatMap((n) => n.zones))];
+  const shapes = new Map<string, LatLon[][][]>();
+  let zoneErrors = 0;
+  await pool(needed, ZONE_CONCURRENCY, async (url) => {
+    try {
+      shapes.set(url, await zoneShape(deps, url, now));
+    } catch (err) {
+      zoneErrors++;
+      deps.log.warn("NWS zone shape failed", { source: source.id, zone: url, error: describe(err) });
+    }
+  });
+  for (const nws of pending) {
+    const polygons = nws.zones.flatMap((z) => shapes.get(z) ?? []);
+    const complete = nws.zones.every((z) => shapes.has(z));
+    if (polygons.length === 0) {
+      // Can't be placed this run: keep its last version, if any; retried next run.
+      const cached = previous?.entries[nws.alert.id];
+      if (cached) entries[nws.alert.id] = cached;
+      continue;
+    }
+    // A partly placed alert is served, but marked to be placed again next run.
+    entries[nws.alert.id] = { updated: complete ? nws.alert.sent : null, result: { ...nws.alert, polygons } };
+  }
+  if (zoneErrors > 0) {
+    return {
+      checkedAt,
+      lastSuccessAt: previous?.lastSuccessAt ?? null,
+      error: `${zoneErrors} of ${needed.length} zone shapes failed`,
+      entries,
+    };
+  }
+  return { checkedAt, lastSuccessAt: checkedAt, error: null, entries };
+}
+
+/**
+ * A zone's simplified shape: from the bucket while under a month old, else
+ * from api.weather.gov (kept for next time); a stale copy stands in when the
+ * fetch fails. Only api.weather.gov zone addresses are followed.
+ */
+async function zoneShape(deps: IngestDeps, url: string, now: Date): Promise<LatLon[][][]> {
+  const match = url.match(NWS_ZONE);
+  if (!match) throw new Error("not an api.weather.gov zone");
+  const path = zonePath(match[1], match[2]);
+  const cached = await deps.store.readZone(path);
+  if (cached && now.getTime() - Date.parse(cached.fetchedAt) < ZONE_MAX_AGE_MS) return cached.polygons;
+  try {
+    const feature = JSON.parse(await fetchText(deps, url)) as { geometry?: unknown };
+    const polygons = geoJsonPolygons(feature.geometry).map((rings) =>
+      rings.map((ring) => simplifyRing(ring, ZONE_TOLERANCE)),
+    );
+    if (polygons.length === 0) throw new Error("zone has no shape");
+    await deps.store.writeZone(path, { v: FORMAT_VERSION, fetchedAt: now.toISOString(), polygons });
+    return polygons;
+  } catch (err) {
+    if (!cached) throw err;
+    deps.log.warn("NWS zone refresh failed; using the old shape", { zone: url, error: describe(err) });
+    return cached.polygons;
+  }
 }
 
 function hasPassed(iso: string | null, now: Date): boolean {

@@ -451,9 +451,12 @@ export const weather = onRequest(
  */
 export const alertsIngest = onSchedule(
   {
+    // MeteoAlarm's terms (§5) cap relay at 5 minutes on average, 10 at most.
     schedule: "every 5 minutes",
     timeoutSeconds: 240,
-    memory: "512MiB",
+    // The monthly download of MeteoAlarm's region shapes (33 MB of GeoJSON)
+    // peaks near 360 MB; 1 GiB leaves room, still well inside the free tier.
+    memory: "1GiB",
     retryCount: 0,
   },
   async () => {

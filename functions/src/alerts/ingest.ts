@@ -15,10 +15,11 @@
  */
 import { createHash } from "node:crypto";
 
-import { parseCapAlert, parseCapFeed, type LatLon } from "./cap";
+import { parseCapAlert, parseCapFeed, type CapAlert, type LatLon } from "./cap";
 import { DWD_PROFILE } from "./dwd";
 import { geoJsonPolygons, simplifyRing } from "./geo";
 import { parseNwsAlerts, type NwsAlert } from "./nws";
+import { REGIONS_PAGE_URL, REGION_TYPES, parseRegionAliases, parseRegionShapes, regionLinks } from "./regions";
 import { serve, type CapProfile, type ServedAlert, type Skip } from "./served";
 import type { AlertSource } from "./sources";
 import { TILE_DEGREES, tilesFor } from "./tiles";
@@ -47,6 +48,18 @@ const ZONE_MAX_AGE_MS = 30 * 24 * 60 * 60_000;
  */
 export const ZONE_TOLERANCE = 0.002;
 const ZONE_CONCURRENCY = 4;
+
+// MeteoAlarm's region shapes, for feeds that name regions instead of drawing
+// them: the files its Redistribution Hub links (all regions' shapes, and the
+// NUTS and FIPS aliases), simplified and split into the bucket by geocode
+// type and code ("NUTS3:FR302"), refreshed after a month. They're downloaded
+// at most once a day, so a region missing from them can't cause a download
+// every run.
+export const regionPath = (key: string): string => `regions/v${FORMAT_VERSION}/${key.replace(":", "/")}.json`;
+const REGION_MAX_AGE_MS = ZONE_MAX_AGE_MS;
+const REGION_REFETCH_MS = 24 * 60 * 60_000;
+const REGION_FETCH_TIMEOUT_MS = 90_000;
+const REGION_WRITE_CONCURRENCY = 16;
 
 /**
  * How long a tile file is kept after the last index that named it: a phone
@@ -81,6 +94,8 @@ export interface IngestState {
   sources: Record<string, SourceState>;
   /** Each tile file's path → when a published index last named it. */
   named?: Record<string, string>;
+  /** When MeteoAlarm's region shapes were last downloaded. */
+  regionsFetchedAt?: string;
 }
 
 export interface IndexSource {
@@ -168,12 +183,12 @@ export interface IngestSummary {
   sourceErrors: number;
 }
 
-async function fetchText(deps: IngestDeps, url: string): Promise<string> {
+async function fetchText(deps: IngestDeps, url: string, timeoutMs = FETCH_TIMEOUT_MS): Promise<string> {
   // No Accept header: MeteoAlarm answers 406 to any XML type and serves
   // only fetch's default `*/*`.
   const response = await deps.fetch(url, {
     headers: { "User-Agent": USER_AGENT },
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    signal: AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return await response.text();
@@ -210,12 +225,112 @@ function describe(err: unknown): string {
   return typeof code === "string" ? `${err.message}: ${code}` : err.message;
 }
 
+/** MeteoAlarm's region shapes for one run, downloaded at most once. */
+interface Regions {
+  /** The shapes of those of [keys] ("EMMA_ID:FR069") it knows. */
+  shapes(keys: string[]): Promise<Map<string, LatLon[][][]>>;
+  /** When the shapes were last downloaded, for the run's state. */
+  fetchedAt: string | null;
+}
+
+function regionResolver(deps: IngestDeps, fetchedAt: string | null, now: Date): Regions {
+  const cached = new Map<string, Promise<{ fetchedAt: string; polygons: LatLon[][][] } | null>>();
+  let downloaded: Promise<Map<string, LatLon[][][]> | null> | null = null;
+  const regions: Regions = {
+    fetchedAt,
+    async shapes(keys) {
+      const found = new Map<string, LatLon[][][]>();
+      let stale = false;
+      for (const key of keys) {
+        if (!cached.has(key)) cached.set(key, deps.store.readZone(regionPath(key)));
+        const file = await cached.get(key);
+        if (file) found.set(key, file.polygons);
+        if (!file || now.getTime() - Date.parse(file.fetchedAt) >= REGION_MAX_AGE_MS) stale = true;
+      }
+      if (!stale) return found;
+      downloaded ??= download();
+      const fresh = await downloaded;
+      for (const key of keys) {
+        const polygons = fresh?.get(key);
+        if (polygons) found.set(key, polygons);
+      }
+      return found;
+    },
+  };
+
+  async function download(): Promise<Map<string, LatLon[][][]> | null> {
+    if (regions.fetchedAt && now.getTime() - Date.parse(regions.fetchedAt) < REGION_REFETCH_MS) return null;
+    try {
+      const links = regionLinks(await fetchText(deps, REGIONS_PAGE_URL));
+      if (!links.geocodes) throw new Error("no geocode file linked");
+      const byCode = parseRegionShapes(await fetchText(deps, links.geocodes, REGION_FETCH_TIMEOUT_MS), ZONE_TOLERANCE);
+      const shapes = new Map<string, LatLon[][][]>([...byCode].map(([code, p]) => [`EMMA_ID:${code}`, p]));
+      // An alias stands for one or more regions: their shapes together.
+      try {
+        if (!links.aliases) throw new Error("no aliases file linked");
+        for (const [key, codes] of parseRegionAliases(await fetchText(deps, links.aliases, REGION_FETCH_TIMEOUT_MS))) {
+          const polygons = codes.flatMap((code) => byCode.get(code) ?? []);
+          if (polygons.length > 0) shapes.set(key, polygons);
+        }
+      } catch (err) {
+        deps.log.warn("MeteoAlarm region aliases download failed", { error: describe(err) });
+      }
+      const fetchedIso = now.toISOString();
+      await pool([...shapes], REGION_WRITE_CONCURRENCY, ([key, polygons]) =>
+        deps.store.writeZone(regionPath(key), { v: FORMAT_VERSION, fetchedAt: fetchedIso, polygons }),
+      );
+      regions.fetchedAt = fetchedIso;
+      deps.log.info("MeteoAlarm regions downloaded", { file: links.geocodes, regions: byCode.size, keys: shapes.size });
+      return shapes;
+    } catch (err) {
+      // Stale shapes stand in where there are any; tried again tomorrow.
+      regions.fetchedAt = now.toISOString();
+      deps.log.warn("MeteoAlarm regions download failed", { error: describe(err) });
+      return null;
+    }
+  }
+  return regions;
+}
+
+/** An area's region keys ("NUTS3:FR302"), by the most precise geocode type it names. */
+function regionKeys(geocodes: Record<string, string[]>): string[] {
+  const type = REGION_TYPES.find((t) => geocodes[t]?.length);
+  return type ? geocodes[type].map((code) => `${type}:${code}`) : [];
+}
+
+/**
+ * Fills the first `<info>`'s areas that name MeteoAlarm regions instead of
+ * drawing them with those regions' shapes; returns how many of the regions
+ * named are unknown.
+ */
+async function placeRegions(cap: CapAlert, regions: Regions): Promise<number> {
+  const pending = (cap.infos[0]?.areas ?? []).filter((a) => a.rings.length === 0 && regionKeys(a.geocodes).length);
+  if (pending.length === 0) return 0;
+  const shapes = await regions.shapes([...new Set(pending.flatMap((a) => regionKeys(a.geocodes)))]);
+  let unknown = 0;
+  for (const area of pending) {
+    for (const key of regionKeys(area.geocodes)) {
+      const polygons = shapes.get(key);
+      if (!polygons) {
+        unknown++;
+        continue;
+      }
+      for (const [outer, ...holes] of polygons) {
+        area.rings.push(outer);
+        area.holes.push(...holes);
+      }
+    }
+  }
+  return unknown;
+}
+
 /** One source's entries this run; on a feed failure, the last run's. */
 function refreshSource(
   deps: IngestDeps,
   source: AlertSource,
   previous: SourceState | undefined,
   now: Date,
+  regions: Regions,
 ): Promise<SourceState> {
   switch (source.kind) {
     case "nws":
@@ -223,7 +338,7 @@ function refreshSource(
     case "cap-zip":
       return refreshZipSource(deps, source, previous, now);
     default:
-      return refreshCapSource(deps, source, previous, now);
+      return refreshCapSource(deps, source, previous, now, regions);
   }
 }
 
@@ -244,6 +359,7 @@ async function refreshCapSource(
   source: AlertSource,
   previous: SourceState | undefined,
   now: Date,
+  regions: Regions,
 ): Promise<SourceState> {
   const checkedAt = now.toISOString();
   let feed;
@@ -255,6 +371,7 @@ async function refreshCapSource(
 
   const entries: Record<string, CachedEntry> = {};
   let documentErrors = 0;
+  let regionErrors = 0;
   await pool(feed, DOCUMENT_CONCURRENCY, async (entry) => {
     const cached = previous?.entries[entry.identifier];
     if (cached && cached.updated === entry.updated) {
@@ -263,7 +380,16 @@ async function refreshCapSource(
     }
     try {
       const cap = parseCapAlert(await fetchText(deps, entry.capUrl));
-      entries[entry.identifier] = { updated: entry.updated, result: serve(source.id, cap, now) };
+      const unknownRegions = await placeRegions(cap, regions);
+      // A region not yet known is placed again next run.
+      if (unknownRegions > 0) {
+        regionErrors++;
+        deps.log.warn("Alert names unknown regions", { source: source.id, count: unknownRegions });
+      }
+      entries[entry.identifier] = {
+        updated: unknownRegions > 0 ? null : entry.updated,
+        result: serve(source.id, cap, now),
+      };
     } catch (err) {
       documentErrors++;
       // A document that won't load keeps its last version, if any, and is
@@ -272,14 +398,18 @@ async function refreshCapSource(
       deps.log.warn("Alert document failed", { source: source.id, error: describe(err) });
     }
   });
-  if (documentErrors > 0) {
+  if (documentErrors > 0 || regionErrors > 0) {
     // The check is incomplete: say so, so a covered country with a missing
     // alert never reads as quiet, and keep the last time it was complete.
-    deps.log.warn("Alert documents failed", { source: source.id, count: documentErrors });
+    deps.log.warn("Alert documents failed", { source: source.id, count: documentErrors, regions: regionErrors });
+    const errors = [
+      documentErrors > 0 ? `${documentErrors} of ${feed.length} documents failed` : null,
+      regionErrors > 0 ? `${regionErrors} of ${feed.length} documents name unknown regions` : null,
+    ];
     return {
       checkedAt,
       lastSuccessAt: previous?.lastSuccessAt ?? null,
-      error: `${documentErrors} of ${feed.length} documents failed`,
+      error: errors.filter((e) => e !== null).join("; "),
       entries,
     };
   }
@@ -453,8 +583,9 @@ export async function ingest(deps: IngestDeps): Promise<IngestSummary> {
   const previous = saved?.v === FORMAT_VERSION ? saved : null;
   const indexGeneration = await deps.store.indexGeneration();
 
+  const regions = regionResolver(deps, previous?.regionsFetchedAt ?? null, now);
   const sourceStates = await pool(deps.sources, FEED_CONCURRENCY, (source) =>
-    refreshSource(deps, source, previous?.sources[source.id], now),
+    refreshSource(deps, source, previous?.sources[source.id], now, regions),
   );
 
   const byTile = new Map<string, ServedAlert[]>();
@@ -534,6 +665,7 @@ export async function ingest(deps: IngestDeps): Promise<IngestSummary> {
     v: FORMAT_VERSION,
     sources: Object.fromEntries(deps.sources.map((s, i) => [s.id, sourceStates[i]])),
     named,
+    ...(regions.fetchedAt ? { regionsFetchedAt: regions.fetchedAt } : {}),
   };
   await deps.store.writeState(state, generation);
 

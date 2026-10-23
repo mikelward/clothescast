@@ -40,9 +40,13 @@ export const METEOALARM_DISCLAIMER =
   "Hydrological Services, please refer to www.meteoalarm.org.";
 
 // MeteoAlarm's terms (docs/ALERTS.md → Sources): credit the national
-// service for one country's warnings and link to meteoalarm.org. Only the
-// countries whose feeds carry polygons are listed; the rest name EMMA
-// regions, which need boundary data first.
+// service for one country's warnings and link to meteoalarm.org. Listed are
+// the countries whose feeds draw polygons or name regions whose shapes
+// MeteoAlarm publishes, by EMMA, NUTS or FIPS code (regions.ts). Left out
+// (TODO.md): Germany, which comes from DWD and its own drawn areas; Croatia,
+// whose feed names county regions the shapes lack; Bosnia and Herzegovina,
+// whose feed is one entity's service; and Andorra and Israel, which have no
+// shapes.
 function meteoalarm(id: string, slug: string, country: string, issuer: string): AlertSource {
   return {
     id,
@@ -98,6 +102,34 @@ export const SOURCES: AlertSource[] = [
   meteoalarm("meteoalarm-ch", "switzerland", "CH", "MeteoSwiss"),
   meteoalarm("meteoalarm-si", "slovenia", "SI", "ARSO"),
   meteoalarm("meteoalarm-ua", "ukraine", "UA", "Ukrhydrometcenter"),
+  meteoalarm("meteoalarm-at", "austria", "AT", "GeoSphere Austria"),
+  meteoalarm("meteoalarm-ee", "estonia", "EE", "Estonian Environment Agency"),
+  meteoalarm("meteoalarm-fi", "finland", "FI", "Finnish Meteorological Institute"),
+  meteoalarm("meteoalarm-gr", "greece", "GR", "HNMS"),
+  meteoalarm("meteoalarm-it", "italy", "IT", "Aeronautica Militare"),
+  meteoalarm("meteoalarm-lv", "latvia", "LV", "LVĢMC"),
+  meteoalarm("meteoalarm-lt", "lithuania", "LT", "Lithuanian Hydrometeorological Service"),
+  meteoalarm("meteoalarm-lu", "luxembourg", "LU", "MeteoLux"),
+  meteoalarm("meteoalarm-md", "moldova", "MD", "Meteorology and Environmental Monitoring Authority"),
+  meteoalarm("meteoalarm-me", "montenegro", "ME", "Institute of Hydrometeorology and Seismology"),
+  meteoalarm("meteoalarm-nl", "netherlands", "NL", "KNMI"),
+  meteoalarm("meteoalarm-pt", "portugal", "PT", "IPMA"),
+  meteoalarm("meteoalarm-rs", "serbia", "RS", "RHMSS"),
+  meteoalarm("meteoalarm-es", "spain", "ES", "AEMET"),
+  meteoalarm("meteoalarm-fr", "france", "FR", "Météo-France"),
+  meteoalarm("meteoalarm-ie", "ireland", "IE", "Met Éireann"),
+  meteoalarm("meteoalarm-be", "belgium", "BE", "RMI"),
+  meteoalarm("meteoalarm-bg", "bulgaria", "BG", "NIMH"),
+  meteoalarm("meteoalarm-hu", "hungary", "HU", "HungaroMet"),
+  meteoalarm("meteoalarm-mk", "republic-of-north-macedonia", "MK", "National Hydrometeorological Service"),
+  meteoalarm("meteoalarm-ro", "romania", "RO", "ANM"),
+  meteoalarm("meteoalarm-cy", "cyprus", "CY", "Cyprus Department of Meteorology"),
+  meteoalarm("meteoalarm-cz", "czechia", "CZ", "CHMI"),
+  meteoalarm("meteoalarm-dk", "denmark", "DK", "DMI"),
+  meteoalarm("meteoalarm-is", "iceland", "IS", "Icelandic Met Office"),
+  meteoalarm("meteoalarm-mt", "malta", "MT", "Malta Met Office"),
+  meteoalarm("meteoalarm-pl", "poland", "PL", "IMGW-PIB"),
+  meteoalarm("meteoalarm-sk", "slovakia", "SK", "SHMU"),
   NWS,
   DWD,
 ];

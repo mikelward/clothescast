@@ -1022,6 +1022,60 @@ publishes or deletes anything, and the newer view stands.
   where today there is only a per-request one; it needs a `PRIVACY.md`
   change and a decision. Adds Firebase Cloud Messaging to the app.
 
+#### Design (proposal, 2026-10-23)
+
+Push only wakes the phone sooner: the phone still reads its own tile (B)
+and decides there, as now, whether an alert covers it and notifies. B
+stays the backstop for a missed message, a phone without Google Play
+services, and alerts that don't notify.
+
+- **Topics: one per geohash-4 cell** (about 40 × 20 km at the equator,
+  narrower toward the poles), named `alerts.v1.<geohash>`. The ingester
+  sends to each cell the alert's polygon touches, five topics to a send
+  (an `||` condition), so a 300 km area of about 150 cells is about 30
+  sends, far inside FCM's 600,000 a minute. A 1° tile topic (the B tile,
+  about 110 km) would tell Google less, but most phones in it would sit
+  outside a district-sized warning and get a high-priority message that
+  ends in no notification, which is the pattern FCM demotes. The server
+  never learns which device is in which cell: the phone subscribes itself
+  and uploads no token.
+- **What's sent, and when.** Only what would notify someone: a new alert
+  at orange or red, or one rising to it, no more than 1,000 km across
+  (`MAX_NOTIFY_SPAN_KM`), sent once it has begun, since the app notifies at
+  the alert's start (`WeatherAlertNotifier`). A warning issued for
+  tomorrow is pushed tomorrow, at the first run after its start; one in
+  force is pushed when found. Yellow alerts and any user's "All alerts"
+  setting ride the pull. The ingester's state records each pushed ID and
+  level, so a rerun or a kept alert sends nothing.
+- **Payload**, a data message well under 2 KB: the tile key and the
+  alert IDs (`{"tile":"-44/170","ids":"metservice:…"}`). The phone runs its
+  usual check at once (an expedited job, which a high-priority message
+  allows), reading the index and its tile; nothing else is fetched.
+- **Subscribing.** The phone subscribes to the cell of its alerts
+  location, the same place B reads. On a move it subscribes to the new
+  cell once the fix is 2 km inside it, then drops the old one, so a phone
+  on a cell edge doesn't flap. Each change runs a check at once: alerts
+  sent before it joined never arrive, and this catches them. Turning the
+  feature off, or alerts off, unsubscribes.
+- **What Google keeps**: the install's FCM token and its one cell topic,
+  with the date it subscribed, for as long as it's subscribed; the
+  device's IP address on each subscribe; tokens lapse after 270 days
+  offline. That's a durable, dated coarse location where B leaves only
+  per-request logs.
+- **In the app**: `firebase-messaging` and a `FirebaseMessagingService`.
+  Like Analytics, it works only in builds with `google-services.json`; CI
+  builds without it, where push stays off and B carries on alone.
+- **Cost and reliability**: FCM is free and the sends fit the 5-minute
+  run. FCM has no delivery SLA; when it's late, down or demoting, the pull
+  still checks every 1 to 3 hours.
+- **`PRIVACY.md`**: a "Third-party services" row and a section saying the
+  above in plain words: which area is shared, with whom, for how long,
+  and how to stop it.
+- **The maintainer's calls**: its own switch (proposed: "Faster alerts",
+  off by default, under the alerts switch, since it adds a lasting record
+  at Google) or riding the alerts switch; and geohash-4 against a coarser
+  cell.
+
 ### Why not a worldwide Google sweep
 
 Google only answers point lookups. Covering the world's land on a 0.25° grid

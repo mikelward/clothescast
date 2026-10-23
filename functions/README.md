@@ -44,10 +44,12 @@ curl -i -X POST "http://127.0.0.1:5001/<project-id>/us-central1/tts" \
 
 ## Deploy
 
-From the repository root:
+The production Firebase project is `clothescast-ecce9`. It isn't secret: every
+release build carries it in the proxy URL and the alerts bucket address. From
+the repository root:
 
 ```sh
-make deploy PROJECT=<projectId>
+make deploy PROJECT=clothescast-ecce9
 ```
 
 It reinstalls these dependencies, builds and tests them, then deploys every

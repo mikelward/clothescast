@@ -11,7 +11,10 @@ export type Severity = "MINOR" | "MODERATE" | "SEVERE" | "EXTREME" | "UNKNOWN";
 /** The issuer's text in one language, verbatim. */
 export interface ServedText {
   language: string;
-  /** CAP `<event>`: the issuer's own title ("Amber wind warning", "High Wind Warning"). */
+  /**
+   * The issuer's own title ("Amber wind warning", "High Wind Warning"): CAP
+   * `<event>`, or another of its fields where a source says so (CapProfile).
+   */
   title: string | null;
   headline: string | null;
   description: string | null;
@@ -110,12 +113,13 @@ export type Skip = "not_actual" | "cancel" | "not_public" | "no_info" | "expired
 
 /**
  * How a source's CAP differs from the norm, for the fields the app grades
- * and names by. [severity] and [eventType] return null to fall back to the
- * standard reading; [areaName], when given, replaces it.
+ * and names by. [severity], [eventType] and [title] return null to fall
+ * back to the standard reading; [areaName], when given, replaces it.
  */
 export interface CapProfile {
   severity?: (info: CapInfo) => Severity | null;
   eventType?: (info: CapInfo) => string | null;
+  title?: (info: CapInfo) => string | null;
   areaName?: (info: CapInfo) => string | null;
 }
 
@@ -159,7 +163,7 @@ export function serve(source: string, cap: CapAlert, now: Date, profile: CapProf
     polygons,
     texts: cap.infos.map((info) => ({
       language: info.language,
-      title: info.event,
+      title: profile.title?.(info) ?? info.event,
       headline: info.headline,
       description: info.description,
       instruction: info.instruction,

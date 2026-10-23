@@ -18,7 +18,7 @@ export interface AlertSource {
    */
   kind: "cap-atom" | "cap-zip" | "nws" | "eccc";
   /** How the source's CAP differs from the norm (served.ts → CapProfile). */
-  profile?: "dwd";
+  profile?: "dwd" | "metservice";
   url: string;
   /** ISO 3166-1 alpha-2 codes of the countries the feed fully covers. */
   countries: string[];
@@ -111,6 +111,24 @@ const ECCC: AlertSource = {
   disclaimer: { name: "ECCC", url: "https://eccc-msc.github.io/open-data/licence/readme_en/" },
 };
 
+// MetService's feed is CC BY 4.0 (its own <rights>), and MetService, the
+// Official Alerting Authority, offers its warnings on its Code of Practice:
+// pass them on unmodified, as top priority and within 10 minutes of
+// receipt, credit it, and don't detract from its reputation (docs/ALERTS.md
+// → Sources). The ingester relays within 5 minutes of a change, as for
+// MeteoAlarm. The disclaimer links the licence, whose §5 disclaims
+// warranties. Severe weather and thunderstorm watches and warnings and
+// road snowfall warnings, in English; no marine warnings.
+const METSERVICE: AlertSource = {
+  id: "metservice",
+  kind: "cap-atom",
+  profile: "metservice",
+  url: "https://alerts.metservice.com/cap/atom",
+  countries: ["NZ"],
+  attribution: { name: "MetService, CC BY 4.0", url: "https://metservice.com" },
+  disclaimer: { name: "MetService", url: "https://creativecommons.org/licenses/by/4.0/legalcode" },
+};
+
 export const SOURCES: AlertSource[] = [
   meteoalarm("meteoalarm-gb", "united-kingdom", "GB", "Met Office"),
   meteoalarm("meteoalarm-no", "norway", "NO", "MET Norway"),
@@ -150,4 +168,5 @@ export const SOURCES: AlertSource[] = [
   NWS,
   DWD,
   ECCC,
+  METSERVICE,
 ];

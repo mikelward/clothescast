@@ -234,10 +234,11 @@ export function parseCapAlert(xml: string): CapAlert {
 /**
  * The alerts a CAP Atom feed lists (MeteoAlarm's legacy feeds and most of
  * the WMO directory's): each one's identifier, `<updated>` and the link to
- * its CAP document. MeteoAlarm repeats an alert once per language, area and
- * polygon, so entries are merged by identifier, keeping the latest
- * `<updated>`. Entries without an identifier or CAP link are skipped. Throws
- * when the XML isn't an Atom feed.
+ * its CAP document. The identifier is the entry's `cap:identifier`, else its
+ * `<id>` (MetService's is the CAP identifier). MeteoAlarm repeats an alert
+ * once per language, area and polygon, so entries are merged by identifier,
+ * keeping the latest `<updated>`. Entries without an identifier or CAP link
+ * are skipped. Throws when the XML isn't an Atom feed.
  */
 export function parseCapFeed(xml: string): FeedEntry[] {
   const root = parser.parse(xml) as Node;
@@ -245,7 +246,7 @@ export function parseCapFeed(xml: string): FeedEntry[] {
   if (!feed) throw new Error("not an Atom feed");
   const byId = new Map<string, FeedEntry>();
   for (const entry of nodes(feed.entry)) {
-    const identifier = text(entry.identifier);
+    const identifier = text(entry.identifier) ?? text(entry.id);
     const capLink = nodes(entry.link).find((l) => {
       const type = text(l["@type"]);
       return type === "application/cap+xml" || type === "application/xml" || type === "text/xml";

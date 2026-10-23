@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://alerts.metservice.com/cap/atom</id>
+  <link href="https://metservice.com"/>
+  <updated>2026-10-24T10:18:47+13:00</updated>
+  <title>Current Watches, Warnings and Advisories for New Zealand issued by MetService</title>
+  <rights>Copyright Meteorological Service of New Zealand Limited, 2026. Licensed under Creative Commons BY 4.0.</rights>
+  <entry>
+    <title>Heavy Rain Warning - Orange</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20261023211847263.7</id>
+    <category term="Met" />
+    <summary>Expect 150 to 200 mm of rain about the main divide, and 80 to 120 mm within 20 km farther east. Peak rates of 20 to 30 mm/h expected about the divide. Freezing level about 3000 m. Impact: Streams and rivers may rise rapidly. Surface flooding, slips, and difficult driving conditions possible. Chance of upgrading to a Red Warning: Low.</summary>
+    <updated>2026-10-24T10:18:47+13:00</updated>
+    <published>2026-10-24T10:18:47+13:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20261023211847263.7"/>
+  </entry>
+  <entry>
+    <title>Heavy Rain Watch</title>
+    <id>2.49.0.0.554.0.severeweather.nz.20261023211847263.3</id>
+    <category term="Met" />
+    <summary>Periods of heavy rain, and amounts may approach warning criteria, mainly about the ranges. Note, rain spreading north during Monday afternoon and easing from the south from evening. Chance of upgrading to a Warning: Moderate.</summary>
+    <updated>2026-10-24T10:18:47+13:00</updated>
+    <published>2026-10-24T10:18:47+13:00</published>
+    <author>
+      <name>Meteorological Service of New Zealand Limited</name>
+    </author>
+    <link rel="related" type="application/cap+xml" href="https://alerts.metservice.com/cap/alert?id=2.49.0.0.554.0.severeweather.nz.20261023211847263.3"/>
+  </entry>
+</feed>

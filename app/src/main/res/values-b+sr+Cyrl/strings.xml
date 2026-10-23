@@ -1312,12 +1312,9 @@ surfaces.
     <string name="settings_alerts_notification_permission">Без дозволе за обавештења упозорења на опасно време не могу да стигну до тебе. Дозволи их да би упозорења стизала.</string>
     <string name="settings_alerts_status_checked">Последња провера: %1$s</string>
     <string name="settings_alerts_status_unsupported">Упозорења нису доступна за ову локацију.</string>
+    <string name="settings_alerts_status_none">Нема упозорења за ову локацију. Последња провера: %1$s</string>
     <string name="settings_alerts_status_failed">Провера упозорења није успела. Ускоро ћемо покушати поново.</string>
     <string name="settings_alerts_status_waiting">Провера упозорења…</string>
-    <string name="today_alerts_promo_title">Добијај временска упозорења</string>
-    <string name="today_alerts_promo_body">Званична упозорења за место где се налазиш, уз обавештења за опасна.</string>
-    <string name="today_alerts_promo_cta">Подешавања упозорења</string>
-    <string name="today_alerts_promo_dismiss">Одбаци</string>
     <string name="notification_channel_weather_alerts_name">Временска упозорења</string>
     <string name="notification_channel_weather_alerts_description">Упозорења на опасно време за твоју локацију од званичних метеоролошких служби.</string>
     <!-- "Наранџасто упозорење на ветар": the level is a neuter adjective

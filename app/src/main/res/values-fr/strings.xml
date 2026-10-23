@@ -1461,13 +1461,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Sans autorisation de notifications, les alertes météo sévères ne peuvent pas te parvenir. Autorise les notifications pour les recevoir.</string>
     <string name="settings_alerts_status_checked">Dernière vérification %1$s</string>
     <string name="settings_alerts_status_unsupported">Les alertes ne sont pas disponibles pour cette position.</string>
+    <string name="settings_alerts_status_none">Aucune alerte pour cette position. Dernière vérification %1$s</string>
     <string name="settings_alerts_status_failed">Impossible de vérifier les alertes. Nouvelle tentative bientôt.</string>
     <string name="settings_alerts_status_waiting">Vérification des alertes…</string>
 
-    <string name="today_alerts_promo_title">Reçois les alertes météo</string>
-    <string name="today_alerts_promo_body">Alertes officielles là où tu es, et une notification quand elles sont sévères.</string>
-    <string name="today_alerts_promo_cta">Paramètres Alertes</string>
-    <string name="today_alerts_promo_dismiss">Ignorer</string>
 
     <string name="notification_channel_weather_alerts_name">Alertes météo</string>
     <string name="notification_channel_weather_alerts_description">Alertes météo sévères pour ta position, émises par les services météo officiels.</string>

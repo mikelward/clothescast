@@ -55,5 +55,4 @@ that a Mexican speaker would notice as wrong is overridden here.
          es-ES base; same "configuración" rule as above. SMN also says
          "aviso", so the alert term itself is not overridden. -->
     <string name="settings_page_alerts">Configuración de avisos</string>
-    <string name="today_alerts_promo_cta">Configuración de Avisos</string>
 </resources>

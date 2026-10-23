@@ -48,6 +48,7 @@ import app.clothescast.notification.NotificationPermission
 import app.clothescast.ui.EdgeFadeOverlay
 import app.clothescast.ui.LocalTimeFormat
 import app.clothescast.ui.formatHourMinute
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -267,8 +268,8 @@ private fun NotifyLevelRow(
 }
 
 /**
- * The last check's outcome. A failed check or a place without coverage never
- * reads as all clear.
+ * The last check's outcome: no alerts in force says so, and a failed check or
+ * a place without coverage never reads as all clear.
  */
 @Composable
 private fun alertsStatusText(status: WeatherAlertsState): String {
@@ -286,7 +287,13 @@ private fun alertsStatusText(status: WeatherAlertsState): String {
                 val locale = LocalConfiguration.current.locales[0]
                 "${DateTimeFormatter.ofPattern("EEE", locale).format(at)} $time"
             }
-            stringResource(R.string.settings_alerts_status_checked, label)
+            // Nothing in force: said outright, so a quiet check reads as a
+            // result and not as a blank.
+            val none = status.active(Instant.now()).isEmpty()
+            stringResource(
+                if (none) R.string.settings_alerts_status_none else R.string.settings_alerts_status_checked,
+                label,
+            )
         } else {
             stringResource(R.string.settings_alerts_status_waiting)
         }

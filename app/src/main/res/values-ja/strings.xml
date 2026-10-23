@@ -1482,13 +1482,10 @@ the displayed label localizes.
     <string name="settings_alerts_notification_permission">通知の許可がないと、重大な気象警報が届きません。許可すれば届くようになります。</string>
     <string name="settings_alerts_status_checked">最終確認 %1$s</string>
     <string name="settings_alerts_status_unsupported">この地域では警報を利用できません。</string>
+    <string name="settings_alerts_status_none">この地域に警報は出ていません。最終確認 %1$s</string>
     <string name="settings_alerts_status_failed">警報を確認できませんでした。まもなく再試行します。</string>
     <string name="settings_alerts_status_waiting">警報を確認中…</string>
 
-    <string name="today_alerts_promo_title">気象警報を受け取る</string>
-    <string name="today_alerts_promo_body">現在地の公式警報を表示し、重大な警報は通知でお知らせします。</string>
-    <string name="today_alerts_promo_cta">警報の設定</string>
-    <string name="today_alerts_promo_dismiss">閉じる</string>
 
     <string name="notification_channel_weather_alerts_name">気象警報</string>
     <string name="notification_channel_weather_alerts_description">公式の気象機関が発表した、現在地の重大な気象警報をお届けします。</string>

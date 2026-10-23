@@ -1463,13 +1463,10 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_alerts_notification_permission">Sem permissão para notificações, os avisos meteorológicos graves não te chegam. Concede-a para os receberes.</string>
     <string name="settings_alerts_status_checked">Última verificação %1$s</string>
     <string name="settings_alerts_status_unsupported">Os avisos não estão disponíveis para esta localização.</string>
+    <string name="settings_alerts_status_none">Nenhum aviso para esta localização. Última verificação %1$s</string>
     <string name="settings_alerts_status_failed">Não foi possível verificar os avisos. A tentar novamente em breve.</string>
     <string name="settings_alerts_status_waiting">A verificar avisos…</string>
 
-    <string name="today_alerts_promo_title">Recebe avisos meteorológicos</string>
-    <string name="today_alerts_promo_body">Avisos oficiais para onde estiveres, com notificações para os graves.</string>
-    <string name="today_alerts_promo_cta">Definições de Avisos</string>
-    <string name="today_alerts_promo_dismiss">Dispensar</string>
 
     <string name="notification_channel_weather_alerts_name">Avisos meteorológicos</string>
     <string name="notification_channel_weather_alerts_description">Avisos meteorológicos graves para a tua localização, emitidos por serviços meteorológicos oficiais.</string>

@@ -524,11 +524,6 @@ class TodayViewModel(
     private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
     /** The last weather alerts check, from [app.clothescast.data.WeatherAlertsStore]. */
     private val weatherAlerts: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
-    /**
-     * Whether alerts are one switch away: signed in with Google and the
-     * alerts proxy built in. Gates the alerts promo card.
-     */
-    private val weatherAlertsReachableBySignIn: Flow<Boolean> = flowOf(false),
     /** Records a dismissed alert card ([app.clothescast.data.WeatherAlertsStore.dismiss]). */
     private val onDismissWeatherAlert: suspend (RelevantAlert) -> Unit = {},
 ) : ViewModel() {
@@ -836,8 +831,7 @@ class TodayViewModel(
         weatherAlertsTicking,
         settingsRepository.preferences,
         insightCache.thisPeriod,
-        weatherAlertsReachableBySignIn,
-    ) { alerts, prefs, thisPeriod, reachableBySignIn ->
+    ) { alerts, prefs, thisPeriod ->
         val onScreen = alerts.onScreen(
             enabled = prefs.weatherAlerts,
             location = thisPeriod?.location ?: prefs.location,
@@ -846,7 +840,6 @@ class TodayViewModel(
         TodayAlertsState(
             alerts = onScreen,
             cards = alerts.undismissed(onScreen),
-            promoVisible = reachableBySignIn && !prefs.weatherAlerts && !prefs.weatherAlertsPromoCardDismissed,
             notifies = prefs.weatherAlerts && prefs.weatherAlertsNotifyLevel != AlertNotifyLevel.NONE,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayAlertsState())
@@ -862,13 +855,6 @@ class TodayViewModel(
                 // The card stays up; tapping Dismiss again retries.
                 DiagLog.w("TodayViewModel", e, "Couldn't record a dismissed alert card.")
             }
-        }
-    }
-
-    /** Retires the alerts promo card, from its X or its CTA, as the other promos do. */
-    fun dismissWeatherAlertsPromoCard() {
-        viewModelScope.launch {
-            settingsRepository.setWeatherAlertsPromoCardDismissed(true)
         }
     }
 
@@ -1039,7 +1025,6 @@ class TodayViewModel(
         private val geminiKeyConfigured: Flow<Boolean> = flowOf(false),
         private val geminiKeyNeedsReentry: Flow<Boolean> = flowOf(false),
         private val weatherAlerts: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
-        private val weatherAlertsReachableBySignIn: Flow<Boolean> = flowOf(false),
         private val onDismissWeatherAlert: suspend (RelevantAlert) -> Unit = {},
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -1056,7 +1041,6 @@ class TodayViewModel(
                 geminiKeyConfigured = geminiKeyConfigured,
                 geminiKeyNeedsReentry = geminiKeyNeedsReentry,
                 weatherAlerts = weatherAlerts,
-                weatherAlertsReachableBySignIn = weatherAlertsReachableBySignIn,
                 onDismissWeatherAlert = onDismissWeatherAlert,
             ) as T
         }

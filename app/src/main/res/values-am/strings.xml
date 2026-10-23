@@ -1302,12 +1302,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_notification_permission">ያለ ማሳወቂያ ፍቃድ ከባድ የአየር ሁኔታ ማስጠንቀቂያዎች ሊደርሱዎት አይችሉም። እንዲደርሱዎት ፍቃዱን ይስጡ።</string>
     <string name="settings_alerts_status_checked">በመጨረሻ የተፈተሸው %1$s</string>
     <string name="settings_alerts_status_unsupported">ለዚህ ቦታ ማስጠንቀቂያዎች አይገኙም።</string>
+    <string name="settings_alerts_status_none">ለዚህ ቦታ ማስጠንቀቂያዎች የሉም። በመጨረሻ የተፈተሸው %1$s</string>
     <string name="settings_alerts_status_failed">ማስጠንቀቂያዎችን መፈተሽ አልተቻለም። በቅርቡ እንደገና ይሞከራል።</string>
     <string name="settings_alerts_status_waiting">ማስጠንቀቂያዎችን በመፈተሽ ላይ…</string>
-    <string name="today_alerts_promo_title">የአየር ሁኔታ ማስጠንቀቂያዎችን ያግኙ</string>
-    <string name="today_alerts_promo_body">ላሉበት ቦታ ይፋዊ ማስጠንቀቂያዎች፣ ለከባዶቹ ማሳወቂያ ጭምር።</string>
-    <string name="today_alerts_promo_cta">የማስጠንቀቂያ ቅንብር</string>
-    <string name="today_alerts_promo_dismiss">ዝጋ</string>
     <string name="notification_channel_weather_alerts_name">የአየር ሁኔታ ማስጠንቀቂያዎች</string>
     <string name="notification_channel_weather_alerts_description">ከይፋዊ የአየር ሁኔታ አገልግሎቶች ለቦታዎ የሚወጡ ከባድ የአየር ሁኔታ ማስጠንቀቂያዎች።</string>
     <!-- "ብርቱካናማ የንፋስ ማስጠንቀቂያ": hazards carry the genitive የ-. -->

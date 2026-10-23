@@ -1312,13 +1312,10 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_alerts_notification_permission">Fără permisiunea de notificare, avertizările meteo severe nu ajung la tine. Acordă permisiunea ca să le primești.</string>
     <string name="settings_alerts_status_checked">Ultima verificare %1$s</string>
     <string name="settings_alerts_status_unsupported">Avertizările nu sunt disponibile pentru această locație.</string>
+    <string name="settings_alerts_status_none">Nu există avertizări pentru această locație. Ultima verificare %1$s</string>
     <string name="settings_alerts_status_failed">Avertizările nu au putut fi verificate. Se încearcă din nou în curând.</string>
     <string name="settings_alerts_status_waiting">Se verifică avertizările…</string>
 
-    <string name="today_alerts_promo_title">Primește avertizări meteo</string>
-    <string name="today_alerts_promo_body">Avertizări oficiale pentru locul în care ești, cu notificări pentru cele severe.</string>
-    <string name="today_alerts_promo_cta">Setări avertizări</string>
-    <string name="today_alerts_promo_dismiss">Închide</string>
 
     <string name="notification_channel_weather_alerts_name">Avertizări meteo</string>
     <string name="notification_channel_weather_alerts_description">Avertizări meteo severe pentru locația ta, de la serviciile meteo oficiale.</string>

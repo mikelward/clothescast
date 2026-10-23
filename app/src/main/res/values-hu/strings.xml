@@ -1327,13 +1327,10 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_alerts_notification_permission">Értesítési engedély nélkül a súlyos időjárási figyelmeztetések nem jutnak el hozzád. Engedélyezd, hogy eljussanak.</string>
     <string name="settings_alerts_status_checked">Utoljára ellenőrizve: %1$s</string>
     <string name="settings_alerts_status_unsupported">A figyelmeztetések ezen a helyszínen nem érhetők el.</string>
+    <string name="settings_alerts_status_none">Ezen a helyszínen nincs figyelmeztetés. Utoljára ellenőrizve: %1$s</string>
     <string name="settings_alerts_status_failed">Nem sikerült ellenőrizni a figyelmeztetéseket. Hamarosan újrapróbáljuk.</string>
     <string name="settings_alerts_status_waiting">Figyelmeztetések ellenőrzése…</string>
 
-    <string name="today_alerts_promo_title">Kapj időjárási figyelmeztetéseket</string>
-    <string name="today_alerts_promo_body">Hivatalos figyelmeztetések ott, ahol vagy, értesítéssel a súlyosakról.</string>
-    <string name="today_alerts_promo_cta">Figyelmeztetések beállításai</string>
-    <string name="today_alerts_promo_dismiss">Elvetés</string>
 
     <string name="notification_channel_weather_alerts_name">Időjárási figyelmeztetések</string>
     <string name="notification_channel_weather_alerts_description">Súlyos időjárási figyelmeztetések a helyszínedre hivatalos meteorológiai szolgálatoktól.</string>

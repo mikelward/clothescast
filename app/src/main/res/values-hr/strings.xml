@@ -1403,12 +1403,9 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_alerts_notification_permission">Bez dopuštenja za obavijesti upozorenja na opasno vrijeme ne mogu doći do tebe. Dopusti ih kako bi upozorenja stizala.</string>
     <string name="settings_alerts_status_checked">Zadnja provjera: %1$s</string>
     <string name="settings_alerts_status_unsupported">Upozorenja nisu dostupna za ovu lokaciju.</string>
+    <string name="settings_alerts_status_none">Nema upozorenja za ovu lokaciju. Zadnja provjera: %1$s</string>
     <string name="settings_alerts_status_failed">Provjera upozorenja nije uspjela. Uskoro ćemo pokušati ponovno.</string>
     <string name="settings_alerts_status_waiting">Provjera upozorenja…</string>
-    <string name="today_alerts_promo_title">Primaj vremenska upozorenja</string>
-    <string name="today_alerts_promo_body">Službena upozorenja za mjesto gdje se nalaziš, uz obavijesti za opasna.</string>
-    <string name="today_alerts_promo_cta">Postavke upozorenja</string>
-    <string name="today_alerts_promo_dismiss">Odbaci</string>
     <string name="notification_channel_weather_alerts_name">Vremenska upozorenja</string>
     <string name="notification_channel_weather_alerts_description">Upozorenja na opasno vrijeme za tvoju lokaciju od službenih meteoroloških ustanova.</string>
     <!-- "Narančasto upozorenje na vjetar": the level is a neuter adjective

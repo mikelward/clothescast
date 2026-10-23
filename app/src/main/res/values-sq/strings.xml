@@ -1190,13 +1190,10 @@
     <string name="settings_alerts_notification_permission">Pa lejen e njoftimeve, paralajmërimet për mot të rrezikshëm s\'mund të të arrijnë. Jepe që të të arrijnë.</string>
     <string name="settings_alerts_status_checked">Kontrolluar së fundi %1$s</string>
     <string name="settings_alerts_status_unsupported">Paralajmërimet nuk ofrohen për këtë vendndodhje.</string>
+    <string name="settings_alerts_status_none">Nuk ka paralajmërime për këtë vendndodhje. Kontrolluar së fundi %1$s</string>
     <string name="settings_alerts_status_failed">Paralajmërimet nuk u kontrolluan dot. Do të provojmë sërish së shpejti.</string>
     <string name="settings_alerts_status_waiting">Po kontrollohen paralajmërimet…</string>
 
-    <string name="today_alerts_promo_title">Merr paralajmërimet e motit</string>
-    <string name="today_alerts_promo_body">Paralajmërime zyrtare për vendin ku je, me njoftime për ato të rënda.</string>
-    <string name="today_alerts_promo_cta">Cilësimet e paralajmërimeve</string>
-    <string name="today_alerts_promo_dismiss">Hiq</string>
 
     <string name="notification_channel_weather_alerts_name">Paralajmërimet e motit</string>
     <string name="notification_channel_weather_alerts_description">Paralajmërime për mot të rrezikshëm në vendndodhjen tënde nga shërbimet zyrtare meteorologjike.</string>

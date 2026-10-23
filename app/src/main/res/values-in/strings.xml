@@ -1333,13 +1333,10 @@ to values/strings.xml (English).
     <string name="settings_alerts_notification_permission">Tanpa izin notifikasi, peringatan cuaca buruk tidak dapat sampai ke Anda. Izinkan agar peringatan bisa sampai.</string>
     <string name="settings_alerts_status_checked">Terakhir diperiksa %1$s</string>
     <string name="settings_alerts_status_unsupported">Peringatan tidak tersedia untuk lokasi ini.</string>
+    <string name="settings_alerts_status_none">Tidak ada peringatan untuk lokasi ini. Terakhir diperiksa %1$s</string>
     <string name="settings_alerts_status_failed">Tidak dapat memeriksa peringatan. Akan segera dicoba lagi.</string>
     <string name="settings_alerts_status_waiting">Memeriksa peringatan…</string>
 
-    <string name="today_alerts_promo_title">Dapatkan peringatan cuaca</string>
-    <string name="today_alerts_promo_body">Peringatan resmi untuk tempat Anda berada, dengan notifikasi untuk cuaca buruk.</string>
-    <string name="today_alerts_promo_cta">Pengaturan peringatan</string>
-    <string name="today_alerts_promo_dismiss">Tutup</string>
 
     <string name="notification_channel_weather_alerts_name">Peringatan cuaca</string>
     <string name="notification_channel_weather_alerts_description">Peringatan cuaca buruk untuk lokasi Anda dari layanan cuaca resmi.</string>

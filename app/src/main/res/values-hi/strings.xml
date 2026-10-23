@@ -1364,12 +1364,9 @@ Not overridden by design:
     <string name="settings_alerts_notification_permission">सूचना अनुमति के बिना, गंभीर मौसम चेतावनियाँ आप तक नहीं पहुंच सकतीं। अनुमति दें ताकि वे पहुंच सकें।</string>
     <string name="settings_alerts_status_checked">पिछली जांच %1$s</string>
     <string name="settings_alerts_status_unsupported">इस स्थान के लिए चेतावनियाँ उपलब्ध नहीं हैं।</string>
+    <string name="settings_alerts_status_none">इस स्थान के लिए कोई चेतावनी नहीं है। पिछली जांच %1$s</string>
     <string name="settings_alerts_status_failed">चेतावनियों की जांच नहीं हो सकी। जल्द ही फिर कोशिश होगी।</string>
     <string name="settings_alerts_status_waiting">चेतावनियों की जांच हो रही है…</string>
-    <string name="today_alerts_promo_title">मौसम चेतावनियाँ पाएँ</string>
-    <string name="today_alerts_promo_body">आप जहाँ हैं वहाँ की आधिकारिक चेतावनियाँ, गंभीर चेतावनियों की सूचना के साथ।</string>
-    <string name="today_alerts_promo_cta">चेतावनी सेटिंग्स</string>
-    <string name="today_alerts_promo_dismiss">बंद करें</string>
     <string name="notification_channel_weather_alerts_name">मौसम चेतावनियाँ</string>
     <string name="notification_channel_weather_alerts_description">आधिकारिक मौसम सेवाओं से आपके स्थान के लिए गंभीर मौसम चेतावनियाँ।</string>
     <!-- "तेज़ हवा की नारंगी चेतावनी": hazards take the oblique form before की;

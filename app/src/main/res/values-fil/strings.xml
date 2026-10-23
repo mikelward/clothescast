@@ -1385,13 +1385,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_notification_permission">Kung walang pahintulot sa notipikasyon, hindi ka maaabot ng mga babala sa matinding panahon. Ibigay ito para maabot ka nila.</string>
     <string name="settings_alerts_status_checked">Huling sinuri %1$s</string>
     <string name="settings_alerts_status_unsupported">Hindi available ang mga babala sa lokasyong ito.</string>
+    <string name="settings_alerts_status_none">Walang babala para sa lokasyong ito. Huling sinuri %1$s</string>
     <string name="settings_alerts_status_failed">Hindi masuri ang mga babala. Susubukan ulit maya-maya.</string>
     <string name="settings_alerts_status_waiting">Sinusuri ang mga babala…</string>
 
-    <string name="today_alerts_promo_title">Makatanggap ng mga babala sa panahon</string>
-    <string name="today_alerts_promo_body">Mga opisyal na babala para sa kinaroroonan mo, may notipikasyon para sa matitindi.</string>
-    <string name="today_alerts_promo_cta">Mga setting ng babala</string>
-    <string name="today_alerts_promo_dismiss">Isara</string>
 
     <string name="notification_channel_weather_alerts_name">Mga babala sa panahon</string>
     <string name="notification_channel_weather_alerts_description">Mga babala sa matinding panahon para sa iyong lokasyon mula sa mga opisyal na serbisyo ng panahon.</string>

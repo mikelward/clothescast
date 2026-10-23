@@ -1324,13 +1324,10 @@ What is NOT overridden, by design:
     <string name="settings_alerts_notification_permission">Be pranešimų leidimo įspėjimai apie pavojingus orus tavęs nepasieks. Suteik jį, kad pasiektų.</string>
     <string name="settings_alerts_status_checked">Paskutinis patikrinimas %1$s</string>
     <string name="settings_alerts_status_unsupported">Įspėjimai šiai vietai nepasiekiami.</string>
+    <string name="settings_alerts_status_none">Šiai vietai įspėjimų nėra. Paskutinis patikrinimas %1$s</string>
     <string name="settings_alerts_status_failed">Nepavyko patikrinti įspėjimų. Netrukus bandysime dar kartą.</string>
     <string name="settings_alerts_status_waiting">Tikrinami įspėjimai…</string>
 
-    <string name="today_alerts_promo_title">Gauk orų įspėjimus</string>
-    <string name="today_alerts_promo_body">Oficialūs įspėjimai ten, kur esi, su pranešimais apie pavojingus.</string>
-    <string name="today_alerts_promo_cta">Įspėjimų nustatymai</string>
-    <string name="today_alerts_promo_dismiss">Atmesti</string>
 
     <string name="notification_channel_weather_alerts_name">Orų įspėjimai</string>
     <string name="notification_channel_weather_alerts_description">Oficialių meteorologijos tarnybų įspėjimai apie pavojingus orus tavo vietoje.</string>

@@ -1382,12 +1382,9 @@ the displayed label localizes.
     <string name="settings_alerts_notification_permission">Zonder toestemming voor meldingen kunnen waarschuwingen voor zwaar weer je niet bereiken. Sta ze toe zodat dat wel kan.</string>
     <string name="settings_alerts_status_checked">Laatst gecontroleerd %1$s</string>
     <string name="settings_alerts_status_unsupported">Waarschuwingen zijn niet beschikbaar voor deze locatie.</string>
+    <string name="settings_alerts_status_none">Geen waarschuwingen voor deze locatie. Laatst gecontroleerd %1$s</string>
     <string name="settings_alerts_status_failed">Controleren op waarschuwingen mislukt. We proberen het zo opnieuw.</string>
     <string name="settings_alerts_status_waiting">Controleren op waarschuwingen…</string>
-    <string name="today_alerts_promo_title">Ontvang weerwaarschuwingen</string>
-    <string name="today_alerts_promo_body">Officiële waarschuwingen voor waar je bent, met meldingen bij zwaar weer.</string>
-    <string name="today_alerts_promo_cta">Waarschuwingsinstellingen</string>
-    <string name="today_alerts_promo_dismiss">Sluiten</string>
     <string name="notification_channel_weather_alerts_name">Weerwaarschuwingen</string>
     <string name="notification_channel_weather_alerts_description">Waarschuwingen voor zwaar weer op je locatie, van officiële weerdiensten.</string>
     <!-- "Code oranje voor wind", as KNMI phrases its color codes. -->

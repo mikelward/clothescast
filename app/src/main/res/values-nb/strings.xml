@@ -1363,12 +1363,9 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_alerts_notification_permission">Uten varseltillatelse kan ikke farevarsler nå deg. Tillat det slik at de kan.</string>
     <string name="settings_alerts_status_checked">Sist sjekket %1$s</string>
     <string name="settings_alerts_status_unsupported">Farevarsler er ikke tilgjengelige for dette stedet.</string>
+    <string name="settings_alerts_status_none">Ingen farevarsler for dette stedet. Sist sjekket %1$s</string>
     <string name="settings_alerts_status_failed">Kunne ikke se etter farevarsler. Prøver igjen snart.</string>
     <string name="settings_alerts_status_waiting">Ser etter farevarsler…</string>
-    <string name="today_alerts_promo_title">Få farevarsler</string>
-    <string name="today_alerts_promo_body">Offisielle farevarsler der du er, med varsler for de alvorlige.</string>
-    <string name="today_alerts_promo_cta">Farevarselinnstillinger</string>
-    <string name="today_alerts_promo_dismiss">Avvis</string>
     <string name="notification_channel_weather_alerts_name">Farevarsler</string>
     <string name="notification_channel_weather_alerts_description">Farevarsler for stedet ditt fra offisielle værtjenester.</string>
     <!-- "Oransje farevarsel for vind", as MET/Yr phrase it. "Farevarsel", since "varsel" here means a notification. -->

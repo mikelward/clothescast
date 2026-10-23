@@ -1333,12 +1333,9 @@ only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Без дозволу на сповіщення попередження про небезпечну погоду до вас не дійдуть. Надайте дозвіл, щоб отримувати їх.</string>
     <string name="settings_alerts_status_checked">Остання перевірка: %1$s</string>
     <string name="settings_alerts_status_unsupported">Для цього місцезнаходження попередження недоступні.</string>
+    <string name="settings_alerts_status_none">Для цього місцезнаходження попереджень немає. Остання перевірка: %1$s</string>
     <string name="settings_alerts_status_failed">Не вдалося перевірити попередження. Незабаром спробуємо знову.</string>
     <string name="settings_alerts_status_waiting">Перевірка попереджень…</string>
-    <string name="today_alerts_promo_title">Отримуйте попередження про погоду</string>
-    <string name="today_alerts_promo_body">Офіційні попередження для місця, де ви перебуваєте, зі сповіщеннями про небезпечні.</string>
-    <string name="today_alerts_promo_cta">Налаштування попереджень</string>
-    <string name="today_alerts_promo_dismiss">Закрити</string>
     <string name="notification_channel_weather_alerts_name">Попередження про погоду</string>
     <string name="notification_channel_weather_alerts_description">Попередження про небезпечну погоду для вашого місцезнаходження від офіційних метеослужб.</string>
     <!-- "Помаранчеве попередження про вітер": the level is a neuter adjective

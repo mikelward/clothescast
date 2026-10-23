@@ -1462,13 +1462,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Sin permiso de notificaciones, los avisos meteorológicos importantes no pueden llegarte. Concédelo para recibirlos.</string>
     <string name="settings_alerts_status_checked">Última comprobación %1$s</string>
     <string name="settings_alerts_status_unsupported">Los avisos no están disponibles para esta ubicación.</string>
+    <string name="settings_alerts_status_none">No hay avisos para esta ubicación. Última comprobación %1$s</string>
     <string name="settings_alerts_status_failed">No se pudieron comprobar los avisos. Se reintentará pronto.</string>
     <string name="settings_alerts_status_waiting">Comprobando avisos…</string>
 
-    <string name="today_alerts_promo_title">Recibe avisos meteorológicos</string>
-    <string name="today_alerts_promo_body">Avisos oficiales para donde estés, con notificaciones para los importantes.</string>
-    <string name="today_alerts_promo_cta">Ajustes de Avisos</string>
-    <string name="today_alerts_promo_dismiss">Descartar</string>
 
     <string name="notification_channel_weather_alerts_name">Avisos meteorológicos</string>
     <string name="notification_channel_weather_alerts_description">Avisos meteorológicos importantes para tu ubicación, emitidos por servicios meteorológicos oficiales.</string>

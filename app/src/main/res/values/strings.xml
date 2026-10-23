@@ -2064,14 +2064,10 @@
          check that failed or a place without coverage. -->
     <string name="settings_alerts_status_checked">Last checked %1$s</string>
     <string name="settings_alerts_status_unsupported">Alerts aren\'t available for this location.</string>
+    <string name="settings_alerts_status_none">No alerts for this location. Last checked %1$s</string>
     <string name="settings_alerts_status_failed">Couldn\'t check for alerts. Trying again soon.</string>
     <string name="settings_alerts_status_waiting">Checking for alerts…</string>
 
-    <!-- Promo card on Today for a Google-signed-in user with alerts off. -->
-    <string name="today_alerts_promo_title">Get weather alerts</string>
-    <string name="today_alerts_promo_body">Official alerts for where you are, with notifications for severe ones.</string>
-    <string name="today_alerts_promo_cta">Alerts settings</string>
-    <string name="today_alerts_promo_dismiss">Dismiss</string>
 
     <string name="notification_channel_weather_alerts_name">Weather alerts</string>
     <string name="notification_channel_weather_alerts_description">Severe weather alerts for your location from official weather services.</string>

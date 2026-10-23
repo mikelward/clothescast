@@ -1395,13 +1395,10 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_alerts_notification_permission">Nếu không có quyền thông báo, cảnh báo thời tiết nguy hiểm không thể đến với bạn. Hãy cấp quyền để nhận được.</string>
     <string name="settings_alerts_status_checked">Kiểm tra lần cuối %1$s</string>
     <string name="settings_alerts_status_unsupported">Cảnh báo không khả dụng cho vị trí này.</string>
+    <string name="settings_alerts_status_none">Không có cảnh báo cho vị trí này. Kiểm tra lần cuối %1$s</string>
     <string name="settings_alerts_status_failed">Không thể kiểm tra cảnh báo. Sẽ sớm thử lại.</string>
     <string name="settings_alerts_status_waiting">Đang kiểm tra cảnh báo…</string>
 
-    <string name="today_alerts_promo_title">Nhận cảnh báo thời tiết</string>
-    <string name="today_alerts_promo_body">Cảnh báo chính thức cho nơi bạn đang ở, kèm thông báo khi có cảnh báo nguy hiểm.</string>
-    <string name="today_alerts_promo_cta">Cài đặt cảnh báo</string>
-    <string name="today_alerts_promo_dismiss">Bỏ qua</string>
 
     <string name="notification_channel_weather_alerts_name">Cảnh báo thời tiết</string>
     <string name="notification_channel_weather_alerts_description">Cảnh báo thời tiết nguy hiểm cho vị trí của bạn từ các cơ quan khí tượng chính thức.</string>

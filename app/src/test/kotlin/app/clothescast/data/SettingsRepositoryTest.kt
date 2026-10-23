@@ -1692,16 +1692,13 @@ class SettingsRepositoryTest {
         val before = subject.preferences.first()
         before.weatherAlerts shouldBe false
         before.weatherAlertsNotifyLevel shouldBe AlertNotifyLevel.ORANGE_AND_RED
-        before.weatherAlertsPromoCardDismissed shouldBe false
 
         subject.setWeatherAlerts(true)
         subject.setWeatherAlertsNotifyLevel(AlertNotifyLevel.RED_ONLY)
-        subject.setWeatherAlertsPromoCardDismissed(true)
 
         val after = subject.preferences.first()
         after.weatherAlerts shouldBe true
         after.weatherAlertsNotifyLevel shouldBe AlertNotifyLevel.RED_ONLY
-        after.weatherAlertsPromoCardDismissed shouldBe true
     }
 
     @Test

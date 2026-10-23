@@ -1454,13 +1454,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Χωρίς άδεια ειδοποιήσεων, οι προειδοποιήσεις για έντονα καιρικά φαινόμενα δεν μπορούν να σε φτάσουν. Παραχώρησέ την ώστε να σε φτάνουν.</string>
     <string name="settings_alerts_status_checked">Τελευταίος έλεγχος %1$s</string>
     <string name="settings_alerts_status_unsupported">Οι προειδοποιήσεις δεν είναι διαθέσιμες για αυτή την τοποθεσία.</string>
+    <string name="settings_alerts_status_none">Δεν υπάρχουν προειδοποιήσεις για αυτή την τοποθεσία. Τελευταίος έλεγχος %1$s</string>
     <string name="settings_alerts_status_failed">Δεν ήταν δυνατός ο έλεγχος για προειδοποιήσεις. Νέα προσπάθεια σύντομα.</string>
     <string name="settings_alerts_status_waiting">Έλεγχος για προειδοποιήσεις…</string>
 
-    <string name="today_alerts_promo_title">Λάβε προειδοποιήσεις καιρού</string>
-    <string name="today_alerts_promo_body">Επίσημες προειδοποιήσεις για εκεί που βρίσκεσαι, με ειδοποιήσεις για τις σοβαρές.</string>
-    <string name="today_alerts_promo_cta">Ρυθμίσεις Προειδοποιήσεων</string>
-    <string name="today_alerts_promo_dismiss">Απόρριψη</string>
 
     <string name="notification_channel_weather_alerts_name">Προειδοποιήσεις καιρού</string>
     <string name="notification_channel_weather_alerts_description">Προειδοποιήσεις για έντονα καιρικά φαινόμενα στην τοποθεσία σου από επίσημες μετεωρολογικές υπηρεσίες.</string>

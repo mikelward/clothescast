@@ -154,10 +154,14 @@ Maintainer's design (2026-10-22):
   whatever this says.
 - **"Alert sound and lock screen"** opens Android's settings for the alerts
   channel.
-- **A promo card on Today** once the user is signed in with Google and
-  alerts are off: "Get weather alerts", opening the Alerts settings,
-  dismissible, shown until followed or dismissed (like "Try Google
-  forecasts").
+- **The status line under the switch**, while alerts are on, says what the
+  last check found: "No alerts for this location. Last checked 10:05" when
+  nothing is in force, "Alerts aren't available for this location." where
+  no source covers it (maintainer, 2026-10-23: the rule now, with Google,
+  and once the ingester replaces it), or that a check failed or is on its
+  way.
+- **No promo card on Today**: the "Get weather alerts" card shown to
+  signed-in users with alerts off was removed (maintainer, 2026-10-23).
 - **Later: on by default**, if it can be done without a sign-in prompt and
   at an acceptable cost (`TODO.md`).
 
@@ -195,9 +199,7 @@ are the issuer's text, shown unedited and possibly not translated.
 | `settings_alerts_notify_all` | All levels | |
 | `settings_alerts_notify_none` | None | |
 | `settings_alerts_channel` | Alert sound and lock screen | Warning sound and lock screen |
-| `alerts_promo_title` | Get weather alerts | Get weather warnings |
-| `alerts_promo_body` | Official alerts for where you are, with notifications for severe ones. | Official warnings for where you are, with notifications for severe ones. |
-| `alerts_promo_action` | Alerts settings | Warnings settings |
+| `settings_alerts_status_none` | No alerts for this location. Last checked %1$s | No warnings for this location. Last checked %1$s |
 
 Times: time only for today, weekday and time otherwise ("Sat 9 AM"), in the
 device's 12/24-hour setting.

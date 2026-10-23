@@ -1447,13 +1447,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Senza il permesso per le notifiche, le allerte meteo gravi non possono raggiungerti. Concedilo per riceverle.</string>
     <string name="settings_alerts_status_checked">Ultimo controllo %1$s</string>
     <string name="settings_alerts_status_unsupported">Le allerte non sono disponibili per questa posizione.</string>
+    <string name="settings_alerts_status_none">Nessuna allerta per questa posizione. Ultimo controllo %1$s</string>
     <string name="settings_alerts_status_failed">Impossibile controllare le allerte. Nuovo tentativo a breve.</string>
     <string name="settings_alerts_status_waiting">Controllo delle allerte in corso…</string>
 
-    <string name="today_alerts_promo_title">Ricevi le allerte meteo</string>
-    <string name="today_alerts_promo_body">Allerte ufficiali per il luogo in cui ti trovi, con notifiche per quelle gravi.</string>
-    <string name="today_alerts_promo_cta">Impostazioni Allerte</string>
-    <string name="today_alerts_promo_dismiss">Ignora</string>
 
     <string name="notification_channel_weather_alerts_name">Allerte meteo</string>
     <string name="notification_channel_weather_alerts_description">Allerte meteo gravi per la tua posizione, emesse dai servizi meteo ufficiali.</string>

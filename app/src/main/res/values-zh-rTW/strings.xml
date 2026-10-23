@@ -1496,13 +1496,10 @@ label localises.
     <string name="settings_alerts_notification_permission">沒有通知權限，你就收不到嚴重天氣特報。授予權限即可接收。</string>
     <string name="settings_alerts_status_checked">上次檢查：%1$s</string>
     <string name="settings_alerts_status_unsupported">此位置目前不提供特報。</string>
+    <string name="settings_alerts_status_none">此位置目前沒有特報。上次檢查：%1$s</string>
     <string name="settings_alerts_status_failed">無法檢查特報，稍後將重試。</string>
     <string name="settings_alerts_status_waiting">正在檢查特報…</string>
 
-    <string name="today_alerts_promo_title">接收天氣特報</string>
-    <string name="today_alerts_promo_body">顯示你所在位置的官方特報，嚴重特報還會傳送通知。</string>
-    <string name="today_alerts_promo_cta">特報設定</string>
-    <string name="today_alerts_promo_dismiss">關閉</string>
 
     <string name="notification_channel_weather_alerts_name">天氣特報</string>
     <string name="notification_channel_weather_alerts_description">官方氣象機關發布的、你所在位置的嚴重天氣特報。</string>

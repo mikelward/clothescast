@@ -1334,13 +1334,10 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_notification_permission">หากไม่มีสิทธิ์การแจ้งเตือน การเตือนภัยสภาพอากาศรุนแรงจะส่งถึงคุณไม่ได้ อนุญาตเพื่อให้ส่งถึงคุณได้</string>
     <string name="settings_alerts_status_checked">ตรวจสอบล่าสุด %1$s</string>
     <string name="settings_alerts_status_unsupported">ไม่มีบริการเตือนภัยสำหรับตำแหน่งนี้</string>
+    <string name="settings_alerts_status_none">ไม่มีการเตือนภัยสำหรับตำแหน่งนี้ ตรวจสอบล่าสุด %1$s</string>
     <string name="settings_alerts_status_failed">ตรวจสอบการเตือนภัยไม่ได้ จะลองอีกครั้งเร็วๆ นี้</string>
     <string name="settings_alerts_status_waiting">กำลังตรวจสอบการเตือนภัย…</string>
 
-    <string name="today_alerts_promo_title">รับการเตือนภัยสภาพอากาศ</string>
-    <string name="today_alerts_promo_body">การเตือนภัยอย่างเป็นทางการสำหรับที่ที่คุณอยู่ พร้อมการแจ้งเตือนเมื่อรุนแรง</string>
-    <string name="today_alerts_promo_cta">การตั้งค่าการเตือนภัย</string>
-    <string name="today_alerts_promo_dismiss">ปิด</string>
 
     <string name="notification_channel_weather_alerts_name">การเตือนภัยสภาพอากาศ</string>
     <string name="notification_channel_weather_alerts_description">การเตือนภัยสภาพอากาศรุนแรงสำหรับตำแหน่งของคุณจากหน่วยงานอุตุนิยมวิทยาอย่างเป็นทางการ</string>

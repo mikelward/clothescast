@@ -64,8 +64,6 @@ data class TodayAlertsState(
     val alerts: List<RelevantAlert> = emptyList(),
     /** Those with a card on Today: [alerts] less the ones dismissed unchanged. */
     val cards: List<RelevantAlert> = alerts,
-    /** Signed in with Google, alerts off, and the promo not yet dismissed. */
-    val promoVisible: Boolean = false,
     /** Alerts on at a level that posts notifications, so the permission matters. */
     val notifies: Boolean = false,
 ) {
@@ -100,15 +98,11 @@ internal fun WeatherAlertsState.undismissed(alerts: List<RelevantAlert>): List<R
 /** Today's alerts plus the actions its cards take, for the pages that draw them. */
 internal class TodayAlertsUi(
     val state: TodayAlertsState,
-    val onOpenSettings: () -> Unit,
-    val onDismissPromo: () -> Unit,
     val onDismissAlert: (RelevantAlert) -> Unit,
 ) {
     /** The same, minus the alerts: for pages past the current period. */
     fun withoutAlerts(): TodayAlertsUi = TodayAlertsUi(
         state.copy(alerts = emptyList(), cards = emptyList()),
-        onOpenSettings,
-        onDismissPromo,
         onDismissAlert,
     )
 }
@@ -117,7 +111,7 @@ internal class TodayAlertsUi(
  * Provided once by [TodayScreen] so the banner stack, the alert cards and the
  * conditions strip read one view without threading it through every page.
  */
-internal val LocalTodayAlerts = compositionLocalOf { TodayAlertsUi(TodayAlertsState(), {}, {}, {}) }
+internal val LocalTodayAlerts = compositionLocalOf { TodayAlertsUi(TodayAlertsState(), {}) }
 
 /** How many alert cards show before the rest fold behind "N more alerts". */
 private const val ALERTS_SHOWN = 3
@@ -257,63 +251,5 @@ private fun linkified(text: String, linkColor: Color): AnnotatedString {
             at = link.range.last + 1
         }
         append(text, at, text.length)
-    }
-}
-
-/**
- * "Get weather alerts": shown once the user is signed in with Google (the
- * proxy's requirement) while alerts are off, until dismissed or followed.
- * The CTA opens Alerts settings, where the switch lives.
- */
-@Composable
-internal fun WeatherAlertsPromoCard(
-    visible: Boolean,
-    onOpenAlerts: () -> Unit,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    if (!visible) return
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        ),
-    ) {
-        Column(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 4.dp, bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(R.string.today_alerts_promo_title),
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.weight(1f),
-                )
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(R.string.today_alerts_promo_dismiss),
-                    )
-                }
-            }
-            Text(
-                text = stringResource(R.string.today_alerts_promo_body),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(end = 12.dp),
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-            ) {
-                TextButton(onClick = onOpenAlerts) {
-                    Text(stringResource(R.string.today_alerts_promo_cta))
-                }
-            }
-        }
     }
 }

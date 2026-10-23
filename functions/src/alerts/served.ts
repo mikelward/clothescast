@@ -21,7 +21,10 @@ export interface ServedText {
 }
 
 export interface ServedAlert {
-  /** `<source id>:<CAP identifier>`, unique across sources. */
+  /**
+   * `<source id>:<CAP identifier>`, unique across sources: the alert's own,
+   * until the ingester gives an update its first message's (threads.ts).
+   */
   id: string;
   source: string;
   sent: string | null;
@@ -102,7 +105,8 @@ function hasPassed(iso: string | null, now: Date): boolean {
   return Number.isFinite(t) && t <= now.getTime();
 }
 
-export type Skip = "not_actual" | "cancel" | "not_public" | "no_info" | "expired" | "no_area";
+/** Why a message isn't served; "superseded" marks one kept only as a link in a chain of updates. */
+export type Skip = "not_actual" | "cancel" | "not_public" | "no_info" | "expired" | "no_area" | "superseded";
 
 /**
  * How a source's CAP differs from the norm, for the fields the app grades

@@ -776,7 +776,8 @@ and every path carries the format version:
   digits of its contents' SHA-256, so a file never changes once written
   (`Cache-Control: public, max-age=86400, immutable`): `tile` and
   `alerts`. Each alert carries
-  `id` (`<source>:<CAP identifier>`), `source`, `sent` (issue time), `onset`,
+  `id` (`<source>:<CAP identifier>` of the first message in its chain of
+  updates; see "Updates" below), `source`, `sent` (issue time), `onset`,
   `expires`, `severity` (CAP's, or MeteoAlarm's color grade where it sends
   one), `certainty`, `urgency`, `eventType` (a hazard keyword such as
   `WIND`, the vocabulary `AlertHazards` reads), `issuer`, `polygons` (the
@@ -866,6 +867,30 @@ and Israel have no shapes. A live run of every source on 2026-10-23: 596
 alerts in 1,256 tiles in about 29 seconds (with the region download), 7
 on a rerun; the median tile 10 KB gzipped, the 90th percentile 34 KB, the
 largest 190 KB (NWS); the index 18 KB gzipped and the state 1.7 MB.
+
+**Updates.** An issuer updates a warning with a new CAP message under a
+new identifier, naming the messages it replaces in `<references>`. The
+app keys dismissals and notifications by the served `id`, so an `id` that
+changed with each update would sound the notification again and bring a
+dismissed card back every time (maintainer, 2026-10-23: one ID through
+every update, for every source). So a message keeps the `id` it was
+served under on the last run, even when fetched again to place its area,
+and an update takes the `id` of the nearest message it updates that was
+served last run, reaching through any intermediate update still listed
+(two updates between runs), else of the nearest one the last run knew;
+when none of its chain was seen, it takes the oldest message the chain
+names (`threads.ts`). NWS lists superseded messages beside their updates; they
+aren't served, but are kept as links in the chain. One gap remains: an
+update that came and went between two runs, named only by the newest,
+can't be followed, so that newest one starts a new `id`. A message another current one
+updates or cancels is superseded and left out, so a warning a feed still
+lists beside its update isn't served twice. A message split into several
+updates (one per area) keeps its `id` on the one continuing the message
+served under it last run (that message, fetched again, or an update of
+it), else the first by identifier; the others are served under their
+own. A live run on 2026-10-23: 294 of 631
+alerts were updates, served under an earlier message's `id`, and
+Ukraine's feed listed 2 warnings beside their updates.
 
 Only public data goes in the bucket, the run's own state
 (`ingest-state/v1.json`: what each feed listed, so unchanged documents

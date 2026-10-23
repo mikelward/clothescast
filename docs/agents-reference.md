@@ -4,6 +4,11 @@ Background and reference material moved out of `AGENTS.md`, which every agent
 session loads whole and which must stay under Antigravity's 24,000-byte rule
 cap. `AGENTS.md` keeps the rules; this file keeps the why and the numbers.
 
+## Firebase project
+
+Production is `clothescast-ecce9`: substitute it for `<projectId>` in the
+deploy, bucket and log commands (`functions/README.md`).
+
 ## Sandbox testing
 
 - **Full parity (expected).** Google Maven hosts allowlisted and the Android

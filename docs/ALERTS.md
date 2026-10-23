@@ -802,7 +802,14 @@ and every path carries the format version:
   `web`, all verbatim. An alert sits in every tile its bounding box touches,
   widened by the app's 1 km containment slack so a phone just outside its
   edge, across a tile line, still finds it; one wider than 1,000 tiles is
-  left out and logged.
+  left out and logged. Each tile carries only its part of an area: the
+  polygons cut to the tile and 2 km around it (`clipToTile`), so the app,
+  which reads the tile holding its point, answers as for the whole area.
+  The cut's new edges run along that 2 km line, farther than the 1 km
+  slack from anywhere in the tile; a tile the box touches but the area
+  doesn't gets none. An area over 900 km across stays whole: the app won't
+  notify of one over 1,000 km (`WeatherAlertRules.MAX_NOTIFY_SPAN_KM`),
+  measuring the area it's sent, and every piece is narrower than that.
 - A run writes only tile files that don't exist yet, then the index that
   names them; a file is deleted an hour after the last index that named it,
   so a phone holding any index from the last hour finds every tile it names.
@@ -907,7 +914,11 @@ admin-1 boundaries, matched by ISO 3166-2 number (EMMA_ID HR0xx is HR-(xx −
 and Israel have no shapes. A live run of every source on 2026-10-23: 596
 alerts in 1,256 tiles in about 29 seconds (with the region download), 7
 on a rerun; the median tile 10 KB gzipped, the 90th percentile 34 KB, the
-largest 190 KB (NWS); the index 18 KB gzipped and the state 1.7 MB.
+largest 190 KB (NWS); the index 18 KB gzipped and the state 1.7 MB. With
+each tile cut to its part of each area, a run that evening: 673 alerts in
+1,438 tiles (1,695 uncut), the median tile 1.9 KB gzipped (7.2 KB uncut),
+the 90th percentile 5.3 KB (43 KB) and the largest 76 KB (178 KB), 39 of
+Switzerland's alerts; the index 20 KB gzipped (23 KB).
 
 **Updates.** An issuer updates a warning with a new CAP message under a
 new identifier, naming the messages it replaces in `<references>`. The

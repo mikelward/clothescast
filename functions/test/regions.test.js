@@ -91,9 +91,10 @@ test("a warning naming a region is placed from its shape, the files downloaded o
   assert.equal(store.state.regionsFetchedAt, NOW.toISOString());
 
   const index = store.files.get(INDEX_PATH);
-  const tile = store.files.get(tilePath("41/10", index.tiles["41/10"]));
-  // Region B: its main part with its hole, and its second part.
-  assert.deepEqual(tile.alerts[0].polygons.map((rings) => rings.length), [2, 1]);
+  const rings = (key) => store.files.get(tilePath(key, index.tiles[key])).alerts[0].polygons.map((p) => p.length);
+  // Region B: its main part with its hole in its tile, its second part in the next.
+  assert.deepEqual(rings("41/10"), [2]);
+  assert.deepEqual(rings("42/10"), [1]);
 });
 
 test("a warning naming a NUTS code is placed from the regions it stands for", async () => {

@@ -25,7 +25,7 @@ import { REGIONS_PAGE_URL, REGION_TYPES, parseRegionAliases, parseRegionShapes, 
 import { serve, type CapProfile, type ServedAlert, type Skip } from "./served";
 import type { AlertSource } from "./sources";
 import { threadIds } from "./threads";
-import { TILE_DEGREES, tilesFor } from "./tiles";
+import { MAX_CLIPPED_SPAN_KM, TILE_DEGREES, clipToTile, spanKm, tilesFor } from "./tiles";
 import { unzip } from "./unzip";
 
 const PROFILES: Record<NonNullable<AlertSource["profile"]>, CapProfile> = { dwd: DWD_PROFILE };
@@ -776,9 +776,14 @@ async function ingestWithin(deps: IngestDeps): Promise<IngestSummary> {
         continue;
       }
       alertCount++;
+      // Each tile gets its own part of the area, unless the app must measure the whole.
+      const clip = spanKm(result.polygons) <= MAX_CLIPPED_SPAN_KM;
       for (const key of keys) {
+        const polygons = clip ? clipToTile(result.polygons, key) : result.polygons;
+        // The box touched the tile, the area itself not.
+        if (polygons.length === 0) continue;
         const list = byTile.get(key) ?? [];
-        list.push(result);
+        list.push(clip ? { ...result, polygons } : result);
         byTile.set(key, list);
       }
     }

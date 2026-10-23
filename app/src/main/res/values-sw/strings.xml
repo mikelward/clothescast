@@ -1304,7 +1304,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_status_unsupported">Tahadhari hazipatikani kwa mahali hapa.</string>
     <string name="settings_alerts_status_none">Hakuna tahadhari kwa mahali hapa. Imekaguliwa mwisho %1$s</string>
     <string name="settings_alerts_status_failed">Imeshindwa kukagua tahadhari. Itajaribu tena hivi karibuni.</string>
-    <string name="settings_alerts_countries_title">Nchi za sasa</string>
+    <string name="settings_alerts_countries_title">Nchi na maeneo ya sasa</string>
     <string name="settings_alerts_countries_as_of">Kufikia %1$s %2$s, watoa tahadhari walijibu maombi yetu kwa:</string>
     <string name="settings_alerts_countries_loading">Inapakia…</string>
     <string name="settings_alerts_countries_failed">Imeshindwa kupakia orodha.</string>

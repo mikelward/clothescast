@@ -1143,7 +1143,7 @@ internal fun SettingsAlertsOffPreview() {
     }
 }
 
-// The "Current countries" list opened, with the index's countries in.
+// The "Current countries and regions" list opened, with the index's countries in.
 @Preview(name = "Settings · Alerts countries", widthDp = 360)
 @Composable
 internal fun SettingsAlertsCountriesPreview() {

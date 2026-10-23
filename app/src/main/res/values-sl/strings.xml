@@ -1322,7 +1322,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_alerts_status_unsupported">Opozorila za to lokacijo niso na voljo.</string>
     <string name="settings_alerts_status_none">Za to lokacijo ni opozoril. Zadnje preverjanje: %1$s</string>
     <string name="settings_alerts_status_failed">Opozoril ni bilo mogoče preveriti. Kmalu bomo poskusili znova.</string>
-    <string name="settings_alerts_countries_title">Trenutne države</string>
+    <string name="settings_alerts_countries_title">Trenutne države in regije</string>
     <string name="settings_alerts_countries_as_of">Na dan %1$s %2$s so ponudniki opozoril odgovorili na naše zahteve za:</string>
     <string name="settings_alerts_countries_loading">Nalaganje …</string>
     <string name="settings_alerts_countries_failed">Seznama ni bilo mogoče naložiti.</string>

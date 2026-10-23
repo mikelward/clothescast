@@ -1464,7 +1464,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_alerts_status_unsupported">Os avisos não estão disponíveis para esta localização.</string>
     <string name="settings_alerts_status_none">Nenhum aviso para esta localização. Última verificação %1$s</string>
     <string name="settings_alerts_status_failed">Não foi possível verificar os avisos. A tentar novamente em breve.</string>
-    <string name="settings_alerts_countries_title">Países atuais</string>
+    <string name="settings_alerts_countries_title">Países e regiões atuais</string>
     <string name="settings_alerts_countries_as_of">A %1$s %2$s, os fornecedores de avisos responderam aos nossos pedidos para:</string>
     <string name="settings_alerts_countries_loading">A carregar…</string>
     <string name="settings_alerts_countries_failed">Não foi possível carregar a lista.</string>

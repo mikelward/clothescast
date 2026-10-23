@@ -1313,7 +1313,7 @@ surfaces.
     <string name="settings_alerts_status_unsupported">Упозорења нису доступна за ову локацију.</string>
     <string name="settings_alerts_status_none">Нема упозорења за ову локацију. Последња провера: %1$s</string>
     <string name="settings_alerts_status_failed">Провера упозорења није успела. Ускоро ћемо покушати поново.</string>
-    <string name="settings_alerts_countries_title">Тренутне земље</string>
+    <string name="settings_alerts_countries_title">Тренутне земље и региони</string>
     <string name="settings_alerts_countries_as_of">Од %1$s %2$s, добављачи упозорења су одговорили на наше захтеве за:</string>
     <string name="settings_alerts_countries_loading">Учитава се…</string>
     <string name="settings_alerts_countries_failed">Учитавање листе није успело.</string>

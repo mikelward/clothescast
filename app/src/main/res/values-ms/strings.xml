@@ -1341,7 +1341,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_alerts_status_unsupported">Amaran tidak tersedia untuk lokasi ini.</string>
     <string name="settings_alerts_status_none">Tiada amaran untuk lokasi ini. Terakhir disemak %1$s</string>
     <string name="settings_alerts_status_failed">Tidak dapat menyemak amaran. Akan cuba semula sebentar lagi.</string>
-    <string name="settings_alerts_countries_title">Negara semasa</string>
+    <string name="settings_alerts_countries_title">Negara dan wilayah semasa</string>
     <string name="settings_alerts_countries_as_of">Setakat %1$s %2$s, penyedia amaran menjawab permintaan kami untuk:</string>
     <string name="settings_alerts_countries_loading">Memuatkan…</string>
     <string name="settings_alerts_countries_failed">Tidak dapat memuatkan senarai.</string>

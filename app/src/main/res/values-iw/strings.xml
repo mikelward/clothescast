@@ -1330,7 +1330,7 @@ standard in Israeli digital communication.
     <string name="settings_alerts_status_unsupported">אזהרות אינן זמינות למיקום זה.</string>
     <string name="settings_alerts_status_none">אין אזהרות למיקום זה. נבדק לאחרונה %1$s</string>
     <string name="settings_alerts_status_failed">לא ניתן היה לבדוק אזהרות. ננסה שוב בקרוב.</string>
-    <string name="settings_alerts_countries_title">מדינות נוכחיות</string>
+    <string name="settings_alerts_countries_title">מדינות ואזורים נוכחיים</string>
     <string name="settings_alerts_countries_as_of">נכון ל-%1$s %2$s, ספקי האזהרות השיבו לבקשות שלנו עבור:</string>
     <string name="settings_alerts_countries_loading">בטעינה…</string>
     <string name="settings_alerts_countries_failed">לא ניתן היה לטעון את הרשימה.</string>

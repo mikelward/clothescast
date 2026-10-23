@@ -1462,7 +1462,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_status_unsupported">Les alertes ne sont pas disponibles pour cette position.</string>
     <string name="settings_alerts_status_none">Aucune alerte pour cette position. Dernière vérification %1$s</string>
     <string name="settings_alerts_status_failed">Impossible de vérifier les alertes. Nouvelle tentative bientôt.</string>
-    <string name="settings_alerts_countries_title">Pays actuels</string>
+    <string name="settings_alerts_countries_title">Pays et régions actuels</string>
     <string name="settings_alerts_countries_as_of">Au %1$s %2$s, les fournisseurs d\'alertes ont répondu à nos demandes pour :</string>
     <string name="settings_alerts_countries_loading">Chargement…</string>
     <string name="settings_alerts_countries_failed">Impossible de charger la liste.</string>

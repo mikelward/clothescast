@@ -1325,7 +1325,7 @@ What is NOT overridden, by design:
     <string name="settings_alerts_status_unsupported">Įspėjimai šiai vietai nepasiekiami.</string>
     <string name="settings_alerts_status_none">Šiai vietai įspėjimų nėra. Paskutinis patikrinimas %1$s</string>
     <string name="settings_alerts_status_failed">Nepavyko patikrinti įspėjimų. Netrukus bandysime dar kartą.</string>
-    <string name="settings_alerts_countries_title">Dabartinės šalys</string>
+    <string name="settings_alerts_countries_title">Dabartinės šalys ir regionai</string>
     <string name="settings_alerts_countries_as_of">%1$s %2$s duomenimis įspėjimų teikėjai atsakė į mūsų užklausas dėl:</string>
     <string name="settings_alerts_countries_loading">Įkeliama…</string>
     <string name="settings_alerts_countries_failed">Nepavyko įkelti sąrašo.</string>

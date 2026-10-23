@@ -1325,7 +1325,7 @@ default English (matching values-pl / values-uk).
     <string name="settings_alerts_status_unsupported">Upozorenja nisu dostupna za ovu lokaciju.</string>
     <string name="settings_alerts_status_none">Nema upozorenja za ovu lokaciju. Poslednja provera: %1$s</string>
     <string name="settings_alerts_status_failed">Provera upozorenja nije uspela. Uskoro ćemo pokušati ponovo.</string>
-    <string name="settings_alerts_countries_title">Trenutne zemlje</string>
+    <string name="settings_alerts_countries_title">Trenutne zemlje i regioni</string>
     <string name="settings_alerts_countries_as_of">Od %1$s %2$s, dobavljači upozorenja su odgovorili na naše zahteve za:</string>
     <string name="settings_alerts_countries_loading">Učitava se…</string>
     <string name="settings_alerts_countries_failed">Učitavanje liste nije uspelo.</string>

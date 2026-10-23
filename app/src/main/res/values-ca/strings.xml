@@ -1276,7 +1276,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_alerts_status_unsupported">Els avisos no estan disponibles per a aquesta ubicació.</string>
     <string name="settings_alerts_status_none">No hi ha avisos per a aquesta ubicació. Última comprovació %1$s</string>
     <string name="settings_alerts_status_failed">No s\'han pogut comprovar els avisos. Es tornarà a provar aviat.</string>
-    <string name="settings_alerts_countries_title">Països actuals</string>
+    <string name="settings_alerts_countries_title">Països i regions actuals</string>
     <string name="settings_alerts_countries_as_of">A %1$s %2$s, els proveïdors d\'avisos van respondre les nostres sol·licituds per a:</string>
     <string name="settings_alerts_countries_loading">S\'està carregant…</string>
     <string name="settings_alerts_countries_failed">No s\'ha pogut carregar la llista.</string>

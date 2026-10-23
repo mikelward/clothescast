@@ -1311,7 +1311,6 @@ What is NOT overridden, by design:
     <string name="settings_page_alerts">Настройки на предупрежденията</string>
     <string name="settings_weather_alerts_title">Предупреждения за времето</string>
     <string name="settings_weather_alerts_summary">Официални предупреждения за местоположението ти на екрана Днес.</string>
-    <string name="settings_weather_alerts_sign_in">Влез с Google, за да получаваш предупреждения за времето.</string>
     <string name="settings_alerts_notify_title">Известявай ме за</string>
     <string name="settings_alerts_notify_red">Само червени</string>
     <string name="settings_alerts_notify_orange_red">Оранжеви и червени</string>
@@ -1357,6 +1356,7 @@ What is NOT overridden, by design:
     <string name="weather_alert_level_orange_description">Предупреждение за опасно време</string>
     <string name="weather_alert_level_red_description">Предупреждение за много опасно време</string>
     <string name="weather_alert_until">До %1$s</string>
+    <string name="weather_alert_issued">Издадено %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Отвори %1$s</string>
     <string name="weather_alert_open_source_fallback">Подробности</string>

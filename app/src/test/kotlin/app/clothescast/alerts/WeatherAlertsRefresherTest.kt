@@ -8,16 +8,19 @@ import androidx.core.app.NotificationCompat
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import app.clothescast.core.data.weather.GoogleWeatherAccess
-import app.clothescast.core.data.weather.GoogleWeatherAlertsClient
+import app.clothescast.core.data.weather.AlertsLookup
+import app.clothescast.core.domain.model.AlertArea
 import app.clothescast.core.domain.model.AlertLevel
 import app.clothescast.core.domain.model.AlertNotifyLevel
+import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.DeliveryMode
+import app.clothescast.core.domain.model.GeoPoint
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.Schedule
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.UserPreferences
+import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.model.WeatherCondition
 import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.data.AlertsCheckOutcome
@@ -27,19 +30,7 @@ import app.clothescast.notification.WeatherAlertNotifier
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondError
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.headersOf
-import io.ktor.serialization.kotlinx.json.json
-import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonPrimitive
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -59,7 +50,7 @@ import java.util.Locale
  * The alerts pipeline as the app wires it: [WeatherAlertsRefresher] checks and
  * writes the store, and [WeatherAlertShade] settles the notifications from the
  * store and the settings after every write, every settings change and every
- * app resume. Real store and notifier, a mock Google.
+ * app resume. Real store and notifier, a fake source.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [33])
@@ -84,11 +75,9 @@ class WeatherAlertsRefresherTest {
         weatherAlerts = true,
     )
 
-    // What Google answers next: a body, or an error status.
-    private var body: String = page()
-    private var status: HttpStatusCode = HttpStatusCode.OK
+    // What the source answers next.
+    private var answer: AlertsLookup = found()
     private var lookups = 0
-    private var access: GoogleWeatherAccess? = GoogleWeatherAccess.OwnKey("test-key")
     private var now: Instant = t0
     private var onRequest: suspend () -> Unit = {}
     // The start-time wake the shade last asked for.
@@ -104,21 +93,6 @@ class WeatherAlertsRefresherTest {
         store = WeatherAlertsStore(
             PreferenceDataStoreFactory.create(produceFile = { temp.newFile("alerts.preferences_pb") }),
         )
-        val engine = MockEngine {
-            lookups++
-            onRequest()
-            if (status == HttpStatusCode.OK) {
-                respond(
-                    content = ByteReadChannel(body),
-                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
-                )
-            } else {
-                respondError(status)
-            }
-        }
-        val http = HttpClient(engine) {
-            install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
-        }
         val clock = object : Clock() {
             override fun getZone(): ZoneId = ZoneOffset.UTC
             override fun withZone(zone: ZoneId?): Clock = this
@@ -134,8 +108,11 @@ class WeatherAlertsRefresherTest {
         )
         refresher = WeatherAlertsRefresher(
             store = store,
-            client = GoogleWeatherAlertsClient(http),
-            access = { access },
+            lookup = { _, _ ->
+                lookups++
+                onRequest()
+                answer
+            },
             clock = clock,
             locale = { Locale.UK },
             onChanged = { shade.reconcile() },
@@ -144,28 +121,39 @@ class WeatherAlertsRefresherTest {
     }
 
     /** One alert over a box around City A, at [severity], ending a day after [t0]. */
-    private fun page(
+    private fun found(
         severity: String = "SEVERE",
         id: String = "alert-1",
         title: String = "Amber warning of wind",
         starts: String = "2026-10-22T09:00:00Z",
         expires: String = "2026-10-23T10:00:00Z",
-    ): String {
-        val box = """{"type":"Polygon","coordinates":[[[-3.0,0.5],[0.0,0.5],[0.0,2.5],[-3.0,2.5],[-3.0,0.5]]]}"""
-        return """
-            {"weatherAlerts": [{
-              "alertId": "$id",
-              "alertTitle": {"text": "$title"},
-              "eventType": "WIND",
-              "areaName": "Region A",
-              "startTime": "$starts",
-              "expirationTime": "$expires",
-              "dataSource": {"name": "Met Office", "authorityUri": "https://example.com/warnings"},
-              "polygon": ${JsonPrimitive(box)},
-              "severity": "$severity"
-            }]}
-        """.trimIndent()
-    }
+    ): AlertsLookup = AlertsLookup.Found(
+        listOf(
+            WeatherAlert(
+                id = id,
+                issuerTitle = title,
+                eventType = "WIND",
+                severity = AlertSeverity.parse(severity),
+                areaName = "Region A",
+                description = null,
+                instruction = null,
+                startTime = Instant.parse(starts),
+                endTime = Instant.parse(expires),
+                issuer = "Met Office",
+                issuerUrl = "https://example.com/warnings",
+                area = AlertArea(
+                    listOf(
+                        listOf(
+                            listOf(
+                                GeoPoint(0.5, -3.0), GeoPoint(0.5, 0.0), GeoPoint(2.5, 0.0),
+                                GeoPoint(2.5, -3.0), GeoPoint(0.5, -3.0),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    )
 
     private suspend fun refresh(
         location: Location = placeA,
@@ -195,7 +183,7 @@ class WeatherAlertsRefresherTest {
 
     @Test
     fun `a warning that hasn't started notifies when it starts, not when it's issued`() = runTest {
-        body = page(starts = "2026-10-23T06:00:00Z")
+        answer = found(starts = "2026-10-23T06:00:00Z")
         refresh()
 
         store.current().alerts shouldHaveSize 1
@@ -211,7 +199,7 @@ class WeatherAlertsRefresherTest {
 
     @Test
     fun `a yellow alert shows but doesn't notify at the default level`() = runTest {
-        body = page(severity = "MODERATE", title = "Yellow warning of wind")
+        answer = found(severity = "MODERATE", title = "Yellow warning of wind")
         refresh()
 
         store.current().alerts.single().level shouldBe AlertLevel.YELLOW
@@ -221,11 +209,11 @@ class WeatherAlertsRefresherTest {
     @Test
     fun `a level that rises notifies again`() = runTest {
         prefs = prefs.copy(weatherAlertsNotifyLevel = AlertNotifyLevel.ALL)
-        body = page(severity = "MODERATE")
+        answer = found(severity = "MODERATE")
         refresh()
         shadeNow() shouldHaveSize 1
 
-        body = page(severity = "EXTREME", title = "Red warning of wind")
+        answer = found(severity = "EXTREME", title = "Red warning of wind")
         now = t0.plus(Duration.ofHours(1))
         refresh()
         store.current().notified shouldBe mapOf("alert-1" to AlertLevel.RED)
@@ -234,11 +222,11 @@ class WeatherAlertsRefresherTest {
 
     @Test
     fun `a notification still showing follows a downgrade and a new end time, silently`() = runTest {
-        body = page(severity = "EXTREME", title = "Red warning of wind")
+        answer = found(severity = "EXTREME", title = "Red warning of wind")
         refresh()
         shadeNow().single().extras.getString(NotificationCompat.EXTRA_TITLE) shouldBe "Red wind warning"
 
-        body = page(severity = "SEVERE", expires = "2026-10-24T10:00:00Z")
+        answer = found(severity = "SEVERE", expires = "2026-10-24T10:00:00Z")
         now = t0.plus(Duration.ofHours(1))
         refresh()
 
@@ -263,7 +251,7 @@ class WeatherAlertsRefresherTest {
 
     @Test
     fun `a new notify level applies to the alerts already known, without a lookup`() = runTest {
-        body = page(severity = "MODERATE", title = "Yellow warning of wind")
+        answer = found(severity = "MODERATE", title = "Yellow warning of wind")
         refresh()
         shadeNow().shouldBeEmpty()
 
@@ -308,7 +296,7 @@ class WeatherAlertsRefresherTest {
     @Test
     fun `in the background, a quiet forecast waits 3 hours and an active alert 1`() = runTest {
         val background = WeatherAlertsRefresher.Trigger.BACKGROUND
-        body = """{"weatherAlerts": []}"""
+        answer = AlertsLookup.Found(emptyList())
         refresh(trigger = background)
         now = t0.plus(Duration.ofHours(2))
         refresh(trigger = background) shouldBe false
@@ -316,7 +304,7 @@ class WeatherAlertsRefresherTest {
         refresh(trigger = background) shouldBe true
 
         // An alert in force makes the next check due an hour on.
-        body = page()
+        answer = found()
         now = t0.plus(Duration.ofHours(4))
         refresh(trigger = WeatherAlertsRefresher.Trigger.ON_SCREEN)
         now = t0.plus(Duration.ofHours(5))
@@ -336,7 +324,7 @@ class WeatherAlertsRefresherTest {
                 windSpeedKmh = 70.0,
             ),
         )
-        body = """{"weatherAlerts": []}"""
+        answer = AlertsLookup.Found(emptyList())
         refresh(trigger = background, forecast = gale)
         now = t0.plus(Duration.ofHours(1))
         refresh(trigger = background, forecast = gale) shouldBe true
@@ -347,7 +335,7 @@ class WeatherAlertsRefresherTest {
         refresh()
         shadeNow() shouldHaveSize 1
 
-        body = """{"weatherAlerts": []}"""
+        answer = AlertsLookup.Found(emptyList())
         refresh(location = placeB) shouldBe true
 
         val state = store.current()
@@ -359,7 +347,7 @@ class WeatherAlertsRefresherTest {
     @Test
     fun `a failed check keeps what was known and says so`() = runTest {
         refresh()
-        status = HttpStatusCode.InternalServerError
+        answer = AlertsLookup.Failed(500)
         now = t0.plus(Duration.ofHours(1))
         refresh()
 
@@ -371,23 +359,9 @@ class WeatherAlertsRefresherTest {
 
     @Test
     fun `a place without coverage is recorded as unsupported, never as all clear`() = runTest {
-        status = HttpStatusCode.NotFound
+        answer = AlertsLookup.Unsupported
         refresh()
         store.current().outcome shouldBe AlertsCheckOutcome.UNSUPPORTED
-    }
-
-    @Test
-    fun `no route to Google costs no lookup, and the next chance retries`() = runTest {
-        access = null
-        refresh()
-        store.current().outcome shouldBe AlertsCheckOutcome.NO_ACCESS
-        lookups shouldBe 0
-
-        // Signed in a minute later: due at once, not an hour on.
-        access = GoogleWeatherAccess.OwnKey("test-key")
-        now = t0.plus(Duration.ofMinutes(1))
-        refresh() shouldBe true
-        store.current().outcome shouldBe AlertsCheckOutcome.OK
     }
 
     @Test
@@ -430,7 +404,7 @@ class WeatherAlertsRefresherTest {
 
     @Test
     fun `notifications recorded during a lookup survive its result`() = runTest {
-        body = page(starts = "2026-10-22T11:00:00Z")
+        answer = found(starts = "2026-10-22T11:00:00Z")
         refresh()
         shadeNow().shouldBeEmpty()
 
@@ -458,7 +432,7 @@ class WeatherAlertsRefresherTest {
         store.current().let { it.isDismissed(it.alerts.single()) } shouldBe true
 
         // The issuer extends it: the card is back.
-        body = page(expires = "2026-10-24T10:00:00Z")
+        answer = found(expires = "2026-10-24T10:00:00Z")
         now = t0.plus(Duration.ofHours(2))
         refresh()
         store.current().let { it.isDismissed(it.alerts.single()) } shouldBe false
@@ -469,12 +443,12 @@ class WeatherAlertsRefresherTest {
         refresh()
         store.dismiss(store.current().alerts.single())
 
-        body = """{"weatherAlerts": []}"""
+        answer = AlertsLookup.Found(emptyList())
         now = t0.plus(Duration.ofHours(1))
         refresh()
         store.current().dismissed shouldBe emptyMap()
 
-        body = page()
+        answer = found()
         now = t0.plus(Duration.ofHours(2))
         refresh()
         store.dismiss(store.current().alerts.single())

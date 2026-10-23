@@ -40,7 +40,6 @@ import app.clothescast.alerts.AlertIcon
 import app.clothescast.alerts.AlertLevelIcon
 import app.clothescast.core.domain.model.AlertNotifyLevel
 import app.clothescast.data.AlertsCheckOutcome
-import app.clothescast.data.SignedInGoogleAccount
 import app.clothescast.data.WeatherAlertsState
 import app.clothescast.diag.DiagLog
 import app.clothescast.notification.CHANNEL_WEATHER_ALERTS
@@ -56,23 +55,15 @@ import java.time.format.DateTimeFormatter
 @Composable
 internal fun AlertsPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val accountActions = rememberGoogleAccountActions(onSignedIn = viewModel::onWeatherAlertsSignedIn)
     SettingsScaffold(R.string.settings_page_alerts, onBack) { padding ->
         CompositionLocalProvider(LocalTimeFormat provides state.timeFormat) {
             AlertsContent(
                 enabled = state.weatherAlerts,
                 notifyLevel = state.weatherAlertsNotifyLevel,
                 status = state.weatherAlertsStatus,
-                googleApiKeyConfigured = state.googleApiKeyConfigured,
-                googleWeatherProxyConfigured = state.googleWeatherProxyConfigured,
-                googleSignInAvailable = state.googleSignInAvailable,
-                googleAccount = state.googleAccount,
                 padding = padding,
                 onSetEnabled = viewModel::setWeatherAlerts,
                 onSetNotifyLevel = viewModel::setWeatherAlertsNotifyLevel,
-                onSignIn = accountActions.signIn,
-                onSignOut = accountActions.signOut,
-                onDeleteAccount = accountActions.deleteAccount,
             )
         }
     }
@@ -80,37 +71,18 @@ internal fun AlertsPage(viewModel: SettingsViewModel, onBack: () -> Unit) {
 
 /**
  * The Alerts page (docs/ALERTS.md → Settings): a master switch, off by
- * default, that reaches Google the way the Google forecaster does (a key of
- * the user's own, else the proxy while signed in, so turning it on while
- * signed out starts the sign-in), then which levels notify.
+ * default, with the last check's outcome under it (so a place no source
+ * covers reads as unavailable, never as all clear), then which levels notify.
  */
 @Composable
 internal fun AlertsContent(
     enabled: Boolean,
     notifyLevel: AlertNotifyLevel,
     status: WeatherAlertsState,
-    googleApiKeyConfigured: Boolean,
-    googleWeatherProxyConfigured: Boolean,
-    googleSignInAvailable: Boolean,
-    googleAccount: SignedInGoogleAccount?,
     padding: PaddingValues,
     onSetEnabled: (Boolean) -> Unit,
     onSetNotifyLevel: (AlertNotifyLevel) -> Unit,
-    onSignIn: () -> Unit,
-    onSignOut: () -> Unit,
-    onDeleteAccount: () -> Unit,
 ) {
-    val signedIn = googleAccount != null
-    val reachable = googleForecastReachable(
-        googleApiKeyConfigured = googleApiKeyConfigured,
-        googleWeatherProxyConfigured = googleWeatherProxyConfigured,
-        signedIn = signedIn,
-    )
-    val startsSignIn = googleForecastStartsSignIn(
-        signedIn = signedIn,
-        googleWeatherProxyConfigured = googleWeatherProxyConfigured,
-        googleApiKeyConfigured = googleApiKeyConfigured,
-    )
     // Alert notifications need POST_NOTIFICATIONS (Android 13+): asked for
     // when alerts go on or a notifying level is picked; the banner below
     // stays while it's missing. No follow-up here: returning from the prompt
@@ -151,39 +123,21 @@ internal fun AlertsContent(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.weight(1f),
                     )
-                    // Always removable once on; turning on needs a route or a
-                    // sign-in that would make one.
                     Switch(
                         checked = enabled,
-                        enabled = enabled || reachable || startsSignIn,
                         onCheckedChange = { nowChecked ->
                             onSetEnabled(nowChecked)
-                            // One system prompt at a time: the sign-in first when
-                            // it's needed, and the banner asks for notifications
-                            // once the user is back.
-                            if (nowChecked && startsSignIn) {
-                                onSignIn()
-                            } else if (nowChecked && notifyLevel != AlertNotifyLevel.NONE) {
+                            if (nowChecked && notifyLevel != AlertNotifyLevel.NONE) {
                                 requestNotificationPermission()
                             }
                         },
                     )
                 }
-                if (enabled && reachable) {
+                if (enabled) {
                     Text(
                         text = alertsStatusText(status),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                if (voiceAccountSectionVisible(signedIn = signedIn, googleSignInAvailable)) {
-                    GoogleAccountSection(
-                        account = googleAccount,
-                        signedOutReason = R.string.settings_weather_alerts_sign_in,
-                        enabled = true,
-                        onSignIn = onSignIn,
-                        onSignOut = onSignOut,
-                        onDeleteAccount = onDeleteAccount,
                     )
                 }
             }
@@ -297,9 +251,8 @@ private fun alertsStatusText(status: WeatherAlertsState): String {
         } else {
             stringResource(R.string.settings_alerts_status_waiting)
         }
-        // Just turned on, or just signed in: the check is on its way.
-        AlertsCheckOutcome.NEVER, AlertsCheckOutcome.NO_ACCESS ->
-            stringResource(R.string.settings_alerts_status_waiting)
+        // Just turned on: the check is on its way.
+        AlertsCheckOutcome.NEVER -> stringResource(R.string.settings_alerts_status_waiting)
     }
 }
 

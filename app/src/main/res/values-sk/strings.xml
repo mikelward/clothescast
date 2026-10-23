@@ -1348,7 +1348,6 @@ What is NOT overridden, by design:
     <string name="settings_page_alerts">Nastavenia výstrah</string>
     <string name="settings_weather_alerts_title">Meteorologické výstrahy</string>
     <string name="settings_weather_alerts_summary">Oficiálne výstrahy pre tvoju polohu na obrazovke Dnes.</string>
-    <string name="settings_weather_alerts_sign_in">Prihlás sa cez Google a dostávaj meteorologické výstrahy.</string>
     <string name="settings_alerts_notify_title">Upozorňovať na</string>
     <string name="settings_alerts_notify_red">Len červené</string>
     <string name="settings_alerts_notify_orange_red">Oranžové a červené</string>
@@ -1393,6 +1392,7 @@ What is NOT overridden, by design:
     <string name="weather_alert_level_orange_description">Výstraha pred nebezpečným počasím</string>
     <string name="weather_alert_level_red_description">Výstraha pred veľmi nebezpečným počasím</string>
     <string name="weather_alert_until">Do %1$s</string>
+    <string name="weather_alert_issued">Vydané %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Otvoriť %1$s</string>
     <string name="weather_alert_open_source_fallback">Podrobnosti</string>

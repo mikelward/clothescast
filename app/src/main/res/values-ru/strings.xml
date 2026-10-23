@@ -1379,7 +1379,6 @@ only the displayed label localizes.
     <string name="settings_page_alerts">Настройки предупреждений</string>
     <string name="settings_weather_alerts_title">Предупреждения о погоде</string>
     <string name="settings_weather_alerts_summary">Официальные предупреждения для твоего местоположения на экране «Сегодня».</string>
-    <string name="settings_weather_alerts_sign_in">Войди через Google, чтобы получать предупреждения о погоде.</string>
     <string name="settings_alerts_notify_title">Уведомлять</string>
     <string name="settings_alerts_notify_red">Только о красных</string>
     <string name="settings_alerts_notify_orange_red">Об оранжевых и красных</string>
@@ -1424,6 +1423,7 @@ only the displayed label localizes.
     <string name="weather_alert_level_orange_description">Предупреждение об опасной погоде</string>
     <string name="weather_alert_level_red_description">Предупреждение об особо опасной погоде</string>
     <string name="weather_alert_until">До %1$s</string>
+    <string name="weather_alert_issued">Выпущено %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Открыть %1$s</string>
     <string name="weather_alert_open_source_fallback">Подробнее</string>

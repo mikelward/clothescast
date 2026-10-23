@@ -1452,7 +1452,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_page_alerts">Ajustes de avisos</string>
     <string name="settings_weather_alerts_title">Avisos meteorológicos</string>
     <string name="settings_weather_alerts_summary">Avisos oficiales para tu ubicación en la pantalla de Hoy.</string>
-    <string name="settings_weather_alerts_sign_in">Inicia sesión con Google para recibir avisos meteorológicos.</string>
     <string name="settings_alerts_notify_title">Notificarme de</string>
     <string name="settings_alerts_notify_red">Solo rojos</string>
     <string name="settings_alerts_notify_orange_red">Naranjas y rojos</string>
@@ -1499,6 +1498,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_level_orange_description">Aviso meteorológico importante</string>
     <string name="weather_alert_level_red_description">Aviso meteorológico extremo</string>
     <string name="weather_alert_until">Hasta %1$s</string>
+    <string name="weather_alert_issued">Emitido %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Abrir %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalles</string>

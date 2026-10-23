@@ -1314,7 +1314,6 @@ What is NOT overridden, by design:
     <string name="settings_page_alerts">Įspėjimų nustatymai</string>
     <string name="settings_weather_alerts_title">Orų įspėjimai</string>
     <string name="settings_weather_alerts_summary">Oficialūs įspėjimai tavo vietai Šiandien ekrane.</string>
-    <string name="settings_weather_alerts_sign_in">Prisijunk per Google, kad gautum orų įspėjimus.</string>
     <string name="settings_alerts_notify_title">Pranešti apie</string>
     <string name="settings_alerts_notify_red">Tik raudonus</string>
     <string name="settings_alerts_notify_orange_red">Oranžinius ir raudonus</string>
@@ -1362,6 +1361,7 @@ What is NOT overridden, by design:
     <string name="weather_alert_level_orange_description">Įspėjimas apie pavojingus orus</string>
     <string name="weather_alert_level_red_description">Įspėjimas apie ekstremalius orus</string>
     <string name="weather_alert_until">Iki %1$s</string>
+    <string name="weather_alert_issued">Paskelbta %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Atidaryti %1$s</string>
     <string name="weather_alert_open_source_fallback">Išsami informacija</string>

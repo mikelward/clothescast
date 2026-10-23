@@ -1486,7 +1486,6 @@ label localises.
     <string name="settings_page_alerts">特報設定</string>
     <string name="settings_weather_alerts_title">天氣特報</string>
     <string name="settings_weather_alerts_summary">在「今天」頁面顯示你所在位置的官方特報。</string>
-    <string name="settings_weather_alerts_sign_in">使用 Google 登入即可接收天氣特報。</string>
     <string name="settings_alerts_notify_title">通知等級</string>
     <string name="settings_alerts_notify_red">僅紅色</string>
     <string name="settings_alerts_notify_orange_red">橙色和紅色</string>
@@ -1533,6 +1532,7 @@ label localises.
     <string name="weather_alert_level_orange_description">嚴重天氣特報</string>
     <string name="weather_alert_level_red_description">極端天氣特報</string>
     <string name="weather_alert_until">至%1$s</string>
+    <string name="weather_alert_issued">%1$s發布</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">開啟%1$s</string>
     <string name="weather_alert_open_source_fallback">詳細資料</string>

@@ -1265,7 +1265,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_page_alerts">Configuració d\'avisos</string>
     <string name="settings_weather_alerts_title">Avisos meteorològics</string>
     <string name="settings_weather_alerts_summary">Avisos oficials per a la teva ubicació a la pantalla d\'avui.</string>
-    <string name="settings_weather_alerts_sign_in">Inicia sessió amb Google per rebre avisos meteorològics.</string>
     <string name="settings_alerts_notify_title">Avisa\'m de</string>
     <string name="settings_alerts_notify_red">Només vermell</string>
     <string name="settings_alerts_notify_orange_red">Taronja i vermell</string>
@@ -1312,6 +1311,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="weather_alert_level_orange_description">Avís meteorològic important</string>
     <string name="weather_alert_level_red_description">Avís meteorològic extrem</string>
     <string name="weather_alert_until">Fins a %1$s</string>
+    <string name="weather_alert_issued">Emès %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Obre %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalls</string>

@@ -1312,7 +1312,6 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_page_alerts">تنظیمات هشدار</string>
     <string name="settings_weather_alerts_title">هشدارهای هواشناسی</string>
     <string name="settings_weather_alerts_summary">هشدارهای رسمی برای موقعیت شما در صفحه امروز.</string>
-    <string name="settings_weather_alerts_sign_in">برای دریافت هشدارهای هواشناسی، با Google وارد شوید.</string>
     <string name="settings_alerts_notify_title">ارسال اعلان برای</string>
     <string name="settings_alerts_notify_red">فقط قرمز</string>
     <string name="settings_alerts_notify_orange_red">نارنجی و قرمز</string>
@@ -1359,6 +1358,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="weather_alert_level_orange_description">هشدار هواشناسی شدید</string>
     <string name="weather_alert_level_red_description">هشدار هواشناسی بسیار شدید</string>
     <string name="weather_alert_until">تا %1$s</string>
+    <string name="weather_alert_issued">صادر شده %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">باز کردن %1$s</string>
     <string name="weather_alert_open_source_fallback">جزئیات</string>

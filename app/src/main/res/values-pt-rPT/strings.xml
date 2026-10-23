@@ -1453,7 +1453,6 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="settings_page_alerts">Definições de avisos</string>
     <string name="settings_weather_alerts_title">Avisos meteorológicos</string>
     <string name="settings_weather_alerts_summary">Avisos oficiais para a tua localização no ecrã Hoje.</string>
-    <string name="settings_weather_alerts_sign_in">Inicia sessão com a Google para receberes avisos meteorológicos.</string>
     <string name="settings_alerts_notify_title">Notificar sobre</string>
     <string name="settings_alerts_notify_red">Apenas vermelho</string>
     <string name="settings_alerts_notify_orange_red">Laranja e vermelho</string>
@@ -1500,6 +1499,7 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="weather_alert_level_orange_description">Aviso meteorológico grave</string>
     <string name="weather_alert_level_red_description">Aviso meteorológico extremo</string>
     <string name="weather_alert_until">Até %1$s</string>
+    <string name="weather_alert_issued">Emitido %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Abrir %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalhes</string>

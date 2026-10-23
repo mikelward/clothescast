@@ -1319,7 +1319,6 @@ standard in Israeli digital communication.
     <string name="settings_page_alerts">הגדרות האזהרות</string>
     <string name="settings_weather_alerts_title">אזהרות מזג אוויר</string>
     <string name="settings_weather_alerts_summary">אזהרות רשמיות למיקום שלך במסך היום.</string>
-    <string name="settings_weather_alerts_sign_in">התחבר/י עם Google כדי לקבל אזהרות מזג אוויר.</string>
     <string name="settings_alerts_notify_title">התראות עבור</string>
     <string name="settings_alerts_notify_red">אדומות בלבד</string>
     <string name="settings_alerts_notify_orange_red">כתומות ואדומות</string>
@@ -1367,6 +1366,7 @@ standard in Israeli digital communication.
     <string name="weather_alert_level_orange_description">אזהרה על מזג אוויר קשה</string>
     <string name="weather_alert_level_red_description">אזהרה על מזג אוויר קיצוני</string>
     <string name="weather_alert_until">עד %1$s</string>
+    <string name="weather_alert_issued">פורסם %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">פתח/י את %1$s</string>
     <string name="weather_alert_open_source_fallback">פרטים</string>

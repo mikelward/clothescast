@@ -8,8 +8,8 @@ import kotlin.math.hypot
 import kotlin.math.max
 
 /**
- * An official weather alert for the user's location, as Google's public alerts
- * relay it from the issuing agency (docs/ALERTS.md). Everything the issuer
+ * An official weather alert for the user's location, as ClothesCast's alerts
+ * ingester relays it from the issuing agency (docs/ALERTS.md). Everything the issuer
  * wrote — [issuerTitle], [description], [instruction] — is kept verbatim; the
  * app composes its own title only where [AlertTitles.colorGraded] says the
  * issuer grades by color.
@@ -18,7 +18,7 @@ data class WeatherAlert(
     val id: String,
     /** The issuer's own title ("Yellow warning of wind", "High Wind Warning"); may be blank. */
     val issuerTitle: String,
-    /** Google's event type ("WIND", "RAIN_EVENT"), or null when absent. */
+    /** A hazard keyword ("WIND", "SNOW_AND_ICE") or the issuer's event in capitals; null when absent. */
     val eventType: String?,
     val severity: AlertSeverity,
     /** The issuer's name for the area ("Grampian; Highlands & Eilean Siar"). A region, so a coarse location. */
@@ -26,9 +26,8 @@ data class WeatherAlert(
     val description: String?,
     val instruction: String?,
     /**
-     * Google's start time. It looks like the issue time rather than when the
-     * weather arrives (docs/ALERTS.md → Coverage), so the UI shows only
-     * [endTime] until that's ruled out.
+     * When the weather is due to arrive (CAP onset). The card still shows
+     * only [endTime]; notifications wait for this.
      */
     val startTime: Instant?,
     val endTime: Instant?,
@@ -38,12 +37,19 @@ data class WeatherAlert(
     val issuerUrl: String?,
     /** The alert's area, or null when the source sent none (such alerts are dropped). */
     val area: AlertArea?,
+    /** When the issuer sent it, where the source says (CAP `sent`). */
+    val issuedAt: Instant? = null,
+    /** The credit the source's terms ask for beside the alert, if any ("Met Office via MeteoAlarm"). */
+    val attribution: AlertAttribution? = null,
 ) {
     val level: AlertLevel get() = severity.level
     val hazard: AlertHazard? get() = AlertHazards.of(eventType)
 }
 
-/** CAP severity, as Google reports it. */
+/** Who to credit for an alert, and where the credit links. */
+data class AlertAttribution(val name: String, val url: String)
+
+/** CAP severity, as the source reports it. */
 enum class AlertSeverity {
     MINOR,
     MODERATE,
@@ -62,7 +68,7 @@ enum class AlertSeverity {
         }
 
     companion object {
-        /** Parses Google's enum name; anything unrecognized is [UNKNOWN]. */
+        /** Parses the severity's name ("SEVERE"); anything unrecognized is [UNKNOWN]. */
         fun parse(raw: String?): AlertSeverity =
             entries.firstOrNull { it.name == raw?.trim()?.uppercase() } ?: UNKNOWN
     }
@@ -103,33 +109,17 @@ enum class AlertNotifyLevel {
 data class GeoPoint(val latitude: Double, val longitude: Double)
 
 /**
- * An alert's area: every ring of its polygon or polygons, outer boundaries and
- * holes alike. Containment uses the even-odd rule across all rings, so holes
- * and multipolygon parts need no special case.
+ * An alert's area: the union of its polygons, each its outer boundary then
+ * any holes. Within a polygon containment uses the even-odd rule, so holes
+ * need no special case; a point inside any polygon is inside the area, so
+ * shapes that overlap (CAP allows it) don't cancel out.
  */
-data class AlertArea(val rings: List<List<GeoPoint>>) {
+data class AlertArea(val polygons: List<List<List<GeoPoint>>>) {
+
+    private val rings: List<List<GeoPoint>> get() = polygons.flatten()
 
     /** Whether [point] lies inside the area. */
-    fun contains(point: GeoPoint): Boolean {
-        var inside = false
-        for (ring in rings) {
-            val n = ring.size
-            if (n < 3) continue
-            var j = n - 1
-            for (i in 0 until n) {
-                val a = ring[i]
-                val b = ring[j]
-                if ((a.latitude > point.latitude) != (b.latitude > point.latitude) &&
-                    point.longitude < (b.longitude - a.longitude) * (point.latitude - a.latitude) /
-                    (b.latitude - a.latitude) + a.longitude
-                ) {
-                    inside = !inside
-                }
-                j = i
-            }
-        }
-        return inside
-    }
+    fun contains(point: GeoPoint): Boolean = polygons.any { insideEvenOdd(it, point) }
 
     /**
      * The shortest distance from [point] to the area's boundary, in km, on a
@@ -171,6 +161,28 @@ data class AlertArea(val rings: List<List<GeoPoint>>) {
 
     private companion object {
         const val KM_PER_DEGREE = 111.2
+
+        /** Whether [point] is inside [rings] by the even-odd rule. */
+        fun insideEvenOdd(rings: List<List<GeoPoint>>, point: GeoPoint): Boolean {
+            var inside = false
+            for (ring in rings) {
+                val n = ring.size
+                if (n < 3) continue
+                var j = n - 1
+                for (i in 0 until n) {
+                    val a = ring[i]
+                    val b = ring[j]
+                    if ((a.latitude > point.latitude) != (b.latitude > point.latitude) &&
+                        point.longitude < (b.longitude - a.longitude) * (point.latitude - a.latitude) /
+                        (b.latitude - a.latitude) + a.longitude
+                    ) {
+                        inside = !inside
+                    }
+                    j = i
+                }
+            }
+            return inside
+        }
 
         /** Distance from the origin to segment a→b, all in km. */
         fun distanceToSegment(ax: Double, ay: Double, bx: Double, by: Double): Double {

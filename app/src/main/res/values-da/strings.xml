@@ -1354,7 +1354,6 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_page_alerts">Varselsindstillinger</string>
     <string name="settings_weather_alerts_title">Vejrvarsler</string>
     <string name="settings_weather_alerts_summary">Officielle varsler for din placering på I dag-skærmen.</string>
-    <string name="settings_weather_alerts_sign_in">Log ind med Google for at få vejrvarsler.</string>
     <string name="settings_alerts_notify_title">Giv mig besked ved</string>
     <string name="settings_alerts_notify_red">Kun rødt</string>
     <string name="settings_alerts_notify_orange_red">Orange og rødt</string>
@@ -1398,6 +1397,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="weather_alert_level_orange_description">Varsel om farligt vejr</string>
     <string name="weather_alert_level_red_description">Varsel om ekstremt vejr</string>
     <string name="weather_alert_until">Indtil %1$s</string>
+    <string name="weather_alert_issued">Udsendt %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Åbn %1$s</string>
     <string name="weather_alert_open_source_fallback">Detaljer</string>

@@ -21,7 +21,7 @@ process.env.FIREBASE_CONFIG =
   process.env.FIREBASE_CONFIG || JSON.stringify({ projectId: "demo-clothescast" });
 
 const express = require(path.join(__dirname, "..", "node_modules", "express"));
-const { tts, weather, weatherAlerts } = require("../lib/index");
+const { tts, weather } = require("../lib/index");
 
 let server;
 let base;
@@ -79,10 +79,10 @@ test("answers JSON, so the client can read the error code", async () => {
   assert.match(res.headers.get("content-type") || "", /application\/json/);
 });
 
-// The Google Weather proxies share one handler; each export must still answer
-// with its guards in order: POST only, so the coordinate travels in the body
-// and never in the URL Cloud Run logs, then App Check before anything else.
-for (const [name, handler] of [["weather", weather], ["weatherAlerts", weatherAlerts]]) {
+// The Google Weather proxy must answer with its guards in order: POST only,
+// so the coordinate travels in the body and never in the URL Cloud Run logs,
+// then App Check before anything else.
+for (const [name, handler] of [["weather", weather]]) {
   test(`${name}: rejects every method but POST, then requires App Check`, async () => {
     const app = express();
     app.use(express.urlencoded({ extended: false })); // as the Functions Framework does

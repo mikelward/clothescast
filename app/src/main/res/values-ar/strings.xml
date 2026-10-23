@@ -1324,7 +1324,6 @@ they work correctly in both the single-band and range templates.
     <string name="settings_page_alerts">إعدادات التنبيهات</string>
     <string name="settings_weather_alerts_title">تنبيهات الطقس</string>
     <string name="settings_weather_alerts_summary">تنبيهات رسمية لموقعك في شاشة اليوم.</string>
-    <string name="settings_weather_alerts_sign_in">سجّل الدخول باستخدام Google لتلقي تنبيهات الطقس.</string>
     <string name="settings_alerts_notify_title">تلقي إشعارات عن</string>
     <string name="settings_alerts_notify_red">الأحمر فقط</string>
     <string name="settings_alerts_notify_orange_red">البرتقالي والأحمر</string>
@@ -1371,6 +1370,7 @@ they work correctly in both the single-band and range templates.
     <string name="weather_alert_level_orange_description">تنبيه طقس شديد</string>
     <string name="weather_alert_level_red_description">تنبيه طقس متطرف</string>
     <string name="weather_alert_until">حتى %1$s</string>
+    <string name="weather_alert_issued">صدر %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">فتح %1$s</string>
     <string name="weather_alert_open_source_fallback">التفاصيل</string>

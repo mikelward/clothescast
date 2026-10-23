@@ -187,33 +187,44 @@ voice and the Google Weather proxy.
       the proxy first, free government feeds by cron if it needs to scale.
       Shipped on Google: Settings → Alerts, cards and the strip icon on
       Today, the conditions widget, and notifications for severe alerts.
+      Off Google since 2026-10-23 (docs/ALERTS.md → Status).
+- [x] **Read the alerts ingester's files in the app** (`ServedAlertsClient`):
+      the index, then the tile holding the point; a country is trusted only
+      when a source lists it, containment is checked on the device, each
+      card shows the issue time and the source's credit, and a stale index
+      or an incomplete source reads as unknown, not quiet. No Google: a
+      place no source covers reads as unavailable (maintainer, 2026-10-23).
+- [ ] **Publish MeteoAlarm's disclaimer.** Its terms (§5) ask redistributors
+      to publish a disclaimer beside the credit; the wording wasn't readable
+      from the sandbox (docs/ALERTS.md → Sources). Read
+      meteoalarm.org/en/live/page/terms-and-conditions and add it where the
+      app credits MeteoAlarm.
 - [x] **Translate the weather alerts text.** Every `values-<lang>` carries
       the alerts block, in each locale's own weather-service term.
-- [ ] **Find when UK warnings start.** Alert notifications wait for the
+- [x] **Find when UK warnings start.** Alert notifications wait for the
       alert's start time (maintainer, 2026-10-22: no notification today for a
-      warning tomorrow), but Google's `startTime` for Met Office warnings looks
-      like the issue time, so UK ones still notify at issue. Run
-      `functions/scripts/check-alert-coverage.sh` while a UK warning is out:
-      it prints every field and the description's start. If the onset is in
-      neither, the Met Office's own feed is the source (docs/ALERTS.md →
-      Before building).
+      warning tomorrow), but Google's `startTime` for Met Office warnings looked
+      like the issue time. The ingester's MeteoAlarm alerts carry the CAP
+      `onset`, the Met Office's own start, and the app now reads them.
 - [x] **Alert icon on the outfit card.** The Cast / Home Assistant card
       heads its conditions row with the level of the alerts overlapping its
       own window (`cardAlertLevel`), as the widget does.
-- [ ] **Weather alerts on by default.** They ship off by default behind
-      Google sign-in (docs/ALERTS.md → Settings). Find a way to turn them
-      on for everyone without a sign-in prompt at an acceptable cost, for
-      example the server CAP ingester with the location checked on the
-      device, or proxy access with App Check alone.
-- [ ] **Keep Google weather data within its terms.** Google's Weather API
-      terms (§21.2.1) allow caching public alerts and hourly forecast values
-      for one hour; the app keeps alerts until the next successful check (3
-      hours or more) and the Google hourly forecast for 12 hours
+- [ ] **Weather alerts on by default.** They ship off by default
+      (docs/ALERTS.md → Settings). Off Google, they need no sign-in; turn
+      them on, or bring back a Today promo, once enough places are covered.
+- [ ] **Keep the Google forecast within its terms.** Google's Weather API
+      terms (§21.2.1) allow caching hourly forecast values for one hour; the
+      app keeps the Google hourly forecast for 12 hours
       (`GoogleForecastCache.defaultTtl`). §21.1 bars Weather API data "in a
       weather app or weather model whose primary purpose is to provide
       weather information"; whether that covers an outfit app is the
-      maintainer's call. Options and quotes: docs/ALERTS.md → Sources →
-      Google.
+      maintainer's call. Alerts are already off Google. Options and quotes:
+      docs/ALERTS.md → Sources → Google.
+- [ ] **Drop the `weatherAlertsQuota` TTL policy** from
+      `firestore.indexes.json` (and its line in
+      `functions/test/firestore-config.test.js`) a day or more after the
+      deploy that removes the `weatherAlerts` proxy, once its last counters
+      have expired.
 - [ ] **Design push for weather alerts.** Write up how an alert the server
       finds reaches the device by FCM, for docs/ALERTS.md → Architecture → C
       (maintainer, 2026-10-23). Settle: the topic per cell and the cell size
@@ -1022,17 +1033,6 @@ Open work:
         Dismiss sits in the expanded card, beside the issuer link. Alternative:
         hide the level everywhere, or an X on the collapsed row. One filter
         (`undismissed`) and one button to move.
-- [ ] **Weather alerts proxy: no server cache, and a 120-a-day cap**
-      (autopilot, 2026-10-22). `weatherAlerts` forwards every lookup, because
-      the Maps Platform caching terms for alerts were unchecked and `SPEC.md`
-      requires checking them before any server-side cache (since checked: one
-      hour, docs/ALERTS.md → Sources → Google). Its own cap is 120
-      lookups per account per UTC day: an hourly background check plus app
-      opens is about 48 a device at worst, so two devices fit. Alternative: the
-      15-minute in-memory cache in docs/ALERTS.md (fewer billed calls when
-      several people share a place), and a cap sized to one device (60).
-      Reversible: both are one constant or one wrapper in
-      `functions/src/index.ts`, redeployed.
 - [ ] **Smart Home: a broker change forgets the Home Assistant cleanup list** (autopilot, PR #1261). Saving MQTT settings with a different host or port empties the list of old topics to clear, so tombstones never go to a broker that didn't publish them (and can't delete another phone's configs there). The old broker keeps its device, as switching brokers always has. Alternative: record the broker with each topic and clear only there, which costs a storage format and still can't reach a broker you've left. Reversible: the set is a single preference, and recording brokers later only adds to it.
 - [ ] **Decide whether "we don't hold a user's data captive" belongs in this
       file's quality bar, not only in `MONETIZATION.md`.** Recorded 2026-09-03

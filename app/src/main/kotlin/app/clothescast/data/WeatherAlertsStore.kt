@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.clothescast.core.domain.model.AlertAttribution
 import app.clothescast.core.domain.model.AlertLevel
 import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.GeoPoint
@@ -22,17 +23,15 @@ import java.util.Locale
 
 /**
  * How the last alerts check went. [OK] means [WeatherAlertsState.alerts] is
- * what Google had then (possibly nothing); every other outcome means we don't
+ * what the source had then (possibly nothing); every other outcome means we don't
  * know, and the app must never read it as all clear.
  */
 enum class AlertsCheckOutcome {
     /** No check yet, or alerts were just turned on. */
     NEVER,
     OK,
-    /** Google has no alerts for this location ("not supported"). */
+    /** No source has alerts for this location. */
     UNSUPPORTED,
-    /** No route to Google: signed out with no key of the user's own. */
-    NO_ACCESS,
     FAILED,
 }
 
@@ -135,6 +134,9 @@ class WeatherAlertsStore(
         val endMs: Long? = null,
         val issuer: String? = null,
         val issuerUrl: String? = null,
+        val issuedMs: Long? = null,
+        val attributionName: String? = null,
+        val attributionUrl: String? = null,
         val notifiable: Boolean = true,
     ) {
         fun toDomain(): RelevantAlert? {
@@ -152,6 +154,12 @@ class WeatherAlertsStore(
                     endTime = endMs?.let(Instant::ofEpochMilli),
                     issuer = issuer,
                     issuerUrl = issuerUrl,
+                    issuedAt = issuedMs?.let(Instant::ofEpochMilli),
+                    attribution = if (attributionName != null && attributionUrl != null) {
+                        AlertAttribution(attributionName, attributionUrl)
+                    } else {
+                        null
+                    },
                     // The area has done its job once the alert is known to
                     // apply here; it isn't kept (a traced region can run to
                     // thousands of points).
@@ -181,6 +189,9 @@ class WeatherAlertsStore(
                 endMs = a.endTime?.toEpochMilli(),
                 issuer = a.issuer,
                 issuerUrl = a.issuerUrl,
+                issuedMs = a.issuedAt?.toEpochMilli(),
+                attributionName = a.attribution?.name,
+                attributionUrl = a.attribution?.url,
                 notifiable = relevant.notifiable,
             )
         },
@@ -197,9 +208,9 @@ class WeatherAlertsStore(
 
 /**
  * A digest of everything the app shows of an alert (its title, the level it's
- * drawn at, hazard, area, the issuer's text and link, its times), so a
- * dismissed card returns when any of it changes. The drawn level covers an
- * area narrowed from too broad to notify (neutral) to the alert's own. The
+ * drawn at, hazard, area, the issuer's text and link, its times, its credit),
+ * so a dismissed card returns when any of it changes. The drawn level covers
+ * an area narrowed from too broad to notify (neutral) to the alert's own. The
  * traced area itself is left out: it isn't stored, and it isn't shown.
  */
 fun RelevantAlert.dismissKey(): String {
@@ -216,6 +227,11 @@ fun RelevantAlert.dismissKey(): String {
         alert.endTime?.toEpochMilli()?.toString(),
         alert.issuer,
         alert.issuerUrl,
+    ) + listOfNotNull(
+        // Only when present, so a key made before these existed (an alert
+        // without them) still matches.
+        alert.issuedAt?.toEpochMilli()?.toString(),
+        alert.attribution?.let { "${it.name}\u0000${it.url}" },
     )
     val digest = MessageDigest.getInstance("SHA-256")
         .digest(fields.joinToString("\u0000") { it ?: "\u0001" }.toByteArray(Charsets.UTF_8))

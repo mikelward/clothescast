@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.alerts.AlertLevelIcon
 import app.clothescast.alerts.WeatherAlertsRefresher
+import app.clothescast.alerts.alertIssued
 import app.clothescast.alerts.alertLinks
 import app.clothescast.alerts.alertTitle
 import app.clothescast.alerts.alertUntil
@@ -118,8 +119,9 @@ private const val ALERTS_SHOWN = 3
 
 /**
  * The alerts in force, one single-row card each: the level icon, the title
- * and the end time, with the issuer, area, the issuer's own words, a link and
- * Dismiss a tap away. Outlined and neutral, so the icon carries the color (a
+ * and the end time, with the issuer, area, the issuer's own words, the issue
+ * time and source credit where the source gives them, a link and Dismiss a
+ * tap away. Outlined and neutral, so the icon carries the color (a
  * yellow icon can't be read on a yellow card).
  */
 @Composable
@@ -216,6 +218,22 @@ internal fun WeatherAlertCard(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
+                // The issue time, which the source's terms (MeteoAlarm) ask
+                // to show; Google's alerts don't give one.
+                alertIssued(
+                    context,
+                    alert,
+                    now,
+                    LocalTimeFormat.current,
+                    LocalConfiguration.current.locales[0],
+                    zone,
+                )?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
                 // Wraps rather than squeezing Dismiss out beside a long
                 // issuer name or at a large font size.
                 FlowRow {
@@ -225,6 +243,13 @@ internal fun WeatherAlertCard(
                                 alert.issuer?.let { stringResource(R.string.weather_alert_open_source, it) }
                                     ?: stringResource(R.string.weather_alert_open_source_fallback),
                             )
+                        }
+                    }
+                    // The source's credit, linked as its terms ask
+                    // ("Met Office via MeteoAlarm" → meteoalarm.org).
+                    alert.attribution?.let { credit ->
+                        TextButton(onClick = { openUrl(context, credit.url) }) {
+                            Text(credit.name)
                         }
                     }
                     // Until the issuer changes anything about it

@@ -1324,7 +1324,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_page_alerts">การตั้งค่าการเตือนภัย</string>
     <string name="settings_weather_alerts_title">การเตือนภัยสภาพอากาศ</string>
     <string name="settings_weather_alerts_summary">แสดงการเตือนภัยอย่างเป็นทางการสำหรับตำแหน่งของคุณบนหน้าวันนี้</string>
-    <string name="settings_weather_alerts_sign_in">ลงชื่อเข้าใช้ด้วย Google เพื่อรับการเตือนภัยสภาพอากาศ</string>
     <string name="settings_alerts_notify_title">ระดับที่จะแจ้งเตือน</string>
     <string name="settings_alerts_notify_red">สีแดงเท่านั้น</string>
     <string name="settings_alerts_notify_orange_red">สีส้มและสีแดง</string>
@@ -1371,6 +1370,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_level_orange_description">การเตือนภัยสภาพอากาศรุนแรง</string>
     <string name="weather_alert_level_red_description">การเตือนภัยสภาพอากาศรุนแรงมาก</string>
     <string name="weather_alert_until">ถึง %1$s</string>
+    <string name="weather_alert_issued">ออกเมื่อ %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">เปิด %1$s</string>
     <string name="weather_alert_open_source_fallback">รายละเอียด</string>

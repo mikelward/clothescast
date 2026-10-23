@@ -1331,7 +1331,6 @@ displayed label localizes.
     <string name="settings_page_alerts">Varoitusasetukset</string>
     <string name="settings_weather_alerts_title">Säävaroitukset</string>
     <string name="settings_weather_alerts_summary">Sijaintisi viralliset varoitukset Tänään-näytöllä.</string>
-    <string name="settings_weather_alerts_sign_in">Kirjaudu Googlella, niin saat säävaroitukset.</string>
     <string name="settings_alerts_notify_title">Ilmoita minulle</string>
     <string name="settings_alerts_notify_red">Vain punaiset</string>
     <string name="settings_alerts_notify_orange_red">Oranssit ja punaiset</string>
@@ -1375,6 +1374,7 @@ displayed label localizes.
     <string name="weather_alert_level_orange_description">Vakava säävaroitus</string>
     <string name="weather_alert_level_red_description">Äärimmäinen säävaroitus</string>
     <string name="weather_alert_until">%1$s asti</string>
+    <string name="weather_alert_issued">Annettu %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Avaa %1$s</string>
     <string name="weather_alert_open_source_fallback">Tiedot</string>

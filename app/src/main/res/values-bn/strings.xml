@@ -1396,7 +1396,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="settings_page_alerts">সতর্কতা সেটিংস</string>
     <string name="settings_weather_alerts_title">আবহাওয়া সতর্কতা</string>
     <string name="settings_weather_alerts_summary">আজকের স্ক্রিনে আপনার অবস্থানের অফিসিয়াল সতর্কতা।</string>
-    <string name="settings_weather_alerts_sign_in">আবহাওয়া সতর্কতা পেতে Google দিয়ে সাইন ইন করুন।</string>
     <string name="settings_alerts_notify_title">আমাকে জানান</string>
     <string name="settings_alerts_notify_red">শুধু লাল</string>
     <string name="settings_alerts_notify_orange_red">কমলা ও লাল</string>
@@ -1440,6 +1439,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="weather_alert_level_orange_description">গুরুতর আবহাওয়া সতর্কতা</string>
     <string name="weather_alert_level_red_description">চরম আবহাওয়া সতর্কতা</string>
     <string name="weather_alert_until">%1$s পর্যন্ত</string>
+    <string name="weather_alert_issued">জারি করা হয়েছে %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s খুলুন</string>
     <string name="weather_alert_open_source_fallback">বিবরণ</string>

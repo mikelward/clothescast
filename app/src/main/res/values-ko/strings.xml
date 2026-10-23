@@ -1476,7 +1476,6 @@ displayed label localizes.
     <string name="settings_page_alerts">특보 설정</string>
     <string name="settings_weather_alerts_title">기상특보</string>
     <string name="settings_weather_alerts_summary">현재 위치의 공식 특보를 「오늘」 화면에 표시해요.</string>
-    <string name="settings_weather_alerts_sign_in">Google로 로그인하면 기상특보를 받을 수 있어요.</string>
     <string name="settings_alerts_notify_title">알림 받을 단계</string>
     <string name="settings_alerts_notify_red">적색만</string>
     <string name="settings_alerts_notify_orange_red">주황색 및 적색</string>
@@ -1523,6 +1522,7 @@ displayed label localizes.
     <string name="weather_alert_level_orange_description">위험기상 특보</string>
     <string name="weather_alert_level_red_description">극한 기상특보</string>
     <string name="weather_alert_until">%1$s까지</string>
+    <string name="weather_alert_issued">%1$s 발표</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s 열기</string>
     <string name="weather_alert_open_source_fallback">세부정보</string>

@@ -325,14 +325,7 @@ integration for many countries"); VicEmergency isn't CAP. Terms are
   for years. To check: that it carries the Bureau's severe weather warnings
   (not just fire), and whether Bureau content in it carries the Bureau's
   own terms.
-- **The rest of Australia.** The Bureau's own CAP-AU warnings sit on its
-  anonymous FTP, but free only for personal or in-organization use;
-  publishing them needs a paid Registered User agreement, so it's out.
-  State feeds instead: Queensland's storm, flood and cyclone warnings
-  (GeoJSON and CAP-AU, every 30 minutes, licence not stated), Tasmania's
-  TasAlert warning polygons and NSW's Hazard Watch feed (both ArcGIS,
-  GeoJSON); nothing found for WA, SA or the NT. Google already carries
-  fire warnings for NSW, the ACT, SA, Tasmania and Queensland.
+- **The rest of Australia**: see "Australia" below.
 - **India**: NDMA's SACHET platform carries IMD warnings as RSS with a CAP
   1.2 message per item, at national and state level (not local); terms for
   apps not published.
@@ -349,6 +342,51 @@ A per-country feed can also keep the location on the device: the cron
 publishes each region's active alerts as one small file (usually empty),
 and the app downloads its region's file and checks containment itself,
 so no coordinate is sent at all.
+
+### Australia
+
+Checked 2026-10-23 from search excerpts of each page (the sandbox couldn't
+open them); prices in Australian dollars include GST. There is no official
+national feed: the Australian Warning System is a framework of levels and
+icons, not data, and Google carries only state fire services. Showing the
+Bureau's warnings in a distributed app, free or not, needs a licence. Its
+default terms ([copyright](https://www.bom.gov.au/copyright)) allow
+"personal use, or use within your organisation. You must not supply it to
+any other person or use it for any commercial purpose", and its anonymous
+FTP, RSS feeds and the WMO mirror all carry them; its undocumented API
+needs express permission.
+
+| Option | Covers | Cost | Terms | Links |
+|---|---|---|---|---|
+| Bureau Registered User | Every Bureau warning, CAP-AU, nationwide (bundle IDBZ0011) | A$1,335 once, A$1,282 a year, plus the warnings subscription (price *unverified*); fees can change on two months' notice | May supply the data only "as part of a Licensee Product"; warnings verbatim and as prominent as the original; the Bureau's attribution image; no "BoM" or "Bureau" in the product name | [Registered users](https://reg.bom.gov.au/reguser/), [charges](https://reg.bom.gov.au/other/charges.shtml), [Data Licence](https://www.bom.gov.au/sites/default/files/2026-04/bureau-of-meteorology-data-licence-agreement-2026.pdf), [brand policy](https://www.bom.gov.au/data-access/brand-trademark-display-policy.shtml); apply to webreg@bom.gov.au |
+| Xweather | Bureau warnings "under BOM's third-party attribution license", plus the US, Canada and Europe | 15,000 accesses a month free (pauses at the limit); about US$300 a month for 1M (*unverified*) | Vendor terms; confirm a free consumer app may show them | [pricing](https://www.xweather.com/pricing), [alerts](https://www.xweather.com/docs/weather-api/endpoints/alerts), [credits](https://www.xweather.com/docs/weather-api/resources/credits) |
+| WillyWeather API | A Bureau-based "Warnings" product, Australia only | First 5,000 requests free, then per request (about A$0.000033 each, *unverified*) | Rights to show them in an app *unverified* | [API](https://www.willyweather.com.au/info/api.html), [terms](https://www.willyweather.com.au/terms.html) |
+| DataQuoll | 34 state and agency sources as GeoJSON or CAP-AU, licence on each record; Bureau content contradictory | 5,000 requests a month free; A$9, A$99 or A$299 a month | Each source's | [pricing](https://dataquoll.io/pricing), [compliance](https://dataquoll.io/compliance) |
+| VicEmergency | Victoria, Bureau warnings included as incidents | Free | CC BY 3.0 AU: credit the State of Victoria, link the notice, show the last update time; ask EMV whether that covers Bureau-written text | [EMV data notice](https://www.emv.vic.gov.au/responsibilities/victorias-warning-system/emergency-data) |
+| Emergency WA | WA's own (DFES) bushfire, cyclone, storm and flood warnings; Bureau ones *unverified* | Free | CC BY-ND 4.0 (no changes) | `api.emergency.wa.gov.au/v1/capau`, [licence](https://catalogue.data.wa.gov.au/dataset/dfes-emergencywa-warning-points-dfes-070) |
+| TasALERT | Tasmania, Bureau severe weather and coastal warnings included | Free | Permission needed: info@alert.tas.gov.au | [about](https://alert.tas.gov.au/about-app) |
+| NSW SES HazardWatch | NSW SES flood, storm and tsunami warnings; Bureau ones *unverified* | Free | By request, republished unaltered: warnings.capability@ses.nsw.gov.au | [HazardWatch](https://hazardwatch.gov.au/) |
+| Queensland QFD | QFD's own storm, flood and cyclone warnings (not the Bureau's), every 30 minutes | Free | CC BY 4.0 | [dataset](https://www.data.qld.gov.au/dataset/storm-flood-and-cyclone-warnings-capau-xml) |
+
+Fire only, and partly in Google already: NSW RFS (CC BY) and SA CFS (CC
+BY-NC-ND). Nothing usable for the NT (SecureNT, undocumented) or the ACT
+(licence unclear). DTN/Weatherzone, The Weather Company, EWN, AccuWeather
+and OpenWeather list the Bureau as a source but sell by quote or with an
+unverified licence.
+
+The paths, cheapest first:
+
+1. **A licensed vendor**, Xweather first: nationwide Bureau warnings with no
+   Bureau contract of our own. If it answers one query for all of Australia
+   (*unverified*), the server cron polls it within the free tier (8,640
+   calls a month at 5 minutes) and no device location reaches it.
+2. **State feeds**: Victoria and WA, Tasmania with permission. Bureau
+   weather warnings stay missing in NSW, Queensland, SA, the ACT and the NT.
+3. **The Registered User licence**: at least A$2,617 in the first year plus
+   the subscription, pulled by the server cron.
+
+With any of them, ask the Bureau in writing whether a free app may use the
+anonymous-FTP CAP feed.
 
 ### One integration for many countries
 
@@ -395,6 +433,32 @@ The catch is per source, not per integration:
 So the vetting checklist per source is: terms allow use in an app; alerts
 carry polygons, or region codes we can map; language; severity matches
 CAP's meaning.
+
+**Terms found so far** (2026-10-23; from search excerpts of each official
+page unless the source's own feed says it; the national feeds in "Sources"
+are covered there):
+
+| Source | Terms | Verdict |
+|---|---|---|
+| DWD (Germany) | CC BY 4.0: "Source: Deutscher Wetterdienst" next to the warning, removed if the warning is changed; send a User-Agent | Fine |
+| KMA (Korea) | KOGL Type 1: credit the source, commercial use and changes allowed; the CAP feed's own marking *unverified* | Probably fine |
+| Roshydromet | Feed says "public domain"; the site requires a link to meteoinfo.ru | Probably fine; check sanctions exposure |
+| SMN (Argentina) | Feed says CC BY 4.0; an older legal page reserves graphics rights | Fine with credit |
+| MetService (NZ) | Code of Practice: pass on unmodified within 10 minutes of receipt, credit the alerting authority | Fine, at push speed |
+| NEMA (NZ) | Public for "smartphone apps, websites or other alerting hubs"; no licence found | Intent favorable; ask |
+| Environment Agency | Flood-monitoring API: Open Government Licence; the CAP Atom feed's own licence contradicts itself | API fine |
+| CMA (China) | Only a "public domain" string in the feed; no terms found | Ask |
+| SAWS (South Africa) | No feed terms; the SAWS Act reserves issuing warnings to SAWS, which also sells data | Ask |
+| IMD / NDMA SACHET | No reuse terms; IMD's data forms bar third-party and commercial use | Ask |
+| IFRC Alert Hub | "All rights reserved"; prior permission needed | Ask |
+| Pelmorex NAAD (Canada) | User guide binds users to terms not found in full | Ask, or use ECCC |
+
+Rules that recur: relay the warning text unaltered under the issuer's name
+(several countries reserve issuing warnings to their weather service by
+law), show the issue time and a link beside it, no logos or implied
+endorsement, and relay within minutes (MeteoAlarm and MetService both cap
+it at 10). A feed's `<rights>` tag isn't proof: DWD's says public domain
+while its legal notice says CC BY 4.0.
 
 **Checking it**: `functions/scripts/check-alert-coverage.sh <projectId>`
 asks Google for alerts at about 30 test cities with the proxy's key and
@@ -455,29 +519,39 @@ points to drawn areas; the point count would confirm it.
   device (`SPEC.md`).
 - **Freshness**: whatever Google's ingest lag is (*unverified*), plus our
   poll interval.
-- **Terms**: the Maps Platform service terms allow temporary caching of some
-  Weather API content (one hour for current conditions and hourly forecasts,
-  per search snippets); *unverified* for alerts. The same terms bar using
-  cached content to recreate a Google product such as a general weather app.
-  Attribution required.
+- **Terms** (Maps Platform service terms §21, last modified 2026-10-15, read
+  2026-10-23). §21.2.1 lets "Public Alert values" be cached for "one hour,
+  after which Customer must delete the cached Google Maps Content"; the same
+  hour applies to hourly forecast values and current conditions (daily
+  forecast values: 24 hours). The app keeps alerts until the next successful
+  check (3 hours or more) and the Google hourly forecast for 12 hours
+  (`GoogleForecastCache`), both past that limit (`TODO.md`). §21.1: "Customers
+  may not use Google Maps Content retrieved from Weather API to recreate a
+  Google service or product (e.g. use data retrieved from Weather API in a
+  weather app or weather model whose primary purpose is to provide weather
+  information)". Whether an outfit app counts is the maintainer's call; if it
+  does, it covers the Google forecast too. The general terms (§3.2.3(a)) also
+  bar pre-fetching, storing or resharing outside those allowances, so a server
+  sweep is out and a server cache must stay within the hour. Attribution
+  required.
 - **Bulk**: none; see "Why not a worldwide Google sweep".
 
 ### Free government feeds
 
 | Source | Coverage | Access | Cost and limits | Freshness | Notes |
 |---|---|---|---|---|---|
-| NWS `api.weather.gov/alerts` | US and territories | Pull: all active alerts in one call, or `?point=lat,lon`; GeoJSON | Free, no key; User-Agent with contact required; rate limits unpublished | Cache headers follow each alert's life cycle | Some alerts reference forecast zones instead of a polygon (zone geometry from `/zones`). Public domain (*unverified*). |
+| NWS `api.weather.gov/alerts` | US and territories | Pull: all active alerts in one call, or `?point=lat,lon`; GeoJSON | Free, no key; User-Agent with contact required (403 without); poll no more than every 30 seconds | Cache headers follow each alert's life cycle | Some alerts reference forecast zones instead of a polygon (zone geometry from `/zones`). Public domain; don't imply endorsement or present altered text as official. |
 | NWS NWWS-OI | US | Push over XMPP | Credentials from NWS; sign-up can take 30+ days; cost *unverified* | Seconds | Raw text products; needs an always-on client. |
-| Met Office NSWWS public API | UK | Pull: Atom feed linking GeoJSON (MultiPolygon) warnings for the next 7 days | Free within 20,000 calls a day, 200 per second burst; registration *unverified* | They recommend polling the Atom feed once a minute | Strict style guide, see below. |
+| Met Office NSWWS public API | UK | Pull: Atom feed linking GeoJSON (MultiPolygon) warnings for the next 7 days | Free within 20,000 calls a day, 200 per second burst; registration *unverified* | They recommend polling the Atom feed once a minute | Strict style guide, see below. Onward redistribution *unverified*; MeteoAlarm carries the same warnings under clearer terms. |
 | Met Office RSS | UK, per region | Pull: RSS summaries | Free; website terms | As issued | The API suits apps better. |
-| MeteoAlarm EDR API | ~38 European countries (EUMETNET) | Pull: OGC API EDR (position or area queries) | Free token after registration review; page lists CC BY 4.0; commercial-use terms *unverified* | As issued by each member | Legacy per-country CAP Atom feeds also exist. Warnings reference EMMA region codes, so geometry may need a separate lookup. Color levels yellow, orange, red. |
+| MeteoAlarm | ~38 European countries (EUMETNET) | Pull: per-country Atom and JSON feeds, open, no key, WebSub; the EDR API is for members and redistributors on request | Free; "terms equivalent to CC BY 4.0" plus its T&C §5: keep the unmodified original with any changed version, show the issue time, link to meteoalarm.org, publish a disclaimer, redistribute within 5 minutes on average and 10 at most | As issued by each member | Credit "EUMETNET – MeteoAlarm", or the national service for one country's warnings. Warnings reference EMMA region codes, so geometry may need a separate lookup (the UK's carry polygons). Color levels yellow, orange, red. |
 | MET Norway MetAlerts 2.0 | Norway | Pull: `/current`, lat/lon queries; CAP, GeoJSON, RSS | Free; User-Agent required; licence *unverified* | As issued | GeoJSON was beta at launch. Also in MeteoAlarm. |
-| ECCC (Canada) | Canada | Pull CAP files from Datamart, or push over AMQP (Sarracenia, anonymous queues) | Free open data; licence *unverified* | Push: seconds | Only free push feed found that needs no sign-up besides WIS2. |
-| JMA | Japan (a Google gap) | Pull: Atom feeds and per-prefecture JSON | Free; terms *unverified* | As issued | Japanese text. One client library reports the Atom feeds drop older in-force warnings. |
+| ECCC (Canada) | Canada | Pull CAP files from Datamart, or push over AMQPS (`anonymous` at `dd.weather.gc.ca:5671`) | Free; End-use Licence v2.1.1 allows commercial use if alerts aren't altered; contact them above 86,400 requests a day, use AMQPS for real time, send a User-Agent | Push: seconds | "Data Source: Environment and Climate Change Canada"; no logos. Only free push feed found that needs no sign-up besides WIS2. |
+| JMA | Japan (a Google gap) | Pull: XML feeds (high-frequency one updated every minute) and per-prefecture JSON | Free; Public Data License 1.0 (CC BY 4.0-compatible); an IP pulling 10 GB a day is blocked, don't re-fetch files | As issued | "Source: Japan Meteorological Agency website". Japanese text. One client library reports the Atom feeds drop older in-force warnings. |
 | WMO WIS2 Global Broker | Members publishing CAP through WIS2 (partial, growing) | Push over MQTT (`origin/a/wis2/#`, public read-only login) | Free; "core" data unrestricted | Seconds | Coverage depends on each country adopting WIS2; check which publish alerts. |
-| WMO Alert Hub / Alert-Hub.org | ~500 alerting authorities' CAP feeds | Registry of feed URLs; aggregated display (SWIC); ESRI republishes it as a GIS feature service | Free; machine-access terms *unverified* | Per feed | Google Public Alerts and AccuWeather use a subset of the same list. A feed directory more than an API. |
-| FEMA IPAWS public feed | US | CAP | *Unverified* | | Mostly duplicates NWS for weather. |
-| BOM | Australia | Pull: CAP-AU warnings on anonymous FTP | Free for personal or in-organization use only; publishing needs a paid Registered User agreement | As issued | Out unless we pay; see "Filling Google's gaps" for state feeds. |
+| WMO Alert Hub / Alert-Hub.org | ~500 alerting authorities' CAP feeds | Registry of feed URLs; aggregated display (SWIC); ESRI republishes it as a GIS feature service | Free. SWIC: "free for re-use by media or other websites", crediting the issuing service; a mirror doesn't relicense, so each issuer's terms govern | Per feed | Google Public Alerts and AccuWeather use a subset of the same list. A feed directory more than an API. SWIC's `/v2/cap-alerts/` RSS mirrors are being retired (most 404 since 2026-10-08). |
+| FEMA IPAWS public feed | US | CAP, pull only; alerts stay 30 minutes | Free; an agreement (MOA) with FEMA may still be needed (`ipaws@fema.dhs.gov`) | | Mostly duplicates NWS for weather. |
+| BOM | Australia | Pull: CAP-AU warnings on anonymous FTP | Free for personal or in-organization use only; publishing needs a paid Registered User agreement | As issued | See "Australia". |
 | VicEmergency | Victoria | Pull: one GeoJSON of warnings and incidents | Free, CC BY 3.0 AU with attribution and a last-updated time | About a minute | The Melbourne fix; see "Filling Google's gaps". |
 
 ### Paid or account-based (rejected: another vendor and key)
@@ -486,7 +560,7 @@ points to drawn areas; the point count would confirm it.
 |---|---|---|---|
 | OpenWeather One Call 3.0 | Global, national agencies | 1,000 calls a day free, then per call | Alerts included in the response. |
 | OpenWeather Global Weather Alerts | Global | Monthly subscription, arranged by email | Push; up to 30 minutes' delay. |
-| Xweather | US, Canada, Europe incl. Met Office, BOM | 15,000 accesses a month free; paid around $300 a month for 1M (third-party figures) | |
+| Xweather | US, Canada, Europe incl. Met Office, BOM | 15,000 accesses a month free; paid around $300 a month for 1M (third-party figures) | The only vendor found that states a Bureau licence; see "Australia". |
 | meteoblue Warnings API | National CAP warnings | Price not found; beta | |
 | WeatherAPI.com | Global | Alerts reportedly on the free plan | |
 | Weatherbit | Global | Alerts tier unclear | |
@@ -568,6 +642,32 @@ its terms apply directly; revisit the titles then.
 - **Cost**: effectively nil. Cloud Scheduler includes 3 free jobs per
   billing account, then $0.10 a job a month; invocations, compute and storage
   sit in free tiers. It does not grow with users.
+- **Hosting on GCP** (us-central1 list prices, read 2026-10-23). The ingest
+  job (1 vCPU, 512 MiB, 10 to 20 seconds a run, feeds fetched in parallel
+  with conditional GETs) as a Cloud Run function: $0 at 15 or 5 minutes
+  ($2 to $4 once the free tier, shared with the weather proxy, is used up),
+  $6 to $17 at 1 minute. State as one gzipped Cloud Storage object written
+  with a generation precondition, so overlapping runs can't clobber it:
+  cents a month. Per-cell files in a public bucket with `Cache-Control`
+  60 to 300 seconds (the default is an hour). What a device poll costs to
+  serve, per month at 5-minute ingest:
+
+  | Devices | Cloud Storage direct | Firebase Hosting | Cloud CDN + load balancer | FCM push only |
+  |---|---|---|---|---|
+  | 1,000 | ~$0.30 | $0 | ~$19 | ~$0–0.50 |
+  | 10,000 | ~$2.90 | $0–1.60 | ~$24–25 | ~$0.30–1 |
+  | 100,000 | $29–43 | $5–31 | ~$76–90 | ~$1–3 |
+
+  Not a fit: Firestore (reading every alert each run is about $7 a month at
+  5 minutes, and polygons hit its 1 MiB document limit), Cloud SQL (about
+  $9.40 a month for a shared core with no SLA), Memorystore (from about
+  $36). Firebase Hosting clears its CDN cache on every deploy. Pub/Sub would
+  be free but isn't needed.
+- **Feed rules that shape it**: a User-Agent with a contact on every fetch
+  (NWS, ECCC, DWD); NWS no more than every 30 seconds; ECCC by AMQPS rather
+  than polling; JMA's per-minute feed without re-fetching files; MeteoAlarm by
+  WebSub or a poll every 3 minutes, to stay under its 5-minute average relay.
+  Keep each warning's original text, issuer, issue time and link.
 - **Freshness**: no better than A on its own, because the device still polls.
 - **Effort**: one parser per feed, region-code geometry for MeteoAlarm and
   NWS zones, and per-feed terms to honor.
@@ -580,13 +680,39 @@ its terms apply directly; revisit the titles then.
   Devices subscribe to their cell's topic.
 - **Freshness**: minutes (cron) or seconds (listener), independent of polling
   and Doze.
-- **Cost**: FCM is free. A listener needs an always-on host (a free-tier
-  e2-micro VM, or Cloud Run with a minimum instance, which isn't free).
+- **Cost**: FCM is free. A listener needs an always-on host: a free-tier
+  e2-micro VM costs about $3.65 a month for its public IPv4 address (we patch
+  it, no SLA); a Cloud Run service pinned to one instance with CPU always on
+  costs about $45. A request-billed Cloud Run service can't listen, since
+  its CPU is throttled between requests. Keep the cron as the backstop, so
+  a dead listener means cron speed, not silence.
+- **Listener feeds**: WIS2 Global Brokers over MQTT, anonymous login
+  `everyone`/`everyone` (Météo-France `globalbroker.meteo.fr:8883`, NOAA
+  `globalbroker.globaldata.nws.noaa.gov:8883`), subscribed to
+  `origin/a/wis2/hk-hko-swic/#` for the Hong Kong Observatory's dataset of
+  SWIC's CAP alerts; ECCC over AMQPS; NWWS-OI over XMPP, with credentials
+  that take 30 days or more and outages up to three times a month. No push
+  was found for DWD, JMA or the Bureau.
+- **FCM limits** (Firebase docs, read 2026-10-23): payloads up to 4,096
+  bytes, but 2,048 for a message sent to a topic (larger ones fail with
+  `INVALID_ARGUMENT`), too small for a CAP document, so a message carries
+  the ID, level and times and the device fetches the rest; one send targets
+  at most 5 topics; at most 2,000 topics per app instance; 600,000 messages a minute
+  per project; topic fan-out is "optimized for throughput rather than
+  latency", with no delivery SLA. High priority reaches a device in Doze,
+  but FCM may demote an app's high-priority messages when they don't lead
+  to a visible notification, which coarse cells invite (an alert reaching
+  phones outside its polygon). Phones without Google Play services get
+  nothing, and a phone that joins a cell misses alerts sent before it
+  joined, so push still needs a catch-up pull.
 - **Privacy**: the topic subscription tells Firebase the device's coarse
-  cell for as long as it's subscribed. Our server never sees it, but this is
-  a durable record where today there is only a per-request one; it needs a
-  `PRIVACY.md` change and a decision. Adds Firebase Cloud Messaging to the
-  app.
+  cell for as long as it's subscribed (with the date it was added; tokens
+  lapse after 270 days offline). Firebase sees the device's IP address on
+  every subscribe, and each cell change is a new record. We can read a
+  token's subscriptions only if the app uploads that token, which it
+  needn't; still, this is a durable record
+  where today there is only a per-request one; it needs a `PRIVACY.md`
+  change and a decision. Adds Firebase Cloud Messaging to the app.
 
 ### Why not a worldwide Google sweep
 
@@ -690,7 +816,8 @@ the nominal one whatever we choose.
       in `TODO.md` → Decisions needing review.
 - [ ] Billing → Reports by SKU after a few calls: which SKU alerts bill
       under, and whether they share the forecast's free calls.
-- [ ] Maps Platform caching terms for alerts.
+- [x] Maps Platform caching terms for alerts: one hour (§21.2.1), shorter
+      than the app keeps them (see Sources → Google; `TODO.md`).
 - [x] Opt-in: its own "Alerts" settings section, off by default (see
       "Settings").
 - [x] Background check cadence: adaptive (maintainer, 2026-10-22; see

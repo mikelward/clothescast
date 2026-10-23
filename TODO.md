@@ -205,6 +205,33 @@ voice and the Google Weather proxy.
       on for everyone without a sign-in prompt at an acceptable cost, for
       example the server CAP ingester with the location checked on the
       device, or proxy access with App Check alone.
+- [ ] **Keep Google weather data within its terms.** Google's Weather API
+      terms (§21.2.1) allow caching public alerts and hourly forecast values
+      for one hour; the app keeps alerts until the next successful check (3
+      hours or more) and the Google hourly forecast for 12 hours
+      (`GoogleForecastCache.defaultTtl`). §21.1 bars Weather API data "in a
+      weather app or weather model whose primary purpose is to provide
+      weather information"; whether that covers an outfit app is the
+      maintainer's call. Options and quotes: docs/ALERTS.md → Sources →
+      Google.
+- [ ] **Design push for weather alerts.** Write up how an alert the server
+      finds reaches the device by FCM, for docs/ALERTS.md → Architecture → C
+      (maintainer, 2026-10-23). Settle: the topic per cell and the cell size
+      (privacy against FCM demoting high-priority messages that show no
+      notification, which coarse cells invite); the payload under 2 KB and
+      what the device fetches after; the catch-up pull when a device changes
+      cell, since alerts sent before it joined never arrive; subscribe and
+      unsubscribe on location change, with hysteresis; what Google keeps
+      (a coarse cell per install, dated); devices without Play services;
+      adding the FCM SDK; and the `PRIVACY.md` change.
+- [ ] **Try Xweather as a forecaster** (maintainer, 2026-10-23). Its Weather
+      API has hourly, day/night and daily forecasts to 15 days, 5-minute
+      steps for the next 2 hours, an Xcast feed with confidence ranges for
+      wind and temperature, and raw model output (`/models/:model`). Find
+      out: its accuracy against the blend (no independent benchmark found),
+      whether its terms let the app show it, and the cost (15,000 accesses a
+      month free, then $0.0006 each; one hourly call per device is about 720
+      a month).
 - [ ] **Keep Google's `RAIN_AND_SNOW` as mixed.** `GoogleConditionMapper`
       folds it into `WeatherCondition.SNOW`, so a mixed hour titles the
       precipitation card "Chance of snow" rather than "Chance of rain or snow"
@@ -997,8 +1024,9 @@ Open work:
         (`undismissed`) and one button to move.
 - [ ] **Weather alerts proxy: no server cache, and a 120-a-day cap**
       (autopilot, 2026-10-22). `weatherAlerts` forwards every lookup, because
-      the Maps Platform caching terms for alerts are unchecked and `SPEC.md`
-      requires checking them before any server-side cache. Its own cap is 120
+      the Maps Platform caching terms for alerts were unchecked and `SPEC.md`
+      requires checking them before any server-side cache (since checked: one
+      hour, docs/ALERTS.md → Sources → Google). Its own cap is 120
       lookups per account per UTC day: an hourly background check plus app
       opens is about 48 a device at worst, so two devices fit. Alternative: the
       15-minute in-memory cache in docs/ALERTS.md (fewer billed calls when

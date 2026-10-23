@@ -677,7 +677,7 @@ its terms apply directly; revisit the titles then.
   billing account, then $0.10 a job a month; invocations, compute and storage
   sit in free tiers. It does not grow with users.
 - **Hosting on GCP** (us-central1 list prices, read 2026-10-23). The ingest
-  job (1 vCPU, 512 MiB, 10 to 20 seconds a run, feeds fetched in parallel
+  job (1 vCPU, 512 MiB, 10 to 20 seconds a run, feeds fetched in parallel, a pool per host,
   with conditional GETs) as a Cloud Run function: $0 at 15 or 5 minutes
   ($2 to $4 once the free tier, shared with the weather proxy, is used up),
   $6 to $17 at 1 minute. State as one gzipped Cloud Storage object written

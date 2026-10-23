@@ -206,6 +206,29 @@ test("a run publishes each tile, then an index naming them", async () => {
   assert.ok(fetch.calls.every((c) => c.userAgent === USER_AGENT));
 });
 
+test("each host's feeds are read side by side with other hosts'", async () => {
+  // Five feeds on one host fill its pool; the other host's feed must still
+  // start before any of them finishes, not queue behind them.
+  const busy = Array.from({ length: 5 }, (_, i) =>
+    ({ ...SOURCE, id: `busy-${i}`, url: `https://busy.example.org/feed-${i}` }));
+  const other = { ...SOURCE, id: "other", url: "https://other.example.org/feed" };
+  let busyDone = 0;
+  let busyDoneWhenOtherStarted = null;
+  const fetch = async (url) => {
+    if (url === other.url) {
+      busyDoneWhenOtherStarted = busyDone;
+    } else {
+      // Yield a macrotask so every pool gets to start its first feed.
+      await new Promise((resolve) => setImmediate(resolve));
+      busyDone++;
+    }
+    return new Response(FEED, { status: 200 });
+  };
+  await ingest({ sources: [...busy, other], store: fakeStore(), fetch, now: () => NOW, log: quiet });
+
+  assert.equal(busyDoneWhenOtherStarted, 0);
+});
+
 test("an unchanged feed rewrites only the index and refetches no documents", async () => {
   const store = fakeStore();
   await run(store, { [SOURCE.url]: FEED, [CAP_URL]: ALERT });

@@ -71,6 +71,11 @@ export const TILE_RETENTION_MS = 60 * 60_000;
 export const USER_AGENT = "ClothesCast alerts (+https://github.com/mikelward/clothescast)";
 
 const FETCH_TIMEOUT_MS = 20_000;
+/**
+ * Feeds read at once from each host. Hosts run side by side, so NWS and DWD
+ * never wait behind MeteoAlarm's 32 country feeds, and MeteoAlarm still sees
+ * no more feeds at once than before.
+ */
 const FEED_CONCURRENCY = 4;
 const DOCUMENT_CONCURRENCY = 8;
 
@@ -584,9 +589,18 @@ export async function ingest(deps: IngestDeps): Promise<IngestSummary> {
   const indexGeneration = await deps.store.indexGeneration();
 
   const regions = regionResolver(deps, previous?.regionsFetchedAt ?? null, now);
-  const sourceStates = await pool(deps.sources, FEED_CONCURRENCY, (source) =>
-    refreshSource(deps, source, previous?.sources[source.id], now, regions),
-  );
+  const byHost = new Map<string, number[]>();
+  deps.sources.forEach((source, i) => {
+    const host = new URL(source.url).host;
+    byHost.set(host, [...(byHost.get(host) ?? []), i]);
+  });
+  const sourceStates: SourceState[] = new Array(deps.sources.length);
+  await Promise.all([...byHost.values()].map((indices) =>
+    pool(indices, FEED_CONCURRENCY, async (i) => {
+      const source = deps.sources[i];
+      sourceStates[i] = await refreshSource(deps, source, previous?.sources[source.id], now, regions);
+    }),
+  ));
 
   const byTile = new Map<string, ServedAlert[]>();
   let alertCount = 0;

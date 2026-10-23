@@ -8,7 +8,7 @@
  * water, not where anyone gets dressed), and so is an alert naming only
  * them.
  */
-import type { LatLon } from "./cap";
+import type { CapReference, LatLon } from "./cap";
 import { geoJsonPolygons } from "./geo";
 import type { ServedAlert, Severity } from "./served";
 
@@ -22,6 +22,9 @@ export function isMarineZone(zoneUrl: string): boolean {
 /** An NWS alert, its area to come from [zones] when it carries no polygon. */
 export interface NwsAlert {
   alert: ServedAlert;
+  /** Its CAP identifier, and the messages it updates. */
+  identifier: string;
+  references: CapReference[];
   /** Land zone URLs whose shapes make up the area; empty when [alert] has a polygon. */
   zones: string[];
 }
@@ -59,16 +62,31 @@ function hasPassed(iso: string | null, now: Date): boolean {
   return Number.isFinite(t) && t <= now.getTime();
 }
 
+/** A message left out as superseded: still a link in its alert's chain of updates (threads.ts). */
+export interface NwsLink {
+  identifier: string;
+  references: CapReference[];
+}
+
+function referencesOf(p: Props): CapReference[] {
+  return (Array.isArray(p.references) ? p.references : []).flatMap((r): CapReference[] => {
+    const ref = r as Props | null;
+    const identifier = str(ref?.identifier);
+    return identifier ? [{ sender: str(ref?.sender), identifier, sent: str(ref?.sent) }] : [];
+  });
+}
+
 /**
  * The alerts in an active-alerts response and, for each left out, why. An
- * alert another one in the response updates is left out as superseded. The
+ * alert another one in the response updates is left out as superseded, but
+ * kept in [links], so an update two steps on still finds its chain. The
  * end is `ends` (when the hazard ends) where given, else `expires`.
  */
 export function parseNwsAlerts(
   json: string,
   source: string,
   now: Date,
-): { alerts: NwsAlert[]; skipped: Partial<Record<NwsSkip, number>> } {
+): { alerts: NwsAlert[]; links: NwsLink[]; skipped: Partial<Record<NwsSkip, number>> } {
   const root = JSON.parse(json) as { features?: unknown };
   if (!Array.isArray(root.features)) throw new Error("not an NWS alerts collection");
   const features = root.features.filter(
@@ -86,6 +104,7 @@ export function parseNwsAlerts(
   }
 
   const alerts: NwsAlert[] = [];
+  const links: NwsLink[] = [];
   const skipped: Partial<Record<NwsSkip, number>> = {};
   const skip = (why: NwsSkip) => {
     skipped[why] = (skipped[why] ?? 0) + 1;
@@ -95,7 +114,11 @@ export function parseNwsAlerts(
     if (!id) continue;
     if (p.status !== "Actual") { skip("not_actual"); continue; }
     if (p.messageType === "Cancel") { skip("cancel"); continue; }
-    if (superseded.has(id)) { skip("superseded"); continue; }
+    if (superseded.has(id)) {
+      skip("superseded");
+      links.push({ identifier: id, references: referencesOf(p) });
+      continue;
+    }
     const ends = str(p.ends) ?? str(p.expires);
     if (hasPassed(ends, now)) { skip("expired"); continue; }
 
@@ -110,6 +133,8 @@ export function parseNwsAlerts(
     const event = str(p.event);
     alerts.push({
       zones,
+      identifier: id,
+      references: referencesOf(p),
       alert: {
         id: `${source}:${id}`,
         source,
@@ -134,5 +159,5 @@ export function parseNwsAlerts(
       },
     });
   }
-  return { alerts, skipped };
+  return { alerts, links, skipped };
 }

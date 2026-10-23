@@ -45,6 +45,13 @@ export interface CapInfo {
   areas: CapArea[];
 }
 
+/** A message an update or cancellation replaces, as CAP's `<references>` names it. */
+export interface CapReference {
+  sender: string | null;
+  identifier: string;
+  sent: string | null;
+}
+
 export interface CapAlert {
   identifier: string;
   sender: string | null;
@@ -52,6 +59,8 @@ export interface CapAlert {
   status: string | null;
   msgType: string | null;
   scope: string | null;
+  /** The earlier messages this one updates or cancels. */
+  references: CapReference[];
   infos: CapInfo[];
 }
 
@@ -188,6 +197,22 @@ function parseInfo(node: Node): CapInfo {
   };
 }
 
+/**
+ * CAP's `<references>`: space-separated "sender,identifier,sent" triples.
+ * A sender may itself hold commas, so the last two fields are taken from
+ * the end; a malformed triple is skipped.
+ */
+export function parseReferences(raw: string | null): CapReference[] {
+  if (!raw) return [];
+  return raw.trim().split(/\s+/).flatMap((triple) => {
+    const fields = triple.split(",");
+    if (fields.length < 3) return [];
+    const sent = fields.pop() ?? null;
+    const identifier = fields.pop();
+    return identifier ? [{ sender: fields.join(",") || null, identifier, sent: sent || null }] : [];
+  });
+}
+
 /** Parses a CAP 1.2 `<alert>`; throws when the XML isn't one. */
 export function parseCapAlert(xml: string): CapAlert {
   const root = parser.parse(xml) as Node;
@@ -201,6 +226,7 @@ export function parseCapAlert(xml: string): CapAlert {
     status: text(alert.status),
     msgType: text(alert.msgType),
     scope: text(alert.scope),
+    references: parseReferences(text(alert.references)),
     infos: nodes(alert.info).map(parseInfo),
   };
 }

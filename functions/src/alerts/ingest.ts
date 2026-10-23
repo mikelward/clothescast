@@ -15,7 +15,7 @@
  */
 import { createHash } from "node:crypto";
 
-import { parseCapAlert, parseCapFeed, type CapAlert, type LatLon } from "./cap";
+import { parseCapAlert, parseCapFeed, type CapAlert, type CapReference, type LatLon } from "./cap";
 import { bundledRegion } from "./bundled-regions";
 import { DWD_PROFILE } from "./dwd";
 import { geoJsonPolygons, simplifyRing } from "./geo";
@@ -23,6 +23,7 @@ import { parseNwsAlerts, type NwsAlert } from "./nws";
 import { REGIONS_PAGE_URL, REGION_TYPES, parseRegionAliases, parseRegionShapes, regionLinks } from "./regions";
 import { serve, type CapProfile, type ServedAlert, type Skip } from "./served";
 import type { AlertSource } from "./sources";
+import { threadIds } from "./threads";
 import { TILE_DEGREES, tilesFor } from "./tiles";
 import { unzip } from "./unzip";
 
@@ -91,6 +92,11 @@ interface CachedEntry {
   updated: string | null;
   /** The alert served for this document, or why it isn't. */
   result: ServedAlert | Skip;
+  /** The document's CAP identifier and the messages it updates; absent in state saved before them. */
+  identifier?: string;
+  references?: CapReference[];
+  /** Another current message updates or cancels this one, so it isn't served (threads.ts). */
+  superseded?: boolean;
 }
 
 interface SourceState {
@@ -360,21 +366,62 @@ async function placeRegions(cap: CapAlert, regions: Regions): Promise<number> {
 }
 
 /** One source's entries this run; on a feed failure, the last run's. */
-function refreshSource(
+async function refreshSource(
   deps: IngestDeps,
   source: AlertSource,
   previous: SourceState | undefined,
   now: Date,
   regions: Regions,
 ): Promise<SourceState> {
+  let state: SourceState;
   switch (source.kind) {
     case "nws":
-      return refreshNwsSource(deps, source, previous, now);
+      state = await refreshNwsSource(deps, source, previous, now);
+      break;
     case "cap-zip":
-      return refreshZipSource(deps, source, previous, now);
+      state = await refreshZipSource(deps, source, previous, now);
+      break;
     default:
-      return refreshCapSource(deps, source, previous, now, regions);
+      state = await refreshCapSource(deps, source, previous, now, regions);
   }
+  return { ...state, entries: threaded(source, state.entries, previous) };
+}
+
+/**
+ * [entries] with each alert served under the ID it had before its latest
+ * update, and the messages another current one replaces marked superseded
+ * (threads.ts). An entry kept from [previous] keeps its ID.
+ */
+function threaded(
+  source: AlertSource,
+  entries: Record<string, CachedEntry>,
+  previous: SourceState | undefined,
+): Record<string, CachedEntry> {
+  // State saved before identifiers were kept: the served ID still held one.
+  const identifierOf = (key: string, entry: CachedEntry) =>
+    entry.identifier ?? (typeof entry.result === "string" ? key : entry.result.id.slice(source.id.length + 1));
+  const lastIds = new Map<string, string>();
+  const lastServed = new Set<string>();
+  for (const [key, entry] of Object.entries(previous?.entries ?? {})) {
+    if (typeof entry.result === "string") continue;
+    lastIds.set(identifierOf(key, entry), entry.result.id);
+    if (!entry.superseded) lastServed.add(identifierOf(key, entry));
+  }
+  const keys = Object.keys(entries);
+  const ids = threadIds(source.id, keys.map((key) => ({
+    identifier: identifierOf(key, entries[key]),
+    references: entries[key].references ?? [],
+    result: entries[key].result,
+    kept: previous?.entries[key] === entries[key],
+  })), lastIds, lastServed);
+  return Object.fromEntries(keys.map((key, i) => {
+    const entry = entries[key];
+    const id = ids[i];
+    const { superseded: _, ...rest } = entry;
+    if (id === null) return [key, { ...rest, superseded: true }];
+    if (typeof entry.result === "string" || entry.result.id === id) return [key, rest];
+    return [key, { ...rest, result: { ...entry.result, id } }];
+  }));
 }
 
 // Keep serving what the feed last listed until those alerts expire; the index
@@ -426,6 +473,8 @@ async function refreshCapSource(
       entries[entry.identifier] = {
         updated: unknownRegions > 0 ? null : entry.updated,
         result: serve(source.id, cap, now),
+        identifier: cap.identifier,
+        references: cap.references,
       };
     } catch (err) {
       documentErrors++;
@@ -493,7 +542,12 @@ async function refreshZipSource(
     }
     try {
       const cap = parseCapAlert(file.data.toString("utf8"));
-      entries[file.name] = { updated: cap.sent, result: simplified(serve(source.id, cap, now, profile)) };
+      entries[file.name] = {
+        updated: cap.sent,
+        result: simplified(serve(source.id, cap, now, profile)),
+        identifier: cap.identifier,
+        references: cap.references,
+      };
     } catch (err) {
       // A document that won't parse is left out and tried again next run.
       documentErrors++;
@@ -533,13 +587,23 @@ async function refreshNwsSource(
   deps.log.info("NWS alerts read", { source: source.id, alerts: parsed.alerts.length, skipped: parsed.skipped });
 
   const entries: Record<string, CachedEntry> = {};
+  // Superseded messages aren't served, but an update two steps on finds
+  // its chain through them.
+  for (const link of parsed.links) {
+    entries[`${source.id}:${link.identifier}`] = {
+      updated: null,
+      result: "superseded",
+      identifier: link.identifier,
+      references: link.references,
+    };
+  }
   const pending: NwsAlert[] = [];
   for (const nws of parsed.alerts) {
     const cached = previous?.entries[nws.alert.id];
     if (cached && cached.updated !== null && cached.updated === nws.alert.sent) {
       entries[nws.alert.id] = cached;
     } else if (nws.zones.length === 0) {
-      entries[nws.alert.id] = { updated: nws.alert.sent, result: nws.alert };
+      entries[nws.alert.id] = thread(nws, nws.alert.sent, nws.alert);
     } else {
       pending.push(nws);
     }
@@ -566,7 +630,7 @@ async function refreshNwsSource(
       continue;
     }
     // A partly placed alert is served, but marked to be placed again next run.
-    entries[nws.alert.id] = { updated: complete ? nws.alert.sent : null, result: { ...nws.alert, polygons } };
+    entries[nws.alert.id] = thread(nws, complete ? nws.alert.sent : null, { ...nws.alert, polygons });
   }
   if (zoneErrors > 0) {
     return {
@@ -578,6 +642,10 @@ async function refreshNwsSource(
     };
   }
   return { checkedAt, lastSuccessAt: checkedAt, error: null, servingLastSuccess: true, entries };
+}
+
+function thread(nws: NwsAlert, updated: string | null, result: ServedAlert): CachedEntry {
+  return { updated, result, identifier: nws.identifier, references: nws.references };
 }
 
 /**
@@ -659,8 +727,8 @@ async function ingestWithin(deps: IngestDeps): Promise<IngestSummary> {
       // One line per source per run, so a quiet feed reads as checked, not missing.
       deps.log.info("Alert source checked", {
         source: source.id,
-        alerts: entries.filter(({ result }) => typeof result !== "string").length,
-        skipped: entries.filter(({ result }) => typeof result === "string").length,
+        alerts: entries.filter(({ result, superseded }) => typeof result !== "string" && !superseded).length,
+        skipped: entries.filter(({ result, superseded }) => typeof result === "string" || superseded).length,
         error: state.error,
         ms: Date.now() - started,
       });
@@ -670,8 +738,8 @@ async function ingestWithin(deps: IngestDeps): Promise<IngestSummary> {
   const byTile = new Map<string, ServedAlert[]>();
   let alertCount = 0;
   deps.sources.forEach((source, i) => {
-    for (const { result } of Object.values(sourceStates[i].entries)) {
-      if (typeof result === "string" || hasPassed(result.expires, now)) continue;
+    for (const { result, superseded } of Object.values(sourceStates[i].entries)) {
+      if (typeof result === "string" || superseded || hasPassed(result.expires, now)) continue;
       const keys = tilesFor(result.polygons);
       if (keys === null) {
         deps.log.warn("Alert area too broad to tile; left out", { source: source.id, alert: result.id });

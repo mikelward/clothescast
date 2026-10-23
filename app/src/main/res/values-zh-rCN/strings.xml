@@ -1482,6 +1482,11 @@ label localizes.
     <string name="settings_alerts_status_unsupported">此位置暂不提供预警。</string>
     <string name="settings_alerts_status_none">此位置暂无预警。上次检查：%1$s</string>
     <string name="settings_alerts_status_failed">无法检查预警，稍后将重试。</string>
+    <string name="settings_alerts_countries_title">当前国家/地区</string>
+    <string name="settings_alerts_countries_as_of">截至 %1$s %2$s，预警提供方已响应我们请求的国家/地区：</string>
+    <string name="settings_alerts_countries_loading">正在加载…</string>
+    <string name="settings_alerts_countries_failed">无法加载列表。</string>
+    <string name="settings_alerts_countries_caveat">此列表不保证完整或未来的覆盖范围。</string>
     <string name="settings_alerts_status_waiting">正在检查预警…</string>
 
 

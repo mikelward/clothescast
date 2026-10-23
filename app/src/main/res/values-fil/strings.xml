@@ -1386,6 +1386,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_status_unsupported">Hindi available ang mga babala sa lokasyong ito.</string>
     <string name="settings_alerts_status_none">Walang babala para sa lokasyong ito. Huling sinuri %1$s</string>
     <string name="settings_alerts_status_failed">Hindi masuri ang mga babala. Susubukan ulit maya-maya.</string>
+    <string name="settings_alerts_countries_title">Mga kasalukuyang bansa</string>
+    <string name="settings_alerts_countries_as_of">Noong %1$s %2$s, sumagot ang mga provider ng babala sa aming mga kahilingan para sa:</string>
+    <string name="settings_alerts_countries_loading">Naglo-load…</string>
+    <string name="settings_alerts_countries_failed">Hindi ma-load ang listahan.</string>
+    <string name="settings_alerts_countries_caveat">Hindi ginagarantiya ng listahang ito ang buo o hinaharap na saklaw.</string>
     <string name="settings_alerts_status_waiting">Sinusuri ang mga babala…</string>
 
 

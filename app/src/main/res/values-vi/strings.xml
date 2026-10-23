@@ -1396,6 +1396,11 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_alerts_status_unsupported">Cảnh báo không khả dụng cho vị trí này.</string>
     <string name="settings_alerts_status_none">Không có cảnh báo cho vị trí này. Kiểm tra lần cuối %1$s</string>
     <string name="settings_alerts_status_failed">Không thể kiểm tra cảnh báo. Sẽ sớm thử lại.</string>
+    <string name="settings_alerts_countries_title">Quốc gia hiện tại</string>
+    <string name="settings_alerts_countries_as_of">Tính đến %1$s %2$s, các nhà cung cấp cảnh báo đã phản hồi yêu cầu của chúng tôi cho:</string>
+    <string name="settings_alerts_countries_loading">Đang tải…</string>
+    <string name="settings_alerts_countries_failed">Không thể tải danh sách.</string>
+    <string name="settings_alerts_countries_caveat">Danh sách này không đảm bảo phạm vi đầy đủ hoặc trong tương lai.</string>
     <string name="settings_alerts_status_waiting">Đang kiểm tra cảnh báo…</string>
 
 

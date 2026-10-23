@@ -1345,6 +1345,11 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_alerts_status_unsupported">Výstrahy pro tuto polohu nejsou k dispozici.</string>
     <string name="settings_alerts_status_none">Pro tuto polohu nejsou žádné výstrahy. Poslední kontrola: %1$s</string>
     <string name="settings_alerts_status_failed">Výstrahy se nepodařilo zkontrolovat. Brzy to zkusíme znovu.</string>
+    <string name="settings_alerts_countries_title">Aktuální země</string>
+    <string name="settings_alerts_countries_as_of">K %1$s %2$s odpověděli poskytovatelé výstrah na naše dotazy pro:</string>
+    <string name="settings_alerts_countries_loading">Načítání…</string>
+    <string name="settings_alerts_countries_failed">Seznam se nepodařilo načíst.</string>
+    <string name="settings_alerts_countries_caveat">Tento seznam nezaručuje úplné ani budoucí pokrytí.</string>
     <string name="settings_alerts_status_waiting">Kontrola výstrah…</string>
     <string name="notification_channel_weather_alerts_name">Meteorologické výstrahy</string>
     <string name="notification_channel_weather_alerts_description">Výstrahy před nebezpečným počasím pro tvou polohu od oficiálních meteorologických služeb.</string>

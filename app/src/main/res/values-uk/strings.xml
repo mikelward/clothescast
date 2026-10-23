@@ -1334,6 +1334,11 @@ only the displayed label localizes.
     <string name="settings_alerts_status_unsupported">Для цього місцезнаходження попередження недоступні.</string>
     <string name="settings_alerts_status_none">Для цього місцезнаходження попереджень немає. Остання перевірка: %1$s</string>
     <string name="settings_alerts_status_failed">Не вдалося перевірити попередження. Незабаром спробуємо знову.</string>
+    <string name="settings_alerts_countries_title">Поточні країни</string>
+    <string name="settings_alerts_countries_as_of">Станом на %1$s %2$s постачальники попереджень відповіли на наші запити для цих країн:</string>
+    <string name="settings_alerts_countries_loading">Завантаження…</string>
+    <string name="settings_alerts_countries_failed">Не вдалося завантажити список.</string>
+    <string name="settings_alerts_countries_caveat">Цей список не гарантує повного чи майбутнього охоплення.</string>
     <string name="settings_alerts_status_waiting">Перевірка попереджень…</string>
     <string name="notification_channel_weather_alerts_name">Попередження про погоду</string>
     <string name="notification_channel_weather_alerts_description">Попередження про небезпечну погоду для вашого місцезнаходження від офіційних метеослужб.</string>

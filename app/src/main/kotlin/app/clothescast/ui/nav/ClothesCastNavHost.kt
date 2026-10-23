@@ -491,6 +491,7 @@ private fun settingsViewModelFactory(app: ClothesCastApplication) =
             }
         },
         weatherAlertsStatus = app.weatherAlertsStore.state,
+        alertsCoverage = { app.alertsCoverage() },
         weatherAlertsChanged = { enabled ->
             WeatherAlertsScheduler.sync(app, enabled)
             if (enabled) {

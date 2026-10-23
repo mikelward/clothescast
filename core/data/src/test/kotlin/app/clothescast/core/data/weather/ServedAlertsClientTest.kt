@@ -192,6 +192,17 @@ class ServedAlertsClientTest {
     }
 
     @Test
+    fun `the covered countries are those whose source answered, and fetch no tile`() = runTest {
+        client(mapOf("v1/index.json" to index(countries = """["se", "GB", "NO", "GB"]""")))
+            .coveredCountries() shouldBe AlertsCoverage(Instant.parse("2026-10-23T11:58:00Z"), listOf("GB", "NO", "SE"))
+        requested shouldBe listOf("v1/index.json")
+        client(mapOf("v1/index.json" to index(error = "HTTP 503")))
+            .coveredCountries() shouldBe AlertsCoverage(Instant.parse("2026-10-23T11:58:00Z"), emptyList())
+        client(emptyMap()).coveredCountries() shouldBe null
+        client(mapOf("v1/index.json" to "not json")).coveredCountries() shouldBe null
+    }
+
+    @Test
     fun `a missing or unreadable file is a failed check`() = runTest {
         client(emptyMap()).lookup(place, "en") shouldBe AlertsLookup.Failed(404)
         client(mapOf("v1/index.json" to index())).lookup(place, "en") shouldBe AlertsLookup.Failed(404)

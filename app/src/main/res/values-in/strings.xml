@@ -1334,6 +1334,11 @@ to values/strings.xml (English).
     <string name="settings_alerts_status_unsupported">Peringatan tidak tersedia untuk lokasi ini.</string>
     <string name="settings_alerts_status_none">Tidak ada peringatan untuk lokasi ini. Terakhir diperiksa %1$s</string>
     <string name="settings_alerts_status_failed">Tidak dapat memeriksa peringatan. Akan segera dicoba lagi.</string>
+    <string name="settings_alerts_countries_title">Negara saat ini</string>
+    <string name="settings_alerts_countries_as_of">Per %1$s %2$s, penyedia peringatan menjawab permintaan kami untuk:</string>
+    <string name="settings_alerts_countries_loading">Memuat…</string>
+    <string name="settings_alerts_countries_failed">Tidak dapat memuat daftar.</string>
+    <string name="settings_alerts_countries_caveat">Daftar ini tidak menjamin cakupan penuh atau di masa mendatang.</string>
     <string name="settings_alerts_status_waiting">Memeriksa peringatan…</string>
 
 

@@ -18,6 +18,7 @@ import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.DEFAULT_GEMINI_TTS_MODEL
 import app.clothescast.core.data.tts.GeminiTtsClient
+import app.clothescast.core.data.weather.AlertsCoverage
 import app.clothescast.core.data.weather.AlertsLookup
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.GoogleWeatherAccess
@@ -421,6 +422,12 @@ class ClothesCastApplication : Application() {
             apiCallLogger = apiCallLogger,
         )
     }
+
+    /**
+     * The countries the alerts sources cover, for Settings → Alerts: the
+     * index only, never a tile or a location. Null when unavailable.
+     */
+    suspend fun alertsCoverage(): AlertsCoverage? = servedAlertsClient?.coveredCountries()
 
     val weatherAlertsStore: WeatherAlertsStore by lazy { WeatherAlertsStore.create(this) }
 

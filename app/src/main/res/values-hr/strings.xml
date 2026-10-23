@@ -1404,6 +1404,11 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="settings_alerts_status_unsupported">Upozorenja nisu dostupna za ovu lokaciju.</string>
     <string name="settings_alerts_status_none">Nema upozorenja za ovu lokaciju. Zadnja provjera: %1$s</string>
     <string name="settings_alerts_status_failed">Provjera upozorenja nije uspjela. Uskoro ćemo pokušati ponovno.</string>
+    <string name="settings_alerts_countries_title">Trenutačne zemlje</string>
+    <string name="settings_alerts_countries_as_of">Na dan %1$s %2$s pružatelji upozorenja odgovorili su na naše zahtjeve za:</string>
+    <string name="settings_alerts_countries_loading">Učitavanje…</string>
+    <string name="settings_alerts_countries_failed">Popis nije moguće učitati.</string>
+    <string name="settings_alerts_countries_caveat">Ovaj popis ne jamči potpunu ni buduću pokrivenost.</string>
     <string name="settings_alerts_status_waiting">Provjera upozorenja…</string>
     <string name="notification_channel_weather_alerts_name">Vremenska upozorenja</string>
     <string name="notification_channel_weather_alerts_description">Upozorenja na opasno vrijeme za tvoju lokaciju od službenih meteoroloških ustanova.</string>

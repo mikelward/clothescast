@@ -1335,6 +1335,11 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_status_unsupported">ไม่มีบริการเตือนภัยสำหรับตำแหน่งนี้</string>
     <string name="settings_alerts_status_none">ไม่มีการเตือนภัยสำหรับตำแหน่งนี้ ตรวจสอบล่าสุด %1$s</string>
     <string name="settings_alerts_status_failed">ตรวจสอบการเตือนภัยไม่ได้ จะลองอีกครั้งเร็วๆ นี้</string>
+    <string name="settings_alerts_countries_title">ประเทศปัจจุบัน</string>
+    <string name="settings_alerts_countries_as_of">ณ %1$s %2$s ผู้ให้บริการการเตือนภัยตอบคำขอของเราสำหรับ:</string>
+    <string name="settings_alerts_countries_loading">กำลังโหลด…</string>
+    <string name="settings_alerts_countries_failed">โหลดรายการไม่ได้</string>
+    <string name="settings_alerts_countries_caveat">รายการนี้ไม่ได้รับประกันความครอบคลุมทั้งหมดหรือในอนาคต</string>
     <string name="settings_alerts_status_waiting">กำลังตรวจสอบการเตือนภัย…</string>
 
 

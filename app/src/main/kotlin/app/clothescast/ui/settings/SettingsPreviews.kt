@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
+import app.clothescast.core.data.weather.AlertsCoverage
 import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.BandClause
 import app.clothescast.core.domain.model.AccessoriesFormat
@@ -1115,9 +1116,11 @@ internal fun SettingsAlertsPreview() {
             enabled = true,
             notifyLevel = AlertNotifyLevel.DEFAULT,
             status = WeatherAlertsState(outcome = AlertsCheckOutcome.UNSUPPORTED),
+            coverage = AlertsCoverageState.Idle,
             padding = PaddingValues(0.dp),
             onSetEnabled = {},
             onSetNotifyLevel = {},
+            onOpenCoverage = {},
         )
     }
 }
@@ -1131,9 +1134,37 @@ internal fun SettingsAlertsOffPreview() {
             enabled = false,
             notifyLevel = AlertNotifyLevel.DEFAULT,
             status = WeatherAlertsState(),
+            coverage = AlertsCoverageState.Idle,
             padding = PaddingValues(0.dp),
             onSetEnabled = {},
             onSetNotifyLevel = {},
+            onOpenCoverage = {},
+        )
+    }
+}
+
+// The "Current countries" list opened, with the index's countries in.
+@Preview(name = "Settings · Alerts countries", widthDp = 360)
+@Composable
+internal fun SettingsAlertsCountriesPreview() {
+    SettingsFrame {
+        AlertsContent(
+            enabled = false,
+            notifyLevel = AlertNotifyLevel.DEFAULT,
+            status = WeatherAlertsState(),
+            coverage = AlertsCoverageState.Loaded(
+                AlertsCoverage(
+                    asOf = java.time.Instant.parse("2026-10-23T15:11:01Z"),
+                    countries = listOf("DE", "GB", "NO", "SE", "US"),
+                ),
+            ),
+            padding = PaddingValues(0.dp),
+            onSetEnabled = {},
+            onSetNotifyLevel = {},
+            onOpenCoverage = {},
+            initiallyShowCoverage = true,
+            // Fixed, so the snapshot's "as of" time doesn't follow the machine's zone.
+            zone = java.time.ZoneOffset.UTC,
         )
     }
 }

@@ -1342,6 +1342,11 @@ displayed label localizes.
     <string name="settings_alerts_status_unsupported">Varoitukset eivät ole käytettävissä tässä sijainnissa.</string>
     <string name="settings_alerts_status_none">Tälle sijainnille ei ole varoituksia. Viimeksi tarkistettu %1$s</string>
     <string name="settings_alerts_status_failed">Varoitusten tarkistus epäonnistui. Yritetään pian uudelleen.</string>
+    <string name="settings_alerts_countries_title">Nykyiset maat</string>
+    <string name="settings_alerts_countries_as_of">%1$s %2$s varoitusten tarjoajat vastasivat pyyntöihimme näiden maiden osalta:</string>
+    <string name="settings_alerts_countries_loading">Ladataan…</string>
+    <string name="settings_alerts_countries_failed">Luettelon lataus epäonnistui.</string>
+    <string name="settings_alerts_countries_caveat">Tämä luettelo ei takaa täyttä eikä tulevaa kattavuutta.</string>
     <string name="settings_alerts_status_waiting">Tarkistetaan varoituksia…</string>
     <string name="notification_channel_weather_alerts_name">Säävaroitukset</string>
     <string name="notification_channel_weather_alerts_description">Virallisten sääpalvelujen vakavat säävaroitukset sijainnillesi.</string>

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
+import app.clothescast.core.data.weather.AlertsCoverage
 import app.clothescast.core.data.weather.GoogleWeatherProbe
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.AccessoriesFormat
@@ -219,6 +220,12 @@ class SettingsViewModel(
      * pure-VM tests.
      */
     private val weatherAlertsChanged: (Boolean) -> Unit = {},
+    /**
+     * Downloads which countries the alerts sources cover, for the Alerts
+     * page's "Current countries" list; null result when it can't. Null in
+     * pure-VM tests, where [loadAlertsCoverage] then reports a failure.
+     */
+    private val alertsCoverage: (suspend () -> AlertsCoverage?)? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -1084,6 +1091,25 @@ class SettingsViewModel(
      * current one and leaves its running flag / verdict alone (same identity-
      * guard pattern as [startDiscovery]).
      */
+    /**
+     * Downloads the covered countries when the Alerts page's list is opened,
+     * once per screen: a list already loaded or loading is kept; a failure
+     * is retried on the next open.
+     */
+    fun loadAlertsCoverage() {
+        when (_state.value.alertsCoverage) {
+            is AlertsCoverageState.Loaded, AlertsCoverageState.Loading -> return
+            AlertsCoverageState.Idle, AlertsCoverageState.Failed -> Unit
+        }
+        _state.update { it.copy(alertsCoverage = AlertsCoverageState.Loading) }
+        viewModelScope.launch {
+            val coverage = alertsCoverage?.invoke()
+            _state.update {
+                it.copy(alertsCoverage = coverage?.let(AlertsCoverageState::Loaded) ?: AlertsCoverageState.Failed)
+            }
+        }
+    }
+
     fun probeGoogleWeather() {
         val probe = googleWeatherProbe ?: return
         val previous = googleProbeJob
@@ -1441,6 +1467,7 @@ class SettingsViewModel(
         private val googleWeatherProbe: (suspend () -> GoogleWeatherProbe)? = null,
         private val weatherAlertsStatus: Flow<WeatherAlertsState> = flowOf(WeatherAlertsState()),
         private val weatherAlertsChanged: (Boolean) -> Unit = {},
+        private val alertsCoverage: (suspend () -> AlertsCoverage?)? = null,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -1472,6 +1499,7 @@ class SettingsViewModel(
                 googleWeatherProbe = googleWeatherProbe,
                 weatherAlertsStatus = weatherAlertsStatus,
                 weatherAlertsChanged = weatherAlertsChanged,
+                alertsCoverage = alertsCoverage,
             ) as T
         }
     }

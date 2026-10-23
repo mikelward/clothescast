@@ -1483,6 +1483,11 @@ the displayed label localizes.
     <string name="settings_alerts_status_unsupported">この地域では警報を利用できません。</string>
     <string name="settings_alerts_status_none">この地域に警報は出ていません。最終確認 %1$s</string>
     <string name="settings_alerts_status_failed">警報を確認できませんでした。まもなく再試行します。</string>
+    <string name="settings_alerts_countries_title">現在の対象国</string>
+    <string name="settings_alerts_countries_as_of">%1$s %2$s時点で、警報の提供元がリクエストに応答した国：</string>
+    <string name="settings_alerts_countries_loading">読み込み中…</string>
+    <string name="settings_alerts_countries_failed">リストを読み込めませんでした。</string>
+    <string name="settings_alerts_countries_caveat">このリストは、完全な対応や今後の対応を保証するものではありません。</string>
     <string name="settings_alerts_status_waiting">警報を確認中…</string>
 
 

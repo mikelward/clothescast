@@ -1487,6 +1487,11 @@ displayed label localizes.
     <string name="settings_alerts_status_unsupported">이 위치에서는 특보를 이용할 수 없어요.</string>
     <string name="settings_alerts_status_none">이 위치에 발효 중인 특보가 없어요. 마지막 확인: %1$s</string>
     <string name="settings_alerts_status_failed">특보를 확인하지 못했어요. 곧 다시 시도할게요.</string>
+    <string name="settings_alerts_countries_title">현재 국가</string>
+    <string name="settings_alerts_countries_as_of">%1$s %2$s 기준 특보 제공처가 요청에 응답한 국가:</string>
+    <string name="settings_alerts_countries_loading">불러오는 중…</string>
+    <string name="settings_alerts_countries_failed">목록을 불러오지 못했어요.</string>
+    <string name="settings_alerts_countries_caveat">이 목록이 전체 또는 향후 지원을 보장하지는 않아요.</string>
     <string name="settings_alerts_status_waiting">특보 확인 중…</string>
 
 

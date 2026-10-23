@@ -1359,6 +1359,11 @@ What is NOT overridden, by design:
     <string name="settings_alerts_status_unsupported">Výstrahy pre túto polohu nie sú k dispozícii.</string>
     <string name="settings_alerts_status_none">Pre túto polohu nie sú žiadne výstrahy. Posledná kontrola: %1$s</string>
     <string name="settings_alerts_status_failed">Výstrahy sa nepodarilo skontrolovať. Čoskoro to skúsime znova.</string>
+    <string name="settings_alerts_countries_title">Aktuálne krajiny</string>
+    <string name="settings_alerts_countries_as_of">K %1$s %2$s odpovedali poskytovatelia výstrah na naše požiadavky pre:</string>
+    <string name="settings_alerts_countries_loading">Načítava sa…</string>
+    <string name="settings_alerts_countries_failed">Zoznam sa nepodarilo načítať.</string>
+    <string name="settings_alerts_countries_caveat">Tento zoznam nezaručuje úplné ani budúce pokrytie.</string>
     <string name="settings_alerts_status_waiting">Kontrola výstrah…</string>
     <string name="notification_channel_weather_alerts_name">Meteorologické výstrahy</string>
     <string name="notification_channel_weather_alerts_description">Výstrahy pred nebezpečným počasím pre tvoju polohu od oficiálnych meteorologických služieb.</string>

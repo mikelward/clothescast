@@ -36,6 +36,7 @@ import app.clothescast.ui.garment.ClothingThickCoatPreview
 import app.clothescast.ui.garment.ClothingThickJacketPreview
 import app.clothescast.ui.garment.ClothingThinJacketPreview
 import app.clothescast.ui.garment.ClothingRainJacketPreview
+import app.clothescast.ui.settings.SettingsAlertsCountriesPreview
 import app.clothescast.ui.settings.SettingsAlertsPreview
 import app.clothescast.ui.settings.SettingsAlertsOffPreview
 import app.clothescast.ui.settings.SettingsCalendarPreview
@@ -799,6 +800,10 @@ class PreviewSnapshots {
 
     @Test
     fun settings_alerts() = capture { SettingsAlertsPreview() }
+
+    @Test
+    @Config(qualifiers = "w360dp-h1600dp-xhdpi")
+    fun settings_alerts_countries() = capture { SettingsAlertsCountriesPreview() }
 
     @Test
     fun settings_alerts_off() = capture { SettingsAlertsOffPreview() }

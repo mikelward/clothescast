@@ -1358,12 +1358,9 @@ What is NOT overridden, by design:
     <string name="settings_alerts_notification_permission">Bez oprávnenia na upozornenia sa k tebe výstrahy pred nebezpečným počasím nedostanú. Udeľ ho, aby sa dostali.</string>
     <string name="settings_alerts_status_checked">Posledná kontrola: %1$s</string>
     <string name="settings_alerts_status_unsupported">Výstrahy pre túto polohu nie sú k dispozícii.</string>
+    <string name="settings_alerts_status_none">Pre túto polohu nie sú žiadne výstrahy. Posledná kontrola: %1$s</string>
     <string name="settings_alerts_status_failed">Výstrahy sa nepodarilo skontrolovať. Čoskoro to skúsime znova.</string>
     <string name="settings_alerts_status_waiting">Kontrola výstrah…</string>
-    <string name="today_alerts_promo_title">Dostávaj meteorologické výstrahy</string>
-    <string name="today_alerts_promo_body">Oficiálne výstrahy pre miesto, kde si, a upozornenia na nebezpečné.</string>
-    <string name="today_alerts_promo_cta">Nastavenia výstrah</string>
-    <string name="today_alerts_promo_dismiss">Zavrieť</string>
     <string name="notification_channel_weather_alerts_name">Meteorologické výstrahy</string>
     <string name="notification_channel_weather_alerts_description">Výstrahy pred nebezpečným počasím pre tvoju polohu od oficiálnych meteorologických služieb.</string>
     <!-- "Oranžová výstraha pred vetrom": the level is a feminine adjective

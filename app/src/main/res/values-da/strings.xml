@@ -1364,12 +1364,9 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_alerts_notification_permission">Uden notifikationstilladelse kan varsler om farligt vejr ikke nå dig. Tillad det, så de kan.</string>
     <string name="settings_alerts_status_checked">Senest tjekket %1$s</string>
     <string name="settings_alerts_status_unsupported">Varsler er ikke tilgængelige for denne placering.</string>
+    <string name="settings_alerts_status_none">Ingen varsler for denne placering. Senest tjekket %1$s</string>
     <string name="settings_alerts_status_failed">Kunne ikke tjekke for varsler. Prøver igen snart.</string>
     <string name="settings_alerts_status_waiting">Tjekker for varsler…</string>
-    <string name="today_alerts_promo_title">Få vejrvarsler</string>
-    <string name="today_alerts_promo_body">Officielle varsler for dit område, med notifikationer om farligt vejr.</string>
-    <string name="today_alerts_promo_cta">Varselsindstillinger</string>
-    <string name="today_alerts_promo_dismiss">Afvis</string>
     <string name="notification_channel_weather_alerts_name">Vejrvarsler</string>
     <string name="notification_channel_weather_alerts_description">Varsler om farligt vejr for din placering fra officielle vejrtjenester.</string>
     <!-- "Orange varsel om vind": neuter level adjective (et varsel), as DMI phrases it. -->

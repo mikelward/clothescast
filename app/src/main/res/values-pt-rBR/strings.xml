@@ -1420,13 +1420,10 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Sem permissão de notificações, os alertas meteorológicos severos não chegam até você. Conceda para recebê-los.</string>
     <string name="settings_alerts_status_checked">Última verificação %1$s</string>
     <string name="settings_alerts_status_unsupported">Os alertas não estão disponíveis para esta localização.</string>
+    <string name="settings_alerts_status_none">Nenhum alerta para esta localização. Última verificação %1$s</string>
     <string name="settings_alerts_status_failed">Não foi possível verificar os alertas. Tentando novamente em breve.</string>
     <string name="settings_alerts_status_waiting">Verificando alertas…</string>
 
-    <string name="today_alerts_promo_title">Receba alertas meteorológicos</string>
-    <string name="today_alerts_promo_body">Alertas oficiais para onde você estiver, com notificações para os severos.</string>
-    <string name="today_alerts_promo_cta">Configurações de Alertas</string>
-    <string name="today_alerts_promo_dismiss">Dispensar</string>
 
     <string name="notification_channel_weather_alerts_name">Alertas meteorológicos</string>
     <string name="notification_channel_weather_alerts_description">Alertas meteorológicos severos para sua localização, emitidos por serviços meteorológicos oficiais.</string>

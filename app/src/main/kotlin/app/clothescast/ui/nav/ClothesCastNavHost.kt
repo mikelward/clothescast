@@ -63,7 +63,6 @@ import app.clothescast.ui.today.TodayViewModel
 import app.clothescast.work.FetchAndNotifyWorker
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -154,7 +153,6 @@ fun ClothesCastNavHost(
                 onNavigateToFormat = { nav.navigate(FormatDest) },
                 onNavigateToVoice = { nav.navigate(VoiceDest) },
                 onNavigateToForecasters = { nav.navigate(ForecastersDest) },
-                onNavigateToAlerts = { nav.navigate(AlertsDest) },
             )
         }
 
@@ -347,9 +345,6 @@ private fun todayViewModelFactory(app: ClothesCastApplication) =
         geminiKeyConfigured = app.secureKeyStore.geminiKeyConfiguredFlow,
         geminiKeyNeedsReentry = app.secureKeyStore.geminiKeyNeedsReentryFlow,
         weatherAlerts = app.weatherAlertsStore.state,
-        weatherAlertsReachableBySignIn = app.googleAccount.account.map { account ->
-            account != null && app.googleWeatherProxyConfigured
-        },
         onDismissWeatherAlert = app.weatherAlertsStore::dismiss,
     )
 

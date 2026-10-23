@@ -1329,13 +1329,10 @@ standard in Israeli digital communication.
     <string name="settings_alerts_notification_permission">ללא הרשאת התראות, אזהרות על מזג אוויר קשה לא יוכלו להגיע אליך. הענק/י אותה כדי שיגיעו.</string>
     <string name="settings_alerts_status_checked">נבדק לאחרונה %1$s</string>
     <string name="settings_alerts_status_unsupported">אזהרות אינן זמינות למיקום זה.</string>
+    <string name="settings_alerts_status_none">אין אזהרות למיקום זה. נבדק לאחרונה %1$s</string>
     <string name="settings_alerts_status_failed">לא ניתן היה לבדוק אזהרות. ננסה שוב בקרוב.</string>
     <string name="settings_alerts_status_waiting">בודק אזהרות…</string>
 
-    <string name="today_alerts_promo_title">קבלת אזהרות מזג אוויר</string>
-    <string name="today_alerts_promo_body">אזהרות רשמיות למיקום שלך, עם התראות על החמורות שבהן.</string>
-    <string name="today_alerts_promo_cta">הגדרות אזהרות</string>
-    <string name="today_alerts_promo_dismiss">סגור</string>
 
     <string name="notification_channel_weather_alerts_name">אזהרות מזג אוויר</string>
     <string name="notification_channel_weather_alerts_description">אזהרות על מזג אוויר קשה למיקום שלך משירותים מטאורולוגיים רשמיים.</string>

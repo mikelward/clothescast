@@ -1340,13 +1340,10 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_alerts_notification_permission">Tanpa kebenaran pemberitahuan, amaran cuaca buruk tidak dapat sampai kepada anda. Benarkan supaya amaran dapat sampai.</string>
     <string name="settings_alerts_status_checked">Terakhir disemak %1$s</string>
     <string name="settings_alerts_status_unsupported">Amaran tidak tersedia untuk lokasi ini.</string>
+    <string name="settings_alerts_status_none">Tiada amaran untuk lokasi ini. Terakhir disemak %1$s</string>
     <string name="settings_alerts_status_failed">Tidak dapat menyemak amaran. Akan cuba semula sebentar lagi.</string>
     <string name="settings_alerts_status_waiting">Menyemak amaran…</string>
 
-    <string name="today_alerts_promo_title">Dapatkan amaran cuaca</string>
-    <string name="today_alerts_promo_body">Amaran rasmi untuk tempat anda berada, dengan pemberitahuan untuk cuaca buruk.</string>
-    <string name="today_alerts_promo_cta">Tetapan amaran</string>
-    <string name="today_alerts_promo_dismiss">Tutup</string>
 
     <string name="notification_channel_weather_alerts_name">Amaran cuaca</string>
     <string name="notification_channel_weather_alerts_description">Amaran cuaca buruk untuk lokasi anda daripada perkhidmatan cuaca rasmi.</string>

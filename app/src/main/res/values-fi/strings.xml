@@ -1341,12 +1341,9 @@ displayed label localizes.
     <string name="settings_alerts_notification_permission">Ilman ilmoituslupaa vakavat säävaroitukset eivät tavoita sinua. Salli se, jotta ne tavoittavat sinut.</string>
     <string name="settings_alerts_status_checked">Viimeksi tarkistettu %1$s</string>
     <string name="settings_alerts_status_unsupported">Varoitukset eivät ole käytettävissä tässä sijainnissa.</string>
+    <string name="settings_alerts_status_none">Tälle sijainnille ei ole varoituksia. Viimeksi tarkistettu %1$s</string>
     <string name="settings_alerts_status_failed">Varoitusten tarkistus epäonnistui. Yritetään pian uudelleen.</string>
     <string name="settings_alerts_status_waiting">Tarkistetaan varoituksia…</string>
-    <string name="today_alerts_promo_title">Ota säävaroitukset käyttöön</string>
-    <string name="today_alerts_promo_body">Sijaintisi viralliset varoitukset ja ilmoitukset vakavista.</string>
-    <string name="today_alerts_promo_cta">Varoitukset-asetukset</string>
-    <string name="today_alerts_promo_dismiss">Sulje</string>
     <string name="notification_channel_weather_alerts_name">Säävaroitukset</string>
     <string name="notification_channel_weather_alerts_description">Virallisten sääpalvelujen vakavat säävaroitukset sijainnillesi.</string>
     <!-- "Oranssi tuulivaroitus": level adjective + hazard as compound stem, as FMI phrases it. -->

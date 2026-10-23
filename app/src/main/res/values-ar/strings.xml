@@ -1334,13 +1334,10 @@ they work correctly in both the single-band and range templates.
     <string name="settings_alerts_notification_permission">بدون إذن الإشعارات، لن تصلك تنبيهات الطقس الشديد. امنحه حتى تصلك.</string>
     <string name="settings_alerts_status_checked">آخر تحقق %1$s</string>
     <string name="settings_alerts_status_unsupported">التنبيهات غير متاحة لهذا الموقع.</string>
+    <string name="settings_alerts_status_none">لا توجد تنبيهات لهذا الموقع. آخر تحقق %1$s</string>
     <string name="settings_alerts_status_failed">تعذّر التحقق من التنبيهات. ستتم إعادة المحاولة قريبًا.</string>
     <string name="settings_alerts_status_waiting">جارٍ التحقق من التنبيهات…</string>
 
-    <string name="today_alerts_promo_title">احصل على تنبيهات الطقس</string>
-    <string name="today_alerts_promo_body">تنبيهات رسمية لمكان وجودك، مع إشعارات بالشديدة منها.</string>
-    <string name="today_alerts_promo_cta">إعدادات التنبيهات</string>
-    <string name="today_alerts_promo_dismiss">إغلاق</string>
 
     <string name="notification_channel_weather_alerts_name">تنبيهات الطقس</string>
     <string name="notification_channel_weather_alerts_description">تنبيهات الطقس الشديد لموقعك من خدمات الأرصاد الجوية الرسمية.</string>

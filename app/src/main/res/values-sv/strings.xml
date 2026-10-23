@@ -1363,12 +1363,9 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_alerts_notification_permission">Utan aviseringsbehörighet kan varningar om farligt väder inte nå dig. Tillåt det så att de kan.</string>
     <string name="settings_alerts_status_checked">Senast kontrollerad %1$s</string>
     <string name="settings_alerts_status_unsupported">Varningar är inte tillgängliga för den här platsen.</string>
+    <string name="settings_alerts_status_none">Inga varningar för den här platsen. Senast kontrollerad %1$s</string>
     <string name="settings_alerts_status_failed">Det gick inte att söka efter varningar. Försöker igen snart.</string>
     <string name="settings_alerts_status_waiting">Söker efter varningar…</string>
-    <string name="today_alerts_promo_title">Få vädervarningar</string>
-    <string name="today_alerts_promo_body">Officiella varningar där du är, med aviseringar för de allvarliga.</string>
-    <string name="today_alerts_promo_cta">Varningsinställningar</string>
-    <string name="today_alerts_promo_dismiss">Stäng</string>
     <string name="notification_channel_weather_alerts_name">Vädervarningar</string>
     <string name="notification_channel_weather_alerts_description">Varningar om farligt väder på din plats från officiella vädertjänster.</string>
     <!-- "Orange varning för vind", as SMHI phrases it. -->

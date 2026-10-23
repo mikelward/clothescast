@@ -1382,12 +1382,9 @@ is unchanged; only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Bez uprawnień do powiadomień ostrzeżenia przed niebezpieczną pogodą do Ciebie nie dotrą. Zezwól na nie, aby ostrzeżenia mogły docierać.</string>
     <string name="settings_alerts_status_checked">Ostatnie sprawdzenie: %1$s</string>
     <string name="settings_alerts_status_unsupported">Ostrzeżenia nie są dostępne dla tej lokalizacji.</string>
+    <string name="settings_alerts_status_none">Brak ostrzeżeń dla tej lokalizacji. Ostatnie sprawdzenie: %1$s</string>
     <string name="settings_alerts_status_failed">Nie udało się sprawdzić ostrzeżeń. Wkrótce spróbujemy ponownie.</string>
     <string name="settings_alerts_status_waiting">Sprawdzanie ostrzeżeń…</string>
-    <string name="today_alerts_promo_title">Otrzymuj ostrzeżenia pogodowe</string>
-    <string name="today_alerts_promo_body">Oficjalne ostrzeżenia dla miejsca, w którym jesteś, z powiadomieniami o niebezpiecznych.</string>
-    <string name="today_alerts_promo_cta">Ustawienia ostrzeżeń</string>
-    <string name="today_alerts_promo_dismiss">Odrzuć</string>
     <string name="notification_channel_weather_alerts_name">Ostrzeżenia pogodowe</string>
     <string name="notification_channel_weather_alerts_description">Ostrzeżenia przed niebezpieczną pogodą dla Twojej lokalizacji od oficjalnych służb meteorologicznych.</string>
     <!-- "Pomarańczowe ostrzeżenie przed wiatrem": the level is a neuter

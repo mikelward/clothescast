@@ -1481,13 +1481,10 @@ label localizes.
     <string name="settings_alerts_notification_permission">没有通知权限，你就收不到严重天气预警。授予权限即可接收。</string>
     <string name="settings_alerts_status_checked">上次检查：%1$s</string>
     <string name="settings_alerts_status_unsupported">此位置暂不提供预警。</string>
+    <string name="settings_alerts_status_none">此位置暂无预警。上次检查：%1$s</string>
     <string name="settings_alerts_status_failed">无法检查预警，稍后将重试。</string>
     <string name="settings_alerts_status_waiting">正在检查预警…</string>
 
-    <string name="today_alerts_promo_title">接收天气预警</string>
-    <string name="today_alerts_promo_body">显示你所在位置的官方预警，严重预警还会发送通知。</string>
-    <string name="today_alerts_promo_cta">预警设置</string>
-    <string name="today_alerts_promo_dismiss">关闭</string>
 
     <string name="notification_channel_weather_alerts_name">天气预警</string>
     <string name="notification_channel_weather_alerts_description">官方气象机构发布的、你所在位置的严重天气预警。</string>

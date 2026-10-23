@@ -1303,12 +1303,9 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_notification_permission">Bila ruhusa ya arifa, tahadhari za hali mbaya ya hewa haziwezi kukufikia. Itoe ili ziweze kukufikia.</string>
     <string name="settings_alerts_status_checked">Imekaguliwa mwisho %1$s</string>
     <string name="settings_alerts_status_unsupported">Tahadhari hazipatikani kwa mahali hapa.</string>
+    <string name="settings_alerts_status_none">Hakuna tahadhari kwa mahali hapa. Imekaguliwa mwisho %1$s</string>
     <string name="settings_alerts_status_failed">Imeshindwa kukagua tahadhari. Itajaribu tena hivi karibuni.</string>
     <string name="settings_alerts_status_waiting">Inakagua tahadhari…</string>
-    <string name="today_alerts_promo_title">Pata tahadhari za hali ya hewa</string>
-    <string name="today_alerts_promo_body">Tahadhari rasmi za mahali ulipo, pamoja na arifa kwa zile kali.</string>
-    <string name="today_alerts_promo_cta">Mipangilio ya tahadhari</string>
-    <string name="today_alerts_promo_dismiss">Funga</string>
     <string name="notification_channel_weather_alerts_name">Tahadhari za hali ya hewa</string>
     <string name="notification_channel_weather_alerts_description">Tahadhari za hali mbaya ya hewa kwa mahali pako kutoka kwa huduma rasmi za hali ya hewa.</string>
     <!-- "Tahadhari ya machungwa ya upepo mkali": levels agree with tahadhari

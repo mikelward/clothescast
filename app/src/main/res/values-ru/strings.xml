@@ -1389,12 +1389,9 @@ only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Без разрешения на уведомления предупреждения об опасной погоде до тебя не дойдут. Разреши уведомления, чтобы получать их.</string>
     <string name="settings_alerts_status_checked">Последняя проверка: %1$s</string>
     <string name="settings_alerts_status_unsupported">Для этого местоположения предупреждения недоступны.</string>
+    <string name="settings_alerts_status_none">Для этого местоположения предупреждений нет. Последняя проверка: %1$s</string>
     <string name="settings_alerts_status_failed">Не удалось проверить предупреждения. Скоро попробуем снова.</string>
     <string name="settings_alerts_status_waiting">Проверка предупреждений…</string>
-    <string name="today_alerts_promo_title">Получай предупреждения о погоде</string>
-    <string name="today_alerts_promo_body">Официальные предупреждения для места, где ты находишься, с уведомлениями об опасных.</string>
-    <string name="today_alerts_promo_cta">Настройки предупреждений</string>
-    <string name="today_alerts_promo_dismiss">Скрыть</string>
     <string name="notification_channel_weather_alerts_name">Предупреждения о погоде</string>
     <string name="notification_channel_weather_alerts_description">Предупреждения об опасной погоде для твоего местоположения от официальных метеослужб.</string>
     <!-- "Оранжевое предупреждение о ветре": the level is a neuter adjective

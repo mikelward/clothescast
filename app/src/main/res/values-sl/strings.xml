@@ -1321,12 +1321,9 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="settings_alerts_notification_permission">Brez dovoljenja za obvestila opozorila o nevarnem vremenu ne pridejo do tebe. Dovoli jih, da bodo prišla.</string>
     <string name="settings_alerts_status_checked">Zadnje preverjanje: %1$s</string>
     <string name="settings_alerts_status_unsupported">Opozorila za to lokacijo niso na voljo.</string>
+    <string name="settings_alerts_status_none">Za to lokacijo ni opozoril. Zadnje preverjanje: %1$s</string>
     <string name="settings_alerts_status_failed">Opozoril ni bilo mogoče preveriti. Kmalu bomo poskusili znova.</string>
     <string name="settings_alerts_status_waiting">Preverjanje opozoril…</string>
-    <string name="today_alerts_promo_title">Prejemaj vremenska opozorila</string>
-    <string name="today_alerts_promo_body">Uradna opozorila za kraj, kjer si, z obvestili za nevarna.</string>
-    <string name="today_alerts_promo_cta">Nastavitve opozoril</string>
-    <string name="today_alerts_promo_dismiss">Zapri</string>
     <string name="notification_channel_weather_alerts_name">Vremenska opozorila</string>
     <string name="notification_channel_weather_alerts_description">Opozorila o nevarnem vremenu za tvojo lokacijo od uradnih vremenskih služb.</string>
     <!-- "Oranžno opozorilo za veter": the level is a neuter adjective

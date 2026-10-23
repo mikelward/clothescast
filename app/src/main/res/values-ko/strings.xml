@@ -1486,13 +1486,10 @@ displayed label localizes.
     <string name="settings_alerts_notification_permission">알림 권한이 없으면 위험기상 특보를 받을 수 없어요. 허용하면 받을 수 있어요.</string>
     <string name="settings_alerts_status_checked">마지막 확인: %1$s</string>
     <string name="settings_alerts_status_unsupported">이 위치에서는 특보를 이용할 수 없어요.</string>
+    <string name="settings_alerts_status_none">이 위치에 발효 중인 특보가 없어요. 마지막 확인: %1$s</string>
     <string name="settings_alerts_status_failed">특보를 확인하지 못했어요. 곧 다시 시도할게요.</string>
     <string name="settings_alerts_status_waiting">특보 확인 중…</string>
 
-    <string name="today_alerts_promo_title">기상특보 받기</string>
-    <string name="today_alerts_promo_body">현재 위치의 공식 특보를 보여 드리고, 위험한 특보는 알림으로 알려 드려요.</string>
-    <string name="today_alerts_promo_cta">특보 설정</string>
-    <string name="today_alerts_promo_dismiss">닫기</string>
 
     <string name="notification_channel_weather_alerts_name">기상특보</string>
     <string name="notification_channel_weather_alerts_description">공식 기상 기관에서 발표한 현재 위치의 위험기상 특보를 알려 드립니다.</string>

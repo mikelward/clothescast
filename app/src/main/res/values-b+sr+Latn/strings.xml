@@ -1324,12 +1324,9 @@ default English (matching values-pl / values-uk).
     <string name="settings_alerts_notification_permission">Bez dozvole za obaveštenja upozorenja na opasno vreme ne mogu da stignu do tebe. Dozvoli ih da bi upozorenja stizala.</string>
     <string name="settings_alerts_status_checked">Poslednja provera: %1$s</string>
     <string name="settings_alerts_status_unsupported">Upozorenja nisu dostupna za ovu lokaciju.</string>
+    <string name="settings_alerts_status_none">Nema upozorenja za ovu lokaciju. Poslednja provera: %1$s</string>
     <string name="settings_alerts_status_failed">Provera upozorenja nije uspela. Uskoro ćemo pokušati ponovo.</string>
     <string name="settings_alerts_status_waiting">Provera upozorenja…</string>
-    <string name="today_alerts_promo_title">Dobijaj vremenska upozorenja</string>
-    <string name="today_alerts_promo_body">Zvanična upozorenja za mesto gde se nalaziš, uz obaveštenja za opasna.</string>
-    <string name="today_alerts_promo_cta">Podešavanja upozorenja</string>
-    <string name="today_alerts_promo_dismiss">Odbaci</string>
     <string name="notification_channel_weather_alerts_name">Vremenska upozorenja</string>
     <string name="notification_channel_weather_alerts_description">Upozorenja na opasno vreme za tvoju lokaciju od zvaničnih meteoroloških službi.</string>
     <!-- "Narandžasto upozorenje na vetar": the level is a neuter adjective

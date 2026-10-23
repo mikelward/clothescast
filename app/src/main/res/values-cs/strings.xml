@@ -1344,12 +1344,9 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="settings_alerts_notification_permission">Bez oprávnění k oznámením se k tobě výstrahy před nebezpečným počasím nedostanou. Povol ho, aby se dostaly.</string>
     <string name="settings_alerts_status_checked">Poslední kontrola: %1$s</string>
     <string name="settings_alerts_status_unsupported">Výstrahy pro tuto polohu nejsou k dispozici.</string>
+    <string name="settings_alerts_status_none">Pro tuto polohu nejsou žádné výstrahy. Poslední kontrola: %1$s</string>
     <string name="settings_alerts_status_failed">Výstrahy se nepodařilo zkontrolovat. Brzy to zkusíme znovu.</string>
     <string name="settings_alerts_status_waiting">Kontrola výstrah…</string>
-    <string name="today_alerts_promo_title">Dostávej meteorologické výstrahy</string>
-    <string name="today_alerts_promo_body">Oficiální výstrahy pro místo, kde jsi, a oznámení o nebezpečných.</string>
-    <string name="today_alerts_promo_cta">Nastavení výstrah</string>
-    <string name="today_alerts_promo_dismiss">Zavřít</string>
     <string name="notification_channel_weather_alerts_name">Meteorologické výstrahy</string>
     <string name="notification_channel_weather_alerts_description">Výstrahy před nebezpečným počasím pro tvou polohu od oficiálních meteorologických služeb.</string>
     <!-- "Oranžová výstraha před větrem": the level is a feminine adjective

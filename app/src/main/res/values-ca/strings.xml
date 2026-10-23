@@ -1275,13 +1275,10 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="settings_alerts_notification_permission">Sense permís de notificació, els avisos meteorològics importants no et poden arribar. Concedeix-lo per rebre\'ls.</string>
     <string name="settings_alerts_status_checked">Última comprovació %1$s</string>
     <string name="settings_alerts_status_unsupported">Els avisos no estan disponibles per a aquesta ubicació.</string>
+    <string name="settings_alerts_status_none">No hi ha avisos per a aquesta ubicació. Última comprovació %1$s</string>
     <string name="settings_alerts_status_failed">No s\'han pogut comprovar els avisos. Es tornarà a provar aviat.</string>
     <string name="settings_alerts_status_waiting">Comprovant els avisos…</string>
 
-    <string name="today_alerts_promo_title">Rep avisos meteorològics</string>
-    <string name="today_alerts_promo_body">Avisos oficials allà on siguis, amb notificacions per als importants.</string>
-    <string name="today_alerts_promo_cta">Configuració d\'Avisos</string>
-    <string name="today_alerts_promo_dismiss">Descarta</string>
 
     <string name="notification_channel_weather_alerts_name">Avisos meteorològics</string>
     <string name="notification_channel_weather_alerts_description">Avisos meteorològics importants per a la teva ubicació, emesos pels serveis meteorològics oficials.</string>

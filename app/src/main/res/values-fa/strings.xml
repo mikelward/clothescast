@@ -1322,13 +1322,10 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_alerts_notification_permission">بدون مجوز اعلان، هشدارهای هوای نامساعد به شما نمی‌رسند. آن را اعطا کنید تا برسند.</string>
     <string name="settings_alerts_status_checked">آخرین بررسی %1$s</string>
     <string name="settings_alerts_status_unsupported">هشدارها برای این موقعیت در دسترس نیستند.</string>
+    <string name="settings_alerts_status_none">هیچ هشداری برای این موقعیت وجود ندارد. آخرین بررسی %1$s</string>
     <string name="settings_alerts_status_failed">بررسی هشدارها ممکن نشد. به‌زودی دوباره تلاش می‌شود.</string>
     <string name="settings_alerts_status_waiting">در حال بررسی هشدارها…</string>
 
-    <string name="today_alerts_promo_title">دریافت هشدارهای هواشناسی</string>
-    <string name="today_alerts_promo_body">هشدارهای رسمی برای جایی که هستید، با اعلان برای موارد شدید.</string>
-    <string name="today_alerts_promo_cta">تنظیمات هشدار</string>
-    <string name="today_alerts_promo_dismiss">رد کردن</string>
 
     <string name="notification_channel_weather_alerts_name">هشدارهای هواشناسی</string>
     <string name="notification_channel_weather_alerts_description">هشدارهای هوای نامساعد برای موقعیت شما از سازمان‌های رسمی هواشناسی.</string>

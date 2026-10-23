@@ -1276,13 +1276,10 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_alerts_notification_permission">Bez paziņojumu atļaujas brīdinājumi par bīstamiem laikapstākļiem tevi nesasniegs. Piešķir to, lai tie tevi sasniegtu.</string>
     <string name="settings_alerts_status_checked">Pēdējā pārbaude %1$s</string>
     <string name="settings_alerts_status_unsupported">Brīdinājumi šai atrašanās vietai nav pieejami.</string>
+    <string name="settings_alerts_status_none">Šai atrašanās vietai brīdinājumu nav. Pēdējā pārbaude %1$s</string>
     <string name="settings_alerts_status_failed">Neizdevās pārbaudīt brīdinājumus. Drīz mēģināsim vēlreiz.</string>
     <string name="settings_alerts_status_waiting">Pārbauda brīdinājumus…</string>
 
-    <string name="today_alerts_promo_title">Saņem laikapstākļu brīdinājumus</string>
-    <string name="today_alerts_promo_body">Oficiālie brīdinājumi tur, kur esi, ar paziņojumiem par bīstamajiem.</string>
-    <string name="today_alerts_promo_cta">Brīdinājumu iestatījumi</string>
-    <string name="today_alerts_promo_dismiss">Aizvērt</string>
 
     <string name="notification_channel_weather_alerts_name">Laikapstākļu brīdinājumi</string>
     <string name="notification_channel_weather_alerts_description">Oficiālo meteoroloģisko dienestu brīdinājumi par bīstamiem laikapstākļiem tavā atrašanās vietā.</string>

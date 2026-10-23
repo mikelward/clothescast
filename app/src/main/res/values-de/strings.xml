@@ -1489,12 +1489,9 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_notification_permission">Ohne Benachrichtigungserlaubnis erreichen dich Unwetterwarnungen nicht. Erlaube sie, damit Warnungen ankommen.</string>
     <string name="settings_alerts_status_checked">Zuletzt geprüft %1$s</string>
     <string name="settings_alerts_status_unsupported">Warnungen sind für diesen Standort nicht verfügbar.</string>
+    <string name="settings_alerts_status_none">Keine Warnungen für diesen Standort. Zuletzt geprüft %1$s</string>
     <string name="settings_alerts_status_failed">Warnungen konnten nicht geprüft werden. Wir versuchen es bald erneut.</string>
     <string name="settings_alerts_status_waiting">Suche nach Warnungen…</string>
-    <string name="today_alerts_promo_title">Wetterwarnungen erhalten</string>
-    <string name="today_alerts_promo_body">Offizielle Warnungen für deinen Standort, mit Benachrichtigung bei Unwettern.</string>
-    <string name="today_alerts_promo_cta">Warnungseinstellungen</string>
-    <string name="today_alerts_promo_dismiss">Schließen</string>
     <string name="notification_channel_weather_alerts_name">Wetterwarnungen</string>
     <string name="notification_channel_weather_alerts_description">Unwetterwarnungen offizieller Wetterdienste für deinen Standort.</string>
     <!-- "Orange Windwarnung": level adjective (feminine) + hazard as compound stem. -->

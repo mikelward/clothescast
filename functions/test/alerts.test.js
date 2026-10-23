@@ -229,6 +229,35 @@ test("each host's feeds are read side by side with other hosts'", async () => {
   assert.equal(busyDoneWhenOtherStarted, 0);
 });
 
+test("a source still fetching at the deadline keeps its last alerts, and the rest publish", async () => {
+  const store = fakeStore();
+  await run(store, { [SOURCE.url]: FEED, [CAP_URL]: ALERT });
+  const other = { ...SOURCE, id: "other", url: "https://other.example.org/feed" };
+  let stop;
+  const fetchDeadline = new Promise((resolve) => { stop = resolve; });
+  // The first source's feed hangs until its request is aborted; the deadline
+  // passes once the other source has fetched its alert.
+  const fetch = (url, init) => {
+    if (init.signal.aborted) return Promise.reject(init.signal.reason);
+    if (url === other.url) return Promise.resolve(new Response(FEED, { status: 200 }));
+    if (url === CAP_URL) {
+      stop();
+      return Promise.resolve(new Response(ALERT, { status: 200 }));
+    }
+    return new Promise((_, reject) => init.signal.addEventListener("abort", () => reject(init.signal.reason)));
+  };
+  const summary = await ingest({ sources: [SOURCE, other], store, fetch, now: () => minutes(5), log: quiet, fetchDeadline });
+
+  assert.equal(summary.sourceErrors, 1);
+  const index = store.files.get(INDEX_PATH);
+  assert.equal(index.generatedAt, minutes(5).toISOString());
+  const [late, onTime] = index.sources;
+  assert.equal(late.error, "run out of time");
+  assert.equal(late.lastSuccessAt, NOW.toISOString());
+  assert.equal(onTime.error, null);
+  assert.equal(summary.alerts, 2);
+});
+
 test("an unchanged feed rewrites only the index and refetches no documents", async () => {
   const store = fakeStore();
   await run(store, { [SOURCE.url]: FEED, [CAP_URL]: ALERT });

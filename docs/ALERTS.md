@@ -820,7 +820,9 @@ Only public data goes in the bucket, the run's own state
 (`ingest-state/v1.json`: what each feed listed, so unchanged documents
 aren't fetched again, and when each tile file was last named) included. A feed that fails keeps its last alerts
 until they expire, and the index says so; so does a document that won't
-load, which is retried next run. The index is written with a generation
+load, which is retried next run. Fetching stops 180 seconds into a run:
+a source still fetching then fails that run the same way, so one slow host
+can't hold back the others' updates. The index is written with a generation
 precondition: a run that overlaps a newer one is refused before it
 publishes or deletes anything, and the newer view stands.
 

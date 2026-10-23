@@ -72,6 +72,13 @@ export const USER_AGENT = "ClothesCast alerts (+https://github.com/mikelward/clo
 
 const FETCH_TIMEOUT_MS = 20_000;
 /**
+ * How long a run fetches before publishing what it has: inside the function's
+ * 240-second timeout, with room to tile and write. A source still fetching
+ * then has its requests aborted and fails this run, keeping its last alerts,
+ * so one slow host can't stop every source's update.
+ */
+export const RUN_FETCH_BUDGET_MS = 180_000;
+/**
  * Feeds read at once from each host. Hosts run side by side, so NWS and DWD
  * never wait behind MeteoAlarm's 32 country feeds, and MeteoAlarm still sees
  * no more feeds at once than before.
@@ -179,6 +186,8 @@ export interface IngestDeps {
   fetch: typeof fetch;
   now: () => Date;
   log: Logger;
+  /** Settles when fetching must stop; by default after [RUN_FETCH_BUDGET_MS]. */
+  fetchDeadline?: Promise<void>;
 }
 
 export interface IngestSummary {
@@ -225,6 +234,7 @@ async function pool<T, R>(items: T[], limit: number, work: (item: T) => Promise<
 function describe(err: unknown): string {
   if (!(err instanceof Error)) return String(err);
   if (err.name === "TimeoutError") return "timeout";
+  if (err.name === "AbortError") return "run out of time";
   // fetch() reports network failures as "fetch failed" with the reason in `cause`.
   const code = ((err as { cause?: { code?: unknown } }).cause)?.code;
   return typeof code === "string" ? `${err.message}: ${code}` : err.message;
@@ -582,7 +592,26 @@ function sha256(body: string): string {
 }
 
 /** Runs the ingester once and publishes what changed. */
-export async function ingest(deps: IngestDeps): Promise<IngestSummary> {
+export async function ingest(runDeps: IngestDeps): Promise<IngestSummary> {
+  const outOfTime = new AbortController();
+  let timer: NodeJS.Timeout | undefined;
+  const deadline = runDeps.fetchDeadline ??
+    new Promise<void>((resolve) => { timer = setTimeout(resolve, RUN_FETCH_BUDGET_MS); });
+  void deadline.then(() => outOfTime.abort());
+  try {
+    return await ingestWithin({
+      ...runDeps,
+      fetch: (url, init) => runDeps.fetch(url, {
+        ...init,
+        signal: init?.signal ? AbortSignal.any([init.signal, outOfTime.signal]) : outOfTime.signal,
+      }),
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function ingestWithin(deps: IngestDeps): Promise<IngestSummary> {
   const now = deps.now();
   const { state: saved, generation } = await deps.store.readState();
   const previous = saved?.v === FORMAT_VERSION ? saved : null;

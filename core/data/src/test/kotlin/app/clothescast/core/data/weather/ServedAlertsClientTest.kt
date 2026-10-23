@@ -30,6 +30,8 @@ class ServedAlertsClientTest {
         generatedAt: String = "2026-10-23T11:58:00Z",
         tiles: String = """{"55/-5": "abc123"}""",
         error: String? = null,
+        lastSuccessAt: String? = "2026-10-23T11:58:00Z",
+        servingLastSuccess: Boolean = true,
         countries: String = """["GB"]""",
         disclaimer: String = "https://meteoalarm.example/terms",
     ) = """
@@ -37,7 +39,8 @@ class ServedAlertsClientTest {
          "sources": [{"id": "meteoalarm-gb", "countries": $countries,
                       "attribution": {"name": "Met Office via MeteoAlarm", "url": "https://meteoalarm.org"},
                       "disclaimer": {"name": "MeteoAlarm", "url": "$disclaimer", "text": "Delays are possible."},
-                      "lastSuccessAt": "2026-10-23T11:58:00Z", "error": ${error?.let { "\"$it\"" } ?: "null"}}],
+                      "lastSuccessAt": ${lastSuccessAt?.let { "\"$it\"" } ?: "null"}, "error": ${error?.let { "\"$it\"" } ?: "null"},
+                      "servingLastSuccess": $servingLastSuccess}],
          "tiles": $tiles}
     """.trimIndent()
 
@@ -162,11 +165,30 @@ class ServedAlertsClientTest {
     }
 
     @Test
-    fun `an incomplete check or a stale index is unknown, not quiet`() = runTest {
-        client(mapOf("v1/index.json" to index(tiles = "{}", error = "1 of 3 documents failed")))
+    fun `a check incomplete for over 30 minutes, or a stale index, is unknown, not quiet`() = runTest {
+        val failing = "1 of 3 documents failed"
+        client(mapOf("v1/index.json" to index(tiles = "{}", error = failing, lastSuccessAt = "2026-10-23T11:29:59Z")))
+            .lookup(place, "en") shouldBe AlertsLookup.Failed(null)
+        client(mapOf("v1/index.json" to index(tiles = "{}", error = failing, lastSuccessAt = null)))
+            .lookup(place, "en") shouldBe AlertsLookup.Failed(null)
+        // Recent, but documents failed: an alert may be missing, so it's unknown.
+        client(mapOf("v1/index.json" to index(tiles = "{}", error = failing, servingLastSuccess = false)))
             .lookup(place, "en") shouldBe AlertsLookup.Failed(null)
         client(mapOf("v1/index.json" to index(tiles = "{}", generatedAt = "2026-10-23T11:00:00Z")))
             .lookup(place, "en") shouldBe AlertsLookup.Failed(null)
+    }
+
+    @Test
+    fun `a source whose feed has failed for under 30 minutes still shows its last alerts`() = runTest {
+        val found = client(
+            mapOf(
+                "v1/index.json" to index(error = "HTTP 503", lastSuccessAt = "2026-10-23T11:30:00Z"),
+                "v1/tiles/55/-5/abc123.json" to tile,
+            ),
+        ).lookup(place, "en")
+        found.shouldBeInstanceOf<AlertsLookup.Found>().alerts.single().issuerTitle shouldBe "Amber wind warning"
+        client(mapOf("v1/index.json" to index(tiles = "{}", error = "HTTP 503", lastSuccessAt = "2026-10-23T11:45:00Z")))
+            .lookup(place, "en") shouldBe AlertsLookup.Found(emptyList())
     }
 
     @Test

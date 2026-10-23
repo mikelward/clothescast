@@ -37,7 +37,9 @@ import kotlin.math.floor
  *
  * The answer is trusted only where a source covers the place's country. A
  * covering source whose last check was incomplete, or an index that has
- * gone stale, is [AlertsLookup.Failed], never "no alerts". A place no source
+ * gone stale, is [AlertsLookup.Failed], never "no alerts" — except a source
+ * whose feed alone has failed for under [MAX_SOURCE_STALENESS] while the
+ * ingester still serves its last complete check, whose alerts are shown. A place no source
  * covers is [AlertsLookup.Unsupported], unless an alert in its tile reaches
  * it anyway (an area over a border), which is shown.
  */
@@ -65,8 +67,15 @@ class ServedAlertsClient(
             }
             val country = location.countryCode?.uppercase(Locale.ROOT)
             val covering = index.sources.filter { country != null && country in it.countries }
-            covering.firstOrNull { it.error != null }?.let {
-                logger.log("Served alerts: ${it.id}'s last check was incomplete (${it.error})")
+            val staleBefore = clock.instant().minus(MAX_SOURCE_STALENESS)
+            covering.firstOrNull { source ->
+                // Only a source still serving its last complete check's alerts
+                // (its feed failing, not its documents) keeps them for a while:
+                // after an incomplete check, an alert may be missing.
+                source.error != null &&
+                    (!source.servingLastSuccess || parseInstant(source.lastSuccessAt)?.isBefore(staleBefore) != false)
+            }?.let {
+                logger.log("Served alerts: ${it.id}'s checks have been incomplete since ${it.lastSuccessAt} (${it.error})")
                 return AlertsLookup.Failed(null)
             }
             val key = tileKey(location.latitude, location.longitude)
@@ -171,6 +180,13 @@ class ServedAlertsClient(
          */
         val MAX_INDEX_AGE: Duration = Duration.ofMinutes(30)
 
+        /**
+         * How long a covering source's last complete check still stands once
+         * its checks start failing (six missed 5-minute runs, as for
+         * [MAX_INDEX_AGE]): one failed fetch shouldn't blank the card.
+         */
+        val MAX_SOURCE_STALENESS: Duration = Duration.ofMinutes(30)
+
         /** The 1° tile holding a point, as the ingester names it: its south-west corner ("51/-1"). */
         fun tileKey(latitude: Double, longitude: Double): String {
             val lon = ((longitude + 180.0) % 360.0 + 360.0) % 360.0 - 180.0
@@ -208,7 +224,10 @@ private data class SourceDto(
     val countries: List<String> = emptyList(),
     val attribution: AttributionDto? = null,
     val disclaimer: DisclaimerDto? = null,
+    val lastSuccessAt: String? = null,
     val error: String? = null,
+    /** Absent from an index written before it existed: read as false, so no grace. */
+    val servingLastSuccess: Boolean = false,
 )
 
 @Serializable

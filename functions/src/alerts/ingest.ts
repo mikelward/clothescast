@@ -96,6 +96,14 @@ interface SourceState {
   checkedAt: string;
   lastSuccessAt: string | null;
   error: string | null;
+  /**
+   * Whether [entries] are still exactly the alerts of the check at
+   * [lastSuccessAt]: true after a complete check, and kept through feed
+   * failures that serve the last run's entries unchanged; false once a
+   * check was incomplete document by document. Absent in state saved
+   * before it existed.
+   */
+  servingLastSuccess?: boolean;
   entries: Record<string, CachedEntry>;
 }
 
@@ -123,6 +131,12 @@ export interface IndexSource {
    * documents did), or null when it was complete.
    */
   error: string | null;
+  /**
+   * Whether the source's served alerts are still exactly those of the check
+   * at [lastSuccessAt], as when only the feed has failed since: the app can
+   * then show them for a while instead of reading the source as unknown.
+   */
+  servingLastSuccess: boolean;
 }
 
 export interface IndexFile {
@@ -365,6 +379,8 @@ function feedFailed(deps: IngestDeps, source: AlertSource, previous: SourceState
     checkedAt: now.toISOString(),
     lastSuccessAt: previous?.lastSuccessAt ?? null,
     error: describe(err),
+    // The last run's entries, unchanged: still the last complete check's if they were.
+    servingLastSuccess: previous ? (previous.servingLastSuccess ?? previous.error === null) : false,
     entries: previous?.entries ?? {},
   };
 }
@@ -425,10 +441,11 @@ async function refreshCapSource(
       checkedAt,
       lastSuccessAt: previous?.lastSuccessAt ?? null,
       error: errors.filter((e) => e !== null).join("; "),
+      servingLastSuccess: false,
       entries,
     };
   }
-  return { checkedAt, lastSuccessAt: checkedAt, error: null, entries };
+  return { checkedAt, lastSuccessAt: checkedAt, error: null, servingLastSuccess: true, entries };
 }
 
 /**
@@ -482,10 +499,11 @@ async function refreshZipSource(
       checkedAt,
       lastSuccessAt: previous?.lastSuccessAt ?? null,
       error: `${documentErrors} of ${files.length} documents failed`,
+      servingLastSuccess: false,
       entries,
     };
   }
-  return { checkedAt, lastSuccessAt: checkedAt, error: null, entries };
+  return { checkedAt, lastSuccessAt: checkedAt, error: null, servingLastSuccess: true, entries };
 }
 
 /**
@@ -549,10 +567,11 @@ async function refreshNwsSource(
       checkedAt,
       lastSuccessAt: previous?.lastSuccessAt ?? null,
       error: `${zoneErrors} of ${needed.length} zone shapes failed`,
+      servingLastSuccess: false,
       entries,
     };
   }
-  return { checkedAt, lastSuccessAt: checkedAt, error: null, entries };
+  return { checkedAt, lastSuccessAt: checkedAt, error: null, servingLastSuccess: true, entries };
 }
 
 /**
@@ -689,6 +708,7 @@ async function ingestWithin(deps: IngestDeps): Promise<IngestSummary> {
       disclaimer: source.disclaimer,
       lastSuccessAt: sourceStates[i].lastSuccessAt,
       error: sourceStates[i].error,
+      servingLastSuccess: sourceStates[i].servingLastSuccess ?? false,
     })),
     tiles,
   };

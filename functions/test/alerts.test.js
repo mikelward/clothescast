@@ -198,6 +198,7 @@ test("a run publishes each tile, then an index naming them", async () => {
     disclaimer: SOURCE.disclaimer,
     lastSuccessAt: NOW.toISOString(),
     error: null,
+    servingLastSuccess: true,
   }]);
   const tile = store.files.get(tilePath("55/-5", index.tiles["55/-5"]));
   assert.equal(tile.tile, "55/-5");
@@ -296,7 +297,22 @@ test("a failing feed keeps its last alerts and says so in the index", async () =
   const index = store.files.get(INDEX_PATH);
   assert.equal(index.sources[0].error, "HTTP 404");
   assert.equal(index.sources[0].lastSuccessAt, NOW.toISOString());
+  assert.equal(index.sources[0].servingLastSuccess, true);
   assert.equal(Object.keys(index.tiles).length, TILES.length);
+});
+
+test("after an incomplete check, a failing feed no longer serves the last complete check", async () => {
+  // Complete, then a document fails (its alert may be missing), then the feed fails:
+  // what's kept is the incomplete set, so it isn't the last complete check's.
+  const store = fakeStore();
+  await run(store, { [SOURCE.url]: FEED, [CAP_URL]: ALERT });
+  const replaced = FEED.replaceAll("amber-wind", "amber-wind-2").replaceAll("34b39a5a", "5ca1ab1e");
+  await run(store, { [SOURCE.url]: replaced }, minutes(5));
+  assert.equal(store.files.get(INDEX_PATH).sources[0].servingLastSuccess, false);
+  await run(store, {}, minutes(10));
+  const [source] = store.files.get(INDEX_PATH).sources;
+  assert.equal(source.error, "HTTP 404");
+  assert.equal(source.servingLastSuccess, false);
 });
 
 test("a document that won't load marks the check incomplete and is retried", async () => {
@@ -307,6 +323,7 @@ test("a document that won't load marks the check incomplete and is retried", asy
   const [source] = store.files.get(INDEX_PATH).sources;
   assert.equal(source.error, "1 of 1 documents failed");
   assert.equal(source.lastSuccessAt, null);
+  assert.equal(source.servingLastSuccess, false);
 
   const fetch = fakeFetch({ [SOURCE.url]: FEED, [CAP_URL]: ALERT });
   const second = await ingest({ sources: [SOURCE], store, fetch, now: () => minutes(5), log: quiet });

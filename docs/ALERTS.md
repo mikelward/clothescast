@@ -721,11 +721,16 @@ and every path carries the format version:
   the source's terms require its wording shown), `attribution`
   (name and link to show
   beside its alerts), `lastSuccessAt` (when the feed and every document it
-  listed last loaded) and `error` (why the latest check was incomplete, or
-  null), and `tiles`, mapping each tile that has alerts to its file's hash.
+  listed last loaded), `error` (why the latest check was incomplete, or
+  null) and `servingLastSuccess` (whether its alerts are still exactly the
+  check at `lastSuccessAt`'s, as when only the feed has failed since), and `tiles`, mapping each tile that has alerts to its file's hash.
   A tile not listed has none. The app trusts the server for a country only
   when a source lists it, and treats a source with an `error`, or an index
-  whose `generatedAt` is old, as unknown, not quiet.
+  whose `generatedAt` is old, as unknown, not quiet. The exception is a
+  source whose feed alone is failing (`servingLastSuccess`) and whose
+  `lastSuccessAt` is under 30 minutes old: its last alerts, which the
+  ingester keeps serving, are shown. After an incomplete document check an
+  alert may be missing, so that one reads as unknown at once.
 - **`v1/tiles/<lat>/<lon>/<hash>.json`**, keyed by the tile's south-west
   corner (`51/-1` holds 51–52°N, 1°W–0°) and named by the first 16 hex
   digits of its contents' SHA-256, so a file never changes once written

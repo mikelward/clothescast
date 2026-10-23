@@ -1365,7 +1365,7 @@ Not overridden by design:
     <string name="settings_alerts_status_unsupported">इस स्थान के लिए चेतावनियाँ उपलब्ध नहीं हैं।</string>
     <string name="settings_alerts_status_none">इस स्थान के लिए कोई चेतावनी नहीं है। पिछली जांच %1$s</string>
     <string name="settings_alerts_status_failed">चेतावनियों की जांच नहीं हो सकी। जल्द ही फिर कोशिश होगी।</string>
-    <string name="settings_alerts_countries_title">मौजूदा देश</string>
+    <string name="settings_alerts_countries_title">मौजूदा देश और क्षेत्र</string>
     <string name="settings_alerts_countries_as_of">%1$s %2$s तक, चेतावनी प्रदाताओं ने इन देशों के लिए हमारे अनुरोधों का जवाब दिया:</string>
     <string name="settings_alerts_countries_loading">लोड हो रहा है…</string>
     <string name="settings_alerts_countries_failed">सूची लोड नहीं हो सकी।</string>

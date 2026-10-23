@@ -1328,7 +1328,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="settings_alerts_status_unsupported">A figyelmeztetések ezen a helyszínen nem érhetők el.</string>
     <string name="settings_alerts_status_none">Ezen a helyszínen nincs figyelmeztetés. Utoljára ellenőrizve: %1$s</string>
     <string name="settings_alerts_status_failed">Nem sikerült ellenőrizni a figyelmeztetéseket. Hamarosan újrapróbáljuk.</string>
-    <string name="settings_alerts_countries_title">Jelenlegi országok</string>
+    <string name="settings_alerts_countries_title">Jelenlegi országok és régiók</string>
     <string name="settings_alerts_countries_as_of">%1$s %2$s állapot szerint a figyelmeztetés-szolgáltatók válaszoltak a kéréseinkre ezekről az országokról:</string>
     <string name="settings_alerts_countries_loading">Betöltés…</string>
     <string name="settings_alerts_countries_failed">Nem sikerült betölteni a listát.</string>

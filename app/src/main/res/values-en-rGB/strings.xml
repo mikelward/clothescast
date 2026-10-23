@@ -51,7 +51,7 @@ full re-translation.
     <string name="settings_alerts_status_unsupported">Warnings aren\'t available for this location.</string>
     <string name="settings_alerts_status_none">No warnings for this location. Last checked %1$s</string>
     <string name="settings_alerts_status_failed">Couldn\'t check for warnings. Trying again soon.</string>
-    <string name="settings_alerts_countries_title">Current countries</string>
+    <string name="settings_alerts_countries_title">Current countries and regions</string>
     <string name="settings_alerts_countries_as_of">As of %1$s %2$s, warning providers responded for:</string>
     <string name="settings_alerts_countries_loading">Loading…</string>
     <string name="settings_alerts_countries_failed">Couldn\'t load the list.</string>

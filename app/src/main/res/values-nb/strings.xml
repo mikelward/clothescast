@@ -1364,7 +1364,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_alerts_status_unsupported">Farevarsler er ikke tilgjengelige for dette stedet.</string>
     <string name="settings_alerts_status_none">Ingen farevarsler for dette stedet. Sist sjekket %1$s</string>
     <string name="settings_alerts_status_failed">Kunne ikke se etter farevarsler. Prøver igjen snart.</string>
-    <string name="settings_alerts_countries_title">Nåværende land</string>
+    <string name="settings_alerts_countries_title">Nåværende land og regioner</string>
     <string name="settings_alerts_countries_as_of">Per %1$s %2$s svarte leverandørene av farevarsler på forespørslene våre for:</string>
     <string name="settings_alerts_countries_loading">Laster inn…</string>
     <string name="settings_alerts_countries_failed">Kunne ikke laste inn listen.</string>

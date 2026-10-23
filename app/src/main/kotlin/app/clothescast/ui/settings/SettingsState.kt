@@ -274,7 +274,7 @@ data class SettingsState(
     val weatherAlertsNotifyLevel: AlertNotifyLevel = AlertNotifyLevel.DEFAULT,
     /** The last alerts check, for the Alerts page's status line. */
     val weatherAlertsStatus: WeatherAlertsState = WeatherAlertsState(),
-    /** The Alerts page's "Current countries" list, downloaded when opened. */
+    /** The Alerts page's "Current countries and regions" list, downloaded when opened. */
     val alertsCoverage: AlertsCoverageState = AlertsCoverageState.Idle,
     /**
      * True while a one-shot Google Weather connectivity probe is in flight.
@@ -402,7 +402,7 @@ data class SettingsState(
         }
 }
 
-/** The Alerts page's "Current countries" list: not asked for yet, on its way, in, or unavailable. */
+/** The Alerts page's "Current countries and regions" list: not asked for yet, on its way, in, or unavailable. */
 sealed interface AlertsCoverageState {
     data object Idle : AlertsCoverageState
     data object Loading : AlertsCoverageState

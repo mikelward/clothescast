@@ -1335,7 +1335,7 @@ they work correctly in both the single-band and range templates.
     <string name="settings_alerts_status_unsupported">التنبيهات غير متاحة لهذا الموقع.</string>
     <string name="settings_alerts_status_none">لا توجد تنبيهات لهذا الموقع. آخر تحقق %1$s</string>
     <string name="settings_alerts_status_failed">تعذّر التحقق من التنبيهات. ستتم إعادة المحاولة قريبًا.</string>
-    <string name="settings_alerts_countries_title">الدول الحالية</string>
+    <string name="settings_alerts_countries_title">الدول والمناطق الحالية</string>
     <string name="settings_alerts_countries_as_of">حتى %1$s %2$s، استجاب مزوّدو التنبيهات لطلباتنا بشأن:</string>
     <string name="settings_alerts_countries_loading">جارٍ التحميل…</string>
     <string name="settings_alerts_countries_failed">تعذّر تحميل القائمة.</string>

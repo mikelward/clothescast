@@ -222,7 +222,7 @@ class SettingsViewModel(
     private val weatherAlertsChanged: (Boolean) -> Unit = {},
     /**
      * Downloads which countries the alerts sources cover, for the Alerts
-     * page's "Current countries" list; null result when it can't. Null in
+     * page's "Current countries and regions" list; null result when it can't. Null in
      * pure-VM tests, where [loadAlertsCoverage] then reports a failure.
      */
     private val alertsCoverage: (suspend () -> AlertsCoverage?)? = null,

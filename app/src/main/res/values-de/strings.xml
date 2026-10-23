@@ -1490,7 +1490,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_status_unsupported">Warnungen sind für diesen Standort nicht verfügbar.</string>
     <string name="settings_alerts_status_none">Keine Warnungen für diesen Standort. Zuletzt geprüft %1$s</string>
     <string name="settings_alerts_status_failed">Warnungen konnten nicht geprüft werden. Wir versuchen es bald erneut.</string>
-    <string name="settings_alerts_countries_title">Aktuelle Länder</string>
+    <string name="settings_alerts_countries_title">Aktuelle Länder und Regionen</string>
     <string name="settings_alerts_countries_as_of">Stand %1$s %2$s haben die Warnungsanbieter unsere Anfragen für diese Länder beantwortet:</string>
     <string name="settings_alerts_countries_loading">Wird geladen…</string>
     <string name="settings_alerts_countries_failed">Die Liste konnte nicht geladen werden.</string>

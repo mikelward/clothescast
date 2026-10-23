@@ -1365,7 +1365,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="settings_alerts_status_unsupported">Varsler er ikke tilgængelige for denne placering.</string>
     <string name="settings_alerts_status_none">Ingen varsler for denne placering. Senest tjekket %1$s</string>
     <string name="settings_alerts_status_failed">Kunne ikke tjekke for varsler. Prøver igen snart.</string>
-    <string name="settings_alerts_countries_title">Nuværende lande</string>
+    <string name="settings_alerts_countries_title">Nuværende lande og regioner</string>
     <string name="settings_alerts_countries_as_of">Pr. %1$s %2$s svarede udbyderne af varsler på vores forespørgsler for:</string>
     <string name="settings_alerts_countries_loading">Indlæser…</string>
     <string name="settings_alerts_countries_failed">Kunne ikke indlæse listen.</string>

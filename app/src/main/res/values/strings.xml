@@ -2065,7 +2065,7 @@
     <string name="settings_alerts_status_unsupported">Alerts aren\'t available for this location.</string>
     <string name="settings_alerts_status_none">No alerts for this location. Last checked %1$s</string>
     <string name="settings_alerts_status_failed">Couldn\'t check for alerts. Trying again soon.</string>
-    <string name="settings_alerts_countries_title">Current countries</string>
+    <string name="settings_alerts_countries_title">Current countries and regions</string>
     <string name="settings_alerts_countries_as_of">As of %1$s %2$s, alert providers responded for:</string>
     <string name="settings_alerts_countries_loading">Loading…</string>
     <string name="settings_alerts_countries_failed">Couldn\'t load the list.</string>

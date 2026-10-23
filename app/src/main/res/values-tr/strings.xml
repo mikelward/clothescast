@@ -1335,7 +1335,7 @@ displayed label localizes.
     <string name="settings_alerts_status_unsupported">Bu konum için uyarılar kullanılamıyor.</string>
     <string name="settings_alerts_status_none">Bu konum için uyarı yok. Son kontrol %1$s</string>
     <string name="settings_alerts_status_failed">Uyarılar kontrol edilemedi. Birazdan tekrar denenecek.</string>
-    <string name="settings_alerts_countries_title">Mevcut ülkeler</string>
+    <string name="settings_alerts_countries_title">Mevcut ülkeler ve bölgeler</string>
     <string name="settings_alerts_countries_as_of">%1$s %2$s itibarıyla uyarı sağlayıcıları şu ülkeler için isteklerimizi yanıtladı:</string>
     <string name="settings_alerts_countries_loading">Yükleniyor…</string>
     <string name="settings_alerts_countries_failed">Liste yüklenemedi.</string>

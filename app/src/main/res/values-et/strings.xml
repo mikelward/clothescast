@@ -1279,7 +1279,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_alerts_status_unsupported">Hoiatused pole selle asukoha jaoks saadaval.</string>
     <string name="settings_alerts_status_none">Selle asukoha jaoks hoiatusi pole. Viimati kontrollitud %1$s</string>
     <string name="settings_alerts_status_failed">Hoiatusi ei õnnestunud kontrollida. Proovime varsti uuesti.</string>
-    <string name="settings_alerts_countries_title">Praegused riigid</string>
+    <string name="settings_alerts_countries_title">Praegused riigid ja piirkonnad</string>
     <string name="settings_alerts_countries_as_of">Seisuga %1$s %2$s vastasid hoiatuste pakkujad meie päringutele nende riikide kohta:</string>
     <string name="settings_alerts_countries_loading">Laadimine…</string>
     <string name="settings_alerts_countries_failed">Loendit ei õnnestunud laadida.</string>

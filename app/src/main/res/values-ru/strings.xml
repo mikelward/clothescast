@@ -1390,7 +1390,7 @@ only the displayed label localizes.
     <string name="settings_alerts_status_unsupported">Для этого местоположения предупреждения недоступны.</string>
     <string name="settings_alerts_status_none">Для этого местоположения предупреждений нет. Последняя проверка: %1$s</string>
     <string name="settings_alerts_status_failed">Не удалось проверить предупреждения. Скоро попробуем снова.</string>
-    <string name="settings_alerts_countries_title">Текущие страны</string>
+    <string name="settings_alerts_countries_title">Текущие страны и регионы</string>
     <string name="settings_alerts_countries_as_of">На %1$s %2$s поставщики предупреждений ответили на наши запросы для этих стран:</string>
     <string name="settings_alerts_countries_loading">Загрузка…</string>
     <string name="settings_alerts_countries_failed">Не удалось загрузить список.</string>

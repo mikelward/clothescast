@@ -1303,7 +1303,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_alerts_status_unsupported">ለዚህ ቦታ ማስጠንቀቂያዎች አይገኙም።</string>
     <string name="settings_alerts_status_none">ለዚህ ቦታ ማስጠንቀቂያዎች የሉም። በመጨረሻ የተፈተሸው %1$s</string>
     <string name="settings_alerts_status_failed">ማስጠንቀቂያዎችን መፈተሽ አልተቻለም። በቅርቡ እንደገና ይሞከራል።</string>
-    <string name="settings_alerts_countries_title">አሁን ያሉ አገሮች</string>
+    <string name="settings_alerts_countries_title">አሁን ያሉ አገሮችና ክልሎች</string>
     <string name="settings_alerts_countries_as_of">ከ%1$s %2$s ጀምሮ፣ የማስጠንቀቂያ አቅራቢዎች ለጥያቄዎቻችን ምላሽ የሰጡባቸው አገሮች፦</string>
     <string name="settings_alerts_countries_loading">በመጫን ላይ…</string>
     <string name="settings_alerts_countries_failed">ዝርዝሩን መጫን አልተቻለም።</string>

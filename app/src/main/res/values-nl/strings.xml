@@ -1383,7 +1383,7 @@ the displayed label localizes.
     <string name="settings_alerts_status_unsupported">Waarschuwingen zijn niet beschikbaar voor deze locatie.</string>
     <string name="settings_alerts_status_none">Geen waarschuwingen voor deze locatie. Laatst gecontroleerd %1$s</string>
     <string name="settings_alerts_status_failed">Controleren op waarschuwingen mislukt. We proberen het zo opnieuw.</string>
-    <string name="settings_alerts_countries_title">Huidige landen</string>
+    <string name="settings_alerts_countries_title">Huidige landen en regio\'s</string>
     <string name="settings_alerts_countries_as_of">Op %1$s %2$s hebben waarschuwingsleveranciers onze verzoeken beantwoord voor:</string>
     <string name="settings_alerts_countries_loading">Laden…</string>
     <string name="settings_alerts_countries_failed">De lijst kon niet worden geladen.</string>

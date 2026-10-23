@@ -1323,7 +1323,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="settings_alerts_status_unsupported">هشدارها برای این موقعیت در دسترس نیستند.</string>
     <string name="settings_alerts_status_none">هیچ هشداری برای این موقعیت وجود ندارد. آخرین بررسی %1$s</string>
     <string name="settings_alerts_status_failed">بررسی هشدارها ممکن نشد. به‌زودی دوباره تلاش می‌شود.</string>
-    <string name="settings_alerts_countries_title">کشورهای فعلی</string>
+    <string name="settings_alerts_countries_title">کشورها و مناطق فعلی</string>
     <string name="settings_alerts_countries_as_of">تا %1$s %2$s، ارائه‌دهندگان هشدار به درخواست‌های ما برای این کشورها پاسخ دادند:</string>
     <string name="settings_alerts_countries_loading">در حال بارگیری…</string>
     <string name="settings_alerts_countries_failed">فهرست بارگیری نشد.</string>

@@ -1463,7 +1463,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_status_unsupported">Los avisos no están disponibles para esta ubicación.</string>
     <string name="settings_alerts_status_none">No hay avisos para esta ubicación. Última comprobación %1$s</string>
     <string name="settings_alerts_status_failed">No se pudieron comprobar los avisos. Se reintentará pronto.</string>
-    <string name="settings_alerts_countries_title">Países actuales</string>
+    <string name="settings_alerts_countries_title">Países y regiones actuales</string>
     <string name="settings_alerts_countries_as_of">A %1$s %2$s, los proveedores de avisos respondieron a nuestras solicitudes para:</string>
     <string name="settings_alerts_countries_loading">Cargando…</string>
     <string name="settings_alerts_countries_failed">No se pudo cargar la lista.</string>

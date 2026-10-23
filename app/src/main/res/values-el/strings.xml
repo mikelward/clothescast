@@ -1455,7 +1455,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_alerts_status_unsupported">Οι προειδοποιήσεις δεν είναι διαθέσιμες για αυτή την τοποθεσία.</string>
     <string name="settings_alerts_status_none">Δεν υπάρχουν προειδοποιήσεις για αυτή την τοποθεσία. Τελευταίος έλεγχος %1$s</string>
     <string name="settings_alerts_status_failed">Δεν ήταν δυνατός ο έλεγχος για προειδοποιήσεις. Νέα προσπάθεια σύντομα.</string>
-    <string name="settings_alerts_countries_title">Τρέχουσες χώρες</string>
+    <string name="settings_alerts_countries_title">Τρέχουσες χώρες και περιοχές</string>
     <string name="settings_alerts_countries_as_of">Στις %1$s %2$s, οι πάροχοι προειδοποιήσεων απάντησαν στα αιτήματά μας για:</string>
     <string name="settings_alerts_countries_loading">Φόρτωση…</string>
     <string name="settings_alerts_countries_failed">Δεν ήταν δυνατή η φόρτωση της λίστας.</string>

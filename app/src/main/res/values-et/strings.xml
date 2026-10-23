@@ -1268,7 +1268,6 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="settings_page_alerts">Hoiatuste seaded</string>
     <string name="settings_weather_alerts_title">Ilmahoiatused</string>
     <string name="settings_weather_alerts_summary">Ametlikud hoiatused sinu asukoha kohta Tänasel ekraanil.</string>
-    <string name="settings_weather_alerts_sign_in">Logi Google\'iga sisse, et saada ilmahoiatusi.</string>
     <string name="settings_alerts_notify_title">Teavita mind</string>
     <string name="settings_alerts_notify_red">Ainult punased</string>
     <string name="settings_alerts_notify_orange_red">Oranžid ja punased</string>
@@ -1312,6 +1311,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="weather_alert_level_orange_description">Ohtliku ilma hoiatus</string>
     <string name="weather_alert_level_red_description">Väga ohtliku ilma hoiatus</string>
     <string name="weather_alert_until">Kuni %1$s</string>
+    <string name="weather_alert_issued">Välja antud %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Ava %1$s</string>
     <string name="weather_alert_open_source_fallback">Üksikasjad</string>

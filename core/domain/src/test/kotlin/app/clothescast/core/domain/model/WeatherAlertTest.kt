@@ -17,7 +17,7 @@ class WeatherAlertTest {
 
     @Test
     fun `contains points inside and not outside`() {
-        val area = AlertArea(listOf(square))
+        val area = AlertArea(listOf(listOf(square)))
         area.contains(GeoPoint(51.5, -1.5)) shouldBe true
         area.contains(GeoPoint(53.0, -1.0)) shouldBe false
         area.contains(GeoPoint(51.0, 1.0)) shouldBe false
@@ -26,22 +26,34 @@ class WeatherAlertTest {
     @Test
     fun `a hole excludes its inside and a second part adds its own`() {
         val second = listOf(GeoPoint(10.0, 10.0), GeoPoint(10.0, 11.0), GeoPoint(11.0, 11.0))
-        val area = AlertArea(listOf(square, hole, second))
+        val area = AlertArea(listOf(listOf(square, hole), listOf(second)))
         area.contains(GeoPoint(51.0, -1.0)) shouldBe false
         area.contains(GeoPoint(51.5, -1.5)) shouldBe true
         area.contains(GeoPoint(10.2, 10.8)) shouldBe true
     }
 
     @Test
+    fun `overlapping polygons are a union, not cancelled out`() {
+        val overlapping = listOf(
+            GeoPoint(51.0, -1.0), GeoPoint(51.0, 1.0), GeoPoint(53.0, 1.0), GeoPoint(53.0, -1.0),
+        )
+        val area = AlertArea(listOf(listOf(square), listOf(overlapping)))
+        area.contains(GeoPoint(51.5, -0.5)) shouldBe true
+        area.contains(GeoPoint(52.5, 0.5)) shouldBe true
+        area.contains(GeoPoint(50.5, -1.5)) shouldBe true
+        AlertArea(listOf(listOf(square), listOf(square))).contains(GeoPoint(51.0, -1.0)) shouldBe true
+    }
+
+    @Test
     fun `a closed ring (first point repeated) reads the same`() {
-        val area = AlertArea(listOf(square + square.first()))
+        val area = AlertArea(listOf(listOf(square + square.first())))
         area.contains(GeoPoint(51.0, -1.0)) shouldBe true
         area.contains(GeoPoint(49.9, -1.0)) shouldBe false
     }
 
     @Test
     fun `distance to the boundary is measured in km`() {
-        val area = AlertArea(listOf(square))
+        val area = AlertArea(listOf(listOf(square)))
         // 0.01° south of the southern edge: about 1.1 km.
         area.distanceToBoundaryKm(GeoPoint(49.99, -1.0)) shouldBe (1.112 plusOrMinus 0.01)
         // On the edge.
@@ -50,7 +62,7 @@ class WeatherAlertTest {
 
     @Test
     fun `span is the longer side of the bounding box`() {
-        val area = AlertArea(listOf(square))
+        val area = AlertArea(listOf(listOf(square)))
         // 2° of latitude ≈ 222 km; 2° of longitude at 51° ≈ 140 km.
         area.spanKm() shouldBe (222.4 plusOrMinus 0.5)
         AlertArea(emptyList()).spanKm() shouldBe 0.0

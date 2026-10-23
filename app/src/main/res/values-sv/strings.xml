@@ -1353,7 +1353,6 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="settings_page_alerts">Varningsinställningar</string>
     <string name="settings_weather_alerts_title">Vädervarningar</string>
     <string name="settings_weather_alerts_summary">Officiella varningar för din plats på skärmen Idag.</string>
-    <string name="settings_weather_alerts_sign_in">Logga in med Google för att få vädervarningar.</string>
     <string name="settings_alerts_notify_title">Avisera mig vid</string>
     <string name="settings_alerts_notify_red">Endast röda</string>
     <string name="settings_alerts_notify_orange_red">Orange och röda</string>
@@ -1397,6 +1396,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="weather_alert_level_orange_description">Varning för farligt väder</string>
     <string name="weather_alert_level_red_description">Varning för extremt väder</string>
     <string name="weather_alert_until">Till %1$s</string>
+    <string name="weather_alert_issued">Utfärdad %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Öppna %1$s</string>
     <string name="weather_alert_open_source_fallback">Detaljer</string>

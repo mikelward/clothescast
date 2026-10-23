@@ -1059,12 +1059,6 @@ class SettingsViewModel(
         }
     }
 
-    /** Signed in from the Alerts page: the check waiting on a route can run now. */
-    fun onWeatherAlertsSignedIn() {
-        onGoogleSignedIn()
-        if (_state.value.weatherAlerts) weatherAlertsChanged(true)
-    }
-
     // The shade follows on its own (WeatherAlertShade watches the setting).
     fun setWeatherAlertsNotifyLevel(level: AlertNotifyLevel) {
         viewModelScope.launch { settingsRepository.setWeatherAlertsNotifyLevel(level) }

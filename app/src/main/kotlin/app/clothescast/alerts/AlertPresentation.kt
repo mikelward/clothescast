@@ -133,8 +133,8 @@ private fun hazardWord(hazard: AlertHazard): Int = when (hazard) {
 /**
  * When the alert ends, for the one-row card and the notification: "Until
  * 9 PM" today, "Until Fri 9 PM" on a later day, in the user's 12/24-hour
- * setting. Null when the issuer gave no end time. Only the end: Google's start
- * time looks like the issue time, not when the weather arrives.
+ * setting. Null when the issuer gave no end time. Only the end, as when
+ * Google's start time looked like the issue time; the onset is real now.
  */
 internal fun alertUntil(
     context: Context,
@@ -144,14 +144,41 @@ internal fun alertUntil(
     locale: Locale,
     zone: ZoneId = ZoneId.systemDefault(),
 ): String? {
-    val end = alert.endTime?.atZone(zone) ?: return null
-    val time = timeFormat.formatHourMinute(end.toLocalTime(), locale)
-    val label = if (end.toLocalDate() == now.atZone(zone).toLocalDate()) {
+    val end = alert.endTime ?: return null
+    return context.getString(R.string.weather_alert_until, alertTimeLabel(end, now, timeFormat, locale, zone))
+}
+
+/**
+ * When the issuer sent the alert: "Issued 9:02 AM" today, "Issued Fri
+ * 9:02 AM" on another day. Null when the source doesn't say (Google's alerts).
+ */
+internal fun alertIssued(
+    context: Context,
+    alert: WeatherAlert,
+    now: Instant,
+    timeFormat: TimeFormat,
+    locale: Locale,
+    zone: ZoneId = ZoneId.systemDefault(),
+): String? {
+    val issued = alert.issuedAt ?: return null
+    return context.getString(R.string.weather_alert_issued, alertTimeLabel(issued, now, timeFormat, locale, zone))
+}
+
+/** "9 PM" on [now]'s day, "Fri 9 PM" on any other, in the user's 12/24-hour setting. */
+private fun alertTimeLabel(
+    at: Instant,
+    now: Instant,
+    timeFormat: TimeFormat,
+    locale: Locale,
+    zone: ZoneId,
+): String {
+    val local = at.atZone(zone)
+    val time = timeFormat.formatHourMinute(local.toLocalTime(), locale)
+    return if (local.toLocalDate() == now.atZone(zone).toLocalDate()) {
         time
     } else {
-        "${DateTimeFormatter.ofPattern("EEE", locale).format(end)} $time"
+        "${DateTimeFormatter.ofPattern("EEE", locale).format(local)} $time"
     }
-    return context.getString(R.string.weather_alert_until, label)
 }
 
 /** "Until Fri 9 PM · Met Office": the notification's text and the card's expanded line. */

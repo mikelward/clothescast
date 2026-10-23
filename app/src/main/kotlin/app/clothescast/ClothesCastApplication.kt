@@ -9,6 +9,7 @@ import app.clothescast.alarm.reconcileWidgetRefreshChain
 import app.clothescast.alerts.WeatherAlertShade
 import app.clothescast.alerts.WeatherAlertsRefresher
 import app.clothescast.alerts.WeatherAlertsScheduler
+import app.clothescast.alerts.alertsBaseUrl
 import app.clothescast.calendar.CalendarContractEventReader
 import app.clothescast.cast.CastInsightController
 import app.clothescast.cast.CastRouteDiscovery
@@ -17,11 +18,12 @@ import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
 import app.clothescast.core.data.tts.DEFAULT_GEMINI_TTS_MODEL
 import app.clothescast.core.data.tts.GeminiTtsClient
+import app.clothescast.core.data.weather.AlertsLookup
 import app.clothescast.core.data.weather.ConfidenceFetchLogger
 import app.clothescast.core.data.weather.GoogleWeatherAccess
-import app.clothescast.core.data.weather.GoogleWeatherAlertsClient
 import app.clothescast.core.data.weather.GoogleWeatherModelClient
 import app.clothescast.core.data.weather.OpenMeteoClient
+import app.clothescast.core.data.weather.ServedAlertsClient
 import app.clothescast.core.data.weather.ZonedHourlySeries
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -259,21 +261,6 @@ class ClothesCastApplication : Application() {
     }
 
     /**
-     * How to reach Google's weather alerts right now: the same route as the
-     * forecast ([googleWeatherAccessWithFingerprint]), with the proxy's
-     * `weatherAlerts` function in place of `weather`.
-     */
-    suspend fun googleWeatherAlertsAccess(): GoogleWeatherAccess? =
-        when (val access = googleWeatherAccessWithFingerprint().first) {
-            is GoogleWeatherAccess.Proxy -> GoogleWeatherAccess.Proxy(
-                host = access.host,
-                path = GoogleWeatherAlertsClient.PROXY_FUNCTION,
-                authorize = access.authorize,
-            )
-            else -> access
-        }
-
-    /**
      * [googleWeatherAccessWithFingerprint]'s fingerprint without decrypting
      * the key: the key's ciphertext hash, else the proxy's constant while
      * signed in, else null.
@@ -415,10 +402,19 @@ class ClothesCastApplication : Application() {
         )
     }
 
-    /** Google's public weather alerts, on the same client and logging as the forecast. */
-    private val googleWeatherAlertsClient: GoogleWeatherAlertsClient by lazy {
-        GoogleWeatherAlertsClient(
+    /**
+     * The alerts the ingester publishes (docs/ALERTS.md → The published
+     * files), from the build's bucket; null on a build without one.
+     */
+    private val servedAlertsClient: ServedAlertsClient? by lazy {
+        val baseUrl = alertsBaseUrl(BuildConfig.ALERTS_BASE_URL, BuildConfig.GEMINI_PROXY_URL)
+        if (baseUrl == null) {
+            DiagLog.i("WeatherAlerts", "No alerts bucket in this build; alerts read as unavailable.")
+            return@lazy null
+        }
+        ServedAlertsClient(
             httpClient = httpClient,
+            baseUrl = baseUrl,
             logger = ConfidenceFetchLogger { message, throwable ->
                 DiagLog.w("WeatherAlerts", throwable, "%s", message)
             },
@@ -441,8 +437,11 @@ class ClothesCastApplication : Application() {
     val weatherAlertsRefresher: WeatherAlertsRefresher by lazy {
         WeatherAlertsRefresher(
             store = weatherAlertsStore,
-            client = googleWeatherAlertsClient,
-            access = ::googleWeatherAlertsAccess,
+            // ClothesCast's own files only: no Google (maintainer, 2026-10-23).
+            // A build with no bucket reads every place as unsupported.
+            lookup = { location, language ->
+                servedAlertsClient?.lookup(location, language) ?: AlertsLookup.Unsupported
+            },
             onChanged = {
                 weatherAlertShade.reconcile()
                 updateAllClothesCastWidgets(this)

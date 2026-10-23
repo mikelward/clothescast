@@ -1180,7 +1180,6 @@
     <string name="settings_page_alerts">Cilësimet e paralajmërimeve</string>
     <string name="settings_weather_alerts_title">Paralajmërimet e motit</string>
     <string name="settings_weather_alerts_summary">Paralajmërime zyrtare për vendndodhjen tënde në ekranin Sot.</string>
-    <string name="settings_weather_alerts_sign_in">Hyr me Google për të marrë paralajmërimet e motit.</string>
     <string name="settings_alerts_notify_title">Më njofto për</string>
     <string name="settings_alerts_notify_red">Vetëm të kuqe</string>
     <string name="settings_alerts_notify_orange_red">Portokalli dhe të kuqe</string>
@@ -1228,6 +1227,7 @@
     <string name="weather_alert_level_orange_description">Paralajmërim për mot të rrezikshëm</string>
     <string name="weather_alert_level_red_description">Paralajmërim për mot ekstrem</string>
     <string name="weather_alert_until">Deri në %1$s</string>
+    <string name="weather_alert_issued">Lëshuar %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Hap %1$s</string>
     <string name="weather_alert_open_source_fallback">Detajet</string>

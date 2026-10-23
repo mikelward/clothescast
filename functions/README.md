@@ -232,40 +232,6 @@ functions' runtime account write. Logs: `firebase functions:log --only
 alertsIngest`; each run ends with an "Alerts ingested" line counting
 alerts, tiles written and deleted, and feeds that failed.
 
-## Weather alerts proxy
-
-`weatherAlerts` forwards one page of Google's public weather alerts
-(`/v1/publicAlerts:lookup`) on the same terms as `weather`, sharing its
-handler: `POST` with a form body, App Check, a Google sign-in
-(`403 sign_in_required` otherwise), and the coordinate never logged or
-stored. It differs in two ways:
-
-- it forwards only the coordinate, a BCP 47 `languageCode` for the alert
-  titles, a `pageSize` of up to 20 and the next-page token
-  (`alerts-query.ts`);
-- it has its own cap, 120 lookups per account per UTC day in
-  `weatherAlertsQuota/g_<hex>` (day and count only, TTL on `expireAt`), so
-  forecast walks and alert checks can't starve each other.
-
-It spends the same `GOOGLE_WEATHER_API_KEY`, so there is no new secret; the
-key's API restrictions must allow the Weather API, which they already do if
-the Google forecast works. Deploy it with Firestore (the new TTL policy):
-
-```sh
-firebase deploy --only functions:weatherAlerts,firestore
-```
-
-and grant the public invoker by hand if the deploy warns, as for `weather`
-(substitute `weatherAlerts` — Cloud Run lowercases it to `weatheralerts`):
-
-```sh
-gcloud run services add-iam-policy-binding weatheralerts \
-  --region us-central1 --project <projectId> \
-  --member allUsers --role roles/run.invoker
-```
-
-The design, coverage and costs are in `docs/ALERTS.md`.
-
 ## Dependency pins
 
 `package.json` carries an `overrides` block that holds three transitive

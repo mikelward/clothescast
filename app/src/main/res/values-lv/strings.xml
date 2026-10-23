@@ -1266,7 +1266,6 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="settings_page_alerts">Brīdinājumu iestatījumi</string>
     <string name="settings_weather_alerts_title">Laikapstākļu brīdinājumi</string>
     <string name="settings_weather_alerts_summary">Oficiālie brīdinājumi tavai atrašanās vietai Šodienas ekrānā.</string>
-    <string name="settings_weather_alerts_sign_in">Pieraksties ar Google, lai saņemtu laikapstākļu brīdinājumus.</string>
     <string name="settings_alerts_notify_title">Paziņot par</string>
     <string name="settings_alerts_notify_red">Tikai sarkanajiem</string>
     <string name="settings_alerts_notify_orange_red">Oranžajiem un sarkanajiem</string>
@@ -1314,6 +1313,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="weather_alert_level_orange_description">Brīdinājums par bīstamiem laikapstākļiem</string>
     <string name="weather_alert_level_red_description">Brīdinājums par ekstremāliem laikapstākļiem</string>
     <string name="weather_alert_until">Līdz %1$s</string>
+    <string name="weather_alert_issued">Izdots %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Atvērt %1$s</string>
     <string name="weather_alert_open_source_fallback">Detaļas</string>

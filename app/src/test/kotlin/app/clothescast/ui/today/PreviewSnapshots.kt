@@ -37,7 +37,7 @@ import app.clothescast.ui.garment.ClothingThickJacketPreview
 import app.clothescast.ui.garment.ClothingThinJacketPreview
 import app.clothescast.ui.garment.ClothingRainJacketPreview
 import app.clothescast.ui.settings.SettingsAlertsPreview
-import app.clothescast.ui.settings.SettingsAlertsSignedOutPreview
+import app.clothescast.ui.settings.SettingsAlertsOffPreview
 import app.clothescast.ui.settings.SettingsCalendarPreview
 import app.clothescast.ui.settings.SettingsClothesFahrenheitPreview
 import app.clothescast.ui.settings.SettingsClothesPreview
@@ -623,6 +623,7 @@ class PreviewSnapshots {
     @Test fun weather_alert_cards_dark() = capture { WeatherAlertCardsDarkPreview() }
     @Test fun weather_alert_levels() = capture { WeatherAlertLevelsPreview() }
     @Test fun weather_alert_card_expanded() = capture { WeatherAlertCardExpandedPreview() }
+    @Test fun weather_alert_card_credited() = capture { WeatherAlertCardCreditedPreview() }
     @Test fun gemini_tts_limit_card() = capture { GeminiTtsLimitCardPreview() }
     @Test fun celebration_themes_card() = capture { CelebrationThemesCardPreview() }
 
@@ -799,7 +800,7 @@ class PreviewSnapshots {
     fun settings_alerts() = capture { SettingsAlertsPreview() }
 
     @Test
-    fun settings_alerts_signed_out() = capture { SettingsAlertsSignedOutPreview() }
+    fun settings_alerts_off() = capture { SettingsAlertsOffPreview() }
 
     // The merged Calendar page renders the permission + feature toggle cards,
     // the celebration sources card, the two calendar listings, one collapsible

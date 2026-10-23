@@ -1385,7 +1385,6 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="settings_page_alerts">Cài đặt cảnh báo</string>
     <string name="settings_weather_alerts_title">Cảnh báo thời tiết</string>
     <string name="settings_weather_alerts_summary">Cảnh báo chính thức cho vị trí của bạn trên màn hình Hôm nay.</string>
-    <string name="settings_weather_alerts_sign_in">Đăng nhập bằng Google để nhận cảnh báo thời tiết.</string>
     <string name="settings_alerts_notify_title">Thông báo cho</string>
     <string name="settings_alerts_notify_red">Chỉ mức đỏ</string>
     <string name="settings_alerts_notify_orange_red">Mức cam và đỏ</string>
@@ -1432,6 +1431,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="weather_alert_level_orange_description">Cảnh báo thời tiết nguy hiểm</string>
     <string name="weather_alert_level_red_description">Cảnh báo thời tiết cực kỳ nguy hiểm</string>
     <string name="weather_alert_until">Đến %1$s</string>
+    <string name="weather_alert_issued">Phát hành %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Mở %1$s</string>
     <string name="weather_alert_open_source_fallback">Chi tiết</string>

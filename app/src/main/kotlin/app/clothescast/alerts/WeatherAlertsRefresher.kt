@@ -1,8 +1,6 @@
 package app.clothescast.alerts
 
 import app.clothescast.core.data.weather.AlertsLookup
-import app.clothescast.core.data.weather.GoogleWeatherAccess
-import app.clothescast.core.data.weather.GoogleWeatherAlertsClient
 import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.GeoPoint
 import app.clothescast.core.domain.model.HourlyForecast
@@ -34,9 +32,11 @@ import kotlin.math.round
  */
 class WeatherAlertsRefresher(
     private val store: WeatherAlertsStore,
-    private val client: GoogleWeatherAlertsClient,
-    /** The route to Google right now: own key, else the proxy while signed in, else null. */
-    private val access: suspend () -> GoogleWeatherAccess?,
+    /**
+     * Where alerts come from: those in force at a location, in the given
+     * BCP 47 language where the issuer has it.
+     */
+    private val lookup: suspend (location: Location, languageTag: String) -> AlertsLookup,
     private val clock: Clock = Clock.systemUTC(),
     private val locale: () -> Locale = { Locale.getDefault() },
     /** Runs after every stored change: the shade and the widgets follow the store. */
@@ -81,10 +81,7 @@ class WeatherAlertsRefresher(
         val state = store.current()
         val now = clock.instant()
         val samePlace = state.point == point
-        // A check that found no route costs no network to repeat, and the
-        // user may have signed in since.
-        val due = !samePlace || state.outcome == AlertsCheckOutcome.NEVER ||
-            state.outcome == AlertsCheckOutcome.NO_ACCESS || when (trigger) {
+        val due = !samePlace || state.outcome == AlertsCheckOutcome.NEVER || when (trigger) {
             // The forecast's own on-screen rule: an hour.
             Trigger.ON_SCREEN -> state.checkedAt == null ||
                 Duration.between(state.checkedAt, now) >= ON_SCREEN_MAX_AGE ||
@@ -114,14 +111,8 @@ class WeatherAlertsRefresher(
         } else {
             before.copy(point = point)
         }
-        val route = access()
-        if (route == null) {
-            store.update { WeatherAlertsState(checkedAt = now, outcome = AlertsCheckOutcome.NO_ACCESS, point = point) }
-            DiagLog.i(TAG, "Alerts check skipped: no route to Google (signed out, no key).")
-            return true
-        }
         val alertsLocation = location.copy(latitude = point.latitude, longitude = point.longitude)
-        val result = client.lookup(alertsLocation, route, locale().toLanguageTag())
+        val result = lookup(alertsLocation, locale().toLanguageTag())
         if (!stillEnabled()) {
             // Turned off mid-lookup: the clean-up that follows owns the store.
             DiagLog.i(TAG, "Alerts turned off during a check; dropping its result.")

@@ -1302,7 +1302,6 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="settings_page_alerts">Setări de avertizări</string>
     <string name="settings_weather_alerts_title">Avertizări meteo</string>
     <string name="settings_weather_alerts_summary">Avertizări oficiale pentru locația ta, pe ecranul Astăzi.</string>
-    <string name="settings_weather_alerts_sign_in">Conectează-te cu Google pentru a primi avertizări meteo.</string>
     <string name="settings_alerts_notify_title">Notifică-mă pentru</string>
     <string name="settings_alerts_notify_red">Doar cod roșu</string>
     <string name="settings_alerts_notify_orange_red">Cod portocaliu și roșu</string>
@@ -1350,6 +1349,7 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="weather_alert_level_orange_description">Avertizare meteo severă</string>
     <string name="weather_alert_level_red_description">Avertizare meteo extremă</string>
     <string name="weather_alert_until">Până la %1$s</string>
+    <string name="weather_alert_issued">Emis %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Deschide %1$s</string>
     <string name="weather_alert_open_source_fallback">Detalii</string>

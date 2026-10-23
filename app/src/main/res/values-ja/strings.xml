@@ -1472,7 +1472,6 @@ the displayed label localizes.
     <string name="settings_page_alerts">警報設定</string>
     <string name="settings_weather_alerts_title">気象警報</string>
     <string name="settings_weather_alerts_summary">現在地の公式警報を「今日」画面に表示します。</string>
-    <string name="settings_weather_alerts_sign_in">Google でログインすると気象警報を受け取れます。</string>
     <string name="settings_alerts_notify_title">通知するレベル</string>
     <string name="settings_alerts_notify_red">赤色のみ</string>
     <string name="settings_alerts_notify_orange_red">橙色と赤色</string>
@@ -1519,6 +1518,7 @@ the displayed label localizes.
     <string name="weather_alert_level_orange_description">重大な気象警報</string>
     <string name="weather_alert_level_red_description">極めて重大な気象警報</string>
     <string name="weather_alert_until">%1$sまで</string>
+    <string name="weather_alert_issued">%1$s発表</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$sを開く</string>
     <string name="weather_alert_open_source_fallback">詳細</string>

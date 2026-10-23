@@ -22,10 +22,12 @@ class WeatherAlertRulesTest {
     private fun square(center: GeoPoint, halfDeg: Double) = AlertArea(
         listOf(
             listOf(
-                GeoPoint(center.latitude - halfDeg, center.longitude - halfDeg),
-                GeoPoint(center.latitude - halfDeg, center.longitude + halfDeg),
-                GeoPoint(center.latitude + halfDeg, center.longitude + halfDeg),
-                GeoPoint(center.latitude + halfDeg, center.longitude - halfDeg),
+                listOf(
+                    GeoPoint(center.latitude - halfDeg, center.longitude - halfDeg),
+                    GeoPoint(center.latitude - halfDeg, center.longitude + halfDeg),
+                    GeoPoint(center.latitude + halfDeg, center.longitude + halfDeg),
+                    GeoPoint(center.latitude + halfDeg, center.longitude - halfDeg),
+                ),
             ),
         ),
     )

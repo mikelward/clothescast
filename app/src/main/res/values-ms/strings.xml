@@ -1330,7 +1330,6 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="settings_page_alerts">Tetapan amaran</string>
     <string name="settings_weather_alerts_title">Amaran cuaca</string>
     <string name="settings_weather_alerts_summary">Amaran rasmi untuk lokasi anda pada skrin Hari Ini.</string>
-    <string name="settings_weather_alerts_sign_in">Log masuk dengan Google untuk mendapatkan amaran cuaca.</string>
     <string name="settings_alerts_notify_title">Beritahu untuk</string>
     <string name="settings_alerts_notify_red">Merah sahaja</string>
     <string name="settings_alerts_notify_orange_red">Jingga dan merah</string>
@@ -1377,6 +1376,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="weather_alert_level_orange_description">Amaran cuaca buruk</string>
     <string name="weather_alert_level_red_description">Amaran cuaca ekstrem</string>
     <string name="weather_alert_until">Hingga %1$s</string>
+    <string name="weather_alert_issued">Dikeluarkan %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Buka %1$s</string>
     <string name="weather_alert_open_source_fallback">Butiran</string>

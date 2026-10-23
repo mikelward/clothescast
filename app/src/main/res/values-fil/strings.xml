@@ -1375,7 +1375,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="settings_page_alerts">Mga setting ng babala</string>
     <string name="settings_weather_alerts_title">Mga babala sa panahon</string>
     <string name="settings_weather_alerts_summary">Mga opisyal na babala para sa iyong lokasyon sa screen ng Ngayon.</string>
-    <string name="settings_weather_alerts_sign_in">Mag-sign in gamit ang Google para makatanggap ng mga babala sa panahon.</string>
     <string name="settings_alerts_notify_title">Mag-notify para sa</string>
     <string name="settings_alerts_notify_red">Pula lamang</string>
     <string name="settings_alerts_notify_orange_red">Kahel at pula</string>
@@ -1423,6 +1422,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="weather_alert_level_orange_description">Babala sa matinding panahon</string>
     <string name="weather_alert_level_red_description">Babala sa napakatinding panahon</string>
     <string name="weather_alert_until">Hanggang %1$s</string>
+    <string name="weather_alert_issued">Inilabas %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Buksan ang %1$s</string>
     <string name="weather_alert_open_source_fallback">Mga detalye</string>

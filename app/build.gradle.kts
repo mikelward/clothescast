@@ -260,6 +260,26 @@ android {
             fromEnv ?: fromLocalProps ?: fromGradleProps ?: ""
         }
         buildConfigField("String", "GEMINI_PROXY_URL", "\"${geminiProxyUrl.asJavaStringLiteralBody()}\"")
+
+        // Where the alerts ingester publishes (docs/ALERTS.md → The published
+        // files), sourced like the proxy URL: the `ALERTS_BASE_URL` env var, an
+        // `alertsBaseUrl=…` line in local.properties, or an `alertsBaseUrl`
+        // Gradle property. Empty by default: the app then derives the
+        // `<project>-alerts` bucket from GEMINI_PROXY_URL's project
+        // (`alertsBaseUrl` in app/.../alerts/AlertsBucket.kt).
+        val alertsBaseUrl: String = run {
+            val fromEnv = System.getenv("ALERTS_BASE_URL")?.trim()?.takeIf { it.isNotBlank() }
+            val fromLocalProps: String? = rootProject.file("local.properties")
+                .takeIf { it.exists() }
+                ?.let { file ->
+                    val props = Properties()
+                    file.inputStream().use { props.load(it) }
+                    props.getProperty("alertsBaseUrl")?.trim()?.takeIf { it.isNotBlank() }
+                }
+            val fromGradleProps = providers.gradleProperty("alertsBaseUrl").orNull?.trim()?.takeIf { it.isNotBlank() }
+            fromEnv ?: fromLocalProps ?: fromGradleProps ?: ""
+        }
+        buildConfigField("String", "ALERTS_BASE_URL", "\"${alertsBaseUrl.asJavaStringLiteralBody()}\"")
     }
 
     // Defence-in-depth: nuke any stale `app_check_debug.xml` from an

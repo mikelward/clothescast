@@ -25,7 +25,6 @@ import {
   ttsPurpose,
 } from "./caller";
 import { excerpt, responseHasAudio, structuralEnvelope } from "./envelope";
-import { alertsQuery } from "./alerts-query";
 import { alertsBucketName, bucketStore } from "./alerts/bucket";
 import { ingest } from "./alerts/ingest";
 import { SOURCES } from "./alerts/sources";
@@ -42,7 +41,7 @@ const GEMINI_API_KEY = defineSecret("GEMINI_API_KEY");
 // account's count for the day, nothing worse.
 const QUOTA_HASH_KEY = defineSecret("QUOTA_HASH_KEY");
 // The developer's Google Maps Platform key with the Weather API enabled,
-// spent by the `weather` and `weatherAlerts` proxies below.
+// spent by the `weather` proxy below.
 const GOOGLE_WEATHER_API_KEY = defineSecret("GOOGLE_WEATHER_API_KEY");
 
 // Allowlist of upstream Gemini models the proxy will forward to. Keep narrow
@@ -402,17 +401,11 @@ async function releaseDailySlot(
 
 const WEATHER_HOST = "weather.googleapis.com";
 const WEATHER_QUOTA_COLLECTION = "weatherQuota";
-const WEATHER_ALERTS_QUOTA_COLLECTION = "weatherAlertsQuota";
 
 // Upstream calls per signed-in account per UTC day. The app caches the 7-day
 // series (~7 pages) for about 12 hours, so a phone uses ~14 a day; this leaves
 // room for a few devices and refreshes while bounding a runaway client.
 const WEATHER_DAILY_LIMIT = 60;
-
-// Alert lookups per signed-in account per UTC day. A phone checks at most
-// hourly in the background (docs/ALERTS.md → Cadence) plus app opens under the
-// same 1-hour rule, so ~48 a day at worst; this leaves room for two devices.
-const WEATHER_ALERTS_DAILY_LIMIT = 120;
 
 /** One Google Weather method the proxy forwards, and its own daily cap. */
 interface GoogleWeatherRoute {
@@ -445,27 +438,6 @@ export const weather = onRequest(
     query: weatherQuery,
     quotaCollection: WEATHER_QUOTA_COLLECTION,
     dailyLimit: WEATHER_DAILY_LIMIT,
-  }),
-);
-
-/**
- * The weather alerts proxy: forwards one page of Google's public alerts for
- * a coordinate (`publicAlerts:lookup`), on the same terms as `weather` (App
- * Check, Google sign-in, the coordinate never logged or stored) with its own
- * daily cap, so forecast walks and alert checks can't starve each other
- * (docs/ALERTS.md).
- */
-export const weatherAlerts = onRequest(
-  {
-    secrets: [GOOGLE_WEATHER_API_KEY, QUOTA_HASH_KEY],
-    cors: false,
-    invoker: "public",
-  },
-  (req, res) => proxyGoogleWeather(req, res, {
-    upstreamPath: "/v1/publicAlerts:lookup",
-    query: alertsQuery,
-    quotaCollection: WEATHER_ALERTS_QUOTA_COLLECTION,
-    dailyLimit: WEATHER_ALERTS_DAILY_LIMIT,
   }),
 );
 

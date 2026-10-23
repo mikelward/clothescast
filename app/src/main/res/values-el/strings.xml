@@ -1444,7 +1444,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="settings_page_alerts">Ρυθμίσεις προειδοποιήσεων</string>
     <string name="settings_weather_alerts_title">Προειδοποιήσεις καιρού</string>
     <string name="settings_weather_alerts_summary">Επίσημες προειδοποιήσεις για την τοποθεσία σου στην οθόνη Σήμερα.</string>
-    <string name="settings_weather_alerts_sign_in">Συνδέσου με Google για να λαμβάνεις προειδοποιήσεις καιρού.</string>
     <string name="settings_alerts_notify_title">Να ειδοποιούμαι για</string>
     <string name="settings_alerts_notify_red">Μόνο κόκκινες</string>
     <string name="settings_alerts_notify_orange_red">Πορτοκαλί και κόκκινες</string>
@@ -1492,6 +1491,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="weather_alert_level_orange_description">Προειδοποίηση για έντονα καιρικά φαινόμενα</string>
     <string name="weather_alert_level_red_description">Προειδοποίηση για ακραία καιρικά φαινόμενα</string>
     <string name="weather_alert_until">Έως %1$s</string>
+    <string name="weather_alert_issued">Εκδόθηκε %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Άνοιγμα %1$s</string>
     <string name="weather_alert_open_source_fallback">Λεπτομέρειες</string>

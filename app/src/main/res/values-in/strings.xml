@@ -1323,7 +1323,6 @@ to values/strings.xml (English).
     <string name="settings_page_alerts">Pengaturan peringatan</string>
     <string name="settings_weather_alerts_title">Peringatan cuaca</string>
     <string name="settings_weather_alerts_summary">Peringatan resmi untuk lokasi Anda di layar Hari ini.</string>
-    <string name="settings_weather_alerts_sign_in">Login dengan Google untuk mendapatkan peringatan cuaca.</string>
     <string name="settings_alerts_notify_title">Beri tahu untuk</string>
     <string name="settings_alerts_notify_red">Hanya merah</string>
     <string name="settings_alerts_notify_orange_red">Oranye dan merah</string>
@@ -1370,6 +1369,7 @@ to values/strings.xml (English).
     <string name="weather_alert_level_orange_description">Peringatan cuaca buruk</string>
     <string name="weather_alert_level_red_description">Peringatan cuaca ekstrem</string>
     <string name="weather_alert_until">Hingga %1$s</string>
+    <string name="weather_alert_issued">Diterbitkan %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">Buka %1$s</string>
     <string name="weather_alert_open_source_fallback">Detail</string>

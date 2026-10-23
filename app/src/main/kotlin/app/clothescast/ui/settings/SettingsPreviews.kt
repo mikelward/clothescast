@@ -1,5 +1,6 @@
 package app.clothescast.ui.settings
 
+import app.clothescast.data.AlertsCheckOutcome
 import app.clothescast.data.SignedInGoogleAccount
 import app.clothescast.data.WeatherAlertsState
 import androidx.compose.foundation.layout.Arrangement
@@ -1104,8 +1105,8 @@ internal fun SettingsLicenseDetailsPreview() {
 // version-string churn. The screen is mostly static text + link buttons —
 // low layout-regression risk to begin with.
 
-// Alerts on and signed in, the first check on its way (a fixed status line:
-// "Last checked …" would move with the runner's clock).
+// Alerts on where no source covers the place: the status line says so
+// rather than reading as all clear.
 @Preview(name = "Settings · Alerts", widthDp = 360)
 @Composable
 internal fun SettingsAlertsPreview() {
@@ -1113,40 +1114,26 @@ internal fun SettingsAlertsPreview() {
         AlertsContent(
             enabled = true,
             notifyLevel = AlertNotifyLevel.DEFAULT,
-            status = WeatherAlertsState(),
-            googleApiKeyConfigured = false,
-            googleWeatherProxyConfigured = true,
-            googleSignInAvailable = true,
-            googleAccount = SignedInGoogleAccount(email = "alice@example.com"),
+            status = WeatherAlertsState(outcome = AlertsCheckOutcome.UNSUPPORTED),
             padding = PaddingValues(0.dp),
             onSetEnabled = {},
             onSetNotifyLevel = {},
-            onSignIn = {},
-            onSignOut = {},
-            onDeleteAccount = {},
         )
     }
 }
 
-// The default: off and signed out, so the switch would start the sign-in.
-@Preview(name = "Settings · Alerts signed out", widthDp = 360)
+// The default: off, so no status line.
+@Preview(name = "Settings · Alerts off", widthDp = 360)
 @Composable
-internal fun SettingsAlertsSignedOutPreview() {
+internal fun SettingsAlertsOffPreview() {
     SettingsFrame {
         AlertsContent(
             enabled = false,
             notifyLevel = AlertNotifyLevel.DEFAULT,
             status = WeatherAlertsState(),
-            googleApiKeyConfigured = false,
-            googleWeatherProxyConfigured = true,
-            googleSignInAvailable = true,
-            googleAccount = null,
             padding = PaddingValues(0.dp),
             onSetEnabled = {},
             onSetNotifyLevel = {},
-            onSignIn = {},
-            onSignOut = {},
-            onDeleteAccount = {},
         )
     }
 }

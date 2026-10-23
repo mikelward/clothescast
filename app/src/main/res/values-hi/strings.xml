@@ -1354,7 +1354,6 @@ Not overridden by design:
     <string name="settings_page_alerts">चेतावनी सेटिंग</string>
     <string name="settings_weather_alerts_title">मौसम चेतावनियाँ</string>
     <string name="settings_weather_alerts_summary">आज स्क्रीन पर आपके स्थान की आधिकारिक चेतावनियाँ।</string>
-    <string name="settings_weather_alerts_sign_in">मौसम चेतावनियाँ पाने के लिए Google से साइन इन करें।</string>
     <string name="settings_alerts_notify_title">मुझे सूचना दें</string>
     <string name="settings_alerts_notify_red">केवल लाल</string>
     <string name="settings_alerts_notify_orange_red">नारंगी और लाल</string>
@@ -1399,6 +1398,7 @@ Not overridden by design:
     <string name="weather_alert_level_orange_description">गंभीर मौसम चेतावनी</string>
     <string name="weather_alert_level_red_description">चरम मौसम चेतावनी</string>
     <string name="weather_alert_until">%1$s तक</string>
+    <string name="weather_alert_issued">जारी %1$s</string>
     <string name="weather_alert_detail">%1$s · %2$s</string>
     <string name="weather_alert_open_source">%1$s खोलें</string>
     <string name="weather_alert_open_source_fallback">विवरण</string>

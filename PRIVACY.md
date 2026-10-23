@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-10-22_
+_Last updated: 2026-10-23_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -8,15 +8,14 @@ have over it.
 
 ## TL;DR
 
-- ClothesCast needs no account. Three optional features need **Sign in
-  with Google**: the free online voice, and the Google forecaster and
-  weather alerts without a key of your own. Signing in gives ClothesCast
-  your Google email address, name and profile photo URL so each feature's
-  free daily limit counts per account. You can sign out or delete that
-  account in Settings → Speech, Forecasters or Alerts at any time; without
-  signing in, the app uses the on-device voice (or your own Gemini key),
-  leaves Google out of the forecast and shows no weather alerts (unless you
-  add your own Google key).
+- ClothesCast needs no account. Two optional features need **Sign in
+  with Google**: the free online voice, and the Google forecaster without
+  a key of your own. Signing in gives ClothesCast your Google email
+  address, name and profile photo URL so each feature's free daily limit
+  counts per account. You can sign out or delete that account in
+  Settings → Speech or Forecasters at any time; without signing in, the
+  app uses the on-device voice (or your own Gemini key) and leaves Google
+  out of the forecast (unless you add your own Google key).
   The app can send anonymous crash reports and aggregate usage analytics
   to a third-party reporting service so the developer can fix bugs and
   decide which features to keep — but **only if you turn that on**.
@@ -44,10 +43,13 @@ have over it.
   That is the only user-content data the app sends off your device
   by default.
 - If you turn on **weather alerts** (Settings → Alerts, off by default),
-  your approximate location and the app's language are sent to Google's
-  Weather API to look up official alerts, about every 3 hours (hourly
-  while the forecast looks severe or an alert is in force) and when you
-  open the app after an hour or more.
+  the app downloads ClothesCast's own alert files from a public Google
+  Cloud Storage bucket: an index of where alerts are in force and, when
+  any are near you, the file for the 1° square (roughly 100 km across)
+  around your location. No coordinate is sent; your phone checks whether
+  an alert covers you. It checks about every 3 hours (hourly while the
+  forecast looks severe or an alert is in force) and when you open the
+  app after an hour or more.
 - If you opt in to **online text-to-speech**, the short spoken sentence
   (e.g. _"50% chance of rain at 3pm — take an umbrella"_) is sent to the
   TTS provider you chose (Google Gemini) so it can return the audio.
@@ -122,20 +124,17 @@ The source code is at <https://github.com/mikelward/clothescast>.
       the voice, Cloud Functions infrastructure logs (operated by Google
       Cloud, not configured by us) record the client IP and HTTP status
       of each call; we do not associate the IP with your account.
-  - **Google's Weather API, for weather alerts** — receives the coarse
-    coordinate and the app's language (e.g. `en-GB`, so alert titles come
-    back in it), **only if** you turn on weather alerts in Settings →
-    Alerts. Off by default. The app checks about every 3 hours, hourly
-    while the forecast looks severe or an alert is in force, and when you
-    open the app and the last check is an hour old. It reaches Google the
-    same two ways as the forecast: straight to Google with your own Google
-    API key, or, signed in with Google and without a key, through a second
-    ClothesCast-operated Cloud Function that receives the same coordinate,
-    language and tokens, doesn't log or store the coordinate or language,
-    and keeps its own count of today's requests for your account (under the
-    same keyed hash, deleted after the day). The alerts that apply where
-    you are are kept on your device until they end, you move, or you turn
-    alerts off; their notifications are built on your device.
+  - **ClothesCast's alert files, on Google Cloud Storage** — **only if**
+    you turn on weather alerts in Settings → Alerts. Off by default. The
+    app downloads a public index and, when it lists alerts in the 1°
+    square (roughly 100 km across) around your location, that square's
+    file. The square is in the file's address, so Google Cloud Storage
+    sees your IP address and that square, but no coordinate, account or
+    sign-in; we don't turn on request logging for the bucket. The files
+    hold only public alerts from official weather services. The alerts
+    that apply where you are are kept on your device until they end, you
+    move, or you turn alerts off; their notifications are built on your
+    device.
 
   None of these services receives an account, device identifier, or any
   other payload beyond the items listed above.
@@ -374,8 +373,8 @@ Online TTS (the Gemini voice) has two paths.
   sign in with Google; until you do, the app speaks with the device
   voice instead, and the first time that happens it tells you so in a
   notification.
-  - **Signing in.** **Sign in with Google** (Settings → Speech,
-    Forecasters or Alerts) signs
+  - **Signing in.** **Sign in with Google** (Settings → Speech or
+    Forecasters) signs
     you in to Firebase Authentication (a Google service) with your
     Google account. Firebase stores your **email address, name and
     profile photo URL** (copied from your Google account) and a
@@ -384,8 +383,8 @@ Online TTS (the Gemini voice) has two paths.
     account across your devices, and so the developer can give
     particular accounts (such as family) a different limit. They are
     never used for advertising or tracking across apps. Signing in is
-    optional; only the free voice, and the Google forecaster and weather
-    alerts without a key of your own, need it.
+    optional; only the free voice, and the Google forecaster without a key
+    of your own, need it.
   - **Sent on each request:** the rendered insight sentence (the same
     text the phone speaks), your Firebase sign-in token in the
     `Authorization` header (the proxy verifies it to read which account
@@ -416,8 +415,8 @@ Online TTS (the Gemini voice) has two paths.
   - **Signing out and deleting your account.** Settings → Speech (or
     Forecasters) → **Sign out** signs you out on this device. **Delete account**
     deletes your Firebase account — email, name, photo URL, user ID and
-    any limit set on it. Only that day's clip count, and that day's counts
-    of forecast and alert requests if you used the weather proxies, survive,
+    any limit set on it. Only that day's clip count, and that day's count
+    of forecast requests if you used the weather proxy, survive,
     until they expire as above; they can't identify you without your
     Google account and are kept so that deleting and re-creating an
     account doesn't reset the day's limits. To ask for deletion without the app, follow
@@ -439,9 +438,10 @@ policies apply to anything they receive:
 |---|---|---|
 | [Open-Meteo](https://open-meteo.com/en/terms) | Coarse coordinate (forecast); your typed search text when you use the Settings location picker | Always for forecast; only when you search for a place name |
 | Google's geocoding service (via Android's [`Geocoder`](https://developer.android.com/reference/android/location/Geocoder) on Play Services devices), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate | Always on Play Services devices (city / country lookup for the Today header); skipped on AOSP devices |
-| [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate, and your own Google API key if you set one; for weather alerts, also the app's language | Only if you enable the "Google" forecaster on the Forecasters page or weather alerts on the Alerts page, with your own key or through a ClothesCast weather proxy |
-| ClothesCast weather proxies (two Cloud Functions, ClothesCast-operated: forecasts and alerts) | Coarse coordinate, your Firebase sign-in token and a Firebase App Check token; for alerts, also the app's language | The Google forecaster or weather alerts without a key of your own, while signed in with Google |
-| Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Speech, Forecasters or Alerts), then periodic token refreshes |
+| [Google Weather API](https://developers.google.com/maps/documentation/weather) (Google Maps Platform), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Coarse coordinate, and your own Google API key if you set one | Only if you enable the "Google" forecaster on the Forecasters page, with your own key or through the ClothesCast weather proxy |
+| ClothesCast weather proxy (Cloud Function, ClothesCast-operated) | Coarse coordinate, your Firebase sign-in token and a Firebase App Check token | The Google forecaster without a key of your own, while signed in with Google |
+| ClothesCast alert files (a public Google Cloud Storage bucket, ClothesCast-operated), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Which 1° square's file the app downloads (it's in the address), and the IP address any download carries | Only if you turn on weather alerts on the Alerts page |
+| Google Firebase Authentication, governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your Google sign-in (email address, name, profile photo URL), to create and refresh your Firebase sign-in | Only if you sign in with Google (Settings → Speech or Forecasters), then periodic token refreshes |
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase sign-in token, a Firebase App Check token, and the Gemini model name | Online TTS with the free voice, while signed in with Google |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence; the outfit-card image, TTS audio, and muxed MP4 on sibling topics; an update timestamp; and a calendar-derived `has_events` boolean (no event titles, times, or locations) — all as retained MQTT messages | Only if you opt in to the Smart Home bridge and configure a broker |
@@ -460,10 +460,10 @@ terms.
 ## What we do _not_ collect
 
 - No passwords and no account of our own. The only sign-in is the
-  optional Sign in with Google, used for three things: the free online
-  voice ("Online TTS" above), and the Google forecaster and weather alerts
-  without a key of your own (the ClothesCast weather proxies under
-  "Third-party services"). Nothing else in the app needs it.
+  optional Sign in with Google, used for two things: the free online
+  voice ("Online TTS" above), and the Google forecaster without a key of
+  your own (the ClothesCast weather proxy under "Third-party services").
+  Nothing else in the app needs it.
 - No advertising identifiers, no ad networks, no ad targeting.
 - No precise GPS location.
 - No contacts, photos, microphone, or files.
@@ -483,8 +483,8 @@ terms.
   checking, forgets the alerts it holds and removes their notifications.
 - **API keys:** Clear them from Settings → API Keys at any time.
 - **Google account:** Sign out, or delete your ClothesCast account
-  (email, name, photo URL and user ID), in Settings → Speech,
-  Forecasters or Alerts. Uninstalling
+  (email, name, photo URL and user ID), in Settings → Speech or
+  Forecasters. Uninstalling
   doesn't delete it; use Delete account first, or follow
   [Delete your ClothesCast account](docs/delete-account.md).
 - **Everything:** Uninstalling the app deletes all locally stored data
@@ -658,6 +658,15 @@ email the address listed on the Play Store listing.
 
 ## Changelog
 
+- **2026-10-23** — Weather alerts no longer come from Google: the app
+  stops sending your coarse coordinate and language to Google's Weather
+  API or the ClothesCast alerts proxy, which is removed, and alerts no
+  longer need Sign in with Google. With alerts on, it downloads
+  ClothesCast's own alert files from a public Google Cloud Storage bucket
+  instead: an index, and the file for the 1° square around you (no
+  coordinate), then checks on your phone whether an alert covers you.
+  Where those files don't reach, the Alerts page says alerts aren't
+  available.
 - **2026-10-22** — Added optional **weather alerts** (Settings → Alerts,
   off by default). When on, your coarse coordinate and the app's language
   go to Google's Weather API about every 3 hours (hourly in severe weather)

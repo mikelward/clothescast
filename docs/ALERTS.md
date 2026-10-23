@@ -1,6 +1,15 @@
 # Severe weather alerts
 
-Proposal, 2026-10-22. Nothing here is built yet. An earlier attempt called an
+**Status, 2026-10-23.** Alerts shipped on Google's `publicAlerts:lookup`
+(Settings → Alerts, cards on Today, the strip icon, notifications) and came
+off it a day later (maintainer): Google's terms allow caching alerts for an
+hour and may bar weather apps outright (Sources → Google). The app now
+reads only the server ingester's files (Architecture B; "The published
+files"), with no Google anywhere: a place no source covers says alerts
+aren't available. The `weatherAlerts` proxy and the Today alerts promo are
+gone, and alerts need no sign-in.
+
+Proposal, 2026-10-22. An earlier attempt called an
 Open-Meteo `/v1/warnings` endpoint that does not exist; every fetch 404'd into
 an empty list, and it was removed in `4b9f9aa8`. Open-Meteo still has no
 warnings product, so the data has to come from somewhere else.
@@ -137,17 +146,16 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   any alert still inside its validity window; it never says there are no
   alerts. Failures are logged and shown in the bug report, never swallowed
   into an empty list (the bug that hid the last attempt).
-- **Signed out, no own key**: no alerts. Settings says how to get them.
+- **No sign-in needed** since alerts came off Google (2026-10-23); a place
+  no source covers says alerts aren't available.
 
 ### Settings
 
 Maintainer's design (2026-10-22):
 
 - **A new "Alerts" section in Settings**, its own page like Forecasters.
-- **Master switch "Weather alerts", off by default.** Turning it on while
-  signed out starts Google sign-in, as the free voice and Google forecast
-  switches do; signing in alone doesn't turn it on. Users with their own key
-  need no sign-in.
+- **Master switch "Weather alerts", off by default.** On Google it started
+  a Google sign-in; since 2026-10-23 it needs none.
 - **"Notify me for"**: which levels post a notification, defaulting to
   orange and red. Options, each shown with its severity icon: red only;
   orange and red; all levels (yellow too); none. Today shows every level
@@ -463,12 +471,13 @@ endorsement, and relay within minutes (MeteoAlarm and MetService both cap
 it at 10). A feed's `<rights>` tag isn't proof: DWD's says public domain
 while its legal notice says CC BY 4.0.
 
-**Checking it**: `functions/scripts/check-alert-coverage.sh <projectId>`
-asks Google for alerts at about 30 test cities with the proxy's key and
-prints what comes back, from which agency, when it's valid, and each
-polygon's size, point count and whether it contains the city. An empty
-answer means either no active alert or no coverage; run it while a national
-warning map shows something at a test point to tell the two apart.
+**Checking it** (the script went with Google's alerts on 2026-10-23):
+`functions/scripts/check-alert-coverage.sh <projectId>` asked Google for
+alerts at about 30 test cities with the proxy's key and printed what came
+back, from which agency, when it was valid, and each polygon's size, point
+count and whether it contained the city. An empty answer meant either no
+active alert or no coverage; it was run while a national warning map showed
+something at a test point to tell the two apart.
 
 **First run, 2026-10-22** (highlights; the Met Office showed yellow warnings
 around Birmingham, east of Glasgow and over Wales):
@@ -604,7 +613,7 @@ its terms apply directly; revisit the titles then.
 
 ## Architecture
 
-### A. Per-user lookup through the proxy (phase 1)
+### A. Per-user lookup through the proxy (phase 1; removed 2026-10-23)
 
 - **Proxy**: a new `weatherAlerts` function next to `weather`, sharing its
   `GOOGLE_WEATHER_API_KEY` secret. Same gates: POST form body (the

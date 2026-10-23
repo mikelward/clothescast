@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import app.clothescast.core.domain.model.AlertAttribution
 import app.clothescast.core.domain.model.AlertSeverity
 import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.usecase.RelevantAlert
@@ -24,6 +25,8 @@ private fun sampleAlert(
     notifiable: Boolean = true,
     description: String = "Very strong winds are expected to cause disruption to travel and power supplies.",
     instruction: String = "Secure loose objects and take care on exposed routes.",
+    issuedAt: Instant? = null,
+    attribution: AlertAttribution? = null,
 ) = RelevantAlert(
     alert = WeatherAlert(
         id = id,
@@ -38,6 +41,8 @@ private fun sampleAlert(
         issuer = "Met Office",
         issuerUrl = "https://example.com/warnings",
         area = null,
+        issuedAt = issuedAt,
+        attribution = attribution,
     ),
     notifiable = notifiable,
 )
@@ -112,6 +117,30 @@ internal fun WeatherAlertCardExpandedPreview() {
     Frame {
         WeatherAlertCard(
             SAMPLE_ALERTS[1],
+            PREVIEW_NOW,
+            onDismiss = {},
+            zone = ZoneOffset.UTC,
+            initiallyExpanded = true,
+        )
+    }
+}
+
+// From ClothesCast's own source: the issue time and the source's credit,
+// which its terms ask for, under the issuer's text.
+@Preview(name = "Alerts · card expanded with credit", widthDp = 360)
+@Composable
+internal fun WeatherAlertCardCreditedPreview() {
+    Frame {
+        WeatherAlertCard(
+            sampleAlert(
+                "amber-credited",
+                "Amber wind warning",
+                "WIND",
+                AlertSeverity.SEVERE,
+                "2026-10-23T18:00:00Z",
+                issuedAt = Instant.parse("2026-10-22T09:02:00Z"),
+                attribution = AlertAttribution("Met Office via MeteoAlarm", "https://example.com/credit"),
+            ),
             PREVIEW_NOW,
             onDismiss = {},
             zone = ZoneOffset.UTC,

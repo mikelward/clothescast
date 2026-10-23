@@ -627,7 +627,18 @@ async function ingestWithin(deps: IngestDeps): Promise<IngestSummary> {
   await Promise.all([...byHost.values()].map((indices) =>
     pool(indices, FEED_CONCURRENCY, async (i) => {
       const source = deps.sources[i];
-      sourceStates[i] = await refreshSource(deps, source, previous?.sources[source.id], now, regions);
+      const started = Date.now();
+      const state = await refreshSource(deps, source, previous?.sources[source.id], now, regions);
+      sourceStates[i] = state;
+      const entries = Object.values(state.entries);
+      // One line per source per run, so a quiet feed reads as checked, not missing.
+      deps.log.info("Alert source checked", {
+        source: source.id,
+        alerts: entries.filter(({ result }) => typeof result !== "string").length,
+        skipped: entries.filter(({ result }) => typeof result === "string").length,
+        error: state.error,
+        ms: Date.now() - started,
+      });
     }),
   ));
 

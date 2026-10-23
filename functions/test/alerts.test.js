@@ -258,6 +258,23 @@ test("a source still fetching at the deadline keeps its last alerts, and the res
   assert.equal(summary.alerts, 2);
 });
 
+test("every source logs one line a run, failed or not", async () => {
+  const lines = [];
+  const log = { ...quiet, info: (message, fields) => lines.push({ message, ...fields }) };
+  const failing = { ...SOURCE, id: "failing", url: "https://other.example.org/feed" };
+  const fetch = fakeFetch({ [SOURCE.url]: FEED, [CAP_URL]: ALERT });
+  await ingest({ sources: [SOURCE, failing], store: fakeStore(), fetch, now: () => NOW, log });
+
+  // Hosts run side by side, so the lines come in either order.
+  const checked = lines.filter((l) => l.message === "Alert source checked")
+    .map(({ source, alerts, error }) => ({ source, alerts, error }))
+    .sort((a, b) => a.source.localeCompare(b.source));
+  assert.deepEqual(checked, [
+    { source: "failing", alerts: 0, error: "HTTP 404" },
+    { source: "meteoalarm-gb", alerts: 1, error: null },
+  ]);
+});
+
 test("an unchanged feed rewrites only the index and refetches no documents", async () => {
   const store = fakeStore();
   await run(store, { [SOURCE.url]: FEED, [CAP_URL]: ALERT });

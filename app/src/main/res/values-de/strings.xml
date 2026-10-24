@@ -393,6 +393,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="conditions_widget_description">Temperatur, Regen, Wind und UV auf einen Blick.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Böen %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--
@@ -640,6 +641,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">Windgeschwindigkeit</string>
     <string name="today_wind_subtitle">Windgeschwindigkeit (%1$s) pro Stunde</string>
+    <string name="today_gusts_title">Windböen</string>
+    <string name="today_gusts_subtitle">Windböen (%1$s) pro Stunde</string>
     <string name="today_cloud_title">Bewölkung</string>
     <string name="today_cloud_subtitle">Gesamtbewölkung (%) pro Stunde</string>
     <string name="today_humidity_title">Luftfeuchtigkeit</string>

@@ -440,6 +440,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vindhastighed</string>
     <string name="today_wind_subtitle">Vindhastighed (%1$s) pr. time</string>
+    <string name="today_gusts_title">Vindstød</string>
+    <string name="today_gusts_subtitle">Vindstød (%1$s) pr. time</string>
     <string name="today_cloud_title">Skydække</string>
     <string name="today_cloud_subtitle">Samlet skydække (%) pr. time</string>
     <string name="today_humidity_title">Luftfugtighed</string>
@@ -466,6 +468,7 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrig)").
     <string name="conditions_widget_description">Temperatur, regn, vind og UV på et øjeblik.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Vindstød %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->

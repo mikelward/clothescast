@@ -65,6 +65,7 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="conditions_widget_description">Temperatuur, vihm, tuul ja UV ühe pilguga.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Puhangud %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <string name="today_forecast_title">Tunnipõhine ilmaprognoos</string>
@@ -84,6 +85,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="today_wind_title">Tuule kiirus</string>
     <string name="today_wind_subtitle">Tuule kiirus (%1$s) tunni kaupa</string>
+    <string name="today_gusts_title">Tuulepuhangud</string>
+    <string name="today_gusts_subtitle">Tuulepuhangud (%1$s) tunni kaupa</string>
 
     <string name="today_cloud_title">Pilvisus</string>
     <string name="today_cloud_subtitle">Kogu pilvisus (%) tunni kaupa</string>

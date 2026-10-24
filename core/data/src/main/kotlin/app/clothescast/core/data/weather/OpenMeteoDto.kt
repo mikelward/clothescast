@@ -38,5 +38,6 @@ internal data class HourlyData(
     @SerialName("weather_code") val weatherCode: List<Int?>,
     @SerialName("precipitation") val precipitation: List<Double?> = emptyList(),
     @SerialName("wind_speed_10m") val windSpeed: List<Double?> = emptyList(),
+    @SerialName("wind_gusts_10m") val windGusts: List<Double?> = emptyList(),
     @SerialName("uv_index") val uvIndex: List<Double?> = emptyList(),
 )

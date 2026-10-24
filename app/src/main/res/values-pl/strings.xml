@@ -354,6 +354,7 @@ is unchanged; only the displayed label localizes.
     <string name="conditions_widget_description">Temperatura, deszcz, wiatr i UV w skrócie.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Porywy %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--
@@ -561,6 +562,8 @@ is unchanged; only the displayed label localizes.
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Prędkość wiatru</string>
     <string name="today_wind_subtitle">Prędkość wiatru (%1$s) na godzinę</string>
+    <string name="today_gusts_title">Porywy wiatru</string>
+    <string name="today_gusts_subtitle">Porywy wiatru (%1$s) na godzinę</string>
     <string name="today_cloud_title">Zachmurzenie</string>
     <string name="today_cloud_subtitle">Całkowite zachmurzenie (%) na godzinę</string>
     <string name="today_humidity_title">Wilgotność</string>

@@ -2,6 +2,7 @@ package app.clothescast.cast
 
 import android.content.Context
 import app.clothescast.alerts.insightAlerts
+import app.clothescast.alerts.withAlerts
 import app.clothescast.R
 import app.clothescast.calendar.resolveHolidayTheme
 import app.clothescast.core.domain.model.ForecastPeriod
@@ -101,7 +102,7 @@ internal suspend fun castCurrentInsight(
         hourly = insight.hourly,
         temperatureUnit = prefs.temperatureUnit,
         windSpeedUnit = prefs.windSpeedUnit,
-    ).copy(alertLevel = alerts.maxOfOrNull { it.level })
+    ).withAlerts(alerts)
     val header = outfitCardHeader(context, insight.period, prefs, formatter.locale)
 
     // By the insight's own date, as the worker's card is: overnight the current

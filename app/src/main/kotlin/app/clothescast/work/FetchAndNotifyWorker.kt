@@ -4,8 +4,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.location.LocationManager
-import app.clothescast.alerts.cardAlertLevel
 import app.clothescast.alerts.insightAlerts
+import app.clothescast.alerts.withAlerts
 import app.clothescast.diag.DiagLog
 import com.mikelward.androidlog.sensitive
 import androidx.annotation.StringRes
@@ -1628,7 +1628,7 @@ class FetchAndNotifyWorker(
         headColors: Map<OutfitSuggestion.Head, Long>,
     ): ByteArray? {
         val outfit = insight.outfit ?: return null
-        val alertLevel = cardAlertLevel(applicationContext, prefs, insight)
+        val alerts = insightAlerts(applicationContext, prefs, insight)
         return runCatching {
             val formatter = InsightFormatter.forRegion(applicationContext, prefs.region)
             val info = outfitCardInfoLines(
@@ -1637,7 +1637,7 @@ class FetchAndNotifyWorker(
                 hourly = insight.hourly,
                 temperatureUnit = prefs.temperatureUnit,
                 windSpeedUnit = prefs.windSpeedUnit,
-            ).copy(alertLevel = alertLevel)
+            ).withAlerts(alerts)
             val header = outfitCardHeader(applicationContext, insight.period, prefs, formatter.locale)
             renderOutfitCard(
                 context = applicationContext,

@@ -314,6 +314,7 @@ displayed label localizes.
     <string name="conditions_widget_description">Lämpötila, sade, tuuli ja UV yhdellä silmäyksellä.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Puuskat %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
 
@@ -504,6 +505,8 @@ displayed label localizes.
 
     <string name="today_wind_title">Tuulennopeus</string>
     <string name="today_wind_subtitle">Tuulennopeus (%1$s) tunnissa</string>
+    <string name="today_gusts_title">Tuulenpuuskat</string>
+    <string name="today_gusts_subtitle">Tuulenpuuskat (%1$s) tunnissa</string>
     <string name="today_cloud_title">Pilvisyys</string>
     <string name="today_cloud_subtitle">Kokonaispilvisyys (%) tunnissa</string>
     <string name="today_humidity_title">Kosteus</string>

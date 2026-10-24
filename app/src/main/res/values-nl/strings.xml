@@ -354,6 +354,7 @@ the displayed label localizes.
     <string name="conditions_widget_description">Temperatuur, regen, wind en UV in één oogopslag.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Windstoten %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--
@@ -563,6 +564,8 @@ the displayed label localizes.
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Windsnelheid</string>
     <string name="today_wind_subtitle">Windsnelheid (%1$s) per uur</string>
+    <string name="today_gusts_title">Windstoten</string>
+    <string name="today_gusts_subtitle">Windstoten (%1$s) per uur</string>
     <string name="today_cloud_title">Bewolking</string>
     <string name="today_cloud_subtitle">Totale bewolking (%) per uur</string>
     <string name="today_humidity_title">Luchtvochtigheid</string>

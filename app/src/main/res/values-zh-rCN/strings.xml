@@ -382,6 +382,7 @@ label localizes.
     <string name="conditions_widget_description">温度、降雨、风力和 UV 一目了然。</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">阵风 %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--
@@ -608,6 +609,8 @@ label localizes.
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">风速</string>
     <string name="today_wind_subtitle">每小时风速（%1$s）</string>
+    <string name="today_gusts_title">阵风</string>
+    <string name="today_gusts_subtitle">每小时阵风（%1$s）</string>
     <string name="today_cloud_title">云量</string>
     <string name="today_cloud_subtitle">每小时总云量（%）</string>
     <string name="today_humidity_title">湿度</string>

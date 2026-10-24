@@ -135,6 +135,7 @@ internal object OpenMeteoMapper {
                 condition = WmoCodeMapper.map(weatherCode.getOrNull(i)),
                 precipitationMm = precipitation.getOrNull(i) ?: 0.0,
                 windSpeedKmh = windSpeed.getOrNull(i),
+                windGustKmh = windGusts.getOrNull(i),
                 uvIndex = uvIndex.getOrNull(i),
             )
         }

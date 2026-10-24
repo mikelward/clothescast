@@ -23,6 +23,7 @@ class ConsensusBlendTest {
         precip: Double = 0.0,
         mm: Double = 0.0,
         wind: Double? = null,
+        gust: Double? = null,
         uv: Double? = null,
         condition: WeatherCondition = WeatherCondition.CLEAR,
     ) = HourlyForecast(
@@ -32,6 +33,7 @@ class ConsensusBlendTest {
         precipitationProbabilityPct = precip,
         precipitationMm = mm,
         windSpeedKmh = wind,
+        windGustKmh = gust,
         uvIndex = uv,
         condition = condition,
     )
@@ -43,6 +45,7 @@ class ConsensusBlendTest {
         precip: Double? = 0.0,
         mm: Double? = null,
         wind: Double? = null,
+        gust: Double? = null,
         uv: Double? = null,
         condition: WeatherCondition? = null,
         date: LocalDate = today,
@@ -53,6 +56,7 @@ class ConsensusBlendTest {
         precipitationProbabilityPct = precip,
         precipitationMm = mm,
         windSpeedKmh = wind,
+        windGustKmh = gust,
         uvIndex = uv,
         condition = condition,
     )
@@ -384,6 +388,29 @@ class ConsensusBlendTest {
 
         blended[0].windSpeedKmh!! shouldBe (25.0 plusOrMinus 0.0001) // (20 + 30) / 2, best_match null skipped
         blended[0].uvIndex!! shouldBe (6.0 plusOrMinus 0.0001)       // (5 + 7) / 2
+    }
+
+    @Test
+    fun `gusts blend like wind, skipping models without them and falling back to best-match`() {
+        val best = listOf(hour(12, temp = 10.0, gust = 99.0), hour(13, temp = 10.0, gust = 44.0))
+        val perModel = PerModelHourly(
+            byModel = mapOf(
+                "gfs_seamless" to listOf(
+                    perModel(12, apparent = 11.0, air = 12.0, gust = 50.0),
+                    perModel(13, apparent = 11.0, air = 12.0),
+                ),
+                "icon_seamless" to listOf(
+                    perModel(12, apparent = 13.0, air = 14.0, gust = 60.0),
+                    perModel(13, apparent = 13.0, air = 14.0),
+                ),
+                PerModelHourly.BEST_MATCH_MODEL_ID to listOf(perModel(12, apparent = 9.0, air = 10.0)),
+            ),
+        )
+
+        val blended = blendConsensusHourly(today, best, perModel).shouldNotBeNull()
+
+        blended[0].windGustKmh!! shouldBe (55.0 plusOrMinus 0.0001) // (50 + 60) / 2
+        blended[1].windGustKmh!! shouldBe (44.0 plusOrMinus 0.0001) // none reported: best_match's own
     }
 
     @Test

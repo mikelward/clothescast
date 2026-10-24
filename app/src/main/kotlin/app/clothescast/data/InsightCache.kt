@@ -336,6 +336,7 @@ class InsightCache(
         val condition: String,
         val precipitationMm: Double = 0.0,
         val windSpeedKmh: Double? = null,
+        val windGustKmh: Double? = null,
         val uvIndex: Double? = null,
     ) {
         fun toDomain(): HourlyForecast = HourlyForecast(
@@ -347,6 +348,7 @@ class InsightCache(
                 .getOrDefault(WeatherCondition.UNKNOWN),
             precipitationMm = precipitationMm,
             windSpeedKmh = windSpeedKmh,
+            windGustKmh = windGustKmh,
             uvIndex = uvIndex,
         )
     }
@@ -396,6 +398,7 @@ class InsightCache(
         val precipitationProbabilityPct: Double? = null,
         val precipitationMm: Double? = null,
         val windSpeedKmh: Double? = null,
+        val windGustKmh: Double? = null,
         val relativeHumidityPct: Double? = null,
         val cloudCoverPct: Double? = null,
         val shortwaveRadiationWm2: Double? = null,
@@ -415,6 +418,7 @@ class InsightCache(
                 precipitationProbabilityPct = precipitationProbabilityPct,
                 precipitationMm = precipitationMm,
                 windSpeedKmh = windSpeedKmh,
+                windGustKmh = windGustKmh,
                 relativeHumidityPct = relativeHumidityPct,
                 cloudCoverPct = cloudCoverPct,
                 shortwaveRadiationWm2 = shortwaveRadiationWm2,
@@ -551,6 +555,7 @@ class InsightCache(
         condition = condition.name,
         precipitationMm = precipitationMm,
         windSpeedKmh = windSpeedKmh,
+        windGustKmh = windGustKmh,
         uvIndex = uvIndex,
     )
 
@@ -573,6 +578,7 @@ class InsightCache(
         precipitationProbabilityPct = precipitationProbabilityPct,
         precipitationMm = precipitationMm,
         windSpeedKmh = windSpeedKmh,
+        windGustKmh = windGustKmh,
         relativeHumidityPct = relativeHumidityPct,
         cloudCoverPct = cloudCoverPct,
         shortwaveRadiationWm2 = shortwaveRadiationWm2,

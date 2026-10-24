@@ -421,6 +421,8 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Rychlost větru</string>
     <string name="today_wind_subtitle">Rychlost větru (%1$s) za hodinu</string>
+    <string name="today_gusts_title">Nárazy větru</string>
+    <string name="today_gusts_subtitle">Nárazy větru (%1$s) za hodinu</string>
     <string name="today_cloud_title">Oblačnost</string>
     <string name="today_cloud_subtitle">Celková oblačnost (%) za hodinu</string>
     <string name="today_humidity_title">Vlhkost vzduchu</string>
@@ -465,6 +467,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="conditions_widget_description">Teplota, déšť, vítr a UV na první pohled.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Nárazy %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->

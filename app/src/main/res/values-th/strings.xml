@@ -141,6 +141,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_label_tonight">คืนนี้</string>
     <string name="today_outfit_label_tomorrow">พรุ่งนี้</string>
     <string name="today_outfit_label_tomorrow_night">คืนพรุ่งนี้</string>
+    <string name="today_wardrobe_day">กลางวัน</string>
+    <string name="today_wardrobe_night">กลางคืน</string>
 
     <!-- Outfit rationale dialog -->
     <string name="today_rationale_title">ทำไมถึงแนะนำชุดนี้?</string>

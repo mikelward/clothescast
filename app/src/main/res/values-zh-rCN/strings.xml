@@ -338,6 +338,8 @@ label localizes.
     <string name="today_outfit_label_tonight">今晚</string>
     <string name="today_outfit_label_tomorrow">明天</string>
     <string name="today_outfit_label_tomorrow_night">明晚</string>
+    <string name="today_wardrobe_day">白天</string>
+    <string name="today_wardrobe_night">夜间</string>
 
     <string name="today_outfit_top_tshirt">T恤</string>
     <string name="today_outfit_top_sweater">毛衣</string>

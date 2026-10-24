@@ -351,6 +351,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="today_outfit_label_tonight">I kveld</string>
     <string name="today_outfit_label_tomorrow">I morgen</string>
     <string name="today_outfit_label_tomorrow_night">I morgen kveld</string>
+    <string name="today_wardrobe_day">Dag</string>
+    <string name="today_wardrobe_night">Natt</string>
 
     <!-- Outfit card labels. -->
     <string name="today_outfit_top_tshirt">T-skjorte</string>

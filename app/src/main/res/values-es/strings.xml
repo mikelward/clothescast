@@ -342,6 +342,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_label_tonight">Esta noche</string>
     <string name="today_outfit_label_tomorrow">Mañana</string>
     <string name="today_outfit_label_tomorrow_night">Mañana por la noche</string>
+    <string name="today_wardrobe_day">Día</string>
+    <string name="today_wardrobe_night">Noche</string>
 
     <string name="today_outfit_top_tshirt">Camiseta</string>
     <string name="today_outfit_top_sweater">Jersey</string>

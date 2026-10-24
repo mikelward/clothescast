@@ -27,6 +27,8 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="today_outfit_label_tonight">Aquesta nit</string>
     <string name="today_outfit_label_tomorrow">Demà</string>
     <string name="today_outfit_label_tomorrow_night">Demà a la nit</string>
+    <string name="today_wardrobe_day">Dia</string>
+    <string name="today_wardrobe_night">Nit</string>
     <string name="today_outfit_top_tshirt">Samarreta</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_sweater">Jersei</string>

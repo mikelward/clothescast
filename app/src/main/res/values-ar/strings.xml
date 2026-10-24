@@ -134,6 +134,8 @@ they work correctly in both the single-band and range templates.
     <string name="today_outfit_label_tonight">الليلة</string>
     <string name="today_outfit_label_tomorrow">غدًا</string>
     <string name="today_outfit_label_tomorrow_night">مساء الغد</string>
+    <string name="today_wardrobe_day">النهار</string>
+    <string name="today_wardrobe_night">الليل</string>
     <string name="today_outfit_top_polo">بولو</string>
     <string name="today_outfit_top_thin_jacket">جاكيت خفيف</string>
     <string name="today_outfit_top_thick_coat">معطف ثقيل</string>

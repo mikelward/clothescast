@@ -334,6 +334,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_label_tonight">Stasera</string>
     <string name="today_outfit_label_tomorrow">Domani</string>
     <string name="today_outfit_label_tomorrow_night">Domani sera</string>
+    <string name="today_wardrobe_day">Giorno</string>
+    <string name="today_wardrobe_night">Notte</string>
 
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_sweater">Maglione</string>

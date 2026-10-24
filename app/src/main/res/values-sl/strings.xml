@@ -133,6 +133,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="today_outfit_label_tonight">Nocoj</string>
     <string name="today_outfit_label_tomorrow">Jutri</string>
     <string name="today_outfit_label_tomorrow_night">Jutri zvečer</string>
+    <string name="today_wardrobe_day">Dan</string>
+    <string name="today_wardrobe_night">Noč</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_thin_jacket">Lahka jakna</string>
     <string name="today_outfit_top_thick_coat">Debel plašč</string>

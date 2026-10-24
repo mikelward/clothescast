@@ -131,6 +131,8 @@ What is NOT overridden, by design:
     <string name="today_outfit_label_tonight">Šįvakar</string>
     <string name="today_outfit_label_tomorrow">Rytoj</string>
     <string name="today_outfit_label_tomorrow_night">Rytoj vakare</string>
+    <string name="today_wardrobe_day">Diena</string>
+    <string name="today_wardrobe_night">Naktis</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_thin_jacket">Plona striukė</string>
     <string name="today_outfit_top_thick_coat">Storas paltas</string>

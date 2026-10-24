@@ -129,6 +129,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="today_outfit_label_tonight">Malam ini</string>
     <string name="today_outfit_label_tomorrow">Esok</string>
     <string name="today_outfit_label_tomorrow_night">Esok malam</string>
+    <string name="today_wardrobe_day">Siang</string>
+    <string name="today_wardrobe_night">Malam</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_thin_jacket">Jaket nipis</string>
     <string name="today_outfit_top_thick_coat">Kot tebal</string>

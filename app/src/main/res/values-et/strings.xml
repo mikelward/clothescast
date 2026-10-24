@@ -27,6 +27,8 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
     <string name="today_outfit_label_tonight">Täna õhtul</string>
     <string name="today_outfit_label_tomorrow">Homme</string>
     <string name="today_outfit_label_tomorrow_night">Homme õhtul</string>
+    <string name="today_wardrobe_day">Päev</string>
+    <string name="today_wardrobe_night">Öö</string>
     <string name="today_outfit_top_tshirt">T-särk</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_sweater">Kampsun</string>

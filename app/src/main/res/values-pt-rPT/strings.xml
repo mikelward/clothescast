@@ -366,6 +366,8 @@ they diverge from BR ("Polonês" → "Polaco", "Holandês" →
     <string name="today_outfit_label_tonight">Esta noite</string>
     <string name="today_outfit_label_tomorrow">Amanhã</string>
     <string name="today_outfit_label_tomorrow_night">Amanhã à noite</string>
+    <string name="today_wardrobe_day">Dia</string>
+    <string name="today_wardrobe_night">Noite</string>
 
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_sweater">Camisola</string>

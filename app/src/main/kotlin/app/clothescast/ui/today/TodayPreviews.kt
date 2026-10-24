@@ -2493,30 +2493,39 @@ private val SAMPLE_WEEK: List<DailyForecast> = run {
     }
 }
 
-// Outfit pair pinned at the top of every 7-day-page snapshot — same row
-// pages 0 / 1 surface, so the snapshots cover the pagination-consistency
-// invariant ("outfit row sits at the same vertical offset on all three
-// pages") as well as the chart deck below it.
+// The insight behind every 7-day-page snapshot's outfit slot: the pair pages
+// 0 / 1 surface, plus the week's outfits the main preview gathers into its
+// Day / Night wardrobe cards. Either way the row sits at the same vertical
+// offset as on the 12-hour pages, above the chart deck.
 private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
     period = ForecastPeriod.TODAY,
     outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
     nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
-    // Tomorrow + tomorrow night, which the "Next 7 days" page shows in place
-    // of the pair above (labels key off forDate, 2026-04-26).
-    laterOutfits = listOf(
-        PeriodOutfit(
-            date = LocalDate.of(2026, 4, 27),
-            night = false,
-            outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
-            rationale = null,
-        ),
-        PeriodOutfit(
-            date = LocalDate.of(2026, 4, 27),
-            night = true,
-            outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.LONG_PANTS),
-            rationale = null,
-        ),
-    ),
+    // A day and a night per [SAMPLE_WEEK] day (the last night drops out, as
+    // the real list's does): warm days in a T-shirt and shorts, cooler ones in
+    // a sweater; mild nights in a sweater, cold ones in a thick jacket — so the
+    // wardrobe cards show two tops and two bottoms by day, two tops by night.
+    weekOutfits = SAMPLE_WEEK.flatMap { day ->
+        listOf(
+            PeriodOutfit(
+                date = day.date,
+                night = false,
+                outfit = if (day.temperatureMaxC >= 20.0) {
+                    OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS)
+                } else {
+                    OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS)
+                },
+            ),
+            PeriodOutfit(
+                date = day.date,
+                night = true,
+                outfit = OutfitSuggestion(
+                    if (day.temperatureMinC >= 11.0) OutfitSuggestion.Top.SWEATER else OutfitSuggestion.Top.THICK_JACKET,
+                    OutfitSuggestion.Bottom.LONG_PANTS,
+                ),
+            ),
+        )
+    }.dropLast(1),
 )
 
 // The 7-day previews render the full [HomePageScaffold], whose banner stack
@@ -2547,7 +2556,7 @@ internal fun SevenDayPagePreview() {
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
-            showLaterOutfits = true,
+            wardrobeDates = SAMPLE_WEEK.first().date..SAMPLE_WEEK.last().date,
         )
     }
 }

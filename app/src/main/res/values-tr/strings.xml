@@ -273,6 +273,8 @@ displayed label localizes.
     <string name="today_outfit_label_tonight">Bu akşam</string>
     <string name="today_outfit_label_tomorrow">Yarın</string>
     <string name="today_outfit_label_tomorrow_night">Yarın akşam</string>
+    <string name="today_wardrobe_day">Gündüz</string>
+    <string name="today_wardrobe_night">Gece</string>
 
     <string name="today_outfit_top_tshirt">Tişört</string>
     <string name="today_outfit_top_sweater">Kazak</string>

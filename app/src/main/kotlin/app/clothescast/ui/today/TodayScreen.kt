@@ -155,9 +155,12 @@ import app.clothescast.ui.garment.FillGlyph
 import app.clothescast.ui.garment.FillGlyphIcon
 import app.clothescast.ui.garment.SolidGlyph
 import app.clothescast.ui.garment.SolidGlyphIcon
+import app.clothescast.ui.garment.GUST_NOTABLE_KMH
 import app.clothescast.ui.garment.WIND_NOTABLE_KMH
 import app.clothescast.ui.garment.uvScaleColorArgb
 import app.clothescast.ui.garment.windScaleColorArgb
+import app.clothescast.ui.garment.windTintKmh
+import app.clothescast.ui.garment.withAlerts
 import app.clothescast.ui.garment.conditionsCells
 import app.clothescast.ui.garment.conditionsStripDescription
 import app.clothescast.ui.garment.outfitCardInfoLines
@@ -1229,7 +1232,7 @@ internal fun HomePageScaffold(
                         // cached; before then the strip would be blank.
                         HomeSection.CONDITIONS ->
                             conditionsInfo?.takeIf { it.tempLine.isNotBlank() }?.let { info ->
-                                ConditionsStrip(info = info.copy(alertLevel = alertsState.stripLevel))
+                                ConditionsStrip(info = info.withAlerts(alertsState.stripLevel, alertsState.stripWind))
                             }
                         HomeSection.OUTFIT -> if (outfitInsight != null) {
                             OutfitPreviewRow(
@@ -1592,6 +1595,13 @@ private fun TodayPage(
                     // — clouds gate irradiance, UV is a subset of that
                     // irradiance, sunshine is the time-integrated payoff.
                     WindCard(
+                        hourly = insight.hourly,
+                        perModelHourly = perModelData,
+                        windSpeedUnit = state.windSpeedUnit,
+                        startDate = insight.forDate,
+                        showModelSpread = state.showModelSpread,
+                    )
+                    GustsCard(
                         hourly = insight.hourly,
                         perModelHourly = perModelData,
                         windSpeedUnit = state.windSpeedUnit,
@@ -3131,6 +3141,59 @@ internal fun WindCard(
     windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
     startDate: java.time.LocalDate = java.time.LocalDate.now(),
     showModelSpread: Boolean = false,
+) = WindSpeedCard(
+    hourly = hourly,
+    perModelHourly = perModelHourly,
+    windSpeedUnit = windSpeedUnit,
+    startDate = startDate,
+    showModelSpread = showModelSpread,
+    title = R.string.today_wind_title,
+    subtitleRes = R.string.today_wind_subtitle,
+    select = { it.windSpeedKmh },
+    // Tinted on its Beaufort scale once the peak is notable, the same
+    // threshold at which the strip shows wind.
+    tintArgb = { peakKmh -> if (peakKmh >= WIND_NOTABLE_KMH) windScaleColorArgb(peakKmh) else CALM_WIND_ARGB },
+)
+
+/**
+ * Diagnostic gusts card: [WindCard]'s chart for the strongest gust in each
+ * hour, the figure wind warnings quote and the one that flips an umbrella.
+ * Auto-hides the same way when no consulted model reports gusts.
+ */
+@Composable
+internal fun GustsCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+    windSpeedUnit: WindSpeedUnit = WindSpeedUnit.KMH,
+    startDate: java.time.LocalDate = java.time.LocalDate.now(),
+    showModelSpread: Boolean = false,
+) = WindSpeedCard(
+    hourly = hourly,
+    perModelHourly = perModelHourly,
+    windSpeedUnit = windSpeedUnit,
+    startDate = startDate,
+    showModelSpread = showModelSpread,
+    title = R.string.today_gusts_title,
+    subtitleRes = R.string.today_gusts_subtitle,
+    select = { it.windGustKmh },
+    // Tinted once the peak gust is notable, the strip's gust threshold, on
+    // the Beaufort scale of the mean wind such a gust usually comes with.
+    tintArgb = { peakKmh ->
+        if (peakKmh >= GUST_NOTABLE_KMH) windScaleColorArgb(windTintKmh(null, peakKmh)) else CALM_WIND_ARGB
+    },
+)
+
+@Composable
+private fun WindSpeedCard(
+    hourly: List<HourlyForecast>,
+    perModelHourly: PerModelHourly,
+    windSpeedUnit: WindSpeedUnit,
+    startDate: java.time.LocalDate,
+    showModelSpread: Boolean,
+    @androidx.annotation.StringRes title: Int,
+    @androidx.annotation.StringRes subtitleRes: Int,
+    select: (PerModelHour) -> Double?,
+    tintArgb: (peakKmh: Double) -> Int,
 ) {
     val times = remember(hourly) { hourly.map { it.time } }
     // Timestamp → window-position map matching the chart's keying (see
@@ -3143,9 +3206,9 @@ internal fun WindCard(
     // floor in the user's unit so the heuristic stays equivalent (10 km/h
     // ≈ 6.2 mph) instead of shrinking to a tighter span on imperial.
     val minSpan = 10.0.toWindSpeedUnit(windSpeedUnit)
-    val peak = remember(perModelHourly, windSpeedUnit, times, indexByTime) {
+    val peak = remember(perModelHourly, windSpeedUnit, times, indexByTime, title) {
         perModelConsensusSeries(perModelHourly, indexByTime) {
-            it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit)
+            select(it)?.toWindSpeedUnit(windSpeedUnit)
         }
             .maxByOrNull { it.second }
             ?.takeIf { it.first in times.indices }
@@ -3160,15 +3223,15 @@ internal fun WindCard(
             value.roundToInt(),
             windSpeedUnit.symbol(),
         )
-    } ?: stringResource(R.string.today_wind_subtitle, windSpeedUnit.symbol())
+    } ?: stringResource(subtitleRes, windSpeedUnit.symbol())
     val unitSymbol = windSpeedUnit.symbol()
     PerModelDiagnosticCard(
-        title = stringResource(R.string.today_wind_title),
+        title = stringResource(title),
         subtitle = subtitle,
         hourly = hourly,
         startDate = startDate,
         perModelHourly = perModelHourly,
-        picker = { it.windSpeedKmh?.toWindSpeedUnit(windSpeedUnit) },
+        picker = { select(it)?.toWindSpeedUnit(windSpeedUnit) },
         yAxis = YAxis.AutoZeroBased(minSpan = minSpan),
         tooltipValueFormat = { "${it.roundToInt()} $unitSymbol" },
         // Picker closes over windSpeedUnit; key the series cache on it so the
@@ -3176,13 +3239,12 @@ internal fun WindCard(
         // overlay payload is unchanged.
         pickerKey = windSpeedUnit,
         showOverlay = showModelSpread,
-        // The strip's wind glyph, tinted on its Beaufort scale once the peak
-        // is notable, the same threshold at which the strip shows wind.
+        // The strip's wind glyph, tinted by [tintArgb] on the peak in km/h.
         leadingIcon = {
             val peakKmh = peak?.second?.let { it / 1.0.toWindSpeedUnit(windSpeedUnit) } ?: 0.0
             SolidGlyphIcon(
                 glyph = SolidGlyph.WIND,
-                tintArgb = if (peakKmh >= WIND_NOTABLE_KMH) windScaleColorArgb(peakKmh) else CALM_WIND_ARGB,
+                tintArgb = tintArgb(peakKmh),
                 modifier = Modifier.size(SUBTITLE_ICON_SIZE),
             )
         },

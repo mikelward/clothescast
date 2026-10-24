@@ -50,6 +50,7 @@ import app.clothescast.alerts.alertIssued
 import app.clothescast.alerts.alertLinks
 import app.clothescast.alerts.alertTitle
 import app.clothescast.alerts.alertUntil
+import app.clothescast.alerts.anyWind
 import app.clothescast.alerts.icon
 import app.clothescast.core.domain.model.AlertLevel
 import app.clothescast.core.domain.model.Location
@@ -88,6 +89,10 @@ data class TodayAlertsState(
      */
     val stripLevel: AlertLevel?
         get() = alerts.maxOfOrNull { it.level }?.takeIf { it >= AlertLevel.YELLOW }
+
+    /** Whether one of the strip's alerts is a wind or storm warning, which shows its wind cell. */
+    val stripWind: Boolean
+        get() = alerts.filter { it.level >= AlertLevel.YELLOW }.anyWind()
 }
 
 /**

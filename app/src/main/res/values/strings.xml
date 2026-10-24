@@ -107,6 +107,10 @@
     <string name="conditions_rain_pct">%1$d%%</string>
     <!-- Conditions widget wind cell, e.g. "35 km/h" (value + unit symbol). -->
     <string name="conditions_wind">%1$d %2$s</string>
+    <!-- The wind cell when the forecast has gusts: the peak gust, e.g.
+         "Gusts 55 km/h", the figure wind warnings quote. Shown on a notable
+         gust, a notable mean wind, or a wind alert. -->
+    <string name="conditions_wind_gust">Gusts %1$d %2$s</string>
     <!-- Conditions widget UV cell, e.g. "UV 8". -->
     <string name="conditions_uv">UV %1$d</string>
 
@@ -253,6 +257,11 @@
     <!-- %1$s is the user's wind-speed unit, e.g. "km/h" or "mph". Derived from
          the chosen distance unit (metric / imperial) — see DistanceUnit.windSpeedUnit(). -->
     <string name="today_wind_subtitle">Wind speed (%1$s) by hour</string>
+    <!-- Gusts diagnostic card, below the wind card: the strongest gust in
+         each hour. Its peak subtitle reuses [today_wind_peak]. %1$s is the
+         user's wind-speed unit. -->
+    <string name="today_gusts_title">Wind gusts</string>
+    <string name="today_gusts_subtitle">Wind gusts (%1$s) by hour</string>
     <!-- Replaces [today_wind_subtitle] when the consensus series has data: peak
          consensus wind speed for the day. %1$d = value rounded to the user's
          wind-speed unit, %2$s = unit symbol ("km/h" / "mph"), %3$s = hour

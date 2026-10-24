@@ -264,13 +264,14 @@ class OpenMeteoClient(
                         temperatureC = air,
                         precipitationProbabilityPct = precipitationProbability.getOrNull(i)?.toDouble(),
                         precipitationMm = precipitation.getOrNull(i),
-                        // Wind and UV ride the primary call too, so best_match
-                        // votes in the wind / UV consensus and draws on those
+                        // Wind, gusts and UV ride the primary call too, so best_match
+                        // votes in their consensus and draws on those
                         // diagnostic charts like any consulted model. Humidity,
                         // cloud, solar, and sunshine ride only the side-band
                         // multi-model call, so they stay null — "no data for
                         // this metric" rather than a synthetic zero.
                         windSpeedKmh = windSpeed.getOrNull(i),
+                        windGustKmh = windGusts.getOrNull(i),
                         uvIndex = uvIndex.getOrNull(i),
                         condition = weatherCode.getOrNull(i)?.let { WmoCodeMapper.map(it) },
                     ),
@@ -314,7 +315,7 @@ class OpenMeteoClient(
                 parameter(
                     "hourly",
                     "temperature_2m,apparent_temperature,precipitation_probability," +
-                        "precipitation,weather_code,wind_speed_10m,uv_index",
+                        "precipitation,weather_code,wind_speed_10m,wind_gusts_10m,uv_index",
                 )
             }.body()
         }

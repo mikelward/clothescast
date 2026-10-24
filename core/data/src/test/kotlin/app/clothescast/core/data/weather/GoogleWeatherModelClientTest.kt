@@ -36,7 +36,7 @@ class GoogleWeatherModelClientTest {
               "relativeHumidity": 72,
               "uvIndex": 2,
               "precipitation": {"probability":{"percent":65,"type":"RAIN"},"qpf":{"quantity":1.2,"unit":"MILLIMETERS"}},
-              "wind": {"speed":{"value":14.0,"unit":"KILOMETERS_PER_HOUR"}},
+              "wind": {"speed":{"value":14.0,"unit":"KILOMETERS_PER_HOUR"},"gust":{"value":31.0,"unit":"KILOMETERS_PER_HOUR"}},
               "cloudCover": 90
             },
             {
@@ -131,6 +131,7 @@ class GoogleWeatherModelClientTest {
         first.precipitationProbabilityPct shouldBe 65.0
         first.precipitationMm shouldBe 1.2
         first.windSpeedKmh shouldBe 14.0
+        first.windGustKmh shouldBe 31.0
         first.uvIndex shouldBe 2.0
         first.relativeHumidityPct shouldBe 72.0
         first.cloudCoverPct shouldBe 90.0

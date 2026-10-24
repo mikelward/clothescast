@@ -163,6 +163,7 @@ What is NOT overridden, by design:
     <string name="conditions_widget_description">Temperatūra, lietus, vėjas ir UV vienu žvilgsniu.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Gūsiai %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Hourly forecast card. -->
@@ -187,6 +188,8 @@ What is NOT overridden, by design:
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vėjo greitis</string>
     <string name="today_wind_subtitle">Vėjo greitis (%1$s) pagal valandą</string>
+    <string name="today_gusts_title">Vėjo gūsiai</string>
+    <string name="today_gusts_subtitle">Vėjo gūsiai (%1$s) pagal valandą</string>
     <string name="today_cloud_title">Debesuotumas</string>
     <string name="today_cloud_subtitle">Bendras debesuotumas (%) pagal valandą</string>
     <string name="today_humidity_title">Drėgmė</string>

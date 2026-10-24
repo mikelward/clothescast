@@ -166,6 +166,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="conditions_widget_description">Nhiệt độ, mưa, gió và UV trong nháy mắt.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Giật %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast chart -->
@@ -190,6 +191,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <!-- Diagnostic cards -->
     <string name="today_wind_title">Tốc độ gió</string>
     <string name="today_wind_subtitle">Tốc độ gió (%1$s) theo giờ</string>
+    <string name="today_gusts_title">Gió giật</string>
+    <string name="today_gusts_subtitle">Gió giật (%1$s) theo giờ</string>
     <string name="today_cloud_title">Độ che phủ mây</string>
     <string name="today_cloud_subtitle">Độ che phủ mây (%) theo giờ</string>
     <string name="today_humidity_title">Độ ẩm</string>

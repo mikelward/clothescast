@@ -409,6 +409,7 @@ only the displayed label localizes.
     <string name="conditions_widget_description">Температура, дощ, вітер і UV з першого погляду.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Пориви %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Hourly forecast card. -->
@@ -438,6 +439,8 @@ only the displayed label localizes.
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Швидкість вітру</string>
     <string name="today_wind_subtitle">Швидкість вітру (%1$s) погодинно</string>
+    <string name="today_gusts_title">Пориви вітру</string>
+    <string name="today_gusts_subtitle">Пориви вітру (%1$s) погодинно</string>
     <string name="today_cloud_title">Хмарність</string>
     <string name="today_cloud_subtitle">Загальна хмарність (%) погодинно</string>
     <string name="today_humidity_title">Вологість</string>

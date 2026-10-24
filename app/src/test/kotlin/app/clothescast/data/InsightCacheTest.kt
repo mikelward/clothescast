@@ -67,7 +67,12 @@ class InsightCacheTest {
 
     private val mildHourly = listOf(
         HourlyForecast(LocalTime.of(7, 0), 14.0, 13.0, 5.0, WeatherCondition.CLEAR),
-        HourlyForecast(LocalTime.of(14, 0), 19.0, 18.0, 5.0, WeatherCondition.CLEAR),
+        // Wind and gusts set, so the hourly round-trip carries them.
+        HourlyForecast(
+            LocalTime.of(14, 0), 19.0, 18.0, 5.0, WeatherCondition.CLEAR,
+            windSpeedKmh = 15.0,
+            windGustKmh = 32.0,
+        ),
     )
     private val mildYesterdayHourly = listOf(
         HourlyForecast(LocalTime.of(7, 0), 13.0, 12.0, 5.0, WeatherCondition.CLEAR),
@@ -487,6 +492,7 @@ class InsightCacheTest {
                         temperatureC = 14.0,
                         precipitationProbabilityPct = 10.0,
                         windSpeedKmh = 8.0,
+                        windGustKmh = 21.0,
                         relativeHumidityPct = 78.0,
                         cloudCoverPct = 60.0,
                     ),

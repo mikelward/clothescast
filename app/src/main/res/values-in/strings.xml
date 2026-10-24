@@ -165,6 +165,7 @@ to values/strings.xml (English).
     <string name="conditions_widget_description">Suhu, hujan, angin, dan UV sekilas.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Embusan %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast cards -->
@@ -185,6 +186,8 @@ to values/strings.xml (English).
     <!-- Wind / cloud / humidity diagnostic cards -->
     <string name="today_wind_title">Kecepatan angin</string>
     <string name="today_wind_subtitle">Kecepatan angin (%1$s) per jam</string>
+    <string name="today_gusts_title">Embusan angin</string>
+    <string name="today_gusts_subtitle">Embusan angin (%1$s) per jam</string>
     <string name="today_cloud_title">Tutupan awan</string>
     <string name="today_cloud_subtitle">Tutupan awan total (%) per jam</string>
     <string name="today_humidity_title">Kelembapan</string>

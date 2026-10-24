@@ -28,7 +28,8 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import app.clothescast.R
-import app.clothescast.alerts.cardAlertLevel
+import app.clothescast.alerts.insightAlerts
+import app.clothescast.alerts.withAlerts
 import app.clothescast.diag.DiagLog
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.ui.garment.OutfitCardInfoLines
@@ -97,7 +98,7 @@ class ConditionsWidget : GlanceAppWidget() {
                     hourly = insight.hourly,
                     temperatureUnit = prefs.temperatureUnit,
                     windSpeedUnit = prefs.windSpeedUnit,
-                ).copy(alertLevel = cardAlertLevel(context, prefs, insight))
+                ).withAlerts(insightAlerts(context, prefs, insight))
             }.onFailure {
                 // A formatter / strip-math failure blanks the widget to its
                 // empty state; without a log that's indistinguishable from

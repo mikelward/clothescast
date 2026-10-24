@@ -1691,6 +1691,8 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
                 .coerceIn(0.0, 100.0),
             precipitationMm = (h.precipitationMm * precipMmScale).coerceAtLeast(0.0),
             windSpeedKmh = windBase + hourPhase * 0.6,
+            // Gusts about 1.6 times the mean, as they typically run.
+            windGustKmh = (windBase + hourPhase * 0.6) * 1.6,
             relativeHumidityPct = 70.0 - hourPhase * 0.5,
             cloudCoverPct = (cloudBase + hourPhase * 2.0).coerceIn(0.0, 100.0),
             shortwaveRadiationWm2 = solarPeakWm2 * daylightFactor,
@@ -1747,6 +1749,7 @@ private val SAMPLE_PER_MODEL_HOURLY: PerModelHourly = run {
             ).map {
                 it.copy(
                     windSpeedKmh = null,
+                    windGustKmh = null,
                     relativeHumidityPct = null,
                     cloudCoverPct = null,
                     shortwaveRadiationWm2 = null,
@@ -1887,6 +1890,19 @@ internal fun WindCardConsensusPreview() {
 internal fun WindCardWithModelSpreadPreview() {
     Frame {
         WindCard(
+            hourly = SAMPLE_HOURLY_RAINY,
+            perModelHourly = SAMPLE_PER_MODEL_HOURLY,
+            startDate = SAMPLE_PER_MODEL_DATE,
+            showModelSpread = true,
+        )
+    }
+}
+
+@Preview(name = "Gusts card · with model spread", widthDp = 360)
+@Composable
+internal fun GustsCardWithModelSpreadPreview() {
+    Frame {
+        GustsCard(
             hourly = SAMPLE_HOURLY_RAINY,
             perModelHourly = SAMPLE_PER_MODEL_HOURLY,
             startDate = SAMPLE_PER_MODEL_DATE,

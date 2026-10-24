@@ -38,6 +38,7 @@ class GoogleForecastCacheTest {
             precipitationProbabilityPct = 40.0,
             precipitationMm = 0.8,
             windSpeedKmh = 12.0,
+            windGustKmh = 30.0,
             relativeHumidityPct = 70.0,
             cloudCoverPct = 80.0,
             uvIndex = 2.0,

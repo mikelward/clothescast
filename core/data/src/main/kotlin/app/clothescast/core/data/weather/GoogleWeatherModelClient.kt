@@ -314,6 +314,7 @@ class GoogleWeatherModelClient(
                 precipitationProbabilityPct = hour.precipitation?.probability?.percent?.toDouble(),
                 precipitationMm = hour.precipitation?.qpf?.quantity,
                 windSpeedKmh = hour.wind?.speed?.value,
+                windGustKmh = hour.wind?.gust?.value,
                 relativeHumidityPct = hour.relativeHumidity?.toDouble(),
                 cloudCoverPct = hour.cloudCover?.toDouble(),
                 uvIndex = hour.uvIndex?.toDouble(),
@@ -418,4 +419,4 @@ private data class GoogleProbability(val percent: Int? = null, val type: String?
 private data class GoogleQpf(val quantity: Double? = null, val unit: String? = null)
 
 @Serializable
-private data class GoogleWind(val speed: GoogleMeasure? = null)
+private data class GoogleWind(val speed: GoogleMeasure? = null, val gust: GoogleMeasure? = null)

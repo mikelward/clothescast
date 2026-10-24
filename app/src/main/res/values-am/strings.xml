@@ -108,6 +108,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_chart_main_line_label">አማካይ</string>
     <string name="today_wind_title">የንፋስ ፍጥነት</string>
     <string name="today_wind_subtitle">የንፋስ ፍጥነት (%1$s) በሰዓት</string>
+    <string name="today_gusts_title">ድንገተኛ ንፋስ</string>
+    <string name="today_gusts_subtitle">ድንገተኛ ንፋስ (%1$s) በሰዓት</string>
     <string name="today_cloud_title">ደመና ሽፋን</string>
     <string name="today_cloud_subtitle">ጠቅላላ ደመና ሽፋን (%) በሰዓት</string>
     <string name="today_humidity_title">እርጥበት</string>
@@ -167,6 +169,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="conditions_widget_description">የሙቀት፣ ዝናብ፣ ነፋስ እና UV በጨረፍታ።</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">ድንገተኛ ንፋስ %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding -->

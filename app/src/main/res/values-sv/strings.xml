@@ -440,6 +440,8 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Vindhastighet</string>
     <string name="today_wind_subtitle">Vindhastighet (%1$s) per timme</string>
+    <string name="today_gusts_title">Vindbyar</string>
+    <string name="today_gusts_subtitle">Vindbyar (%1$s) per timme</string>
     <string name="today_cloud_title">Molntäcke</string>
     <string name="today_cloud_subtitle">Totalt molntäcke (%) per timme</string>
     <string name="today_humidity_title">Luftfuktighet</string>
@@ -466,6 +468,7 @@ native names for all locales (e.g. "Tyska (Tyskland)", "Franska (Frankrike)").
     <string name="conditions_widget_description">Temperatur, regn, vind och UV med en blick.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Byar %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->

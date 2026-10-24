@@ -2,6 +2,8 @@ package app.clothescast.alerts
 
 import android.content.Context
 import app.clothescast.ClothesCastApplication
+import app.clothescast.core.domain.model.AlertHazard
+import app.clothescast.core.domain.model.AlertHazards
 import app.clothescast.core.domain.model.AlertLevel
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.Location
@@ -10,7 +12,9 @@ import app.clothescast.core.domain.model.WeatherAlert
 import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.data.WeatherAlertsState
 import app.clothescast.diag.DiagLog
+import app.clothescast.ui.garment.OutfitCardInfoLines
 import app.clothescast.ui.garment.outfitCardWindowRange
+import app.clothescast.ui.garment.withAlerts
 import app.clothescast.ui.today.onScreen
 import kotlinx.coroutines.CancellationException
 import java.time.Instant
@@ -47,15 +51,20 @@ internal suspend fun insightAlerts(
     )
 }
 
-/** [insightAlerts]' level: the highest, or null when none applies. */
-internal suspend fun cardAlertLevel(
-    context: Context,
-    prefs: UserPreferences,
-    insight: Insight,
-    now: Instant = Instant.now(),
-): AlertLevel? = insightAlerts(context, prefs, insight, now).maxOfOrNull { it.level }
+/**
+ * [this] with [alerts] (an insight's, [insightAlerts]): the highest level
+ * heads the strip, and a wind or storm warning shows its wind cell.
+ */
+internal fun OutfitCardInfoLines.withAlerts(alerts: List<RelevantAlert>): OutfitCardInfoLines =
+    withAlerts(alerts.maxOfOrNull { it.level }, alerts.anyWind())
 
-/** [cardAlertLevel]'s rule on its inputs; a null [window] means "in force at [now]". */
+/** Whether any of [this] is a wind or storm warning, which shows the strip's wind cell. */
+internal fun List<RelevantAlert>.anyWind(): Boolean =
+    any { AlertHazards.of(it.alert.eventType) in WIND_HAZARDS }
+
+private val WIND_HAZARDS = setOf(AlertHazard.WIND, AlertHazard.STORM)
+
+/** The strip's level for [state]: [insightAlerts]' highest; a null [window] means "in force at [now]". */
 internal fun cardAlertLevel(
     state: WeatherAlertsState,
     enabled: Boolean,

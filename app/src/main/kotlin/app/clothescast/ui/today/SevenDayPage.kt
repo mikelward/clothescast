@@ -512,6 +512,13 @@ internal fun SevenDayPage(
                     startDate = startDate,
                     showModelSpread = showModelSpread,
                 )
+                GustsCard(
+                    hourly = flatHourly,
+                    perModelHourly = perModelData,
+                    windSpeedUnit = windSpeedUnit,
+                    startDate = startDate,
+                    showModelSpread = showModelSpread,
+                )
                 HumidityCard(
                     hourly = flatHourly,
                     perModelHourly = perModelData,

@@ -433,6 +433,8 @@ What is NOT overridden, by design:
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Rýchlosť vetra</string>
     <string name="today_wind_subtitle">Rýchlosť vetra (%1$s) za hodinu</string>
+    <string name="today_gusts_title">Nárazy vetra</string>
+    <string name="today_gusts_subtitle">Nárazy vetra (%1$s) za hodinu</string>
     <string name="today_cloud_title">Oblačnosť</string>
     <string name="today_cloud_subtitle">Celková oblačnosť (%) za hodinu</string>
     <string name="today_humidity_title">Vlhkosť</string>
@@ -477,6 +479,7 @@ What is NOT overridden, by design:
     <string name="conditions_widget_description">Teplota, dážď, vietor a UV na prvý pohľad.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Nárazy %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--

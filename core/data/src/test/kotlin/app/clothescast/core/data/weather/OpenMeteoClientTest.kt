@@ -139,6 +139,7 @@ class OpenMeteoClientTest {
                 "precipitation_probability": [40, null],
                 "weather_code": [2, null],
                 "wind_speed_10m": [10.0, null],
+                "wind_gusts_10m": [25.0, null],
                 "uv_index": [4.0, null]
               }
             }
@@ -152,6 +153,7 @@ class OpenMeteoClientTest {
                 "apparent_temperature_ecmwf_ifs025": [21.0, 10.0],
                 "precipitation_probability_ecmwf_ifs025": [50, 60],
                 "wind_speed_10m_ecmwf_ifs025": [20.0, 20.0],
+                "wind_gusts_10m_ecmwf_ifs025": [45.0, 45.0],
                 "temperature_2m_icon_seamless": [23.0, 20.0],
                 "apparent_temperature_icon_seamless": [23.0, 20.0],
                 "precipitation_probability_icon_seamless": [70, 80],
@@ -185,6 +187,8 @@ class OpenMeteoClientTest {
         // the primary call, so best_match votes there too: (10 + 20 + 30) / 3.
         bundle.today.hourly[0].temperatureC shouldBe ((20.0 + 21.0 + 23.0) / 3 plusOrMinus 1e-6)
         bundle.today.hourly[0].windSpeedKmh!! shouldBe ((10.0 + 20.0 + 30.0) / 3 plusOrMinus 1e-6)
+        // Gusts likewise, ICON (no gusts) sitting out: (25 + 45) / 2.
+        bundle.today.hourly[0].windGustKmh!! shouldBe ((25.0 + 45.0) / 2 plusOrMinus 1e-6)
         // 13:00 — best_match's hour was null upstream: it must sit the hour
         // out, not vote the mapper's synthetic 0 °C / 0 %.
         bundle.today.hourly[1].temperatureC shouldBe ((10.0 + 20.0) / 2 plusOrMinus 1e-6)
@@ -197,6 +201,7 @@ class OpenMeteoClientTest {
             .byModel.getValue(PerModelHourly.BEST_MATCH_MODEL_ID)
         bestMatch.map { it.time.hour } shouldBe listOf(12)
         bestMatch[0].windSpeedKmh shouldBe 10.0
+        bestMatch[0].windGustKmh shouldBe 25.0
         bestMatch[0].uvIndex shouldBe 4.0
     }
 

@@ -3,6 +3,7 @@ package app.clothescast.ui.garment
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.clothescast.core.domain.model.AlertLevel
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.TemperatureUnit
 import app.clothescast.core.domain.model.WeatherCondition
@@ -30,13 +31,14 @@ class OutfitCardInfoLinesTest {
     private val ctx: Context = ApplicationProvider.getApplicationContext()
     private val formatter = InsightFormatter(ctx.resources)
 
-    private fun hour(uv: Double? = null, wind: Double? = null) = HourlyForecast(
+    private fun hour(uv: Double? = null, wind: Double? = null, gust: Double? = null) = HourlyForecast(
         time = LocalTime.NOON,
         temperatureC = 18.0,
         feelsLikeC = 18.0,
         precipitationProbabilityPct = 0.0,
         condition = WeatherCondition.CLEAR,
         windSpeedKmh = wind,
+        windGustKmh = gust,
         uvIndex = uv,
     )
 
@@ -45,7 +47,8 @@ class OutfitCardInfoLinesTest {
 
     private fun uvLabelFor(peakUv: Double?): String? = infoFor(listOf(hour(uv = peakUv))).uvLabel
 
-    private fun windLabelFor(peakWind: Double?): String? = infoFor(listOf(hour(wind = peakWind))).windLabel
+    private fun windLabelFor(peakWind: Double?, peakGust: Double? = null): String? =
+        infoFor(listOf(hour(wind = peakWind, gust = peakGust))).windLabel
 
     private fun rainHour(pct: Double, condition: WeatherCondition = WeatherCondition.CLEAR) =
         hour().copy(precipitationProbabilityPct = pct, condition = condition)
@@ -126,5 +129,41 @@ class OutfitCardInfoLinesTest {
     fun `wind below the threshold stays hidden`() {
         assertNull(windLabelFor(29.0))
         assertNull(windLabelFor(null))
+    }
+
+    // --- Gusts (notable >= 50 km/h, or the mean's 30) ---
+
+    @Test
+    fun `a notable gust shows wind under a moderate mean, naming the gust`() {
+        // A gusty evening: 25 km/h mean, 55 km/h gusts.
+        assertEquals("Gusts 55 km/h", windLabelFor(25.0, peakGust = 55.0))
+        assertEquals("Gusts 50 km/h", windLabelFor(null, peakGust = 50.0))
+        assertNull(windLabelFor(25.0, peakGust = 49.0))
+    }
+
+    @Test
+    fun `a notable mean shows wind with its gust where there is one`() {
+        assertEquals("Gusts 45 km/h", windLabelFor(32.0, peakGust = 45.0))
+    }
+
+    @Test
+    fun `gusts tint as the mean wind they usually come with`() {
+        // 75 km/h gusts on a 25 km/h mean read as a 50 km/h mean: orange.
+        val info = infoFor(listOf(hour(wind = 25.0, gust = 75.0)))
+        assertEquals(50.0, info.windMaxKmh!!, 0.001)
+        assertEquals(0xFFEF6C00.toInt(), windScaleColorArgb(info.windMaxKmh!!))
+    }
+
+    // --- A wind alert shows the wind cell whatever the forecast ---
+
+    @Test
+    fun `a wind alert shows wind below the thresholds, and no alert leaves it hidden`() {
+        val calm = infoFor(listOf(hour(wind = 12.0, gust = 25.0)))
+        assertNull(calm.windLabel)
+        assertEquals("Gusts 25 km/h", calm.withAlerts(AlertLevel.YELLOW, wind = true).windLabel)
+        assertNull(calm.withAlerts(AlertLevel.YELLOW, wind = false).windLabel)
+        assertEquals(AlertLevel.YELLOW, calm.withAlerts(AlertLevel.YELLOW, wind = false).alertLevel)
+        // No wind in the forecast at all: nothing to show.
+        assertNull(infoFor(listOf(hour())).withAlerts(AlertLevel.RED, wind = true).windLabel)
     }
 }

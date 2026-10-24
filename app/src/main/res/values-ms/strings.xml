@@ -161,6 +161,7 @@ vs "kemungkinan", "padam" vs "hapus").
     <string name="conditions_widget_description">Suhu, hujan, angin dan UV sepintas lalu.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Tiupan %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast card -->
@@ -185,6 +186,8 @@ vs "kemungkinan", "padam" vs "hapus").
     <!-- Wind / cloud / humidity diagnostic cards -->
     <string name="today_wind_title">Kelajuan angin</string>
     <string name="today_wind_subtitle">Kelajuan angin (%1$s) mengikut jam</string>
+    <string name="today_gusts_title">Tiupan angin</string>
+    <string name="today_gusts_subtitle">Tiupan angin (%1$s) mengikut jam</string>
     <string name="today_cloud_title">Liputan awan</string>
     <string name="today_cloud_subtitle">Jumlah liputan awan (%) mengikut jam</string>
     <string name="today_humidity_title">Kelembapan</string>

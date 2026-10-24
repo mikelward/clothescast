@@ -433,6 +433,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="conditions_widget_description">Θερμοκρασία, βροχή, άνεμος και UV με μια ματιά.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Ριπές %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--
@@ -584,6 +585,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_chart_main_line_label">Μέσος</string>
     <string name="today_wind_title">Ταχύτητα ανέμου</string>
     <string name="today_wind_subtitle">Ταχύτητα ανέμου (%1$s) ανά ώρα</string>
+    <string name="today_gusts_title">Ριπές ανέμου</string>
+    <string name="today_gusts_subtitle">Ριπές ανέμου (%1$s) ανά ώρα</string>
     <string name="today_cloud_title">Νέφωση</string>
     <string name="today_cloud_subtitle">Συνολική νέφωση (%) ανά ώρα</string>
     <string name="today_humidity_title">Υγρασία</string>

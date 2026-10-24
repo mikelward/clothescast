@@ -65,6 +65,7 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="conditions_widget_description">Temperatura, pluja, vent i UV d\'un cop d\'ull.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Ràfegues %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <string name="today_forecast_title">Previsió per hores</string>
@@ -84,6 +85,8 @@ the in-app clock is digit-driven and reads consistently across locales.
 
     <string name="today_wind_title">Velocitat del vent</string>
     <string name="today_wind_subtitle">Velocitat del vent (%1$s) per hora</string>
+    <string name="today_gusts_title">Ràfegues de vent</string>
+    <string name="today_gusts_subtitle">Ràfegues de vent (%1$s) per hora</string>
 
     <string name="today_cloud_title">Nuvolositat</string>
     <string name="today_cloud_subtitle">Nuvolositat total (%) per hora</string>

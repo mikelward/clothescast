@@ -411,6 +411,7 @@ Not overridden by design:
     <string name="conditions_widget_description">तापमान, बारिश, हवा और UV एक नज़र में।</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">झोंके %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->
@@ -508,6 +509,8 @@ Not overridden by design:
     <!-- Diagnostic cards (wind, cloud cover, humidity). -->
     <string name="today_wind_title">हवा की गति</string>
     <string name="today_wind_subtitle">प्रति घंटा हवा की गति (%1$s)</string>
+    <string name="today_gusts_title">हवा के झोंके</string>
+    <string name="today_gusts_subtitle">प्रति घंटा हवा के झोंके (%1$s)</string>
     <string name="today_cloud_title">बादल छाव</string>
     <string name="today_cloud_subtitle">प्रति घंटा कुल बादल छाव (%)</string>
     <string name="today_humidity_title">आर्द्रता</string>

@@ -160,6 +160,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="conditions_widget_description">Temperatura, ulan, hangin at UV sa isang sulyap.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Bugso %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast card -->
@@ -184,6 +185,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Diagnostic cards -->
     <string name="today_wind_title">Bilis ng hangin</string>
     <string name="today_wind_subtitle">Bilis ng hangin (%1$s) bawat oras</string>
+    <string name="today_gusts_title">Bugso ng hangin</string>
+    <string name="today_gusts_subtitle">Bugso ng hangin (%1$s) bawat oras</string>
     <string name="today_cloud_title">Takip ng ulap</string>
     <string name="today_cloud_subtitle">Kabuuang takip ng ulap (%) bawat oras</string>
     <string name="today_humidity_title">Halumigmig</string>

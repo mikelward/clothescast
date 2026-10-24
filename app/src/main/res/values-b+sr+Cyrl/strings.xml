@@ -448,6 +448,7 @@ surfaces.
     <string name="conditions_widget_description">Температура, киша, ветар и УВ на први поглед.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Удари %1$d %2$s</string>
     <string name="conditions_uv">УВ %1$d</string>
 
     <!-- Hourly forecast card. -->
@@ -472,6 +473,8 @@ surfaces.
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Брзина ветра</string>
     <string name="today_wind_subtitle">Брзина ветра (%1$s) по сату</string>
+    <string name="today_gusts_title">Удари ветра</string>
+    <string name="today_gusts_subtitle">Удари ветра (%1$s) по сату</string>
     <string name="today_cloud_title">Облачност</string>
     <string name="today_cloud_subtitle">Укупна облачност (%) по сату</string>
     <string name="today_humidity_title">Влажност</string>

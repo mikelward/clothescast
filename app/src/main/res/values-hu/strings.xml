@@ -423,6 +423,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Diagnostic cards. -->
     <string name="today_wind_title">Szélsebesség</string>
     <string name="today_wind_subtitle">Szélsebesség (%1$s) óránként</string>
+    <string name="today_gusts_title">Széllökések</string>
+    <string name="today_gusts_subtitle">Széllökések (%1$s) óránként</string>
     <string name="today_cloud_title">Felhőzet</string>
     <string name="today_cloud_subtitle">Teljes felhőzet (%) óránként</string>
     <string name="today_humidity_title">Páratartalom</string>
@@ -467,6 +469,7 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="conditions_widget_description">Hőmérséklet, eső, szél és UV egy pillantással.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Széllökés %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->

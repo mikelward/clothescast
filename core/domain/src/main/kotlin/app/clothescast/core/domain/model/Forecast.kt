@@ -45,6 +45,13 @@ data class HourlyForecast(
      */
     val windSpeedKmh: Double? = null,
     /**
+     * Strongest 10 m gust in the hour, km/h: the few-second bursts wind
+     * warnings are issued for, typically 1.3–1.6 times [windSpeedKmh].
+     * Nullable / defaulted as [windSpeedKmh]; the conditions strip shows wind
+     * when the period's peak gust is notable even if the mean wind isn't.
+     */
+    val windGustKmh: Double? = null,
+    /**
      * UV index for the hour (0–~12+). Nullable / defaulted as [windSpeedKmh].
      * The conditions widget shows the period's peak when it's high enough to be
      * worth acting on.

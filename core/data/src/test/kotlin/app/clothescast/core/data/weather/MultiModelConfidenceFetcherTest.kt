@@ -111,7 +111,7 @@ class MultiModelConfidenceFetcherTest {
             "apparent_temperature_max,apparent_temperature_min,precipitation_probability_max"
         req.url.parameters["hourly"] shouldBe
             "apparent_temperature,temperature_2m,precipitation_probability,precipitation," +
-            "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
+            "wind_speed_10m,wind_gusts_10m,relative_humidity_2m,cloud_cover_low," +
             "shortwave_radiation,sunshine_duration,uv_index,weather_code"
         // forecast_days=14 covers the Today screen's two week pages ("Next 7
         // days" and "Following 7 days") so the per-model diagnostic cards
@@ -232,6 +232,9 @@ class MultiModelConfidenceFetcherTest {
         ecmwf[0].temperatureC shouldBe (14.0 plusOrMinus 0.0001)
         ecmwf[0].precipitationProbabilityPct shouldBe (10.0 plusOrMinus 0.0001)
         ecmwf[0].windSpeedKmh shouldBe (8.0 plusOrMinus 0.0001)
+        ecmwf[0].windGustKmh shouldBe (18.0 plusOrMinus 0.0001)
+        // A model whose run omits gusts carries none, not a synthetic zero.
+        hourly.byModel.getValue("gfs_seamless")[0].windGustKmh.shouldBeNull()
         ecmwf[0].relativeHumidityPct shouldBe (78.0 plusOrMinus 0.0001)
         // Domain field is still named cloudCoverPct, but it carries the
         // low-deck value now (cloud_cover_low) — see PerModelHour kdoc.
@@ -814,6 +817,7 @@ class MultiModelConfidenceFetcherTest {
                 "wind_speed_10m_ecmwf_ifs025": [8.0, 9.5, 11.0],
                 "wind_speed_10m_gfs_seamless": [7.5, 9.0, 10.5],
                 "wind_speed_10m_icon_seamless": [10.0, 12.0, 13.5],
+                "wind_gusts_10m_ecmwf_ifs025": [18.0, 21.0, 25.0],
                 "relative_humidity_2m_ecmwf_ifs025": [78, 80, 82],
                 "relative_humidity_2m_gfs_seamless": [76, 78, 80],
                 "relative_humidity_2m_icon_seamless": [82, 84, 85],

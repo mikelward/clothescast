@@ -1252,11 +1252,15 @@ internal data class OutfitCardInfoLines(
     // the cell is hidden. Default null for callers that don't compute it.
     val rainLineShort: String? = null,
     // Wind / UV cells. Each label is null unless the period's peak is "notable"
-    // (wind >= WIND_NOTABLE_KMH; UV once it rounds to >= UV_NOTABLE, matching the
-    // integer the label shows); the raw maximum rides alongside so the renderer
-    // can pick the Beaufort / WHO scale tint.
+    // (mean wind >= WIND_NOTABLE_KMH or a gust >= GUST_NOTABLE_KMH; UV once it
+    // rounds to >= UV_NOTABLE, matching the integer the label shows); the raw
+    // maximum rides alongside so the renderer can pick the Beaufort / WHO scale
+    // tint. [windMaxKmh] is the wind the tint reads (see [windTintKmh]).
     val windLabel: String? = null,
     val windMaxKmh: Double? = null,
+    // The wind label whatever the thresholds, for a wind alert to show
+    // ([withAlerts]); null only when the forecast carries no wind at all.
+    val windAnyLabel: String? = null,
     val uvLabel: String? = null,
     val uvMax: Double? = null,
     // The highest official alert in force where the forecast is for, drawn as
@@ -1429,19 +1433,28 @@ internal fun outfitCardInfoLines(
         rainFillFraction = null
     }
     // Wind / UV: take the period's peak and only surface it when notable. The
-    // hourly series is already the cross-model consensus blend (wind / UV folded
-    // in at fetch time — see blendConsensusHourly), so a plain max over it
-    // matches the wind / UV diagnostic charts' "Combined" line rather than a
-    // lone best_match spike.
-    val windMaxKmh = hourly.mapNotNull { it.windSpeedKmh }.maxOrNull()
-        ?.takeIf { it >= WIND_NOTABLE_KMH }
-    val windLabel = windMaxKmh?.let {
-        context.getString(
-            R.string.conditions_wind,
-            it.toWindSpeedUnit(windSpeedUnit).roundToInt(),
+    // hourly series is already the cross-model consensus blend (wind, gusts and
+    // UV folded in at fetch time — see blendConsensusHourly), so a plain max
+    // over it matches the diagnostic charts' "Combined" line rather than a
+    // lone best_match spike. Wind shows on its mean or its gusts, and names the
+    // gust where there is one: the number warnings quote.
+    val meanPeakKmh = hourly.mapNotNull { it.windSpeedKmh }.maxOrNull()
+    val gustPeakKmh = hourly.mapNotNull { it.windGustKmh }.maxOrNull()
+    val windAnyLabel = when {
+        gustPeakKmh != null -> context.getString(
+            R.string.conditions_wind_gust,
+            gustPeakKmh.toWindSpeedUnit(windSpeedUnit).roundToInt(),
             windSpeedUnit.symbol(),
         )
+        meanPeakKmh != null -> context.getString(
+            R.string.conditions_wind,
+            meanPeakKmh.toWindSpeedUnit(windSpeedUnit).roundToInt(),
+            windSpeedUnit.symbol(),
+        )
+        else -> null
     }
+    val windNotable = (meanPeakKmh ?: 0.0) >= WIND_NOTABLE_KMH || (gustPeakKmh ?: 0.0) >= GUST_NOTABLE_KMH
+    val windLabel = windAnyLabel?.takeIf { windNotable }
     // UV gates on the *rounded* peak so the cell appears for exactly the values
     // the label renders: a 5.5–5.9 peak reads as "UV 6" once rounded, so testing
     // the raw value against UV_NOTABLE (6.0) would hide a UV the user is told is 6.
@@ -1454,11 +1467,21 @@ internal fun outfitCardInfoLines(
         tempFillFraction = tempFillFraction,
         rainFillFraction = rainFillFraction,
         windLabel = windLabel,
-        windMaxKmh = windMaxKmh,
+        windMaxKmh = windAnyLabel?.let { windTintKmh(meanPeakKmh, gustPeakKmh) },
+        windAnyLabel = windAnyLabel,
         uvLabel = uvLabel,
         uvMax = uvMax,
     )
 }
+
+/**
+ * [this] with the alerts its forecast carries: the highest level heads the
+ * strip, and a [wind] alert (a wind or storm warning) shows the wind cell
+ * whatever the forecast's peak, since a warning outranks the forecast's own
+ * reading (maintainer, 2026-10-24).
+ */
+internal fun OutfitCardInfoLines.withAlerts(level: AlertLevel?, wind: Boolean): OutfitCardInfoLines =
+    copy(alertLevel = level, windLabel = windLabel ?: windAnyLabel?.takeIf { wind })
 
 /** Which glyph a [ConditionsCell] draws. */
 internal enum class ConditionsGlyph { ALERT, THERMOMETER, DROPLET, WIND, UV }
@@ -1727,8 +1750,24 @@ private const val RAIN_PEAK_THRESHOLD_PCT = 10
 
 // "Notable" thresholds — below these the wind / UV cells are hidden, matching
 // the strip's principle of surfacing a metric only when it's worth acting on.
+// Wind shows on either its mean (Beaufort 5, a fresh breeze) or its gusts:
+// warnings are issued for gusts, and gusts flip umbrellas and push cyclists
+// when the mean wind is still moderate (maintainer, 2026-10-24).
 internal const val WIND_NOTABLE_KMH = 30.0
+internal const val GUST_NOTABLE_KMH = 50.0
 internal const val UV_NOTABLE = 6.0
+
+// Gusts typically run about 1.5 times the mean wind, so a gust reads on the
+// mean-wind Beaufort scale as the mean it usually comes with.
+private const val GUST_FACTOR = 1.5
+
+/**
+ * The wind speed the Beaufort tint reads: the mean, or the mean a gust
+ * typically comes with ([GUST_FACTOR]) when that's higher, so a gusty day
+ * with a moderate mean doesn't tint as calm.
+ */
+internal fun windTintKmh(meanKmh: Double?, gustKmh: Double?): Double =
+    maxOf(meanKmh ?: 0.0, (gustKmh ?: 0.0) / GUST_FACTOR)
 
 /**
  * Beaufort-flavoured colour for a wind speed in km/h: amber (fresh breeze) →

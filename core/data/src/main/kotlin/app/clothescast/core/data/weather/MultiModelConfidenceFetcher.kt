@@ -229,7 +229,7 @@ internal class MultiModelConfidenceFetcher(
                 parameter(
                     "hourly",
                     "apparent_temperature,temperature_2m,precipitation_probability,precipitation," +
-                        "wind_speed_10m,relative_humidity_2m,cloud_cover_low," +
+                        "wind_speed_10m,wind_gusts_10m,relative_humidity_2m,cloud_cover_low," +
                         "shortwave_radiation,sunshine_duration,uv_index,weather_code",
                 )
                 parameter("models", models.joinToString(","))
@@ -273,6 +273,7 @@ internal class MultiModelConfidenceFetcher(
                 val precips = seriesFor(obj, "precipitation_probability", model, soleModel)
                 val precipMm = seriesFor(obj, "precipitation", model, soleModel)
                 val winds = seriesFor(obj, "wind_speed_10m", model, soleModel)
+                val gusts = seriesFor(obj, "wind_gusts_10m", model, soleModel)
                 val humidities = seriesFor(obj, "relative_humidity_2m", model, soleModel)
                 // We request cloud_cover_low but keep the domain field named
                 // `cloudCoverPct` — the value is still a percent, just for the
@@ -324,6 +325,9 @@ internal class MultiModelConfidenceFetcher(
                 if (winds == null) {
                     logger.log("model $model hourly: wind_speed_10m missing, wind chart will skip this model")
                 }
+                if (gusts == null) {
+                    logger.log("model $model hourly: wind_gusts_10m missing, gusts chart will skip this model")
+                }
                 if (humidities == null) {
                     logger.log("model $model hourly: relative_humidity_2m missing, humidity chart will skip this model")
                 }
@@ -367,6 +371,7 @@ internal class MultiModelConfidenceFetcher(
                                 precipitationProbabilityPct = precip,
                                 precipitationMm = numberAt(precipMm, i)?.toDouble(),
                                 windSpeedKmh = numberAt(winds, i)?.toDouble(),
+                                windGustKmh = numberAt(gusts, i)?.toDouble(),
                                 relativeHumidityPct = numberAt(humidities, i)?.toDouble(),
                                 cloudCoverPct = numberAt(clouds, i)?.toDouble(),
                                 shortwaveRadiationWm2 = numberAt(solar, i)?.toDouble(),

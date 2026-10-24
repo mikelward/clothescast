@@ -17,11 +17,11 @@ class CardAlertsTest {
     private val tonight = Instant.parse("2026-10-22T19:00:00Z")..Instant.parse("2026-10-23T07:00:00Z")
     private val tomorrow = Instant.parse("2026-10-23T07:00:00Z")..Instant.parse("2026-10-23T19:00:00Z")
 
-    private fun alert(severity: AlertSeverity, start: String?, end: String?) = RelevantAlert(
+    private fun alert(severity: AlertSeverity, start: String?, end: String?, eventType: String = "WIND") = RelevantAlert(
         alert = WeatherAlert(
             id = "$severity-$start-$end",
             issuerTitle = "Warning",
-            eventType = "WIND",
+            eventType = eventType,
             severity = severity,
             areaName = null,
             description = null,
@@ -76,5 +76,17 @@ class CardAlertsTest {
     fun `without a window, what's in force now`() {
         val severe = alert(AlertSeverity.SEVERE, start = "2026-10-23T06:00:00Z", end = "2026-10-23T20:00:00Z")
         cardAlertLevel(stored(severe), enabled = true, location = here, window = null, now = now) shouldBe AlertLevel.ORANGE
+    }
+
+    @Test
+    fun `a wind or storm warning shows the strip's wind cell, others don't`() {
+        fun wind(type: String) = listOf(alert(AlertSeverity.MODERATE, null, null, eventType = type)).anyWind()
+        wind("WIND") shouldBe true
+        wind("HIGH_WIND_WARNING") shouldBe true
+        wind("HURRICANE_WARNING") shouldBe true
+        wind("RAIN") shouldBe false
+        wind("WINTER_STORM_WARNING") shouldBe false
+        wind("THUNDERSTORM") shouldBe false
+        emptyList<RelevantAlert>().anyWind() shouldBe false
     }
 }

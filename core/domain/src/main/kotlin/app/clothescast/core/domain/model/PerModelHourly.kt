@@ -81,6 +81,10 @@ data class PerModelHour(
      *  payloads and model runs that didn't return the field carry no value,
      *  and the diagnostic wind chart hides that model. */
     val windSpeedKmh: Double? = null,
+    /** Strongest 10 m gust in the hour, km/h: what wind warnings are issued
+     *  for and what flips an umbrella, drawn on the gusts chart. Nullable —
+     *  see [windSpeedKmh]. */
+    val windGustKmh: Double? = null,
     /** 2 m relative humidity, percent (0–100). Low-signal at the cool
      *  temperatures Europe sees most of the year (apparent-temp's humidity
      *  term only kicks in above ~20 °C) but worth carrying for hot days

@@ -165,6 +165,7 @@ standard in Israeli digital communication.
     <string name="conditions_widget_description">טמפרטורה, גשם, רוח ו-UV במבט אחד.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">משבים %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Today — forecast chart -->
@@ -187,6 +188,8 @@ standard in Israeli digital communication.
     <!-- Today — wind / cloud / humidity charts -->
     <string name="today_wind_title">מהירות רוח</string>
     <string name="today_wind_subtitle">מהירות רוח (%1$s) לפי שעה</string>
+    <string name="today_gusts_title">משבי רוח</string>
+    <string name="today_gusts_subtitle">משבי רוח (%1$s) לפי שעה</string>
     <string name="today_cloud_title">כיסוי ענן</string>
     <string name="today_cloud_subtitle">כיסוי ענן כולל (%) לפי שעה</string>
     <string name="today_humidity_title">לחות</string>

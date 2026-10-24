@@ -314,6 +314,7 @@ displayed label localizes.
     <string name="conditions_widget_description">Sıcaklık, yağmur, rüzgar ve UV bir bakışta.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
+    <string name="conditions_wind_gust">Hamle %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
 
@@ -503,6 +504,8 @@ displayed label localizes.
 
     <string name="today_wind_title">Rüzgar hızı</string>
     <string name="today_wind_subtitle">Saatlik rüzgar hızı (%1$s)</string>
+    <string name="today_gusts_title">Rüzgar hamlesi</string>
+    <string name="today_gusts_subtitle">Saatlik rüzgar hamlesi (%1$s)</string>
     <string name="today_cloud_title">Bulut örtüsü</string>
     <string name="today_cloud_subtitle">Saatlik toplam bulut örtüsü (%)</string>
     <string name="today_humidity_title">Nem</string>

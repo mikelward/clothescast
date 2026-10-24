@@ -104,7 +104,7 @@ fun blendConsensusHourly(
             // fall back to best_match's own value rather than NaN'ing.
             val blendedPrecip = candidates.weightedMeanOrNull { it.precipitationProbabilityPct }
                 ?: hour.precipitationProbabilityPct
-            // Wind / UV: same skip-nulls-then-average treatment as precip.
+            // Wind, gusts and UV: same skip-nulls-then-average treatment as precip.
             // best_match carries both off the primary forecast call, so it
             // votes here like any consulted model; models whose runs omit the
             // field sit the hour out. Fall back to best_match's own value when
@@ -112,6 +112,8 @@ fun blendConsensusHourly(
             // dropping the field to null).
             val windCandidates = candidates.mapNotNull { it.windSpeedKmh }
             val blendedWind = if (windCandidates.isEmpty()) hour.windSpeedKmh else windCandidates.average()
+            val gustCandidates = candidates.mapNotNull { it.windGustKmh }
+            val blendedGust = if (gustCandidates.isEmpty()) hour.windGustKmh else gustCandidates.average()
             val uvCandidates = candidates.mapNotNull { it.uvIndex }
             val blendedUv = if (uvCandidates.isEmpty()) hour.uvIndex else uvCandidates.average()
             // Rain amount blends like the rest: skip models that didn't
@@ -129,6 +131,7 @@ fun blendConsensusHourly(
                 precipitationProbabilityPct = blendedPrecip,
                 precipitationMm = blendedMm,
                 windSpeedKmh = blendedWind,
+                windGustKmh = blendedGust,
                 uvIndex = blendedUv,
                 condition = consensusCondition(
                     fallback = hour.condition,
@@ -164,6 +167,8 @@ fun blendConsensusHourly(
                 precipitationMm = candidates.mapNotNull { it.precipitationMm }
                     .takeIf { it.isNotEmpty() }?.average() ?: 0.0,
                 windSpeedKmh = candidates.mapNotNull { it.windSpeedKmh }
+                    .takeIf { it.isNotEmpty() }?.average(),
+                windGustKmh = candidates.mapNotNull { it.windGustKmh }
                     .takeIf { it.isNotEmpty() }?.average(),
                 uvIndex = candidates.mapNotNull { it.uvIndex }
                     .takeIf { it.isNotEmpty() }?.average(),
@@ -215,6 +220,7 @@ private fun List<PerModelHour>.averagedIntoOne(): PerModelHour {
         precipitationProbabilityPct = avgOrNull { it.precipitationProbabilityPct },
         precipitationMm = avgOrNull { it.precipitationMm },
         windSpeedKmh = avgOrNull { it.windSpeedKmh },
+        windGustKmh = avgOrNull { it.windGustKmh },
         relativeHumidityPct = avgOrNull { it.relativeHumidityPct },
         cloudCoverPct = avgOrNull { it.cloudCoverPct },
         shortwaveRadiationWm2 = avgOrNull { it.shortwaveRadiationWm2 },

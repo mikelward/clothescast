@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,14 +34,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import app.clothescast.R
 import app.clothescast.core.domain.model.ColorPalette
 import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.RemoveIcon
 import com.mikelward.androidzoom.MAX_FONT_SCALE
 import com.mikelward.androidzoom.MIN_FONT_SCALE
 import com.mikelward.androidzoom.compose.LocalFontSizeState
@@ -110,16 +115,30 @@ internal fun DisplayContent(
     }
 }
 
+internal const val TEXT_SIZE_SMALLER_TAG = "text_size_smaller"
+internal const val TEXT_SIZE_LARGER_TAG = "text_size_larger"
+
 /**
- * The text-size slider and the pinch switch, moving the shared state the
- * whole app is sized by (mikelward/androidzoom), so this screen is its own
- * preview while the slider is dragged. Hidden where no state is provided --
+ * The text-size slider, the minus and plus buttons at its ends (one percent a
+ * tap), and the pinch switch, moving the shared state the whole app is sized
+ * by (mikelward/androidzoom), so this screen is its own preview while the
+ * slider is dragged. Hidden where no state is provided --
  * previews and tests that never set one.
  */
 @Composable
 private fun TextSizeCard() {
     val state = LocalFontSizeState.current ?: return
-    SectionCard(title = stringResource(R.string.settings_display_text_size_title)) {
+    val percent = fontScalePercent(state.scale)
+    val shown = stringResource(R.string.settings_display_text_size_value, percent)
+    // The percentage sits on the title's line rather than beside the slider,
+    // so the minus and plus buttons can take the slider's two ends without
+    // squeezing its track (at 160% the label alone is wider than a button).
+    SectionCard(
+        title = stringResource(R.string.settings_display_text_size_title),
+        titleTrailing = {
+            Text(text = shown, style = MaterialTheme.typography.titleMedium)
+        },
+    ) {
         // Whether the slider holds a drag, so leaving the screen mid-drag still
         // stores the size on screen: disposal never calls
         // `onValueChangeFinished`, and the state outlives this screen, so it
@@ -131,7 +150,25 @@ private fun TextSizeCard() {
         DisposableEffect(state) {
             onDispose { if (dragging) state.commit(state.scale) }
         }
+        // A tap is a whole change, shown and stored at once: preview then
+        // commit, the path a slider release takes (commit alone stores nothing
+        // that no preview has moved).
+        val step = { delta: Int ->
+            val stepped = stepFontScale(state.scale, delta)
+            state.preview(stepped)
+            state.commit(stepped)
+        }
         Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(
+                onClick = { step(-1) },
+                enabled = percent > fontScalePercent(MIN_FONT_SCALE),
+                modifier = Modifier.testTag(TEXT_SIZE_SMALLER_TAG),
+            ) {
+                Icon(
+                    imageVector = RemoveIcon,
+                    contentDescription = stringResource(R.string.settings_display_text_size_smaller),
+                )
+            }
             // Hosted at the unscaled density: the drag changes the scaled one
             // on every frame, which would otherwise restart its own gesture.
             Box(modifier = Modifier.weight(1f)) {
@@ -147,17 +184,22 @@ private fun TextSizeCard() {
                             state.commit(state.scale)
                         },
                         valueRange = MIN_FONT_SCALE..MAX_FONT_SCALE,
+                        // Says the percentage the card shows; a slider's own
+                        // description is its raw value.
+                        modifier = Modifier.semantics { stateDescription = shown },
                     )
                 }
             }
-            Text(
-                text = stringResource(
-                    R.string.settings_display_text_size_value,
-                    fontScalePercent(state.scale),
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(start = 12.dp),
-            )
+            IconButton(
+                onClick = { step(+1) },
+                enabled = percent < fontScalePercent(MAX_FONT_SCALE),
+                modifier = Modifier.testTag(TEXT_SIZE_LARGER_TAG),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.settings_display_text_size_larger),
+                )
+            }
         }
         Row(
             modifier = Modifier

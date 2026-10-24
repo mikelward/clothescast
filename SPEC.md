@@ -133,8 +133,9 @@ I put on before I leave?" instead of a full weather-office report.
   over purely theme-derived colours. Rainbow is the default, Accessible uses a
   colour-vision-deficiency-safe palette, and Highlighter is intentionally vivid.
 - **Text size:** the app's own text can be sized from Display settings, as a
-  multiplier on top of the system font scale (80%-160%), or by a two-finger
-  pinch anywhere in the app. It starts at 115%, as the sibling apps do, with the
+  multiplier on top of the system font scale (80%-160%), with minus and plus
+  buttons at the slider's ends for exact 1% steps, or by a two-finger pinch
+  anywhere in the app. It starts at 115%, as the sibling apps do, with the
   forecast callout one text style smaller so it reads as it did before. Only text
   scales; padding, icons and charts' plot areas keep their size. The range, the
   pinch and the scaled density are the shared mikelward/androidzoom library;

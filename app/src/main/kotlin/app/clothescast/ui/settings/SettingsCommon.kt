@@ -36,13 +36,30 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 
 @Composable
-internal fun SectionCard(title: String, content: @Composable () -> Unit) {
+internal fun SectionCard(
+    title: String,
+    // Shown at the end of the title's line -- a value the whole card is
+    // about, such as the text size's percentage.
+    titleTrailing: (@Composable () -> Unit)? = null,
+    content: @Composable () -> Unit,
+) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            if (titleTrailing == null) {
+                Text(text = title, style = MaterialTheme.typography.titleMedium)
+            } else {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f),
+                    )
+                    titleTrailing()
+                }
+            }
             content()
         }
     }

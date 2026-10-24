@@ -147,6 +147,17 @@ jobs:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
+      # Antigravity caps a rule file at 24,000 bytes and silently drops the
+      # tail, so AGENTS.md (CLAUDE.md / GEMINI.md link to it) must stay under
+      # that. Checked here because every PR, docs-only included, runs this job.
+      - name: Check AGENTS.md fits the rule-file cap
+        run: |
+          bytes="$(wc -c < AGENTS.md | tr -d ' ')"
+          echo "AGENTS.md is ${bytes} bytes (cap 24000)."
+          if [ "$bytes" -ge 24000 ]; then
+            echo "::error file=AGENTS.md::AGENTS.md is ${bytes} bytes; trim it under 24,000 (Antigravity truncates the tail past that)."
+            exit 1
+          fi
       - uses: mikelward/lanes@main
         id: lane
         with:

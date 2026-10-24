@@ -765,11 +765,10 @@ Open work:
 
 ## Testing & quality
 
-- [ ] **Check `AGENTS.md` < 24,000 bytes in CI** (as mikelward/stopdash#932
-      plans): add `test "$(wc -c < AGENTS.md)" -lt 24000` to
-      `.github/workflows/ci.yml` on the docs/classify path, so `AGENTS.md`
-      can't silently grow past Antigravity's 24,000-byte per-file rule cap,
-      which truncates the tail without warning.
+- [x] **Check `AGENTS.md` < 24,000 bytes in CI** (as mikelward/stopdash#932
+      plans): the `classify` job, which every PR runs, fails when `AGENTS.md`
+      reaches 24,000 bytes, Antigravity's per-file rule cap that truncates
+      the tail without warning.
 - [x] **Chart snapshots could record with the plot missing.** On PR #1281
       the snapshot bot twice committed a chart card with an empty chart area.
       Vico's `runTransaction` always builds the model on `Dispatchers.Default`,

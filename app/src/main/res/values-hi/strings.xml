@@ -328,6 +328,8 @@ Not overridden by design:
     <string name="today_outfit_label_tonight">आज रात</string>
     <string name="today_outfit_label_tomorrow">कल</string>
     <string name="today_outfit_label_tomorrow_night">कल रात</string>
+    <string name="today_wardrobe_day">दिन</string>
+    <string name="today_wardrobe_night">रात</string>
     <string name="today_outfit_top_tshirt">टी-शर्ट</string>
     <string name="today_outfit_top_sweater">स्वेटर</string>
     <string name="today_outfit_top_thick_jacket">मोटी जैकेट</string>

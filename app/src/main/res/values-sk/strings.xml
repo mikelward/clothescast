@@ -364,6 +364,8 @@ What is NOT overridden, by design:
     <string name="today_outfit_label_tonight">Dnes večer</string>
     <string name="today_outfit_label_tomorrow">Zajtra</string>
     <string name="today_outfit_label_tomorrow_night">Zajtra večer</string>
+    <string name="today_wardrobe_day">Deň</string>
+    <string name="today_wardrobe_night">Noc</string>
 
     <!-- Outfit-card category labels. -->
     <string name="today_outfit_top_tshirt">Tričko</string>

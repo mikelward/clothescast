@@ -131,6 +131,8 @@ surfaces fall back to default English (matching values-pl / values-uk).
     <string name="today_outfit_label_tonight">Diseară</string>
     <string name="today_outfit_label_tomorrow">Mâine</string>
     <string name="today_outfit_label_tomorrow_night">Mâine seară</string>
+    <string name="today_wardrobe_day">Zi</string>
+    <string name="today_wardrobe_night">Noapte</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_thin_jacket">Geacă ușoară</string>
     <string name="today_outfit_top_thick_coat">Palton gros</string>

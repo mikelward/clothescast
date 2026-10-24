@@ -311,6 +311,8 @@ is unchanged; only the displayed label localizes.
     <string name="today_outfit_label_tonight">Wieczorem</string>
     <string name="today_outfit_label_tomorrow">Jutro</string>
     <string name="today_outfit_label_tomorrow_night">Jutro wieczorem</string>
+    <string name="today_wardrobe_day">Dzień</string>
+    <string name="today_wardrobe_night">Noc</string>
 
     <!-- Outfit-card category labels. -->
     <string name="today_outfit_top_tshirt">Koszulka</string>

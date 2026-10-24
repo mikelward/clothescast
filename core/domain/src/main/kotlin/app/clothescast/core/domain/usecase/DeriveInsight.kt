@@ -188,12 +188,11 @@ class DeriveInsight(
             nextOutfitRationale = periodView.nextForecast?.let {
                 OutfitSuggestion.explainFromForecast(it, rules)
             },
-            laterOutfits = periodView.laterForecasts.map { (date, night, forecast) ->
+            weekOutfits = periodView.weekForecasts.map { (date, night, forecast) ->
                 PeriodOutfit(
                     date = date,
                     night = night,
                     outfit = OutfitSuggestion.fromForecast(forecast, rules, defaultBottom, defaultTop),
-                    rationale = OutfitSuggestion.explainFromForecast(forecast, rules),
                 )
             },
             period = period,
@@ -296,22 +295,18 @@ class DeriveInsight(
             prefs.defaultTop,
             prefs.defaultBottom,
         ).items
-        // The two periods after the next one, stepping day → night → next day
-        // from this period's own start: the ongoing overnight began yesterday.
-        val periodStart = when {
-            period == ForecastPeriod.TODAY -> bundle.today.date to false
-            overnight -> bundle.yesterday.date to true
-            else -> bundle.today.date to true
-        }
-        val laterForecasts = generateSequence(periodStart) { (date, night) ->
-            if (night) date.plusDays(1) to false else date to true
-        }.drop(2).take(2).mapNotNull { (date, night) ->
-            laterPeriodForecast(bundle, date, night, morningStart, tonightStart)?.let { Triple(date, night, it) }
-        }.toList()
+        // Every day and night from today through the end of the forecast, for
+        // the week pages' wardrobe; a period the bundle can't fully cover drops out.
+        val weekForecasts = (listOf(bundle.today.date) + bundle.upcomingDays.map { it.date })
+            .distinct()
+            .flatMap { date -> listOf(date to false, date to true) }
+            .mapNotNull { (date, night) ->
+                laterPeriodForecast(bundle, date, night, morningStart, tonightStart)?.let { Triple(date, night, it) }
+            }
         return PeriodView(
             forecast = periodForecast,
             nextForecast = nextForecast,
-            laterForecasts = laterForecasts,
+            weekForecasts = weekForecasts,
             triggeredOutfit = triggeredOutfit,
             events = filterEventsForPeriod(events, period, nightBase.date, morningStart, tonightStart),
             perModelForRender = perModelForRender,
@@ -503,7 +498,7 @@ class DeriveInsight(
     private data class PeriodView(
         val forecast: DailyForecast,
         val nextForecast: DailyForecast?,
-        val laterForecasts: List<Triple<LocalDate, Boolean, DailyForecast>>,
+        val weekForecasts: List<Triple<LocalDate, Boolean, DailyForecast>>,
         val triggeredOutfit: TriggeredOutfit,
         val events: List<CalendarEvent>,
         val perModelForRender: PerModelHourly?,

@@ -352,6 +352,8 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <string name="today_outfit_label_tonight">Ma este</string>
     <string name="today_outfit_label_tomorrow">Holnap</string>
     <string name="today_outfit_label_tomorrow_night">Holnap este</string>
+    <string name="today_wardrobe_day">Nappal</string>
+    <string name="today_wardrobe_night">Éjjel</string>
 
     <!-- Outfit card labels. -->
     <string name="today_outfit_top_tshirt">Póló</string>

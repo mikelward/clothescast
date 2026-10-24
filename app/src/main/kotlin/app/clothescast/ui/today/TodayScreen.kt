@@ -56,6 +56,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -100,6 +101,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
@@ -673,13 +675,12 @@ private fun TodayContent(
                             forecastZone = state.thisPeriodInsight.forecastZone,
                             location = state.thisPeriodInsight.location,
                             onNavigateToLocation = onSetUpLocation,
-                            // Pinned at the top of every page so the rest of the
-                            // content doesn't jump on a swipe. "Next 7 days"
-                            // looks past pages 0 / 1: the two periods after
-                            // their pair (tomorrow + tomorrow night from a
-                            // morning). The following week keeps that pair.
+                            // In the outfit row's slot, so the rest of the
+                            // content doesn't jump on a swipe: the Day / Night
+                            // wardrobe for this page's days (falling back to
+                            // this period's pair on a cache without them).
                             outfitInsight = state.thisPeriodInsight,
-                            showLaterOutfits = !isFollowingWeek,
+                            wardrobeDates = weekDays.firstOrNull()?.let { it.date..weekDays.last().date },
                             onNavigateToClothes = onNavigateToClothes,
                             onOpenPrivacy = onOpenPrivacy,
                             onOpenCalendarSettings = onOpenCalendarSettings,
@@ -1064,7 +1065,7 @@ internal fun HomePageScaffold(
     onDismissGeminiTtsLimitCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
-    showLaterOutfits: Boolean = false,
+    wardrobeDates: ClosedRange<LocalDate>? = null,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
     conditionsHourly: List<HourlyForecast>? = null,
     confidenceSlot: (@Composable ColumnScope.() -> Unit)? = null,
@@ -1225,8 +1226,8 @@ internal fun HomePageScaffold(
                 // caller falls back to this period's insight, so
                 // [outfitInsight] is null only on previews / tests that don't
                 // wire a pair. Labels count from this period's day.
-                // [showLaterOutfits] swaps it for the two periods after that
-                // pair (the "Next 7 days" page).
+                // [wardrobeDates] (the week pages) swaps the pair for the Day /
+                // Night wardrobe of those dates' outfits.
                 homeSectionOrder.forEach { section ->
                     when (section) {
                         // Conditions strip (feels-like, rain, wind, UV) inset to
@@ -1239,9 +1240,19 @@ internal fun HomePageScaffold(
                                 ConditionsStrip(info = info.withAlerts(alertsState.stripLevel, alertsState.stripWind))
                             }
                         HomeSection.OUTFIT -> if (outfitInsight != null) {
-                            OutfitPreviewRow(
+                            val wardrobe = wardrobeDates
+                                ?.let { dates -> outfitInsight.weekOutfits.filter { it.date in dates } }
+                                .orEmpty()
+                            if (wardrobe.isNotEmpty()) {
+                                WeekWardrobeRow(
+                                    outfits = wardrobe,
+                                    outfitTopColors = state.outfitTopColors,
+                                    outfitBottomColors = state.outfitBottomColors,
+                                    outfitTopStrokes = state.outfitTopStrokes,
+                                    outfitBottomStrokes = state.outfitBottomStrokes,
+                                )
+                            } else OutfitPreviewRow(
                                 insight = outfitInsight,
-                                later = showLaterOutfits,
                                 today = state.thisPeriodInsight?.anchorDate ?: outfitInsight.anchorDate,
                                 temperatureUnit = state.temperatureUnit,
                                 clothesRules = state.clothesRules,
@@ -2080,7 +2091,6 @@ internal fun EmptyState(
 @Composable
 internal fun OutfitPreviewRow(
     insight: Insight,
-    later: Boolean = false,
     today: LocalDate = insight.anchorDate,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     clothesRules: List<ClothesRule> = emptyList(),
@@ -2094,17 +2104,12 @@ internal fun OutfitPreviewRow(
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
 ) {
-    val laterOutfits = insight.laterOutfits.takeIf { later }.orEmpty()
-    val cards = if (laterOutfits.isNotEmpty()) {
-        laterOutfits.map { Triple(it.outfit, periodLabel(PeriodSlot(it.date, it.night), today), it.rationale) }
-    } else {
-        val primary = insight.outfit ?: return
-        val slot = insight.periodSlot
-        listOfNotNull(
-            Triple(primary, periodLabel(slot, today), insight.outfitRationale),
-            insight.nextOutfit?.let { Triple(it, periodLabel(slot.next(), today), insight.nextOutfitRationale) },
-        )
-    }
+    val primary = insight.outfit ?: return
+    val slot = insight.periodSlot
+    val cards = listOfNotNull(
+        Triple(primary, periodLabel(slot, today), insight.outfitRationale),
+        insight.nextOutfit?.let { Triple(it, periodLabel(slot.next(), today), insight.nextOutfitRationale) },
+    )
     // IntrinsicSize.Max + fillMaxHeight stretches both cards to the taller one's
     // height. The garment caption grows to as many lines as its content needs
     // (a long worn line wrapping on a narrow card, plus an accessory line) — so
@@ -2135,6 +2140,118 @@ internal fun OutfitPreviewRow(
         }
     }
 }
+
+/**
+ * The week pages' wardrobe: a "Day" and a "Night" card, each gathering the
+ * distinct tops (upper half) and bottoms (lower half) the week's [outfits]
+ * call for, warmest first. Icons only — the charts below say which day needs
+ * what; this answers what to have ready for the week. A card with no periods
+ * (no night the forecast fully covers) is left out.
+ */
+@Composable
+internal fun WeekWardrobeRow(
+    outfits: List<PeriodOutfit>,
+    outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomColors: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
+    outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+) {
+    val cards = listOf(false to R.string.today_wardrobe_day, true to R.string.today_wardrobe_night)
+        .mapNotNull { (night, labelRes) ->
+            val periods = outfits.filter { it.night == night }
+            if (periods.isEmpty()) {
+                null
+            } else {
+                Triple(
+                    labelRes,
+                    periods.map { it.outfit.top }.distinct().sorted(),
+                    periods.map { it.outfit.bottom }.distinct().sorted(),
+                )
+            }
+        }
+    // Both cards get the same number of icon rows in each half (padding the
+    // shorter with blank rows), so they match in height and their dividers
+    // line up — measuring intrinsics instead overestimates wrapped rows.
+    val topRows = cards.maxOfOrNull { it.second.chunked(WARDROBE_ICONS_PER_ROW).size } ?: 0
+    val bottomRows = cards.maxOfOrNull { it.third.chunked(WARDROBE_ICONS_PER_ROW).size } ?: 0
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        cards.forEach { (labelRes, tops, bottoms) ->
+            Card(modifier = Modifier.weight(1f)) {
+                BoxWithConstraints(modifier = Modifier.padding(16.dp)) {
+                    // Up to three across, at most half the outfit card's 80dp
+                    // figure, shrinking to fit a narrow card.
+                    val iconSize = minOf(
+                        WARDROBE_ICON_MAX,
+                        (maxWidth - WARDROBE_ICON_GAP * (WARDROBE_ICONS_PER_ROW - 1)) / WARDROBE_ICONS_PER_ROW,
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = stringResource(labelRes),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                        )
+                        WardrobeIconRows(tops, topRows, iconSize) { top ->
+                            // Bottom-aligned in a square: the top SVGs have
+                            // uneven viewport heights (see [OutfitPreviewCard]).
+                            Box(modifier = Modifier.size(iconSize), contentAlignment = Alignment.BottomCenter) {
+                                GarmentTopIcon(
+                                    top = top,
+                                    customFill = outfitTopColors[top]?.let { Color(it.toInt()) },
+                                    customStroke = outfitTopStrokes[top]?.let { Color(it.toInt()) },
+                                    contentDescription = stringResource(topLabelRes(top)),
+                                    modifier = Modifier.width(iconSize),
+                                )
+                            }
+                        }
+                        HorizontalDivider()
+                        WardrobeIconRows(bottoms, bottomRows, iconSize) { bottom ->
+                            GarmentBottomIcon(
+                                bottom = bottom,
+                                customFill = outfitBottomColors[bottom]?.let { Color(it.toInt()) },
+                                customStroke = outfitBottomStrokes[bottom]?.let { Color(it.toInt()) },
+                                contentDescription = stringResource(bottomLabelRes(bottom)),
+                                modifier = Modifier.size(iconSize),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/** [items] in centered rows of up to [WARDROBE_ICONS_PER_ROW], padded with blank rows to [rows]. */
+@Composable
+private fun <T> WardrobeIconRows(
+    items: List<T>,
+    rows: Int,
+    iconSize: Dp,
+    icon: @Composable (T) -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(WARDROBE_ICON_GAP)) {
+        val chunks = items.chunked(WARDROBE_ICONS_PER_ROW)
+        repeat(rows) { index ->
+            Row(
+                modifier = Modifier.fillMaxWidth().height(iconSize),
+                horizontalArrangement = Arrangement.spacedBy(WARDROBE_ICON_GAP, Alignment.CenterHorizontally),
+            ) {
+                chunks.getOrNull(index)?.forEach { icon(it) }
+            }
+        }
+    }
+}
+
+private const val WARDROBE_ICONS_PER_ROW = 3
+private val WARDROBE_ICON_MAX = 40.dp
+private val WARDROBE_ICON_GAP = 8.dp
 
 /**
  * A 12-hour window: its calendar date and whether it's the night, which runs

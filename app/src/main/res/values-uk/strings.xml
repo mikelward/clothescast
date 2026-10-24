@@ -368,6 +368,8 @@ only the displayed label localizes.
     <string name="today_outfit_label_tonight">Сьогодні ввечері</string>
     <string name="today_outfit_label_tomorrow">Завтра</string>
     <string name="today_outfit_label_tomorrow_night">Завтра ввечері</string>
+    <string name="today_wardrobe_day">День</string>
+    <string name="today_wardrobe_night">Ніч</string>
 
     <string name="today_outfit_top_tshirt">Футболка</string>
     <string name="today_outfit_top_polo">Поло</string>

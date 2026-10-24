@@ -345,6 +345,8 @@ the displayed label localizes.
     <string name="today_outfit_label_tonight">今夜</string>
     <string name="today_outfit_label_tomorrow">明日</string>
     <string name="today_outfit_label_tomorrow_night">明日の夜</string>
+    <string name="today_wardrobe_day">昼</string>
+    <string name="today_wardrobe_night">夜</string>
 
     <string name="today_outfit_top_tshirt">Tシャツ</string>
     <string name="today_outfit_top_sweater">セーター</string>

@@ -434,6 +434,8 @@ default English (matching values-pl / values-uk).
     <string name="today_outfit_label_tonight">Večeras</string>
     <string name="today_outfit_label_tomorrow">Sutra</string>
     <string name="today_outfit_label_tomorrow_night">Sutra uveče</string>
+    <string name="today_wardrobe_day">Dan</string>
+    <string name="today_wardrobe_night">Noć</string>
 
     <!-- "Why this outfit?" rationale dialog. -->
     <string name="today_rationale_title">Zašto ova kombinacija?</string>

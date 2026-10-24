@@ -384,6 +384,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_label_tonight">Απόψε</string>
     <string name="today_outfit_label_tomorrow">Αύριο</string>
     <string name="today_outfit_label_tomorrow_night">Αύριο βράδυ</string>
+    <string name="today_wardrobe_day">Ημέρα</string>
+    <string name="today_wardrobe_night">Νύχτα</string>
 
     <string name="today_outfit_top_tshirt">Μπλουζάκι</string>
     <string name="today_outfit_top_sweater">Πουλόβερ</string>

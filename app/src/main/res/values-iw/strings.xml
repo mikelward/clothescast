@@ -133,6 +133,8 @@ standard in Israeli digital communication.
     <string name="today_outfit_label_tonight">הלילה</string>
     <string name="today_outfit_label_tomorrow">מחר</string>
     <string name="today_outfit_label_tomorrow_night">מחר בערב</string>
+    <string name="today_wardrobe_day">יום</string>
+    <string name="today_wardrobe_night">לילה</string>
     <string name="today_outfit_top_polo">פולו</string>
     <string name="today_outfit_top_thin_jacket">ז׳קט דק</string>
     <string name="today_outfit_top_thick_coat">מעיל כבד</string>

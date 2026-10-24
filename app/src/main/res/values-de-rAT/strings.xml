@@ -336,6 +336,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="today_outfit_label_tonight">Heute Abend</string>
     <string name="today_outfit_label_tomorrow">Morgen</string>
     <string name="today_outfit_label_tomorrow_night">Morgen Abend</string>
+    <string name="today_wardrobe_day">Tag</string>
+    <string name="today_wardrobe_night">Nacht</string>
 
     <!--
     Outfit-card category labels — shown in OutfitPreviewCard on the Today

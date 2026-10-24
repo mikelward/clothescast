@@ -50,6 +50,8 @@
     <string name="today_outfit_label_overnight">Overnight</string>
     <string name="today_outfit_label_tomorrow">Tomorrow</string>
     <string name="today_outfit_label_tomorrow_night">Tomorrow night</string>
+    <string name="today_wardrobe_day">Day</string>
+    <string name="today_wardrobe_night">Night</string>
     <string name="today_outfit_top_tshirt">T-shirt</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_sweater">Sweater</string>

@@ -41,6 +41,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.PerModelHour
+import app.clothescast.core.domain.model.PeriodOutfit
 import app.clothescast.core.domain.model.PerModelHourly
 import app.clothescast.core.domain.model.Insight
 import app.clothescast.core.domain.model.InsightSummary
@@ -2482,6 +2483,22 @@ private val SAMPLE_WEEK_OUTFIT_INSIGHT = SAMPLE_INSIGHT.copy(
     period = ForecastPeriod.TODAY,
     outfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
     nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+    // Tomorrow + tomorrow night, which the "Next 7 days" page shows in place
+    // of the pair above (labels key off forDate, 2026-04-26).
+    laterOutfits = listOf(
+        PeriodOutfit(
+            date = LocalDate.of(2026, 4, 27),
+            night = false,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.SWEATER, OutfitSuggestion.Bottom.LONG_PANTS),
+            rationale = null,
+        ),
+        PeriodOutfit(
+            date = LocalDate.of(2026, 4, 27),
+            night = true,
+            outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.LONG_PANTS),
+            rationale = null,
+        ),
+    ),
 )
 
 // The 7-day previews render the full [HomePageScaffold], whose banner stack
@@ -2512,6 +2529,7 @@ internal fun SevenDayPagePreview() {
             scrollState = androidx.compose.foundation.rememberScrollState(),
             onChevronTap = {},
             outfitInsight = SAMPLE_WEEK_OUTFIT_INSIGHT,
+            showLaterOutfits = true,
         )
     }
 }

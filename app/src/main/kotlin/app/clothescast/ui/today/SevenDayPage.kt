@@ -144,6 +144,7 @@ internal fun SevenDayPage(
      * that don't wire an outfit pair, in which case the row collapses.
      */
     outfitInsight: Insight? = null,
+    showLaterOutfits: Boolean = false,
     onNavigateToClothes: () -> Unit = {},
     onOpenPrivacy: () -> Unit = {},
     onOpenCalendarSettings: () -> Unit = {},
@@ -290,6 +291,7 @@ internal fun SevenDayPage(
         // — the scaffold renders it (and the banner stack) so all three pager
         // pages carry the same cards in the same place.
         outfitInsight = outfitInsight,
+        showLaterOutfits = showLaterOutfits,
         onSetUpLocation = onNavigateToLocation ?: {},
         onOpenPrivacy = onOpenPrivacy,
         onOpenCalendarSettings = onOpenCalendarSettings,

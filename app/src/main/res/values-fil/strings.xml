@@ -124,6 +124,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_label_today">Ngayon</string>
     <string name="today_outfit_label_tonight">Ngayong gabi</string>
     <string name="today_outfit_label_tomorrow">Bukas</string>
+    <string name="today_outfit_label_tomorrow_night">Bukas ng gabi</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_thin_jacket">Manipis na jacket</string>
     <string name="today_outfit_top_thick_coat">Makapal na coat</string>

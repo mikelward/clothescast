@@ -85,6 +85,14 @@ data class Insight(
     /** Companion to [nextOutfit]; same null-on-legacy-cache caveat as [outfitRationale]. */
     val nextOutfitRationale: OutfitRationale? = null,
     /**
+     * The outfits for the two periods after [nextOutfit]'s, in order: tomorrow
+     * and tomorrow night on a TODAY insight, tomorrow night and the day after
+     * on a coming TONIGHT one, tonight and tomorrow on the ongoing overnight.
+     * Shown on the "Next 7 days" page. Holds fewer, or none, when the forecast
+     * doesn't reach that far (a night needs the following morning's hours).
+     */
+    val laterOutfits: List<PeriodOutfit> = emptyList(),
+    /**
      * Which slice of the day this insight is for. [ForecastPeriod.TODAY] is the
      * morning pass (covers 07:00–19:00); [ForecastPeriod.TONIGHT] is the evening
      * pass (covers 19:00–07:00). Defaults to TODAY so older cached insights from
@@ -143,4 +151,15 @@ data class Insight(
      * fetch failed, and on cached payloads predating this field.
      */
     val weekPerModelHourly: PerModelHourly? = null,
+)
+
+/**
+ * One period's outfit, named by the date the period starts on and whether it's
+ * the night (evening through the next morning) or the daytime.
+ */
+data class PeriodOutfit(
+    val date: LocalDate,
+    val night: Boolean,
+    val outfit: OutfitSuggestion,
+    val rationale: OutfitRationale?,
 )

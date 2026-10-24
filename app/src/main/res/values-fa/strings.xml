@@ -131,6 +131,7 @@ Western Arabic numerals (0-9) are used for TTS compatibility.
     <string name="today_outfit_label_today">امروز</string>
     <string name="today_outfit_label_tonight">امشب</string>
     <string name="today_outfit_label_tomorrow">فردا</string>
+    <string name="today_outfit_label_tomorrow_night">فردا شب</string>
     <string name="today_outfit_top_polo">پولو</string>
     <string name="today_outfit_top_thin_jacket">کت نازک</string>
     <string name="today_outfit_top_thick_coat">پالتوی ضخیم</string>

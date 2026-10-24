@@ -140,6 +140,7 @@ What is NOT overridden, by design:
     <string name="today_outfit_label_today">Днес</string>
     <string name="today_outfit_label_tonight">Тази вечер</string>
     <string name="today_outfit_label_tomorrow">Утре</string>
+    <string name="today_outfit_label_tomorrow_night">Утре вечер</string>
     <string name="today_outfit_top_polo">Поло</string>
     <string name="today_outfit_top_thin_jacket">Тънко яке</string>
     <string name="today_outfit_top_thick_coat">Дебело палто</string>

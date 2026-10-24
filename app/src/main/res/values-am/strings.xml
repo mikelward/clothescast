@@ -80,6 +80,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_label_today">ዛሬ</string>
     <string name="today_outfit_label_tonight">ዛሬ ምሽት</string>
     <string name="today_outfit_label_tomorrow">ነገ</string>
+    <string name="today_outfit_label_tomorrow_night">ነገ ምሽት</string>
     <string name="today_rationale_title">ይህ ልብስ ለምን?</string>
     <string name="today_rationale_show">ለምን?</string>
     <string name="today_rationale_dismiss">ገባኝ</string>

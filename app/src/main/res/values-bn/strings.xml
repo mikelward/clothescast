@@ -134,6 +134,7 @@ West Bengal vocabulary differences in a future PR.
     <string name="today_outfit_label_today">আজ</string>
     <string name="today_outfit_label_tonight">আজ রাতে</string>
     <string name="today_outfit_label_tomorrow">আগামীকাল</string>
+    <string name="today_outfit_label_tomorrow_night">আগামীকাল রাতে</string>
     <string name="today_outfit_top_polo">পোলো</string>
     <string name="today_outfit_top_thin_jacket">পাতলা জ্যাকেট</string>
     <string name="today_outfit_top_thick_coat">মোটা কোট</string>

@@ -418,6 +418,7 @@ surfaces.
     <string name="today_outfit_label_today">Данас</string>
     <string name="today_outfit_label_tonight">Вечерас</string>
     <string name="today_outfit_label_tomorrow">Сутра</string>
+    <string name="today_outfit_label_tomorrow_night">Сутра увече</string>
 
     <!-- "Why this outfit?" rationale dialog. -->
     <string name="today_rationale_title">Зашто ова комбинација?</string>

@@ -349,6 +349,7 @@ locale (Angličtina (USA), Francouzština (Francie), Němčina (Německo), …).
     <string name="today_outfit_label_today">Dnes</string>
     <string name="today_outfit_label_tonight">Dnes večer</string>
     <string name="today_outfit_label_tomorrow">Zítra</string>
+    <string name="today_outfit_label_tomorrow_night">Zítra večer</string>
 
     <!-- Outfit card labels. -->
     <string name="today_outfit_top_tshirt">Tričko</string>

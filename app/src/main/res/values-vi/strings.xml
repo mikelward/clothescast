@@ -130,6 +130,7 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="today_outfit_label_today">Hôm nay</string>
     <string name="today_outfit_label_tonight">Tối nay</string>
     <string name="today_outfit_label_tomorrow">Ngày mai</string>
+    <string name="today_outfit_label_tomorrow_night">Tối mai</string>
     <string name="today_outfit_top_polo">Áo polo</string>
     <string name="today_outfit_top_thin_jacket">Áo khoác mỏng</string>
     <string name="today_outfit_top_thick_coat">Áo khoác dày mùa đông</string>

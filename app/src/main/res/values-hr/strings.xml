@@ -315,6 +315,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="today_outfit_label_today">Danas</string>
     <string name="today_outfit_label_tonight">Večeras</string>
     <string name="today_outfit_label_tomorrow">Sutra</string>
+    <string name="today_outfit_label_tomorrow_night">Sutra navečer</string>
 
     <string name="today_outfit_top_tshirt">Majica</string>
     <string name="today_outfit_top_sweater">Džemper</string>

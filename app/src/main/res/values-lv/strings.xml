@@ -137,6 +137,7 @@ informal "tu"-form throughout ("Apģērb …", "Paņem … līdzi").
     <string name="today_outfit_label_today">Šodien</string>
     <string name="today_outfit_label_tonight">Šovakar</string>
     <string name="today_outfit_label_tomorrow">Rīt</string>
+    <string name="today_outfit_label_tomorrow_night">Rīt vakarā</string>
     <string name="today_rationale_title">Kāpēc šis apģērbs?</string>
     <string name="today_rationale_show">Kāpēc?</string>
     <string name="today_rationale_dismiss">Sapratu</string>

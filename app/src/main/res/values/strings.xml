@@ -105,12 +105,10 @@
     <string name="conditions_widget_description">Temperature, rain, wind and UV at a glance.</string>
     <!-- Conditions strip rain cell — peak chance only, e.g. "60%". -->
     <string name="conditions_rain_pct">%1$d%%</string>
-    <!-- Conditions widget wind cell, e.g. "35 km/h" (value + unit symbol). -->
+    <!-- Conditions strip wind cell, e.g. "55 km/h" (value + unit symbol): the
+         peak gust, the figure wind warnings quote, or the peak mean wind where
+         the forecast has no gusts. -->
     <string name="conditions_wind">%1$d %2$s</string>
-    <!-- The wind cell when the forecast has gusts: the peak gust, e.g.
-         "Gusts 55 km/h", the figure wind warnings quote. Shown on a notable
-         gust, a notable mean wind, or a wind alert. -->
-    <string name="conditions_wind_gust">Gusts %1$d %2$s</string>
     <!-- Conditions widget UV cell, e.g. "UV 8". -->
     <string name="conditions_uv">UV %1$d</string>
 

@@ -1436,22 +1436,17 @@ internal fun outfitCardInfoLines(
     // hourly series is already the cross-model consensus blend (wind, gusts and
     // UV folded in at fetch time — see blendConsensusHourly), so a plain max
     // over it matches the diagnostic charts' "Combined" line rather than a
-    // lone best_match spike. Wind shows on its mean or its gusts, and names the
-    // gust where there is one: the number warnings quote.
+    // lone best_match spike. Wind shows on its mean or its gusts, and reads the
+    // peak gust where there is one, the number warnings quote, else the peak
+    // mean (maintainer, 2026-10-24: just the peak, no "gusts" word).
     val meanPeakKmh = hourly.mapNotNull { it.windSpeedKmh }.maxOrNull()
     val gustPeakKmh = hourly.mapNotNull { it.windGustKmh }.maxOrNull()
-    val windAnyLabel = when {
-        gustPeakKmh != null -> context.getString(
-            R.string.conditions_wind_gust,
-            gustPeakKmh.toWindSpeedUnit(windSpeedUnit).roundToInt(),
-            windSpeedUnit.symbol(),
-        )
-        meanPeakKmh != null -> context.getString(
+    val windAnyLabel = (gustPeakKmh ?: meanPeakKmh)?.let {
+        context.getString(
             R.string.conditions_wind,
-            meanPeakKmh.toWindSpeedUnit(windSpeedUnit).roundToInt(),
+            it.toWindSpeedUnit(windSpeedUnit).roundToInt(),
             windSpeedUnit.symbol(),
         )
-        else -> null
     }
     val windNotable = (meanPeakKmh ?: 0.0) >= WIND_NOTABLE_KMH || (gustPeakKmh ?: 0.0) >= GUST_NOTABLE_KMH
     val windLabel = windAnyLabel?.takeIf { windNotable }

@@ -134,16 +134,16 @@ class OutfitCardInfoLinesTest {
     // --- Gusts (notable >= 50 km/h, or the mean's 30) ---
 
     @Test
-    fun `a notable gust shows wind under a moderate mean, naming the gust`() {
+    fun `a notable gust shows wind under a moderate mean, reading the peak gust`() {
         // A gusty evening: 25 km/h mean, 55 km/h gusts.
-        assertEquals("Gusts 55 km/h", windLabelFor(25.0, peakGust = 55.0))
-        assertEquals("Gusts 50 km/h", windLabelFor(null, peakGust = 50.0))
+        assertEquals("55 km/h", windLabelFor(25.0, peakGust = 55.0))
+        assertEquals("50 km/h", windLabelFor(null, peakGust = 50.0))
         assertNull(windLabelFor(25.0, peakGust = 49.0))
     }
 
     @Test
-    fun `a notable mean shows wind with its gust where there is one`() {
-        assertEquals("Gusts 45 km/h", windLabelFor(32.0, peakGust = 45.0))
+    fun `a notable mean shows wind at its peak gust where there is one`() {
+        assertEquals("45 km/h", windLabelFor(32.0, peakGust = 45.0))
     }
 
     @Test
@@ -160,7 +160,7 @@ class OutfitCardInfoLinesTest {
     fun `a wind alert shows wind below the thresholds, and no alert leaves it hidden`() {
         val calm = infoFor(listOf(hour(wind = 12.0, gust = 25.0)))
         assertNull(calm.windLabel)
-        assertEquals("Gusts 25 km/h", calm.withAlerts(AlertLevel.YELLOW, wind = true).windLabel)
+        assertEquals("25 km/h", calm.withAlerts(AlertLevel.YELLOW, wind = true).windLabel)
         assertNull(calm.withAlerts(AlertLevel.YELLOW, wind = false).windLabel)
         assertEquals(AlertLevel.YELLOW, calm.withAlerts(AlertLevel.YELLOW, wind = false).alertLevel)
         // No wind in the forecast at all: nothing to show.

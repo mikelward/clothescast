@@ -142,7 +142,7 @@ class OutfitCardSnapshotTest {
                     rainFillFraction = 0.8f,
                     rainLineShort = "80%",
                     // A wind warning's gusts, tinted as the ~60 km/h mean they come with.
-                    windLabel = "Gusts 90 km/h",
+                    windLabel = "90 km/h",
                     windMaxKmh = 60.0,
                     alertLevel = app.clothescast.core.domain.model.AlertLevel.ORANGE,
                 ),

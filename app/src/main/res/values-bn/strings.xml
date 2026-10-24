@@ -248,7 +248,6 @@ West Bengal vocabulary differences in a future PR.
     <string name="conditions_widget_description">তাপমাত্রা, বৃষ্টি, বাতাস ও UV এক নজরে।</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">দমকা %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- ============================================================

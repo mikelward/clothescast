@@ -314,7 +314,6 @@ displayed label localizes.
     <string name="conditions_widget_description">Sıcaklık, yağmur, rüzgar ve UV bir bakışta.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Hamle %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
 

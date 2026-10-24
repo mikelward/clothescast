@@ -65,7 +65,6 @@ the in-app clock is digit-driven and reads consistently across locales.
     <string name="conditions_widget_description">Temperatura, pluja, vent i UV d\'un cop d\'ull.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Ràfegues %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <string name="today_forecast_title">Previsió per hores</string>

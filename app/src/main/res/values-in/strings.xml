@@ -165,7 +165,6 @@ to values/strings.xml (English).
     <string name="conditions_widget_description">Suhu, hujan, angin, dan UV sekilas.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Embusan %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Forecast cards -->

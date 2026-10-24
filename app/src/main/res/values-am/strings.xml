@@ -169,7 +169,6 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="conditions_widget_description">የሙቀት፣ ዝናብ፣ ነፋስ እና UV በጨረፍታ።</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">ድንገተኛ ንፋስ %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding -->

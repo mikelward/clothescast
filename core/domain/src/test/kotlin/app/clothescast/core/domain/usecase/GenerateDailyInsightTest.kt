@@ -1990,7 +1990,7 @@ class GenerateDailyInsightTest {
     )
 
     @Test
-    fun `week outfits cover every day and night the forecast reaches`() = runTest {
+    fun `week outfits start two periods ahead and run as far as the forecast reaches`() = runTest {
         val d0 = LocalDate.of(2026, 4, 25)
         val days = listOf(
             dayWith(d0.plusDays(1), dayC = 26.0, nightC = 20.0), // tomorrow: shorts, warm night
@@ -2006,20 +2006,24 @@ class GenerateDailyInsightTest {
         )
         val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
 
+        // From a morning: today and tonight are page 0's pair, so the list
+        // starts tomorrow. The last day's night has no following morning, so it
+        // drops out.
         val week = subject(london, prefs, ForecastPeriod.TODAY).insight.weekOutfits
-        // The last day's night has no following morning, so it drops out.
         week.map { it.date to it.night } shouldBe listOf(
-            d0 to false, d0 to true,
             d0.plusDays(1) to false, d0.plusDays(1) to true,
             d0.plusDays(2) to false, d0.plusDays(2) to true,
             d0.plusDays(3) to false,
         )
-        week[2].outfit.bottom shouldBe OutfitSuggestion.Bottom.SHORTS
+        week[0].outfit.bottom shouldBe OutfitSuggestion.Bottom.SHORTS
         // Tomorrow night runs into the day after's 03:00, feeling 8°C: jacket.
-        week[3].outfit.top shouldBe OutfitSuggestion.Top.THICK_JACKET
-        week[4].outfit.top shouldBe OutfitSuggestion.Top.SWEATER
-        // The list doesn't depend on which period the insight is for.
-        subject(london, prefs, ForecastPeriod.TONIGHT).insight.weekOutfits shouldBe week
+        week[1].outfit.top shouldBe OutfitSuggestion.Top.THICK_JACKET
+        week[2].outfit.top shouldBe OutfitSuggestion.Top.SWEATER
+        // From an evening it starts tomorrow night; during the overnight, tonight.
+        subject(london, prefs, ForecastPeriod.TONIGHT).insight.weekOutfits shouldBe week.drop(1)
+        subject.snapshot(london, prefs, ForecastPeriod.TONIGHT, overnight = true)
+            .let { DeriveInsight()(it, prefs).insight.weekOutfits }
+            .map { it.date to it.night }.take(2) shouldBe listOf(d0 to true, d0.plusDays(1) to false)
     }
 
     @Test
@@ -2037,7 +2041,7 @@ class GenerateDailyInsightTest {
         val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
 
         subject(london, prefs, ForecastPeriod.TODAY).insight.weekOutfits
-            .map { it.date to it.night } shouldBe listOf(d0 to false, d0 to true, d0.plusDays(1) to false)
+            .map { it.date to it.night } shouldBe listOf(d0.plusDays(1) to false)
     }
 
     @Test
@@ -2113,7 +2117,7 @@ class GenerateDailyInsightTest {
 
         subject(london, nightOwlPrefs, ForecastPeriod.TODAY).insight.weekOutfits
             .map { it.date to it.night } shouldBe
-            listOf(d0 to false, d0 to true, d0.plusDays(1) to false, d0.plusDays(1) to true)
+            listOf(d0.plusDays(1) to false, d0.plusDays(1) to true)
     }
 
     @Test
@@ -2135,7 +2139,7 @@ class GenerateDailyInsightTest {
 
         subject(london, prefs, ForecastPeriod.TODAY).insight.weekOutfits
             .map { it.date to it.night } shouldBe
-            listOf(d0 to false, d0 to true, d0.plusDays(1) to false, d0.plusDays(2) to false)
+            listOf(d0.plusDays(1) to false, d0.plusDays(2) to false)
     }
 
     @Test

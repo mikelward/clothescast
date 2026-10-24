@@ -1289,6 +1289,7 @@
     <string name="insight_lead_tonight">Tonight</string>
     <string name="insight_lead_overnight">Overnight</string>
     <string name="insight_lead_tomorrow">Tomorrow</string>
+    <string name="insight_lead_tomorrow_night">Tomorrow night</string>
 
     <!-- Single-band sentence: %1$s = lead-in ("Today"), %2$d = feels-like
          degrees (rounded, in the user's chosen unit). The comma-fronted
@@ -1331,11 +1332,13 @@
     <string name="insight_unchanged_today">Today, it will be the same as yesterday.</string>
     <string name="insight_unchanged_tonight">Tonight, it will be the same as last night.</string>
     <string name="insight_unchanged_tomorrow">Tomorrow, it will be the same as today.</string>
+    <string name="insight_unchanged_tomorrow_night">Tomorrow night, it will be the same as tonight.</string>
     <!-- No-lead variants of the "unchanged" placeholder for the Today card,
          whose header already carries the period. Translated in every locale. -->
     <string name="insight_unchanged_today_no_lead">It will be the same as yesterday.</string>
     <string name="insight_unchanged_tonight_no_lead">It will be the same as last night.</string>
     <string name="insight_unchanged_tomorrow_no_lead">It will be the same as today.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">It will be the same as tonight.</string>
 
     <!-- Band labels — used inside the band-sentence templates above. -->
     <string name="insight_band_freezing">freezing</string>

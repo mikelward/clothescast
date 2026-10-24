@@ -52,12 +52,15 @@ vs "kemungkinan", "padam" vs "hapus").
 
     <string name="insight_lead_today">Hari ini</string>
     <string name="insight_lead_tomorrow">Esok</string>
+    <string name="insight_lead_tomorrow_night">Esok malam</string>
     <string name="insight_unchanged_today">Hari ini cuacanya sama seperti semalam.</string>
     <string name="insight_unchanged_today_no_lead">Seperti semalam.</string>
     <string name="insight_unchanged_tonight">Malam ini cuacanya sama seperti malam tadi.</string>
     <string name="insight_unchanged_tonight_no_lead">Seperti malam tadi.</string>
     <string name="insight_unchanged_tomorrow">Esok cuacanya sama seperti hari ini.</string>
+    <string name="insight_unchanged_tomorrow_night">Esok malam cuacanya sama seperti malam ini.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Seperti hari ini.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Seperti malam ini.</string>
     <string name="insight_lead_tonight">Malam ini</string>
     <!-- Malay topic-comment shape: "Hari ini cuacanya sejuk." -->
     <string name="insight_band_single">%1$s cuacanya %2$d°.</string>

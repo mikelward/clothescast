@@ -206,7 +206,7 @@ fun TodayScreen(
     onNavigateToAlerts: () -> Unit = onNavigateToSettings,
     // Pager page to open on, from the Today deep link's `?page=` query. The
     // feels-like home-screen widgets deep-link to page 0 (current period) and
-    // page 2 (7-day). rememberPagerState only reads this on first composition,
+    // [PAGE_WEEK] (7-day). rememberPagerState only reads this on first composition,
     // so a config change keeps the user's swiped-to page rather than yanking
     // back here.
     startPage: Int = 0,
@@ -222,17 +222,13 @@ fun TodayScreen(
         state.workStatus is WorkStatus.Retrying
 
     // Hoisted out of TodayContent so the TopAppBar title can swap with the
-    // visible page — page 0 is the user's current 12-hour window ("Today" or
-    // "Tonight"), page 1 is the next window ("Tonight" or "Tomorrow"),
-    // page 2 is the 7-day outlook (days 1-7), page 3 is the following week
-    // (days 8-14). Page count is constant; when thisPeriodInsight is null the
-    // pager doesn't render but the state is harmlessly retained at page 0.
-    val pagerState = rememberPagerState(initialPage = startPage.coerceIn(0, 3)) { 4 }
-    val titleRes = topBarTitleRes(
-        period = state.thisPeriodInsight?.period,
-        page = pagerState.currentPage,
-        overnight = state.thisPeriodInsight?.summary?.overnight == true,
-    )
+    // visible page — pages 0-2 are the user's current 12-hour window and the
+    // two after it ("Today", "Tonight", "Tomorrow" from a morning), page 3 is
+    // the 7-day outlook (days 1-7), page 4 the following week (days 8-14).
+    // Page count is constant; when thisPeriodInsight is null the pager doesn't
+    // render but the state is harmlessly retained at page 0.
+    val pagerState = rememberPagerState(initialPage = startPage.coerceIn(0, PAGE_COUNT - 1)) { PAGE_COUNT }
+    val title = topBarTitle(state.thisPeriodInsight, pagerState.currentPage)
     // System back on page 1 or 2 steps back one page instead of exiting the
     // app — matches the on-screen left chevron. Page 0 falls through to the
     // platform default (finish the activity).
@@ -263,7 +259,7 @@ fun TodayScreen(
         contentWindowInsets = WindowInsets(0),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(titleRes)) },
+                title = { Text(title) },
                 actions = {
                     // On any period page past the current window (Tomorrow, Next
                     // 7 days, Following 7 days) offer a one-tap jump back to page
@@ -585,11 +581,12 @@ private fun TodayContent(
                 state = pagerState,
                 // Pre-compose the neighbouring pages so the swipe is pure
                 // translation of already-laid-out content. The 7-day page
-                // (page 2) carries six Vico chart cards plus the per-model
+                // ([PAGE_WEEK]) carries six Vico chart cards plus the per-model
                 // diagnostic deck; composing all that on the frame the user's
                 // finger starts moving is the bulk of the perceived jank.
-                // 1 covers 0↔1 and 1↔2 — the common swipe paths — without
-                // paying for page 2's composition on a cold open to page 0.
+                // 1 covers each step between neighbours — the common swipe
+                // paths — without paying for the week's composition on a cold
+                // open to page 0.
                 beyondViewportPageCount = 1,
                 modifier = Modifier
                     .weight(1f)
@@ -615,12 +612,12 @@ private fun TodayContent(
                         }
                     }
                 }
-                if (page == 2 || page == 3) {
+                if (page == PAGE_WEEK || page == PAGE_FOLLOWING_WEEK) {
                     val currentDay = state.thisPeriodInsight.currentDay
                     val upcoming = state.thisPeriodInsight.upcomingDays
-                    val isFollowingWeek = page == 3
-                    // Page 2 ("Next 7 days") plots today + days 2-7 so the chart
-                    // starts on the user's current day. Page 3 ("Following 7
+                    val isFollowingWeek = page == PAGE_FOLLOWING_WEEK
+                    // Page 3 ("Next 7 days") plots today + days 2-7 so the chart
+                    // starts on the user's current day. Page 4 ("Following 7
                     // days") plots days 8-14 — upcomingDays[0] is tomorrow
                     // (day 2), so day 8 is upcomingDays[6] onward. Either page
                     // collapses to a stand-in message via [SevenDayPage] when
@@ -661,16 +658,14 @@ private fun TodayContent(
                             workStatusToShow = workStatusToShow,
                             locationActionRequired = locationActionRequired,
                             onChevronTap = {
-                                // Left chevron steps back one page (3 → 2, 2 → 1).
-                                pagerScope.launch {
-                                    pagerState.animateScrollToPage(if (isFollowingWeek) 2 else 1)
-                                }
+                                // Left chevron steps back one page (4 → 3, 3 → 2).
+                                pagerScope.launch { pagerState.animateScrollToPage(page - 1) }
                             },
-                            // Forward chevron only on page 2, advancing to page 3.
+                            // Forward chevron only on the near week, advancing to the following one.
                             onForwardChevronTap = if (isFollowingWeek) {
                                 null
                             } else {
-                                { pagerScope.launch { pagerState.animateScrollToPage(3) } }
+                                { pagerScope.launch { pagerState.animateScrollToPage(PAGE_FOLLOWING_WEEK) } }
                             },
                             onToggleModelSpread = onToggleModelSpread,
                             onRevealModelSpread = onRevealModelSpread,
@@ -704,8 +699,14 @@ private fun TodayContent(
                     }
                     return@HorizontalPager
                 }
-                val pageInsight = if (page == 0) state.thisPeriodInsight else state.nextPeriodInsight
-                val pagePeriod = if (page == 0) state.thisPeriodInsight.period else nextPeriodFallback
+                val pageInsight = when (page) {
+                    0 -> state.thisPeriodInsight
+                    1 -> state.nextPeriodInsight
+                    else -> state.thirdPeriodInsight
+                }
+                // The third window is the same kind as this one (a morning's
+                // tomorrow, an evening's tomorrow night).
+                val pagePeriod = if (page == 1) nextPeriodFallback else state.thisPeriodInsight.period
                 CompositionLocalProvider(
                     LocalTodayAlerts provides if (page == 0) pageAlerts else pageAlerts.withoutAlerts(),
                 ) {
@@ -714,34 +715,29 @@ private fun TodayContent(
                         fallbackPeriod = pagePeriod,
                         state = state,
                         scrollState = pageScrollState,
-                        // Same outfit row on pages 0 / 1 (and the following
-                        // week) — this period's pair, not the current page's
-                        // period's pair. Pinning the row at the top keeps the
-                        // rest of the content from jumping when the user
-                        // swipes. The "Next 7 days" page shows the two periods
-                        // after it instead.
-                        outfitInsight = state.thisPeriodInsight,
-                        // Chevron layout across the three pages:
-                        //   page 0 (this period) — right chevron → page 1
-                        //   page 1 (next period) — left chevron → page 0,
-                        //                          right chevron → page 2
-                        //   page 2 (7-day overview) — its own back chevron → page 1
-                        // The 7-day page has a left chevron that doesn't surface
-                        // here (SevenDayPage owns its own header), so we only
-                        // wire chevrons for pages 0 and 1 in this block.
-                        showChevronRight = (page == 0 || page == 1),
-                        showChevronLeft = (page == 1),
+                        // Each 12-hour page shows its own period's outfit and
+                        // the next one's ("Tonight" + "Tomorrow" on an
+                        // evening's page 0, "Tomorrow" + "Tomorrow night" on
+                        // its page 1). A page whose insight isn't cached yet
+                        // keeps this period's pair rather than an empty slot.
+                        outfitInsight = pageInsight ?: state.thisPeriodInsight,
+                        // Chevrons step one page either way: page 0 has only a
+                        // right chevron; pages 1 and 2 have both, page 2's
+                        // right one leading to the 7-day page (which owns its
+                        // own header and chevrons).
+                        showChevronRight = true,
+                        showChevronLeft = page > 0,
                         workStatusToShow = workStatusToShow,
                         locationActionRequired = locationActionRequired,
                         onChevronTap = {
-                            // Left chevron on page 1 → back to page 0.
-                            // Right chevron on page 0 → forward to page 1.
+                            // Left chevron steps back a page; page 0's only
+                            // chevron (the right one) steps forward.
                             pagerScope.launch {
-                                pagerState.animateScrollToPage(if (page == 0) 1 else 0)
+                                pagerState.animateScrollToPage(if (page == 0) 1 else page - 1)
                             }
                         },
-                        onChevronRightTap = if (page == 1) {
-                            { pagerScope.launch { pagerState.animateScrollToPage(2) } }
+                        onChevronRightTap = if (page > 0) {
+                            { pagerScope.launch { pagerState.animateScrollToPage(page + 1) } }
                         } else {
                             null
                         },
@@ -1039,10 +1035,10 @@ private fun BannerStack(
  * work-status / holiday), and the user-reorderable sections in
  * [homeSectionOrder]: the conditions strip and [OutfitPreviewRow] (drawn here),
  * plus the [insightSlot], [confidenceSlot], and [chartsSlot] the page supplies.
- * Pages 0 / 1 fill the insight / confidence / per-period chart slots; page 2
- * supplies the weekly header (as [insightSlot]) + 7-day chart deck. Keeping the
- * chrome here means the banner stack and reorderable sections are byte-identical
- * across all three pages — swiping keeps the same cards in the same place.
+ * The 12-hour pages fill the insight / confidence / per-period chart slots; the
+ * week pages supply the weekly header (as [insightSlot]) + chart deck. Keeping
+ * the chrome here means the banner stack and reorderable sections are
+ * byte-identical across the pages — swiping keeps the same cards in the same place.
  */
 @Composable
 internal fun HomePageScaffold(
@@ -1076,8 +1072,8 @@ internal fun HomePageScaffold(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     // Conditions for the strip. Driven by [conditionsHourly] — the hourly
-    // series of *this page's* period (today / tonight on pages 0 / 1, the whole
-    // 7-day window on page 2) — so each page's strip reads its own feels-like
+    // series of *this page's* period (its 12-hour window on pages 0-2, the
+    // whole week on the week pages) — so each page's strip reads its own feels-like
     // range, rain, wind and UV rather than repeating this period's everywhere.
     // Reuses the exact helper the conditions widget and outfit card feed off so
     // every surface reads the same indicators in the same order.
@@ -1220,14 +1216,15 @@ internal fun HomePageScaffold(
                 // cached insight), so a section the user ordered but has no data
                 // for simply contributes nothing. The non-reorderable [content]
                 // (the missing-period placeholder) always trails them. The same
-                // order is used on all three pager pages — the 7-day page
-                // supplies its week-headline card as [insightSlot] — so each
-                // section keeps the same vertical offset across a swipe.
+                // order is used on every pager page — the week pages supply
+                // their week-headline card as [insightSlot] — so each section
+                // keeps the same vertical offset across a swipe.
                 //
                 // The outfit row still renders even when the page's own insight
-                // is missing (page 2's placeholder, or a not-yet-cached next
-                // period): [outfitInsight] is always this period's insight,
-                // null only on previews / tests that don't wire a pair.
+                // is missing (a not-yet-cached period's placeholder): the
+                // caller falls back to this period's insight, so
+                // [outfitInsight] is null only on previews / tests that don't
+                // wire a pair. Labels count from this period's day.
                 // [showLaterOutfits] swaps it for the two periods after that
                 // pair (the "Next 7 days" page).
                 homeSectionOrder.forEach { section ->
@@ -1245,6 +1242,7 @@ internal fun HomePageScaffold(
                             OutfitPreviewRow(
                                 insight = outfitInsight,
                                 later = showLaterOutfits,
+                                today = state.thisPeriodInsight?.anchorDate ?: outfitInsight.anchorDate,
                                 temperatureUnit = state.temperatureUnit,
                                 clothesRules = state.clothesRules,
                                 outfitTopColors = state.outfitTopColors,
@@ -1410,6 +1408,7 @@ private fun TodayPage(
                 InsightCard(
                     insight = insight,
                     region = state.region,
+                    today = state.thisPeriodInsight?.anchorDate,
                     temperatureUnit = state.temperatureUnit,
                     rangeFormat = state.rangeFormat,
                     clothesFormat = state.clothesFormat,
@@ -2082,6 +2081,7 @@ internal fun EmptyState(
 internal fun OutfitPreviewRow(
     insight: Insight,
     later: Boolean = false,
+    today: LocalDate = insight.anchorDate,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     clothesRules: List<ClothesRule> = emptyList(),
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
@@ -2096,15 +2096,13 @@ internal fun OutfitPreviewRow(
 ) {
     val laterOutfits = insight.laterOutfits.takeIf { later }.orEmpty()
     val cards = if (laterOutfits.isNotEmpty()) {
-        val today = insight.currentDay?.date ?: insight.forDate
-        val locale = LocalConfiguration.current.locales[0]
-        laterOutfits.map { Triple(it.outfit, laterOutfitLabel(it, today, locale), it.rationale) }
+        laterOutfits.map { Triple(it.outfit, periodLabel(PeriodSlot(it.date, it.night), today), it.rationale) }
     } else {
         val primary = insight.outfit ?: return
-        val (primaryLabel, nextLabel) = outfitLabels(insight)
+        val slot = insight.periodSlot
         listOfNotNull(
-            Triple(primary, stringResource(primaryLabel), insight.outfitRationale),
-            insight.nextOutfit?.let { Triple(it, stringResource(nextLabel), insight.nextOutfitRationale) },
+            Triple(primary, periodLabel(slot, today), insight.outfitRationale),
+            insight.nextOutfit?.let { Triple(it, periodLabel(slot.next(), today), insight.nextOutfitRationale) },
         )
     }
     // IntrinsicSize.Max + fillMaxHeight stretches both cards to the taller one's
@@ -2139,63 +2137,72 @@ internal fun OutfitPreviewRow(
 }
 
 /**
- * A later period's card label, relative to [today]: "Today" / "Tonight",
- * "Tomorrow" / "Tomorrow night", else the weekday ("Sunday"). A night past
- * tomorrow never comes up (the furthest pair is tomorrow night + the day
- * after), so it falls back to the bare weekday rather than a "%s night"
- * string that would need per-locale inflection.
+ * A 12-hour window: its calendar date and whether it's the night, which runs
+ * into the next morning. [overnight] marks the ongoing night that began the
+ * day before ([date] is that day).
+ */
+internal data class PeriodSlot(val date: LocalDate, val night: Boolean, val overnight: Boolean = false) {
+    fun next(): PeriodSlot = if (night) PeriodSlot(date.plusDays(1), night = false) else PeriodSlot(date, night = true)
+}
+
+internal val Insight.periodSlot: PeriodSlot
+    get() = PeriodSlot(forDate, night = period == ForecastPeriod.TONIGHT, overnight = summary.overnight)
+
+/**
+ * The day this insight's fetch called today — what "Today" / "Tomorrow" are
+ * relative to. Taken from the insight rather than the clock so a label never
+ * disagrees with the prose it heads, and previews stay date-independent.
+ */
+internal val Insight.anchorDate: LocalDate
+    get() = currentDay?.date ?: if (summary.overnight) forDate.plusDays(1) else forDate
+
+/**
+ * The period's name relative to [today]: "Overnight", "Today" / "Tonight",
+ * "Tomorrow" / "Tomorrow night", else the weekday ("Sunday"). The furthest a
+ * 12-hour page reaches is the day after tomorrow's daytime, so a later night
+ * never needs a "%s night" string (which would need per-locale inflection);
+ * it falls back to the bare weekday.
  */
 @Composable
-private fun laterOutfitLabel(period: PeriodOutfit, today: LocalDate, locale: Locale): String =
-    when (period.date) {
-        today -> stringResource(
-            if (period.night) R.string.today_outfit_label_tonight else R.string.today_outfit_label_today,
+internal fun periodLabel(slot: PeriodSlot, today: LocalDate): String {
+    val locale = LocalConfiguration.current.locales[0]
+    return when {
+        slot.night && slot.overnight -> stringResource(R.string.today_outfit_label_overnight)
+        slot.date == today -> stringResource(
+            if (slot.night) R.string.today_outfit_label_tonight else R.string.today_outfit_label_today,
         )
-        today.plusDays(1) -> stringResource(
-            if (period.night) R.string.today_outfit_label_tomorrow_night else R.string.today_outfit_label_tomorrow,
+        slot.date == today.plusDays(1) -> stringResource(
+            if (slot.night) R.string.today_outfit_label_tomorrow_night else R.string.today_outfit_label_tomorrow,
         )
-        else -> period.date.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, locale)
+        else -> slot.date.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, locale)
             .replaceFirstChar { it.titlecase(locale) }
     }
+}
 
-private fun outfitLabels(insight: Insight): Pair<Int, Int> =
-    when (insight.period) {
-        ForecastPeriod.TODAY ->
-            R.string.today_outfit_label_today to R.string.today_outfit_label_tonight
-        ForecastPeriod.TONIGHT ->
-            // Ongoing overnight → "Overnight" + "Today"; the coming night →
-            // "Tonight" + "Tomorrow".
-            if (insight.summary.overnight) {
-                R.string.today_outfit_label_overnight to R.string.today_outfit_label_today
-            } else {
-                R.string.today_outfit_label_tonight to R.string.today_outfit_label_tomorrow
-            }
-    }
+/** Pager layout: three 12-hour pages, then the two week pages. */
+internal const val PAGE_WEEK = 3
+internal const val PAGE_FOLLOWING_WEEK = 4
+private const val PAGE_COUNT = 5
 
-// Title shown in the TopAppBar — tracks the visible pager page so swiping
-// right from a morning view flips "Today" to "Tonight" (and the evening
-// equivalent flips "Tonight" to "Tomorrow"). Page 2 is the 7-day outlook and
-// page 3 the following week (days 8-14); their titles are the same regardless
-// of which period the user opened from. Falls back to "Today" when no insight
-// is cached yet (pager isn't rendered in that state).
-internal fun topBarTitleRes(
-    period: ForecastPeriod?,
-    page: Int,
-    overnight: Boolean = false,
-): Int {
-    if (page == 2) return R.string.today_title_week
-    if (page == 3) return R.string.today_title_following_week
-    // The ongoing overnight (post-midnight tail): page 0 is "Overnight", page 1
-    // the daytime it leads into ("Today").
-    return when (period) {
-        null -> R.string.today_title
-        ForecastPeriod.TODAY -> if (page == 0) R.string.today_title else R.string.today_outfit_label_tonight
-        ForecastPeriod.TONIGHT ->
-            if (overnight) {
-                if (page == 0) R.string.today_outfit_label_overnight else R.string.today_outfit_label_today
-            } else {
-                if (page == 0) R.string.today_outfit_label_tonight else R.string.today_outfit_label_tomorrow
-            }
+/**
+ * Title shown in the TopAppBar — tracks the visible pager page: the 12-hour
+ * pages name their period relative to this period's day ("Today", "Tonight",
+ * "Tomorrow", "Tomorrow night", …), the week pages their window. Falls back to
+ * "Today" when no insight is cached yet (the pager isn't rendered then).
+ */
+@Composable
+internal fun topBarTitle(insight: Insight?, page: Int): String = when {
+    page == PAGE_WEEK -> stringResource(R.string.today_title_week)
+    page == PAGE_FOLLOWING_WEEK -> stringResource(R.string.today_title_following_week)
+    insight == null -> stringResource(R.string.today_title)
+    else -> {
+        var slot = insight.periodSlot
+        repeat(page) { slot = slot.next() }
+        if (page == 0 && slot.date == insight.anchorDate && !slot.night) {
+            stringResource(R.string.today_title)
+        } else {
+            periodLabel(slot, insight.anchorDate)
+        }
     }
 }
 
@@ -2570,6 +2577,14 @@ private fun bottomLabelRes(bottom: OutfitSuggestion.Bottom): Int = when (bottom)
 internal fun InsightCard(
     insight: Insight,
     region: Region,
+    /**
+     * The day the heading and prose lead-in count from ("Tomorrow night" when
+     * [insight] is the next day's night). The Today screen passes this
+     * period's [anchorDate]; null (previews, the skeleton) uses the clock for
+     * a future insight and the insight's own day otherwise, so a dated sample
+     * still reads "Today".
+     */
+    today: LocalDate? = null,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     /**
      * How the rendered prose presents the temperature-range clause (none /
@@ -2662,23 +2677,17 @@ internal fun InsightCard(
             accessoriesFormat, periodPreamble, wearPreamble,
         )
     }
-    // Page 2 caches tomorrow's daytime insight after the evening worker run;
-    // surface it as "Tomorrow" rather than "Today" so the heading matches the
-    // prose lead-in below. The ongoing overnight (post-midnight tail) is flagged
-    // on the insight itself — "Overnight", not "Tonight". Compared in the
-    // forecast location's zone — `forDate` is that zone's date, so a device
-    // in a different timezone would otherwise mislabel the current day.
-    val isFutureDay = insight.forDate.isAfter(LocalDate.now(insight.forecastZone ?: ZoneId.systemDefault()))
-    val periodLabel = stringResource(
-        when (insight.period) {
-            ForecastPeriod.TODAY ->
-                if (isFutureDay) R.string.today_outfit_label_tomorrow
-                else R.string.today_outfit_label_today
-            ForecastPeriod.TONIGHT ->
-                if (insight.summary.overnight) R.string.today_outfit_label_overnight
-                else R.string.today_outfit_label_tonight
-        },
-    )
+    // A page past this period's day (tomorrow, tomorrow night) heads and leads
+    // with "Tomorrow" / "Tomorrow night" rather than "Today" / "Tonight". The
+    // ongoing overnight (post-midnight tail) is flagged on the insight itself
+    // — "Overnight", not "Tonight". The clock fallback reads the forecast
+    // location's zone — `forDate` is that zone's date, so a device in a
+    // different timezone would otherwise mislabel the current day.
+    val labelToday = today ?: LocalDate.now(insight.forecastZone ?: ZoneId.systemDefault()).let { now ->
+        if (insight.forDate.isAfter(now)) now else insight.anchorDate
+    }
+    val isFutureDay = insight.forDate.isAfter(labelToday)
+    val periodHeading = periodLabel(insight.periodSlot, labelToday)
     val location = insight.location
     // Fall back to a localised "Your location" when reverse geocoding returned
     // nothing useful — we still have coords, so the maps link is worth keeping.
@@ -2715,7 +2724,7 @@ internal fun InsightCard(
             // settings (the address detail + Map button live there) and falls
             // back to inert text when no nav callback is wired (previews / tests).
             InsightCardCenterLabel(
-                label = periodLabel,
+                label = periodHeading,
                 locationLabel = locationLabel,
                 onNavigateToLocation = onNavigateToLocation,
                 labelModifier = if (onLongPressDate != null) {

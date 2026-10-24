@@ -414,12 +414,15 @@ displayed label localizes.
 
     <string name="insight_lead_today">오늘</string>
     <string name="insight_lead_tomorrow">내일</string>
+    <string name="insight_lead_tomorrow_night">내일 밤</string>
     <string name="insight_unchanged_today">오늘은 어제와 같은 날씨입니다.</string>
     <string name="insight_unchanged_today_no_lead">어제와 같음.</string>
     <string name="insight_unchanged_tonight">오늘 밤은 어젯밤과 같은 날씨입니다.</string>
     <string name="insight_unchanged_tonight_no_lead">어젯밤과 같음.</string>
     <string name="insight_unchanged_tomorrow">내일은 오늘과 같은 날씨입니다.</string>
+    <string name="insight_unchanged_tomorrow_night">내일 밤은 오늘 밤과 같은 날씨입니다.</string>
     <string name="insight_unchanged_tomorrow_no_lead">오늘과 같음.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">오늘 밤과 같음.</string>
     <string name="insight_lead_tonight">오늘 밤</string>
     <!-- "오늘 포근한 날씨입니다." -->
     <string name="insight_band_single">%1$s %2$d° 날씨입니다.</string>

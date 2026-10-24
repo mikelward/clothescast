@@ -409,12 +409,15 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <string name="insight_lead_today">Hoje</string>
     <string name="insight_lead_tomorrow">Amanhã</string>
+    <string name="insight_lead_tomorrow_night">Amanhã à noite</string>
     <string name="insight_unchanged_today">Hoje será igual a ontem.</string>
     <string name="insight_unchanged_today_no_lead">Como ontem.</string>
     <string name="insight_unchanged_tonight">Esta noite será igual à noite passada.</string>
     <string name="insight_unchanged_tonight_no_lead">Como ontem à noite.</string>
     <string name="insight_unchanged_tomorrow">Amanhã será igual a hoje.</string>
+    <string name="insight_unchanged_tomorrow_night">Amanhã à noite será igual a esta noite.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Como hoje.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Como esta noite.</string>
     <string name="insight_lead_tonight">Esta noite</string>
     <string name="insight_band_single">%1$s será %2$d°.</string>
     <string name="insight_band_single_no_lead">%1$d°.</string>

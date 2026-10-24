@@ -525,12 +525,15 @@ What is NOT overridden, by design:
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Dnes</string>
     <string name="insight_lead_tomorrow">Zajtra</string>
+    <string name="insight_lead_tomorrow_night">Zajtra večer</string>
     <string name="insight_unchanged_today">Dnes bude rovnako ako včera.</string>
     <string name="insight_unchanged_today_no_lead">Ako včera.</string>
     <string name="insight_unchanged_tonight">Dnes večer bude rovnako ako včera večer.</string>
     <string name="insight_unchanged_tonight_no_lead">Ako včera večer.</string>
     <string name="insight_unchanged_tomorrow">Zajtra bude rovnako ako dnes.</string>
+    <string name="insight_unchanged_tomorrow_night">Zajtra večer bude rovnako ako dnes večer.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Ako dnes.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Ako dnes večer.</string>
     <string name="insight_lead_tonight">Dnes večer</string>
     <string name="insight_band_single">%1$s bude %2$d°.</string>
     <string name="insight_band_single_no_lead">%1$d°.</string>

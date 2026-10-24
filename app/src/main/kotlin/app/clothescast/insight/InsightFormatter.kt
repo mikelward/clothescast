@@ -139,12 +139,11 @@ class InsightFormatter(
     private val phraser: ClothesPhraser = ClothesPhraser.forLocale(resources, locale)
 
     /**
-     * Render [summary] as prose. When [isFutureDay] is true the [ForecastPeriod.TODAY]
-     * lead-in switches from "Today" to "Tomorrow" — this is the page-2 case where
-     * the evening worker has cached a daytime insight for the next calendar date
-     * and rendering "Today, …" would be wrong. The TONIGHT lead is left alone:
-     * the worker never pairs a primary insight with tomorrow night, so the only
-     * tomorrow-shaped payload that reaches the formatter is a daytime one.
+     * Render [summary] as prose. When [isFutureDay] is true the lead-in names
+     * tomorrow — "Tomorrow" for a [ForecastPeriod.TODAY] summary (the evening's
+     * next page, or the morning's third), "Tomorrow night" for a TONIGHT one
+     * (the evening's third page) — since "Today, …" / "Tonight, …" would be
+     * wrong for the next calendar date.
      *
      * When no clause produces any prose (only reachable with [RangeFormat.NONE],
      * where the temperature range is dropped and nothing else fired),
@@ -356,8 +355,12 @@ class InsightFormatter(
             omitLead -> R.string.insight_unchanged_today_no_lead
             else -> R.string.insight_unchanged_today
         }
-        ForecastPeriod.TONIGHT ->
-            if (omitLead) R.string.insight_unchanged_tonight_no_lead else R.string.insight_unchanged_tonight
+        ForecastPeriod.TONIGHT -> when {
+            isFutureDay && omitLead -> R.string.insight_unchanged_tomorrow_night_no_lead
+            isFutureDay -> R.string.insight_unchanged_tomorrow_night
+            omitLead -> R.string.insight_unchanged_tonight_no_lead
+            else -> R.string.insight_unchanged_tonight
+        }
     }
 
     /**
@@ -867,8 +870,11 @@ class InsightFormatter(
         ForecastPeriod.TODAY -> if (isFutureDay) R.string.insight_lead_tomorrow else R.string.insight_lead_today
         // The ongoing overnight leads with "Overnight", not "Tonight", so the
         // spoken / written prose matches the "Overnight" page + outfit labels.
-        ForecastPeriod.TONIGHT ->
-            if (overnight) R.string.insight_lead_overnight else R.string.insight_lead_tonight
+        ForecastPeriod.TONIGHT -> when {
+            overnight -> R.string.insight_lead_overnight
+            isFutureDay -> R.string.insight_lead_tomorrow_night
+            else -> R.string.insight_lead_tonight
+        }
     }
 
     private fun conditionRes(condition: WeatherCondition): Int = when (condition) {

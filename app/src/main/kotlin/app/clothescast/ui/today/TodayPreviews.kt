@@ -343,6 +343,24 @@ internal fun OutfitRowTonightTomorrowPreview() {
     }
 }
 
+// An evening's third page: tomorrow night, then the day after by weekday
+// (2026-04-26 is a Sunday, so "Tomorrow night" + "Tuesday").
+@Preview(name = "Outfit row · tomorrow night + day after", widthDp = 360)
+@Composable
+internal fun OutfitRowTomorrowNightPreview() {
+    Frame {
+        OutfitPreviewRow(
+            SAMPLE_INSIGHT.copy(
+                period = ForecastPeriod.TONIGHT,
+                forDate = LocalDate.of(2026, 4, 27),
+                outfit = OutfitSuggestion(OutfitSuggestion.Top.THICK_JACKET, OutfitSuggestion.Bottom.LONG_PANTS),
+                nextOutfit = OutfitSuggestion(OutfitSuggestion.Top.TSHIRT, OutfitSuggestion.Bottom.SHORTS),
+            ),
+            today = LocalDate.of(2026, 4, 26),
+        )
+    }
+}
+
 @Preview(name = "Outfit row · rain jacket + umbrella", widthDp = 360)
 @Composable
 internal fun OutfitRowRainJacketUmbrellaPreview() {

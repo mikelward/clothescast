@@ -50,6 +50,7 @@ import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.diag.DiagLog
 import app.clothescast.ui.theme.ClothesCastTheme
+import app.clothescast.ui.today.PAGE_WEEK
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -107,9 +108,9 @@ class SevenDayFeelsLikeWidget : GlanceAppWidget() {
     }
 }
 
-/** Pager pages the tap intents deep-link to — page 0 is the current period, page 2 the 7-day deck. */
+/** Pager pages the tap intents deep-link to — page 0 is the current period, [PAGE_WEEK] the 7-day deck. */
 internal const val THIS_PERIOD_PAGE = 0
-private const val WEEK_PAGE = 2
+private const val WEEK_PAGE = PAGE_WEEK
 
 // Fallback render size for the off-screen chart bitmap (3:1, mid-range). Used
 // only when the launcher hasn't reported the widget's cell size yet (e.g. the

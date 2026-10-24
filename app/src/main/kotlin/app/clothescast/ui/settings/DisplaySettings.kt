@@ -24,6 +24,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -119,6 +120,17 @@ internal fun DisplayContent(
 private fun TextSizeCard() {
     val state = LocalFontSizeState.current ?: return
     SectionCard(title = stringResource(R.string.settings_display_text_size_title)) {
+        // Whether the slider holds a drag, so leaving the screen mid-drag still
+        // stores the size on screen: disposal never calls
+        // `onValueChangeFinished`, and the state outlives this screen, so it
+        // would otherwise stay mid-gesture and hold back every later stored
+        // value (as in snoozemo). The release reads [FontSizeState.scale]
+        // directly, which `preview` has already set, so it stores exactly where
+        // the finger let go.
+        var dragging by remember { mutableStateOf(false) }
+        DisposableEffect(state) {
+            onDispose { if (dragging) state.commit(state.scale) }
+        }
         Row(verticalAlignment = Alignment.CenterVertically) {
             // Hosted at the unscaled density: the drag changes the scaled one
             // on every frame, which would otherwise restart its own gesture.
@@ -126,8 +138,14 @@ private fun TextSizeCard() {
                 StableInputDensity {
                     Slider(
                         value = state.scale,
-                        onValueChange = state::preview,
-                        onValueChangeFinished = { state.commit(state.scale) },
+                        onValueChange = {
+                            dragging = true
+                            state.preview(it)
+                        },
+                        onValueChangeFinished = {
+                            dragging = false
+                            state.commit(state.scale)
+                        },
                         valueRange = MIN_FONT_SCALE..MAX_FONT_SCALE,
                     )
                 }

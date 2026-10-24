@@ -1,0 +1,114 @@
+package app.clothescast.ui.settings
+
+import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.unit.dp
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.clothescast.core.domain.model.ColorPalette
+import app.clothescast.core.domain.model.HomeSection
+import app.clothescast.core.domain.model.ThemeMode
+import app.clothescast.ui.theme.ClothesCastTheme
+import com.mikelward.androidzoom.FontSizeSettings
+import com.mikelward.androidzoom.compose.FontSizeState
+import com.mikelward.androidzoom.compose.rememberFontSizeState
+import io.kotest.matchers.shouldBe
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
+
+/**
+ * The Display screen's text-size card: what the slider (and the buttons beside
+ * it) leave stored, since that write is the only thing that outlives the
+ * screen.
+ */
+@RunWith(AndroidJUnit4::class)
+@Config(sdk = [33], qualifiers = "en-rUS-w360dp-h2000dp-xhdpi")
+class TextSizeCardTest {
+
+    @get:Rule
+    val composeRule = createAndroidComposeRule<ComponentActivity>()
+
+    private val settled = mutableListOf<Float>()
+    private lateinit var state: FontSizeState
+    private var shown by mutableStateOf(true)
+
+    private fun render(scale: Float = 1.15f) {
+        composeRule.setContent {
+            state = rememberFontSizeState(
+                persisted = FontSizeSettings(scale = scale),
+                onScaleSettled = { settled += it },
+                onPinchEnabledChange = {},
+            )
+            ClothesCastTheme(dynamicColor = false, fontSize = state) {
+                if (shown) {
+                    DisplayContent(
+                        themeMode = ThemeMode.SYSTEM,
+                        colorPalette = ColorPalette.RAINBOW,
+                        homeSectionOrder = HomeSection.DEFAULTS,
+                        padding = PaddingValues(0.dp),
+                        onSetThemeMode = {},
+                        onSetColorPalette = {},
+                        onReorderHomeSection = { _, _ -> },
+                    )
+                }
+            }
+        }
+    }
+
+    private fun slider() = composeRule.onNode(
+        SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo),
+    )
+
+    // Each step in its own block, with the tree settling between: one block
+    // dispatches without recomposing, so the size would not move until the drag
+    // was already over.
+    private fun dragRight() {
+        slider().performTouchInput { down(center) }
+        composeRule.waitForIdle()
+        // Past the touch slop, so this is a drag rather than a press.
+        slider().performTouchInput { moveTo(center + Offset(100f, 0f)) }
+        composeRule.waitForIdle()
+    }
+
+    @Test
+    fun releasePersistsWhereTheDragEnded() {
+        render()
+        dragRight()
+        slider().performTouchInput { up() }
+        composeRule.waitForIdle()
+        (state.scale > 1.2f) shouldBe true // past where the press landed
+        settled shouldBe listOf(state.scale)
+    }
+
+    // Leaving the screen with a finger still on the slider disposes it without
+    // a release, so nothing else would store the size already on screen.
+    @Test
+    fun leavingMidDragPersistsTheDraggedSize() {
+        render()
+        dragRight()
+        val dragged = state.scale
+        (dragged > 1.2f) shouldBe true
+        settled shouldBe emptyList()
+
+        composeRule.runOnIdle { shown = false }
+        composeRule.waitForIdle()
+
+        settled shouldBe listOf(dragged)
+        // And the gesture is over, so a stored value lands rather than being
+        // held for a drag that has ended.
+        composeRule.runOnIdle {
+            state.onPersisted(FontSizeSettings(scale = 1.3f, pinchEnabled = false))
+            state.scale shouldBe 1.3f
+            state.pinchEnabled shouldBe false
+        }
+    }
+}

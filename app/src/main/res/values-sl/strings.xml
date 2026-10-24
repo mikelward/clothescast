@@ -50,12 +50,15 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
 
     <string name="insight_lead_today">Danes</string>
     <string name="insight_lead_tomorrow">Jutri</string>
+    <string name="insight_lead_tomorrow_night">Jutri zvečer</string>
     <string name="insight_unchanged_today">Danes bo enako kot včeraj.</string>
     <string name="insight_unchanged_today_no_lead">Kot včeraj.</string>
     <string name="insight_unchanged_tonight">Nocoj bo enako kot sinoči.</string>
     <string name="insight_unchanged_tonight_no_lead">Kot sinoči.</string>
     <string name="insight_unchanged_tomorrow">Jutri bo enako kot danes.</string>
+    <string name="insight_unchanged_tomorrow_night">Jutri zvečer bo enako kot nocoj.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Kot danes.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Kot nocoj.</string>
     <string name="insight_lead_tonight">Nocoj</string>
     <!-- "Danes bo mrzlo." — leading time adverb + "bo" + adjective. -->
     <string name="insight_band_single">%1$s bo %2$d°.</string>

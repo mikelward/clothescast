@@ -523,11 +523,10 @@ class DeriveInsight(
  * the next-card pre-render rather than fabricate data.
  *
  * Yesterday becomes today's daily forecast so the delta clause still has an
- * apples-to-apples comparison (tomorrow vs. today). The `tomorrow` and
- * `tomorrowHourly` fields drop to empty — we don't have day-after-tomorrow
- * data, so a hypothetical tonight-period generation off the shifted bundle
- * would lose its overnight wrap; that's why the public `dayOffset=1` path is
- * gated to TODAY-period only. [ForecastBundle.upcomingDays] leads with the
+ * apples-to-apples comparison (tomorrow vs. today). `tomorrow` and
+ * `tomorrowHourly` become the day after when [ForecastBundle.upcomingDays]
+ * reaches it, else empty (a short fetch) — a night sliced off such a bundle
+ * would lose its overnight wrap. [ForecastBundle.upcomingDays] leads with the
  * promoted day (it duplicates `tomorrow` at index 0), so the shift drops it —
  * otherwise the derived insight's `upcomingDays[0]` would equal its own
  * `forDate`, violating that field's "days after" contract and double-plotting
@@ -535,13 +534,38 @@ class DeriveInsight(
  */
 internal fun ForecastBundle.shiftedToTomorrow(): ForecastBundle? {
     val tmrw = tomorrow ?: return null
+    val upcoming = upcomingDays.dropWhile { !it.date.isAfter(tmrw.date) }
+    // The day after, when the fetch reached it (the 14-day bundle does), so
+    // the shifted day's night still wraps into its next morning.
+    val dayAfter = upcoming.firstOrNull()?.takeIf { it.date == tmrw.date.plusDays(1) }
     return copy(
         today = tmrw,
         yesterday = today,
-        tomorrow = null,
-        tomorrowHourly = emptyList(),
-        upcomingDays = upcomingDays.dropWhile { !it.date.isAfter(tmrw.date) },
+        tomorrow = dayAfter,
+        tomorrowHourly = dayAfter?.hourly.orEmpty(),
+        upcomingDays = upcoming,
     )
+}
+
+/**
+ * The snapshot for the 12-hour window after this one, sliced from the same
+ * cached bundle rather than fetched: the ongoing overnight → today's daytime,
+ * a morning → that evening's night, a coming night → tomorrow's daytime
+ * (the bundle shifted a day). Null when the bundle doesn't reach far enough:
+ * a day needs tomorrow, a night the next morning's hours, so a short bundle
+ * leaves the page to its placeholder rather than a night missing its
+ * small-hours low. The Today screen chains it to derive its third 12-hour page.
+ *
+ * Calendar events ride along unchanged: they cover today and tomorrow, so a
+ * night past tomorrow simply has no events to mention. The historic
+ * yesterday is dropped on a shift — it's dated before the new yesterday.
+ */
+fun ForecastSnapshot.followingPeriod(): ForecastSnapshot? = when {
+    overnight -> copy(period = ForecastPeriod.TODAY, overnight = false)
+    period == ForecastPeriod.TODAY -> copy(period = ForecastPeriod.TONIGHT).takeIf { bundle.tomorrowHourly.isNotEmpty() }
+    else -> bundle.shiftedToTomorrow()?.let {
+        copy(bundle = it, period = ForecastPeriod.TODAY, historicYesterday = null)
+    }
 }
 
 /**

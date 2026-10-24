@@ -455,12 +455,15 @@ zh-CN) is unchanged; only the displayed label localizes.
          Greek 24-hour colon notation ("15:00" / "15:30"). -->
     <string name="insight_lead_today">Σήμερα</string>
     <string name="insight_lead_tomorrow">Αύριο</string>
+    <string name="insight_lead_tomorrow_night">Αύριο βράδυ</string>
     <string name="insight_unchanged_today">Σήμερα θα είναι όπως χθες.</string>
     <string name="insight_unchanged_today_no_lead">Όπως χθες.</string>
     <string name="insight_unchanged_tonight">Απόψε θα είναι όπως χθες το βράδυ.</string>
     <string name="insight_unchanged_tonight_no_lead">Όπως χθες το βράδυ.</string>
     <string name="insight_unchanged_tomorrow">Αύριο θα είναι όπως σήμερα.</string>
+    <string name="insight_unchanged_tomorrow_night">Αύριο βράδυ θα είναι όπως απόψε.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Όπως σήμερα.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Όπως απόψε.</string>
     <string name="insight_lead_tonight">Απόψε</string>
     <string name="insight_band_single">%1$s θα κάνει %2$d°.</string>
     <string name="insight_band_single_no_lead">%1$d°.</string>

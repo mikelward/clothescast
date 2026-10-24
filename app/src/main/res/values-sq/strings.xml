@@ -139,13 +139,16 @@
 
     <string name="insight_lead_today">Sot</string>
     <string name="insight_lead_tomorrow">Nesër</string>
+    <string name="insight_lead_tomorrow_night">Nesër në mbrëmje</string>
     <string name="insight_lead_tonight">Sonte</string>
     <string name="insight_unchanged_today">Sot do të jetë si dje.</string>
     <string name="insight_unchanged_today_no_lead">Si dje.</string>
     <string name="insight_unchanged_tonight">Sonte do të jetë si mbrëmë.</string>
     <string name="insight_unchanged_tonight_no_lead">Si mbrëmë.</string>
     <string name="insight_unchanged_tomorrow">Nesër do të jetë si sot.</string>
+    <string name="insight_unchanged_tomorrow_night">Nesër në mbrëmje do të jetë si sonte.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Si sot.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Si sonte.</string>
     <string name="insight_band_single">%1$s do të jetë %2$d°.</string>
     <string name="insight_band_single_no_lead">%1$d°.</string>
     <string name="insight_band_range">%1$s do të jetë %2$d° deri %3$d°.</string>

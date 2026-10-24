@@ -365,12 +365,15 @@ the displayed label localizes.
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Vandaag</string>
     <string name="insight_lead_tomorrow">Morgen</string>
+    <string name="insight_lead_tomorrow_night">Morgenavond</string>
     <string name="insight_unchanged_today">Vandaag wordt het hetzelfde als gisteren.</string>
     <string name="insight_unchanged_today_no_lead">Als gisteren.</string>
     <string name="insight_unchanged_tonight">Vanavond wordt het hetzelfde als gisteravond.</string>
     <string name="insight_unchanged_tonight_no_lead">Als gisteravond.</string>
     <string name="insight_unchanged_tomorrow">Morgen wordt het hetzelfde als vandaag.</string>
+    <string name="insight_unchanged_tomorrow_night">Morgenavond wordt het hetzelfde als vanavond.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Als vandaag.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Als vanavond.</string>
     <string name="insight_lead_tonight">Vanavond</string>
 
     <!-- Dutch V2 word order: "Vandaag wordt het mild." -->

@@ -78,12 +78,15 @@ default English (matching values-pl / values-uk).
 
     <string name="insight_lead_today">Danas</string>
     <string name="insight_lead_tomorrow">Sutra</string>
+    <string name="insight_lead_tomorrow_night">Sutra uveče</string>
     <string name="insight_unchanged_today">Danas će biti isto kao juče.</string>
     <string name="insight_unchanged_today_no_lead">Kao juče.</string>
     <string name="insight_unchanged_tonight">Večeras će biti isto kao sinoć.</string>
     <string name="insight_unchanged_tonight_no_lead">Kao sinoć.</string>
     <string name="insight_unchanged_tomorrow">Sutra će biti isto kao danas.</string>
+    <string name="insight_unchanged_tomorrow_night">Sutra uveče će biti isto kao večeras.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Kao danas.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Kao večeras.</string>
     <string name="insight_lead_tonight">Večeras</string>
     <string name="insight_band_single">%1$s će biti %2$d°.</string>
     <string name="insight_band_single_no_lead">%1$d°.</string>

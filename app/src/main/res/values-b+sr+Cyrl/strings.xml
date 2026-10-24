@@ -66,12 +66,15 @@ surfaces.
 
     <string name="insight_lead_today">Данас</string>
     <string name="insight_lead_tomorrow">Сутра</string>
+    <string name="insight_lead_tomorrow_night">Сутра увече</string>
     <string name="insight_unchanged_today">Данас ће бити исто као јуче.</string>
     <string name="insight_unchanged_today_no_lead">Као јуче.</string>
     <string name="insight_unchanged_tonight">Вечерас ће бити исто као синоћ.</string>
     <string name="insight_unchanged_tonight_no_lead">Као синоћ.</string>
     <string name="insight_unchanged_tomorrow">Сутра ће бити исто као данас.</string>
+    <string name="insight_unchanged_tomorrow_night">Сутра увече ће бити исто као вечерас.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Као данас.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Као вечерас.</string>
     <string name="insight_lead_tonight">Вечерас</string>
     <string name="insight_band_single">%1$s ће бити %2$d°.</string>
     <string name="insight_band_single_no_lead">%1$d°.</string>

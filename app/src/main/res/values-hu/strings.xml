@@ -513,12 +513,15 @@ locale (Angol (Egyesült Államok), Francia (Franciaország), Német
     <!-- Insight prose templates. -->
     <string name="insight_lead_today">Ma</string>
     <string name="insight_lead_tomorrow">Holnap</string>
+    <string name="insight_lead_tomorrow_night">Holnap este</string>
     <string name="insight_unchanged_today">Ma ugyanolyan lesz, mint tegnap.</string>
     <string name="insight_unchanged_today_no_lead">Mint tegnap.</string>
     <string name="insight_unchanged_tonight">Ma este ugyanolyan lesz, mint tegnap este.</string>
     <string name="insight_unchanged_tonight_no_lead">Mint tegnap este.</string>
     <string name="insight_unchanged_tomorrow">Holnap ugyanolyan lesz, mint ma.</string>
+    <string name="insight_unchanged_tomorrow_night">Holnap este ugyanolyan lesz, mint ma este.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Mint ma.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Mint ma este.</string>
     <string name="insight_lead_tonight">Ma este</string>
     <!-- "%1$s %2$s lesz." → "Ma hideg lesz." Lead first, then band, copula at end. -->
     <string name="insight_band_single">%1$s %2$d° lesz.</string>

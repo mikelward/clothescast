@@ -467,12 +467,15 @@ Tone is informal "sina"-form throughout ("Pane … selga", "Võta … kaasa",
 
     <string name="insight_lead_today">Täna</string>
     <string name="insight_lead_tomorrow">Homme</string>
+    <string name="insight_lead_tomorrow_night">Homme õhtul</string>
     <string name="insight_unchanged_today">Täna on sama ilm kui eile.</string>
     <string name="insight_unchanged_today_no_lead">Nagu eile.</string>
     <string name="insight_unchanged_tonight">Täna õhtul on sama ilm kui eile õhtul.</string>
     <string name="insight_unchanged_tonight_no_lead">Nagu eile õhtul.</string>
     <string name="insight_unchanged_tomorrow">Homme on sama ilm kui täna.</string>
+    <string name="insight_unchanged_tomorrow_night">Homme õhtul on sama ilm kui täna õhtul.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Nagu täna.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Nagu täna õhtul.</string>
     <string name="insight_lead_tonight">Täna õhtul</string>
     <!-- Estonian copular shape: "Täna on külm." -->
     <string name="insight_band_single">%1$s on %2$d°.</string>

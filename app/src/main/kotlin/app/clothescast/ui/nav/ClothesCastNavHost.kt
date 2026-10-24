@@ -74,10 +74,10 @@ import kotlinx.serialization.serializer
 // back stack handles up-navigation. No hand-maintained "current route" state,
 // no goBackOrUp(), no per-screen BackHandler.
 // [page] selects which pager page the Today screen opens on: 0 = current period,
-// 1 = next period, 2 = 7-day deck. Defaulted (so it rides as an optional `?page=`
+// 1-2 = the next two periods, 3 = 7-day deck. Defaulted (so it rides as an optional `?page=`
 // query on the deep link), which keeps the bare `clothescast://today` notification
 // link matching with page 0. The feels-like home-screen widgets deep-link to
-// page 0 / 2.
+// page 0 / 3.
 @Serializable internal data class TodayRoute(val page: Int = 0)
 @Serializable internal object PairingRoute
 

@@ -30,6 +30,7 @@ import app.clothescast.core.domain.usecase.DeriveInsight
 import app.clothescast.core.domain.usecase.HolidayResolver
 import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.core.domain.usecase.ThemeForToday
+import app.clothescast.core.domain.usecase.followingPeriod
 import app.clothescast.tts.toJavaLocale
 import java.util.Locale
 import app.clothescast.data.InsightCache
@@ -73,6 +74,13 @@ data class TodayState(
      * [MissingPeriodPlaceholder] in that case.
      */
     val nextPeriodInsight: Insight? = null,
+    /**
+     * The 12-hour window after [nextPeriodInsight] — tomorrow's daytime from a
+     * morning, tomorrow night from an evening — sliced from this period's
+     * cached bundle ([followingPeriod]), so it needs no worker run of its
+     * own. Null before the first fetch or on a bundle that stops at tomorrow.
+     */
+    val thirdPeriodInsight: Insight? = null,
     val workStatus: WorkStatus = WorkStatus.Idle,
     /**
      * True iff any worker on the daily / tonight / replay queues is in an
@@ -702,6 +710,8 @@ class TodayViewModel(
         // preservation / re-gating logic on the cache side.
         val thisPeriodInsight = thisPeriodSnapshot?.let { deriveInsight(it, prefs).insight }
         val nextPeriodInsight = nextPeriodSnapshot?.let { deriveInsight(it, prefs).insight }
+        val thirdPeriodInsight = thisPeriodSnapshot?.followingPeriod()?.followingPeriod()
+            ?.let { deriveInsight(it, prefs).insight }
         // Resolve "is today a holiday the user wants themed?" — `today`
         // comes from the [dateTicker] flow above so the rollover at local
         // midnight re-fires combine even when no other input changes. The
@@ -741,6 +751,7 @@ class TodayViewModel(
         TodayState(
             thisPeriodInsight = thisPeriodInsight,
             nextPeriodInsight = nextPeriodInsight,
+            thirdPeriodInsight = thirdPeriodInsight,
             workStatus = workSignals.status,
             anyWorkActive = workSignals.anyWorkActive,
             temperatureUnit = prefs.temperatureUnit,

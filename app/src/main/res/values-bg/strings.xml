@@ -64,12 +64,15 @@ What is NOT overridden, by design:
 
     <string name="insight_lead_today">Днес</string>
     <string name="insight_lead_tomorrow">Утре</string>
+    <string name="insight_lead_tomorrow_night">Утре вечер</string>
     <string name="insight_unchanged_today">Днес ще бъде същото като вчера.</string>
     <string name="insight_unchanged_today_no_lead">Като вчера.</string>
     <string name="insight_unchanged_tonight">Тази вечер ще бъде същото като снощи.</string>
     <string name="insight_unchanged_tonight_no_lead">Като снощи.</string>
     <string name="insight_unchanged_tomorrow">Утре ще бъде същото като днес.</string>
+    <string name="insight_unchanged_tomorrow_night">Утре вечер ще бъде същото като тази вечер.</string>
     <string name="insight_unchanged_tomorrow_no_lead">Като днес.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">Като тази вечер.</string>
     <string name="insight_lead_tonight">Тази вечер</string>
     <string name="insight_band_single">%1$s ще бъде %2$d°.</string>
     <string name="insight_band_single_no_lead">%1$d°.</string>

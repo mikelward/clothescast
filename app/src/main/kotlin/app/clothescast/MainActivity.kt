@@ -270,7 +270,7 @@ class MainActivity : ComponentActivity() {
         /** Deep-link URI that lands on the Today screen. Notification taps target
          *  this; ClothesCastNavHost declares a matching navDeepLink on TodayRoute.
          *  An optional `?page=` query selects the pager page (0 = current period,
-         *  2 = 7-day) — the feels-like widgets use it; see [todayPageUri]. */
+         *  3 = 7-day) — the feels-like widgets use it; see [todayPageUri]. */
         const val DEEP_LINK_TODAY = "clothescast://today"
 
         /** [DEEP_LINK_TODAY] targeting a specific pager [page]. Page 0 omits the

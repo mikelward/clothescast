@@ -15,6 +15,7 @@ import app.clothescast.core.domain.model.WindSpeedUnit
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.Garment
 import app.clothescast.core.domain.model.ForecastPeriod
+import app.clothescast.core.domain.model.ForecastSnapshot
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Location
 import app.clothescast.core.domain.model.OutfitSuggestion
@@ -35,6 +36,7 @@ import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import java.time.Clock
@@ -2032,6 +2034,59 @@ class GenerateDailyInsightTest {
         val later = subject(london, prefs, ForecastPeriod.TODAY).insight.laterOutfits
         later.map { it.date to it.night } shouldBe listOf(d0.plusDays(1) to false)
         subject(london, prefs, ForecastPeriod.TONIGHT).insight.laterOutfits shouldBe emptyList()
+    }
+
+    @Test
+    fun `following periods chain through the cached bundle without a fetch`() = runTest {
+        val d0 = LocalDate.of(2026, 4, 25)
+        val days = listOf(
+            dayWith(d0.plusDays(1), dayC = 26.0, nightC = 20.0),
+            dayWith(d0.plusDays(2), dayC = 15.0, nightC = 8.0),
+        )
+        val bundle = ForecastBundle(
+            dayWith(d0, dayC = 20.0, nightC = 10.0),
+            yesterday,
+            tomorrowHourly = days[0].hourly,
+            tomorrow = days[0],
+            upcomingDays = days,
+        )
+        val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
+        fun ForecastSnapshot.key() = DeriveInsight()(this, prefs).insight.let { it.forDate to it.period }
+
+        // Morning: today, tonight, tomorrow.
+        val morning = subject.snapshot(london, prefs, ForecastPeriod.TODAY)
+        morning.followingPeriod()!!.followingPeriod()!!.key() shouldBe (d0.plusDays(1) to ForecastPeriod.TODAY)
+        // Evening: tonight, tomorrow, tomorrow night — which still wraps into
+        // the day after's small hours (8°C: jacket, not tomorrow's warm day).
+        val evening = subject.snapshot(london, prefs, ForecastPeriod.TONIGHT)
+        val third = DeriveInsight()(evening.followingPeriod()!!.followingPeriod()!!, prefs).insight
+        (third.forDate to third.period) shouldBe (d0.plusDays(1) to ForecastPeriod.TONIGHT)
+        third.outfit!!.top shouldBe OutfitSuggestion.Top.THICK_JACKET
+        third.nextOutfit!!.top shouldBe OutfitSuggestion.Top.SWEATER
+        // Overnight: the night so far, today, tonight.
+        val overnight = subject.snapshot(london, prefs, ForecastPeriod.TONIGHT, overnight = true)
+        overnight.followingPeriod()!!.followingPeriod()!!.key() shouldBe (d0 to ForecastPeriod.TONIGHT)
+    }
+
+    @Test
+    fun `a following night needs the next morning's hours`() = runTest {
+        val d0 = LocalDate.of(2026, 4, 25)
+        // The bundle stops at tomorrow: an evening's third page (tomorrow
+        // night) would have no small hours, so there's none.
+        val tomorrow = dayWith(d0.plusDays(1), dayC = 26.0, nightC = 20.0)
+        val bundle = ForecastBundle(
+            dayWith(d0, dayC = 20.0, nightC = 10.0),
+            yesterday,
+            tomorrowHourly = tomorrow.hourly,
+            tomorrow = tomorrow,
+            upcomingDays = listOf(tomorrow),
+        )
+        val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
+
+        val evening = subject.snapshot(london, prefs, ForecastPeriod.TONIGHT)
+        evening.followingPeriod()!!.followingPeriod() shouldBe null
+        // A morning's third page (tomorrow's daytime) still has what it needs.
+        subject.snapshot(london, prefs, ForecastPeriod.TODAY).followingPeriod()!!.followingPeriod() shouldNotBe null
     }
 
     @Test

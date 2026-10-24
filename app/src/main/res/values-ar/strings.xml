@@ -56,12 +56,15 @@ they work correctly in both the single-band and range templates.
 
     <string name="insight_lead_today">اليوم</string>
     <string name="insight_lead_tomorrow">غدًا</string>
+    <string name="insight_lead_tomorrow_night">مساء الغد</string>
     <string name="insight_unchanged_today">اليوم سيكون الجو مثل الأمس.</string>
     <string name="insight_unchanged_today_no_lead">مثل الأمس.</string>
     <string name="insight_unchanged_tonight">الليلة سيكون الجو مثل الليلة الماضية.</string>
     <string name="insight_unchanged_tonight_no_lead">مثل الليلة الماضية.</string>
     <string name="insight_unchanged_tomorrow">غدًا سيكون الجو مثل اليوم.</string>
+    <string name="insight_unchanged_tomorrow_night">مساء الغد سيكون الجو مثل الليلة.</string>
     <string name="insight_unchanged_tomorrow_no_lead">مثل اليوم.</string>
+    <string name="insight_unchanged_tomorrow_night_no_lead">مثل الليلة.</string>
     <string name="insight_lead_tonight">الليلة</string>
     <!-- "اليوم سيكون الجو معتدل." -->
     <string name="insight_band_single">%1$s سيكون الجو %2$d°.</string>

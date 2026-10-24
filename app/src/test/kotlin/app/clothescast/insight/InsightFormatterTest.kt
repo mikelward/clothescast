@@ -170,13 +170,10 @@ class InsightFormatterTest {
     }
 
     @Test
-    fun `isFutureDay leaves the tonight lead-in alone`() {
-        // The evening worker only ever pairs a primary insight with tomorrow's
-        // daytime, so a TONIGHT payload with isFutureDay=true isn't a real
-        // path — but if it ever arrived we'd rather say "Tonight" than
-        // accidentally promote it to tomorrow.
+    fun `isFutureDay swaps the tonight lead-in for tomorrow night`() {
+        // The evening's third page: tomorrow night.
         subject.format(summary(period = ForecastPeriod.TONIGHT), isFutureDay = true) shouldBe
-            "Tonight, it will be 21°."
+            "Tomorrow night, it will be 21°."
     }
 
     @Test
@@ -992,6 +989,12 @@ class InsightFormatterTest {
     fun `omit range with no other clause compares to today on a future day`() {
         omitSubject.format(summary(), isFutureDay = true) shouldBe
             "Tomorrow, it will be the same as today."
+    }
+
+    @Test
+    fun `omit range with no other clause compares to tonight on a future night`() {
+        omitSubject.format(summary(period = ForecastPeriod.TONIGHT), isFutureDay = true) shouldBe
+            "Tomorrow night, it will be the same as tonight."
     }
 
     @Test

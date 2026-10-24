@@ -354,7 +354,6 @@ the displayed label localizes.
     <string name="conditions_widget_description">Temperatuur, regen, wind en UV in één oogopslag.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Windstoten %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--

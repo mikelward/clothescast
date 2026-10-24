@@ -338,7 +338,6 @@
     <string name="conditions_widget_description">Temperatura, shiu, era dhe UV me një shikim.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Shpërthime %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
     <string name="outfit_card_temperature_range">%1$d–%2$d%3$s</string>
     <string name="outfit_card_header">ClothesCast %1$s</string>

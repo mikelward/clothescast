@@ -171,7 +171,6 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="conditions_widget_description">Temperatura, dež, veter in UV na prvi pogled.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Sunki %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Hourly forecast card. -->

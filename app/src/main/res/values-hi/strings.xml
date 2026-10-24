@@ -411,7 +411,6 @@ Not overridden by design:
     <string name="conditions_widget_description">तापमान, बारिश, हवा और UV एक नज़र में।</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">झोंके %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!-- Onboarding. -->

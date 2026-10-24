@@ -89,7 +89,7 @@ Mocks: [Weather alerts mocks](https://claude.ai/artifact/At8xMVnBa6ZARY99qAfS4q)
   weather alert"). A wind or storm warning among them also shows the
   strip's wind cell, whatever the forecast's own wind (maintainer,
   2026-10-24): the strip otherwise shows wind at a 30 km/h mean or
-  50 km/h gusts, and names the peak gust.
+  50 km/h gusts, and reads the peak gust.
 - **Today**: one single-row card per alert at the top of the page: the
   severity icon, the title, the end time ("Until Sat 9 AM"; "From 6 PM"
   before it starts only once start times are known to be onset, see

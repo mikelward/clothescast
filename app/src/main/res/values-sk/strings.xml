@@ -479,7 +479,6 @@ What is NOT overridden, by design:
     <string name="conditions_widget_description">Teplota, dážď, vietor a UV na prvý pohľad.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Nárazy %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--

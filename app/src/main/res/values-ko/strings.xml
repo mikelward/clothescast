@@ -401,7 +401,6 @@ displayed label localizes.
     <string name="conditions_widget_description">온도, 비, 바람, UV를 한눈에.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">돌풍 %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--

@@ -393,7 +393,6 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="conditions_widget_description">Temperatura, chuva, vento e UV em um relance.</string>
     <string name="conditions_rain_pct">%1$d%%</string>
     <string name="conditions_wind">%1$d %2$s</string>
-    <string name="conditions_wind_gust">Rajadas %1$d %2$s</string>
     <string name="conditions_uv">UV %1$d</string>
 
     <!--

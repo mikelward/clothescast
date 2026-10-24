@@ -9,6 +9,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,6 +23,8 @@ import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.ThemeMode
 import app.clothescast.ui.theme.ClothesCastTheme
 import com.mikelward.androidzoom.FontSizeSettings
+import com.mikelward.androidzoom.MAX_FONT_SCALE
+import com.mikelward.androidzoom.MIN_FONT_SCALE
 import com.mikelward.androidzoom.compose.FontSizeState
 import com.mikelward.androidzoom.compose.rememberFontSizeState
 import io.kotest.matchers.shouldBe
@@ -110,5 +118,49 @@ class TextSizeCardTest {
             state.scale shouldBe 1.3f
             state.pinchEnabled shouldBe false
         }
+    }
+
+    @Test
+    fun plusAndMinusStepOnePercentAndPersistEachTap() {
+        // Between whole percents, as a drag or a pinch can leave it: shown 115%.
+        render(scale = 1.153f)
+        composeRule.onNodeWithTag(TEXT_SIZE_LARGER_TAG).performClick()
+        composeRule.waitForIdle()
+        state.scale shouldBe 1.16f
+        settled shouldBe listOf(1.16f)
+        composeRule.onNodeWithText("116%").assertExists()
+
+        composeRule.onNodeWithTag(TEXT_SIZE_SMALLER_TAG).performClick()
+        composeRule.onNodeWithTag(TEXT_SIZE_SMALLER_TAG).performClick()
+        composeRule.waitForIdle()
+        state.scale shouldBe 1.14f
+        settled shouldBe listOf(1.16f, 1.15f, 1.14f)
+    }
+
+    @Test
+    fun plusDisablesAtTheTop() {
+        render(scale = 1.59f)
+        composeRule.onNodeWithTag(TEXT_SIZE_LARGER_TAG).assertIsEnabled().performClick()
+        composeRule.waitForIdle()
+        state.scale shouldBe MAX_FONT_SCALE
+        composeRule.onNodeWithTag(TEXT_SIZE_LARGER_TAG).assertIsNotEnabled()
+        composeRule.onNodeWithTag(TEXT_SIZE_SMALLER_TAG).assertIsEnabled()
+    }
+
+    @Test
+    fun minusDisablesAtTheBottom() {
+        render(scale = 0.81f)
+        composeRule.onNodeWithTag(TEXT_SIZE_SMALLER_TAG).assertIsEnabled().performClick()
+        composeRule.waitForIdle()
+        state.scale shouldBe MIN_FONT_SCALE
+        composeRule.onNodeWithTag(TEXT_SIZE_SMALLER_TAG).assertIsNotEnabled()
+        composeRule.onNodeWithTag(TEXT_SIZE_LARGER_TAG).assertIsEnabled()
+    }
+
+    @Test
+    fun buttonsSayWhatTheyDo() {
+        render()
+        composeRule.onNodeWithContentDescription("Smaller text").assertExists()
+        composeRule.onNodeWithContentDescription("Larger text").assertExists()
     }
 }

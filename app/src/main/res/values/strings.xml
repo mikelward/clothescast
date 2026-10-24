@@ -636,6 +636,10 @@
     <!-- %1$d is a percentage of the system's own text size; 100 is the same size. -->
     <string name="settings_display_text_size_value">%1$d%%</string>
     <string name="settings_display_text_size_pinch">Pinch to resize</string>
+    <!-- TODO: translate. Spoken label of the button left of the text-size slider; one tap is 1% smaller. -->
+    <string name="settings_display_text_size_smaller" tools:ignore="MissingTranslation">Smaller text</string>
+    <!-- TODO: translate. Spoken label of the button right of the text-size slider; one tap is 1% larger. -->
+    <string name="settings_display_text_size_larger" tools:ignore="MissingTranslation">Larger text</string>
     <string name="settings_display_home_layout_title">Home screen layout</string>
     <string name="settings_display_home_layout_description">Drag the handles to reorder how these sections appear on the home screen.</string>
     <string name="settings_display_home_section_conditions">Conditions</string>

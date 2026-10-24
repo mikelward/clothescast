@@ -418,6 +418,7 @@ only the displayed label localizes.
     <string name="today_outfit_label_today">Сегодня</string>
     <string name="today_outfit_label_tonight">Сегодня вечером</string>
     <string name="today_outfit_label_tomorrow">Завтра</string>
+    <string name="today_outfit_label_tomorrow_night">Завтра вечером</string>
 
     <!--
     Outfit-card category labels — shown in OutfitPreviewCard on the Today

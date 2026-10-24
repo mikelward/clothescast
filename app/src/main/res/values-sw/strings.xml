@@ -121,6 +121,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="today_outfit_label_today">Leo</string>
     <string name="today_outfit_label_tonight">Usiku huu</string>
     <string name="today_outfit_label_tomorrow">Kesho</string>
+    <string name="today_outfit_label_tomorrow_night">Kesho usiku</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_thin_jacket">Jaketi nyepesi</string>
     <string name="today_outfit_top_thick_coat">Koti nzito</string>

@@ -1969,6 +1969,114 @@ class GenerateDailyInsightTest {
         result.insight.nextOutfit!!.top shouldBe OutfitSuggestion.Top.SWEATER
     }
 
+    /** A day whose daytime feels [dayC] and whose evening and early morning feel [nightC]. */
+    private fun dayWith(date: LocalDate, dayC: Double, nightC: Double) = DailyForecast(
+        date = date,
+        temperatureMinC = nightC,
+        temperatureMaxC = dayC,
+        feelsLikeMinC = nightC,
+        feelsLikeMaxC = dayC,
+        precipitationProbabilityMaxPct = 0.0,
+        precipitationMmTotal = 0.0,
+        condition = WeatherCondition.CLEAR,
+        hourly = listOf(
+            HourlyForecast(LocalTime.of(3, 0), nightC, nightC, 0.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(9, 0), dayC, dayC, 0.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(15, 0), dayC, dayC, 0.0, WeatherCondition.CLEAR),
+            HourlyForecast(LocalTime.of(21, 0), nightC, nightC, 0.0, WeatherCondition.CLEAR),
+        ),
+    )
+
+    @Test
+    fun `later outfits follow the next period, two ahead, for today and tonight alike`() = runTest {
+        val d0 = LocalDate.of(2026, 4, 25)
+        val days = listOf(
+            dayWith(d0.plusDays(1), dayC = 26.0, nightC = 20.0), // tomorrow: shorts, warm night
+            dayWith(d0.plusDays(2), dayC = 15.0, nightC = 8.0), // day after: sweater, cold night
+            dayWith(d0.plusDays(3), dayC = 15.0, nightC = 8.0),
+        )
+        val bundle = ForecastBundle(
+            dayWith(d0, dayC = 20.0, nightC = 10.0),
+            yesterday,
+            tomorrowHourly = days[0].hourly,
+            tomorrow = days[0],
+            upcomingDays = days,
+        )
+        val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
+
+        val today = subject(london, prefs, ForecastPeriod.TODAY).insight.laterOutfits
+        today.map { it.date to it.night } shouldBe listOf(d0.plusDays(1) to false, d0.plusDays(1) to true)
+        today[0].outfit.bottom shouldBe OutfitSuggestion.Bottom.SHORTS
+        // Tomorrow night runs into the day after's 03:00, feeling 8°C: jacket.
+        today[1].outfit.top shouldBe OutfitSuggestion.Top.THICK_JACKET
+
+        val tonight = subject(london, prefs, ForecastPeriod.TONIGHT).insight.laterOutfits
+        tonight.map { it.date to it.night } shouldBe listOf(d0.plusDays(1) to true, d0.plusDays(2) to false)
+        tonight[1].outfit.top shouldBe OutfitSuggestion.Top.SWEATER
+    }
+
+    @Test
+    fun `later outfits stop where the forecast does, never a half night`() = runTest {
+        val d0 = LocalDate.of(2026, 4, 25)
+        // Only tomorrow: its daytime is there, but its night lacks the next morning.
+        val tomorrow = dayWith(d0.plusDays(1), dayC = 26.0, nightC = 20.0)
+        val bundle = ForecastBundle(
+            dayWith(d0, dayC = 20.0, nightC = 10.0),
+            yesterday,
+            tomorrowHourly = tomorrow.hourly,
+            tomorrow = tomorrow,
+            upcomingDays = listOf(tomorrow),
+        )
+        val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
+
+        val later = subject(london, prefs, ForecastPeriod.TODAY).insight.laterOutfits
+        later.map { it.date to it.night } shouldBe listOf(d0.plusDays(1) to false)
+        subject(london, prefs, ForecastPeriod.TONIGHT).insight.laterOutfits shouldBe emptyList()
+    }
+
+    @Test
+    fun `a same-day night window needs no next day`() = runTest {
+        val d0 = LocalDate.of(2026, 4, 25)
+        // Tomorrow is the last day: with a 00:30 tonight time its night is
+        // tomorrow's own small hours, so it still gets a card.
+        val tomorrow = dayWith(d0.plusDays(1), dayC = 26.0, nightC = 20.0)
+        val bundle = ForecastBundle(
+            dayWith(d0, dayC = 20.0, nightC = 10.0),
+            yesterday,
+            tomorrowHourly = tomorrow.hourly,
+            tomorrow = tomorrow,
+            upcomingDays = listOf(tomorrow),
+        )
+        val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
+        val nightOwlPrefs = prefs.copy(
+            tonightSchedule = Schedule(time = LocalTime.of(0, 30), days = Schedule.EVERY_DAY, zoneId = ZoneOffset.UTC),
+        )
+
+        subject(london, nightOwlPrefs, ForecastPeriod.TODAY).insight.laterOutfits
+            .map { it.date to it.night } shouldBe listOf(d0.plusDays(1) to false, d0.plusDays(1) to true)
+    }
+
+    @Test
+    fun `later night is dropped when the next day has no small hours`() = runTest {
+        val d0 = LocalDate.of(2026, 4, 25)
+        val tomorrow = dayWith(d0.plusDays(1), dayC = 26.0, nightC = 20.0)
+        // The day after has daytime hours but nothing before the morning.
+        val dayAfter = dayWith(d0.plusDays(2), dayC = 15.0, nightC = 8.0).let { day ->
+            day.copy(hourly = day.hourly.filter { it.time.hour >= 9 })
+        }
+        val bundle = ForecastBundle(
+            dayWith(d0, dayC = 20.0, nightC = 10.0),
+            yesterday,
+            tomorrowHourly = tomorrow.hourly,
+            tomorrow = tomorrow,
+            upcomingDays = listOf(tomorrow, dayAfter),
+        )
+        val subject = GenerateDailyInsight(FakeWeatherRepository(bundle), clock = clock)
+
+        subject(london, prefs, ForecastPeriod.TODAY).insight.laterOutfits
+            .map { it.date to it.night } shouldBe listOf(d0.plusDays(1) to false)
+    }
+
     @Test
     fun `tonight period leaves nextOutfit null when tomorrow daily is unavailable`() = runTest {
         val weather = FakeWeatherRepository(ForecastBundle(today, yesterday))

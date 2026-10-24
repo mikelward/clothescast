@@ -129,6 +129,7 @@ to values/strings.xml (English).
     <string name="today_outfit_label_today">Hari ini</string>
     <string name="today_outfit_label_tonight">Malam ini</string>
     <string name="today_outfit_label_tomorrow">Besok</string>
+    <string name="today_outfit_label_tomorrow_night">Besok malam</string>
     <string name="today_outfit_top_polo">Polo</string>
     <string name="today_outfit_top_thin_jacket">Jaket tipis</string>
     <string name="today_outfit_top_thick_coat">Mantel tebal</string>

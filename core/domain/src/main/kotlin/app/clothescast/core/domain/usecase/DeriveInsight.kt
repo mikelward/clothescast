@@ -13,6 +13,7 @@ import app.clothescast.core.domain.model.InsightSummary
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ForecastModel
 import app.clothescast.core.domain.model.PerModelHourly
+import app.clothescast.core.domain.model.PeriodOutfit
 import app.clothescast.core.domain.model.PrecipLikelihood
 import app.clothescast.core.domain.model.TriggeredOutfit
 import app.clothescast.core.domain.model.UserPreferences
@@ -187,6 +188,14 @@ class DeriveInsight(
             nextOutfitRationale = periodView.nextForecast?.let {
                 OutfitSuggestion.explainFromForecast(it, rules)
             },
+            laterOutfits = periodView.laterForecasts.map { (date, night, forecast) ->
+                PeriodOutfit(
+                    date = date,
+                    night = night,
+                    outfit = OutfitSuggestion.fromForecast(forecast, rules, defaultBottom, defaultTop),
+                    rationale = OutfitSuggestion.explainFromForecast(forecast, rules),
+                )
+            },
             period = period,
             hasEvents = periodView.events.any { !it.allDay && !it.location.isNullOrBlank() },
             forecastZone = bundle.forecastZone,
@@ -287,9 +296,22 @@ class DeriveInsight(
             prefs.defaultTop,
             prefs.defaultBottom,
         ).items
+        // The two periods after the next one, stepping day → night → next day
+        // from this period's own start: the ongoing overnight began yesterday.
+        val periodStart = when {
+            period == ForecastPeriod.TODAY -> bundle.today.date to false
+            overnight -> bundle.yesterday.date to true
+            else -> bundle.today.date to true
+        }
+        val laterForecasts = generateSequence(periodStart) { (date, night) ->
+            if (night) date.plusDays(1) to false else date to true
+        }.drop(2).take(2).mapNotNull { (date, night) ->
+            laterPeriodForecast(bundle, date, night, morningStart, tonightStart)?.let { Triple(date, night, it) }
+        }.toList()
         return PeriodView(
             forecast = periodForecast,
             nextForecast = nextForecast,
+            laterForecasts = laterForecasts,
             triggeredOutfit = triggeredOutfit,
             events = filterEventsForPeriod(events, period, nightBase.date, morningStart, tonightStart),
             perModelForRender = perModelForRender,
@@ -481,6 +503,7 @@ class DeriveInsight(
     private data class PeriodView(
         val forecast: DailyForecast,
         val nextForecast: DailyForecast?,
+        val laterForecasts: List<Triple<LocalDate, Boolean, DailyForecast>>,
         val triggeredOutfit: TriggeredOutfit,
         val events: List<CalendarEvent>,
         val perModelForRender: PerModelHourly?,
@@ -600,6 +623,43 @@ fun tonightDateTime(
     if (!time.isBefore(tonightStart)) todayDate else todayDate.plusDays(1),
     time,
 )
+
+/**
+ * The daytime or night on [date] sliced from the bundle's days, or null when the
+ * forecast doesn't cover it: a night needs the following morning's hours too, so
+ * a half night never stands in for a whole one.
+ */
+private fun laterPeriodForecast(
+    bundle: ForecastBundle,
+    date: LocalDate,
+    night: Boolean,
+    morningStart: LocalTime,
+    tonightStart: LocalTime,
+): DailyForecast? {
+    fun day(on: LocalDate): DailyForecast? = when (on) {
+        bundle.yesterday.date -> bundle.yesterday
+        bundle.today.date -> bundle.today
+        else -> bundle.upcomingDays.firstOrNull { it.date == on }
+            ?: bundle.tomorrow?.takeIf { it.date == on }
+    }
+    val base = day(date) ?: return null
+    val forecast = if (night && tonightStart.isBefore(morningStart)) {
+        // A same-day window ([00:30, 07:00)) never reads the next day.
+        base.slicedForTonight(tonightStart = tonightStart, morningEnd = morningStart, tomorrowHourly = emptyList())
+    } else if (night) {
+        val nextMorning = day(date.plusDays(1))?.hourly
+            ?: bundle.tomorrowHourly.takeIf { date == bundle.today.date }
+            ?: return null
+        // Both halves or nothing: an evening without the small hours (or the
+        // reverse) would miss the night's low and under-dress the card.
+        if (nextMorning.none { it.time.isBefore(morningStart) }) return null
+        if (base.hourly.none { !it.time.isBefore(tonightStart) }) return null
+        base.slicedForTonight(tonightStart = tonightStart, morningEnd = morningStart, tomorrowHourly = nextMorning)
+    } else {
+        base.slicedForToday(morningStart = morningStart, eveningEnd = tonightStart)
+    }
+    return forecast.takeIf { it.hourly.isNotEmpty() }
+}
 
 internal fun DailyForecast.slicedForToday(
     morningStart: LocalTime,

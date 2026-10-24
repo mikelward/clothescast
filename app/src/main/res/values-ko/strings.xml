@@ -356,6 +356,7 @@ displayed label localizes.
     <string name="today_outfit_label_today">오늘</string>
     <string name="today_outfit_label_tonight">오늘 밤</string>
     <string name="today_outfit_label_tomorrow">내일</string>
+    <string name="today_outfit_label_tomorrow_night">내일 밤</string>
 
     <string name="today_outfit_top_tshirt">티셔츠</string>
     <string name="today_outfit_top_sweater">스웨터</string>

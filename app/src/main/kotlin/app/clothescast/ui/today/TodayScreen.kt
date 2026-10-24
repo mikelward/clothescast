@@ -93,6 +93,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -115,6 +116,7 @@ import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.HomeSection
 import app.clothescast.core.domain.model.HourlyForecast
 import app.clothescast.core.domain.model.Insight
+import app.clothescast.core.domain.model.PeriodOutfit
 import app.clothescast.core.domain.model.OutfitRationale
 import app.clothescast.core.domain.model.OutfitSuggestion
 import app.clothescast.core.domain.model.ModelDivergenceSummary
@@ -676,10 +678,13 @@ private fun TodayContent(
                             forecastZone = state.thisPeriodInsight.forecastZone,
                             location = state.thisPeriodInsight.location,
                             onNavigateToLocation = onSetUpLocation,
-                            // Same outfit pair pages 0 / 1 show. Pinning it at
-                            // the top of every page keeps the rest of the
-                            // content from jumping when the user swipes.
+                            // Pinned at the top of every page so the rest of the
+                            // content doesn't jump on a swipe. "Next 7 days"
+                            // looks past pages 0 / 1: the two periods after
+                            // their pair (tomorrow + tomorrow night from a
+                            // morning). The following week keeps that pair.
                             outfitInsight = state.thisPeriodInsight,
+                            showLaterOutfits = !isFollowingWeek,
                             onNavigateToClothes = onNavigateToClothes,
                             onOpenPrivacy = onOpenPrivacy,
                             onOpenCalendarSettings = onOpenCalendarSettings,
@@ -709,13 +714,12 @@ private fun TodayContent(
                         fallbackPeriod = pagePeriod,
                         state = state,
                         scrollState = pageScrollState,
-                        // Same outfit row on all three pages — pages 0 / 1 and
-                        // the 7-day page all show this period's pair, not the
-                        // current page's period's pair. Pinning the row at the
-                        // top of every page keeps the rest of the content from
-                        // jumping when the user swipes; it also stays the
-                        // at-a-glance today+tonight summary rather than
-                        // morphing into a 7-day outfit timeline on page 2.
+                        // Same outfit row on pages 0 / 1 (and the following
+                        // week) — this period's pair, not the current page's
+                        // period's pair. Pinning the row at the top keeps the
+                        // rest of the content from jumping when the user
+                        // swipes. The "Next 7 days" page shows the two periods
+                        // after it instead.
                         outfitInsight = state.thisPeriodInsight,
                         // Chevron layout across the three pages:
                         //   page 0 (this period) — right chevron → page 1
@@ -1064,6 +1068,7 @@ internal fun HomePageScaffold(
     onDismissGeminiTtsLimitCard: () -> Unit,
     onNavigateToClothes: () -> Unit,
     homeSectionOrder: List<HomeSection> = HomeSection.DEFAULTS,
+    showLaterOutfits: Boolean = false,
     insightSlot: (@Composable ColumnScope.() -> Unit)? = null,
     conditionsHourly: List<HourlyForecast>? = null,
     confidenceSlot: (@Composable ColumnScope.() -> Unit)? = null,
@@ -1223,6 +1228,8 @@ internal fun HomePageScaffold(
                 // is missing (page 2's placeholder, or a not-yet-cached next
                 // period): [outfitInsight] is always this period's insight,
                 // null only on previews / tests that don't wire a pair.
+                // [showLaterOutfits] swaps it for the two periods after that
+                // pair (the "Next 7 days" page).
                 homeSectionOrder.forEach { section ->
                     when (section) {
                         // Conditions strip (feels-like, rain, wind, UV) inset to
@@ -1237,6 +1244,7 @@ internal fun HomePageScaffold(
                         HomeSection.OUTFIT -> if (outfitInsight != null) {
                             OutfitPreviewRow(
                                 insight = outfitInsight,
+                                later = showLaterOutfits,
                                 temperatureUnit = state.temperatureUnit,
                                 clothesRules = state.clothesRules,
                                 outfitTopColors = state.outfitTopColors,
@@ -2073,6 +2081,7 @@ internal fun EmptyState(
 @Composable
 internal fun OutfitPreviewRow(
     insight: Insight,
+    later: Boolean = false,
     temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     clothesRules: List<ClothesRule> = emptyList(),
     outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
@@ -2085,8 +2094,19 @@ internal fun OutfitPreviewRow(
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
     onNavigateToClothes: () -> Unit = {},
 ) {
-    val primary = insight.outfit ?: return
-    val (primaryLabel, nextLabel) = outfitLabels(insight)
+    val laterOutfits = insight.laterOutfits.takeIf { later }.orEmpty()
+    val cards = if (laterOutfits.isNotEmpty()) {
+        val today = insight.currentDay?.date ?: insight.forDate
+        val locale = LocalConfiguration.current.locales[0]
+        laterOutfits.map { Triple(it.outfit, laterOutfitLabel(it, today, locale), it.rationale) }
+    } else {
+        val primary = insight.outfit ?: return
+        val (primaryLabel, nextLabel) = outfitLabels(insight)
+        listOfNotNull(
+            Triple(primary, stringResource(primaryLabel), insight.outfitRationale),
+            insight.nextOutfit?.let { Triple(it, stringResource(nextLabel), insight.nextOutfitRationale) },
+        )
+    }
     // IntrinsicSize.Max + fillMaxHeight stretches both cards to the taller one's
     // height. The garment caption grows to as many lines as its content needs
     // (a long worn line wrapping on a narrow card, plus an accessory line) — so
@@ -2096,28 +2116,11 @@ internal fun OutfitPreviewRow(
         modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        OutfitPreviewCard(
-            outfit = primary,
-            label = stringResource(primaryLabel),
-            rationale = insight.outfitRationale,
-            temperatureUnit = temperatureUnit,
-            clothesRules = clothesRules,
-            outfitTopColors = outfitTopColors,
-            outfitBottomColors = outfitBottomColors,
-            outfitHandsColors = outfitHandsColors,
-            outfitCarriedColors = outfitCarriedColors,
-            outfitOuterColors = outfitOuterColors,
-            outfitHeadColors = outfitHeadColors,
-            outfitTopStrokes = outfitTopStrokes,
-            outfitBottomStrokes = outfitBottomStrokes,
-            onNavigateToClothes = onNavigateToClothes,
-            modifier = Modifier.weight(1f).fillMaxHeight(),
-        )
-        insight.nextOutfit?.let {
+        cards.forEach { (outfit, label, rationale) ->
             OutfitPreviewCard(
-                outfit = it,
-                label = stringResource(nextLabel),
-                rationale = insight.nextOutfitRationale,
+                outfit = outfit,
+                label = label,
+                rationale = rationale,
                 temperatureUnit = temperatureUnit,
                 clothesRules = clothesRules,
                 outfitTopColors = outfitTopColors,
@@ -2134,6 +2137,26 @@ internal fun OutfitPreviewRow(
         }
     }
 }
+
+/**
+ * A later period's card label, relative to [today]: "Today" / "Tonight",
+ * "Tomorrow" / "Tomorrow night", else the weekday ("Sunday"). A night past
+ * tomorrow never comes up (the furthest pair is tomorrow night + the day
+ * after), so it falls back to the bare weekday rather than a "%s night"
+ * string that would need per-locale inflection.
+ */
+@Composable
+private fun laterOutfitLabel(period: PeriodOutfit, today: LocalDate, locale: Locale): String =
+    when (period.date) {
+        today -> stringResource(
+            if (period.night) R.string.today_outfit_label_tonight else R.string.today_outfit_label_today,
+        )
+        today.plusDays(1) -> stringResource(
+            if (period.night) R.string.today_outfit_label_tomorrow_night else R.string.today_outfit_label_tomorrow,
+        )
+        else -> period.date.dayOfWeek.getDisplayName(java.time.format.TextStyle.FULL, locale)
+            .replaceFirstChar { it.titlecase(locale) }
+    }
 
 private fun outfitLabels(insight: Insight): Pair<Int, Int> =
     when (insight.period) {

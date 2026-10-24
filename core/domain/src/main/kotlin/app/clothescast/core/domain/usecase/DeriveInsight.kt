@@ -295,11 +295,24 @@ class DeriveInsight(
             prefs.defaultTop,
             prefs.defaultBottom,
         ).items
-        // Every day and night from today through the end of the forecast, for
-        // the week pages' wardrobe; a period the bundle can't fully cover drops out.
+        // Every day and night from two periods ahead through the end of the
+        // forecast, for the week pages' wardrobe; a period the bundle can't
+        // fully cover drops out. This period and the next (page 0's pair) stay
+        // out — the current one may be half over (an afternoon's Day card
+        // shouldn't carry a coat for a morning that's gone) — so the wardrobe
+        // starts about a day ahead: tomorrow's daytime from a morning.
+        val currentSlot = when {
+            overnight -> bundle.yesterday.date to true
+            period == ForecastPeriod.TONIGHT -> bundle.today.date to true
+            else -> bundle.today.date to false
+        }
+        val nextSlot = currentSlot.let { (date, night) -> if (night) date.plusDays(1) to false else date to true }
         val weekForecasts = (listOf(bundle.today.date) + bundle.upcomingDays.map { it.date })
             .distinct()
             .flatMap { date -> listOf(date to false, date to true) }
+            .filter { (date, night) ->
+                date.isAfter(nextSlot.first) || (date == nextSlot.first && night && !nextSlot.second)
+            }
             .mapNotNull { (date, night) ->
                 laterPeriodForecast(bundle, date, night, morningStart, tonightStart)?.let { Triple(date, night, it) }
             }

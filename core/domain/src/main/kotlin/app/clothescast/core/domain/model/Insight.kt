@@ -85,8 +85,9 @@ data class Insight(
     /** Companion to [nextOutfit]; same null-on-legacy-cache caveat as [outfitRationale]. */
     val nextOutfitRationale: OutfitRationale? = null,
     /**
-     * The outfit for every day and night from [currentDay] through the end of
-     * the forecast, in order. The week pages gather each week's tops and
+     * The outfit for every day and night from two periods after this one
+     * (past the pair [outfit] / [nextOutfit] cover) through the end of the
+     * forecast, in order. The week pages gather each week's tops and
      * bottoms from it into their Day / Night wardrobe cards. A period the
      * forecast can't fully cover is left out (a night needs the following
      * morning's hours), so the last night is usually missing.

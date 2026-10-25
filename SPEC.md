@@ -135,7 +135,10 @@ I put on before I leave?" instead of a full weather-office report.
 - **Text size:** the app's own text can be sized from Display settings, as a
   multiplier on top of the system font scale (80%-160%), with minus and plus
   buttons at the slider's ends for exact 1% steps, or by a two-finger pinch
-  anywhere in the app. It starts at 115%, as the sibling apps do, with the
+  anywhere in the app. The buttons and slider hold still on screen while they
+  resize the page: it scrolls by however much the text above grows or shrinks,
+  so tap after tap (or the rest of a drag) lands on the same control, until the
+  user scrolls the page themselves (maintainer, 2026-10-25). It starts at 115%, as the sibling apps do, with the
   forecast callout one text style smaller so it reads as it did before. Only text
   scales; padding, icons and charts' plot areas keep their size. The range, the
   pinch and the scaled density are the shared mikelward/androidzoom library;

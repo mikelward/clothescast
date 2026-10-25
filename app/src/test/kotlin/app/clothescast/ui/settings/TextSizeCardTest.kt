@@ -28,6 +28,7 @@ import com.mikelward.androidzoom.MIN_FONT_SCALE
 import com.mikelward.androidzoom.compose.FontSizeState
 import com.mikelward.androidzoom.compose.rememberFontSizeState
 import io.kotest.matchers.shouldBe
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -162,5 +163,34 @@ class TextSizeCardTest {
         render()
         composeRule.onNodeWithContentDescription("Smaller text").assertExists()
         composeRule.onNodeWithContentDescription("Larger text").assertExists()
+    }
+
+    /** Where [tag] sits on screen, in root pixels. */
+    private fun top(tag: String): Float = composeRule.onNodeWithTag(tag).fetchSemanticsNode().positionInRoot.y
+
+    /** Taps [tag] [times] times, checking after each that both buttons are where they were. */
+    private fun tapHoldsStill(tag: String, times: Int) {
+        composeRule.waitForIdle()
+        val larger = top(TEXT_SIZE_LARGER_TAG)
+        val smaller = top(TEXT_SIZE_SMALLER_TAG)
+        repeat(times) {
+            composeRule.onNodeWithTag(tag).performClick()
+            composeRule.waitForIdle()
+            assertEquals("plus after tap ${it + 1}", larger, top(TEXT_SIZE_LARGER_TAG), 1f)
+            assertEquals("minus after tap ${it + 1}", smaller, top(TEXT_SIZE_SMALLER_TAG), 1f)
+        }
+    }
+
+    @Test
+    fun `tapping plus again and again leaves the buttons where they were`() {
+        // The screen is taller than the page, so holding still needs room added below to scroll into.
+        render(scale = 1.0f)
+        tapHoldsStill(TEXT_SIZE_LARGER_TAG, 30)
+    }
+
+    @Test
+    fun `tapping minus again and again leaves the buttons where they were`() {
+        render(scale = 1.5f)
+        tapHoldsStill(TEXT_SIZE_SMALLER_TAG, 30)
     }
 }

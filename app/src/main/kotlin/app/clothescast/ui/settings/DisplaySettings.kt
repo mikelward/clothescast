@@ -64,6 +64,8 @@ internal fun DisplayContent(
     onReorderHomeSection: (from: Int, to: Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    // Keeps the text-size minus, plus and slider under the finger as each change resizes the page.
+    val textSizeHold = rememberScrollHold(scrollState)
     EdgeFadeOverlay(
         scrollState = scrollState,
         modifier = Modifier.padding(padding),
@@ -72,11 +74,12 @@ internal fun DisplayContent(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
+                .holdSlack(textSizeHold)
                 .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            TextSizeCard()
+            TextSizeCard(textSizeHold)
             SectionCard(title = stringResource(R.string.settings_display_theme_title)) {
                 ThemeMode.entries.forEach { mode ->
                     RadioRow(
@@ -126,7 +129,7 @@ internal const val TEXT_SIZE_LARGER_TAG = "text_size_larger"
  * previews and tests that never set one.
  */
 @Composable
-private fun TextSizeCard() {
+private fun TextSizeCard(hold: ScrollHold? = null) {
     val state = LocalFontSizeState.current ?: return
     val percent = fontScalePercent(state.scale)
     val shown = stringResource(R.string.settings_display_text_size_value, percent)
@@ -154,11 +157,14 @@ private fun TextSizeCard() {
         // commit, the path a slider release takes (commit alone stores nothing
         // that no preview has moved).
         val step = { delta: Int ->
+            hold?.hold()
             val stepped = stepFontScale(state.scale, delta)
             state.preview(stepped)
             state.commit(stepped)
         }
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        // Held still as the size changes ([ScrollHold]), so the next tap or the rest of a drag
+        // lands where the last one did, however much the card's title above grows or shrinks.
+        Row(modifier = Modifier.holding(hold), verticalAlignment = Alignment.CenterVertically) {
             IconButton(
                 onClick = { step(-1) },
                 enabled = percent > fontScalePercent(MIN_FONT_SCALE),
@@ -177,6 +183,7 @@ private fun TextSizeCard() {
                         value = state.scale,
                         onValueChange = {
                             dragging = true
+                            hold?.hold()
                             state.preview(it)
                         },
                         onValueChangeFinished = {

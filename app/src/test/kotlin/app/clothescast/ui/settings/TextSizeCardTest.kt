@@ -2,12 +2,14 @@ package app.clothescast.ui.settings
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -50,10 +52,15 @@ class TextSizeCardTest {
     private lateinit var state: FontSizeState
     private var shown by mutableStateOf(true)
 
-    private fun render(scale: Float = 1.15f) {
-        composeRule.setContent {
+    /**
+     * [restoring] stands in for the store across a recreation: the screen comes back at the size last
+     * stored, as the app's does, rather than at [scale].
+     */
+    private fun render(scale: Float = 1.15f, restoring: StateRestorationTester? = null) {
+        val setContent: (@Composable () -> Unit) -> Unit = restoring?.let { it::setContent } ?: composeRule::setContent
+        setContent {
             state = rememberFontSizeState(
-                persisted = FontSizeSettings(scale = scale),
+                persisted = FontSizeSettings(scale = if (restoring != null) settled.lastOrNull() ?: scale else scale),
                 onScaleSettled = { settled += it },
                 onPinchEnabledChange = {},
             )
@@ -186,6 +193,18 @@ class TextSizeCardTest {
         // The screen is taller than the page, so holding still needs room added below to scroll into.
         render(scale = 1.0f)
         tapHoldsStill(TEXT_SIZE_LARGER_TAG, 30)
+    }
+
+    @Test
+    fun `the buttons stay put when the screen is recreated after shrinking`() {
+        // The screen is taller than the page, so the hold adds room; it is saved with the scroll position.
+        val restore = StateRestorationTester(composeRule)
+        render(scale = 1.5f, restoring = restore)
+        tapHoldsStill(TEXT_SIZE_SMALLER_TAG, 20)
+        val larger = top(TEXT_SIZE_LARGER_TAG)
+        restore.emulateSavedInstanceStateRestore()
+        composeRule.waitForIdle()
+        assertEquals(larger, top(TEXT_SIZE_LARGER_TAG), 1f)
     }
 
     @Test

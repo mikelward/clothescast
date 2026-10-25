@@ -6,7 +6,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -34,16 +35,16 @@ import kotlinx.coroutines.flow.filter
  * Main thread only; constant work per placement.
  */
 @Stable
-internal class ScrollHold(private val scroll: ScrollState) {
+internal class ScrollHold(private val scroll: ScrollState, top: Int = 0, bottom: Int = 0) {
     private var target = Float.NaN
     private var last = Float.NaN
 
     // The column's own height, slack aside, as [holdSlack] last measured it.
     internal var contentHeight = 0
 
-    var topSlack by mutableIntStateOf(0)
+    var topSlack by mutableIntStateOf(top)
         private set
-    var bottomSlack by mutableIntStateOf(0)
+    var bottomSlack by mutableIntStateOf(bottom)
         private set
 
     /** Keeps the held control where it is now; a hold already in force keeps where it began. */
@@ -91,7 +92,12 @@ internal class ScrollHold(private val scroll: ScrollState) {
 /** A [ScrollHold] on [scroll], let go whenever the rider scrolls the page themselves. */
 @Composable
 internal fun rememberScrollHold(scroll: ScrollState): ScrollHold {
-    val hold = remember(scroll) { ScrollHold(scroll) }
+    // Saved with the scroll position it goes with: restored to a page without its slack, that position
+    // would show the rows shifted by however much room the hold had added.
+    val hold = rememberSaveable(
+        scroll,
+        saver = Saver(save = { listOf(it.topSlack, it.bottomSlack) }, restore = { ScrollHold(scroll, it[0], it[1]) }),
+    ) { ScrollHold(scroll) }
     LaunchedEffect(hold) {
         // The hold's own scrolls are raw deltas, never a scroll in progress, so only the rider's count.
         snapshotFlow { scroll.isScrollInProgress }.filter { it }.collect { hold.release() }

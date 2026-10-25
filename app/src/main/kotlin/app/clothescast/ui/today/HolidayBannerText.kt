@@ -75,3 +75,7 @@ private fun resolveBannerString(
     val resId = context.resources.getIdentifier(key, "string", context.packageName)
     return if (resId == 0) fallback else context.getString(resId)
 }
+
+/** "{emoji}  {text}", or just [text] for a theme with no emoji. */
+internal fun holidayBannerLabel(theme: HolidayTheme, text: String): String =
+    if (theme.emoji.isEmpty()) text else "${theme.emoji}  $text"

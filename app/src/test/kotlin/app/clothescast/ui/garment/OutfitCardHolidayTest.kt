@@ -55,6 +55,16 @@ class OutfitCardHolidayTest {
     }
 
     @Test
+    fun `an unrecognized calendar holiday is named on a neutral chip with no emoji`() {
+        val plain = FestiveThemes.publicHoliday("Daylight Saving Time ends")
+
+        val holiday = outfitCardHoliday(context, plain, Region.EN_US).shouldNotBeNull()
+
+        holiday.label shouldBe "Daylight Saving Time ends"
+        holiday.backgroundArgb shouldBe 0xFFE0E0E0.toInt()
+    }
+
+    @Test
     fun `a catalog holiday reads its banner copy`() {
         outfitCardHoliday(context, christmas, Region.EN_US)?.label shouldBe "${christmas.emoji}  Merry Christmas"
     }

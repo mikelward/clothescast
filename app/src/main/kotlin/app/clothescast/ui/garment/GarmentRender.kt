@@ -28,6 +28,7 @@ import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.tts.toJavaLocale
 import app.clothescast.ui.today.holidayBannerContentArgb
+import app.clothescast.ui.today.holidayBannerLabel
 import app.clothescast.ui.today.holidayBannerText
 import app.clothescast.core.domain.model.TimeFormat
 import app.clothescast.core.domain.model.Region
@@ -1382,10 +1383,12 @@ internal fun outfitCardHoliday(
     val country = (region.toJavaLocale() ?: Locale.getDefault()).country
     val text = holidayBannerText(context, theme, country).trim()
     if (text.isEmpty()) return null
+    // A plain day (a clock change) gets a neutral chip, not a theme color.
+    val backgroundArgb = if (theme.plain) PLAIN_HOLIDAY_CHIP_ARGB else theme.bannerArgb
     return OutfitCardHoliday(
-        label = "${theme.emoji}  $text",
-        backgroundArgb = theme.bannerArgb.toInt(),
-        contentArgb = holidayBannerContentArgb(theme.bannerArgb),
+        label = holidayBannerLabel(theme, text),
+        backgroundArgb = backgroundArgb.toInt(),
+        contentArgb = holidayBannerContentArgb(backgroundArgb),
     )
 }
 
@@ -1865,6 +1868,7 @@ private const val HOLIDAY_PAD_X = 16
 private const val HOLIDAY_PAD_Y = 8
 private const val HOLIDAY_GAP_PX = 16
 private const val HOLIDAY_RADIUS = 12f
+private const val PLAIN_HOLIDAY_CHIP_ARGB = 0xFFE0E0E0L
 
 /** Colors for one theme of [renderOutfitCard]. */
 internal data class OutfitCardPalette(

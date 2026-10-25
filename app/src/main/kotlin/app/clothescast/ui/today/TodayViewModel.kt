@@ -154,12 +154,11 @@ data class TodayState(
      */
     val showModelSpread: Boolean = false,
     /**
-     * Fill colour overrides for each top-icon tier. Empty = baked-in
-     * defaults. On a date matching an enabled holiday this map carries the
-     * holiday's palette overlaid on top of the user's [UserPreferences.outfitTopColors]
-     * — see [TodayViewModel.state]'s combine builder. Holiday wins for the
-     * day; the user's custom colour is restored at the next render after
-     * the calendar rolls over.
+     * Fill colour overrides for each top-icon tier: the user's picks. Empty =
+     * baked-in defaults. A celebration's palette isn't folded in here: the
+     * outfit row lays [activeHoliday]'s colours over these only on the cards
+     * for [holidayDate] ([OutfitTierColors.forDate]), so tomorrow's and later
+     * outfits keep the user's own colours.
      */
     val outfitTopColors: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     /** Sibling of [outfitTopColors] for the bottom-icon tier. */
@@ -177,23 +176,13 @@ data class TodayState(
      *  No holiday theming today, so this is just the user's picked colour. */
     val outfitHeadColors: Map<OutfitSuggestion.Head, Long> = emptyMap(),
     /**
-     * Holiday-theme accent colour overrides for the *stroke* / outline of
-     * each top tier. Empty = no override; the renderer auto-derives a
-     * darker shade of the fill (the long-standing two-tone look). Used by
-     * 2-colour holidays to put the alternate colour on top-icon outlines
-     * (e.g. yellow Australia-Day shirt with green collar) and by 3-colour
-     * holidays to put the unifying third colour on both top + bottom (e.g.
-     * white trim on US Independence Day's red top + blue bottom).
-     */
-    val outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
-    /** Sibling of [outfitTopStrokes] for the bottom-icon tier. */
-    val outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
-    /**
      * The holiday theme firing on today's calendar date — `null` when no
      * enabled holiday matches. The Today screen reads this to render a small
      * themed banner above the outfit preview row.
      */
     val activeHoliday: HolidayTheme? = null,
+    /** The date [activeHoliday] was resolved for; null with no holiday. */
+    val holidayDate: LocalDate? = null,
     /**
      * Whether the Today-screen "Celebration themes" promo card should
      * render. True iff the user hasn't dismissed it AND neither of the
@@ -733,21 +722,6 @@ class TodayViewModel(
             themeFromCalendarHolidays = prefs.calendarHolidayThemingActive,
             themeFromCalendarBirthdays = prefs.calendarBirthdayThemingActive,
         )
-        // Merge holiday overrides on top of the user's custom colours. The
-        // user's choices populate the base map; the holiday's per-tier
-        // entries replace any user pick for that tier *for today only*
-        // (this map is computed at render time and never persisted, so
-        // tomorrow's render restores the user's pick).
-        //
-        // Strokes only come from the holiday theme — the user has no
-        // stroke-customisation UI today. Empty map ⇒ the garment renderer
-        // auto-derives the stroke as a darker shade of the fill (the
-        // existing two-tone behaviour); a non-empty map paints the
-        // holiday's chosen accent colour as a contrasting outline.
-        val topColors = prefs.outfitTopColors + (theme?.topOverrides ?: emptyMap())
-        val bottomColors = prefs.outfitBottomColors + (theme?.bottomOverrides ?: emptyMap())
-        val topStrokes = theme?.topStrokeOverrides ?: emptyMap()
-        val bottomStrokes = theme?.bottomStrokeOverrides ?: emptyMap()
         TodayState(
             thisPeriodInsight = thisPeriodInsight,
             nextPeriodInsight = nextPeriodInsight,
@@ -775,15 +749,14 @@ class TodayViewModel(
             clothesRules = prefs.clothesRules,
             homeSectionOrder = prefs.homeSectionOrder,
             showModelSpread = spread,
-            outfitTopColors = topColors,
-            outfitBottomColors = bottomColors,
+            outfitTopColors = prefs.outfitTopColors,
+            outfitBottomColors = prefs.outfitBottomColors,
             outfitHandsColors = prefs.outfitHandsColors,
             outfitCarriedColors = prefs.outfitCarriedColors,
             outfitOuterColors = prefs.outfitOuterColors,
             outfitHeadColors = prefs.outfitHeadColors,
-            outfitTopStrokes = topStrokes,
-            outfitBottomStrokes = bottomStrokes,
             activeHoliday = theme,
+            holidayDate = today.takeIf { theme != null },
             celebrationCardVisible = !prefs.celebrationCardDismissed &&
                 !prefs.calendarHolidayThemingActive &&
                 !prefs.calendarBirthdayThemingActive,

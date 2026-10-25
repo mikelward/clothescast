@@ -1248,8 +1248,6 @@ internal fun HomePageScaffold(
                                     outfits = wardrobe,
                                     outfitTopColors = state.outfitTopColors,
                                     outfitBottomColors = state.outfitBottomColors,
-                                    outfitTopStrokes = state.outfitTopStrokes,
-                                    outfitBottomStrokes = state.outfitBottomStrokes,
                                 )
                             } else OutfitPreviewRow(
                                 insight = outfitInsight,
@@ -1262,8 +1260,8 @@ internal fun HomePageScaffold(
                                 outfitCarriedColors = state.outfitCarriedColors,
                                 outfitOuterColors = state.outfitOuterColors,
                                 outfitHeadColors = state.outfitHeadColors,
-                                outfitTopStrokes = state.outfitTopStrokes,
-                                outfitBottomStrokes = state.outfitBottomStrokes,
+                                holiday = state.activeHoliday,
+                                holidayDate = state.holidayDate,
                                 onNavigateToClothes = onNavigateToClothes,
                             )
                         }
@@ -2102,14 +2100,17 @@ internal fun OutfitPreviewRow(
     outfitHeadColors: Map<OutfitSuggestion.Head, Long> = emptyMap(),
     outfitTopStrokes: Map<OutfitSuggestion.Top, Long> = emptyMap(),
     outfitBottomStrokes: Map<OutfitSuggestion.Bottom, Long> = emptyMap(),
+    holiday: HolidayTheme? = null,
+    holidayDate: LocalDate? = null,
     onNavigateToClothes: () -> Unit = {},
 ) {
     val primary = insight.outfit ?: return
     val slot = insight.periodSlot
     val cards = listOfNotNull(
-        Triple(primary, periodLabel(slot, today), insight.outfitRationale),
-        insight.nextOutfit?.let { Triple(it, periodLabel(slot.next(), today), insight.nextOutfitRationale) },
+        Triple(primary, slot, insight.outfitRationale),
+        insight.nextOutfit?.let { Triple(it, slot.next(), insight.nextOutfitRationale) },
     )
+    val baseColors = OutfitTierColors(outfitTopColors, outfitBottomColors, outfitTopStrokes, outfitBottomStrokes)
     // IntrinsicSize.Max + fillMaxHeight stretches both cards to the taller one's
     // height. The garment caption grows to as many lines as its content needs
     // (a long worn line wrapping on a narrow card, plus an accessory line) — so
@@ -2119,21 +2120,24 @@ internal fun OutfitPreviewRow(
         modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Max),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        cards.forEach { (outfit, label, rationale) ->
+        cards.forEach { (outfit, cardSlot, rationale) ->
+            // A celebration themes only its own day's cards: tonight still
+            // wears Christmas, tomorrow morning goes back to the user's colors.
+            val colors = baseColors.forDate(cardSlot.date, holiday, holidayDate)
             OutfitPreviewCard(
                 outfit = outfit,
-                label = label,
+                label = periodLabel(cardSlot, today),
                 rationale = rationale,
                 temperatureUnit = temperatureUnit,
                 clothesRules = clothesRules,
-                outfitTopColors = outfitTopColors,
-                outfitBottomColors = outfitBottomColors,
+                outfitTopColors = colors.topColors,
+                outfitBottomColors = colors.bottomColors,
                 outfitHandsColors = outfitHandsColors,
                 outfitCarriedColors = outfitCarriedColors,
                 outfitOuterColors = outfitOuterColors,
                 outfitHeadColors = outfitHeadColors,
-                outfitTopStrokes = outfitTopStrokes,
-                outfitBottomStrokes = outfitBottomStrokes,
+                outfitTopStrokes = colors.topStrokes,
+                outfitBottomStrokes = colors.bottomStrokes,
                 onNavigateToClothes = onNavigateToClothes,
                 modifier = Modifier.weight(1f).fillMaxHeight(),
             )

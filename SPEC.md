@@ -97,6 +97,9 @@ I put on before I leave?" instead of a full weather-office report.
   On a themed day the card names the celebration under its title, in the
   Today banner's words and colors — a birthday or calendar holiday by its
   calendar title.
+  On the Today screen a celebration's outfit colors apply only to that day's
+  cards (today and tonight); tomorrow and later outfits keep the user's own
+  colors.
 - **TV / leanback.** The manifest opts into Android TV / leanback launchability
   while keeping touchscreen optional, so the same app can appear on supported TV
   homes without filtering out phones.

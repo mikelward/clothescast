@@ -249,12 +249,15 @@ class ThemeForTodayTest {
             date = random,
             overrides = noOverrides,
             enabledCountries = allCountries,
-            events = listOf(birthday("Alice's birthday"), publicHoliday("Diwali")),
+            events = listOf(
+                birthday("Alice's birthday"),
+                publicHoliday("Diwali", "en.hinduism#holiday@group.v.calendar.google.com"),
+            ),
             themeFromCalendarHolidays = true,
             themeFromCalendarBirthdays = true,
         )
         theme.shouldNotBeNull()
-        // Colours come from the public holiday (no Funny theme present).
+        // Colours come from the recognized public holiday (no Funny theme present).
         theme.id shouldBe HolidayId.GENERIC_PUBLIC_HOLIDAY
         // Both celebrations surface, public holiday first, birthday second.
         val segments = theme.bannerSegments
@@ -443,22 +446,41 @@ class ThemeForTodayTest {
     }
 
     @Test
-    fun `region-keyed holiday calendar keeps the generic festive palette`() {
-        // `en.usa#holiday@…` is a country calendar, not a religion calendar —
-        // no religion-specific palette, falls through to the generic 🎊
-        // gold/purple so a Thanksgiving from the catalog-gap path still
-        // themes neutrally.
+    fun `an unrecognized calendar holiday gets a plain banner with no emoji or colors`() {
+        // `en.uk#holiday@…` is a country calendar, not a religion calendar, so
+        // we can't tell a celebration from a clock change: name it plainly.
         val theme = subject.resolve(
             date = random,
             overrides = noOverrides,
             enabledCountries = allCountries,
-            events = listOf(publicHoliday("Some Holiday", "en.usa#holiday@group.v.calendar.google.com")),
+            events = listOf(publicHoliday("Daylight Saving Time ends", "en.uk#holiday@group.v.calendar.google.com")),
             themeFromCalendarHolidays = true,
             themeFromCalendarBirthdays = false,
         )
         theme.shouldNotBeNull()
-        theme.emoji shouldBe "🎊"
-        theme.bannerArgb shouldBe 0xFFD4AF37L
+        theme.plain shouldBe true
+        theme.emoji shouldBe ""
+        theme.displayTitleOverride shouldBe "Daylight Saving Time ends"
+        theme.topOverrides shouldBe emptyMap()
+        theme.bottomOverrides shouldBe emptyMap()
+    }
+
+    @Test
+    fun `a birthday beside an unrecognized holiday keeps the birthday colors`() {
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = allCountries,
+            events = listOf(publicHoliday("Daylight Saving Time starts"), birthday("Alice's birthday")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = true,
+        )
+        theme.shouldNotBeNull()
+        theme.plain shouldBe false
+        theme.id shouldBe HolidayId.BIRTHDAY
+        theme.emoji shouldBe "🎂"
+        theme.bannerSegments?.map { it.literalText } shouldBe
+            listOf("Daylight Saving Time starts", "Alice's birthday")
     }
 
     @Test

@@ -94,8 +94,10 @@ class ThemeForToday(
 
         // Colours come from the Funny theme when present (suppressed on
         // solemn days), else the first primary, else the synthetic.
+        // A plain contributor (a clock change) has no colours to lend.
         val colourSource = funnies.firstOrNull()
             ?: primaries.firstOrNull()
+            ?: contributors.firstOrNull { !it.plain }
             ?: contributors.first()
 
         // A single celebration renders its own standalone banner — no join.

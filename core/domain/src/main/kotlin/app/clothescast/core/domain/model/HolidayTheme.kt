@@ -366,7 +366,8 @@ sealed interface HolidayDate {
  * every garment alongside the fill.
  *
  * [emoji] is a single glyph rendered alongside the banner text — keep it to
- * one visible code point so RTL / fontScale doesn't reflow the line.
+ * one visible code point so RTL / fontScale doesn't reflow the line. Empty
+ * for a [plain] theme.
  */
 data class HolidayTheme(
     val id: HolidayId,
@@ -445,6 +446,13 @@ data class HolidayTheme(
      * colours (the Funny theme when present, else the first primary).
      */
     val bannerSegments: List<BannerSegment>? = null,
+    /**
+     * `true` for a calendar holiday we don't recognize, so can't call a
+     * celebration ("Daylight Saving Time ends"). The banner shows the title on the default card colors with no
+     * [emoji], and outfits keep the user's own colors; [topOverrides],
+     * [bottomOverrides] and [bannerArgb] are unused.
+     */
+    val plain: Boolean = false,
 )
 
 /**
@@ -3015,16 +3023,14 @@ private const val MEXICO_DEAD_WHITE = 0xFFF5F5F5L
 
 // Synthetic themes used by [FestiveThemes] when the user has opted into
 // calendar-sourced theming and a row arrives carrying [EventKind.PUBLIC_HOLIDAY]
-// or [EventKind.BIRTHDAY]. Generic festive gold/purple for a holiday name we
-// don't recognise (catalog gaps); religion-specific palettes when the owner
+// or [EventKind.BIRTHDAY]. A holiday name we don't recognise (catalog gaps)
+// gets a plain, uncolored banner; religion-specific palettes when the owner
 // account identifies one of Google's religion-keyed holiday calendars
 // (Eid from "Muslim Holidays", Yom Kippur from "Jewish Holidays", Diwali
 // from "Hindu Holidays"); and a confetti yellow/magenta for a detected
 // birthday — gender-neutral, maximum party pop, and visually distinct from
-// every catalog holiday and the generic-holiday fallback above so a "Bob's
+// every catalog holiday so a "Bob's
 // birthday" in the banner never gets mistaken for a recognised holiday.
-private const val FESTIVE_GOLD = 0xFFD4AF37L
-private const val FESTIVE_PURPLE = 0xFF6A1B9AL
 private const val ISLAMIC_GREEN = 0xFF1B8A4BL
 private const val ISLAMIC_GOLD = 0xFFD4AF37L
 private const val JUDAISM_BLUE = 0xFF0038B8L
@@ -3041,7 +3047,7 @@ private const val BIRTHDAY_MAGENTA = 0xFFD81B60L
  * religion key (`judaism`, `islamic`, `hinduism`) stays fixed, so a French
  * phone seeing "Aïd el-Fitr" still themes green/gold. Region-keyed calendars
  * (`en.usa`, `en.indian`, `en.australian`) and any non-Google source fall
- * through to `null` and pick up the generic gold/purple fallback.
+ * through to `null` and get a plain, uncolored banner.
  *
  * The set is intentionally small. Adding more religions is cheap (one regex
  * arm + one palette) but each one is a colour-design call, so leave it to a
@@ -3108,18 +3114,32 @@ fun normalizeCalendarHolidayTitle(raw: String): String =
 object FestiveThemes {
     fun publicHoliday(title: String, ownerAccount: String? = null): HolidayTheme {
         val display = normalizeCalendarHolidayTitle(title)
+        // A holiday we can't recognize (any calendar but the religion-keyed
+        // ones) is named on a plain banner: no emoji, no colors, since we
+        // can't tell whether it's a celebration ("Daylight Saving Time ends").
         val religion = religionFromOwnerAccount(ownerAccount)
+            ?: return HolidayTheme(
+                id = HolidayId.GENERIC_PUBLIC_HOLIDAY,
+                displayNameKey = display,
+                bannerTextKey = display,
+                emoji = "",
+                topOverrides = emptyMap(),
+                bottomOverrides = emptyMap(),
+                bannerArgb = 0L,
+                countries = emptySet(),
+                isSynthetic = true,
+                displayTitleOverride = display,
+                plain = true,
+            )
         val emoji = when (religion) {
             HolidayReligion.ISLAMIC -> "🌙"
             HolidayReligion.JUDAISM -> "✡️"
             HolidayReligion.HINDUISM -> "🪔"
-            null -> "🎊"
         }
         val (top, bottom) = when (religion) {
             HolidayReligion.ISLAMIC -> ISLAMIC_GREEN to ISLAMIC_GOLD
             HolidayReligion.JUDAISM -> JUDAISM_BLUE to JUDAISM_WHITE
             HolidayReligion.HINDUISM -> HINDU_SAFFRON to HINDU_MAGENTA
-            null -> FESTIVE_GOLD to FESTIVE_PURPLE
         }
         return HolidayTheme(
             id = HolidayId.GENERIC_PUBLIC_HOLIDAY,

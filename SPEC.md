@@ -97,6 +97,10 @@ I put on before I leave?" instead of a full weather-office report.
   On a themed day the card names the celebration under its title, in the
   Today banner's words and colors — a birthday or calendar holiday by its
   calendar title.
+  A calendar holiday we don't recognize (anything but a birthday or Google's
+  religion-keyed holiday calendars, e.g. "Daylight Saving Time ends") is
+  named on a plain banner: no emoji, no banner or outfit colors, since it may
+  not be a celebration.
   On the Today screen a celebration's outfit colors apply only to that day's
   cards (today and tonight); tomorrow and later outfits keep the user's own
   colors.

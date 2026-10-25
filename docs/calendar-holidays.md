@@ -6,9 +6,11 @@ already synced to your phone to make the daily forecast more useful:
 - **Evening extras** — if you have an evening event somewhere, the forecast
   can fold in the weather for *that* part of the day (e.g. "Tonight, rain,
   bring a jacket").
-- **Birthdays and public holidays** — these can theme the outfit card with
-  special colors, and name the day ("🎂 Alice's birthday") in a banner on
-  the Today screen and on the outfit card.
+- **Birthdays and public holidays** — these name the day ("🎂 Alice's
+  birthday") in a banner on the Today screen and on the outfit card.
+  Birthdays and holidays from Google's religious holiday calendars also
+  theme the outfits with special colors; other calendar entries, like
+  "Daylight Saving Time ends", get a plain banner with no emoji or colors.
 
 The **Calendar settings** screen has two listings — **Birthdays** and
 **Public holidays** — that show the upcoming celebrations ClothesCast found in

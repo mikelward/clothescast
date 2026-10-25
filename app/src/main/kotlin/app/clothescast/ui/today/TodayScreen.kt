@@ -1859,16 +1859,20 @@ internal fun HolidayBanner(
     val bannerText = remember(theme, effectiveCountry, and) {
         holidayBannerText(context, theme, effectiveCountry, and)
     }
-    val bannerColor = remember(theme.bannerArgb) { Color(theme.bannerArgb.toInt()) }
-    val textColor = remember(theme.bannerArgb) { Color(holidayBannerContentArgb(theme.bannerArgb)) }
-    val cardColors = CardDefaults.cardColors(
-        containerColor = bannerColor,
-        contentColor = textColor,
-    )
+    // A plain day (a clock change) sits on the default card colors.
+    val cardColors = if (theme.plain) {
+        CardDefaults.cardColors()
+    } else {
+        CardDefaults.cardColors(
+            containerColor = Color(theme.bannerArgb.toInt()),
+            contentColor = Color(holidayBannerContentArgb(theme.bannerArgb)),
+        )
+    }
+    val textColor = cardColors.contentColor
     val cardModifier = modifier.fillMaxWidth()
     val content: @Composable () -> Unit = {
         Text(
-            text = "${theme.emoji}  $bannerText",
+            text = holidayBannerLabel(theme, bannerText),
             style = MaterialTheme.typography.titleSmall,
             color = textColor,
             modifier = Modifier

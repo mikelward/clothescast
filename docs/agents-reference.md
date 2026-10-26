@@ -9,6 +9,10 @@ cap. `AGENTS.md` keeps the rules; this file keeps the why and the numbers.
 Production is `clothescast-ecce9`: substitute it for `<projectId>` in the
 deploy, bucket and log commands (`functions/README.md`).
 
+To enable Firebase locally, configure a project for `app.clothescast` and drop
+its `google-services.json` at `app/google-services.json`; it is per-developer
+and gitignored, so never commit it.
+
 ## Sandbox testing
 
 - **Full parity (expected).** Google Maven hosts allowlisted and the Android
@@ -47,6 +51,13 @@ deploy, bucket and log commands (`functions/README.md`).
 
 ## CI
 
+- **Jobs.** `JVM unit tests` (`:core:*:test` + `:app:testDebugUnitTest`,
+  uploads Roborazzi snapshots as `ui-preview-snapshots`); `Android release
+  check` (`:app:assembleRelease` on PRs, nothing on `main`); `Build the release
+  AAB` (`:app:bundleRelease`, `main` only, needs only `classify` so R8 overlaps
+  the tests); `Distribute and release` (needs `unit-tests`, `android-build`,
+  `release-build`; downloads `app-release-aab`, no Gradle; GitHub prerelease
+  `v<versionCode>`, then Play).
 - **Why the release build runs in parallel.** The bundle used to be a step
   inside `deploy`, so its ~6 min started only after the tests finished — pure
   critical path for work that depends on nothing the tests produce. R8 is

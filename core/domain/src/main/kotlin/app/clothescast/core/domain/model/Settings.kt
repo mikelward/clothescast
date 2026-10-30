@@ -367,7 +367,8 @@ enum class TtsEngine { DEVICE, GEMINI }
  *   science-fiction guidebook voice (no named IP — just the register).
  * - [FATHER_CHRISTMAS], [VAMPIRE], [NEW_YEARS_HOST], [LEPRECHAUN],
  *   [KING], [QUEEN] and [PRESIDENT] are seasonal novelty registers ([VAMPIRE]
- *   is a classic-horror Transylvanian count for Halloween; [KING] /
+ *   is a classic-horror count with Bela Lugosi's Hungarian accent for
+ *   Halloween; [KING] /
  *   [QUEEN] evoke King Charles III / Queen Elizabeth II for occasions with a
  *   royal in the name; [PRESIDENT] evokes the solemn oratory of George
  *   Washington / Abraham Lincoln for Presidents' Day and the like). They're

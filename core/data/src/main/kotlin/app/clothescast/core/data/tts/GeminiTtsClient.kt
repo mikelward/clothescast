@@ -124,8 +124,9 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE: String =
         "with heavily rolled Rs and drawn-out vowels, dripping with theatrical " +
         "menace and aristocratic relish, as if the weather were a delicious dark " +
         "secret. Linger dramatically on ominous words. You may add brief " +
-        "in-character touches such as 'Goood eeevening' or a slow, sinister " +
-        "laugh. No audio effects, background noise, or vinyl-style texture.\n\n"
+        "in-character touches such as 'Goood eeevening', and end with a slow, " +
+        "sinister laugh. No audio effects, background noise, or vinyl-style " +
+        "texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST: String =
     "Read the following as an exuberant New Year's Eve party host counting down " +

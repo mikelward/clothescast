@@ -863,6 +863,15 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `the vampire always ends with a sinister laugh`() {
+        // "May add" left the laugh to chance; Flash skipped it more often than Pro.
+        val directive = styleDirectiveFor(TtsStyle.VAMPIRE)
+
+        directive.shouldContain("end with a slow, sinister laugh")
+        directive.shouldNotContain("or a slow, sinister laugh")
+    }
+
+    @Test
     fun `styleDirectiveFor returns the B2 weather-forecaster variant for WEATHER_FORECASTER`() {
         // Pin the WEATHER_FORECASTER arm on the B2 (no-register) directive
         // specifically — directiveFor() upgrades en-AU to the _REGISTER

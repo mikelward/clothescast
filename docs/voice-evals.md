@@ -566,11 +566,23 @@ Halloween vampire, then got a forecaster spot check.
 Schedar tied Algenib on en-GB and collapsed on en-US, which is why the
 pin went to Algenib.
 
-These rounds read the earlier "Transylvanian accent" prompt. The prompt now
-asks for Bela Lugosi's Hungarian accent and the Hungarian falling contour
-after each accent (Mády, Reichel & Beňuš 2013), shipped unrated on the
-maintainer's call. Re-run `scripts/compare-persona-voices.py` before trusting
-the pin on it.
+### Hungarian-accent prompt (#1374, reverted)
+
+#1374 swapped "Transylvanian accent" for Bela Lugosi's Hungarian accent and
+described Hungarian's falling pitch after each accent (Mády, Reichel & Beňuš
+2013: Hungarian accent groups fall steadily from the stressed first syllable,
+where Slovak's stay flat). It merged before a listening test. Algenib, three
+takes each, both prompts rated in one sitting:
+
+| Prompt | en-GB | en-US |
+|---|---|---|
+| Transylvanian (shipped) | 8.0 (8, 8, 8) | 7.7 (7, 8, 8) |
+| Hungarian (#1374) | 8.0 (8, 8, 8) | 7.0 (7, 7, 7) |
+
+The rater called the Hungarian en-GB 8s generous and the takes "not really
+super vampirey", so the Transylvanian prompt came back. Low against the 9.2
+and 9.3 above because the anchor moved between sittings; compare within a
+table, not across.
 
 ### Forecaster (#1320 adds it to the picker)
 

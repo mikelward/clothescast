@@ -116,23 +116,14 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS: String =
         "Christmas'. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"
 
-// The cliché count is Bela Lugosi's Hungarian-accented English, so the prompt
-// names Hungarian: "Transylvanian" invites a generic Eastern European accent.
-// First-syllable stress alone doesn't make it Hungarian (Slovak has it too);
-// the tell is that each accent group falls steadily from its stressed syllable
-// to the next accent, where Slovak's stay flat (Mády, Reichel & Beňuš 2013,
-// "Accentual phrase in languages with fixed word stress").
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE: String =
     "Read the following as a gloriously over-the-top vampire count from an old " +
-        "black-and-white horror film, speaking English with a thick Hungarian " +
-        "accent like Bela Lugosi's Dracula. Hit the first syllable of each " +
-        "important word high, then let the pitch slide steadily down until the " +
-        "next important word, where it jumps back up. Give unstressed vowels " +
-        "their full value, roll the Rs and say W as V. Speak slowly and " +
-        "deliberately, with theatrical menace and aristocratic relish, as if the " +
-        "weather were a delicious dark secret. You may add brief in-character " +
-        "touches such as 'Goood eeevening' or a slow, sinister laugh. No audio " +
-        "effects, background noise, or vinyl-style texture.\n\n"
+        "black-and-white horror film — a thick, exaggerated Transylvanian accent " +
+        "with heavily rolled Rs and drawn-out vowels, dripping with theatrical " +
+        "menace and aristocratic relish, as if the weather were a delicious dark " +
+        "secret. Linger dramatically on ominous words. You may add brief " +
+        "in-character touches such as 'Goood eeevening' or a slow, sinister " +
+        "laugh. No audio effects, background noise, or vinyl-style texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST: String =
     "Read the following as an exuberant New Year's Eve party host counting down " +

@@ -566,6 +566,12 @@ Halloween vampire, then got a forecaster spot check.
 Schedar tied Algenib on en-GB and collapsed on en-US, which is why the
 pin went to Algenib.
 
+These rounds read the earlier "Transylvanian accent" prompt. The prompt now
+asks for Bela Lugosi's Hungarian accent and the Hungarian falling contour
+after each accent (Mády, Reichel & Beňuš 2013), shipped unrated on the
+maintainer's call. Re-run `scripts/compare-persona-voices.py` before trusting
+the pin on it.
+
 ### Forecaster (#1320 adds it to the picker)
 
 Shipped accent and directive per locale (Despina not re-rated; it already ships):

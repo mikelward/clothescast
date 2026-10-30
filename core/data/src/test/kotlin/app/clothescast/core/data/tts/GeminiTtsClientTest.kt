@@ -845,6 +845,19 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `vampire asks for a Hungarian accent whose pitch falls after each accent`() {
+        // The Lugosi count is Hungarian, not a generic "Transylvanian", and
+        // what marks Hungarian over other first-syllable-stress languages is
+        // the steady fall from each accent to the next (Mády, Reichel & Beňuš
+        // 2013). See the comment on GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE.
+        val directive = styleDirectiveFor(TtsStyle.VAMPIRE)
+
+        directive.shouldContain("Hungarian accent")
+        directive.shouldContain("slide steadily down until the next important word")
+        directive.shouldNotContain("Transylvanian")
+    }
+
+    @Test
     fun `styleDirectiveFor returns the B2 weather-forecaster variant for WEATHER_FORECASTER`() {
         // Pin the WEATHER_FORECASTER arm on the B2 (no-register) directive
         // specifically — directiveFor() upgrades en-AU to the _REGISTER

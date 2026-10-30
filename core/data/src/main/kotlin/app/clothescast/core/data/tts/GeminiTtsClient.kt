@@ -24,6 +24,8 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.http.path
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -637,7 +639,7 @@ class GeminiTtsClient(
 
         val pcm = Base64.getDecoder().decode(inline.data)
         val sampleRate = parseSampleRate(inline.mimeType) ?: DEFAULT_SAMPLE_RATE_HZ
-        return PcmAudio(bytes = pcm, sampleRate = sampleRate)
+        return withIntroFor(style, PcmAudio(bytes = pcm, sampleRate = sampleRate))
     }
 
     private fun parseSampleRate(mimeType: String): Int? {
@@ -652,6 +654,20 @@ class GeminiTtsClient(
 
     companion object {
         private const val DEFAULT_SAMPLE_RATE_HZ = 24_000
+    }
+}
+
+/**
+ * [speech] with its persona's musical intro in front, if it has one: the
+ * vampire opens with [OrganSting]. Applied here, where the audio is made, so
+ * every way the briefing is heard (the phone, Cast, the smart-home MQTT audio
+ * and video) gets the same intro. Rendering and splicing run on
+ * [Dispatchers.Default] since callers may be on the main thread.
+ */
+internal suspend fun withIntroFor(style: TtsStyle, speech: PcmAudio): PcmAudio {
+    if (style != TtsStyle.VAMPIRE) return speech
+    return withContext(Dispatchers.Default) {
+        PcmAudio(bytes = OrganSting.pcm(speech.sampleRate) + speech.bytes, sampleRate = speech.sampleRate)
     }
 }
 

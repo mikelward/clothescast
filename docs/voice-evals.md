@@ -584,6 +584,34 @@ super vampirey", so the Transylvanian prompt came back. Low against the 9.2
 and 9.3 above because the anchor moved between sittings; compare within a
 table, not across.
 
+### Darker and more exaggerated variants (2026-10, none shipped)
+
+The target is the modern cliché count: exaggerated and dark, less smooth
+than Lugosi. Rendered with `scripts/say.py` on en-GB, none beat the
+Transylvanian prompt:
+
+- **Exaggerated Hungarian, horror menace** (first-syllable stress, rolled Rs,
+  W as V, TH as T or D, "rather than smooth or suave"): not dark enough.
+- **Sinister** (low, slow, cold, near-whisper, the listener as the next
+  victim): not exaggerated or dark enough.
+- **Evil caricature** ("hammy", "dripping with evil") in Algenib, Charon,
+  Orus and Enceladus on Flash and Pro: too weak and not dark enough. Pro
+  laughed more reliably when the prompt only allowed a laugh.
+- **Director's notes** (Google's profile / scene / notes / transcript layout,
+  a midnight crypt): scored below with and without a language line.
+
+| Model | Voice | "Language: British English." | No language line |
+|---|---|---|---|
+| Flash | Algenib | 7 | 6 |
+| Flash | Charon | 7 | 5 |
+| Pro | Algenib | 7 | 5 |
+| Pro | Charon | 8 | 7 |
+
+Dropping the language line lost in every pair, so it isn't what weakens
+the accent. Pro with Charon was "a bit clearer and nicer, but not very
+menacing". Wording alone hasn't reached dark; #1376 added a synthesized
+organ intro instead.
+
 ### Forecaster (#1320 adds it to the picker)
 
 Shipped accent and directive per locale (Despina not re-rated; it already ships):

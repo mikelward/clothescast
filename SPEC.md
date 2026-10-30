@@ -158,7 +158,9 @@ I put on before I leave?" instead of a full weather-office report.
   choices and re-resolve when those choices change.
 - **Voice:** device TTS is the default low-friction path. Gemini TTS is BYOK,
   styleable, and used only when selected and keyed; device TTS remains the
-  fallback for phone playback.
+  fallback for phone playback. The vampire persona opens with a few seconds of
+  pipe organ, synthesized in the app (no recording), on every route the
+  briefing plays: phone, Cast and smart home.
 - **Smart-home UX:** smart-home integrations are opt-in and should describe where
   payloads go. Settings status rows should show selected routes, broker errors,
   and last-delivery state rather than making users infer background behaviour.

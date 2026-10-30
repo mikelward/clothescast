@@ -621,6 +621,24 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `the vampire's audio opens with the organ and other styles' doesn't`() = runTest {
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY),
+            callPlanner = directPlanner("test-key"),
+        )
+        // SUCCESS_BODY encodes the four bytes 0xDE 0xAD 0xBE 0xEF.
+        val speech = listOf(0xDE.toByte(), 0xAD.toByte(), 0xBE.toByte(), 0xEF.toByte())
+        val organ = OrganSting.pcm(24_000)
+
+        val vampire = client.synthesize(text = "hello", style = TtsStyle.VAMPIRE)
+
+        vampire.sampleRate shouldBe 24_000
+        vampire.bytes.copyOfRange(0, organ.size).contentEquals(organ) shouldBe true
+        vampire.bytes.copyOfRange(organ.size, vampire.bytes.size).toList() shouldBe speech
+        client.synthesize(text = "hello", style = TtsStyle.PIRATE).bytes.toList() shouldBe speech
+    }
+
+    @Test
     fun `uses the planner's endpoint and lets it attach auth headers`() = runTest {
         // Mirrors `:app`'s shared-key path: a different host and a pair of
         // proxy-only headers (App Check token + Firebase install ID),

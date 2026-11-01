@@ -38,4 +38,13 @@ interface CalendarEventReader {
      * it.
      */
     suspend fun availableCalendars(): List<CalendarInfo> = emptyList()
+
+    /**
+     * Countries (ISO alpha-2) of the Google regional holiday calendars the
+     * user reads from (enabled per their visibility and per-calendar
+     * overrides), so the banner can tell when holidays from more than one
+     * country are on. Best-effort like the rest: empty on missing permission
+     * or failure. Defaulted for test fakes.
+     */
+    suspend fun enabledHolidayCalendarCountries(): Set<String> = emptySet()
 }

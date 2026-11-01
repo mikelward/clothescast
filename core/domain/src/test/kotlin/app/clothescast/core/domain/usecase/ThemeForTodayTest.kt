@@ -524,4 +524,68 @@ class ThemeForTodayTest {
             themeFromCalendarBirthdays = true,
         ).shouldBeNull()
     }
+
+    private val usCalendar = "en.usa#holiday@group.v.calendar.google.com"
+    private val ukCalendar = "en.uk#holiday@group.v.calendar.google.com"
+
+    @Test
+    fun `a holiday from another country's calendar carries its flag`() {
+        // A UK user also reading the US holiday calendar.
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = setOf("GB", HolidayCatalog.GLOBAL_COUNTRY),
+            events = listOf(publicHoliday("Daylight Saving Time ends", usCalendar)),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+            holidayCalendarCountries = setOf("GB", "US"),
+        )
+        theme.shouldNotBeNull()
+        theme.flags shouldBe listOf("US")
+    }
+
+    @Test
+    fun `with one country on, holidays carry no flag`() {
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = setOf("GB", HolidayCatalog.GLOBAL_COUNTRY),
+            events = listOf(publicHoliday("Early May bank holiday", ukCalendar)),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = false,
+            holidayCalendarCountries = setOf("GB"),
+        )
+        theme.shouldNotBeNull()
+        theme.flags shouldBe emptyList()
+    }
+
+    @Test
+    fun `a global holiday carries no flag even with several countries on`() {
+        val theme = subject.resolve(
+            date = christmas,
+            overrides = noOverrides,
+            enabledCountries = setOf("GB", "US", HolidayCatalog.GLOBAL_COUNTRY),
+            events = emptyList(),
+            themeFromCalendarHolidays = false,
+            themeFromCalendarBirthdays = false,
+        )
+        theme.shouldNotBeNull()
+        theme.id shouldBe HolidayId.CHRISTMAS_DAY
+        theme.flags shouldBe emptyList()
+    }
+
+    @Test
+    fun `each piece of a composed banner carries its own flag`() {
+        val theme = subject.resolve(
+            date = random,
+            overrides = noOverrides,
+            enabledCountries = setOf("GB", HolidayCatalog.GLOBAL_COUNTRY),
+            events = listOf(publicHoliday("Daylight Saving Time ends", usCalendar), birthday("Alice's birthday")),
+            themeFromCalendarHolidays = true,
+            themeFromCalendarBirthdays = true,
+            holidayCalendarCountries = setOf("GB", "US"),
+        )
+        theme.shouldNotBeNull()
+        theme.bannerSegments?.map { it.flags } shouldBe listOf(listOf("US"), emptyList())
+    }
 }

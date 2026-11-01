@@ -40,6 +40,11 @@ suspend fun resolveHolidayTheme(
     } else {
         emptyList()
     }
+    val holidayCalendarCountries = if (prefs.calendarHolidayThemingActive) {
+        coRunCatching { calendarEventReader.enabledHolidayCalendarCountries() }.getOrDefault(emptySet())
+    } else {
+        emptySet()
+    }
     val localeCountry = prefs.region.toJavaLocale()?.country
         ?: Locale.getDefault().country
     val effectiveCountries = prefs.holidayCountrySelection.resolveEnabledCountries(
@@ -54,5 +59,6 @@ suspend fun resolveHolidayTheme(
         events = events,
         themeFromCalendarHolidays = prefs.calendarHolidayThemingActive,
         themeFromCalendarBirthdays = prefs.calendarBirthdayThemingActive,
+        holidayCalendarCountries = holidayCalendarCountries,
     )
 }

@@ -31,6 +31,7 @@ import app.clothescast.core.domain.usecase.HolidayResolver
 import app.clothescast.core.domain.usecase.RelevantAlert
 import app.clothescast.core.domain.usecase.ThemeForToday
 import app.clothescast.core.domain.usecase.followingPeriod
+import app.clothescast.core.domain.util.coRunCatching
 import app.clothescast.tts.toJavaLocale
 import java.util.Locale
 import app.clothescast.data.InsightCache
@@ -428,6 +429,14 @@ internal data class WorkSignals(
 )
 
 /** Presence + invalid-state mirror of the Gemini BYOK secret. */
+/** Prefs, today's date and its calendar inputs, for the theme resolve. */
+internal data class PrefsDateEvents(
+    val prefs: UserPreferences,
+    val date: LocalDate,
+    val events: List<CalendarEvent>,
+    val holidayCalendarCountries: Set<String>,
+)
+
 internal data class GeminiKeySignals(
     val configured: Boolean,
     val needsReentry: Boolean,
@@ -594,7 +603,7 @@ class TodayViewModel(
     // sixth combine input; the read only fires when the user has opted into
     // calendar-sourced theming (or the reader is null in tests).
     @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-    private val preferencesDateEvents: Flow<Triple<UserPreferences, LocalDate, List<CalendarEvent>>> =
+    private val preferencesDateEvents: Flow<PrefsDateEvents> =
         combine(settingsRepository.preferences, dateTicker, ::Pair).flatMapLatest { (prefs, date) ->
             flow {
                 val needEvents = calendarEventReader != null &&
@@ -606,7 +615,15 @@ class TodayViewModel(
                 } else {
                     emptyList()
                 }
-                emit(Triple(prefs, date, events))
+                val holidayCalendarCountries: Set<String> =
+                    if (calendarEventReader != null && prefs.calendarHolidayThemingActive) {
+                        coRunCatching { calendarEventReader.enabledHolidayCalendarCountries() }
+                            .onFailure { DiagLog.w("TodayViewModel", it, "Holiday calendar countries unavailable; no flags.") }
+                            .getOrDefault(emptySet())
+                    } else {
+                        emptySet()
+                    }
+                emit(PrefsDateEvents(prefs, date, events, holidayCalendarCountries))
             }
         }
 
@@ -692,7 +709,7 @@ class TodayViewModel(
         val spread = misc.showModelSpread
         val geminiKeyConfigured = misc.geminiKey.configured
         val geminiKeyNeedsReentry = misc.geminiKey.needsReentry
-        val (prefs, today, events) = prefsDateEvents
+        val (prefs, today, events, holidayCalendarCountries) = prefsDateEvents
         // Derive each cached snapshot against the *current* prefs so a settings
         // change re-renders the prose / outfit / bullets in the same frame as
         // the dropdown closes — no waiting for the next worker run, no
@@ -721,6 +738,7 @@ class TodayViewModel(
             events = events,
             themeFromCalendarHolidays = prefs.calendarHolidayThemingActive,
             themeFromCalendarBirthdays = prefs.calendarBirthdayThemingActive,
+            holidayCalendarCountries = holidayCalendarCountries,
         )
         TodayState(
             thisPeriodInsight = thisPeriodInsight,

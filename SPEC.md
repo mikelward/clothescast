@@ -101,6 +101,10 @@ I put on before I leave?" instead of a full weather-office report.
   religion-keyed holiday calendars, e.g. "Daylight Saving Time ends") is
   named on a plain banner: no emoji, no banner or outfit colors, since it may
   not be a celebration.
+  With holidays from more than one country on (the holiday country picker
+  plus synced regional holiday calendars), each country-specific holiday in
+  the banner leads with its country's flag ("🇺🇸 Daylight Saving Time ends"),
+  so a user can tell where it applies; global holidays and birthdays don't.
   On the Today screen a celebration's outfit colors apply only to that day's
   cards (today and tonight); tomorrow and later outfits keep the user's own
   colors.

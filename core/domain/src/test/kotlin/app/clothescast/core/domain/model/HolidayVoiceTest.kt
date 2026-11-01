@@ -15,7 +15,11 @@ class HolidayVoiceTest {
         holidayTtsStyle(HolidayId.NEW_YEARS_DAY) shouldBe TtsStyle.NEW_YEARS_HOST
         holidayTtsStyle(HolidayId.UK_KINGS_BIRTHDAY) shouldBe TtsStyle.KING
         holidayTtsStyle(HolidayId.CHRISTMAS_DAY) shouldBe TtsStyle.FATHER_CHRISTMAS
-        holidayTtsStyle(HolidayId.BOXING_DAY) shouldBe TtsStyle.FATHER_CHRISTMAS
+    }
+
+    @Test
+    fun `Boxing Day isn't Christmas`() {
+        holidayTtsStyle(HolidayId.BOXING_DAY) shouldBe null
     }
 
     @Test

@@ -16,7 +16,8 @@ enum class VoiceGender { MALE, FEMALE, NEUTRAL }
  * called out in [TtsStyle]'s doc plus the two novelty days the registers were
  * built for (Talk Like a Pirate Day → [TtsStyle.PIRATE], Towel Day →
  * [TtsStyle.SCIFI_NARRATOR]). Everything else returns null so the everyday
- * forecaster voice (or the user's deliberate pick) keeps speaking.
+ * forecaster voice (or the user's own pick) keeps speaking. Christmas Day
+ * only: Boxing Day isn't Christmas.
  */
 fun holidayTtsStyle(id: HolidayId): TtsStyle? = when (id) {
     HolidayId.NEW_YEARS_DAY -> TtsStyle.NEW_YEARS_HOST
@@ -26,7 +27,7 @@ fun holidayTtsStyle(id: HolidayId): TtsStyle? = when (id) {
     HolidayId.TALK_LIKE_A_PIRATE_DAY -> TtsStyle.PIRATE
     HolidayId.UK_KINGS_BIRTHDAY -> TtsStyle.KING
     HolidayId.HALLOWEEN -> TtsStyle.VAMPIRE
-    HolidayId.CHRISTMAS_DAY, HolidayId.BOXING_DAY -> TtsStyle.FATHER_CHRISTMAS
+    HolidayId.CHRISTMAS_DAY -> TtsStyle.FATHER_CHRISTMAS
     else -> null
 }
 

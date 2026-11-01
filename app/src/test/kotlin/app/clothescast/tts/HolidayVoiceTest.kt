@@ -99,12 +99,19 @@ class HolidayVoiceTest {
     }
 
     @Test
-    fun `a deliberate persona pick overrides the holiday`() {
+    fun `the holiday's persona overrides a persona the user picked`() {
         val selection = resolveHolidayVoice(
-            HolidayId.CHRISTMAS_DAY,
+            HolidayId.HALLOWEEN,
             "Leda",
             TtsStyle.PIRATE,
         )
-        selection shouldBe GeminiVoiceSelection("Leda", TtsStyle.PIRATE)
+        selection.style shouldBe TtsStyle.VAMPIRE
+        selection.voiceName shouldBe "Charon"
+    }
+
+    @Test
+    fun `a persona the user picked stands on a day with no holiday persona`() {
+        resolveHolidayVoice(HolidayId.VALENTINES_DAY, "Leda", TtsStyle.PIRATE) shouldBe
+            GeminiVoiceSelection("Leda", TtsStyle.PIRATE)
     }
 }

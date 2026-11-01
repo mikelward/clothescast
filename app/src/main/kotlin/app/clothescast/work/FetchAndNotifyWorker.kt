@@ -1508,8 +1508,8 @@ class FetchAndNotifyWorker(
         theme: HolidayTheme?,
     ): PcmAudio? {
         val utterance = ttsUtterance(insight, prefs, theme)
-        // On a themed day with no deliberate persona pick, speak in the
-        // holiday's voice (Father Christmas on Dec 25, a president on
+        // On a themed day, speak in the holiday's voice, even over a persona
+        // the user picked (Father Christmas on Dec 25, a president on
         // Presidents' Day, …) and switch to a matching-gender voice.
         val selection = resolveHolidayVoice(theme?.id, prefs.geminiVoice, prefs.ttsStyle)
         val speaker = GeminiTtsSpeaker(

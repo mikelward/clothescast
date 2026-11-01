@@ -660,15 +660,20 @@ class GeminiTtsClient(
 
 /**
  * [speech] with its persona's musical intro in front, if it has one: the
- * vampire opens with [OrganSting]. Applied here, where the audio is made, so
- * every way the briefing is heard (the phone, Cast, the smart-home MQTT audio
- * and video) gets the same intro. Rendering and splicing run on
- * [Dispatchers.Default] since callers may be on the main thread.
+ * vampire opens with [OrganSting], Father Christmas with [SleighBells].
+ * Applied here, where the audio is made, so every way the briefing is heard
+ * (the phone, Cast, the smart-home MQTT audio and video) gets the same intro.
+ * Rendering and splicing run on [Dispatchers.Default] since callers may be on
+ * the main thread.
  */
 internal suspend fun withIntroFor(style: TtsStyle, speech: PcmAudio): PcmAudio {
-    if (style != TtsStyle.VAMPIRE) return speech
+    val intro: (Int) -> ByteArray = when (style) {
+        TtsStyle.VAMPIRE -> OrganSting::pcm
+        TtsStyle.FATHER_CHRISTMAS -> SleighBells::pcm
+        else -> return speech
+    }
     return withContext(Dispatchers.Default) {
-        PcmAudio(bytes = OrganSting.pcm(speech.sampleRate) + speech.bytes, sampleRate = speech.sampleRate)
+        PcmAudio(bytes = intro(speech.sampleRate) + speech.bytes, sampleRate = speech.sampleRate)
     }
 }
 

@@ -639,6 +639,22 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `Father Christmas's audio opens with sleigh bells`() = runTest {
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY),
+            callPlanner = directPlanner("test-key"),
+        )
+        // SUCCESS_BODY encodes the four bytes 0xDE 0xAD 0xBE 0xEF.
+        val speech = listOf(0xDE.toByte(), 0xAD.toByte(), 0xBE.toByte(), 0xEF.toByte())
+        val bells = SleighBells.pcm(24_000)
+
+        val santa = client.synthesize(text = "hello", style = TtsStyle.FATHER_CHRISTMAS)
+
+        santa.bytes.copyOfRange(0, bells.size).contentEquals(bells) shouldBe true
+        santa.bytes.copyOfRange(bells.size, santa.bytes.size).toList() shouldBe speech
+    }
+
+    @Test
     fun `uses the planner's endpoint and lets it attach auth headers`() = runTest {
         // Mirrors `:app`'s shared-key path: a different host and a pair of
         // proxy-only headers (App Check token + Firebase install ID),

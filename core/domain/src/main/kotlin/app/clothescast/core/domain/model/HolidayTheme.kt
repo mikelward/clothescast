@@ -453,6 +453,14 @@ data class HolidayTheme(
      * [bottomOverrides] and [bannerArgb] are unused.
      */
     val plain: Boolean = false,
+    /**
+     * Countries (ISO alpha-2) whose flags lead the banner, set by
+     * [ThemeForToday] when the user has holidays from more than one country
+     * on, so they can tell where a holiday applies. Empty otherwise, for a
+     * global holiday, and on a composed theme (its [bannerSegments] carry
+     * their own).
+     */
+    val flags: List<String> = emptyList(),
 )
 
 /**
@@ -478,6 +486,8 @@ data class BannerSegment(
      * birthday speaks "Happy birthday!".
      */
     val holidayId: HolidayId? = null,
+    /** Countries whose flags lead this piece; see [HolidayTheme.flags]. */
+    val flags: List<String> = emptyList(),
 )
 
 /**
@@ -3103,8 +3113,9 @@ fun normalizeCalendarHolidayTitle(raw: String): String =
  * `title` becomes the banner's display string verbatim (it's the calendar
  * event's own title — "Diwali", "Alice's birthday"); these themes are
  * marked [HolidayTheme.isSynthetic] so the per-holiday picker filters
- * them out, and they carry an empty [HolidayTheme.countries] set so the
- * country-resolver never re-fires them.
+ * them out. A calendar holiday's [HolidayTheme.countries] is the country its
+ * source calendar covers (empty when unknown), for the banner's flag; they
+ * aren't in [HolidayCatalog], so the country resolver never fires them.
  *
  * Privacy note: the `title` originates from a calendar event the user
  * has opted into reading. It surfaces on-device in the Today banner and
@@ -3126,7 +3137,7 @@ object FestiveThemes {
                 topOverrides = emptyMap(),
                 bottomOverrides = emptyMap(),
                 bannerArgb = 0L,
-                countries = emptySet(),
+                countries = setOfNotNull(holidayCalendarCountry(ownerAccount)),
                 isSynthetic = true,
                 displayTitleOverride = display,
                 plain = true,
@@ -3149,7 +3160,7 @@ object FestiveThemes {
             topOverrides = topPaletteAll(top),
             bottomOverrides = bottomPaletteAll(bottom),
             bannerArgb = top,
-            countries = emptySet(),
+            countries = setOfNotNull(holidayCalendarCountry(ownerAccount)),
             isSynthetic = true,
             displayTitleOverride = display,
         )

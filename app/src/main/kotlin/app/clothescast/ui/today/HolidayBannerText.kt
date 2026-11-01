@@ -4,6 +4,7 @@ import android.content.Context
 import app.clothescast.R
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.bannerTextKeyFor
+import app.clothescast.core.domain.model.flagEmoji
 
 /**
  * The day's banner copy without its emoji: "Merry Christmas", "Alice's
@@ -28,17 +29,29 @@ internal fun holidayBannerText(
     val segments = theme.bannerSegments
     if (!segments.isNullOrEmpty()) {
         return segments.joinToString(separator = " $and ") { segment ->
-            segment.literalText ?: run {
-                val key = segment.textKeyByCountry[country.uppercase()] ?: segment.textKey
-                resolveBannerString(context, key, theme.id.name)
-            }
+            withFlags(
+                segment.flags,
+                segment.literalText ?: run {
+                    val key = segment.textKeyByCountry[country.uppercase()] ?: segment.textKey
+                    resolveBannerString(context, key, theme.id.name)
+                },
+            )
         }
     }
     // Synthetic themes (calendar-sourced holidays/birthdays) carry the event
     // title as [HolidayTheme.displayTitleOverride]; bypass the resource lookup
     // because the key is a runtime string, not a `@string/...` id.
-    return theme.displayTitleOverride
-        ?: resolveBannerString(context, theme.bannerTextKeyFor(country), theme.id.name)
+    return withFlags(
+        theme.flags,
+        theme.displayTitleOverride
+            ?: resolveBannerString(context, theme.bannerTextKeyFor(country), theme.id.name),
+    )
+}
+
+/** [text] led by the flags of [countries] ("🇺🇸 Daylight Saving Time ends"). */
+private fun withFlags(countries: List<String>, text: String): String {
+    val flags = countries.mapNotNull { flagEmoji(it) }.joinToString("")
+    return if (flags.isEmpty()) text else "$flags $text"
 }
 
 /**
@@ -76,6 +89,9 @@ private fun resolveBannerString(
     return if (resId == 0) fallback else context.getString(resId)
 }
 
-/** "{emoji}  {text}", or just [text] for a theme with no emoji. */
+/**
+ * "{emoji}  {text}", or just [text] for a theme with no emoji, or whose text
+ * already leads with it (Australia Day's 🇦🇺 emoji and its flag).
+ */
 internal fun holidayBannerLabel(theme: HolidayTheme, text: String): String =
-    if (theme.emoji.isEmpty()) text else "${theme.emoji}  $text"
+    if (theme.emoji.isEmpty() || text.startsWith(theme.emoji)) text else "${theme.emoji}  $text"

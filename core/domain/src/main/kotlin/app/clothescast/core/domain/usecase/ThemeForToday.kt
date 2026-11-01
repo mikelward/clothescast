@@ -8,6 +8,7 @@ import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.isFunny
+import app.clothescast.core.domain.model.isRealCountry
 import java.time.LocalDate
 
 /**
@@ -47,6 +48,7 @@ class ThemeForToday(
         events: List<CalendarEvent>,
         themeFromCalendarHolidays: Boolean,
         themeFromCalendarBirthdays: Boolean,
+        holidayCalendarCountries: Set<String> = emptySet(),
     ): HolidayTheme? {
         val catalogMatches = holidayResolver.resolveAll(date, overrides, enabledCountries)
         val primaries = catalogMatches.filterNot { it.isFunny }
@@ -100,23 +102,49 @@ class ThemeForToday(
             ?: contributors.firstOrNull { !it.plain }
             ?: contributors.first()
 
+        // With holidays from more than one country on, each country-specific
+        // piece of the banner carries its flag, so a UK user with a US
+        // holiday calendar reads "🇺🇸 Daylight Saving Time ends" and knows it
+        // isn't their clocks. The countries on are the catalog's enabled ones
+        // plus the synced holiday calendars' (today's included, in case the
+        // calendar list couldn't be read).
+        val countriesOn = buildSet {
+            enabledCountries.filterTo(this, ::isRealCountry)
+            if (themeFromCalendarHolidays) {
+                addAll(holidayCalendarCountries)
+                calendarHolidays.flatMapTo(this) { it.countries }
+            }
+        }
+        fun flagsFor(theme: HolidayTheme): List<String> {
+            if (countriesOn.size < 2) return emptyList()
+            val real = theme.countries.filter(::isRealCountry)
+            val mine = real.filter { it in countriesOn }
+            return (mine.ifEmpty { real }).sorted()
+        }
+
         // A single celebration renders its own standalone banner — no join.
-        if (contributors.size == 1) return contributors.first()
+        if (contributors.size == 1) return contributors.first().let { it.copy(flags = flagsFor(it)) }
 
         val segments = contributors.map { theme ->
             when {
                 theme.displayTitleOverride != null ->
-                    BannerSegment(literalText = theme.displayTitleOverride, holidayId = theme.id)
+                    BannerSegment(
+                        literalText = theme.displayTitleOverride,
+                        holidayId = theme.id,
+                        flags = flagsFor(theme),
+                    )
                 theme.isFunny ->
                     BannerSegment(
                         textKey = theme.bannerJoinKey ?: theme.bannerTextKey,
                         holidayId = theme.id,
+                        flags = flagsFor(theme),
                     )
                 else ->
                     BannerSegment(
                         textKey = theme.bannerTextKey,
                         textKeyByCountry = theme.bannerTextKeyByCountry,
                         holidayId = theme.id,
+                        flags = flagsFor(theme),
                     )
             }
         }

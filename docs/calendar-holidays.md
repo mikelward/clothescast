@@ -11,6 +11,9 @@ already synced to your phone to make the daily forecast more useful:
   Birthdays and holidays from Google's religious holiday calendars also
   theme the outfits with special colors; other calendar entries, like
   "Daylight Saving Time ends", get a plain banner with no emoji or colors.
+  If you have holidays from more than one country turned on, each holiday
+  shows its country's flag ("🇺🇸 Daylight Saving Time ends") so you can tell
+  where it applies.
 
 The **Calendar settings** screen has two listings — **Birthdays** and
 **Public holidays** — that show the upcoming celebrations ClothesCast found in

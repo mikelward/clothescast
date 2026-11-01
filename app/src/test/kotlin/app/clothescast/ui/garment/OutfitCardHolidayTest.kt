@@ -65,6 +65,20 @@ class OutfitCardHolidayTest {
     }
 
     @Test
+    fun `a holiday's flag leads its name`() {
+        val plain = FestiveThemes.publicHoliday("Daylight Saving Time ends").copy(flags = listOf("US"))
+
+        outfitCardHoliday(context, plain, Region.EN_US)?.label shouldBe "🇺🇸 Daylight Saving Time ends"
+    }
+
+    @Test
+    fun `a flag the holiday's emoji already shows isn't repeated`() {
+        val australiaDay = HolidayCatalog.themeFor(HolidayId.AUSTRALIA_DAY).shouldNotBeNull().copy(flags = listOf("AU"))
+
+        outfitCardHoliday(context, australiaDay, Region.EN_US)?.label shouldBe "🇦🇺 Happy Australia Day"
+    }
+
+    @Test
     fun `a catalog holiday reads its banner copy`() {
         outfitCardHoliday(context, christmas, Region.EN_US)?.label shouldBe "${christmas.emoji}  Merry Christmas"
     }

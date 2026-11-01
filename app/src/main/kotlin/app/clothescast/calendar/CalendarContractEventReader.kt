@@ -10,6 +10,7 @@ import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.CalendarInfo
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
+import app.clothescast.core.domain.model.holidayCalendarCountry
 import app.clothescast.core.domain.repository.CalendarEventReader
 import app.clothescast.core.domain.usecase.CalendarEventClassifier
 import app.clothescast.core.domain.util.coRunCatching
@@ -427,6 +428,13 @@ class CalendarContractEventReader(
                 .onFailure { DiagLog.w(TAG, it, "Calendar enumeration failed; returning none.") }
                 .getOrDefault(emptyList())
         }
+    }
+
+    override suspend fun enabledHolidayCalendarCountries(): Set<String> {
+        val overrides = calendarOverridesProvider()
+        return availableCalendars()
+            .filter { overrides[it.id] ?: it.visible }
+            .mapNotNullTo(mutableSetOf()) { holidayCalendarCountry(it.id) }
     }
 
     private companion object {

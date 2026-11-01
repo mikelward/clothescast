@@ -83,12 +83,11 @@ data class GeminiVoiceSelection(val voiceName: String, val style: TtsStyle)
  * one — e.g. Presidents' Day → a male president, Towel Day → a male sci-fi
  * narrator.
  *
- * A deliberate non-default persona pick wins: if the user has chosen any
- * [TtsStyle] other than [TtsStyle.WEATHER_FORECASTER], their choice stands and
- * the holiday is ignored. Only the everyday forecaster default yields to the
- * day. The voice is only swapped when the persona implies a gender the user's
- * current voice doesn't already have, so a user already on a male voice keeps
- * it for a male persona.
+ * The holiday's persona wins over whatever persona the user picked: the
+ * vampire on Halloween, Father Christmas on Christmas Day, for everyone. On
+ * other days the user's pick stands. The voice is only swapped when the
+ * persona implies a gender the user's current voice doesn't already have, so a
+ * user already on a male voice keeps it for a male persona.
  */
 fun resolveHolidayVoice(
     holidayId: HolidayId?,
@@ -96,7 +95,7 @@ fun resolveHolidayVoice(
     userStyle: TtsStyle,
 ): GeminiVoiceSelection {
     val persona = holidayId?.let { holidayTtsStyle(it) }
-    if (persona == null || userStyle != TtsStyle.WEATHER_FORECASTER) {
+    if (persona == null) {
         return GeminiVoiceSelection(userVoice, userStyle)
     }
     val gender = persona.suggestedVoiceGender

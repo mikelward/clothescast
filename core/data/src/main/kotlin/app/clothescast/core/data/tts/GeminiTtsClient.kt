@@ -29,19 +29,45 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import java.io.ByteArrayOutputStream
 import java.util.Base64
 import java.util.Locale
 
-// `gemini-2.5-flash-preview-tts` is the audio-output variant of Flash 2.5
-// (text-only Flash 2.5 is much cheaper but doesn't speak). Pricing as of
-// April 2026: standard-tier pricing is $1.00/M text input tokens + $20.00/M
-// audio output tokens; a typical ~100-char insight ≈ 25 input tokens + ~160
-// audio output tokens for a ~5 s clip, which works out to ~$0.003 per call
-// (~$0.20/month at two clips/day). The Gemini free tier covers low-volume
-// BYOK use without billing at all. Note this model is still on the
-// `-preview-` track — see CLAUDE.md's "Don't rename Gemini models from
-// web-search guesses" before swapping it for a GA-sounding name.
-const val DEFAULT_GEMINI_TTS_MODEL: String = "gemini-2.5-flash-preview-tts"
+// `gemini-3.8-flash-lite-tts` is Google's high-volume TTS model, and the
+// named replacement for `gemini-2.5-flash-preview-tts`, which Google shuts
+// down on 2026-11-17. `gemini-3.8-flash-tts` is the pricier creative tier.
+// Standard-tier pricing as reported in November 2026 (Google's pricing page is
+// the authority): $0.50/M text input + $6.00/M audio output tokens until
+// 2026-12-31, then $1.00/M + $12.00/M.
+// Audio is 25 tokens a second, so a ~5 s clip is ~125 output tokens: about
+// $0.001 a call now and $0.002 from 2027, against ~$0.003 on the 2.5 model.
+// The Gemini free tier covers low-volume BYOK use without billing at all.
+// The proxy allowlists these ids (functions/src/models.ts); change both
+// together, and check the names against the live API, not search results.
+const val DEFAULT_GEMINI_TTS_MODEL: String = "gemini-3.8-flash-lite-tts"
+
+// The full Flash TTS model, for the languages Flash-Lite doesn't list (see
+// [geminiTtsModelFor]). $9.00/M audio output until 2026-12-31, then $18.00/M:
+// dearer than Flash-Lite, still below the 2.5 model's $20.00/M.
+const val GEMINI_TTS_FULL_MODEL: String = "gemini-3.8-flash-tts"
+
+/**
+ * Languages the app offers that Google's model page lists for
+ * [GEMINI_TTS_FULL_MODEL] but not [DEFAULT_GEMINI_TTS_MODEL]: Flash-Lite covers
+ * 101 languages, Flash 130. Thai was one of the 2.5 model's own 24.
+ */
+private val FULL_MODEL_LANGUAGES = setOf("fi", "lt", "sl", "sv", "sw", "th")
+
+/** The TTS model for a briefing spoken in [locale]. */
+fun geminiTtsModelFor(locale: Locale?): String =
+    if (locale != null && modernLanguageCode(locale.language) in FULL_MODEL_LANGUAGES) {
+        GEMINI_TTS_FULL_MODEL
+    } else {
+        DEFAULT_GEMINI_TTS_MODEL
+    }
+
+/** Names the model for the shared proxy, which reads it here rather than from the path. */
+internal const val GEMINI_MODEL_HEADER = "X-Gemini-Model"
 // Despina chosen via the post-#353 evals: clears the user's ≥8 bar across
 // en-GB, en-AU (B3, four rolls all ≥8), en-US, de, de-AT, de-CH. Reliable
 // rather than dazzling — it's the most consistently-acceptable voice across
@@ -57,9 +83,11 @@ internal const val GEMINI_HOST = "generativelanguage.googleapis.com"
 internal const val GEMINI_API_VERSION = "v1beta"
 
 /**
- * Natural-language style instructions prepended to every TTS request. Gemini
- * documents the input text as a style-steerable prompt — preambles like this
- * are interpreted as direction and not spoken back.
+ * Natural-language style instructions sent with every TTS request as the turn's
+ * `speechMetadata.style`. Gemini 3.8 TTS reads the text part verbatim, so these
+ * must never be joined onto the text: there they would be spoken aloud. (The
+ * 2.5 model treated a preamble in the text as direction, which is how these
+ * were written and evaluated.)
  *
  * [GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER] is the default register —
  * national-news broadcast delivery, deliberate cadence, sentence-final lift,
@@ -350,10 +378,8 @@ private val LANGUAGE_DIRECTIVES: Map<String, String> = mapOf(
  * model's default — North American English — applies).
  *
  * Gemini's prebuilt voices are language-agnostic and accept natural-language
- * accent steering in the same prompt that carries the spoken text. The
- * instruction is prepended to the user text alongside the chosen style
- * directive (see [styleDirectiveFor]) and is interpreted as direction, not
- * spoken back.
+ * accent steering. The instruction rides in `speechMetadata.style` after the
+ * chosen style directive (see [styleDirectiveFor]), never in the spoken text.
  *
  * Lookup is two-step: an exact `language-COUNTRY` match wins (so variants like
  * en-GB / en-AU / en-US can carry their own directive), otherwise a
@@ -496,14 +522,19 @@ internal const val TTS_PURPOSE_HEADER = "X-TTS-Purpose"
 internal const val GEMINI_TTS_SOCKET_TIMEOUT_MS: Long = 45_000L
 
 /**
- * Calls Gemini's audio-output model (e.g. `gemini-2.5-flash-preview-tts`). The
- * target host and request-time auth headers come from [callPlanner] — `:app`'s
+ * Calls Gemini's audio-output model, [geminiTtsModelFor] the briefing's locale.
+ * The target host and request-time auth headers come from [callPlanner] — `:app`'s
  * planner picks between the developer's Cloud Function proxy (default) and the
  * direct Generative Language host (when the user has set their own key).
  *
- * The model returns a single 16-bit signed PCM audio stream at a sample rate carried
- * in the `mimeType` (`audio/L16;codec=pcm;rate=24000`). [PcmAudio.sampleRate] parses
- * that out of the response so the caller can hand the bytes straight to AudioTrack.
+ * The request carries only the words to speak as text; delivery direction goes
+ * in `speechMetadata.style`, since Gemini 3.8 TTS speaks its text verbatim.
+ *
+ * Gemini 3.8 returns a complete WAV file (`audio/wav`), which [WavDecoder]
+ * unwraps to 16-bit mono PCM at the file's own sample rate. Headerless PCM
+ * (`audio/L16;codec=pcm;rate=24000`, what earlier models sent) is still
+ * accepted, with the rate read from the `mimeType`. Either way the caller can
+ * hand [PcmAudio.bytes] straight to AudioTrack.
  *
  * Despite the `audio/L16` mime label (which per RFC 2586 specifies network byte
  * order), Gemini's payload is already little-endian — the same encoding Android's
@@ -516,7 +547,6 @@ internal const val GEMINI_TTS_SOCKET_TIMEOUT_MS: Long = 45_000L
 class GeminiTtsClient(
     private val httpClient: HttpClient,
     private val callPlanner: GeminiCallPlanner,
-    private val model: String = DEFAULT_GEMINI_TTS_MODEL,
     private val apiCallLogger: ApiCallLogger = NoOpApiCallLogger,
 ) {
     suspend fun synthesize(
@@ -527,6 +557,7 @@ class GeminiTtsClient(
         preview: Boolean = false,
     ): PcmAudio {
         val plan = callPlanner.plan()
+        val model = geminiTtsModelFor(locale)
 
         // WEATHER_FORECASTER gets the full accent directive ("Speak with a
         // Standard British accent."). Character styles get only a bare language
@@ -537,13 +568,12 @@ class GeminiTtsClient(
         } else {
             locale?.let { geminiLanguageDirectiveFor(it) }
         }
-        val prompt = buildString {
-            append(directiveFor(style, locale))
+        val deliveryStyle = buildString {
+            append(directiveFor(style, locale).trim())
             if (accent != null) {
-                append(accent)
                 append("\n\n")
+                append(accent)
             }
-            append(text)
         }
 
         // Hand-rolled (not via core.data.diag.instrument) because Gemini doesn't use
@@ -565,6 +595,9 @@ class GeminiTtsClient(
                 // The shared proxy counts Settings previews in their own daily
                 // bucket. Google's own endpoint doesn't know the header, so a
                 // BYOK call never sends it.
+                if (plan.endpoint != GeminiEndpoint.Direct) {
+                    headers.append(GEMINI_MODEL_HEADER, model)
+                }
                 if (preview && plan.endpoint != GeminiEndpoint.Direct) {
                     headers.append(TTS_PURPOSE_HEADER, "preview")
                 }
@@ -572,7 +605,14 @@ class GeminiTtsClient(
                 setBody(
                     TtsRequest(
                         contents = listOf(
-                            TtsContent(parts = listOf(TtsTextPart(prompt))),
+                            TtsContent(
+                                parts = listOf(
+                                    TtsTextPart(
+                                        text = text,
+                                        speechMetadata = SpeechMetadata(style = deliveryStyle),
+                                    ),
+                                ),
+                            ),
                         ),
                         generationConfig = TtsGenerationConfig(
                             responseModalities = listOf("AUDIO"),
@@ -634,13 +674,35 @@ class GeminiTtsClient(
         }
 
         val candidate = response.candidates.firstOrNull()
-        val inline = candidate?.content?.parts?.firstOrNull { it.inlineData != null }
-            ?.inlineData
-            ?: throw GeminiTtsEmptyResponseException(candidate?.finishReason)
+        val inlineParts = candidate?.content?.parts?.mapNotNull { it.inlineData }.orEmpty()
+        if (inlineParts.isEmpty()) throw GeminiTtsEmptyResponseException(candidate?.finishReason)
 
-        val pcm = Base64.getDecoder().decode(inline.data)
-        val sampleRate = parseSampleRate(inline.mimeType) ?: DEFAULT_SAMPLE_RATE_HZ
-        return withIntroFor(style, PcmAudio(bytes = pcm, sampleRate = sampleRate))
+        // One part is the norm, but a response may split the clip across
+        // several (each its own WAV on 3.8); keeping only the first would cut
+        // the briefing short.
+        val pieces = inlineParts.map { decodeAudio(Base64.getDecoder().decode(it.data), it.mimeType) }
+        val sampleRate = pieces.first().sampleRate
+        if (pieces.any { it.sampleRate != sampleRate }) {
+            throw UnsupportedTtsAudioException("parts at different sample rates")
+        }
+        val speech = if (pieces.size == 1) {
+            pieces.single()
+        } else {
+            val joined = ByteArrayOutputStream()
+            pieces.forEach { joined.write(it.bytes) }
+            PcmAudio(bytes = joined.toByteArray(), sampleRate = sampleRate)
+        }
+        return withIntroFor(style, speech)
+    }
+
+    private fun decodeAudio(audio: ByteArray, mimeType: String): PcmAudio {
+        if (WavDecoder.isWav(audio)) return WavDecoder.decode(audio)
+        // Labelled WAV but no RIFF header: playing it as PCM would be noise.
+        if (mimeType.contains("wav", ignoreCase = true)) {
+            throw UnsupportedTtsAudioException("$mimeType without a RIFF header")
+        }
+        val sampleRate = parseSampleRate(mimeType) ?: DEFAULT_SAMPLE_RATE_HZ
+        return PcmAudio(bytes = audio, sampleRate = sampleRate)
     }
 
     private fun parseSampleRate(mimeType: String): Int? {
@@ -753,6 +815,7 @@ fun isRetryableGeminiTtsFailure(t: Throwable): Boolean = when (t) {
     is CancellationException -> false
     is GeminiTtsDailyQuotaExhaustedException -> false
     is GeminiTtsBlockedException -> false
+    is UnsupportedTtsAudioException -> false
     is MissingApiKeyException -> false
     is InvalidApiKeyException -> false
     is GeminiTtsHttpException -> t.status.value == 429 || t.status.value in 500..599

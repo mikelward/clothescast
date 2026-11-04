@@ -22,7 +22,12 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.junit.jupiter.api.Test
+import java.util.Base64
 import java.util.Locale
 
 class GeminiTtsClientTest {
@@ -103,8 +108,71 @@ class GeminiTtsClientTest {
 
         val req = checkNotNull(captured)
         req.url.host shouldBe GEMINI_HOST
-        req.url.encodedPath shouldBe "/v1beta/models/gemini-2.5-flash-preview-tts:generateContent"
+        req.url.encodedPath shouldBe "/v1beta/models/gemini-3.8-flash-lite-tts:generateContent"
         req.headers["x-goog-api-key"] shouldBe "test-key"
+    }
+
+    @Test
+    fun `languages Flash-Lite doesn't cover go to the full Flash model`() = runTest {
+        val paths = mutableListOf<String>()
+        val proxyModels = mutableListOf<String?>()
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) {
+                paths += it.url.encodedPath
+                proxyModels += it.headers[GEMINI_MODEL_HEADER]
+            },
+            callPlanner = {
+                GeminiCallPlan(
+                    endpoint = GeminiEndpoint(host = "example-proxy.test", apiVersion = "v1"),
+                    applyAuth = {},
+                )
+            },
+        )
+
+        client.synthesize(text = "hej", locale = Locale.forLanguageTag("sv-SE"))
+        client.synthesize(text = "sawasdee", locale = Locale.forLanguageTag("th-TH"))
+        client.synthesize(text = "hello", locale = Locale.UK)
+        client.synthesize(text = "hello")
+
+        paths shouldBe listOf(
+            "/v1/models/gemini-3.8-flash-tts:generateContent",
+            "/v1/models/gemini-3.8-flash-tts:generateContent",
+            "/v1/models/gemini-3.8-flash-lite-tts:generateContent",
+            "/v1/models/gemini-3.8-flash-lite-tts:generateContent",
+        )
+        // The proxy routes by the header, so it must name the same model.
+        proxyModels shouldBe listOf(
+            "gemini-3.8-flash-tts",
+            "gemini-3.8-flash-tts",
+            "gemini-3.8-flash-lite-tts",
+            "gemini-3.8-flash-lite-tts",
+        )
+    }
+
+    @Test
+    fun `a BYOK call names its model only in the path`() = runTest {
+        var captured: HttpRequestData? = null
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) { captured = it },
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "moi", locale = Locale.forLanguageTag("fi-FI"))
+
+        val req = checkNotNull(captured)
+        req.url.encodedPath shouldBe "/v1beta/models/gemini-3.8-flash-tts:generateContent"
+        req.headers[GEMINI_MODEL_HEADER] shouldBe null
+    }
+
+    @Test
+    fun `every language Flash-Lite lacks takes the full model, and nothing else does`() {
+        for (tag in listOf("fi-FI", "lt-LT", "sl-SI", "sv-SE", "sw-KE", "th-TH")) {
+            withClue(tag) { geminiTtsModelFor(Locale.forLanguageTag(tag)) shouldBe GEMINI_TTS_FULL_MODEL }
+        }
+        for (tag in listOf("en-US", "en-GB", "de-DE", "nb-NO", "da-DK", "et-EE", "he-IL", "ja-JP")) {
+            withClue(tag) { geminiTtsModelFor(Locale.forLanguageTag(tag)) shouldBe DEFAULT_GEMINI_TTS_MODEL }
+        }
+        geminiTtsModelFor(null) shouldBe DEFAULT_GEMINI_TTS_MODEL
     }
 
     @Test
@@ -165,7 +233,9 @@ class GeminiTtsClientTest {
     }
 
     @Test
-    fun `request body prepends the weather-forecaster directive by default`() = runTest {
+    fun `the spoken text is only the words and the direction rides in speech metadata`() = runTest {
+        // Gemini 3.8 TTS reads the text part verbatim, so a directive joined
+        // onto it would be read out ("Read the following weather forecast…").
         var capturedBody: String? = null
         val client = GeminiTtsClient(
             httpClient = mockClient(SUCCESS_BODY) {
@@ -176,11 +246,35 @@ class GeminiTtsClientTest {
             callPlanner = directPlanner("test-key"),
         )
 
-        client.synthesize(text = "hello world")
+        client.synthesize(text = "hello world", locale = Locale.UK)
 
-        val body = checkNotNull(capturedBody)
-        body.shouldContain("national news service")
-        body.shouldContain("hello world")
+        val part = onlyPart(checkNotNull(capturedBody))
+        part["text"]!!.jsonPrimitive.content shouldBe "hello world"
+        val style = part["speechMetadata"]!!.jsonObject["style"]!!.jsonPrimitive.content
+        style.shouldContain("national news service")
+        style.shouldContain("Standard British accent")
+        style.shouldNotContain("hello world")
+    }
+
+    @Test
+    fun `a persona's direction rides in speech metadata too`() = runTest {
+        var capturedBody: String? = null
+        val client = GeminiTtsClient(
+            httpClient = mockClient(SUCCESS_BODY) {
+                capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
+                    .bytes()
+                    .toString(Charsets.UTF_8)
+            },
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "ahoy", locale = Locale.UK, style = TtsStyle.PIRATE)
+
+        val part = onlyPart(checkNotNull(capturedBody))
+        part["text"]!!.jsonPrimitive.content shouldBe "ahoy"
+        val style = part["speechMetadata"]!!.jsonObject["style"]!!.jsonPrimitive.content
+        style.shouldContain("swaggering pirate")
+        style.shouldContain("Speak in British English.")
     }
 
     @Test
@@ -607,17 +701,61 @@ class GeminiTtsClientTest {
     }
 
     @Test
-    fun `decodes inline pcm and parses sample rate from mime type`() = runTest {
+    fun `unwraps a wav response to its samples at the file's sample rate`() = runTest {
+        // Gemini 3.8 TTS returns a whole WAV file. Played as raw PCM, its
+        // 44-byte header would click, and the rate would be a guess.
         val client = GeminiTtsClient(
-            httpClient = mockClient(SUCCESS_BODY),
+            httpClient = mockClient(
+                audioBody("audio/wav", WavEncoder.encode(PcmAudio(bytes = SPEECH, sampleRate = 16_000))),
+            ),
             callPlanner = directPlanner("test-key"),
         )
 
         val audio = client.synthesize(text = "hello")
 
-        // SUCCESS_BODY encodes the four bytes 0xDE 0xAD 0xBE 0xEF.
-        audio.bytes.toList() shouldBe listOf(0xDE.toByte(), 0xAD.toByte(), 0xBE.toByte(), 0xEF.toByte())
-        audio.sampleRate shouldBe 24_000
+        audio.bytes.toList() shouldBe SPEECH.toList()
+        audio.sampleRate shouldBe 16_000
+    }
+
+    @Test
+    fun `joins a clip split across several audio parts`() = runTest {
+        val first = byteArrayOf(1, 2, 3, 4)
+        val second = byteArrayOf(5, 6)
+        val parts = listOf(first, second).joinToString(",") { samples ->
+            val wav = Base64.getEncoder().encodeToString(WavEncoder.encode(PcmAudio(samples, 24_000)))
+            """{"inlineData":{"mimeType":"audio/wav","data":"$wav"}}"""
+        }
+        val client = GeminiTtsClient(
+            httpClient = mockClient("""{"candidates":[{"content":{"parts":[$parts]}}]}"""),
+            callPlanner = directPlanner("test-key"),
+        )
+
+        client.synthesize(text = "hello").bytes.toList() shouldBe (first + second).toList()
+    }
+
+    @Test
+    fun `decodes headerless pcm and parses sample rate from mime type`() = runTest {
+        val client = GeminiTtsClient(
+            httpClient = mockClient(audioBody("audio/L16;codec=pcm;rate=22050", SPEECH)),
+            callPlanner = directPlanner("test-key"),
+        )
+
+        val audio = client.synthesize(text = "hello")
+
+        audio.bytes.toList() shouldBe SPEECH.toList()
+        audio.sampleRate shouldBe 22_050
+    }
+
+    @Test
+    fun `refuses audio labelled wav that has no wav header`() = runTest {
+        val client = GeminiTtsClient(
+            httpClient = mockClient(audioBody("audio/wav", SPEECH)),
+            callPlanner = directPlanner("test-key"),
+        )
+
+        val ex = shouldThrow<UnsupportedTtsAudioException> { client.synthesize(text = "hello") }
+
+        isRetryableGeminiTtsFailure(ex) shouldBe false
     }
 
     @Test
@@ -626,8 +764,7 @@ class GeminiTtsClientTest {
             httpClient = mockClient(SUCCESS_BODY),
             callPlanner = directPlanner("test-key"),
         )
-        // SUCCESS_BODY encodes the four bytes 0xDE 0xAD 0xBE 0xEF.
-        val speech = listOf(0xDE.toByte(), 0xAD.toByte(), 0xBE.toByte(), 0xEF.toByte())
+        val speech = SPEECH.toList()
         val organ = OrganSting.pcm(24_000)
 
         val vampire = client.synthesize(text = "hello", style = TtsStyle.VAMPIRE)
@@ -644,8 +781,7 @@ class GeminiTtsClientTest {
             httpClient = mockClient(SUCCESS_BODY),
             callPlanner = directPlanner("test-key"),
         )
-        // SUCCESS_BODY encodes the four bytes 0xDE 0xAD 0xBE 0xEF.
-        val speech = listOf(0xDE.toByte(), 0xAD.toByte(), 0xBE.toByte(), 0xEF.toByte())
+        val speech = SPEECH.toList()
         val bells = SleighBells.pcm(24_000)
 
         val santa = client.synthesize(text = "hello", style = TtsStyle.FATHER_CHRISTMAS)
@@ -678,7 +814,7 @@ class GeminiTtsClientTest {
 
         val req = checkNotNull(captured)
         req.url.host shouldBe "example-proxy.test"
-        req.url.encodedPath shouldBe "/v1/models/gemini-2.5-flash-preview-tts:generateContent"
+        req.url.encodedPath shouldBe "/v1/models/gemini-3.8-flash-lite-tts:generateContent"
         req.headers["X-Firebase-AppCheck"] shouldBe "fake-app-check-token"
         req.headers["X-Install-Id"] shouldBe "fake-fid"
         req.headers["x-goog-api-key"] shouldBe null
@@ -934,20 +1070,35 @@ class GeminiTtsClientTest {
     }
 
     private companion object {
-        // 0xDE 0xAD 0xBE 0xEF base64-encoded.
-        const val SUCCESS_BODY = """
+        /** The four sample bytes every canned response carries. */
+        val SPEECH = byteArrayOf(0xDE.toByte(), 0xAD.toByte(), 0xBE.toByte(), 0xEF.toByte())
+
+        /** A generateContent response carrying [audio] as its one inline part. */
+        fun audioBody(mimeType: String, audio: ByteArray): String = """
             {
               "candidates": [{
                 "content": {
                   "parts": [{
                     "inlineData": {
-                      "mimeType": "audio/L16;codec=pcm;rate=24000",
-                      "data": "3q2+7w=="
+                      "mimeType": "$mimeType",
+                      "data": "${Base64.getEncoder().encodeToString(audio)}"
                     }
                   }]
                 }
               }]
             }
         """
+
+        /** What Gemini 3.8 TTS returns: [SPEECH] in a 24 kHz WAV file. */
+        val SUCCESS_BODY = audioBody("audio/wav", WavEncoder.encode(PcmAudio(bytes = SPEECH, sampleRate = 24_000)))
+
+        /** The request's single content part, as JSON. */
+        fun onlyPart(requestBody: String): JsonObject {
+            val contents = Json.parseToJsonElement(requestBody).jsonObject["contents"]!!.jsonArray
+            contents.size shouldBe 1
+            val parts = contents[0].jsonObject["parts"]!!.jsonArray
+            parts.size shouldBe 1
+            return parts[0].jsonObject
+        }
     }
 }

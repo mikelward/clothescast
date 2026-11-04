@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
  *
  * The shape is `generateContent` like the text endpoint, but the request specifies
  * `responseModalities: ["AUDIO"]` and a [SpeechConfig], and the response carries an
- * [InlineData] PCM payload instead of plain text. Kept in its own file so the
+ * [InlineData] audio payload instead of plain text. Kept in its own file so the
  * existing text DTOs in `:core:data/insight` stay focused.
  */
 @Serializable
@@ -21,8 +21,19 @@ internal data class TtsRequest(
 @Serializable
 internal data class TtsContent(val parts: List<TtsTextPart>)
 
+/**
+ * One turn of speech. Gemini 3.8 TTS reads [text] as a verbatim transcript, so
+ * anything written there is spoken; how to say it goes in [speechMetadata].
+ */
 @Serializable
-internal data class TtsTextPart(val text: String)
+internal data class TtsTextPart(
+    val text: String,
+    val speechMetadata: SpeechMetadata,
+)
+
+/** Delivery direction for a turn: tone, pacing, accent. Never spoken. */
+@Serializable
+internal data class SpeechMetadata(val style: String)
 
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)

@@ -21,7 +21,8 @@ import kotlinx.coroutines.tasks.await
  *   call — to the developer-operated Cloud Function at [proxyBaseUrl],
  *   carrying a Firebase App Check attestation token (`X-Firebase-AppCheck`),
  *   the signed-in user's Firebase ID token (`Authorization: Bearer
- *   <idToken>`) and the model name (`X-Gemini-Model`). The function holds
+ *   <idToken>`). `GeminiTtsClient` adds the model name (`X-Gemini-Model`),
+ *   which it picks per briefing. The function holds
  *   the developer's Gemini key, verifies the token, counts the call against
  *   that Google account's daily quota and forwards it.
  * - **No key set and the shared path unusable** ([sharedPathEnabled] reads
@@ -43,7 +44,6 @@ class AppCheckGeminiCallPlanner(
     private val secureKeyStore: SecureKeyStore,
     private val proxyBaseUrl: String,
     private val sharedPathEnabled: () -> Boolean,
-    private val model: String,
     private val appCheck: () -> FirebaseAppCheck = { FirebaseAppCheck.getInstance() },
     private val auth: () -> FirebaseAuth = { FirebaseAuth.getInstance() },
 ) : GeminiCallPlanner {
@@ -78,7 +78,6 @@ class AppCheckGeminiCallPlanner(
                 val appCheckToken = appCheck().getAppCheckToken(false).await().token
                 it.headers.append("X-Firebase-AppCheck", appCheckToken)
                 it.headers.append("Authorization", "Bearer ${signedInIdToken()}")
-                it.headers.append("X-Gemini-Model", model)
             },
         )
     }

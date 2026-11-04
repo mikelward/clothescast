@@ -305,9 +305,10 @@ It prints local URLs like
 curl -i -X POST "http://127.0.0.1:5001/<projectId>/us-central1/tts" \
   -H "X-Firebase-AppCheck: <debug token>" \
   -H "Authorization: Bearer <anonymous ID token>" \
-  -H "X-Gemini-Model: gemini-2.5-flash-preview-tts" \
+  -H "X-Gemini-Model: gemini-3.8-flash-lite-tts" \
   -H "Content-Type: application/json" \
-  -d '{ "contents":[{"parts":[{"text":"Hello"}]}],
+  -d '{ "contents":[{"parts":[{"text":"Hello",
+        "speechMetadata":{"style":"Warm and unhurried."}}]}],
         "generationConfig":{"responseModalities":["AUDIO"],
         "speechConfig":{"voiceConfig":{"prebuiltVoiceConfig":{"voiceName":"Despina"}}}} }'
 ```

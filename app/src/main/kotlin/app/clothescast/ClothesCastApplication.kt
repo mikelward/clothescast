@@ -16,7 +16,6 @@ import app.clothescast.cast.CastRouteDiscovery
 import app.clothescast.BuildConfig
 import app.clothescast.core.data.diag.ApiCallLogger
 import app.clothescast.core.data.location.OpenMeteoGeocodingClient
-import app.clothescast.core.data.tts.DEFAULT_GEMINI_TTS_MODEL
 import app.clothescast.core.data.tts.GeminiTtsClient
 import app.clothescast.core.data.weather.AlertsCoverage
 import app.clothescast.core.data.weather.AlertsLookup
@@ -306,7 +305,6 @@ class ClothesCastApplication : Application() {
             secureKeyStore = secureKeyStore,
             proxyBaseUrl = BuildConfig.GEMINI_PROXY_URL,
             sharedPathEnabled = { sharedTtsAvailable },
-            model = DEFAULT_GEMINI_TTS_MODEL,
         )
     }
 

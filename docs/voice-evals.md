@@ -4,6 +4,12 @@ Results from a manual listening session conducted against real app output
 (en-AU and en-GB, Gemini 2.5 Flash Preview TTS). All scores are subjective
 1–10 ratings by the primary user unless noted.
 
+> **Note (Gemini 3.8 move, 2026-11):** every eval here ran on 2.5 Flash
+> Preview TTS, with the directive written into the text. The app now uses
+> `gemini-3.8-flash-lite-tts` and sends the same directives as
+> `speechMetadata.style`. None of the results below has been re-run on 3.8
+> yet (TODO.md → Voice / TTS).
+
 > **Note (post-PR #323):** the newsreader directive this eval was
 > conducted under is now opt-in via the new "Style" picker, with `Normal`
 > (the v505-equivalent studio-voice preamble) as the default. The default

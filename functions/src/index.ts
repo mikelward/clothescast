@@ -25,6 +25,7 @@ import {
   ttsPurpose,
 } from "./caller";
 import { excerpt, responseHasAudio, structuralEnvelope } from "./envelope";
+import { ALLOWED_MODELS } from "./models";
 import { alertsBucketName, bucketStore } from "./alerts/bucket";
 import { ingest } from "./alerts/ingest";
 import { SOURCES } from "./alerts/sources";
@@ -43,11 +44,6 @@ const QUOTA_HASH_KEY = defineSecret("QUOTA_HASH_KEY");
 // The developer's Google Maps Platform key with the Weather API enabled,
 // spent by the `weather` proxy below.
 const GOOGLE_WEATHER_API_KEY = defineSecret("GOOGLE_WEATHER_API_KEY");
-
-// Allowlist of upstream Gemini models the proxy will forward to. Keep narrow
-// so a compromised or modded client can't redirect billing onto an expensive
-// model. Mirror `DEFAULT_GEMINI_TTS_MODEL` in the Android code.
-const ALLOWED_MODELS = new Set<string>(["gemini-2.5-flash-preview-tts"]);
 
 const GEMINI_HOST = "generativelanguage.googleapis.com";
 const GEMINI_API_VERSION = "v1beta";

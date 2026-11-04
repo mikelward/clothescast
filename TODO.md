@@ -124,6 +124,28 @@ voice and the Google Weather proxy.
 - [x] Gemini TTS as opt-in voice engine (PR #27)
 - [x] Diagnostic "Test Gemini voice" button in Settings (PR #28)
 - [x] **Voice picker** for Gemini. Curated list in `TtsVoices.kt`; Despina is the current default (validated across en-GB / en-AU / en-US / de-*).
+- [ ] **Re-audition the voices on Gemini 3.8 Flash-Lite TTS.** Every eval in
+      `docs/voice-evals.md` ran on 2.5 Flash Preview TTS with the directive
+      written into the text. The move to 3.8 (Google shuts the 2.5 model down
+      on 2026-11-17) sends the same directives, unchanged, as
+      `speechMetadata.style`, which Google says works best short ("warm,
+      unhurried"). Check Despina as default, the en-AU register directive,
+      the personas and the Algenib vampire, and compare `gemini-3.8-flash-tts`
+      ($18/M audio from 2027 against $12/M) before deciding to keep Flash-Lite.
+      Finnish, Lithuanian, Slovenian, Swedish, Swahili and Thai already go to
+      full Flash, the only one of the two whose language list names them
+      (`geminiTtsModelFor`). Ukrainian, one of the 2.5 model's 24 languages, is
+      on neither 3.8 list: listen to it on both.
+- [ ] **Move the voice eval scripts to 3.8.** `scripts/say.py`,
+      `compare-gemini-voices.py`, `compare-persona-voices.py`,
+      `compare-tts-directives.py` and `eval-weather-report-style.py` still
+      call `gemini-2.5-flash-preview-tts` with the directive in the text and
+      expect headerless PCM; from 2026-11-17 they stop working. Each has its
+      own copy of the request, so share one helper as they move.
+- [ ] **Drop `LEGACY_TTS_MODEL` from the proxy's allowlist** after
+      2026-11-17 (`functions/src/models.ts`). Until then it keeps installs
+      from before the 3.8 move on the Gemini voice; after it, Google rejects
+      the model and those installs fall back to the device voice either way.
 - [x] **Re-translate the Voice engine subhead + per-engine descriptions.** PR
       #874 rewrote `settings_tts_engine_description` and
       `settings_api_key_gemini_header`, added `settings_tts_device_header`,

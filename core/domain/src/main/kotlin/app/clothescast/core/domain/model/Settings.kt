@@ -346,14 +346,14 @@ enum class PreambleVisibility { ALWAYS, SPEECH_ONLY, NEVER }
  *
  * - [DEVICE] uses Android's on-device TextToSpeech engine. Free, fully offline once
  *   voices are installed, but quality varies by vendor.
- * - [GEMINI] uses Gemini's audio-output model (`gemini-2.5-flash-preview-tts`) over
+ * - [GEMINI] uses Gemini's audio-output model (`gemini-3.8-flash-lite-tts`) over
  *   the BYOK Gemini key. Near-human quality, requires network at speak-time, costs
  *   a small amount per character. Falls back to [DEVICE] if the call fails.
  */
 enum class TtsEngine { DEVICE, GEMINI }
 
 /**
- * Steers the global style preamble Gemini TTS prepends to every request.
+ * Steers the delivery style Gemini TTS sends with every request.
  *
  * - [WEATHER_FORECASTER] reads the briefing in a national-news weather
  *   broadcast register — deliberate cadence, sentence-final lift, gentle
@@ -408,7 +408,7 @@ enum class TtsStyle {
  *  - [TtsEngine.DEVICE] picks the actual voice to speak in (the Android
  *    TextToSpeech engine has separate en-US / en-GB / en-AU voices).
  *  - [TtsEngine.GEMINI] passes the locale through as a natural-language
- *    accent directive prepended to the prompt — Gemini's prebuilt voices are
+ *    accent directive in the request's delivery style — Gemini's prebuilt voices are
  *    language-agnostic personalities and follow that direction.
  *
  * [SYSTEM] means "follow the phone's locale" — the right default for almost

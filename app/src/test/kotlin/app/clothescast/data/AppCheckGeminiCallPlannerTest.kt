@@ -54,7 +54,6 @@ class AppCheckGeminiCallPlannerTest {
             secureKeyStore = secureKeyStore,
             proxyBaseUrl = "https://example.test/tts",
             sharedPathEnabled = { true },
-            model = "gemini-test",
         )
 
         shouldThrow<InvalidApiKeyException> { subject.plan() }
@@ -72,7 +71,6 @@ class AppCheckGeminiCallPlannerTest {
             secureKeyStore = secureKeyStore,
             proxyBaseUrl = "https://example.test/tts",
             sharedPathEnabled = { signedIn },
-            model = "gemini-test",
         )
 
         shouldThrow<MissingApiKeyException> { subject.plan() }

@@ -146,6 +146,111 @@ def pinned_voice(source: str, style: str) -> str | None:
     return match.group(1) if match else None
 
 
+HOLIDAY_VOICE_KT = REPO / "core/domain/src/main/kotlin/app/clothescast/core/domain/model/HolidayVoice.kt"
+TTS_VOICES_KT = REPO / "app/src/main/kotlin/app/clothescast/tts/TtsVoices.kt"
+RES = REPO / "app/src/main/res"
+
+
+def holiday_styles() -> dict[str, str]:
+    """holidayTtsStyle: the HolidayId -> TtsStyle persona switch, e.g. HALLOWEEN -> VAMPIRE."""
+    body = re.search(r"fun holidayTtsStyle\(.*?\{(.*?)\n\}", HOLIDAY_VOICE_KT.read_text(encoding="utf-8"), re.S)
+    if not body:
+        raise ValueError(f"holidayTtsStyle not found in {HOLIDAY_VOICE_KT.name}")
+    return dict(re.findall(r"HolidayId\.([A-Z_]+) -> TtsStyle\.([A-Z_]+)", body.group(1)))
+
+
+def persona_gender(style: str) -> str:
+    """suggestedVoiceGender: MALE, FEMALE or NEUTRAL."""
+    body = re.search(r"val TtsStyle\.suggestedVoiceGender.*?when \(this\) \{(.*?)\n    \}",
+                     HOLIDAY_VOICE_KT.read_text(encoding="utf-8"), re.S)
+    if not body:
+        raise ValueError(f"suggestedVoiceGender not found in {HOLIDAY_VOICE_KT.name}")
+    for styles, gender in re.findall(r"((?:\s*TtsStyle\.[A-Z_]+,?)+)\s*-> VoiceGender\.([A-Z]+)", body.group(1)):
+        if style in re.findall(r"TtsStyle\.([A-Z_]+)", styles):
+            return gender
+    return "NEUTRAL"
+
+
+def curated_voices() -> list[tuple[str, str]]:
+    """GEMINI_VOICES, in picker order: (voice, gender)."""
+    return re.findall(r'TtsVoiceOption\("([^"]+)", "[^"]*", VoiceGender\.([A-Z]+)\)',
+                      TTS_VOICES_KT.read_text(encoding="utf-8"))
+
+
+def holiday_voice(style: str, user_voice: str) -> str:
+    """
+    resolveHolidayVoice, then the client's pinnedVoiceFor: keep the user's
+    voice unless the persona implies the other gender, in which case the first
+    picker voice of that gender; a pinned persona (the vampire) overrides both.
+    """
+    pinned = pinned_voice(client_source(), style)
+    if pinned:
+        return pinned
+    gender = persona_gender(style)
+    voices = curated_voices()
+    if gender == "NEUTRAL" or dict(voices).get(user_voice) == gender:
+        return user_voice
+    return next((v for v, g in voices if g == gender), voices[0][0])
+
+
+def resource_dirs(tag: str) -> list[str]:
+    """
+    The `values-*` directories Android would try for a locale, most specific
+    first: script-qualified BCP-47 ones (`values-b+sr+Latn`), then region,
+    then language, then the default. Hebrew, Indonesian and Yiddish live under
+    their legacy codes (`values-iw`, `values-in`, `values-ji`), as Android
+    still names them, so both spellings are tried.
+    """
+    language, country = _language_and_country(tag)
+    scripts = [t.title() for t in tag.replace("_", "-").split("-")[1:] if len(t) == 4 and t.isalpha()]
+    legacy = {"he": "iw", "id": "in", "yi": "ji"}
+    dirs = []
+    for lang in dict.fromkeys([language, legacy.get(language, language)]):
+        for script in scripts:
+            if country:
+                dirs.append(f"values-b+{lang}+{script}+{country}")
+            dirs.append(f"values-b+{lang}+{script}")
+        if country:
+            dirs.append(f"values-{lang}-r{country}")
+        dirs.append(f"values-{lang}")
+    return dirs + ["values"]
+
+
+def _resource_string(name: str, tag: str) -> str | None:
+    for d in resource_dirs(tag):
+        path = RES / d / "strings.xml"
+        if path.exists():
+            match = re.search(rf'<string name="{re.escape(name)}">(.*?)</string>', path.read_text(encoding="utf-8"))
+            if match:
+                return match.group(1).replace("\\'", "'").replace('\\"', '"')
+    return None
+
+
+def holiday_greeting(holiday: str, tag: str) -> str:
+    """
+    The spoken greeting holidayTtsGreeting puts before the forecast, in the
+    voice locale's language: the banner string, closed with "!" unless it
+    brings its own punctuation. (Every holiday with a persona is festive.)
+    """
+    greeting = _resource_string(f"holiday_banner_{holiday.lower()}", tag)
+    if greeting is None:
+        raise ValueError(f"no holiday_banner_{holiday.lower()} string")
+    greeting = greeting.strip()
+    return greeting if greeting[-1] in ".!?" else greeting + "!"
+
+
+def play(path: pathlib.Path) -> None:
+    """Plays a WAV: aplay on Linux, afplay on macOS."""
+    import shutil
+    import subprocess
+
+    player = next((p for p in ("aplay", "afplay") if shutil.which(p)), None)
+    if player is None:
+        print(f"No aplay or afplay to play {path}; open it in any audio player.")
+        return
+    subprocess.run([player, "-q", str(path)] if player == "aplay" else [player, str(path)], check=False)
+
+
 def request_body(text: str, style: str, voice: str) -> dict:
     """The generateContent body GeminiTtsClient sends."""
     return {

@@ -7,11 +7,8 @@ Results from a manual listening session conducted against real app output
 > **Note (Gemini 3.8 move, 2026-11):** every eval here ran on 2.5 Flash
 > Preview TTS, with the directive written into the text. The app now uses
 > `gemini-3.8-flash-lite-tts` and sends the same directives as
-> `speechMetadata.style`. None of the results below has been re-run on 3.8
-> yet (TODO.md → Voice / TTS). The scripts now send the 3.8 request:
-> `scripts/compare-tts-models.py` renders it on Flash-Lite and Flash side by
-> side (`--blind` to rate without knowing which is which), and
-> `scripts/say.py --directive … --accent …` tries one prompt change at a time.
+> `speechMetadata.style`. A first listen preferred nothing over Flash-Lite;
+> the fuller re-audition is planned in the next section.
 
 > **Note (post-PR #323):** the newsreader directive this eval was
 > conducted under is now opt-in via the new "Style" picker, with `Normal`
@@ -20,6 +17,71 @@ Results from a manual listening session conducted against real app output
 > re-audition under Normal is pending — sections below remain the
 > historical record of the newsreader-only eval, not the current
 > recommendation.
+
+---
+
+## Gemini 3.8 re-audition (2026-11)
+
+Every clip below is the request the app sends, built from its own source
+by `scripts/gemini_tts.py`, so a change there is heard here. A holiday
+case also does what the app does on the day: the holiday's persona, the
+voice it switches to (a male persona on a female voice takes Charon; the
+vampire always speaks in Algenib), and the greeting before the forecast.
+The organ and sleigh-bell intros the app adds aren't rendered.
+
+Set up once:
+
+```bash
+export GEMINI_API_KEY=your_key_here
+```
+
+**1. Everyday voices across the English locales** (Flash-Lite, which the
+first listen preferred). 3 locales × 4 voices × 2 rolls = 24 clips, about
+3 cents:
+
+```bash
+python3 scripts/compare-tts-models.py --models flash-lite --locales en-GB en-AU en-US --voices Despina Leda Vindemiatrix Charon
+```
+
+**2. Holiday themes**, as the app would play them on each day.
+8 holidays × 2 locales = 16 clips:
+
+```bash
+python3 scripts/compare-tts-models.py --models flash-lite --locales en-GB en-US --holidays all --rolls 1
+```
+
+**3. Flash against Flash-Lite**, only where step 1 or 2 left a doubt, and
+blind so the model doesn't colour the score:
+
+```bash
+python3 scripts/compare-tts-models.py --blind --locales en-AU --voices Leda --rolls 2
+```
+
+Then listen and score. It plays each clip in turn (aplay on Linux, afplay
+on macOS) and prints a summary to paste back:
+
+```bash
+python3 scripts/rate-tts-clips.py /tmp/tts-models/
+```
+
+`--pattern en-AU` or `--pattern halloween` narrows it. Each case's
+directory has a `prompt.txt` with exactly what was sent.
+
+Listen for:
+
+- **Nothing spoken that isn't the forecast.** No "Read the following…", no
+  accent line. A transcript check found none, but listen anyway.
+- **en-AU.** Its register sentence once rescued Iapetus from 5 to 9 on 2.5.
+- **Personas.** In character without turning into caricature; the vampire
+  still ends with its laugh.
+- **Long style strings.** Google suggests short ones on 3.8 ("warm,
+  unhurried"). To try one, add
+  `--directive "A calm national-news weather presenter: measured, clear."`
+  to step 1.
+- **Ukrainian**, which neither 3.8 model lists:
+  `--locales uk-UA --text "Сьогодні буде від 10 до 11 градусів. Одягніть светр і куртку."`
+
+Record the scores in a dated section here, like the ones below.
 
 ---
 
@@ -688,5 +750,7 @@ first, Charon the first male voice, the vampire pinned to Algenib.
 | `scripts/compare-gemini-voices.py` | Generate one clip per voice for a single directive |
 | `scripts/eval-weather-report-style.py` | Generate clips for 7 candidates × 7 voices × 9 locales |
 | `scripts/compare-persona-voices.py` | Render one persona's real prompt in several voices, N rolls each |
-| `scripts/rate-tts-clips.py` | Play each clip with `aplay`, prompt for a score + notes |
+| `scripts/compare-tts-models.py` | The 3.8 re-audition: locales × voices × styles or holidays × models, optionally blind |
+| `scripts/rate-tts-clips.py` | Play each clip (aplay on Linux, afplay on macOS), prompt for a score + notes |
 | `scripts/say.py` | One-shot helper for rapid prompt iteration (prints / plays a single clip) |
+| `scripts/gemini_tts.py` | Shared: builds the app's 3.8 request from its source; every script above uses it |

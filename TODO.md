@@ -131,8 +131,10 @@ voice and the Google Weather proxy.
       `speechMetadata.style`, which Google says works best short ("warm,
       unhurried"). Check Despina as default, the en-AU register directive,
       the personas and the Algenib vampire, and compare `gemini-3.8-flash-tts`
-      ($18/M audio from 2027 against $12/M) before deciding to keep Flash-Lite:
-      `scripts/compare-tts-models.py` renders the same request on both.
+      ($18/M audio from 2027 against $12/M) before deciding to keep Flash-Lite
+      (a first listen found Flash-Lite fine). The plan and commands are in
+      `docs/voice-evals.md` → "Gemini 3.8 re-audition": en-GB, en-AU and
+      en-US across voices, and every holiday persona.
       Finnish, Lithuanian, Slovenian, Swedish, Swahili and Thai already go to
       full Flash, the only one of the two whose language list names them
       (`geminiTtsModelFor`). Ukrainian, one of the 2.5 model's 24 languages, is

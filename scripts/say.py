@@ -2,7 +2,7 @@
 """
 Single-shot Gemini TTS helper for prompt iteration.
 
-Synthesises one clip, writes it to a WAV, and plays it via `aplay`. Designed
+Synthesises one clip, writes it to a WAV, and plays it (aplay on Linux, afplay on macOS). Designed
 for tweak-in-a-loop work: change one flag, rerun, listen, change another.
 
 With no flags it sends exactly what the app sends: the en-GB
@@ -32,7 +32,8 @@ Usage
   # See the request before the API call; write a file, skip playback:
   python3 scripts/say.py --print-prompt --no-play --out /tmp/foo.wav
 
-For Flash against Flash-Lite side by side, use compare-tts-models.py.
+For Flash against Flash-Lite, several locales, voices or holiday themes
+side by side, use compare-tts-models.py.
 
 Cost: each call is one Gemini TTS request (about $0.001 a short clip on
 Flash-Lite at 2026 rates; the free tier covers light iteration).
@@ -41,7 +42,6 @@ Flash-Lite at 2026 rates; the free tier covers light iteration).
 import argparse
 import os
 import pathlib
-import subprocess
 
 import gemini_tts
 
@@ -91,7 +91,7 @@ def main() -> None:
     print(f"Wrote {out} ({clip.duration:.1f}s, {voice} on {model}).")
 
     if not args.no_play:
-        subprocess.run(["aplay", "-q", str(out)], check=False)
+        gemini_tts.play(out)
 
 
 if __name__ == "__main__":

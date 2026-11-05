@@ -18,15 +18,12 @@ Run rate-tts-clips.py against the output directory to rate them:
 """
 
 import os
-import wave
-import urllib.request
-import json
-import base64
 import pathlib
 
+import gemini_tts
+
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
-MODEL = "gemini-2.5-flash-preview-tts"
-SAMPLE_RATE = 24_000
+MODEL = gemini_tts.models(gemini_tts.client_source())[0]
 
 DIRECTIVE = (
     "Read the following in a clear, educated newsreader style — articulate but "
@@ -49,42 +46,12 @@ VOICES = [
 ]
 
 
-def synthesize(voice: str) -> bytes:
-    prompt = DIRECTIVE + ACCENT + SAMPLE_TEXT
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "responseModalities": ["AUDIO"],
-            "speechConfig": {
-                "voiceConfig": {
-                    "prebuiltVoiceConfig": {"voiceName": voice}
-                }
-            },
-        },
-    }
-    url = (
-        f"https://generativelanguage.googleapis.com/v1beta/models/"
-        f"{MODEL}:generateContent?key={API_KEY}"
-    )
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(req) as resp:
-        body = json.loads(resp.read())
-    inline = body["candidates"][0]["content"]["parts"][0]["inlineData"]
-    return base64.b64decode(inline["data"])
+def synthesize(voice: str) -> gemini_tts.Clip:
+    # Gemini 3.8 reads the text verbatim: direction goes in the style.
+    return gemini_tts.synthesize(API_KEY, MODEL, SAMPLE_TEXT, (DIRECTIVE + ACCENT).strip(), voice)
 
 
-def write_wav(path: pathlib.Path, pcm: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with wave.open(str(path), "wb") as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(SAMPLE_RATE)
-        wf.writeframes(pcm)
+
 
 
 def main() -> None:
@@ -101,9 +68,9 @@ def main() -> None:
         slug = f"{voice.lower()}-en-GB"
         print(f"  {slug} ...", end=" ", flush=True)
         try:
-            pcm = synthesize(voice)
-            write_wav(out / f"{slug}.wav", pcm)
-            print(f"✓  ({len(pcm)//2/SAMPLE_RATE:.1f}s)")
+            clip = synthesize(voice)
+            gemini_tts.write_wav(out / f"{slug}.wav", clip.pcm, clip.sample_rate)
+            print(f"✓  ({clip.duration:.1f}s)")
         except Exception as exc:
             print(f"✗  {exc}")
 

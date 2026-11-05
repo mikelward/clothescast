@@ -2,194 +2,93 @@
 """
 Single-shot Gemini TTS helper for prompt iteration.
 
-Synthesises one clip with the given directive + accent + voice + text,
-writes it to a WAV, and plays it via `aplay`. Designed for
-tweak-in-a-loop work: change one flag, rerun, listen, change another.
+Synthesises one clip, writes it to a WAV, and plays it via `aplay`. Designed
+for tweak-in-a-loop work: change one flag, rerun, listen, change another.
 
-The defaults mirror the strings shipped in
-`core/data/.../tts/GeminiTtsClient.kt` (WEATHER_FORECASTER directive +
-en-GB accent + Leda voice + the eval-script sample text), so a bare
-`python3 scripts/say.py` reproduces the production prompt for one clip.
+With no flags it sends exactly what the app sends: the en-GB
+WEATHER_FORECASTER directive and accent as `speechMetadata.style`, the
+default voice, and the model the app picks for the locale, all read from
+`core/data/.../tts/GeminiTtsClient.kt`. Gemini 3.8 TTS reads the text
+verbatim, so direction never goes in --text.
 
 Usage
 -----
   export GEMINI_API_KEY=your_key_here
 
-  # Production prompt (en-GB Weather Forecaster, Leda):
+  # Production request (en-GB Weather Forecaster, default voice, Flash-Lite):
   python3 scripts/say.py
 
-  # Try a bare en-GB accent (the "trim clarity" candidate):
-  python3 scripts/say.py --accent "Speak with a Standard British accent."
+  # Another style or locale, as the app would send it:
+  python3 scripts/say.py --style VAMPIRE
+  python3 scripts/say.py --locale de-DE --text "Heute wird es 14 Grad."
 
-  # Drop the accent entirely (Gemini falls back to North American English):
+  # Try a different directive or accent line ('' drops the accent):
+  python3 scripts/say.py --directive "Warm and unhurried, like a friend."
   python3 scripts/say.py --accent ""
 
-  # Different voice:
-  python3 scripts/say.py --voice Charon
+  # Same request on the other model:
+  python3 scripts/say.py --model gemini-3.8-flash-tts
 
-  # Custom text:
-  python3 scripts/say.py --text "It's 12 degrees and overcast."
+  # See the request before the API call; write a file, skip playback:
+  python3 scripts/say.py --print-prompt --no-play --out /tmp/foo.wav
 
-  # See the assembled prompt before the API call:
-  python3 scripts/say.py --print-prompt
+For Flash against Flash-Lite side by side, use compare-tts-models.py.
 
-  # Try a different TTS model (e.g. a future GA replacement):
-  python3 scripts/say.py --model gemini-2.5-flash-tts
-
-  # Just write a file, skip playback:
-  python3 scripts/say.py --no-play --out /tmp/foo.wav
-
-Cost: each call is one Gemini TTS request (~$0.003 per short clip on
-the standard tier; free tier covers light iteration).
+Cost: each call is one Gemini TTS request (about $0.001 a short clip on
+Flash-Lite at 2026 rates; the free tier covers light iteration).
 """
 
 import argparse
-import base64
-import json
 import os
 import pathlib
 import subprocess
-import urllib.error
-import urllib.request
-import wave
 
-DEFAULT_MODEL = "gemini-2.5-flash-preview-tts"
-SAMPLE_RATE = 24_000
+import gemini_tts
 
-# Defaults mirror GeminiTtsClient.kt:
-#   GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER  → DEFAULT_DIRECTIVE
-#   ACCENT_DIRECTIVES["en-GB"]                     → DEFAULT_ACCENT
-#   DEFAULT_GEMINI_TTS_VOICE                       → DEFAULT_VOICE
-# Sample text matches scripts/eval-weather-report-style.py so clips from
-# this helper are directly comparable to the eval rig's output.
-DEFAULT_DIRECTIVE = (
-    "Read the following weather forecast in the style of a weather report on a "
-    "national news service. Enunciate clearly and use a measured speed. "
-    "Accentuate the ends of sentences and give a gentle emphasis to clothing "
-    "recommendations. No audio effects, background noise, or vinyl-style "
-    "texture."
-)
-DEFAULT_ACCENT = "Speak with a Standard British accent — clear and natural."
 DEFAULT_TEXT = "Today will be cold to cool. Wear a jumper and jacket."
-DEFAULT_VOICE = "Leda"
-
-
-def synthesize(prompt: str, voice: str, model: str, api_key: str) -> bytes:
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "responseModalities": ["AUDIO"],
-            "speechConfig": {
-                "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}
-            },
-        },
-    }
-    url = (
-        f"https://generativelanguage.googleapis.com/v1beta/models/"
-        f"{model}:generateContent?key={api_key}"
-    )
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req) as resp:
-            body = json.loads(resp.read())
-    except urllib.error.HTTPError as e:
-        # Surface Gemini's actual error message (e.g. "voice not found",
-        # auth failure, quota) instead of a bare "HTTP 400". Mirrors the
-        # GeminiTtsHttpException treatment in GeminiTtsClient.kt.
-        raw = e.read().decode("utf-8", "replace")
-        try:
-            msg = json.loads(raw).get("error", {}).get("message", raw)
-        except json.JSONDecodeError:
-            msg = raw
-        raise SystemExit(f"Gemini TTS HTTP {e.code}: {msg}") from None
-    inline = body["candidates"][0]["content"]["parts"][0]["inlineData"]
-    return base64.b64decode(inline["data"])
-
-
-def write_wav(path: pathlib.Path, pcm: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with wave.open(str(path), "wb") as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(SAMPLE_RATE)
-        wf.writeframes(pcm)
 
 
 def main() -> None:
+    source = gemini_tts.client_source()
+    default_voice = gemini_tts.kotlin_string_const(source, "DEFAULT_GEMINI_TTS_VOICE")
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument(
-        "--directive",
-        default=DEFAULT_DIRECTIVE,
-        help="Style directive (default: shipped WEATHER_FORECASTER).",
-    )
-    parser.add_argument(
-        "--accent",
-        default=DEFAULT_ACCENT,
-        help="Accent clause (default: shipped en-GB). Pass '' to omit.",
-    )
-    parser.add_argument(
-        "--voice",
-        default=DEFAULT_VOICE,
-        help=f"Gemini voice name (default: {DEFAULT_VOICE}).",
-    )
-    parser.add_argument(
-        "--text",
-        default=DEFAULT_TEXT,
-        help="Text to speak (default: cold/jumper sample).",
-    )
-    parser.add_argument(
-        "--model",
-        default=DEFAULT_MODEL,
-        help=f"Gemini TTS model id (default: {DEFAULT_MODEL}).",
-    )
-    parser.add_argument(
-        "--out",
-        default="/tmp/say.wav",
-        help="Output WAV path (default: /tmp/say.wav).",
-    )
-    parser.add_argument(
-        "--no-play",
-        action="store_true",
-        help="Write the WAV but don't invoke aplay.",
-    )
-    parser.add_argument(
-        "--print-prompt",
-        action="store_true",
-        help="Print the assembled prompt before calling the API.",
-    )
+    parser.add_argument("--style", default="WEATHER_FORECASTER", help="TtsStyle name (default: WEATHER_FORECASTER).")
+    parser.add_argument("--locale", default="en-GB", help="Voice locale (default: en-GB).")
+    parser.add_argument("--directive", help="Style directive in place of the app's.")
+    parser.add_argument("--accent", help="Accent or language line in place of the app's. Pass '' to omit.")
+    parser.add_argument("--voice", help=f"Gemini voice name (default: the style's pinned voice, else {default_voice}).")
+    parser.add_argument("--text", default=DEFAULT_TEXT, help="Text to speak, read verbatim.")
+    parser.add_argument("--model", help="Gemini TTS model id (default: the one the app picks for --locale).")
+    parser.add_argument("--out", default="/tmp/say.wav", help="Output WAV path (default: /tmp/say.wav).")
+    parser.add_argument("--no-play", action="store_true", help="Write the WAV but don't invoke aplay.")
+    parser.add_argument("--print-prompt", action="store_true", help="Print the text and style before calling the API.")
     args = parser.parse_args()
 
     api_key = os.environ.get("GEMINI_API_KEY", "")
     if not api_key:
         raise SystemExit("Set GEMINI_API_KEY env var before running.")
 
-    # Match GeminiTtsClient.kt's prompt assembly: directive + "\n\n" +
-    # (accent + "\n\n" if accent) + text. We rstrip the directive/accent
-    # in case the caller pastes a constant that already ends with "\n\n",
-    # so we don't end up with quadruple newlines.
-    prompt = args.directive.rstrip() + "\n\n"
-    if args.accent:
-        prompt += args.accent.rstrip() + "\n\n"
-    prompt += args.text
+    style_name = args.style.upper()
+    try:
+        style = gemini_tts.delivery_style(source, style_name, args.locale, args.directive, args.accent)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from None
+    voice = args.voice or gemini_tts.pinned_voice(source, style_name) or default_voice
+    model = args.model or gemini_tts.model_for(source, args.locale)
 
     if args.print_prompt:
-        print("--- prompt ---")
-        print(prompt)
-        print("--- end ---")
+        print(f"--- text ---\n{args.text}\n--- style ---\n{style}\n--- end ---")
 
-    pcm = synthesize(prompt, args.voice, args.model, api_key)
+    try:
+        clip = gemini_tts.synthesize(api_key, model, args.text, style, voice)
+    except (RuntimeError, ValueError) as exc:
+        raise SystemExit(str(exc)) from None
     out = pathlib.Path(args.out)
-    write_wav(out, pcm)
-    duration = len(pcm) // 2 / SAMPLE_RATE
-    print(f"Wrote {out} ({duration:.1f}s, {args.voice} on {args.model}).")
+    gemini_tts.write_wav(out, clip.pcm, clip.sample_rate)
+    print(f"Wrote {out} ({clip.duration:.1f}s, {voice} on {model}).")
 
     if not args.no_play:
         subprocess.run(["aplay", "-q", str(out)], check=False)

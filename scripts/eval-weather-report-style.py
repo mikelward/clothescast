@@ -55,16 +55,12 @@ Rate with:
 """
 
 import argparse
-import base64
-import json
 import os
 import pathlib
-import urllib.request
-import wave
+
+import gemini_tts
 
 API_KEY = os.environ.get("GEMINI_API_KEY", "")
-MODEL = "gemini-2.5-flash-preview-tts"
-SAMPLE_RATE = 24_000
 
 # Realistic clips in each supported language — one temperature read + one
 # clothing call-to-action so we can hear whether emphasis on the recommendation
@@ -237,31 +233,10 @@ VOICES += PERSONA_CANDIDATES
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
-def synthesize(directive: str, accent: str, voice: str, sample: str) -> bytes:
-    prompt = directive + accent + "\n\n" + sample
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "responseModalities": ["AUDIO"],
-            "speechConfig": {
-                "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}
-            },
-        },
-    }
-    url = (
-        f"https://generativelanguage.googleapis.com/v1beta/models/"
-        f"{MODEL}:generateContent?key={API_KEY}"
-    )
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    with urllib.request.urlopen(req) as resp:
-        body = json.loads(resp.read())
-    inline = body["candidates"][0]["content"]["parts"][0]["inlineData"]
-    return base64.b64decode(inline["data"])
+def synthesize(model: str, directive: str, accent: str, voice: str, sample: str) -> gemini_tts.Clip:
+    # Gemini 3.8 reads the text verbatim: direction goes in the style.
+    delivery = directive.strip() + ("\n\n" + accent.strip() if accent.strip() else "")
+    return gemini_tts.synthesize(API_KEY, model, sample, delivery, voice)
 
 
 def parse_voices(raw: list[str]) -> list[str]:
@@ -271,16 +246,8 @@ def parse_voices(raw: list[str]) -> list[str]:
     return [known.get(n.lower(), n[:1].upper() + n[1:].lower()) for n in names]
 
 
-def write_wav(path: pathlib.Path, pcm: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with wave.open(str(path), "wb") as wf:
-        wf.setnchannels(1)
-        wf.setsampwidth(2)
-        wf.setframerate(SAMPLE_RATE)
-        wf.writeframes(pcm)
 
 
-# ── main ──────────────────────────────────────────────────────────────────────
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -318,6 +285,10 @@ def main() -> None:
         help="Output directory (default /tmp/tts-weather-style).",
     )
     parser.add_argument(
+        "--model",
+        help="Gemini TTS model id (default: the app's Flash-Lite model).",
+    )
+    parser.add_argument(
         "--overwrite",
         action="store_true",
         help="Regenerate matching clips instead of skipping ones already on disk.",
@@ -328,6 +299,7 @@ def main() -> None:
         # clips; overwriting would make both render (and delete) everything.
         parser.error("--overwrite can't be combined with --reverse")
     voices = parse_voices(args.voices) if args.voices else VOICES
+    model = args.model or gemini_tts.models(gemini_tts.client_source())[0]
 
     if not API_KEY:
         raise SystemExit("Set GEMINI_API_KEY env var before running.")
@@ -356,9 +328,9 @@ def main() -> None:
             continue
         print(f"  {locale}/{slug} ...", end=" ", flush=True)
         try:
-            pcm = synthesize(directive, accent, voice, sample)
-            write_wav(path, pcm)
-            print(f"ok  ({len(pcm) // 2 / SAMPLE_RATE:.1f}s)")
+            clip = synthesize(model, directive, accent, voice, sample)
+            gemini_tts.write_wav(path, clip.pcm, clip.sample_rate)
+            print(f"ok  ({clip.duration:.1f}s)")
         except Exception as exc:
             # Under --overwrite (single worker: it refuses --reverse), don't
             # leave the previous run's clip to be rated as this run's. Without

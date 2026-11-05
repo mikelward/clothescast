@@ -187,11 +187,12 @@ jobs:
         # with origin/main present, since the versionCode is counted from it.
         run: python3 scripts/unshallow_test.py
 
-      - name: Test the persona voice eval's prompt extraction
-        # scripts/compare-persona-voices.py reads each style directive out of
-        # GeminiTtsClient.kt rather than retyping it; this fails if a refactor
-        # there stops it finding the real prompt.
-        run: python3 scripts/compare_persona_voices_test.py
+      - name: Test the voice eval scripts' request building
+        # The voice eval scripts build the app's TTS request through
+        # scripts/gemini_tts.py, which reads the style directives, accent lines
+        # and models out of GeminiTtsClient.kt rather than retyping them; this
+        # fails if a refactor there stops it finding the real request.
+        run: python3 scripts/gemini_tts_test.py
 
       - name: Test the release-notes deduplication
         # Same reason as the step above: the release-notes step is

@@ -8,7 +8,10 @@ Results from a manual listening session conducted against real app output
 > Preview TTS, with the directive written into the text. The app now uses
 > `gemini-3.8-flash-lite-tts` and sends the same directives as
 > `speechMetadata.style`. None of the results below has been re-run on 3.8
-> yet (TODO.md → Voice / TTS).
+> yet (TODO.md → Voice / TTS). The scripts now send the 3.8 request:
+> `scripts/compare-tts-models.py` renders it on Flash-Lite and Flash side by
+> side (`--blind` to rate without knowing which is which), and
+> `scripts/say.py --directive … --accent …` tries one prompt change at a time.
 
 > **Note (post-PR #323):** the newsreader directive this eval was
 > conducted under is now opt-in via the new "Style" picker, with `Normal`

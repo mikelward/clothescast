@@ -131,17 +131,12 @@ voice and the Google Weather proxy.
       `speechMetadata.style`, which Google says works best short ("warm,
       unhurried"). Check Despina as default, the en-AU register directive,
       the personas and the Algenib vampire, and compare `gemini-3.8-flash-tts`
-      ($18/M audio from 2027 against $12/M) before deciding to keep Flash-Lite.
+      ($18/M audio from 2027 against $12/M) before deciding to keep Flash-Lite:
+      `scripts/compare-tts-models.py` renders the same request on both.
       Finnish, Lithuanian, Slovenian, Swedish, Swahili and Thai already go to
       full Flash, the only one of the two whose language list names them
       (`geminiTtsModelFor`). Ukrainian, one of the 2.5 model's 24 languages, is
       on neither 3.8 list: listen to it on both.
-- [ ] **Move the voice eval scripts to 3.8.** `scripts/say.py`,
-      `compare-gemini-voices.py`, `compare-persona-voices.py`,
-      `compare-tts-directives.py` and `eval-weather-report-style.py` still
-      call `gemini-2.5-flash-preview-tts` with the directive in the text and
-      expect headerless PCM; from 2026-11-17 they stop working. Each has its
-      own copy of the request, so share one helper as they move.
 - [ ] **Drop `LEGACY_TTS_MODEL` from the proxy's allowlist** after
       2026-11-17 (`functions/src/models.ts`). Until then it keeps installs
       from before the 3.8 move on the Gemini voice; after it, Google rejects

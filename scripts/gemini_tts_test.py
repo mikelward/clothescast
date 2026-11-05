@@ -123,6 +123,107 @@ class ModelTest(unittest.TestCase):
         self.assertIsNone(gemini_tts.pinned_voice(SOURCE, "PIRATE"))
 
 
+class HolidayTest(unittest.TestCase):
+    def test_holidays_take_the_apps_personas(self):
+        styles = gemini_tts.holiday_styles()
+        self.assertEqual(styles["HALLOWEEN"], "VAMPIRE")
+        self.assertEqual(styles["CHRISTMAS_DAY"], "FATHER_CHRISTMAS")
+        self.assertEqual(styles["NEW_YEARS_DAY"], "NEW_YEARS_HOST")
+        self.assertNotIn("BOXING_DAY", styles)
+
+    def test_a_holiday_switches_voice_as_the_app_does(self):
+        # A male persona on a female voice takes the first male picker voice;
+        # a male voice stays; a neutral persona keeps the user's; the vampire
+        # always speaks in its pinned voice.
+        first_male = next(v for v, g in gemini_tts.curated_voices() if g == "MALE")
+        self.assertEqual(gemini_tts.holiday_voice("FATHER_CHRISTMAS", "Despina"), first_male)
+        self.assertEqual(gemini_tts.holiday_voice("FATHER_CHRISTMAS", "Iapetus"), "Iapetus")
+        self.assertEqual(gemini_tts.holiday_voice("NEW_YEARS_HOST", "Despina"), "Despina")
+        self.assertEqual(gemini_tts.holiday_voice("VAMPIRE", "Despina"), "Algenib")
+        self.assertEqual(gemini_tts.holiday_voice("VAMPIRE", "Charon"), "Algenib")
+
+    def test_the_greeting_is_the_banner_closed_with_one_mark(self):
+        self.assertEqual(gemini_tts.holiday_greeting("CHRISTMAS_DAY", "en-GB"), "Merry Christmas!")
+        self.assertEqual(gemini_tts.holiday_greeting("TALK_LIKE_A_PIRATE_DAY", "en-US"), "Ahoy, matey!")
+        self.assertEqual(gemini_tts.holiday_greeting("US_PRESIDENTS_DAY", "en-US"), "Happy Presidents' Day!")
+
+    def test_the_greeting_is_in_the_voice_locales_language(self):
+        # Every voice locale the app offers must find its own translation, as
+        # Android's resource lookup does: legacy-code directories (values-iw,
+        # values-in) and script-qualified ones (values-b+sr+Latn) included.
+        english = gemini_tts.holiday_greeting("CHRISTMAS_DAY", "en-US")
+        locales = re.findall(r'^\s+[A-Z_]+\("([a-z]{2,3}(?:-[A-Za-z]+)*)"\)', SETTINGS_KT, re.M)
+        self.assertIn("sr-Latn-RS", locales)
+        for tag in locales:
+            if tag.startswith("en"):
+                continue
+            with self.subTest(tag=tag):
+                self.assertNotEqual(gemini_tts.holiday_greeting("CHRISTMAS_DAY", tag), english)
+        self.assertEqual(gemini_tts.holiday_greeting("CHRISTMAS_DAY", "id-ID"), "Selamat Natal!")
+        self.assertNotEqual(
+            gemini_tts.holiday_greeting("CHRISTMAS_DAY", "sr-Latn-RS"),
+            gemini_tts.holiday_greeting("CHRISTMAS_DAY", "sr-Cyrl-RS"),
+        )
+
+    def test_resource_dirs_try_the_android_spellings(self):
+        self.assertEqual(gemini_tts.resource_dirs("he-IL"),
+                         ["values-he-rIL", "values-he", "values-iw-rIL", "values-iw", "values"])
+        self.assertEqual(gemini_tts.resource_dirs("sr-Latn-RS"),
+                         ["values-b+sr+Latn+RS", "values-b+sr+Latn", "values-sr-rRS", "values-sr", "values"])
+
+
+class MatrixTest(unittest.TestCase):
+    """compare-tts-models.py's case list: the requests a run will send."""
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "ctm", pathlib.Path(__file__).resolve().parent / "compare-tts-models.py"
+        )
+        cls.ctm = importlib.util.module_from_spec(spec)
+        # Its dataclass looks itself up in sys.modules while being defined.
+        sys.modules["ctm"] = cls.ctm
+        spec.loader.exec_module(cls.ctm)
+
+    def args(self, **kw):
+        import argparse
+
+        base = dict(locales=["en-GB"], styles=None, holidays=None, text=None)
+        return argparse.Namespace(**{**base, **kw})
+
+    def test_each_english_locale_reads_its_own_words(self):
+        cases = self.ctm.build_cases(self.args(locales=["en-GB", "en-AU", "en-US"]))
+        text = {c.locale: c.text for c in cases}
+        self.assertIn("jumper", text["en-GB"])
+        self.assertIn("jumper", text["en-AU"])
+        self.assertIn("sweater", text["en-US"])
+        self.assertEqual({c.style for c in cases}, {"WEATHER_FORECASTER"})
+
+    def test_a_holiday_case_greets_then_forecasts_in_its_persona(self):
+        cases = self.ctm.build_cases(self.args(locales=["en-US"], holidays=["halloween"]))
+        self.assertEqual(len(cases), 1)
+        self.assertEqual(cases[0].style, "VAMPIRE")
+        self.assertTrue(cases[0].text.startswith("Happy Halloween! Today, it will be"))
+
+    def test_all_holidays_and_styles_combine(self):
+        cases = self.ctm.build_cases(self.args(holidays=["ALL"], styles=["PIRATE"]))
+        self.assertEqual(len(cases), 1 + len(gemini_tts.holiday_styles()))
+
+    def test_bad_input_is_refused_not_guessed(self):
+        with self.assertRaisesRegex(ValueError, "BOXING_DAY"):
+            self.ctm.build_cases(self.args(holidays=["BOXING_DAY"]))
+        with self.assertRaisesRegex(ValueError, "--text"):
+            self.ctm.build_cases(self.args(locales=["de-DE"]))
+
+    def test_short_model_names_resolve(self):
+        self.assertEqual(
+            self.ctm.resolve_models(["flash-lite", "flash"], SOURCE),
+            ["gemini-3.8-flash-lite-tts", "gemini-3.8-flash-tts"],
+        )
+
+
 class SynthesizeTest(unittest.TestCase):
     def call(self, resp):
         with mock.patch.object(gemini_tts.urllib.request, "urlopen", return_value=resp) as urlopen:

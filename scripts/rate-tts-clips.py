@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Plays each .wav in a directory via aplay, prompts for a rating and optional
+Plays each .wav in a directory (aplay on Linux, afplay on macOS), prompts for a rating and optional
 notes, then prints a summary you can paste back for recommendations.
 
 Usage
@@ -19,12 +19,13 @@ Rating format
 
 import argparse
 import pathlib
-import subprocess
 import sys
+
+import gemini_tts
 
 
 def play(path: pathlib.Path) -> None:
-    subprocess.run(["aplay", "-q", str(path)], check=False)
+    gemini_tts.play(path)
 
 
 def prompt_rating(path: pathlib.Path) -> tuple[str, str] | None:

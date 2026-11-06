@@ -251,8 +251,7 @@ class GeminiTtsClientTest {
         val part = onlyPart(checkNotNull(capturedBody))
         part["text"]!!.jsonPrimitive.content shouldBe "hello world"
         val style = part["speechMetadata"]!!.jsonObject["style"]!!.jsonPrimitive.content
-        style.shouldContain("national news service")
-        style.shouldContain("Standard British accent")
+        style.shouldContain("weather presenter on the national news")
         style.shouldNotContain("hello world")
     }
 
@@ -278,25 +277,34 @@ class GeminiTtsClientTest {
     }
 
     @Test
-    fun `request body includes a british accent directive for en-GB locale`() = runTest {
-        var capturedBody: String? = null
-        val client = GeminiTtsClient(
-            httpClient = mockClient(SUCCESS_BODY) {
-                capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
-                    .bytes()
-                    .toString(Charsets.UTF_8)
-            },
-            callPlanner = directPlanner("test-key"),
-        )
+    fun `an English forecast names its English in languageCode, not in accent words`() = runTest {
+        // On Gemini 3.8 every accent phrase tried pulled somewhere else
+        // ("General" toward American, "educated" toward British); the
+        // language code held the accent with none (docs/voice-evals.md).
+        for (tag in listOf("en-GB", "en-AU", "en-CA", "en-ZA", "en-IN")) {
+            var capturedBody: String? = null
+            val client = GeminiTtsClient(
+                httpClient = mockClient(SUCCESS_BODY) {
+                    capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
+                        .bytes()
+                        .toString(Charsets.UTF_8)
+                },
+                callPlanner = directPlanner("test-key"),
+            )
 
-        client.synthesize(text = "hello", locale = Locale.UK)
+            client.synthesize(text = "hello", locale = Locale.forLanguageTag(tag))
 
-        val body = checkNotNull(capturedBody)
-        body.shouldContain("Standard British accent")
+            val body = checkNotNull(capturedBody)
+            withClue(tag) {
+                styleOf(body) shouldBe GEMINI_TTS_STYLE_FORECASTER_EN
+                speechConfigOf(body)["languageCode"]!!.jsonPrimitive.content shouldBe tag
+                body.shouldNotContain("accent")
+            }
+        }
     }
 
     @Test
-    fun `request body includes an australian accent directive for en-AU locale`() = runTest {
+    fun `American English gets the warmer evening-news anchor`() = runTest {
         var capturedBody: String? = null
         val client = GeminiTtsClient(
             httpClient = mockClient(SUCCESS_BODY) {
@@ -307,41 +315,25 @@ class GeminiTtsClientTest {
             callPlanner = directPlanner("test-key"),
         )
 
-        client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-AU"))
+        client.synthesize(text = "hello", locale = Locale.US)
 
         val body = checkNotNull(capturedBody)
-        body.shouldContain("Australian accent")
-        // "General" was dropped — the per-locale register sentence in the
-        // directive carries the standard-variety signal instead.
-        body.shouldNotContain("General Australian")
+        styleOf(body) shouldBe GEMINI_TTS_STYLE_FORECASTER_EN_US
+        speechConfigOf(body)["languageCode"]!!.jsonPrimitive.content shouldBe "en-US"
     }
 
     @Test
-    fun `weather forecaster on en-AU uses the register-in-directive variant`() = runTest {
-        // en-AU is the only locale where directiveFor returns the variant with
-        // the "standard variety, not regional dialect" sentence — empirically
-        // needed to rescue Iapetus on en-AU. See docs/voice-evals.md →
-        // "B3 register-in-directive eval".
-        var capturedBody: String? = null
-        val client = GeminiTtsClient(
-            httpClient = mockClient(SUCCESS_BODY) {
-                capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
-                    .bytes()
-                    .toString(Charsets.UTF_8)
-            },
-            callPlanner = directPlanner("test-key"),
-        )
-
-        client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-AU"))
-
-        val body = checkNotNull(capturedBody)
-        body.shouldContain("standard variety, not a regional dialect")
+    fun `the language code keeps only the language and region`() {
+        // Android 14's regional preferences add extensions like -u-mu-celsius
+        // to the device locale; they say nothing about speech.
+        speechLanguageCodeFor(TtsStyle.WEATHER_FORECASTER, Locale.forLanguageTag("en-AU-u-mu-celsius")) shouldBe "en-AU"
+        speechLanguageCodeFor(TtsStyle.WEATHER_FORECASTER, Locale.ENGLISH) shouldBe "en"
     }
 
     @Test
-    fun `weather forecaster on en-GB uses the default directive without the register sentence`() = runTest {
-        // en-GB stays on the B2 directive — adding the register sentence
-        // empirically nudged en-GB voices off-brand. See voice-evals.md.
+    fun `personas and other languages send no language code`() = runTest {
+        // Only the English forecaster was listened to with one; a persona's
+        // own accent (an Irish leprechaun, a Transylvanian count) could fight it.
         var capturedBody: String? = null
         val client = GeminiTtsClient(
             httpClient = mockClient(SUCCESS_BODY) {
@@ -352,36 +344,16 @@ class GeminiTtsClientTest {
             callPlanner = directPlanner("test-key"),
         )
 
-        client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-GB"))
+        client.synthesize(text = "ahoy", locale = Locale.UK, style = TtsStyle.PIRATE)
+        speechConfigOf(checkNotNull(capturedBody)).containsKey("languageCode") shouldBe false
+        styleOf(checkNotNull(capturedBody)).shouldContain("Speak in British English.")
 
-        val body = checkNotNull(capturedBody)
-        body.shouldNotContain("standard variety, not a regional dialect")
-    }
+        client.synthesize(text = "hallo", locale = Locale.GERMANY)
+        speechConfigOf(checkNotNull(capturedBody)).containsKey("languageCode") shouldBe false
+        styleOf(checkNotNull(capturedBody)).shouldContain("national news service")
 
-    @Test
-    fun `character style on en-AU does not get the register-in-directive variant`() = runTest {
-        // The register sentence is WEATHER_FORECASTER-specific. Persona styles
-        // (PIRATE here) get their own directive verbatim — adding register
-        // direction would conflict with persona delivery.
-        var capturedBody: String? = null
-        val client = GeminiTtsClient(
-            httpClient = mockClient(SUCCESS_BODY) {
-                capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
-                    .bytes()
-                    .toString(Charsets.UTF_8)
-            },
-            callPlanner = directPlanner("test-key"),
-        )
-
-        client.synthesize(
-            text = "ahoy",
-            locale = Locale.forLanguageTag("en-AU"),
-            style = TtsStyle.PIRATE,
-        )
-
-        val body = checkNotNull(capturedBody)
-        body.shouldNotContain("standard variety, not a regional dialect")
-        body.shouldContain("swaggering pirate")
+        client.synthesize(text = "hello")
+        speechConfigOf(checkNotNull(capturedBody)).containsKey("languageCode") shouldBe false
     }
 
     @Test
@@ -640,28 +612,6 @@ class GeminiTtsClientTest {
     }
 
     @Test
-    fun `request body omits the accent directive for unknown english variants`() = runTest {
-        // en-NZ isn't in our supported variant list — fall through to whatever the
-        // model defaults to rather than picking a wrong-but-confident accent.
-        var capturedBody: String? = null
-        val client = GeminiTtsClient(
-            httpClient = mockClient(SUCCESS_BODY) {
-                capturedBody = (it.body as io.ktor.http.content.OutgoingContent.ByteArrayContent)
-                    .bytes()
-                    .toString(Charsets.UTF_8)
-            },
-            callPlanner = directPlanner("test-key"),
-        )
-
-        client.synthesize(text = "hello", locale = Locale.forLanguageTag("en-NZ"))
-
-        val body = checkNotNull(capturedBody)
-        // No accent directive at all — none of the SSB / General Australian /
-        // General American sentinels should leak in for unknown variants.
-        body.shouldNotContain("Speak with a")
-    }
-
-    @Test
     fun `character styles get a bare language hint not the full accent directive`() = runTest {
         var capturedBody: String? = null
         val client = GeminiTtsClient(
@@ -693,11 +643,11 @@ class GeminiTtsClientTest {
             callPlanner = directPlanner("test-key"),
         )
 
-        client.synthesize(text = "hello", locale = Locale.UK, style = TtsStyle.WEATHER_FORECASTER)
+        client.synthesize(text = "hallo", locale = Locale.forLanguageTag("de-AT"), style = TtsStyle.WEATHER_FORECASTER)
 
         val body = checkNotNull(capturedBody)
-        body.shouldContain("Standard British accent")
-        body.shouldNotContain("Speak in British English.")
+        body.shouldContain("österreichischen Akzent")
+        body.shouldNotContain("Speak in Austrian German.")
     }
 
     @Test
@@ -1025,11 +975,9 @@ class GeminiTtsClientTest {
 
     @Test
     fun `styleDirectiveFor returns the B2 weather-forecaster variant for WEATHER_FORECASTER`() {
-        // Pin the WEATHER_FORECASTER arm on the B2 (no-register) directive
-        // specifically — directiveFor() upgrades en-AU to the _REGISTER
-        // variant, but styleDirectiveFor() itself is locale-agnostic and
-        // must return the bare B2 wording so that routing decision stays
-        // in directiveFor where the per-locale comment lives.
+        // styleDirectiveFor is locale-agnostic: the B2 wording every
+        // non-English forecast takes. English routing lives in
+        // englishForecasterStyleFor.
         val directive = styleDirectiveFor(TtsStyle.WEATHER_FORECASTER)
 
         directive shouldBe GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER
@@ -1091,6 +1039,15 @@ class GeminiTtsClientTest {
 
         /** What Gemini 3.8 TTS returns: [SPEECH] in a 24 kHz WAV file. */
         val SUCCESS_BODY = audioBody("audio/wav", WavEncoder.encode(PcmAudio(bytes = SPEECH, sampleRate = 24_000)))
+
+        /** The request's `speechMetadata.style`. */
+        fun styleOf(requestBody: String): String =
+            onlyPart(requestBody)["speechMetadata"]!!.jsonObject["style"]!!.jsonPrimitive.content
+
+        /** The request's `generationConfig.speechConfig`, as JSON. */
+        fun speechConfigOf(requestBody: String): JsonObject =
+            Json.parseToJsonElement(requestBody).jsonObject["generationConfig"]!!
+                .jsonObject["speechConfig"]!!.jsonObject
 
         /** The request's single content part, as JSON. */
         fun onlyPart(requestBody: String): JsonObject {

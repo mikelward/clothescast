@@ -80,10 +80,12 @@ def main() -> None:
     model = args.model or gemini_tts.model_for(source, args.locale)
 
     if args.print_prompt:
-        print(f"--- text ---\n{args.text}\n--- style ---\n{style}\n--- end ---")
+        code = gemini_tts.language_code_for(source, style_name, args.locale)
+        print(f"--- text ---\n{args.text}\n--- style ---\n{style}\n--- languageCode: {code or '(none)'} ---")
 
     try:
-        clip = gemini_tts.synthesize(api_key, model, args.text, style, voice)
+        clip = gemini_tts.synthesize(api_key, model, args.text, style, voice,
+                                     language_code=gemini_tts.language_code_for(source, style_name, args.locale))
     except (RuntimeError, ValueError) as exc:
         raise SystemExit(str(exc)) from None
     out = pathlib.Path(args.out)

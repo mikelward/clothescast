@@ -7,8 +7,9 @@ Results from a manual listening session conducted against real app output
 > **Note (Gemini 3.8 move, 2026-11):** every eval here ran on 2.5 Flash
 > Preview TTS, with the directive written into the text. The app now uses
 > `gemini-3.8-flash-lite-tts` and sends the same directives as
-> `speechMetadata.style`. A first listen preferred nothing over Flash-Lite;
-> the fuller re-audition is planned in the next section.
+> `speechMetadata.style`. A first listen preferred nothing over Flash-Lite.
+> English has since been re-auditioned and re-worded ("Gemini 3.8 English
+> forecaster" below); other languages and the personas are next.
 
 > **Note (post-PR #323):** the newsreader directive this eval was
 > conducted under is now opt-in via the new "Style" picker, with `Normal`
@@ -82,6 +83,82 @@ Listen for:
   `--locales uk-UA --text "Сьогодні буде від 10 до 11 градусів. Одягніть светр і куртку."`
 
 Record the scores in a dated section here, like the ones below.
+
+---
+
+## Gemini 3.8 English forecaster (2026-11)
+
+The maintainer listened on `gemini-3.8-flash-lite-tts` (Flash only where
+marked), with one sample forecast per locale and one or two rolls per clip.
+The English forecaster now ships the winners: **K** for en-US, **L** for every
+other English, each with `speechConfig.languageCode` and no accent line.
+
+**The 2.5-era request on 3.8 (A):** directive plus accent line.
+- en-AU, overall: "fine enough".
+- en-AU Charon: a little inflection at sentence ends, and stress not quite on
+  the right words. The directive's "Accentuate the ends of sentences" was
+  tuned for 2.5's sentence-final lift.
+- en-AU Despina: "a bit Queensland / Chilli from Bluey".
+- en-AU Leda: good, but young, and not slow enough for a newsreader.
+- en-AU Vindemiatrix: "isn't Australian at all".
+- en-GB Charon: a little "jackit" for "jacket". Despina softens the "t" in
+  "jacket" towards a stop. Both minor.
+
+**Accent words backfire on 3.8.** With the accent coming only from the
+style text, every word pulls somewhere:
+- **B:** "an educated General Australian accent, as an ABC News presenter
+  would" came out American, rhotic on "wear a jumper". ABC News is also the US
+  network, and "General … accent" sits next to "General American", our own
+  en-US line. 2.5 already found "General Australian" a weak anchor.
+- **C:** B plus "a falling close" came out part British. "Educated, not
+  broad" points at Cultivated Australian, the old RP-like ABC register.
+- **D and E:** a short "polished ABC News weather presenter" line, on
+  Flash-Lite and Flash. They carry the same "ABC" and "educated General
+  Australian" cues as B, and got no verdict of their own.
+- **The machine judge:** asked to judge these, `gemini-3.8-flash` called B
+  British, so it can't tell accents apart. Judge by ear.
+
+**`languageCode` anchors the accent.**
+- **F:** A plus `en-AU` drifted Charon towards en-NZ.
+- **G:** a short delivery-only line with no accent words, plus the code:
+  "A calm national-news weather presenter: unhurried, measured and clear, each
+  sentence settling to a falling close."
+  - en-AU: Despina "quite good" on one roll and OK on the other; Charon "quite
+    ok", acceptable.
+  - en-GB: "good newsreader-y, about what I was going for".
+  - en-US: "acceptable but not great", "a bit numb, not authentic/human".
+    Every word in it turns energy down.
+
+**Warmth, without American cues outside the US.**
+- **H and I** (en-US): G plus "Speak with a General American accent.", and
+  G as a "network-news weather anchor". I "sucks"; H got no verdict.
+- **K:** "A warm, engaged evening-news weather anchor talking to viewers they
+  like: natural and conversational, unhurried and clear, with real interest in
+  the forecast."
+  - en-US: "better, more human. Much more so."
+  - en-AU: Despina a bit too bubbly but acceptable; Charon pretty good.
+  - en-GB: one of two rolls **went American**. "Anchor" and "viewers" are US
+    cues, and they beat the language code.
+- **L:** "A warm but composed weather presenter on the national news, speaking
+  to people they like: natural and unhurried, clear, with quiet interest in the
+  forecast."
+  - en-GB: "really quite good. They feel warm. Slightly unnatural but
+    acceptably so."
+  - en-AU: "really good".
+
+**What shipped.**
+- en-US takes K; every other English (en-GB, en-AU, en-CA, en-ZA, and any
+  English the phone reports) takes L.
+- English forecasts send `languageCode`, built from language and region only.
+- The English accent lines and the en-AU register directive are gone.
+- Other languages and the personas send exactly what they did on 2.5, with no
+  language code. F showed the code alone can shift an accent, so each gets its
+  own listen first.
+
+**Language codes are safe.** Gemini accepted `languageCode` for all 58 voice
+locales the app offers. It also took `en-001`, `es-419`, Unicode extensions
+(`-u-mu-celsius`) and `en_AU`, and refused only made-up languages (`zz-ZZ`).
+The app sends language and region only.
 
 ---
 

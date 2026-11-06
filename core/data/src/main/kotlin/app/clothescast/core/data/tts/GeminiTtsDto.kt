@@ -49,8 +49,13 @@ internal data class TtsGenerationConfig(
     val speechConfig: SpeechConfig,
 )
 
+/**
+ * [languageCode] is a BCP-47 tag ("en-AU") naming the language and accent to
+ * speak in. It anchors the accent far more reliably than accent words in the
+ * style do. Null leaves it off the wire, where Gemini infers the language.
+ */
 @Serializable
-internal data class SpeechConfig(val voiceConfig: VoiceConfig)
+internal data class SpeechConfig(val voiceConfig: VoiceConfig, val languageCode: String? = null)
 
 @Serializable
 internal data class VoiceConfig(val prebuiltVoiceConfig: PrebuiltVoiceConfig)

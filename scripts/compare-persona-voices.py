@@ -102,7 +102,8 @@ def main() -> int:
             slug = f"{style.lower()}-{voice.lower()}-{roll}"
             print(f"  {slug} ...", end=" ", flush=True)
             try:
-                clip = gemini_tts.synthesize(api_key, model, args.text, delivery, voice, args.timeout)
+                clip = gemini_tts.synthesize(api_key, model, args.text, delivery, voice, args.timeout,
+                                             gemini_tts.language_code_for(source, style, args.locale))
             except (RuntimeError, ValueError, OSError) as exc:
                 failures += 1
                 print(f"✗  {type(exc).__name__}: {exc}")

@@ -89,17 +89,14 @@ internal const val GEMINI_API_VERSION = "v1beta"
  * 2.5 model treated a preamble in the text as direction, which is how these
  * were written and evaluated.)
  *
- * [GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER] is the default register —
- * national-news broadcast delivery, deliberate cadence, sentence-final lift,
- * gentle emphasis on clothing advice. Chosen via listening eval over a neutral
- * "studio voice" and a newsreader variant.
- *
- * [GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER_REGISTER] is the same with
- * an extra "Use the language's standard variety, not a regional dialect"
- * sentence. Empirically rescues Iapetus on en-AU (5 → 9) and lifts other
- * voices that were below the user's quality bar; on en-GB it nudged voices
- * off-brand and is **not** used there. [directiveFor] picks the variant per
- * locale. See docs/voice-evals.md → "B3 register-in-directive eval".
+ * English briefings in the WEATHER_FORECASTER style use a short, delivery-only
+ * line instead ([GEMINI_TTS_STYLE_FORECASTER_EN_US], [GEMINI_TTS_STYLE_FORECASTER_EN]),
+ * with the accent carried by the request's `languageCode`: see
+ * [englishForecasterStyleFor]. [GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER]
+ * is the register every other language still gets — national-news broadcast
+ * delivery, deliberate cadence, sentence-final lift, gentle emphasis on
+ * clothing advice — chosen on 2.5 via listening eval over a neutral "studio
+ * voice" and a newsreader variant, and not yet re-auditioned on 3.8.
  *
  * Below the defaults are character / persona registers (pirate, cowboy, etc.).
  * Each one starts with "Read the following…" so the model treats it as
@@ -108,17 +105,33 @@ internal const val GEMINI_API_VERSION = "v1beta"
  * noise, or vinyl-style texture" trailer — important for personas like
  * PIRATE that might otherwise tempt the model to add ocean ambience.
  */
+/**
+ * The en-US forecaster, chosen by ear on Gemini 3.8 (docs/voice-evals.md →
+ * "Gemini 3.8 English forecaster (2026-11)"): the calm newsreader line the
+ * other English locales take sounded numb in American English, and this one
+ * human. Its "anchor" and "viewers" are American cues, which is the point here
+ * and why en-GB must not get it: one en-GB roll came out American.
+ */
+internal const val GEMINI_TTS_STYLE_FORECASTER_EN_US: String =
+    "A warm, engaged evening-news weather anchor talking to viewers they like: natural " +
+        "and conversational, unhurried and clear, with real interest in the forecast. " +
+        "No audio effects or background noise."
+
+/**
+ * Every other English forecaster (en-GB, en-AU and the rest), chosen by ear on
+ * Gemini 3.8: warm but composed, with no accent words at all, since every
+ * accent phrase tried pulled somewhere ("General" toward American, "educated"
+ * toward British, "ABC News" toward the US network). The request's
+ * `languageCode` says which English it is.
+ */
+internal const val GEMINI_TTS_STYLE_FORECASTER_EN: String =
+    "A warm but composed weather presenter on the national news, speaking to people " +
+        "they like: natural and unhurried, clear, with quiet interest in the forecast. " +
+        "No audio effects or background noise."
+
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER: String =
     "Read the following weather forecast in the style of a weather report on a " +
         "national news service. Enunciate clearly and use a measured speed. " +
-        "Accentuate the ends of sentences and give a gentle emphasis to clothing " +
-        "recommendations. No audio effects, background noise, or vinyl-style " +
-        "texture.\n\n"
-
-internal const val GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER_REGISTER: String =
-    "Read the following weather forecast in the style of a weather report on a " +
-        "national news service. Use the language's standard variety, not a " +
-        "regional dialect. Enunciate clearly and use a measured speed. " +
         "Accentuate the ends of sentences and give a gentle emphasis to clothing " +
         "recommendations. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"
@@ -261,26 +274,29 @@ internal fun styleDirectiveFor(style: TtsStyle): String = when (style) {
 }
 
 /**
- * Picks the right WEATHER_FORECASTER variant for [locale]. Most locales get
- * [GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER] (B2 wording). en-AU gets
- * [GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER_REGISTER] (B2 + the explicit
- * "standard variety, not regional dialect" sentence), which empirically
- * rescues Iapetus on en-AU from a near-degenerate 5/10 to 9/10 and lifts
- * other voices that were below the user's quality bar. The same change on
- * en-GB nudged voices off-brand, hence the per-locale routing rather than a
- * global directive update. See docs/voice-evals.md.
- *
- * Character styles (PIRATE, COWBOY, etc.) ignore the locale routing and use
- * the persona's directive verbatim — adding a register-direction sentence
- * would conflict with persona delivery.
+ * The English forecaster's style line, or null for anything else: [locale] is
+ * English and [style] is WEATHER_FORECASTER. American English takes
+ * [GEMINI_TTS_STYLE_FORECASTER_EN_US]; every other English, or English with no
+ * region, takes [GEMINI_TTS_STYLE_FORECASTER_EN]. Personas keep their own
+ * directives, and other languages the long forecaster directive and accent line.
  */
-internal fun directiveFor(style: TtsStyle, locale: Locale?): String {
-    if (style == TtsStyle.WEATHER_FORECASTER &&
-        locale?.language == "en" && locale.country == "AU"
-    ) {
-        return GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER_REGISTER
-    }
-    return styleDirectiveFor(style)
+internal fun englishForecasterStyleFor(style: TtsStyle, locale: Locale?): String? {
+    if (style != TtsStyle.WEATHER_FORECASTER || locale?.language != "en") return null
+    return if (locale.country == "US") GEMINI_TTS_STYLE_FORECASTER_EN_US else GEMINI_TTS_STYLE_FORECASTER_EN
+}
+
+/**
+ * The `speechConfig.languageCode` to send, or null to send none: only the
+ * English forecaster sends one, as that's what was listened to; with it the
+ * accent holds without accent words in the style. Built from the language and
+ * region alone, since Android hands over extensions such as `-u-mu-celsius`
+ * that say nothing about speech. Gemini accepted every tag the app offers, and
+ * `en-001` and `en_AU`-style ones, refusing only made-up languages.
+ */
+internal fun speechLanguageCodeFor(style: TtsStyle, locale: Locale?): String? {
+    if (englishForecasterStyleFor(style, locale) == null) return null
+    val country = locale?.country.orEmpty()
+    return if (country.isEmpty()) "en" else "en-$country"
 }
 
 /**
@@ -382,11 +398,12 @@ private val LANGUAGE_DIRECTIVES: Map<String, String> = mapOf(
  * chosen style directive (see [styleDirectiveFor]), never in the spoken text.
  *
  * Lookup is two-step: an exact `language-COUNTRY` match wins (so variants like
- * en-GB / en-AU / en-US can carry their own directive), otherwise a
- * language-only key. The table mixes both shapes — most non-English entries
- * are language-only (`de`, `fr`, `vi`, …), while English and Arabic
- * enumerate per-country variants. Adding a new locale is a one-line entry in
- * [ACCENT_DIRECTIVES].
+ * de-AT / de-CH can carry their own directive), otherwise a language-only key.
+ * The table mixes both shapes — most entries are language-only (`de`, `fr`,
+ * `vi`, …), while German, French, Spanish, Portuguese and Arabic enumerate
+ * per-country variants. Adding a new locale is a one-line entry in
+ * [ACCENT_DIRECTIVES]. English has none: the English forecaster sends a
+ * `languageCode` instead (see [speechLanguageCodeFor]).
  */
 internal fun geminiAccentDirectiveFor(locale: Locale): String? {
     val language = modernLanguageCode(locale.language)
@@ -407,16 +424,6 @@ internal fun geminiAccentDirectiveFor(locale: Locale): String? {
 // tautology (e.g. "Italian with an Italian accent"), the entry collapses
 // to a bare language directive.
 private val ACCENT_DIRECTIVES: Map<String, String> = mapOf(
-    "en-GB" to "Speak with a Standard British accent.",
-    // en-AU drops "General" — paired with the per-locale register sentence in
-    // GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER_REGISTER (selected by
-    // directiveFor for en-AU only). The combination empirically rescues
-    // Iapetus on en-AU; "General" was redundant once the directive carries
-    // "standard variety, not regional dialect" for this locale. See
-    // docs/voice-evals.md → "B3 register-in-directive eval".
-    "en-AU" to "Speak with an Australian accent, not broad.",
-    "en-US" to "Speak with a General American accent.",
-    "en-CA" to "Speak with a Canadian English accent.",
     // Language-only fallback for Standard German (de-DE) and any de-* variant
     // not explicitly enumerated. Austrian (de-AT) and Swiss German (de-CH) have
     // their own entries below so the audio sounds like those regions rather than
@@ -466,7 +473,6 @@ private val ACCENT_DIRECTIVES: Map<String, String> = mapOf(
     "lv" to "Runā latviski.",
     "lt" to "Kalbėk lietuviškai.",
     "tr" to "Türkçe konuş.",
-    "en-ZA" to "Speak with a South African English accent.",
     "id" to "Bicara dalam bahasa Indonesia.",
     "ms" to "Bertutur dalam bahasa Melayu.",
     "fil" to "Magsalita sa Filipino.",
@@ -559,20 +565,24 @@ class GeminiTtsClient(
         val plan = callPlanner.plan()
         val model = geminiTtsModelFor(locale)
 
-        // WEATHER_FORECASTER gets the full accent directive ("Speak with a
-        // Standard British accent."). Character styles get only a bare language
-        // hint ("Speak in British English.") so the accent words don't conflict
-        // with the persona.
-        val accent = if (style == TtsStyle.WEATHER_FORECASTER) {
-            locale?.let { geminiAccentDirectiveFor(it) }
-        } else {
-            locale?.let { geminiLanguageDirectiveFor(it) }
-        }
-        val deliveryStyle = buildString {
-            append(directiveFor(style, locale).trim())
-            if (accent != null) {
-                append("\n\n")
-                append(accent)
+        // English in the forecaster style: a short delivery-only line, with
+        // the accent in languageCode. Otherwise WEATHER_FORECASTER gets the
+        // full accent directive ("Sprich auf Deutsch …"), and character styles
+        // only a bare language hint ("Speak in British English.") so accent
+        // words don't conflict with the persona.
+        val languageCode = speechLanguageCodeFor(style, locale)
+        val deliveryStyle = englishForecasterStyleFor(style, locale) ?: run {
+            val accent = if (style == TtsStyle.WEATHER_FORECASTER) {
+                locale?.let { geminiAccentDirectiveFor(it) }
+            } else {
+                locale?.let { geminiLanguageDirectiveFor(it) }
+            }
+            buildString {
+                append(styleDirectiveFor(style).trim())
+                if (accent != null) {
+                    append("\n\n")
+                    append(accent)
+                }
             }
         }
 
@@ -620,6 +630,7 @@ class GeminiTtsClient(
                                 voiceConfig = VoiceConfig(
                                     prebuiltVoiceConfig = PrebuiltVoiceConfig(pinnedVoiceFor(style) ?: voiceName),
                                 ),
+                                languageCode = languageCode,
                             ),
                         ),
                     ),

@@ -94,10 +94,25 @@ def accent_directive(source: str, tag: str) -> str | None:
 
 
 def directive_for(source: str, style: str, tag: str) -> str:
-    """Mirrors directiveFor: en-AU's forecaster takes the register variant."""
-    if style == "WEATHER_FORECASTER" and _language_and_country(tag) == ("en", "AU"):
-        return kotlin_string_const(source, "GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER_REGISTER")
+    """The style's long directive (styleDirectiveFor), what every non-English forecast takes."""
     return kotlin_string_const(source, f"GEMINI_TTS_STYLE_DIRECTIVE_{style}")
+
+
+def english_forecaster_style(source: str, style: str, tag: str) -> str | None:
+    """Mirrors englishForecasterStyleFor: en-US takes the anchor line, other English the presenter."""
+    language, country = _language_and_country(tag)
+    if style != "WEATHER_FORECASTER" or language != "en":
+        return None
+    name = "GEMINI_TTS_STYLE_FORECASTER_EN_US" if country == "US" else "GEMINI_TTS_STYLE_FORECASTER_EN"
+    return kotlin_string_const(source, name)
+
+
+def language_code_for(source: str, style: str, tag: str) -> str | None:
+    """Mirrors speechLanguageCodeFor: only the English forecaster sends one, language and region only."""
+    if english_forecaster_style(source, style, tag) is None:
+        return None
+    _, country = _language_and_country(tag)
+    return f"en-{country}" if country else "en"
 
 
 def delivery_style(
@@ -108,14 +123,23 @@ def delivery_style(
     accent: str | None = None,
 ) -> str:
     """
-    The `speechMetadata.style` the app sends: the style's directive, then the
-    forecaster's accent line or a persona's bare language hint, as
-    GeminiTtsClient.synthesize builds it. Pass `directive` or `accent` to try
-    a different one in its place; an empty `accent` drops the line.
+    The `speechMetadata.style` the app sends, as GeminiTtsClient.synthesize
+    builds it: an English forecast's short presenter line (its accent is in
+    the language code), or else the style's directive followed by the
+    forecaster's accent line or a persona's bare language hint. Pass
+    `directive` or `accent` to try a different one in its place; an empty
+    `accent` drops the line.
     """
+    english = english_forecaster_style(source, style, tag)
+    if english is not None and directive is None and accent is None:
+        return english
     if accent is None:
-        accent = accent_directive(source, tag) if style == "WEATHER_FORECASTER" else language_hint(source, tag)
-    text = (directive if directive is not None else directive_for(source, style, tag)).strip()
+        accent = (None if english is not None
+                  else accent_directive(source, tag) if style == "WEATHER_FORECASTER"
+                  else language_hint(source, tag))
+    if directive is None:
+        directive = english if english is not None else directive_for(source, style, tag)
+    text = directive.strip()
     return f"{text}\n\n{accent}" if accent else text
 
 
@@ -251,14 +275,14 @@ def play(path: pathlib.Path) -> None:
     subprocess.run([player, "-q", str(path)] if player == "aplay" else [player, str(path)], check=False)
 
 
-def request_body(text: str, style: str, voice: str) -> dict:
+def request_body(text: str, style: str, voice: str, language_code: str | None = None) -> dict:
     """The generateContent body GeminiTtsClient sends."""
+    speech = {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}}
+    if language_code:
+        speech["languageCode"] = language_code
     return {
         "contents": [{"parts": [{"text": text, "speechMetadata": {"style": style}}]}],
-        "generationConfig": {
-            "responseModalities": ["AUDIO"],
-            "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}},
-        },
+        "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": speech},
     }
 
 
@@ -290,12 +314,13 @@ def decode_audio(data: bytes, mime_type: str) -> tuple[bytes, int]:
 
 
 def synthesize(
-    api_key: str, model: str, text: str, style: str, voice: str, timeout: float = 90.0
+    api_key: str, model: str, text: str, style: str, voice: str, timeout: float = 90.0,
+    language_code: str | None = None,
 ) -> Clip:
     """One generateContent call, shaped like the app's; raises with Gemini's own message on failure."""
     req = urllib.request.Request(
         ENDPOINT.format(model=model),
-        data=json.dumps(request_body(text, style, voice)).encode(),
+        data=json.dumps(request_body(text, style, voice, language_code)).encode(),
         headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
         method="POST",
     )

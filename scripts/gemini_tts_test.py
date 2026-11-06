@@ -70,20 +70,30 @@ class PromptTest(unittest.TestCase):
         self.assertIn("'Goood eeevening'", style)
         self.assertTrue(style.endswith("texture.\n\nSpeak in British English."))
 
-    def test_the_forecaster_gets_the_accent_line_and_en_au_its_register(self):
-        gb = gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", "en-GB")
-        self.assertIn("national news service", gb)
-        self.assertTrue(gb.endswith("texture.\n\nSpeak with a Standard British accent."))
-        self.assertNotIn("standard variety", gb)
-        au = gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", "en-AU")
-        self.assertIn("standard variety, not a regional dialect", au)
-        self.assertTrue(au.endswith("Speak with an Australian accent, not broad."))
+    def test_an_english_forecast_is_the_short_presenter_line_with_its_accent_in_the_code(self):
+        us = gemini_tts.kotlin_string_const(SOURCE, "GEMINI_TTS_STYLE_FORECASTER_EN_US")
+        other = gemini_tts.kotlin_string_const(SOURCE, "GEMINI_TTS_STYLE_FORECASTER_EN")
+        self.assertIn("anchor", us)
+        self.assertNotIn("anchor", other)
+        for tag, expected in (("en-US", us), ("en-GB", other), ("en-AU", other), ("en-IN", other)):
+            with self.subTest(tag=tag):
+                self.assertEqual(gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", tag), expected)
+                self.assertEqual(gemini_tts.language_code_for(SOURCE, "WEATHER_FORECASTER", tag), tag)
+        self.assertEqual(gemini_tts.language_code_for(SOURCE, "WEATHER_FORECASTER", "en-AU-u-mu-celsius"), "en-AU")
+
+    def test_other_languages_and_personas_keep_their_lines_and_send_no_code(self):
+        de = gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", "de-AT")
+        self.assertIn("national news service", de)
+        self.assertTrue(de.endswith("österreichischen Akzent."))
+        self.assertIsNone(gemini_tts.language_code_for(SOURCE, "WEATHER_FORECASTER", "de-AT"))
+        self.assertIsNone(gemini_tts.language_code_for(SOURCE, "PIRATE", "en-GB"))
 
     def test_a_tried_directive_or_accent_replaces_the_apps(self):
         style = gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", "en-GB", "Warm.", "Be Scottish.")
         self.assertEqual(style, "Warm.\n\nBe Scottish.")
-        self.assertEqual(gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", "en-GB", accent=""),
-                         gemini_tts.directive_for(SOURCE, "WEATHER_FORECASTER", "en-GB").strip())
+        self.assertEqual(gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", "en-GB", "Warm."), "Warm.")
+        self.assertEqual(gemini_tts.delivery_style(SOURCE, "WEATHER_FORECASTER", "de-DE", accent=""),
+                         gemini_tts.directive_for(SOURCE, "WEATHER_FORECASTER", "de-DE").strip())
 
     def test_language_hint_mirrors_the_app_fallback(self):
         # Exact entry; bare-language fallback; and no leak from ACCENT_DIRECTIVES,
@@ -240,6 +250,11 @@ class SynthesizeTest(unittest.TestCase):
         )
         self.assertIn("/models/gemini-3.8-flash-lite-tts:generateContent", req.full_url)
         self.assertNotIn("key=", req.full_url)  # the key goes in a header, not the URL
+        self.assertNotIn("languageCode", body["generationConfig"]["speechConfig"])
+
+    def test_a_language_code_goes_in_the_speech_config(self):
+        body = gemini_tts.request_body("Hi.", "Warm.", "Despina", "en-AU")
+        self.assertEqual(body["generationConfig"]["speechConfig"]["languageCode"], "en-AU")
 
     def test_a_wav_response_is_unwrapped_at_its_own_rate(self):
         clip, _ = self.call(response(audio_part(wav_bytes(b"\x01\x02\x03\x04", 16000), "audio/wav")))

@@ -124,21 +124,19 @@ voice and the Google Weather proxy.
 - [x] Gemini TTS as opt-in voice engine (PR #27)
 - [x] Diagnostic "Test Gemini voice" button in Settings (PR #28)
 - [x] **Voice picker** for Gemini. Curated list in `TtsVoices.kt`; Despina is the current default (validated across en-GB / en-AU / en-US / de-*).
-- [ ] **Re-audition the voices on Gemini 3.8 Flash-Lite TTS.** Every eval in
-      `docs/voice-evals.md` ran on 2.5 Flash Preview TTS with the directive
-      written into the text. The move to 3.8 (Google shuts the 2.5 model down
-      on 2026-11-17) sends the same directives, unchanged, as
-      `speechMetadata.style`, which Google says works best short ("warm,
-      unhurried"). Check Despina as default, the en-AU register directive,
-      the personas and the Algenib vampire, and compare `gemini-3.8-flash-tts`
-      ($18/M audio from 2027 against $12/M) before deciding to keep Flash-Lite
-      (a first listen found Flash-Lite fine). The plan and commands are in
-      `docs/voice-evals.md` → "Gemini 3.8 re-audition": en-GB, en-AU and
-      en-US across voices, and every holiday persona.
-      Finnish, Lithuanian, Slovenian, Swedish, Swahili and Thai already go to
-      full Flash, the only one of the two whose language list names them
-      (`geminiTtsModelFor`). Ukrainian, one of the 2.5 model's 24 languages, is
-      on neither 3.8 list: listen to it on both.
+- [x] **Re-audition the English forecaster on Gemini 3.8** (2026-11): en-US
+      takes the warm-anchor line, other English the warm-presenter line, both
+      with `languageCode` and no accent words. See docs/voice-evals.md →
+      "Gemini 3.8 English forecaster".
+- [ ] **Re-audition the other languages on 3.8.** They still send the
+      2.5-era directive and accent line, with no `languageCode`. Try them
+      with the code and a short delivery line, as English now does. Watch for
+      drift, as en-AU did towards en-NZ with the code alone. Ukrainian is on
+      neither 3.8 list; Finnish, Lithuanian, Slovenian, Swedish, Swahili and
+      Thai go to full Flash.
+- [ ] **Re-audition the personas and holidays on 3.8.** They send their
+      2.5-era directives unchanged, with no `languageCode`:
+      `scripts/compare-tts-models.py --holidays all`.
 - [ ] **Drop `LEGACY_TTS_MODEL` from the proxy's allowlist** after
       2026-11-17 (`functions/src/models.ts`). Until then it keeps installs
       from before the 3.8 move on the Gemini voice; after it, Google rejects
@@ -1039,6 +1037,12 @@ Open work:
       `MONETIZATION.md`; independent of monetization and worth doing regardless.
 
 ## Decisions needing review
+
+- [ ] **en-CA, en-ZA and any other English take the warm-presenter line, not
+      the en-US anchor one** (2026-11). Only en-GB, en-AU and en-US were
+      heard. L avoids the American cues that turned one en-GB K roll American;
+      for en-CA, K's warmth might suit better. One line in
+      `englishForecasterStyleFor`.
 
 - [ ] **Alert coverage after the first six countries: the US first**
       (autopilot, 2026-10-23). NWS is the largest source with clear terms

@@ -156,7 +156,9 @@ def main() -> int:
         for stale in [*out.glob("*.wav"), out / "key.json"]:
             stale.unlink(missing_ok=True)
         style = styles[case]
-        (out / "prompt.txt").write_text(f"text:\n{case.text}\n\nstyle:\n{style}\n", encoding="utf-8")
+        code = gemini_tts.language_code_for(source, case.style, case.locale)
+        (out / "prompt.txt").write_text(
+            f"text:\n{case.text}\n\nstyle:\n{style}\n\nlanguageCode: {code or '(none)'}\n", encoding="utf-8")
         app_model = short_name(gemini_tts.model_for(source, case.locale))
         print(f"{case.locale} {case.name} ({case.style}; the app uses {app_model} here)")
 
@@ -168,7 +170,8 @@ def main() -> int:
         for model, voice, roll in case_jobs:
             name = names[(model, voice, roll)]
             try:
-                clip = gemini_tts.synthesize(api_key, model, case.text, style, voice, args.timeout)
+                clip = gemini_tts.synthesize(api_key, model, case.text, style, voice, args.timeout,
+                                             gemini_tts.language_code_for(source, case.style, case.locale))
             except (RuntimeError, ValueError, OSError) as exc:
                 failures += 1
                 print(f"  {name}: FAILED: {exc}")

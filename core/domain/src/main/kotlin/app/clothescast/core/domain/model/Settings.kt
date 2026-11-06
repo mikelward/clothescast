@@ -355,9 +355,11 @@ enum class TtsEngine { DEVICE, GEMINI }
 /**
  * Steers the delivery style Gemini TTS sends with every request.
  *
- * - [WEATHER_FORECASTER] reads the briefing in a national-news weather
- *   broadcast register — deliberate cadence, sentence-final lift, gentle
- *   emphasis on clothing advice. Default.
+ * - [WEATHER_FORECASTER] reads the briefing as a news weather presenter. Default.
+ *   In English it is warm and natural (an American evening-news anchor for
+ *   en-US, a composed national-news presenter elsewhere); other languages keep
+ *   the national-news broadcast register — deliberate cadence, sentence-final
+ *   lift, gentle emphasis on clothing advice.
  * - [SCIENCE_TEACHER], [HISTORIAN], [SPORTSCASTER], [STADIUM_ANNOUNCER],
  *   [STORYTELLER], [FITNESS_INSTRUCTOR], [MORNING_PRESENTER] — persona
  *   registers that shape *delivery* without rewriting the text.
@@ -407,9 +409,10 @@ enum class TtsStyle {
  *
  *  - [TtsEngine.DEVICE] picks the actual voice to speak in (the Android
  *    TextToSpeech engine has separate en-US / en-GB / en-AU voices).
- *  - [TtsEngine.GEMINI] passes the locale through as a natural-language
- *    accent directive in the request's delivery style — Gemini's prebuilt voices are
- *    language-agnostic personalities and follow that direction.
+ *  - [TtsEngine.GEMINI] passes the locale through: for an English forecast as
+ *    the request's `languageCode`, otherwise as a natural-language accent
+ *    directive in its delivery style. Gemini's prebuilt voices are
+ *    language-agnostic personalities and follow either.
  *
  * [SYSTEM] means "follow the phone's locale" — the right default for almost
  * everyone, since their device language already encodes their accent

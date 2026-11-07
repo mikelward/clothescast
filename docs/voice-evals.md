@@ -819,6 +819,34 @@ first, Charon the first male voice, the vampire pinned to Algenib.
 
 ---
 
+## Holiday personas (2026-11)
+
+Asked politely, the holiday personas came out close to everyday voices: the
+leprechaun read as an ordinary Irish speaker. New prompts asked for the
+over-the-top film or cartoon character, as the vampire's does. The scored takes
+were told to end with a sign-off ("Ho ho ho!", "Happy New Year!", a laugh);
+the shipped prompts instead end on the forecast, since a trailing flourish
+makes the forecast harder to remember, while an opening greeting is welcome.
+
+Blind A/B on Gemini 3.8 Flash-Lite, one sitting, en-GB with the voice the app
+switches to on the day (Charon for the male personas, Despina for the host),
+two takes a side, one score a side:
+
+| Persona | Old | New | Shipped |
+|---|---|---|---|
+| Leprechaun | 7 | 8 | New |
+| Pirate | 7 | 8 | New |
+| Father Christmas | 7 | 7 | New; still not Santa enough (see round 2) |
+| King | 8 | 7 | Old |
+| Sci-fi narrator | 9 | 8 | Old |
+| New Year's Eve host | lower | higher | New: very excited, but better; held en-GB on both takes, where an old take drifted American |
+| President (en-US, Charon and Algenib) | not yet scored | | Old: it already sounded right |
+
+The rater noted that every take, old and new, has audible natural breaths,
+likely new with 3.8, and that they aren't necessarily an improvement.
+
+---
+
 ## Scripts
 
 | Script | Purpose |

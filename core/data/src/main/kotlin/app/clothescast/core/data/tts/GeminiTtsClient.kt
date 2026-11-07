@@ -176,11 +176,23 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST: String =
         "Year!' are fine. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"
 
+/**
+ * The St Patrick's Day persona. "A lilting Irish brogue" alone came out as an
+ * ordinary Irish speaker, so like the vampire this asks for the cartoon: a
+ * tiny, cheeky fairy-tale creature, pitched up and quick, with an exaggerated
+ * brogue. It ends on the forecast itself: a trailing giggle would make the
+ * forecast harder to remember.
+ */
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_LEPRECHAUN: String =
-    "Read the following as a playful, mischievous leprechaun with a lilting " +
-        "Irish brogue and a twinkle in the eye. You may add brief in-character " +
-        "exclamations such as 'Top o' the morning'. No audio effects, " +
-        "background noise, or vinyl-style texture.\n\n"
+    "Read the following as a gloriously over-the-top, mischievous leprechaun " +
+        "from a children's cartoon — a tiny, impish fairy-tale trickster, not " +
+        "an ordinary Irish person. Use a thick, exaggerated stage-Irish brogue, " +
+        "a higher, squeaky little voice, and a quick, bouncy, sing-song rhythm " +
+        "that skips up and down, as if letting the listener in on a secret " +
+        "about a pot of gold. Sound gleeful and cheeky throughout. You may add " +
+        "brief in-character touches such as 'Top o' the mornin'' or " +
+        "'Begorrah', but end on the forecast itself, with nothing added after " +
+        "it. No audio effects, background noise, or vinyl-style texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_KING: String =
     "Read the following in the style of King Charles III delivering a formal " +

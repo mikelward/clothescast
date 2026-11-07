@@ -974,6 +974,16 @@ class GeminiTtsClientTest {
     }
 
     @Test
+    fun `the leprechaun is a cartoon character, not an ordinary Irish speaker`() {
+        // "A lilting Irish brogue" alone read as a normal Irish voice.
+        val directive = styleDirectiveFor(TtsStyle.LEPRECHAUN)
+
+        directive.shouldContain("not an ordinary Irish person")
+        directive.shouldContain("squeaky little voice")
+        directive.shouldContain("end on the forecast itself, with nothing added after it")
+    }
+
+    @Test
     fun `styleDirectiveFor returns the B2 weather-forecaster variant for WEATHER_FORECASTER`() {
         // styleDirectiveFor is locale-agnostic: the B2 wording every
         // non-English forecast takes. English routing lives in

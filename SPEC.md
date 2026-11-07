@@ -165,7 +165,10 @@ I put on before I leave?" instead of a full weather-office report.
   fallback for phone playback. The vampire persona opens with a few seconds of
   pipe organ, and Father Christmas (Christmas Day) with sleigh
   bells, both synthesized in the app (no recording), on every route the
-  briefing plays: phone, Cast and smart home.
+  briefing plays: phone, Cast and smart home. Holiday personas may open with a
+  greeting but end on the forecast itself: a trailing laugh or catchphrase
+  makes the forecast harder to remember. The vampire's closing laugh is the
+  one exception.
 - **Smart-home UX:** smart-home integrations are opt-in and should describe where
   payloads go. Settings status rows should show selected routes, broker errors,
   and last-delivery state rather than making users infer background behaviour.

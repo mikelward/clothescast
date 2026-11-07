@@ -144,10 +144,11 @@ class HolidayTest(unittest.TestCase):
     def test_a_holiday_switches_voice_as_the_app_does(self):
         # A male persona on a female voice takes the first male picker voice;
         # a male voice stays; a neutral persona keeps the user's; the vampire
-        # always speaks in its pinned voice.
+        # and Father Christmas always speak in their pinned voice.
         first_male = next(v for v, g in gemini_tts.curated_voices() if g == "MALE")
-        self.assertEqual(gemini_tts.holiday_voice("FATHER_CHRISTMAS", "Despina"), first_male)
-        self.assertEqual(gemini_tts.holiday_voice("FATHER_CHRISTMAS", "Iapetus"), "Iapetus")
+        self.assertEqual(gemini_tts.holiday_voice("PIRATE", "Despina"), first_male)
+        self.assertEqual(gemini_tts.holiday_voice("PIRATE", "Iapetus"), "Iapetus")
+        self.assertEqual(gemini_tts.holiday_voice("FATHER_CHRISTMAS", "Iapetus"), "Algenib")
         self.assertEqual(gemini_tts.holiday_voice("NEW_YEARS_HOST", "Despina"), "Despina")
         self.assertEqual(gemini_tts.holiday_voice("VAMPIRE", "Despina"), "Algenib")
         self.assertEqual(gemini_tts.holiday_voice("VAMPIRE", "Charon"), "Algenib")

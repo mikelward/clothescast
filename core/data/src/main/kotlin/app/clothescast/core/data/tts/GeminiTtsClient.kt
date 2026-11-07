@@ -104,6 +104,15 @@ internal const val GEMINI_API_VERSION = "v1beta"
  * interjections, and ends with the standard "no audio effects, background
  * noise, or vinyl-style texture" trailer — important for personas like
  * PIRATE that might otherwise tempt the model to add ocean ambience.
+ *
+ * The leprechaun, Father Christmas, the New Year's Eve host and the pirate ask
+ * for the over-the-top film or cartoon character and say it isn't an ordinary
+ * speaker: asked politely, Gemini read the leprechaun as a normal Irish voice.
+ * They end on the forecast itself: a holiday greeting opens the briefing,
+ * but a trailing laugh or catchphrase makes the forecast harder to remember.
+ * The vampire's closing laugh is the one exception, kept on purpose. The King, the sci-fi narrator and the
+ * president scored better as they were (docs/voice-evals.md → "Holiday
+ * personas (2026-11)").
  */
 /**
  * The en-US forecaster, chosen by ear on Gemini 3.8 (docs/voice-evals.md →
@@ -137,9 +146,14 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_WEATHER_FORECASTER: String =
         "texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_PIRATE: String =
-    "Read the following as a swaggering pirate, with hearty nautical flair. " +
-        "You may add brief in-character exclamations such as 'Arrr' or 'Aye, " +
-        "matey'. No audio effects, background noise, or vinyl-style texture.\n\n"
+    "Read the following as a gloriously over-the-top, swaggering pirate captain " +
+        "from a swashbuckling adventure film — a gravelly, salt-cured growl in a " +
+        "thick West Country accent, with rolling, growled Rs and booming, " +
+        "roguish relish, as if the forecast were treasure-map directions. Not " +
+        "an ordinary sailor. You may add brief in-character exclamations such " +
+        "as 'Arrr' or 'Aye, me hearties', but end on the forecast itself, with " +
+        "nothing added after it. No audio effects, background noise, or " +
+        "vinyl-style texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_COWBOY: String =
     "Read the following in a slow, friendly American Old West drawl. You may " +
@@ -153,10 +167,14 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_SCIFI_NARRATOR: String =
         "effects, background noise, or vinyl-style texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS: String =
-    "Read the following as a jolly, warm-hearted Father Christmas — a deep, " +
-        "booming, good-natured voice brimming with festive cheer. You may add " +
-        "brief in-character exclamations such as 'Ho ho ho' or 'Merry " +
-        "Christmas'. No audio effects, background noise, or vinyl-style " +
+    "Read the following as a gloriously over-the-top, jolly Father Christmas " +
+        "from a classic Christmas film — not an ordinary friendly man, but the " +
+        "big, round, rosy-cheeked Santa himself: a deep, rich, booming voice, " +
+        "warm and slow, bubbling with chuckles and twinkly delight, as if " +
+        "reading the forecast to children on his knee. Lean into the cheer on " +
+        "every cosy word. You may add brief in-character touches such as " +
+        "'Well, well, well', but end on the forecast itself, with nothing added " +
+        "after it. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE: String =
@@ -170,17 +188,32 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_VAMPIRE: String =
         "texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_NEW_YEARS_HOST: String =
-    "Read the following as an exuberant New Year's Eve party host counting down " +
-        "to midnight — celebratory, building excitement, full of warmth and " +
-        "anticipation. Brief in-character interjections such as 'Happy New " +
-        "Year!' are fine. No audio effects, background noise, or vinyl-style " +
+    "Read the following as a gloriously over-the-top New Year's Eve party host " +
+        "on stage in front of a cheering crowd, moments before midnight — loud, " +
+        "breathless and giddy, every fact a reason to celebrate, the energy " +
+        "climbing with each sentence as if the countdown were about to start. " +
+        "Not a calm presenter. You may add brief in-character touches such as " +
+        "'Here we go, everybody!', but end on the forecast itself, with nothing " +
+        "added after it. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"
 
+/**
+ * The St Patrick's Day persona. "A lilting Irish brogue" alone came out as an
+ * ordinary Irish speaker, so like the vampire this asks for the cartoon: a
+ * tiny, cheeky fairy-tale creature, pitched up and quick, with an exaggerated
+ * brogue. It ends on the forecast itself: a trailing giggle would make the
+ * forecast harder to remember.
+ */
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_LEPRECHAUN: String =
-    "Read the following as a playful, mischievous leprechaun with a lilting " +
-        "Irish brogue and a twinkle in the eye. You may add brief in-character " +
-        "exclamations such as 'Top o' the morning'. No audio effects, " +
-        "background noise, or vinyl-style texture.\n\n"
+    "Read the following as a gloriously over-the-top, mischievous leprechaun " +
+        "from a children's cartoon — a tiny, impish fairy-tale trickster, not " +
+        "an ordinary Irish person. Use a thick, exaggerated stage-Irish brogue, " +
+        "a higher, squeaky little voice, and a quick, bouncy, sing-song rhythm " +
+        "that skips up and down, as if letting the listener in on a secret " +
+        "about a pot of gold. Sound gleeful and cheeky throughout. You may add " +
+        "brief in-character touches such as 'Top o' the mornin'' or " +
+        "'Begorrah', but end on the forecast itself, with nothing added after " +
+        "it. No audio effects, background noise, or vinyl-style texture.\n\n"
 
 internal const val GEMINI_TTS_STYLE_DIRECTIVE_KING: String =
     "Read the following in the style of King Charles III delivering a formal " +
@@ -246,9 +279,16 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_SPORTSCASTER: String =
  * keep it. The vampire is pinned to Algenib, the top-rated voice in
  * scripts/compare-persona-voices.py's rounds. Charon, the first male voice
  * the holiday switch would otherwise take, read the count less convincingly.
+ * The president is pinned the other way: Charon beat Algenib with both the
+ * current prompt and a grander one (docs/voice-evals.md → "Holiday personas
+ * (2026-11)"), so a user who picked Algenib or another male voice still hears
+ * Charon. Father Christmas is pinned to Algenib, which beat Charon and
+ * Enceladus with all three Santa prompts tried.
  */
 internal fun pinnedVoiceFor(style: TtsStyle): String? = when (style) {
     TtsStyle.VAMPIRE -> "Algenib"
+    TtsStyle.FATHER_CHRISTMAS -> "Algenib"
+    TtsStyle.PRESIDENT -> "Charon"
     else -> null
 }
 

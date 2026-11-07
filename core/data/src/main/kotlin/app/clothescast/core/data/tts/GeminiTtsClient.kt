@@ -281,10 +281,12 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_SPORTSCASTER: String =
  * The president is pinned the other way: Charon beat Algenib with both the
  * current prompt and a grander one (docs/voice-evals.md → "Holiday personas
  * (2026-11)"), so a user who picked Algenib or another male voice still hears
- * Charon.
+ * Charon. Father Christmas is pinned to Algenib, which beat Charon and
+ * Enceladus with all three Santa prompts tried.
  */
 internal fun pinnedVoiceFor(style: TtsStyle): String? = when (style) {
     TtsStyle.VAMPIRE -> "Algenib"
+    TtsStyle.FATHER_CHRISTMAS -> "Algenib"
     TtsStyle.PRESIDENT -> "Charon"
     else -> null
 }

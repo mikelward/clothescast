@@ -3,7 +3,9 @@ package app.clothescast.core.data.tts
 import app.clothescast.core.data.insight.GeminiCallPlan
 import app.clothescast.core.data.insight.GeminiCallPlanner
 import app.clothescast.core.data.insight.GeminiEndpoint
+import app.clothescast.core.domain.model.HolidayId
 import app.clothescast.core.domain.model.TtsStyle
+import app.clothescast.core.domain.model.holidayTtsStyle
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.matchers.shouldBe
@@ -971,6 +973,31 @@ class GeminiTtsClientTest {
 
         directive.shouldContain("end with a slow, sinister laugh")
         directive.shouldNotContain("or a slow, sinister laugh")
+    }
+
+    @Test
+    fun `holiday personas ask for the character, not an ordinary speaker`() {
+        // Asked politely, Gemini read these as everyday voices. The King, the
+        // sci-fi narrator and the president scored better as they were.
+        val holidayPersonas = HolidayId.entries.mapNotNull(::holidayTtsStyle).toSet() -
+            setOf(TtsStyle.KING, TtsStyle.SCIFI_NARRATOR, TtsStyle.PRESIDENT)
+
+        for (style in holidayPersonas) {
+            withClue("style=$style") {
+                val directive = styleDirectiveFor(style)
+                listOf("over-the-top", "unmistakabl").any { it in directive } shouldBe true
+            }
+        }
+    }
+
+    @Test
+    fun `holiday personas end on the forecast`() {
+        // A trailing laugh or catchphrase makes the forecast harder to remember.
+        for (style in listOf(TtsStyle.FATHER_CHRISTMAS, TtsStyle.NEW_YEARS_HOST, TtsStyle.PIRATE)) {
+            withClue("style=$style") {
+                styleDirectiveFor(style).shouldContain("end on the forecast itself, with nothing added after it")
+            }
+        }
     }
 
     @Test

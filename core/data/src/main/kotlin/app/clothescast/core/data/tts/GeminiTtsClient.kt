@@ -109,7 +109,8 @@ internal const val GEMINI_API_VERSION = "v1beta"
  * for the over-the-top film or cartoon character and say it isn't an ordinary
  * speaker: asked politely, Gemini read the leprechaun as a normal Irish voice.
  * They end on the forecast itself: a holiday greeting opens the briefing,
- * but a trailing laugh or catchphrase makes the forecast harder to remember. The King, the sci-fi narrator and the
+ * but a trailing laugh or catchphrase makes the forecast harder to remember.
+ * The vampire's closing laugh is the one exception, kept on purpose. The King, the sci-fi narrator and the
  * president scored better as they were (docs/voice-evals.md → "Holiday
  * personas (2026-11)").
  */

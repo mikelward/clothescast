@@ -840,7 +840,12 @@ two takes a side, one score a side:
 | King | 8 | 7 | Old |
 | Sci-fi narrator | 9 | 8 | Old |
 | New Year's Eve host | lower | higher | New: very excited, but better; held en-GB on both takes, where an old take drifted American |
-| President (en-US, Charon and Algenib) | not yet scored | | Old: it already sounded right |
+| President (en-US, Charon and Algenib) | slight lean | | Old prompt, pinned to Charon |
+
+For the president the old prompt (blind A) got a slight lean over a grander
+candidate ("soaring … unmistakably a great statesman … carved in stone"), and
+Algenib was weaker than Charon with both, so the president is now pinned to
+Charon, as the vampire is to Algenib.
 
 The rater noted that every take, old and new, has audible natural breaths,
 likely new with 3.8, and that they aren't necessarily an improvement.

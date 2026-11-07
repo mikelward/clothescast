@@ -1,7 +1,7 @@
 ---
 trigger: always_on
 alwaysApply: true
-last_modified: 2026-10-26
+last_modified: 2026-11-07
 ---
 
 # ClothesCast
@@ -107,11 +107,34 @@ Shared by every mikelward repo and the user-level agent config; canonical in mik
   and `./gradlew :app:assembleRelease`; both should work here. For pure-Kotlin work,
   `cd core && ../gradlew :core:domain:test` is faster. `.claude/hooks/session-start.sh`
   sets up the SDK; if `:app` still won't build, say so.
-- **What's new**. Every commit subject ships in Play's 500-character release notes: write
-  it for users, and squash supporting commits. Prefix the rest `ci:`, `test:`,
-  `internal:` or `docs:`.
-- **After a merge**. Report the new versionCode.
-- **Release notes since N**. Up to five user-facing bullets, what users most need first.
+- **What's new**. Every commit subject ships verbatim to Play's "What's new"
+  (`whatsnew-en-US`) as a `• ` bullet, oldest first since the last successful `main` run,
+  repeats once. So title each like a changelog line (maintainer, 2026-10-23): an imperative
+  verb, then the feature in the user's words, sentence case, ≤ ~80 chars, e.g. `Fix …`,
+  `Improve …`, `Add …` (`Show bigger outfit icons on the Today screen`, not `:app + :core —
+  glanceable outfit-preview icons`), with an optional parenthetical saying how. Scenario,
+  mechanism, module names, file paths and "fixes #123" go in the body. PR titles match.
+  This overrides the fleet's ≤ 70.
+- **Prefixes**. Prefix what ships nothing user-visible (CI filters these out), overriding
+  the fleet's list: `ci:`, `test:` (only tests/fixtures/snapshots — `src/test/`,
+  `src/androidTest/`, `app/snapshots/`), `internal:` (tooling, build, refactors, project
+  meta), `docs:` (`docs/`, `*.md` at any depth, dotfiles — `PRIVACY.md` included, since
+  "What's new" is a store field nobody sees at update time). Never `build:` or
+  `refactor:`: CI doesn't filter them, so they ship. A mixed test + production commit is
+  bare. A dependency the app ships is bare; a test-/build-only bump you write keeps its
+  prefix (the weekly batch lands bare).
+- **500 characters**. Play caps "What's new" there: CI drops trailing bullets and appends
+  `…`, so squash supporting commits into the one telling the user-facing story.
+- **After a merge**. Report the versionCode (`git rev-list --count origin/main` after an
+  unshallowed refspec fetch): `Need versionCode 72 (b81c23d) or higher to test PR #52's
+  fix`. Without remote Git, say it couldn't be verified.
+- **Release notes since N**. Up to five `• ` end-user bullets in one code block for
+  commits N+1..`origin/main` (freshly fetched; offline only from a complete local `main`,
+  saying it may be behind), worded as titles, one per feature (a reworked one by its final
+  state; read bodies where unclear), ranked by what the user risks without it (broken or
+  wrong first, polish last). Skip prefixed/docs/CI commits, dependency bumps (unless
+  nothing else changed — then one bullet) and anything the range added then undid. Range
+  above, one line below naming what was omitted.
 - **UI**. 4dp grid, symmetric, concise copy, standard Material icons.
 - **Weather**. Use feels-like temperature. One chance-of-rain number drives every rain
   surface; snow never calls for rain gear.

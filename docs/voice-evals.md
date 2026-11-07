@@ -847,6 +847,25 @@ candidate ("soaring … unmistakably a great statesman … carved in stone"), an
 Algenib was weaker than Charon with both, so the president is now pinned to
 Charon, as the vampire is to Algenib.
 
+### Round 2: Father Christmas prompts and voices
+
+Three prompts (the shipped one; a "grandfatherly" one, very old and chesty,
+chuckling throughout; and a one-line "Jolly old Father Christmas: deep,
+booming, chuckling, slow and twinkly") in three voices, two takes each, blind:
+
+| Voice | Shipped | Grandfatherly | Short |
+|---|---|---|---|
+| Algenib | 9 | 9 | 8 |
+| Charon | 8 | 7 | 7 |
+| Enceladus | 6 | not scored | not scored |
+
+On Algenib the grandfatherly prompt was "distinctive and Christmassy, best of
+the lot so far" and the shipped one "a little better still", so Father
+Christmas is now pinned to Algenib with the shipped prompt. On Charon the
+short prompt "sounds a bit Kelsey Grammer" and the grandfatherly one "a bit
+old timey". No take said the "Ho ho ho!" the prompt asked for, which was
+fine: a trailing flourish distracts from the forecast.
+
 The rater noted that every take, old and new, has audible natural breaths,
 likely new with 3.8, and that they aren't necessarily an improvement.
 

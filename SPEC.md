@@ -116,6 +116,14 @@ I put on before I leave?" instead of a full weather-office report.
 
 - **Feels-like first.** Clothing rules and user-facing temperature advice use
   apparent temperature, not raw 2 m air temperature.
+- **One chance of rain drives every rain surface.** The prose, the umbrella and
+  rain-jacket defaults and the conditions strip's droplet all read the same
+  blended-consensus chance of rain, so they can't disagree. At **10%** or more
+  the prose says "chance of rain", the umbrella default fires and the strip
+  shows a droplet; at **50%** or more the prose drops the hedge and says
+  "rain", and the rain-jacket default fires. There is no per-model,
+  weather-code or trace-amount path to rain advice, and snow never calls for
+  rain gear, even above those bars.
 - **One sentence should be enough.** The core briefing should fit in a
   notification, sound natural over TTS, and stay useful when mirrored through
   MQTT or Cast.

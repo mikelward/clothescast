@@ -172,7 +172,7 @@ internal const val GEMINI_TTS_STYLE_DIRECTIVE_FATHER_CHRISTMAS: String =
         "big, round, rosy-cheeked Santa himself: a deep, rich, booming voice, " +
         "warm and slow, bubbling with chuckles and twinkly delight, as if " +
         "reading the forecast to children on his knee. Lean into the cheer on " +
-        "every cosy word. You may add brief in-character touches such as " +
+        "every cozy word. You may add brief in-character touches such as " +
         "'Well, well, well', but end on the forecast itself, with nothing added " +
         "after it. No audio effects, background noise, or vinyl-style " +
         "texture.\n\n"

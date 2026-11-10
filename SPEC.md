@@ -230,6 +230,19 @@ I put on before I leave?" instead of a full weather-office report.
   report was really sent is unknowable, so earlier runs stay on the device under
   the log's own bound (the newest five) and a later report may repeat some of
   them.
+- **Backup and transfer:** Android Auto Backup and device-to-device
+  transfer carry the user's choices: the `settings` DataStore, the
+  `secure_key_store` ciphertext and the in-app locale
+  (`res/xml/data_extraction_rules.xml`, an include list). Caches, alarm and
+  widget state, WorkManager, Firebase IDs and sign-in, logs and the Tink
+  keyset stay behind. Without its Keystore-sealed keyset the new install
+  can't decrypt the restored keys: the Gemini key reads as needing re-entry
+  (keeping own-key speech off the shared proxy) and the MQTT and Google
+  slots clear on first use. Cloud backup runs only with end-to-end
+  encryption (a screen lock), because settings can hold a chosen location.
+  A restore arms the delivery alarms within seconds through a one-shot
+  alarm from the backup agent, so a new phone gets its forecast without the
+  app being opened first.
 - **Runtime permissions:** coarse / background location, notifications,
   calendar, and exact-alarm-related platform capabilities must have explicit UX
   and fallbacks.

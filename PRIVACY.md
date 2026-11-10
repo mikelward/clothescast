@@ -1,6 +1,6 @@
 # Privacy Policy
 
-_Last updated: 2026-10-23_
+_Last updated: 2026-11-10_
 
 ClothesCast is a daily weather-insight app for Android. This policy
 describes what data the app handles, where it goes, and what control you
@@ -75,6 +75,14 @@ have over it.
   broker host and credentials are entirely yours; nothing ClothesCast
   sends goes to a service the developer operates. See "Smart Home / Home
   Assistant bridge" below for what's in the payload.
+- Your **settings travel with Android's backup**. If Google backup is on
+  for your phone, Android copies ClothesCast's settings (your wardrobe,
+  schedules, a location you chose, Smart Home broker address and user
+  name, which calendars you picked) to your Google account, end-to-end encrypted with your screen
+  lock, and puts them back when you reinstall or set up a new phone; a
+  phone-to-phone transfer copies them directly. Saved API keys and
+  passwords go only as ciphertext the new phone can't read, so you enter
+  them again. See "Backup and moving to a new phone" below.
 - Nothing is sold, no advertising, no ad-targeting profiles, no
   third-party data sharing beyond the services listed below. (The
   aggregate usage analytics + crash reports above _do_ count as
@@ -432,6 +440,28 @@ Online TTS (the Gemini voice) has two paths.
   proxy involvement, and no sign-in needed. Your key is never shared
   with us or any third party.
 
+### Backup and moving to a new phone
+
+ClothesCast uses Android's own backup. The developer never sees it.
+
+- **What's copied:** the app's settings, including your wardrobe and
+  colours, schedules, voice, forecasters, holidays, a location you chose
+  by hand (its coordinates and name), your Smart Home broker's address,
+  topic and user name, the name you gave it, your cast device, and which
+  calendars you switched on or off (by account and calendar ID, never
+  their events); the
+  in-app language; and the ciphertext of any API keys and broker password.
+- **What isn't:** the key that decrypts that ciphertext (it is sealed in
+  your phone's hardware and can't leave it), so keys and passwords have
+  to be entered again; cached forecasts, insights and alerts; your Google
+  sign-in for ClothesCast; logs; and crash reports.
+- **Where it goes:** to your Google account, only when backup is on and
+  your phone has a screen lock, so Android can encrypt it end to end; or
+  straight to your new phone in a phone-to-phone transfer.
+- **Turning it off:** Android's Settings → System → Backup (the name
+  varies by phone) turns backup off for all apps; deleting the backup
+  there removes the copy.
+
 ## Third-party services
 
 ClothesCast talks to these services on your behalf. Their own privacy
@@ -448,6 +478,7 @@ policies apply to anything they receive:
 | ClothesCast TTS proxy (Cloud Function, ClothesCast-operated) | The short rendered insight sentence, your Firebase sign-in token, a Firebase App Check token, and the Gemini model name | Online TTS with the free voice, while signed in with Google |
 | [Google Gemini API](https://ai.google.dev/gemini-api/terms) | The short rendered insight sentence (forwarded by the proxy, or sent directly when you use your own key) | Online TTS, either path |
 | Your self-hosted MQTT broker (e.g. Mosquitto inside Home Assistant) | The short rendered insight sentence; the outfit-card image, TTS audio, and muxed MP4 on sibling topics; an update timestamp; and a calendar-derived `has_events` boolean (no event titles, times, or locations) — all as retained MQTT messages | Only if you opt in to the Smart Home bridge and configure a broker |
+| Android backup (Google One / Google Drive backup), governed by [Google's Privacy Policy](https://policies.google.com/privacy) | Your ClothesCast settings and the encrypted (unreadable) key store, end-to-end encrypted with your screen lock — see "Backup and moving to a new phone" | Only if backup is on in your phone's settings and the phone has a screen lock; Android decides when |
 | Analytics / crash-reporting service (e.g. Firebase Crashlytics + Google Analytics for Firebase) | Aggregate usage events and crash diagnostics — see "Analytics and crash reporting" below for what's in and out | Only if you turn on crash and usage reporting in Settings → Privacy, plus the one upgrade exception described there |
 
 These providers act as service providers fulfilling a single request and
@@ -491,7 +522,8 @@ terms.
   doesn't delete it; use Delete account first, or follow
   [Delete your ClothesCast account](docs/delete-account.md).
 - **Everything:** Uninstalling the app deletes all locally stored data
-  (settings, cached insight, API keys).
+  (settings, cached insight, API keys). A copy of the settings in your
+  Android backup stays until you turn backup off or delete it.
 
 ## Analytics and crash reporting
 
@@ -660,6 +692,13 @@ Open an issue at <https://github.com/mikelward/clothescast/issues> or
 email the address listed on the Play Store listing.
 
 ## Changelog
+
+- **2026-11-10** — ClothesCast's settings now go into Android's backup:
+  to your Google account, end-to-end encrypted with your screen lock,
+  when backup is on, or straight across in a phone-to-phone transfer.
+  They include a location you chose and your Smart Home broker's address
+  and user name. API keys and passwords go only as ciphertext the new
+  phone can't decrypt; caches, sign-in and logs stay behind.
 
 - **2026-10-23** — Opening **Current countries** on the Alerts page
   downloads the public alerts index to list the countries alerts come

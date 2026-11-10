@@ -85,7 +85,10 @@
 
     <application
         android:name=".ClothesCastApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
+        android:backupAgent=".backup.ClothesCastBackupAgent"
+        android:fullBackupOnly="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         tools:ignore="UnusedAttribute"
         android:banner="@drawable/tv_banner"
         android:enableOnBackInvokedCallback="true"

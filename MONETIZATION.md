@@ -1230,16 +1230,14 @@ false premise:
 
 - **A client-side entitlement cannot work here at all.** The cap is enforced by
   the Cloud Function against an anonymous Firebase uid that rotates on reinstall,
-  and `allowBackup="false"` means nothing survives a device transfer. A
+  and backup deliberately leaves Firebase IDs and sign-in behind. A
   client-side claim on a server-enforced quota is a request, not a fact — so the
-  usual `firstInstallTime` stamp is not merely lossy here, it is inert. **That
-  premise expires in 2027**, when the platform requires backup and restore
-  (maintainer, 2026-09-03) — and independently of the mandate, **we don't hold a
-  user's data captive**, so nothing here may be designed to rely on their data
-  being unable to follow them. It does not rescue a client-side entitlement,
-  which fails on the server-enforcement argument regardless, but it does mean
-  `allowBackup="false"` cannot be assumed permanent when anything else is built
-  on it.
+  usual `firstInstallTime` stamp is not merely lossy here, it is inert. Settings
+  do follow the user now (Auto Backup and device transfer, ahead of the 2027
+  platform requirement; maintainer, 2026-09-03) — and independently of the
+  mandate, **we don't hold a user's data captive**, so nothing here may be
+  designed to rely on their data being unable to follow them. A backed-up
+  client-side claim is still only a request against a server-enforced quota.
 - **The server's own signal is real but partial.** A uid with quota history
   predating a cutoff is provably an existing user, and no sibling app has anything
   equivalent. But it is **not an install census**: the quota document is written

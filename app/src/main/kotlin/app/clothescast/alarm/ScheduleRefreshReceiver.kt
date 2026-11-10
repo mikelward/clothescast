@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.first
  *  - clock change (a manual or carrier correction moves the wall clock, so the
  *    armed RTC instant no longer matches the scheduled wall-clock time)
  *  - locale change (the next insight should be generated in the new language)
+ *  - a restore from backup or another phone ([ACTION_RESTORED], from
+ *    [app.clothescast.backup.ClothesCastBackupAgent]): the restored schedule has
+ *    no alarms behind it yet
  *
  * The schedules' `zoneId` is re-resolved from `ZoneId.systemDefault()` at read time, so
  * we just need to recompute "next 7am" / "next 7pm" with the now-current zone and rearm.
@@ -56,5 +59,8 @@ class ScheduleRefreshReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "ScheduleRefreshReceiver"
+
+        /** Sent by the backup agent's one-shot alarm after a restore. */
+        const val ACTION_RESTORED = "app.clothescast.action.RESTORED"
     }
 }

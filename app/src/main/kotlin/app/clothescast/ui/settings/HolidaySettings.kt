@@ -64,6 +64,7 @@ import app.clothescast.core.domain.model.HolidayOverride
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.UpcomingCalendarEvent
 import app.clothescast.ui.EdgeFadeOverlay
+import app.clothescast.ui.today.HolidayLabelText
 import kotlinx.coroutines.launch
 import java.text.Collator
 import java.time.LocalDate
@@ -749,8 +750,9 @@ private fun HolidayOverrideRow(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = "${theme.emoji}  $displayName",
+        HolidayLabelText(
+            theme = theme,
+            text = displayName,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(1f),
         )

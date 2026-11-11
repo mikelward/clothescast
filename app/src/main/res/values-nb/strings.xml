@@ -878,7 +878,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="settings_smart_home_name_hint">f.eks. Annas</string>
 
     <!-- Holiday banners (missing ones) -->
-    <string name="holiday_banner_anzac_day">Vi glemmer aldri</string>
+    <string name="holiday_banner_anzac_day">Anzac-dagen</string>
+    <string name="holiday_spoken_anzac_day">Vi glemmer aldri</string>
     <string name="holiday_banner_australia_day">God Australia Day</string>
     <string name="holiday_banner_austria_national_day">God Østerrikes nasjonaldag</string>
     <string name="holiday_banner_bastille_day">God Bastiljedagen</string>
@@ -892,7 +893,8 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="holiday_banner_croatia_victory_day">God Kroatias seierdag</string>
     <string name="holiday_banner_fathers_day_jun">God Farsdag</string>
     <string name="holiday_banner_fathers_day_sep">God Farsdag</string>
-    <string name="holiday_banner_fr_armistice_day">Vi glemmer aldri</string>
+    <string name="holiday_banner_fr_armistice_day">Minnedag</string>
+    <string name="holiday_spoken_fr_armistice_day">Vi glemmer aldri</string>
     <string name="holiday_banner_german_unity_day">God Tysk enhetsdag</string>
     <string name="holiday_banner_italy_republic_day">God Italiensk republikkdag</string>
     <string name="holiday_banner_japan_coming_of_age_day">God Japansk myndighetsdag</string>
@@ -903,9 +905,11 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="holiday_banner_korean_hangeul_day">God Hangeul-dagen</string>
     <string name="holiday_banner_korean_independence_movement_day">God Koreansk uavhengighetsdag</string>
     <string name="holiday_banner_korean_liberation_day">God Koreansk frigjøringsdag</string>
-    <string name="holiday_banner_korean_memorial_day">Vi hedrer Koreas falne</string>
+    <string name="holiday_banner_korean_memorial_day">Koreansk minnedag</string>
+    <string name="holiday_spoken_korean_memorial_day">Vi hedrer Koreas falne</string>
     <string name="holiday_banner_mlk_day">Vi hedrer dr. King</string>
-    <string name="holiday_banner_remembrance_day">Vi glemmer aldri</string>
+    <string name="holiday_banner_remembrance_day">Minnedag</string>
+    <string name="holiday_spoken_remembrance_day">Vi glemmer aldri</string>
     <string name="holiday_banner_spain_hispanic_day">God Día de la Hispanidad</string>
     <string name="holiday_banner_st_andrews_day">God Sankta Andreas dag</string>
     <string name="holiday_banner_st_davids_day">God Sankta Davids dag</string>
@@ -914,10 +918,12 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="holiday_banner_uk_kings_birthday">Gratulerer med kongens fødselsdag</string>
     <string name="holiday_banner_uk_mothering_sunday">God Morsdag (UK)</string>
     <string name="holiday_banner_us_independence_day">God 4. juli</string>
-    <string name="holiday_banner_us_memorial_day">Vi hedrer våre falne</string>
+    <string name="holiday_banner_us_memorial_day">Memorial Day</string>
+    <string name="holiday_spoken_us_memorial_day">Vi hedrer våre falne</string>
     <string name="holiday_banner_us_presidents_day">God Presidents\' Day</string>
     <string name="holiday_banner_us_thanksgiving">God Thanksgiving</string>
-    <string name="holiday_banner_us_veterans_day">Vi hedrer våre veteraner</string>
+    <string name="holiday_banner_us_veterans_day">Veterans Day</string>
+    <string name="holiday_spoken_us_veterans_day">Vi hedrer våre veteraner</string>
     <string name="holiday_banner_waitangi_day">God Waitangi Day</string>
     <string name="settings_calendar_birthdays">Kalenderbursdag</string>
     <string name="settings_calendar_public_holidays">Kalenderhelligdager</string>
@@ -1087,13 +1093,16 @@ native names for all locales (e.g. "Tysk (Tyskland)", "Fransk (Frankrike)").
     <string name="holiday_banner_turkey_republic_day">Gratulerer med republikkens dag</string>
     <string name="holiday_banner_turkey_victory_day">Gratulerer med seiersdagen</string>
     <string name="holiday_banner_turkey_youth_day">Gratulerer med ungdoms- og idrettsdagen</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Vi skal minnes dem</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Minnesøndag</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Vi skal minnes dem</string>
     <string name="holiday_banner_ukraine_constitution_day">Gratulerer med grunnlovsdagen</string>
-    <string name="holiday_banner_ukraine_defender_day">Til ære for Ukrainas forsvarere</string>
+    <string name="holiday_banner_ukraine_defender_day">Ukrainas forsvarsdag</string>
+    <string name="holiday_spoken_ukraine_defender_day">Til ære for Ukrainas forsvarere</string>
     <string name="holiday_banner_ukraine_independence_day">Gratulerer med uavhengighetsdagen</string>
     <string name="holiday_banner_ukraine_statehood_day">Gratulerer med Ukrainas statsdannelsesdag</string>
     <string name="holiday_banner_ukraine_unity_day">Gratulerer med enhetens dag</string>
-    <string name="holiday_banner_ukraine_victory_day">Til ære for de falne</string>
+    <string name="holiday_banner_ukraine_victory_day">Seiersdagen</string>
+    <string name="holiday_spoken_ukraine_victory_day">Til ære for de falne</string>
     <string name="holiday_banner_us_election_day">Gå og stem</string>
     <string name="holiday_banner_us_labor_day">Gratulerer med Labor Day</string>
     <string name="holiday_banner_vietnam_national_day">Gratulerer med nasjonaldagen</string>

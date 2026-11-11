@@ -804,7 +804,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Chúc mừng Lễ Các Thánh</string>
-    <string name="holiday_banner_anzac_day">Lest we forget</string>
+    <string name="holiday_banner_anzac_day">Ngày Anzac</string>
+    <string name="holiday_spoken_anzac_day">Lest we forget</string>
     <string name="holiday_banner_assumption">Chúc mừng Lễ Đức Mẹ Lên Trời</string>
     <string name="holiday_banner_australia_day">Chúc mừng Ngày Quốc khánh Úc</string>
     <string name="holiday_banner_austria_national_day">Chúc mừng Ngày Quốc khánh Áo</string>
@@ -824,7 +825,8 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_epiphany">Chúc mừng Lễ Hiển Linh</string>
     <string name="holiday_banner_fathers_day_jun">Chúc mừng Ngày của Cha</string>
     <string name="holiday_banner_fathers_day_sep">Chúc mừng Ngày của Cha</string>
-    <string name="holiday_banner_fr_armistice_day">Lest we forget</string>
+    <string name="holiday_banner_fr_armistice_day">Ngày Tưởng niệm</string>
+    <string name="holiday_spoken_fr_armistice_day">Lest we forget</string>
     <string name="holiday_banner_german_unity_day">Chúc mừng Ngày Thống nhất Đức</string>
     <string name="holiday_banner_good_friday">Thứ Sáu Tuần Thánh</string>
     <string name="holiday_banner_halloween">Chúc mừng Halloween</string>
@@ -838,13 +840,15 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_korean_hangeul_day">Chúc mừng Ngày Hangul</string>
     <string name="holiday_banner_korean_independence_movement_day">Chúc mừng Ngày Phong trào Độc lập Hàn Quốc</string>
     <string name="holiday_banner_korean_liberation_day">Chúc mừng Ngày Giải phóng Hàn Quốc</string>
-    <string name="holiday_banner_korean_memorial_day">Tưởng niệm những người đã ngã xuống vì Hàn Quốc</string>
+    <string name="holiday_banner_korean_memorial_day">Ngày Tưởng niệm</string>
+    <string name="holiday_spoken_korean_memorial_day">Tưởng niệm những người đã ngã xuống vì Hàn Quốc</string>
     <string name="holiday_banner_labour_day">Chúc mừng Ngày Lao động</string>
     <string name="holiday_banner_mlk_day">Tưởng nhớ Tiến sĩ King</string>
     <string name="holiday_banner_mothers_day">Chúc mừng Ngày của Mẹ</string>
     <string name="tts_greeting_birthday">Chúc mừng sinh nhật</string>
     <string name="holiday_banner_new_years_day">Chúc mừng Năm Mới</string>
-    <string name="holiday_banner_remembrance_day">Lest we forget</string>
+    <string name="holiday_banner_remembrance_day">Ngày Tưởng niệm</string>
+    <string name="holiday_spoken_remembrance_day">Lest we forget</string>
     <string name="holiday_banner_spain_hispanic_day">Chúc mừng Día de la Hispanidad</string>
     <string name="holiday_banner_st_andrews_day">Chúc mừng Ngày Thánh Andrew</string>
     <string name="holiday_banner_st_davids_day">Chúc mừng Ngày Thánh David</string>
@@ -854,10 +858,12 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_uk_kings_birthday">Chúc mừng Sinh nhật Nhà vua</string>
     <string name="holiday_banner_uk_mothering_sunday">Chúc mừng Chủ nhật Tôn vinh Mẹ</string>
     <string name="holiday_banner_us_independence_day">Chúc mừng Ngày 4 tháng 7</string>
-    <string name="holiday_banner_us_memorial_day">Tưởng niệm những người đã ngã xuống</string>
+    <string name="holiday_banner_us_memorial_day">Ngày Tưởng niệm Mỹ</string>
+    <string name="holiday_spoken_us_memorial_day">Tưởng niệm những người đã ngã xuống</string>
     <string name="holiday_banner_us_presidents_day">Chúc mừng Ngày Tổng thống</string>
     <string name="holiday_banner_us_thanksgiving">Chúc mừng Lễ Tạ ơn</string>
-    <string name="holiday_banner_us_veterans_day">Tôn vinh các Cựu chiến binh</string>
+    <string name="holiday_banner_us_veterans_day">Ngày Cựu chiến binh</string>
+    <string name="holiday_spoken_us_veterans_day">Tôn vinh các Cựu chiến binh</string>
     <string name="holiday_banner_valentines_day">Chúc mừng Ngày Valentine</string>
     <string name="holiday_banner_waitangi_day">Chúc mừng Ngày Waitangi</string>
     <string name="holiday_name_us_presidents_day">Ngày Tổng thống</string>
@@ -1120,13 +1126,16 @@ Skipped intentionally: app_name (brand), insight_time_am/pm/midnight/noon
     <string name="holiday_banner_turkey_republic_day">Chúc mừng Ngày Cộng hòa</string>
     <string name="holiday_banner_turkey_victory_day">Chúc mừng Ngày Chiến thắng</string>
     <string name="holiday_banner_turkey_youth_day">Chúc mừng Ngày Thanh niên và Thể thao</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Chúng ta sẽ nhớ họ</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Chúa Nhật Tưởng niệm</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Chúng ta sẽ nhớ họ</string>
     <string name="holiday_banner_ukraine_constitution_day">Chúc mừng Ngày Hiến pháp</string>
-    <string name="holiday_banner_ukraine_defender_day">Tưởng nhớ những người bảo vệ Ukraine</string>
+    <string name="holiday_banner_ukraine_defender_day">Ngày Người Bảo vệ Ukraine</string>
+    <string name="holiday_spoken_ukraine_defender_day">Tưởng nhớ những người bảo vệ Ukraine</string>
     <string name="holiday_banner_ukraine_independence_day">Chúc mừng Ngày Độc lập</string>
     <string name="holiday_banner_ukraine_statehood_day">Chúc mừng Ngày Nhà nước Ukraine</string>
     <string name="holiday_banner_ukraine_unity_day">Chúc mừng Ngày Đoàn kết</string>
-    <string name="holiday_banner_ukraine_victory_day">Tưởng nhớ những người đã hy sinh</string>
+    <string name="holiday_banner_ukraine_victory_day">Ngày Chiến thắng</string>
+    <string name="holiday_spoken_ukraine_victory_day">Tưởng nhớ những người đã hy sinh</string>
     <string name="holiday_banner_us_election_day">Đi bỏ phiếu thôi</string>
     <string name="holiday_banner_us_labor_day">Chúc mừng Ngày Lao động</string>
     <string name="holiday_banner_vietnam_national_day">Chúc mừng Quốc khánh</string>

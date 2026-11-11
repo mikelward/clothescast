@@ -760,6 +760,7 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
 
     <!-- Missing holiday banners. -->
     <string name="holiday_banner_anzac_day">Dan Anzac</string>
+    <string name="holiday_spoken_anzac_day">Dan Anzac</string>
     <string name="holiday_banner_australia_day">Srečen Dan Avstralije</string>
     <string name="holiday_banner_austria_national_day">Srečen avstrijski državni praznik</string>
     <string name="holiday_banner_bastille_day">Srečen Dan Bastille</string>
@@ -770,7 +771,8 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="holiday_banner_canadian_thanksgiving">Srečen kanadski zahvalni dan</string>
     <string name="holiday_banner_fathers_day_jun">Srečen Dan očetov</string>
     <string name="holiday_banner_fathers_day_sep">Srečen Dan očetov</string>
-    <string name="holiday_banner_fr_armistice_day">Spominjamo padle</string>
+    <string name="holiday_banner_fr_armistice_day">Dan spomina</string>
+    <string name="holiday_spoken_fr_armistice_day">Spominjamo padle</string>
     <string name="holiday_banner_german_unity_day">Srečen Dan nemške enotnosti</string>
     <string name="holiday_banner_italy_republic_day">Srečen Dan republike</string>
     <string name="holiday_banner_japan_coming_of_age_day">Srečen Dan polnoletnosti</string>
@@ -781,9 +783,11 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="holiday_banner_korean_hangeul_day">Srečen Dan Hangul</string>
     <string name="holiday_banner_korean_independence_movement_day">Spominjamo korejsko gibanje za neodvisnost</string>
     <string name="holiday_banner_korean_liberation_day">Srečen Dan osvoboditve</string>
-    <string name="holiday_banner_korean_memorial_day">Spominjamo padle</string>
+    <string name="holiday_banner_korean_memorial_day">Korejski dan spomina</string>
+    <string name="holiday_spoken_korean_memorial_day">Spominjamo padle</string>
     <string name="holiday_banner_mlk_day">Srečen Martin Luther King dan</string>
-    <string name="holiday_banner_remembrance_day">Spominjamo padle</string>
+    <string name="holiday_banner_remembrance_day">Dan spomina</string>
+    <string name="holiday_spoken_remembrance_day">Spominjamo padle</string>
     <string name="holiday_banner_spain_hispanic_day">Srečen Dan Hispanidada</string>
     <string name="holiday_banner_st_andrews_day">Srečen Dan svetega Andreja</string>
     <string name="holiday_banner_st_davids_day">Srečen Dan svetega Davida</string>
@@ -792,10 +796,12 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="holiday_banner_uk_kings_birthday">Srečen Kraljevin rojstni dan</string>
     <string name="holiday_banner_uk_mothering_sunday">Srečna materinska nedelja</string>
     <string name="holiday_banner_us_independence_day">Srečen Dan neodvisnosti</string>
-    <string name="holiday_banner_us_memorial_day">Spominjamo padle</string>
+    <string name="holiday_banner_us_memorial_day">Memorial Day</string>
+    <string name="holiday_spoken_us_memorial_day">Spominjamo padle</string>
     <string name="holiday_banner_us_presidents_day">Srečen Presidents\' Day</string>
     <string name="holiday_banner_us_thanksgiving">Srečen zahvalni dan</string>
-    <string name="holiday_banner_us_veterans_day">Čaščenje veteranov</string>
+    <string name="holiday_banner_us_veterans_day">Veterans Day</string>
+    <string name="holiday_spoken_us_veterans_day">Čaščenje veteranov</string>
     <string name="holiday_banner_waitangi_day">Srečen Dan Waitangi</string>
     <string name="holiday_banner_croatia_statehood_day">Srečen Dan državnosti Hrvaške</string>
     <string name="holiday_banner_croatia_victory_day">Srečen Dan zmage Hrvaške</string>
@@ -1043,13 +1049,16 @@ informal "ti"-form throughout, mirroring the Croatian / Serbian pass.
     <string name="holiday_banner_turkey_republic_day">Vesel dan republike</string>
     <string name="holiday_banner_turkey_victory_day">Vesel dan zmage</string>
     <string name="holiday_banner_turkey_youth_day">Vesel dan mladine in športa</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Spominjali se jih bomo</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Spominska nedelja</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Spominjali se jih bomo</string>
     <string name="holiday_banner_ukraine_constitution_day">Vesel dan ustave</string>
-    <string name="holiday_banner_ukraine_defender_day">V čast ukrajinskim branilcem</string>
+    <string name="holiday_banner_ukraine_defender_day">Dan branilca Ukrajine</string>
+    <string name="holiday_spoken_ukraine_defender_day">V čast ukrajinskim branilcem</string>
     <string name="holiday_banner_ukraine_independence_day">Vesel dan neodvisnosti</string>
     <string name="holiday_banner_ukraine_statehood_day">Vesel dan ukrajinske državnosti</string>
     <string name="holiday_banner_ukraine_unity_day">Vesel dan enotnosti</string>
-    <string name="holiday_banner_ukraine_victory_day">V čast padlim</string>
+    <string name="holiday_banner_ukraine_victory_day">Dan zmage</string>
+    <string name="holiday_spoken_ukraine_victory_day">V čast padlim</string>
     <string name="holiday_banner_us_election_day">Pojdi voliti</string>
     <string name="holiday_banner_us_labor_day">Vesel praznik dela</string>
     <string name="holiday_banner_vietnam_national_day">Vesel državni praznik</string>

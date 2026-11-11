@@ -18,4 +18,4 @@
   would quietly lose Sign in with Google.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:keep="@string/holiday_name_*,@string/holiday_banner_*,@string/settings_holiday_country_*,@string/default_web_client_id" />
+    tools:keep="@string/holiday_name_*,@string/holiday_banner_*,@string/holiday_spoken_*,@string/settings_holiday_country_*,@string/default_web_client_id" />

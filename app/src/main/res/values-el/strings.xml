@@ -895,6 +895,7 @@ zh-CN) is unchanged; only the displayed label localizes.
 
     <!-- Missing holiday banners. -->
     <string name="holiday_banner_anzac_day">Ημέρα Anzac</string>
+    <string name="holiday_spoken_anzac_day">Ημέρα Anzac</string>
     <string name="holiday_banner_australia_day">Καλή Ημέρα Αυστραλίας</string>
     <string name="holiday_banner_austria_national_day">Καλή Αυστριακή Εθνική Εορτή</string>
     <string name="holiday_banner_bastille_day">Καλή Ημέρα Βαστίλης</string>
@@ -905,7 +906,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_canadian_thanksgiving">Καλή Ημέρα Ευχαριστιών Καναδά</string>
     <string name="holiday_banner_fathers_day_jun">Χρόνια Πολλά για τη Γιορτή του Πατέρα</string>
     <string name="holiday_banner_fathers_day_sep">Χρόνια Πολλά για τη Γιορτή του Πατέρα</string>
-    <string name="holiday_banner_fr_armistice_day">Τιμούμε τους πεσόντες</string>
+    <string name="holiday_banner_fr_armistice_day">Ημέρα Ανακωχής</string>
+    <string name="holiday_spoken_fr_armistice_day">Τιμούμε τους πεσόντες</string>
     <string name="holiday_banner_german_unity_day">Καλή Ημέρα Γερμανικής Ενότητας</string>
     <string name="holiday_banner_italy_republic_day">Καλή Ημέρα Δημοκρατίας</string>
     <string name="holiday_banner_japan_coming_of_age_day">Καλή Ημέρα Ενηλικίωσης</string>
@@ -916,9 +918,11 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_korean_hangeul_day">Καλή Ημέρα Hangul</string>
     <string name="holiday_banner_korean_independence_movement_day">Τιμούμε το κορεατικό κίνημα ανεξαρτησίας</string>
     <string name="holiday_banner_korean_liberation_day">Καλή Ημέρα Απελευθέρωσης</string>
-    <string name="holiday_banner_korean_memorial_day">Τιμούμε τους πεσόντες</string>
+    <string name="holiday_banner_korean_memorial_day">Κορεατική Ημέρα Μνήμης</string>
+    <string name="holiday_spoken_korean_memorial_day">Τιμούμε τους πεσόντες</string>
     <string name="holiday_banner_mlk_day">Καλή Ημέρα Μάρτιν Λούθερ Κινγκ</string>
-    <string name="holiday_banner_remembrance_day">Τιμούμε τους πεσόντες</string>
+    <string name="holiday_banner_remembrance_day">Ημέρα Ανακωχής</string>
+    <string name="holiday_spoken_remembrance_day">Τιμούμε τους πεσόντες</string>
     <string name="holiday_banner_spain_hispanic_day">Καλή Ημέρα Hispanidad</string>
     <string name="holiday_banner_st_andrews_day">Καλή Ημέρα Αγίου Ανδρέα</string>
     <string name="holiday_banner_st_davids_day">Καλή Ημέρα Αγίου Δαβίδ</string>
@@ -927,10 +931,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_uk_kings_birthday">Χρόνια Πολλά στον Βασιλιά</string>
     <string name="holiday_banner_uk_mothering_sunday">Καλή Κυριακή της Μητέρας</string>
     <string name="holiday_banner_us_independence_day">Καλή Ημέρα Ανεξαρτησίας</string>
-    <string name="holiday_banner_us_memorial_day">Τιμούμε τους πεσόντες</string>
+    <string name="holiday_banner_us_memorial_day">Ημέρα Μνήμης</string>
+    <string name="holiday_spoken_us_memorial_day">Τιμούμε τους πεσόντες</string>
     <string name="holiday_banner_us_presidents_day">Καλή Presidents\' Day</string>
     <string name="holiday_banner_us_thanksgiving">Καλή Ημέρα Ευχαριστιών</string>
-    <string name="holiday_banner_us_veterans_day">Τιμούμε τους βετεράνους</string>
+    <string name="holiday_banner_us_veterans_day">Veterans Day</string>
+    <string name="holiday_spoken_us_veterans_day">Τιμούμε τους βετεράνους</string>
     <string name="holiday_banner_waitangi_day">Καλή Ημέρα Waitangi</string>
     <string name="holiday_banner_croatia_statehood_day">Καλή Ημέρα Κρατικότητας Κροατίας</string>
     <string name="holiday_banner_croatia_victory_day">Καλή Ημέρα Νίκης Κροατίας</string>
@@ -1178,13 +1184,16 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_turkey_republic_day">Καλή Ημέρα Δημοκρατίας</string>
     <string name="holiday_banner_turkey_victory_day">Καλή Ημέρα Νίκης</string>
     <string name="holiday_banner_turkey_youth_day">Καλή Ημέρα Νεολαίας και Αθλητισμού</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Θα τους θυμόμαστε</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Κυριακή Μνήμης</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Θα τους θυμόμαστε</string>
     <string name="holiday_banner_ukraine_constitution_day">Καλή Ημέρα Συντάγματος</string>
-    <string name="holiday_banner_ukraine_defender_day">Τιμώντας τους υπερασπιστές της Ουκρανίας</string>
+    <string name="holiday_banner_ukraine_defender_day">Ημέρα Υπερασπιστή της Ουκρανίας</string>
+    <string name="holiday_spoken_ukraine_defender_day">Τιμώντας τους υπερασπιστές της Ουκρανίας</string>
     <string name="holiday_banner_ukraine_independence_day">Καλή Ημέρα Ανεξαρτησίας</string>
     <string name="holiday_banner_ukraine_statehood_day">Καλή Ημέρα Ουκρανικής Κρατικότητας</string>
     <string name="holiday_banner_ukraine_unity_day">Καλή Ημέρα Ενότητας</string>
-    <string name="holiday_banner_ukraine_victory_day">Τιμώντας τους πεσόντες</string>
+    <string name="holiday_banner_ukraine_victory_day">Ημέρα της Νίκης</string>
+    <string name="holiday_spoken_ukraine_victory_day">Τιμώντας τους πεσόντες</string>
     <string name="holiday_banner_us_election_day">Πήγαινε να ψηφίσεις</string>
     <string name="holiday_banner_us_labor_day">Καλή Ημέρα Εργασίας</string>
     <string name="holiday_banner_vietnam_national_day">Καλή Εθνική Εορτή</string>

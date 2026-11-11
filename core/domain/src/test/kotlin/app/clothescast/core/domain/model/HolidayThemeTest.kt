@@ -197,4 +197,21 @@ class HolidayThemeTest {
         normalizeCalendarHolidayTitle("Memorial Day. (Observed)") shouldBe "Memorial Day"
         normalizeCalendarHolidayTitle("Boxing Day! (most regions)") shouldBe "Boxing Day"
     }
+
+    @Test
+    fun `remembrance days show a poppy, never the red triangle`() {
+        listOf(
+            HolidayId.REMEMBRANCE_DAY,
+            HolidayId.UK_REMEMBRANCE_SUNDAY,
+            HolidayId.ANZAC_DAY,
+            HolidayId.US_MEMORIAL_DAY,
+            HolidayId.KOREAN_MEMORIAL_DAY,
+            HolidayId.UKRAINE_VICTORY_DAY,
+        ).forEach { id ->
+            val theme = HolidayCatalog.themeFor(id) ?: error("$id missing from catalog")
+            theme.icon shouldBe HolidayIcon.POPPY
+            theme.emoji shouldBe ""
+        }
+        HolidayCatalog.all.none { it.second.emoji == "\uD83D\uDD3A" } shouldBe true
+    }
 }

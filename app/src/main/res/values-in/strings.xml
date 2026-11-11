@@ -742,7 +742,8 @@ to values/strings.xml (English).
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Selamat Hari Semua Orang Kudus</string>
-    <string name="holiday_banner_anzac_day">Lest we forget</string>
+    <string name="holiday_banner_anzac_day">Hari Anzac</string>
+    <string name="holiday_spoken_anzac_day">Lest we forget</string>
     <string name="holiday_banner_assumption">Selamat Hari Assumsi</string>
     <string name="holiday_banner_australia_day">Selamat Hari Australia</string>
     <string name="holiday_banner_austria_national_day">Selamat Hari Nasional Austria</string>
@@ -762,7 +763,8 @@ to values/strings.xml (English).
     <string name="holiday_banner_epiphany">Selamat Hari Epifani</string>
     <string name="holiday_banner_fathers_day_jun">Selamat Hari Ayah</string>
     <string name="holiday_banner_fathers_day_sep">Selamat Hari Ayah</string>
-    <string name="holiday_banner_fr_armistice_day">Lest we forget</string>
+    <string name="holiday_banner_fr_armistice_day">Hari Peringatan</string>
+    <string name="holiday_spoken_fr_armistice_day">Lest we forget</string>
     <string name="holiday_banner_german_unity_day">Selamat Hari Persatuan Jerman</string>
     <string name="holiday_banner_good_friday">Jumat Agung</string>
     <string name="holiday_banner_halloween">Selamat Halloween</string>
@@ -776,13 +778,15 @@ to values/strings.xml (English).
     <string name="holiday_banner_korean_hangeul_day">Selamat Hari Hangul</string>
     <string name="holiday_banner_korean_independence_movement_day">Selamat Hari Gerakan Kemerdekaan Korea</string>
     <string name="holiday_banner_korean_liberation_day">Selamat Hari Pembebasan Korea</string>
-    <string name="holiday_banner_korean_memorial_day">Menghormati pahlawan Korea</string>
+    <string name="holiday_banner_korean_memorial_day">Hari Peringatan Korea</string>
+    <string name="holiday_spoken_korean_memorial_day">Menghormati pahlawan Korea</string>
     <string name="holiday_banner_labour_day">Selamat Hari Buruh</string>
     <string name="holiday_banner_mlk_day">Menghormati Dr. King</string>
     <string name="holiday_banner_mothers_day">Selamat Hari Ibu</string>
     <string name="tts_greeting_birthday">Selamat ulang tahun</string>
     <string name="holiday_banner_new_years_day">Selamat Tahun Baru</string>
-    <string name="holiday_banner_remembrance_day">Lest we forget</string>
+    <string name="holiday_banner_remembrance_day">Hari Peringatan</string>
+    <string name="holiday_spoken_remembrance_day">Lest we forget</string>
     <string name="holiday_banner_spain_hispanic_day">Selamat Día de la Hispanidad</string>
     <string name="holiday_banner_st_andrews_day">Selamat Hari Santo Andrew</string>
     <string name="holiday_banner_st_davids_day">Selamat Hari Santo David</string>
@@ -792,10 +796,12 @@ to values/strings.xml (English).
     <string name="holiday_banner_uk_kings_birthday">Selamat Ulang Tahun Raja</string>
     <string name="holiday_banner_uk_mothering_sunday">Selamat Hari Ibu</string>
     <string name="holiday_banner_us_independence_day">Selamat 4 Juli</string>
-    <string name="holiday_banner_us_memorial_day">Menghormati pahlawan kita</string>
+    <string name="holiday_banner_us_memorial_day">Hari Peringatan AS</string>
+    <string name="holiday_spoken_us_memorial_day">Menghormati pahlawan kita</string>
     <string name="holiday_banner_us_presidents_day">Selamat Hari Presiden</string>
     <string name="holiday_banner_us_thanksgiving">Selamat Thanksgiving</string>
-    <string name="holiday_banner_us_veterans_day">Menghormati para Veteran kita</string>
+    <string name="holiday_banner_us_veterans_day">Hari Veteran</string>
+    <string name="holiday_spoken_us_veterans_day">Menghormati para Veteran kita</string>
     <string name="holiday_banner_valentines_day">Selamat Hari Valentine</string>
     <string name="holiday_banner_waitangi_day">Selamat Hari Waitangi</string>
     <string name="holiday_name_us_presidents_day">Hari Presiden</string>
@@ -1058,13 +1064,16 @@ to values/strings.xml (English).
     <string name="holiday_banner_turkey_republic_day">Selamat Hari Republik</string>
     <string name="holiday_banner_turkey_victory_day">Selamat Hari Kemenangan</string>
     <string name="holiday_banner_turkey_youth_day">Selamat Hari Pemuda dan Olahraga</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Kami akan mengenang mereka</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Minggu Pengingatan</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Kami akan mengenang mereka</string>
     <string name="holiday_banner_ukraine_constitution_day">Selamat Hari Konstitusi</string>
-    <string name="holiday_banner_ukraine_defender_day">Mengenang para pembela Ukraina</string>
+    <string name="holiday_banner_ukraine_defender_day">Hari Pembela Ukraina</string>
+    <string name="holiday_spoken_ukraine_defender_day">Mengenang para pembela Ukraina</string>
     <string name="holiday_banner_ukraine_independence_day">Selamat Hari Kemerdekaan</string>
     <string name="holiday_banner_ukraine_statehood_day">Selamat Hari Kenegaraan Ukraina</string>
     <string name="holiday_banner_ukraine_unity_day">Selamat Hari Persatuan</string>
-    <string name="holiday_banner_ukraine_victory_day">Mengenang yang gugur</string>
+    <string name="holiday_banner_ukraine_victory_day">Hari Kemenangan</string>
+    <string name="holiday_spoken_ukraine_victory_day">Mengenang yang gugur</string>
     <string name="holiday_banner_us_election_day">Ayo pergi memilih</string>
     <string name="holiday_banner_us_labor_day">Selamat Hari Buruh</string>
     <string name="holiday_banner_vietnam_national_day">Selamat Hari Nasional</string>

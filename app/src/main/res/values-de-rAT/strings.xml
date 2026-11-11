@@ -490,16 +490,16 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_fathers_day_sep">Frohen Vatertag</string>
     <string name="holiday_banner_us_presidents_day">Frohen Presidents\' Day</string>
     <string name="holiday_banner_us_independence_day">Frohen 4. Juli</string>
-    <string name="holiday_banner_us_memorial_day">Wir gedenken der Gefallenen</string>
+    <string name="holiday_spoken_us_memorial_day">Wir gedenken der Gefallenen</string>
     <string name="holiday_banner_us_thanksgiving">Frohen Erntedanktag</string>
-    <string name="holiday_banner_us_veterans_day">Wir ehren unsere Veteranen</string>
+    <string name="holiday_spoken_us_veterans_day">Wir ehren unsere Veteranen</string>
     <string name="holiday_banner_mlk_day">Zu Ehren von Dr. King</string>
     <string name="holiday_banner_juneteenth">Frohen Juneteenth</string>
     <string name="holiday_banner_canada_day">Frohen Canada Day</string>
     <string name="holiday_banner_canadian_thanksgiving">Frohen Erntedanktag</string>
     <string name="holiday_banner_australia_day">Frohen Australia Day</string>
     <string name="holiday_banner_waitangi_day">Frohen Waitangi Day</string>
-    <string name="holiday_banner_anzac_day">Wir gedenken der Gefallenen</string>
+    <string name="holiday_spoken_anzac_day">Wir gedenken der Gefallenen</string>
     <string name="holiday_banner_burns_night">Frohe Burns Night</string>
     <string name="holiday_banner_bonfire_night">Erinnere dich, erinnere dich</string>
     <string name="holiday_banner_st_davids_day">Frohen St.-David-Tag</string>
@@ -509,7 +509,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_uk_kings_birthday">Alles Gute zum Geburtstag des Königs</string>
     <string name="holiday_banner_uk_mothering_sunday">Frohen Muttersonntag</string>
     <string name="holiday_banner_bastille_day">Frohen Bastille-Tag</string>
-    <string name="holiday_banner_fr_armistice_day">Wir gedenken der Gefallenen</string>
+    <string name="holiday_spoken_fr_armistice_day">Wir gedenken der Gefallenen</string>
     <string name="holiday_banner_italy_republic_day">Frohen Tag der Republik</string>
     <string name="holiday_banner_spain_hispanic_day">Frohen Tag der Hispanidad</string>
     <string name="holiday_banner_brazil_independence_day">Frohen brasilianischen Unabhängigkeitstag</string>
@@ -521,7 +521,7 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_japan_culture_day">Frohen Kulturtag</string>
     <string name="holiday_banner_japan_marine_day">Frohen Meerestag</string>
     <string name="holiday_banner_korean_independence_movement_day">Frohen koreanischen Unabhängigkeitstag</string>
-    <string name="holiday_banner_korean_memorial_day">Wir gedenken Koreas Gefallenen</string>
+    <string name="holiday_spoken_korean_memorial_day">Wir gedenken Koreas Gefallenen</string>
     <string name="holiday_banner_korean_liberation_day">Frohen koreanischen Befreiungstag</string>
     <string name="holiday_banner_korean_hangeul_day">Frohen Hangeul-Tag</string>
 

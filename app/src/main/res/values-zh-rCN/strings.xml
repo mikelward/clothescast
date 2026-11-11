@@ -881,7 +881,8 @@ label localizes.
 
     <!-- Holiday banners. -->
     <string name="holiday_banner_all_saints_day">万圣节快乐</string>
-    <string name="holiday_banner_anzac_day">铭记历史</string>
+    <string name="holiday_banner_anzac_day">澳新军团纪念日</string>
+    <string name="holiday_spoken_anzac_day">铭记历史</string>
     <string name="holiday_banner_assumption">圣母升天节快乐</string>
     <string name="holiday_banner_australia_day">澳大利亚日快乐</string>
     <string name="holiday_banner_austria_national_day">奥地利国庆节快乐</string>
@@ -901,7 +902,8 @@ label localizes.
     <string name="holiday_banner_epiphany">主显节快乐</string>
     <string name="holiday_banner_fathers_day_jun">父亲节快乐</string>
     <string name="holiday_banner_fathers_day_sep">父亲节快乐</string>
-    <string name="holiday_banner_fr_armistice_day">铭记历史</string>
+    <string name="holiday_banner_fr_armistice_day">阵亡将士纪念日</string>
+    <string name="holiday_spoken_fr_armistice_day">铭记历史</string>
     <string name="holiday_banner_german_unity_day">德国统一日快乐</string>
     <string name="holiday_banner_good_friday">耶稣受难日</string>
     <string name="holiday_banner_halloween">万圣节快乐</string>
@@ -915,13 +917,15 @@ label localizes.
     <string name="holiday_banner_korean_hangeul_day">韩文节快乐</string>
     <string name="holiday_banner_korean_independence_movement_day">三一节快乐</string>
     <string name="holiday_banner_korean_liberation_day">光复节快乐</string>
-    <string name="holiday_banner_korean_memorial_day">铭记韩国英烈</string>
+    <string name="holiday_banner_korean_memorial_day">显忠日</string>
+    <string name="holiday_spoken_korean_memorial_day">铭记韩国英烈</string>
     <string name="holiday_banner_labour_day">劳动节快乐</string>
     <string name="holiday_banner_mlk_day">缅怀马丁·路德·金博士</string>
     <string name="holiday_banner_mothers_day">母亲节快乐</string>
     <string name="tts_greeting_birthday">生日快乐</string>
     <string name="holiday_banner_new_years_day">新年快乐</string>
-    <string name="holiday_banner_remembrance_day">铭记历史</string>
+    <string name="holiday_banner_remembrance_day">阵亡将士纪念日</string>
+    <string name="holiday_spoken_remembrance_day">铭记历史</string>
     <string name="holiday_banner_spain_hispanic_day">西班牙国庆节快乐</string>
     <string name="holiday_banner_st_andrews_day">圣安德鲁节快乐</string>
     <string name="holiday_banner_st_davids_day">圣大卫节快乐</string>
@@ -931,10 +935,12 @@ label localizes.
     <string name="holiday_banner_uk_kings_birthday">国王生日快乐</string>
     <string name="holiday_banner_uk_mothering_sunday">母亲节快乐</string>
     <string name="holiday_banner_us_independence_day">7月4日快乐</string>
-    <string name="holiday_banner_us_memorial_day">铭记英烈</string>
+    <string name="holiday_banner_us_memorial_day">阵亡将士纪念日</string>
+    <string name="holiday_spoken_us_memorial_day">铭记英烈</string>
     <string name="holiday_banner_us_presidents_day">总统日快乐</string>
     <string name="holiday_banner_us_thanksgiving">感恩节快乐</string>
-    <string name="holiday_banner_us_veterans_day">缅怀退伍军人</string>
+    <string name="holiday_banner_us_veterans_day">退伍军人节</string>
+    <string name="holiday_spoken_us_veterans_day">缅怀退伍军人</string>
     <string name="holiday_banner_valentines_day">情人节快乐</string>
     <string name="holiday_banner_waitangi_day">怀唐伊日快乐</string>
 
@@ -1206,13 +1212,16 @@ label localizes.
     <string name="holiday_banner_turkey_republic_day">共和国日快乐</string>
     <string name="holiday_banner_turkey_victory_day">胜利日快乐</string>
     <string name="holiday_banner_turkey_youth_day">青年与体育节快乐</string>
-    <string name="holiday_banner_uk_remembrance_sunday">我们将铭记他们</string>
+    <string name="holiday_banner_uk_remembrance_sunday">纪念星期日</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">我们将铭记他们</string>
     <string name="holiday_banner_ukraine_constitution_day">宪法日快乐</string>
-    <string name="holiday_banner_ukraine_defender_day">致敬乌克兰的捍卫者</string>
+    <string name="holiday_banner_ukraine_defender_day">乌克兰捍卫者日</string>
+    <string name="holiday_spoken_ukraine_defender_day">致敬乌克兰的捍卫者</string>
     <string name="holiday_banner_ukraine_independence_day">独立日快乐</string>
     <string name="holiday_banner_ukraine_statehood_day">乌克兰国家日快乐</string>
     <string name="holiday_banner_ukraine_unity_day">团结日快乐</string>
-    <string name="holiday_banner_ukraine_victory_day">缅怀逝者</string>
+    <string name="holiday_banner_ukraine_victory_day">胜利日</string>
+    <string name="holiday_spoken_ukraine_victory_day">缅怀逝者</string>
     <string name="holiday_banner_us_election_day">去投票吧</string>
     <string name="holiday_banner_us_labor_day">劳动节快乐</string>
     <string name="holiday_banner_vietnam_national_day">国庆日快乐</string>

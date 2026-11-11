@@ -629,6 +629,7 @@ The rest of the UI falls through to values/strings.xml (English).
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">የሁሉም ቅዱሳን በዓልዎ ይብሰርዎ</string>
     <string name="holiday_banner_anzac_day">አንዘ ቀን</string>
+    <string name="holiday_spoken_anzac_day">አንዘ ቀን</string>
     <string name="holiday_banner_assumption">የእናታችን ማርያም ዕርገት</string>
     <string name="holiday_banner_australia_day">የአውስትራሊያ ቀን</string>
     <string name="holiday_banner_austria_national_day">የኦስትሪያ ብሔራዊ ቀን</string>
@@ -648,7 +649,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_epiphany">ቅዱስ ጥምቀት</string>
     <string name="holiday_banner_fathers_day_jun">የአባቶች ቀን</string>
     <string name="holiday_banner_fathers_day_sep">የአባቶች ቀን</string>
-    <string name="holiday_banner_fr_armistice_day">አንዘ ቀን</string>
+    <string name="holiday_banner_fr_armistice_day">የሃዘን ቀን</string>
+    <string name="holiday_spoken_fr_armistice_day">አንዘ ቀን</string>
     <string name="holiday_banner_german_unity_day">የጀርመን አንድነት ቀን</string>
     <string name="holiday_banner_good_friday">ዓርብ ስቅለት</string>
     <string name="holiday_banner_halloween">ሃሎዊን</string>
@@ -662,13 +664,15 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_korean_hangeul_day">ሃንጉል ቀን</string>
     <string name="holiday_banner_korean_independence_movement_day">የኮሪያ ነጻነት ቀን</string>
     <string name="holiday_banner_korean_liberation_day">የኮሪያ ነጻ መሆን ቀን</string>
-    <string name="holiday_banner_korean_memorial_day">ለወደቁ ኮሪያውያን</string>
+    <string name="holiday_banner_korean_memorial_day">የኮሪያ መታሰቢያ ቀን</string>
+    <string name="holiday_spoken_korean_memorial_day">ለወደቁ ኮሪያውያን</string>
     <string name="holiday_banner_labour_day">የሰራተኞች ቀን</string>
     <string name="holiday_banner_mlk_day">ለዶ/ር ኪንግ መስዋዕትነት</string>
     <string name="holiday_banner_mothers_day">የእናቶች ቀን</string>
     <string name="tts_greeting_birthday">መልካም ልደት</string>
     <string name="holiday_banner_new_years_day">መልካም አዲስ ዓመት</string>
-    <string name="holiday_banner_remembrance_day">አንዘ ቀን</string>
+    <string name="holiday_banner_remembrance_day">የሃዘን ቀን</string>
+    <string name="holiday_spoken_remembrance_day">አንዘ ቀን</string>
     <string name="holiday_banner_spain_hispanic_day">ሂስፓኒዳድ ቀን</string>
     <string name="holiday_banner_st_andrews_day">የቅዱስ አንድሩ ቀን</string>
     <string name="holiday_banner_st_davids_day">የቅዱስ ዳዊት ቀን</string>
@@ -678,10 +682,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_uk_kings_birthday">የንጉሡ ልደት መልካም ይሁን</string>
     <string name="holiday_banner_uk_mothering_sunday">የእናቶች እሁድ</string>
     <string name="holiday_banner_us_independence_day">ሐምሌ 4 ደስ ይሁንዎ</string>
-    <string name="holiday_banner_us_memorial_day">ለወደቁ ወታደሮቻችን</string>
+    <string name="holiday_banner_us_memorial_day">የአሜሪካ መታሰቢያ ቀን</string>
+    <string name="holiday_spoken_us_memorial_day">ለወደቁ ወታደሮቻችን</string>
     <string name="holiday_banner_us_presidents_day">የፕሬዝዳንቶች ቀን</string>
     <string name="holiday_banner_us_thanksgiving">ምስጋና</string>
-    <string name="holiday_banner_us_veterans_day">ለቀድሞ ወታደሮቻችን</string>
+    <string name="holiday_banner_us_veterans_day">ቬተራን ቀን</string>
+    <string name="holiday_spoken_us_veterans_day">ለቀድሞ ወታደሮቻችን</string>
     <string name="holiday_banner_valentines_day">ቫለንቲን ቀን</string>
     <string name="holiday_banner_waitangi_day">ዋይታንጊ ቀን</string>
 
@@ -1026,13 +1032,16 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_turkey_republic_day">የሪፐብሊክ ቀን መልካም ይሁን</string>
     <string name="holiday_banner_turkey_victory_day">የድል ቀን መልካም ይሁን</string>
     <string name="holiday_banner_turkey_youth_day">የወጣቶችና የስፖርት ቀን መልካም ይሁን</string>
-    <string name="holiday_banner_uk_remembrance_sunday">እናስታውሳቸዋለን</string>
+    <string name="holiday_banner_uk_remembrance_sunday">የማስታወሻ እሁድ</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">እናስታውሳቸዋለን</string>
     <string name="holiday_banner_ukraine_constitution_day">የሕገ መንግሥት ቀን መልካም ይሁን</string>
-    <string name="holiday_banner_ukraine_defender_day">የዩክሬን ተከላካዮችን በማስታወስ</string>
+    <string name="holiday_banner_ukraine_defender_day">የዩክሬን ተከላካዮች ቀን</string>
+    <string name="holiday_spoken_ukraine_defender_day">የዩክሬን ተከላካዮችን በማስታወስ</string>
     <string name="holiday_banner_ukraine_independence_day">የነፃነት ቀን መልካም ይሁን</string>
     <string name="holiday_banner_ukraine_statehood_day">የዩክሬን መንግሥትነት ቀን መልካም ይሁን</string>
     <string name="holiday_banner_ukraine_unity_day">የአንድነት ቀን መልካም ይሁን</string>
-    <string name="holiday_banner_ukraine_victory_day">የወደቁትን በማስታወስ</string>
+    <string name="holiday_banner_ukraine_victory_day">የድል ቀን</string>
+    <string name="holiday_spoken_ukraine_victory_day">የወደቁትን በማስታወስ</string>
     <string name="holiday_banner_us_election_day">ሄደህ ድምፅ ስጥ</string>
     <string name="holiday_banner_us_labor_day">የሠራተኞች ቀን መልካም ይሁን</string>
     <string name="holiday_banner_vietnam_national_day">የብሔራዊ ቀን መልካም ይሁን</string>

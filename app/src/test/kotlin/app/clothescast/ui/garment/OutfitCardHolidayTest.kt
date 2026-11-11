@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.clothescast.R
 import app.clothescast.core.domain.model.CalendarEvent
 import app.clothescast.core.domain.model.EventKind
 import app.clothescast.core.domain.model.FestiveThemes
@@ -108,10 +109,14 @@ class OutfitCardHolidayTest {
 
     @Test
     fun `the holiday's name follows the region`() {
-        outfitCardHoliday(context, remembranceDay, Region.EN_US)?.label shouldBe
-            "${remembranceDay.emoji}  Honoring our Veterans"
-        outfitCardHoliday(context, remembranceDay, Region.EN_GB)?.label shouldBe
-            "${remembranceDay.emoji}  Lest we forget"
+        outfitCardHoliday(context, remembranceDay, Region.EN_US)?.label shouldBe "Veterans Day"
+        outfitCardHoliday(context, remembranceDay, Region.EN_GB)?.label shouldBe "Remembrance Day"
+    }
+
+    @Test
+    fun `Remembrance Day leads with a drawn poppy, not an emoji`() {
+        outfitCardHoliday(context, remembranceDay, Region.EN_GB)?.iconRes shouldBe R.drawable.ic_holiday_poppy
+        outfitCardHoliday(context, christmas, Region.EN_GB)?.iconRes shouldBe null
     }
 
     @Test
@@ -130,6 +135,14 @@ class OutfitCardHolidayTest {
     }
 
     @Test
+    fun `a drawn icon leads the chip's text`() {
+        val chip = OutfitCardHoliday("Remembrance Day", CHIP_ARGB, android.graphics.Color.WHITE)
+
+        poppyRedPixels(render(chip.copy(iconRes = R.drawable.ic_holiday_poppy))) shouldNotBe 0
+        poppyRedPixels(render(chip)) shouldBe 0
+    }
+
+    @Test
     fun `a long name is cut to the text column, never past it`() {
         val card = render(
             OutfitCardHoliday("🎂  " + "Alice's birthday ".repeat(20), CHIP_ARGB, android.graphics.Color.WHITE),
@@ -139,6 +152,21 @@ class OutfitCardHolidayTest {
         card.getPixel(COLUMN_RIGHT - 4, CHIP_PROBE_Y) shouldBe CHIP_ARGB
         // ...and stops at the card's padding.
         card.getPixel(COLUMN_RIGHT + 4, CHIP_PROBE_Y) shouldBe android.graphics.Color.WHITE
+    }
+
+    // Pixels in the chip's leading area close to the poppy's front-petal red.
+    private fun poppyRedPixels(card: Bitmap): Int {
+        var count = 0
+        for (x in COLUMN_LEFT until COLUMN_LEFT + 80) {
+            for (y in 0 until card.height / 2) {
+                val p = card.getPixel(x, y)
+                val r = (p shr 16) and 0xFF
+                val g = (p shr 8) and 0xFF
+                val b = p and 0xFF
+                if (r > 200 && g < 90 && b < 90) count++
+            }
+        }
+        return count
     }
 
     private fun render(holiday: OutfitCardHoliday?): Bitmap {

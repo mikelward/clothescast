@@ -461,7 +461,15 @@ data class HolidayTheme(
      * their own).
      */
     val flags: List<String> = emptyList(),
+    /**
+     * A drawn symbol that leads the banner in place of [emoji], for days whose
+     * symbol has no emoji (the Remembrance poppy). Set with an empty [emoji].
+     */
+    val icon: HolidayIcon? = null,
 )
+
+/** Drawn banner symbols with no Unicode emoji; `:app` maps each to a drawable. */
+enum class HolidayIcon { POPPY }
 
 /**
  * One piece of a composed (multi-celebration) banner. Resolves to
@@ -1156,7 +1164,8 @@ object HolidayCatalog {
             id = HolidayId.ANZAC_DAY,
             displayNameKey = "holiday_name_anzac_day",
             bannerTextKey = "holiday_banner_anzac_day",
-            emoji = "🔺", // 🔺 — abstract; avoids lighter / flower vibe
+            emoji = "",
+            icon = HolidayIcon.POPPY,
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
@@ -1294,7 +1303,8 @@ object HolidayCatalog {
             id = HolidayId.UKRAINE_VICTORY_DAY,
             displayNameKey = "holiday_name_ukraine_victory_day",
             bannerTextKey = "holiday_banner_ukraine_victory_day",
-            emoji = "🔺", // 🔺 — match Anzac / Remembrance for visual continuity
+            emoji = "",
+            icon = HolidayIcon.POPPY,
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
@@ -1452,7 +1462,8 @@ object HolidayCatalog {
             id = HolidayId.US_MEMORIAL_DAY,
             displayNameKey = "holiday_name_us_memorial_day",
             bannerTextKey = "holiday_banner_us_memorial_day",
-            emoji = "🔺", // 🔺 — match Anzac / Remembrance for visual continuity
+            emoji = "",
+            icon = HolidayIcon.POPPY,
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
@@ -1531,7 +1542,8 @@ object HolidayCatalog {
             id = HolidayId.KOREAN_MEMORIAL_DAY,
             displayNameKey = "holiday_name_korean_memorial_day",
             bannerTextKey = "holiday_banner_korean_memorial_day",
-            emoji = "🔺", // 🔺 — match Anzac / US Memorial for visual continuity
+            emoji = "",
+            icon = HolidayIcon.POPPY,
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
@@ -2118,7 +2130,7 @@ object HolidayCatalog {
             id = HolidayId.UKRAINE_DEFENDER_DAY,
             displayNameKey = "holiday_name_ukraine_defender_day",
             bannerTextKey = "holiday_banner_ukraine_defender_day",
-            emoji = "🔺", // 🔺 — solemn, matches the other remembrance days
+            emoji = "🇺🇦",
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
@@ -2435,15 +2447,16 @@ object HolidayCatalog {
         // closest to Nov 11; [REMEMBRANCE_DAY] on Nov 11 itself is the
         // armistice anniversary. Same khaki palette and solemn flag as
         // Remembrance Day — same observance, distinct calendar day for
-        // most years. Banner uses the Royal British Legion's "We will
-        // remember them" so a same-day collision (Nov 11 falling on a
-        // Sunday, ~once every 7 years — next 2029) joins as "Lest we
-        // forget and We will remember them" rather than echoing itself.
+        // most years. The banner names the day; speech uses the Royal
+        // British Legion's "We will remember them" so a same-day collision
+        // (Nov 11 falling on a Sunday, ~once every 7 years — next 2029) says
+        // "Lest we forget and We will remember them" rather than echoing.
         HolidayDate.NthWeekday(Month.NOVEMBER, 2, DayOfWeek.SUNDAY) to HolidayTheme(
             id = HolidayId.UK_REMEMBRANCE_SUNDAY,
             displayNameKey = "holiday_name_uk_remembrance_sunday",
             bannerTextKey = "holiday_banner_uk_remembrance_sunday",
-            emoji = "🔺", // 🔺 — match Anzac / Remembrance Day for visual continuity
+            emoji = "",
+            icon = HolidayIcon.POPPY,
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
@@ -2465,7 +2478,8 @@ object HolidayCatalog {
                 "US" to "holiday_banner_us_veterans_day",
                 "FR" to "holiday_banner_fr_armistice_day",
             ),
-            emoji = "🔺", // 🔺 — match Anzac's abstract glyph for visual continuity
+            emoji = "",
+            icon = HolidayIcon.POPPY,
             topOverrides = topPaletteAll(ANZAC_KHAKI),
             bottomOverrides = bottomPaletteAll(ANZAC_KHAKI),
             bannerArgb = ANZAC_KHAKI,
@@ -2732,6 +2746,7 @@ private const val ENGLAND_RED = 0xFFCE1124L
 private const val ENGLAND_WHITE = 0xFFF5F5F5L
 
 private const val ANZAC_KHAKI = 0xFF6D6748L
+
 
 private const val MOTHER_PINK = 0xFFEC407AL
 private const val MOTHER_GREEN = 0xFF66BB6AL

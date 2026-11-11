@@ -916,16 +916,19 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_fathers_day_sep">Feliz Día del Padre</string>
     <string name="holiday_banner_us_presidents_day">Feliz Presidents\' Day</string>
     <string name="holiday_banner_us_independence_day">Feliz 4 de julio</string>
-    <string name="holiday_banner_us_memorial_day">Recordando a los caídos</string>
+    <string name="holiday_banner_us_memorial_day">Memorial Day</string>
+    <string name="holiday_spoken_us_memorial_day">Recordando a los caídos</string>
     <string name="holiday_banner_us_thanksgiving">Feliz Acción de Gracias</string>
-    <string name="holiday_banner_us_veterans_day">Honrando a nuestros veteranos</string>
+    <string name="holiday_banner_us_veterans_day">Veterans Day</string>
+    <string name="holiday_spoken_us_veterans_day">Honrando a nuestros veteranos</string>
     <string name="holiday_banner_mlk_day">En honor al Dr. King</string>
     <string name="holiday_banner_juneteenth">Feliz Juneteenth</string>
     <string name="holiday_banner_canada_day">Feliz Día de Canadá</string>
     <string name="holiday_banner_canadian_thanksgiving">Feliz Acción de Gracias</string>
     <string name="holiday_banner_australia_day">Feliz Día de Australia</string>
     <string name="holiday_banner_waitangi_day">Feliz Día de Waitangi</string>
-    <string name="holiday_banner_anzac_day">Los recordamos</string>
+    <string name="holiday_banner_anzac_day">Día de Anzac</string>
+    <string name="holiday_spoken_anzac_day">Los recordamos</string>
     <string name="holiday_banner_burns_night">Feliz Burns Night</string>
     <string name="holiday_banner_bonfire_night">Bonfire Night</string>
     <string name="holiday_banner_st_davids_day">Feliz Día de San David</string>
@@ -937,7 +940,8 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_austria_national_day">Feliz Día Nacional de Austria</string>
     <string name="holiday_banner_german_unity_day">Feliz Día de la Unidad Alemana</string>
     <string name="holiday_banner_bastille_day">Feliz Día de la Bastilla</string>
-    <string name="holiday_banner_fr_armistice_day">Los recordamos</string>
+    <string name="holiday_banner_fr_armistice_day">Día del Recuerdo</string>
+    <string name="holiday_spoken_fr_armistice_day">Los recordamos</string>
     <string name="holiday_banner_italy_republic_day">Feliz Día de la República Italiana</string>
     <string name="holiday_banner_brazil_independence_day">Feliz Día de la Independencia de Brasil</string>
     <string name="holiday_banner_croatia_statehood_day">Feliz Día de la Estatalidad de Croacia</string>
@@ -948,10 +952,12 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_japan_culture_day">Feliz Día de la Cultura</string>
     <string name="holiday_banner_japan_marine_day">Feliz Día del Mar</string>
     <string name="holiday_banner_korean_independence_movement_day">Feliz Día del Movimiento de Independencia</string>
-    <string name="holiday_banner_korean_memorial_day">Recordando a los caídos de Corea</string>
+    <string name="holiday_banner_korean_memorial_day">Día del Memorial</string>
+    <string name="holiday_spoken_korean_memorial_day">Recordando a los caídos de Corea</string>
     <string name="holiday_banner_korean_liberation_day">Feliz Día de la Liberación</string>
     <string name="holiday_banner_korean_hangeul_day">Feliz Día del Hangeul</string>
-    <string name="holiday_banner_remembrance_day">Los recordamos</string>
+    <string name="holiday_banner_remembrance_day">Día del Recuerdo</string>
+    <string name="holiday_spoken_remembrance_day">Los recordamos</string>
 
     <!-- Home location. -->
 
@@ -1185,13 +1191,16 @@ zh-CN) is unchanged; only the displayed label localizes.
     <string name="holiday_banner_turkey_republic_day">Feliz Día de la República</string>
     <string name="holiday_banner_turkey_victory_day">Feliz Día de la Victoria</string>
     <string name="holiday_banner_turkey_youth_day">Feliz Día de la Juventud y el Deporte</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Los recordaremos</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Domingo del Recuerdo</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Los recordaremos</string>
     <string name="holiday_banner_ukraine_constitution_day">Feliz Día de la Constitución</string>
-    <string name="holiday_banner_ukraine_defender_day">Honrando a los defensores de Ucrania</string>
+    <string name="holiday_banner_ukraine_defender_day">Día del Defensor de Ucrania</string>
+    <string name="holiday_spoken_ukraine_defender_day">Honrando a los defensores de Ucrania</string>
     <string name="holiday_banner_ukraine_independence_day">Feliz Día de la Independencia</string>
     <string name="holiday_banner_ukraine_statehood_day">Feliz Día de la Condición de Estado de Ucrania</string>
     <string name="holiday_banner_ukraine_unity_day">Feliz Día de la Unidad</string>
-    <string name="holiday_banner_ukraine_victory_day">Honrando a los caídos</string>
+    <string name="holiday_banner_ukraine_victory_day">Día de la Victoria</string>
+    <string name="holiday_spoken_ukraine_victory_day">Honrando a los caídos</string>
     <string name="holiday_banner_us_election_day">Sal a votar</string>
     <string name="holiday_banner_us_labor_day">Feliz Día del Trabajo</string>
     <string name="holiday_banner_vietnam_national_day">Feliz Día Nacional</string>

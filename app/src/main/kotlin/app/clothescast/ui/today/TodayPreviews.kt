@@ -1158,15 +1158,15 @@ internal fun HolidayUkRemembranceSundayPreview() = HolidayShowcase(HolidayId.UK_
 internal fun HolidayRemembranceDayPreview() = HolidayShowcase(HolidayId.REMEMBRANCE_DAY)
 
 // US variant of Nov 11 — same monochrome khaki palette, different banner
-// copy ("Honoring our Veterans" vs "Lest we forget"). Wired by passing
+// copy ("Veterans Day" vs "Remembrance Day"). Wired by passing
 // Region.EN_US into the showcase helper, which forwards it to HolidayBanner.
 @Preview(name = "Holiday · Veterans Day (US)", widthDp = 360)
 @Composable
 internal fun HolidayRemembranceDayUsPreview() =
     HolidayShowcase(HolidayId.REMEMBRANCE_DAY, region = Region.EN_US)
 
-// French variant of Nov 11 — same khaki, "Souvenons-nous" instead of
-// "Lest we forget". Exercises the FR country override added in v3.
+// French variant of Nov 11 — same khaki, "Jour de l'Armistice" instead of
+// "Jour du Souvenir". Exercises the FR country override added in v3.
 @Preview(name = "Holiday · Armistice Day (FR)", widthDp = 360)
 @Composable
 internal fun HolidayRemembranceDayFrPreview() =

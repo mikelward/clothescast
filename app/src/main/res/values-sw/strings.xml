@@ -629,7 +629,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Sikukuu ya Watakatifu Wote</string>
-    <string name="holiday_banner_anzac_day">Tusisahau</string>
+    <string name="holiday_banner_anzac_day">Siku ya Anzac</string>
+    <string name="holiday_spoken_anzac_day">Tusisahau</string>
     <string name="holiday_banner_assumption">Sikukuu ya Kupaa kwa Bikira Maria</string>
     <string name="holiday_banner_australia_day">Siku ya Australia</string>
     <string name="holiday_banner_austria_national_day">Siku ya Taifa ya Austria</string>
@@ -649,7 +650,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_epiphany">Heri ya Epifania</string>
     <string name="holiday_banner_fathers_day_jun">Siku ya Baba</string>
     <string name="holiday_banner_fathers_day_sep">Siku ya Baba</string>
-    <string name="holiday_banner_fr_armistice_day">Tusisahau</string>
+    <string name="holiday_banner_fr_armistice_day">Siku ya Ukumbusho</string>
+    <string name="holiday_spoken_fr_armistice_day">Tusisahau</string>
     <string name="holiday_banner_german_unity_day">Siku ya Umoja wa Ujerumani</string>
     <string name="holiday_banner_good_friday">Ijumaa Kuu</string>
     <string name="holiday_banner_halloween">Heri ya Halloween</string>
@@ -663,13 +665,15 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_korean_hangeul_day">Heri ya Siku ya Hangeul</string>
     <string name="holiday_banner_korean_independence_movement_day">Siku ya Harakati ya Uhuru wa Korea</string>
     <string name="holiday_banner_korean_liberation_day">Siku ya Ukombozi wa Korea</string>
-    <string name="holiday_banner_korean_memorial_day">Heshima kwa walioanguka wa Korea</string>
+    <string name="holiday_banner_korean_memorial_day">Siku ya Ukumbusho</string>
+    <string name="holiday_spoken_korean_memorial_day">Heshima kwa walioanguka wa Korea</string>
     <string name="holiday_banner_labour_day">Siku ya Wafanyakazi</string>
     <string name="holiday_banner_mlk_day">Heshima kwa Dk. King</string>
     <string name="holiday_banner_mothers_day">Siku ya Mama</string>
     <string name="tts_greeting_birthday">Heri ya siku ya kuzaliwa</string>
     <string name="holiday_banner_new_years_day">Heri ya Mwaka Mpya</string>
-    <string name="holiday_banner_remembrance_day">Tusisahau</string>
+    <string name="holiday_banner_remembrance_day">Siku ya Ukumbusho</string>
+    <string name="holiday_spoken_remembrance_day">Tusisahau</string>
     <string name="holiday_banner_spain_hispanic_day">Heri ya Día de la Hispanidad</string>
     <string name="holiday_banner_st_andrews_day">Siku ya Mtakatifu Andrew</string>
     <string name="holiday_banner_st_davids_day">Siku ya Mtakatifu David</string>
@@ -679,10 +683,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_uk_kings_birthday">Heri ya Kuzaliwa kwa Mfalme</string>
     <string name="holiday_banner_uk_mothering_sunday">Heri ya Jumapili ya Mama</string>
     <string name="holiday_banner_us_independence_day">Heri ya Julai 4</string>
-    <string name="holiday_banner_us_memorial_day">Heshima kwa walioanguka wetu</string>
+    <string name="holiday_banner_us_memorial_day">Siku ya Ukumbusho</string>
+    <string name="holiday_spoken_us_memorial_day">Heshima kwa walioanguka wetu</string>
     <string name="holiday_banner_us_presidents_day">Siku ya Marais</string>
     <string name="holiday_banner_us_thanksgiving">Shukrani</string>
-    <string name="holiday_banner_us_veterans_day">Heshima kwa Maveterani wetu</string>
+    <string name="holiday_banner_us_veterans_day">Siku ya Maveterani</string>
+    <string name="holiday_spoken_us_veterans_day">Heshima kwa Maveterani wetu</string>
     <string name="holiday_banner_valentines_day">Heri ya Valentini</string>
     <string name="holiday_banner_waitangi_day">Heri ya Siku ya Waitangi</string>
 
@@ -1027,13 +1033,16 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_turkey_republic_day">Heri ya Siku ya Jamhuri</string>
     <string name="holiday_banner_turkey_victory_day">Heri ya Siku ya Ushindi</string>
     <string name="holiday_banner_turkey_youth_day">Heri ya Siku ya Vijana na Michezo</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Tutawakumbuka</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Jumapili ya Kumbukumbu</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Tutawakumbuka</string>
     <string name="holiday_banner_ukraine_constitution_day">Heri ya Siku ya Katiba</string>
-    <string name="holiday_banner_ukraine_defender_day">Kuwaheshimu watetezi wa Ukraine</string>
+    <string name="holiday_banner_ukraine_defender_day">Siku ya Mtetezi wa Ukraine</string>
+    <string name="holiday_spoken_ukraine_defender_day">Kuwaheshimu watetezi wa Ukraine</string>
     <string name="holiday_banner_ukraine_independence_day">Heri ya Siku ya Uhuru</string>
     <string name="holiday_banner_ukraine_statehood_day">Heri ya Siku ya Utaifa wa Ukraine</string>
     <string name="holiday_banner_ukraine_unity_day">Heri ya Siku ya Umoja</string>
-    <string name="holiday_banner_ukraine_victory_day">Kuwakumbuka walioanguka</string>
+    <string name="holiday_banner_ukraine_victory_day">Siku ya Ushindi</string>
+    <string name="holiday_spoken_ukraine_victory_day">Kuwakumbuka walioanguka</string>
     <string name="holiday_banner_us_election_day">Nenda kupiga kura</string>
     <string name="holiday_banner_us_labor_day">Heri ya Siku ya Wafanyakazi</string>
     <string name="holiday_banner_vietnam_national_day">Heri ya Siku ya Taifa</string>

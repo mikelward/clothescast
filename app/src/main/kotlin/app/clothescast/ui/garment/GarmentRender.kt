@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.PathParser as AndroidPathParser
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withTranslation
@@ -27,6 +28,7 @@ import app.clothescast.core.domain.model.toUnit
 import app.clothescast.core.domain.model.toWindSpeedUnit
 import app.clothescast.insight.InsightFormatter
 import app.clothescast.tts.toJavaLocale
+import app.clothescast.ui.today.drawableRes
 import app.clothescast.ui.today.holidayBannerContentArgb
 import app.clothescast.ui.today.holidayBannerLabel
 import app.clothescast.ui.today.holidayBannerText
@@ -747,7 +749,7 @@ internal fun renderOutfitCard(
     val proseTop = holiday
         ?.let { h ->
             val chipTop = headerBottom + HOLIDAY_GAP_PX
-            val chipHeight = drawHolidayChip(canvas, h, proseX.toFloat(), chipTop, headerWidth)
+            val chipHeight = drawHolidayChip(context, canvas, h, proseX.toFloat(), chipTop, headerWidth)
             (chipTop + chipHeight + HOLIDAY_GAP_PX).toInt()
         }
         ?: plainProseTop
@@ -842,9 +844,11 @@ internal fun renderOutfitCard(
 /**
  * Draws [holiday] as a rounded chip at ([x], [top]) that hugs its label,
  * ellipsized to fit [maxWidth]. Laid out through StaticLayout so an RTL title
- * comes out in the right visual order. Returns the chip's height.
+ * comes out in the right visual order. A drawn [OutfitCardHoliday.iconRes]
+ * (the poppy) leads the text at its line height. Returns the chip's height.
  */
 private fun drawHolidayChip(
+    context: Context,
     canvas: Canvas,
     holiday: OutfitCardHoliday,
     x: Float,
@@ -857,7 +861,11 @@ private fun drawHolidayChip(
         color = holiday.contentArgb
     }
     val label = holiday.label
-    val maxTextWidth = maxWidth - 2 * HOLIDAY_PAD_X
+    val icon = holiday.iconRes?.let { ContextCompat.getDrawable(context, it) }
+    // The icon matches the text's line height, so size it from the font.
+    val iconSize = if (icon == null) 0 else ceil(textPaint.fontMetrics.let { it.descent - it.ascent }).toInt()
+    val iconSpace = if (icon == null) 0 else iconSize + HOLIDAY_ICON_GAP
+    val maxTextWidth = maxWidth - 2 * HOLIDAY_PAD_X - iconSpace
     val textWidth = minOf(ceil(StaticLayout.getDesiredWidth(label, textPaint)), maxTextWidth).toInt()
     val layout = StaticLayout.Builder
         .obtain(label, 0, label.length, textPaint, textWidth)
@@ -870,13 +878,19 @@ private fun drawHolidayChip(
     canvas.drawRoundRect(
         x,
         top,
-        x + textWidth + 2 * HOLIDAY_PAD_X,
+        x + iconSpace + textWidth + 2 * HOLIDAY_PAD_X,
         top + height,
         HOLIDAY_RADIUS,
         HOLIDAY_RADIUS,
         fill,
     )
-    canvas.withTranslation(x + HOLIDAY_PAD_X, top + HOLIDAY_PAD_Y) {
+    icon?.let {
+        val iconLeft = (x + HOLIDAY_PAD_X).toInt()
+        val iconTop = (top + (height - iconSize) / 2).toInt()
+        it.setBounds(iconLeft, iconTop, iconLeft + iconSize, iconTop + iconSize)
+        it.draw(canvas)
+    }
+    canvas.withTranslation(x + HOLIDAY_PAD_X + iconSpace, top + HOLIDAY_PAD_Y) {
         layout.draw(this)
     }
     return height
@@ -1365,6 +1379,8 @@ internal data class OutfitCardHoliday(
     val label: String,
     val backgroundArgb: Int,
     val contentArgb: Int,
+    /** A drawn symbol leading [label], for a day whose symbol has no emoji. */
+    @DrawableRes val iconRes: Int? = null,
 )
 
 /**
@@ -1389,6 +1405,7 @@ internal fun outfitCardHoliday(
         label = holidayBannerLabel(theme, text),
         backgroundArgb = backgroundArgb.toInt(),
         contentArgb = holidayBannerContentArgb(backgroundArgb),
+        iconRes = theme.icon?.drawableRes(),
     )
 }
 
@@ -1866,6 +1883,7 @@ private const val ICON_TILE_RADIUS = 16f
 private const val HOLIDAY_PX = 22f
 private const val HOLIDAY_PAD_X = 16
 private const val HOLIDAY_PAD_Y = 8
+private const val HOLIDAY_ICON_GAP = 8
 private const val HOLIDAY_GAP_PX = 16
 private const val HOLIDAY_RADIUS = 12f
 private const val PLAIN_HOLIDAY_CHIP_ARGB = 0xFFE0E0E0L

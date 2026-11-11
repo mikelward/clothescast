@@ -52,7 +52,7 @@ internal fun holidayTtsGreeting(
                     // through to an empty list and spoke no greeting at all.
                     // Calendar public holidays have no safe stand-in, so they
                     // stay skipped.
-                    key?.let { localized.resolveStringByName(it) }
+                    key?.let { localized.resolveSpokenByName(it) }
                         ?: R.string.tts_greeting_birthday
                             .takeIf { segment.holidayId == HolidayId.BIRTHDAY }
                             ?.let { localized.getString(it) }
@@ -71,7 +71,7 @@ internal fun holidayTtsGreeting(
             } else {
                 null
             }
-        else -> localized.resolveStringByName(theme.bannerTextKeyFor(country))
+        else -> localized.resolveSpokenByName(theme.bannerTextKeyFor(country))
     }
 
     val trimmed = core?.trim().orEmpty()
@@ -103,6 +103,20 @@ private fun List<String>.joinGreetings(and: String): String =
     reduce { sentence, piece ->
         if (sentence.last() in TERMINAL_PUNCTUATION) "$sentence $piece" else "$sentence $and $piece"
     }
+
+/**
+ * The spoken form of banner key [bannerKey]: its `holiday_spoken_*` twin when
+ * one exists, else the banner copy itself. Lets a banner name the day
+ * ("Remembrance Day") while the voice keeps the solemn phrase ("Lest we
+ * forget").
+ */
+private fun Context.resolveSpokenByName(bannerKey: String): String? =
+    bannerKey.takeIf { it.startsWith(BANNER_PREFIX) }
+        ?.let { resolveStringByName(SPOKEN_PREFIX + it.removePrefix(BANNER_PREFIX)) }
+        ?: resolveStringByName(bannerKey)
+
+private const val BANNER_PREFIX = "holiday_banner_"
+private const val SPOKEN_PREFIX = "holiday_spoken_"
 
 // getIdentifier is required: the string name is computed at runtime (holiday
 // key), so a compile-time R.string reference isn't possible.

@@ -846,6 +846,7 @@ spousal register), matching the existing insight prose ("Ponesi …",
 
     <!-- Missing holiday banners. -->
     <string name="holiday_banner_anzac_day">Dan Anzaca</string>
+    <string name="holiday_spoken_anzac_day">Dan Anzaca</string>
     <string name="holiday_banner_australia_day">Sretan Dan Australije</string>
     <string name="holiday_banner_austria_national_day">Sretan austrijski nacionalni praznik</string>
     <string name="holiday_banner_bastille_day">Sretan Dan Bastille</string>
@@ -856,7 +857,8 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="holiday_banner_canadian_thanksgiving">Sretan kanadski Dan zahvalnosti</string>
     <string name="holiday_banner_fathers_day_jun">Sretan Dan očeva</string>
     <string name="holiday_banner_fathers_day_sep">Sretan Dan očeva</string>
-    <string name="holiday_banner_fr_armistice_day">Obilježavamo padle</string>
+    <string name="holiday_banner_fr_armistice_day">Dan sjećanja</string>
+    <string name="holiday_spoken_fr_armistice_day">Obilježavamo padle</string>
     <string name="holiday_banner_german_unity_day">Sretan Dan njemačkog jedinstva</string>
     <string name="holiday_banner_italy_republic_day">Sretan Dan Republike</string>
     <string name="holiday_banner_japan_coming_of_age_day">Sretan Dan punoljetnosti</string>
@@ -867,9 +869,11 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="holiday_banner_korean_hangeul_day">Sretan Dan Hangula</string>
     <string name="holiday_banner_korean_independence_movement_day">Obilježavamo korejski pokret za neovisnost</string>
     <string name="holiday_banner_korean_liberation_day">Sretan Dan oslobođenja</string>
-    <string name="holiday_banner_korean_memorial_day">Obilježavamo padle</string>
+    <string name="holiday_banner_korean_memorial_day">Korejski Dan sjećanja</string>
+    <string name="holiday_spoken_korean_memorial_day">Obilježavamo padle</string>
     <string name="holiday_banner_mlk_day">Sretan Dan Martina Luthera Kinga</string>
-    <string name="holiday_banner_remembrance_day">Obilježavamo padle</string>
+    <string name="holiday_banner_remembrance_day">Dan sjećanja</string>
+    <string name="holiday_spoken_remembrance_day">Obilježavamo padle</string>
     <string name="holiday_banner_spain_hispanic_day">Sretan Dan Hispanidade</string>
     <string name="holiday_banner_st_andrews_day">Sretan Dan svetog Andrije</string>
     <string name="holiday_banner_st_davids_day">Sretan Dan svetog Davida</string>
@@ -878,10 +882,12 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="holiday_banner_uk_kings_birthday">Sretan Kraljevljev rođendan</string>
     <string name="holiday_banner_uk_mothering_sunday">Sretna Nedjelja majki</string>
     <string name="holiday_banner_us_independence_day">Sretan Dan neovisnosti</string>
-    <string name="holiday_banner_us_memorial_day">Obilježavamo padle</string>
+    <string name="holiday_banner_us_memorial_day">Memorial Day</string>
+    <string name="holiday_spoken_us_memorial_day">Obilježavamo padle</string>
     <string name="holiday_banner_us_presidents_day">Sretan Presidents\' Day</string>
     <string name="holiday_banner_us_thanksgiving">Sretan Dan zahvalnosti</string>
-    <string name="holiday_banner_us_veterans_day">Obilježavamo veterane</string>
+    <string name="holiday_banner_us_veterans_day">Veterans Day</string>
+    <string name="holiday_spoken_us_veterans_day">Obilježavamo veterane</string>
     <string name="holiday_banner_waitangi_day">Sretan Dan Waitangija</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
 
@@ -1126,13 +1132,16 @@ spousal register), matching the existing insight prose ("Ponesi …",
     <string name="holiday_banner_turkey_republic_day">Sretan Dan Republike</string>
     <string name="holiday_banner_turkey_victory_day">Sretan Dan pobjede</string>
     <string name="holiday_banner_turkey_youth_day">Sretan Dan mladih i sporta</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Sjećamo ih se</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Spomendan</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Sjećamo ih se</string>
     <string name="holiday_banner_ukraine_constitution_day">Sretan Dan Ustava</string>
-    <string name="holiday_banner_ukraine_defender_day">U čast ukrajinskih branitelja</string>
+    <string name="holiday_banner_ukraine_defender_day">Dan branitelja Ukrajine</string>
+    <string name="holiday_spoken_ukraine_defender_day">U čast ukrajinskih branitelja</string>
     <string name="holiday_banner_ukraine_independence_day">Sretan Dan neovisnosti</string>
     <string name="holiday_banner_ukraine_statehood_day">Sretan Dan ukrajinske državnosti</string>
     <string name="holiday_banner_ukraine_unity_day">Sretan Dan jedinstva</string>
-    <string name="holiday_banner_ukraine_victory_day">U čast palih</string>
+    <string name="holiday_banner_ukraine_victory_day">Dan pobjede</string>
+    <string name="holiday_spoken_ukraine_victory_day">U čast palih</string>
     <string name="holiday_banner_us_election_day">Idi i glasuj</string>
     <string name="holiday_banner_us_labor_day">Sretan Praznik rada</string>
     <string name="holiday_banner_vietnam_national_day">Sretan Nacionalni dan</string>

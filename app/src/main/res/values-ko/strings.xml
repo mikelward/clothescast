@@ -884,12 +884,14 @@ displayed label localizes.
     <string name="holiday_name_boxing_day">박싱 데이</string>
     <string name="holiday_banner_korean_independence_movement_day">삼일절</string>
     <string name="holiday_banner_korean_memorial_day">현충일</string>
+    <string name="holiday_spoken_korean_memorial_day">현충일</string>
     <string name="holiday_banner_korean_liberation_day">광복절</string>
     <string name="holiday_banner_korean_hangeul_day">한글날</string>
 
     <!-- Holiday banners — non-Korean public holidays. -->
     <string name="holiday_banner_all_saints_day">만성절을 기념합니다</string>
-    <string name="holiday_banner_anzac_day">우리는 기억합니다</string>
+    <string name="holiday_banner_anzac_day">안작 데이</string>
+    <string name="holiday_spoken_anzac_day">우리는 기억합니다</string>
     <string name="holiday_banner_assumption">성모 승천 대축일을 기념합니다</string>
     <string name="holiday_banner_australia_day">호주의 날을 기념합니다</string>
     <string name="holiday_banner_austria_national_day">오스트리아 국경일을 기념합니다</string>
@@ -909,7 +911,8 @@ displayed label localizes.
     <string name="holiday_banner_epiphany">주현절을 기념합니다</string>
     <string name="holiday_banner_fathers_day_jun">아버지의 날을 기념합니다</string>
     <string name="holiday_banner_fathers_day_sep">아버지의 날을 기념합니다</string>
-    <string name="holiday_banner_fr_armistice_day">우리는 기억합니다</string>
+    <string name="holiday_banner_fr_armistice_day">현충일</string>
+    <string name="holiday_spoken_fr_armistice_day">우리는 기억합니다</string>
     <string name="holiday_banner_german_unity_day">독일 통일의 날을 기념합니다</string>
     <string name="holiday_banner_good_friday">성금요일</string>
     <string name="holiday_banner_halloween">해피 핼러윈</string>
@@ -925,7 +928,8 @@ displayed label localizes.
     <string name="holiday_banner_mothers_day">어머니의 날을 기념합니다</string>
     <string name="tts_greeting_birthday">생일 축하합니다</string>
     <string name="holiday_banner_new_years_day">새해 복 많이 받으세요</string>
-    <string name="holiday_banner_remembrance_day">우리는 기억합니다</string>
+    <string name="holiday_banner_remembrance_day">현충일</string>
+    <string name="holiday_spoken_remembrance_day">우리는 기억합니다</string>
     <string name="holiday_banner_spain_hispanic_day">Día de la Hispanidad을 기념합니다</string>
     <string name="holiday_banner_st_andrews_day">성 앤드루스의 날을 기념합니다</string>
     <string name="holiday_banner_st_davids_day">성 다윗의 날을 기념합니다</string>
@@ -935,10 +939,12 @@ displayed label localizes.
     <string name="holiday_banner_uk_kings_birthday">국왕 생신을 축하합니다</string>
     <string name="holiday_banner_uk_mothering_sunday">어머니 주일을 기념합니다</string>
     <string name="holiday_banner_us_independence_day">미국 독립기념일을 기념합니다</string>
-    <string name="holiday_banner_us_memorial_day">전몰용사를 기립니다</string>
+    <string name="holiday_banner_us_memorial_day">전몰장병 추모일</string>
+    <string name="holiday_spoken_us_memorial_day">전몰용사를 기립니다</string>
     <string name="holiday_banner_us_presidents_day">대통령의 날을 기념합니다</string>
     <string name="holiday_banner_us_thanksgiving">추수감사절을 기념합니다</string>
-    <string name="holiday_banner_us_veterans_day">참전용사를 기립니다</string>
+    <string name="holiday_banner_us_veterans_day">재향군인의 날</string>
+    <string name="holiday_spoken_us_veterans_day">참전용사를 기립니다</string>
     <string name="holiday_banner_valentines_day">발렌타인데이를 기념합니다</string>
     <string name="holiday_banner_waitangi_day">와이탕이 데이를 기념합니다</string>
 
@@ -1211,13 +1217,16 @@ displayed label localizes.
     <string name="holiday_banner_turkey_republic_day">공화국의 날을 축하합니다</string>
     <string name="holiday_banner_turkey_victory_day">승전기념일을 축하합니다</string>
     <string name="holiday_banner_turkey_youth_day">청년과 스포츠의 날을 축하합니다</string>
-    <string name="holiday_banner_uk_remembrance_sunday">우리는 그들을 기억할 것입니다</string>
+    <string name="holiday_banner_uk_remembrance_sunday">추모 일요일</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">우리는 그들을 기억할 것입니다</string>
     <string name="holiday_banner_ukraine_constitution_day">헌법의 날을 축하합니다</string>
-    <string name="holiday_banner_ukraine_defender_day">우크라이나 수호자들을 기리며</string>
+    <string name="holiday_banner_ukraine_defender_day">우크라이나 수호자의 날</string>
+    <string name="holiday_spoken_ukraine_defender_day">우크라이나 수호자들을 기리며</string>
     <string name="holiday_banner_ukraine_independence_day">독립기념일을 축하합니다</string>
     <string name="holiday_banner_ukraine_statehood_day">우크라이나 국가의 날을 축하합니다</string>
     <string name="holiday_banner_ukraine_unity_day">통일의 날을 축하합니다</string>
-    <string name="holiday_banner_ukraine_victory_day">전사자를 기리며</string>
+    <string name="holiday_banner_ukraine_victory_day">승전 기념일</string>
+    <string name="holiday_spoken_ukraine_victory_day">전사자를 기리며</string>
     <string name="holiday_banner_us_election_day">투표하러 가요</string>
     <string name="holiday_banner_us_labor_day">노동절을 축하합니다</string>
     <string name="holiday_banner_vietnam_national_day">건국기념일을 축하합니다</string>

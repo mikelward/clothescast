@@ -793,7 +793,8 @@ The rest of the UI falls through to values/strings.xml (English).
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Maligayang Undas</string>
-    <string name="holiday_banner_anzac_day">Lest we forget</string>
+    <string name="holiday_banner_anzac_day">Araw ng Anzac</string>
+    <string name="holiday_spoken_anzac_day">Lest we forget</string>
     <string name="holiday_banner_assumption">Maligayang Araw ng Asumpsiyon</string>
     <string name="holiday_banner_australia_day">Maligayang Araw ng Australia</string>
     <string name="holiday_banner_austria_national_day">Maligayang Pambansang Araw ng Austria</string>
@@ -813,7 +814,8 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_epiphany">Maligayang Epipanya</string>
     <string name="holiday_banner_fathers_day_jun">Maligayang Araw ng Ama</string>
     <string name="holiday_banner_fathers_day_sep">Maligayang Araw ng Ama</string>
-    <string name="holiday_banner_fr_armistice_day">Lest we forget</string>
+    <string name="holiday_banner_fr_armistice_day">Araw ng Pag-alaala</string>
+    <string name="holiday_spoken_fr_armistice_day">Lest we forget</string>
     <string name="holiday_banner_german_unity_day">Maligayang Araw ng Pagkakaisa ng Alemanya</string>
     <string name="holiday_banner_good_friday">Biyernes Santo</string>
     <string name="holiday_banner_halloween">Maligayang Halloween</string>
@@ -827,13 +829,15 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_korean_hangeul_day">Maligayang Araw ng Hangeul</string>
     <string name="holiday_banner_korean_independence_movement_day">Maligayang Kilusang Kalayaan ng Korea</string>
     <string name="holiday_banner_korean_liberation_day">Maligayang Araw ng Kalayaan ng Korea</string>
-    <string name="holiday_banner_korean_memorial_day">Nagbibigay-pugay sa mga bayani ng Korea</string>
+    <string name="holiday_banner_korean_memorial_day">Korean Memorial Day</string>
+    <string name="holiday_spoken_korean_memorial_day">Nagbibigay-pugay sa mga bayani ng Korea</string>
     <string name="holiday_banner_labour_day">Maligayang Araw ng Manggagawa</string>
     <string name="holiday_banner_mlk_day">Nagbibigay-pugay kay Dr. King</string>
     <string name="holiday_banner_mothers_day">Maligayang Araw ng Ina</string>
     <string name="tts_greeting_birthday">Maligayang kaarawan</string>
     <string name="holiday_banner_new_years_day">Maligayang Bagong Taon</string>
-    <string name="holiday_banner_remembrance_day">Lest we forget</string>
+    <string name="holiday_banner_remembrance_day">Araw ng Pag-alaala</string>
+    <string name="holiday_spoken_remembrance_day">Lest we forget</string>
     <string name="holiday_banner_spain_hispanic_day">Maligayang Día de la Hispanidad</string>
     <string name="holiday_banner_st_andrews_day">Maligayang Araw ni San Andrew</string>
     <string name="holiday_banner_st_davids_day">Maligayang Araw ni San David</string>
@@ -843,10 +847,12 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_uk_kings_birthday">Maligayang Kaarawan ng Hari</string>
     <string name="holiday_banner_uk_mothering_sunday">Maligayang Linggo ng Ina</string>
     <string name="holiday_banner_us_independence_day">Maligayang Ika-4 ng Hulyo</string>
-    <string name="holiday_banner_us_memorial_day">Nagbibigay-pugay sa ating mga bayani</string>
+    <string name="holiday_banner_us_memorial_day">US Memorial Day</string>
+    <string name="holiday_spoken_us_memorial_day">Nagbibigay-pugay sa ating mga bayani</string>
     <string name="holiday_banner_us_presidents_day">Maligayang Presidents\' Day</string>
     <string name="holiday_banner_us_thanksgiving">Maligayang Thanksgiving</string>
-    <string name="holiday_banner_us_veterans_day">Nagbibigay-pugay sa ating mga Beterano</string>
+    <string name="holiday_banner_us_veterans_day">Veterans Day</string>
+    <string name="holiday_spoken_us_veterans_day">Nagbibigay-pugay sa ating mga Beterano</string>
     <string name="holiday_banner_valentines_day">Maligayang Araw ng Pag-ibig</string>
     <string name="holiday_banner_waitangi_day">Maligayang Araw ng Waitangi</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
@@ -1109,13 +1115,16 @@ The rest of the UI falls through to values/strings.xml (English).
     <string name="holiday_banner_turkey_republic_day">Maligayang Araw ng Republika</string>
     <string name="holiday_banner_turkey_victory_day">Maligayang Araw ng Tagumpay</string>
     <string name="holiday_banner_turkey_youth_day">Maligayang Araw ng Kabataan at Sports</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Aalalahanin natin sila</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Linggo ng Paggunita</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Aalalahanin natin sila</string>
     <string name="holiday_banner_ukraine_constitution_day">Maligayang Araw ng Konstitusyon</string>
-    <string name="holiday_banner_ukraine_defender_day">Pagpaparangal sa mga tagapagtanggol ng Ukraine</string>
+    <string name="holiday_banner_ukraine_defender_day">Araw ng mga Tagapagtanggol</string>
+    <string name="holiday_spoken_ukraine_defender_day">Pagpaparangal sa mga tagapagtanggol ng Ukraine</string>
     <string name="holiday_banner_ukraine_independence_day">Maligayang Araw ng Kalayaan</string>
     <string name="holiday_banner_ukraine_statehood_day">Maligayang Araw ng Estado ng Ukraine</string>
     <string name="holiday_banner_ukraine_unity_day">Maligayang Araw ng Pagkakaisa</string>
-    <string name="holiday_banner_ukraine_victory_day">Pagpaparangal sa mga bayani</string>
+    <string name="holiday_banner_ukraine_victory_day">Araw ng Tagumpay</string>
+    <string name="holiday_spoken_ukraine_victory_day">Pagpaparangal sa mga bayani</string>
     <string name="holiday_banner_us_election_day">Lumabas at bumoto</string>
     <string name="holiday_banner_us_labor_day">Maligayang Araw ng Manggagawa</string>
     <string name="holiday_banner_vietnam_national_day">Maligayang Araw ng Bansa</string>

@@ -158,9 +158,8 @@ class InsightTtsUtteranceTest {
 
     @Test
     fun `holiday-name override follows the app region, not the voice locale`() {
-        // US region with an en-GB voice: the spoken greeting should mirror the
-        // Today banner's US variant ("Veterans Day"), not the en-GB-locale
-        // default ("Remembrance Day").
+        // US region with an en-GB voice: the spoken greeting follows the US
+        // variant ("Honoring our Veterans"), not the default ("Lest we forget").
         val utterance = insightTtsUtterance(
             context = context,
             summary = sampleSummary,
@@ -171,6 +170,21 @@ class InsightTtsUtteranceTest {
         )
 
         utterance.text shouldBe "Honoring our Veterans. Today, it will be 8° to 15°. Wear a jumper and jacket."
+    }
+
+    @Test
+    fun `Remembrance Day speaks its solemn phrase, not the banner's day name`() {
+        // The banner reads "Remembrance Day"; the voice keeps "Lest we forget".
+        val utterance = insightTtsUtterance(
+            context = context,
+            summary = sampleSummary,
+            region = Region.EN_GB,
+            voiceLocale = VoiceLocale.EN_GB,
+            fallbackLocale = Locale.UK,
+            holidayTheme = remembranceDay,
+        )
+
+        utterance.text shouldBe "Lest we forget. Today, it will be 8° to 15°. Wear a jumper and jacket."
     }
 
     @Test

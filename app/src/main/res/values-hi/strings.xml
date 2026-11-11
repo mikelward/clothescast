@@ -771,7 +771,8 @@ Not overridden by design:
 
     <!-- Holiday banners. -->
     <string name="holiday_banner_all_saints_day">ऑल सेंट्स डे की शुभकामनाएँ</string>
-    <string name="holiday_banner_anzac_day">हम नहीं भूलेंगे</string>
+    <string name="holiday_banner_anzac_day">एन्ज़ैक दिवस</string>
+    <string name="holiday_spoken_anzac_day">हम नहीं भूलेंगे</string>
     <string name="holiday_banner_assumption">असम्पशन डे की शुभकामनाएँ</string>
     <string name="holiday_banner_australia_day">ऑस्ट्रेलिया दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_austria_national_day">ऑस्ट्रियाई राष्ट्रीय दिवस की शुभकामनाएँ</string>
@@ -791,7 +792,8 @@ Not overridden by design:
     <string name="holiday_banner_epiphany">एपिफेनी की शुभकामनाएँ</string>
     <string name="holiday_banner_fathers_day_jun">पितृ दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_fathers_day_sep">पितृ दिवस की शुभकामनाएँ</string>
-    <string name="holiday_banner_fr_armistice_day">हम नहीं भूलेंगे</string>
+    <string name="holiday_banner_fr_armistice_day">स्मरण दिवस</string>
+    <string name="holiday_spoken_fr_armistice_day">हम नहीं भूलेंगे</string>
     <string name="holiday_banner_german_unity_day">जर्मन एकता दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_good_friday">गुड फ्राइडे</string>
     <string name="holiday_banner_halloween">हैलोवीन की शुभकामनाएँ</string>
@@ -805,13 +807,15 @@ Not overridden by design:
     <string name="holiday_banner_korean_hangeul_day">हांगुल दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_korean_independence_movement_day">कोरियाई स्वतंत्रता आंदोलन दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_korean_liberation_day">कोरियाई मुक्ति दिवस की शुभकामनाएँ</string>
-    <string name="holiday_banner_korean_memorial_day">कोरिया के शहीदों को नमन</string>
+    <string name="holiday_banner_korean_memorial_day">कोरियाई स्मारक दिवस</string>
+    <string name="holiday_spoken_korean_memorial_day">कोरिया के शहीदों को नमन</string>
     <string name="holiday_banner_labour_day">मज़दूर दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_mlk_day">डॉ. किंग को नमन</string>
     <string name="holiday_banner_mothers_day">मातृ दिवस की शुभकामनाएँ</string>
     <string name="tts_greeting_birthday">जन्मदिन मुबारक</string>
     <string name="holiday_banner_new_years_day">नव वर्ष की शुभकामनाएँ</string>
-    <string name="holiday_banner_remembrance_day">हम नहीं भूलेंगे</string>
+    <string name="holiday_banner_remembrance_day">स्मरण दिवस</string>
+    <string name="holiday_spoken_remembrance_day">हम नहीं भूलेंगे</string>
     <string name="holiday_banner_spain_hispanic_day">Día de la Hispanidad की शुभकामनाएँ</string>
     <string name="holiday_banner_st_andrews_day">सेंट एंड्रूज़ दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_st_davids_day">सेंट डेविड दिवस की शुभकामनाएँ</string>
@@ -821,10 +825,12 @@ Not overridden by design:
     <string name="holiday_banner_uk_kings_birthday">राजा को जन्मदिन की शुभकामनाएं</string>
     <string name="holiday_banner_uk_mothering_sunday">मदरिंग संडे की शुभकामनाएँ</string>
     <string name="holiday_banner_us_independence_day">4 जुलाई की शुभकामनाएँ</string>
-    <string name="holiday_banner_us_memorial_day">हमारे शहीदों को नमन</string>
+    <string name="holiday_banner_us_memorial_day">अमेरिकी स्मारक दिवस</string>
+    <string name="holiday_spoken_us_memorial_day">हमारे शहीदों को नमन</string>
     <string name="holiday_banner_us_presidents_day">Presidents\' Day की शुभकामनाएँ</string>
     <string name="holiday_banner_us_thanksgiving">थैंक्सगिविंग की शुभकामनाएँ</string>
-    <string name="holiday_banner_us_veterans_day">हमारे वेटरन्स को नमन</string>
+    <string name="holiday_banner_us_veterans_day">वेटरन्स दिवस</string>
+    <string name="holiday_spoken_us_veterans_day">हमारे वेटरन्स को नमन</string>
     <string name="holiday_banner_valentines_day">वेलेंटाइन दिवस की शुभकामनाएँ</string>
     <string name="holiday_banner_waitangi_day">वैतांगी दिवस की शुभकामनाएँ</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
@@ -1088,13 +1094,16 @@ Not overridden by design:
     <string name="holiday_banner_turkey_republic_day">गणतंत्र दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_turkey_victory_day">विजय दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_turkey_youth_day">युवा एवं खेल दिवस की शुभकामनाएं</string>
-    <string name="holiday_banner_uk_remembrance_sunday">हम उन्हें याद रखेंगे</string>
+    <string name="holiday_banner_uk_remembrance_sunday">स्मरण रविवार</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">हम उन्हें याद रखेंगे</string>
     <string name="holiday_banner_ukraine_constitution_day">संविधान दिवस की शुभकामनाएं</string>
-    <string name="holiday_banner_ukraine_defender_day">यूक्रेन के रक्षकों के सम्मान में</string>
+    <string name="holiday_banner_ukraine_defender_day">यूक्रेन रक्षक दिवस</string>
+    <string name="holiday_spoken_ukraine_defender_day">यूक्रेन के रक्षकों के सम्मान में</string>
     <string name="holiday_banner_ukraine_independence_day">स्वतंत्रता दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_ukraine_statehood_day">यूक्रेनी राज्यत्व दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_ukraine_unity_day">एकता दिवस की शुभकामनाएं</string>
-    <string name="holiday_banner_ukraine_victory_day">शहीदों के सम्मान में</string>
+    <string name="holiday_banner_ukraine_victory_day">विजय दिवस</string>
+    <string name="holiday_spoken_ukraine_victory_day">शहीदों के सम्मान में</string>
     <string name="holiday_banner_us_election_day">जाओ और वोट दो</string>
     <string name="holiday_banner_us_labor_day">श्रमिक दिवस की शुभकामनाएं</string>
     <string name="holiday_banner_vietnam_national_day">राष्ट्रीय दिवस की शुभकामनाएं</string>

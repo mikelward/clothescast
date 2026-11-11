@@ -885,7 +885,8 @@ the displayed label localizes.
 
     <!-- Holiday banners — greeting messages shown on the Today screen. -->
     <string name="holiday_banner_all_saints_day">諸聖人の日おめでとうございます</string>
-    <string name="holiday_banner_anzac_day">忘れまじ</string>
+    <string name="holiday_banner_anzac_day">アンザックデー</string>
+    <string name="holiday_spoken_anzac_day">忘れまじ</string>
     <string name="holiday_banner_assumption">聖母被昇天おめでとうございます</string>
     <string name="holiday_banner_australia_day">オーストラリアデーおめでとうございます</string>
     <string name="holiday_banner_austria_national_day">オーストリア国民の日おめでとうございます</string>
@@ -905,7 +906,8 @@ the displayed label localizes.
     <string name="holiday_banner_epiphany">公現祭おめでとうございます</string>
     <string name="holiday_banner_fathers_day_jun">父の日おめでとうございます</string>
     <string name="holiday_banner_fathers_day_sep">父の日おめでとうございます</string>
-    <string name="holiday_banner_fr_armistice_day">忘れまじ</string>
+    <string name="holiday_banner_fr_armistice_day">戦没者追悼記念日</string>
+    <string name="holiday_spoken_fr_armistice_day">忘れまじ</string>
     <string name="holiday_banner_german_unity_day">ドイツ統一の日おめでとうございます</string>
     <string name="holiday_banner_good_friday">聖金曜日</string>
     <string name="holiday_banner_halloween">ハッピーハロウィン</string>
@@ -915,13 +917,15 @@ the displayed label localizes.
     <string name="holiday_banner_korean_hangeul_day">ハングルの日おめでとうございます</string>
     <string name="holiday_banner_korean_independence_movement_day">三一節おめでとうございます</string>
     <string name="holiday_banner_korean_liberation_day">光復節おめでとうございます</string>
-    <string name="holiday_banner_korean_memorial_day">顕忠日に先人の勇気を称えます</string>
+    <string name="holiday_banner_korean_memorial_day">顕忠日</string>
+    <string name="holiday_spoken_korean_memorial_day">顕忠日に先人の勇気を称えます</string>
     <string name="holiday_banner_labour_day">労働祭おめでとうございます</string>
     <string name="holiday_banner_mlk_day">キング博士の遺志を讃えます</string>
     <string name="holiday_banner_mothers_day">母の日おめでとうございます</string>
     <string name="tts_greeting_birthday">お誕生日おめでとうございます</string>
     <string name="holiday_banner_new_years_day">明けましておめでとうございます</string>
-    <string name="holiday_banner_remembrance_day">忘れまじ</string>
+    <string name="holiday_banner_remembrance_day">戦没者追悼記念日</string>
+    <string name="holiday_spoken_remembrance_day">忘れまじ</string>
     <string name="holiday_banner_spain_hispanic_day">スペイン国民の日おめでとうございます</string>
     <string name="holiday_banner_st_andrews_day">聖アンドリューの日おめでとうございます</string>
     <string name="holiday_banner_st_davids_day">聖デイビッズの日おめでとうございます</string>
@@ -931,10 +935,12 @@ the displayed label localizes.
     <string name="holiday_banner_uk_kings_birthday">国王誕生日おめでとう</string>
     <string name="holiday_banner_uk_mothering_sunday">母の日おめでとうございます</string>
     <string name="holiday_banner_us_independence_day">独立記念日おめでとうございます</string>
-    <string name="holiday_banner_us_memorial_day">先人の勇気を称えます</string>
+    <string name="holiday_banner_us_memorial_day">戦没将兵記念日</string>
+    <string name="holiday_spoken_us_memorial_day">先人の勇気を称えます</string>
     <string name="holiday_banner_us_presidents_day">大統領の日おめでとうございます</string>
     <string name="holiday_banner_us_thanksgiving">感謝祭おめでとうございます</string>
-    <string name="holiday_banner_us_veterans_day">退役軍人の皆様に敬意を表します</string>
+    <string name="holiday_banner_us_veterans_day">退役軍人の日</string>
+    <string name="holiday_spoken_us_veterans_day">退役軍人の皆様に敬意を表します</string>
     <string name="holiday_banner_valentines_day">バレンタインデーおめでとうございます</string>
     <string name="holiday_banner_waitangi_day">ワイタンギデーおめでとうございます</string>
 
@@ -1207,13 +1213,16 @@ the displayed label localizes.
     <string name="holiday_banner_turkey_republic_day">共和国記念日おめでとう</string>
     <string name="holiday_banner_turkey_victory_day">戦勝記念日おめでとう</string>
     <string name="holiday_banner_turkey_youth_day">青年とスポーツの日おめでとう</string>
-    <string name="holiday_banner_uk_remembrance_sunday">彼らを忘れない</string>
+    <string name="holiday_banner_uk_remembrance_sunday">戦没者追悼の日曜日</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">彼らを忘れない</string>
     <string name="holiday_banner_ukraine_constitution_day">憲法記念日おめでとう</string>
-    <string name="holiday_banner_ukraine_defender_day">ウクライナの守り手を称えて</string>
+    <string name="holiday_banner_ukraine_defender_day">ウクライナ防衛者の日</string>
+    <string name="holiday_spoken_ukraine_defender_day">ウクライナの守り手を称えて</string>
     <string name="holiday_banner_ukraine_independence_day">独立記念日おめでとう</string>
     <string name="holiday_banner_ukraine_statehood_day">ウクライナ国家の日おめでとう</string>
     <string name="holiday_banner_ukraine_unity_day">統一の日おめでとう</string>
-    <string name="holiday_banner_ukraine_victory_day">戦没者を称えて</string>
+    <string name="holiday_banner_ukraine_victory_day">戦勝記念日</string>
+    <string name="holiday_spoken_ukraine_victory_day">戦没者を称えて</string>
     <string name="holiday_banner_us_election_day">投票に行こう</string>
     <string name="holiday_banner_us_labor_day">労働者の日おめでとう</string>
     <string name="holiday_banner_vietnam_national_day">建国記念日おめでとう</string>

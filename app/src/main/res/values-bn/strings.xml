@@ -813,7 +813,8 @@ West Bengal vocabulary differences in a future PR.
 
     <!-- Holiday banners. -->
     <string name="holiday_banner_all_saints_day">সকল সাধুর দিবসের শুভেচ্ছা</string>
-    <string name="holiday_banner_anzac_day">আমরা ভুলি না</string>
+    <string name="holiday_banner_anzac_day">আনজাক দিবস</string>
+    <string name="holiday_spoken_anzac_day">আমরা ভুলি না</string>
     <string name="holiday_banner_assumption">অ্যাসাম্পশন দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_australia_day">অস্ট্রেলিয়া দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_austria_national_day">অস্ট্রিয়া জাতীয় দিবসের শুভেচ্ছা</string>
@@ -833,7 +834,8 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_epiphany">এপিফানির শুভেচ্ছা</string>
     <string name="holiday_banner_fathers_day_jun">শুভ বাবা দিবস</string>
     <string name="holiday_banner_fathers_day_sep">শুভ বাবা দিবস</string>
-    <string name="holiday_banner_fr_armistice_day">আমরা ভুলি না</string>
+    <string name="holiday_banner_fr_armistice_day">স্মরণ দিবস</string>
+    <string name="holiday_spoken_fr_armistice_day">আমরা ভুলি না</string>
     <string name="holiday_banner_german_unity_day">জার্মান ঐক্য দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_good_friday">শুভ শুক্রবার</string>
     <string name="holiday_banner_halloween">শুভ হ্যালোউইন</string>
@@ -847,13 +849,15 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_korean_hangeul_day">শুভ হানগুল দিবস</string>
     <string name="holiday_banner_korean_independence_movement_day">কোরিয়ান স্বাধীনতা আন্দোলন দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_korean_liberation_day">কোরিয়ান মুক্তি দিবসের শুভেচ্ছা</string>
-    <string name="holiday_banner_korean_memorial_day">কোরিয়ার শহীদদের প্রতি শ্রদ্ধা</string>
+    <string name="holiday_banner_korean_memorial_day">কোরিয়ান স্মৃতি দিবস</string>
+    <string name="holiday_spoken_korean_memorial_day">কোরিয়ার শহীদদের প্রতি শ্রদ্ধা</string>
     <string name="holiday_banner_labour_day">শ্রম দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_mlk_day">ড. কিংয়ের প্রতি শ্রদ্ধা</string>
     <string name="holiday_banner_mothers_day">শুভ মা দিবস</string>
     <string name="tts_greeting_birthday">শুভ জন্মদিন</string>
     <string name="holiday_banner_new_years_day">শুভ নববর্ষ</string>
-    <string name="holiday_banner_remembrance_day">আমরা ভুলি না</string>
+    <string name="holiday_banner_remembrance_day">স্মরণ দিবস</string>
+    <string name="holiday_spoken_remembrance_day">আমরা ভুলি না</string>
     <string name="holiday_banner_spain_hispanic_day">শুভ Día de la Hispanidad</string>
     <string name="holiday_banner_st_andrews_day">সেন্ট অ্যান্ড্রু দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_st_davids_day">সেন্ট ডেভিড দিবসের শুভেচ্ছা</string>
@@ -863,10 +867,12 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_uk_kings_birthday">রাজার জন্মদিন শুভ হোক</string>
     <string name="holiday_banner_uk_mothering_sunday">শুভ মাদারিং সানডে</string>
     <string name="holiday_banner_us_independence_day">শুভ ৪ জুলাই</string>
-    <string name="holiday_banner_us_memorial_day">আমাদের শহীদদের প্রতি শ্রদ্ধা</string>
+    <string name="holiday_banner_us_memorial_day">মার্কিন স্মৃতি দিবস</string>
+    <string name="holiday_spoken_us_memorial_day">আমাদের শহীদদের প্রতি শ্রদ্ধা</string>
     <string name="holiday_banner_us_presidents_day">শুভ Presidents\' Day</string>
     <string name="holiday_banner_us_thanksgiving">শুভ থ্যাংকসগিভিং</string>
-    <string name="holiday_banner_us_veterans_day">আমাদের ভেটেরানদের প্রতি শ্রদ্ধা</string>
+    <string name="holiday_banner_us_veterans_day">ভেটেরান্স দিবস</string>
+    <string name="holiday_spoken_us_veterans_day">আমাদের ভেটেরানদের প্রতি শ্রদ্ধা</string>
     <string name="holiday_banner_valentines_day">শুভ ভালোবাসা দিবস</string>
     <string name="holiday_banner_waitangi_day">ওয়াইতাঙ্গি দিবসের শুভেচ্ছা</string>
     <string name="holiday_name_us_presidents_day">Presidents\' Day</string>
@@ -1130,13 +1136,16 @@ West Bengal vocabulary differences in a future PR.
     <string name="holiday_banner_turkey_republic_day">প্রজাতন্ত্র দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_turkey_victory_day">বিজয় দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_turkey_youth_day">যুব ও ক্রীড়া দিবসের শুভেচ্ছা</string>
-    <string name="holiday_banner_uk_remembrance_sunday">আমরা তাদের মনে রাখব</string>
+    <string name="holiday_banner_uk_remembrance_sunday">স্মৃতি রবিবার</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">আমরা তাদের মনে রাখব</string>
     <string name="holiday_banner_ukraine_constitution_day">সংবিধান দিবসের শুভেচ্ছা</string>
-    <string name="holiday_banner_ukraine_defender_day">ইউক্রেনের রক্ষকদের সম্মানে</string>
+    <string name="holiday_banner_ukraine_defender_day">ইউক্রেন রক্ষক দিবস</string>
+    <string name="holiday_spoken_ukraine_defender_day">ইউক্রেনের রক্ষকদের সম্মানে</string>
     <string name="holiday_banner_ukraine_independence_day">স্বাধীনতা দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_ukraine_statehood_day">ইউক্রেনীয় রাষ্ট্র দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_ukraine_unity_day">ঐক্য দিবসের শুভেচ্ছা</string>
-    <string name="holiday_banner_ukraine_victory_day">শহীদদের সম্মানে</string>
+    <string name="holiday_banner_ukraine_victory_day">বিজয় দিবস</string>
+    <string name="holiday_spoken_ukraine_victory_day">শহীদদের সম্মানে</string>
     <string name="holiday_banner_us_election_day">ভোট দিতে যাও</string>
     <string name="holiday_banner_us_labor_day">শ্রমিক দিবসের শুভেচ্ছা</string>
     <string name="holiday_banner_vietnam_national_day">জাতীয় দিবসের শুভেচ্ছা</string>

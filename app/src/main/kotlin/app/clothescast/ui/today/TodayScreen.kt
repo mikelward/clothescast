@@ -99,6 +99,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -1871,8 +1879,9 @@ internal fun HolidayBanner(
     val textColor = cardColors.contentColor
     val cardModifier = modifier.fillMaxWidth()
     val content: @Composable () -> Unit = {
-        Text(
-            text = holidayBannerLabel(theme, bannerText),
+        HolidayLabelText(
+            theme = theme,
+            text = bannerText,
             style = MaterialTheme.typography.titleSmall,
             color = textColor,
             modifier = Modifier
@@ -1889,6 +1898,59 @@ internal fun HolidayBanner(
         Card(modifier = cardModifier, colors = cardColors) { content() }
     }
 }
+
+/**
+ * [text] led by the theme's symbol: its emoji, or a drawn [HolidayTheme.icon]
+ * (the poppy) inlined at the text's size. Shared by the Today banner and the
+ * holiday settings rows so both show the same symbol.
+ */
+@Composable
+internal fun HolidayLabelText(
+    theme: HolidayTheme,
+    text: String,
+    style: TextStyle,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    textAlign: TextAlign? = null,
+) {
+    val icon = theme.icon
+    if (icon == null) {
+        Text(
+            text = holidayBannerLabel(theme, text),
+            modifier = modifier,
+            color = color,
+            style = style,
+            textAlign = textAlign,
+        )
+        return
+    }
+    val label = buildAnnotatedString {
+        appendInlineContent(HOLIDAY_ICON_ID)
+        append("  ")
+        append(text)
+    }
+    val inlineContent = mapOf(
+        HOLIDAY_ICON_ID to InlineTextContent(
+            Placeholder(1.2.em, 1.2.em, PlaceholderVerticalAlign.TextCenter),
+        ) {
+            Image(
+                painter = painterResource(icon.drawableRes()),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+            )
+        },
+    )
+    Text(
+        text = label,
+        modifier = modifier,
+        color = color,
+        style = style,
+        textAlign = textAlign,
+        inlineContent = inlineContent,
+    )
+}
+
+private const val HOLIDAY_ICON_ID = "holiday_icon"
 
 @Composable
 internal fun WorkStatusBanner(

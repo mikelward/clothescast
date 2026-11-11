@@ -661,7 +661,8 @@ displayed label localizes.
 
     <!-- Holiday banners -->
     <string name="holiday_banner_all_saints_day">Tüm Azizler Günün kutlu olsun</string>
-    <string name="holiday_banner_anzac_day">Unutmayalım</string>
+    <string name="holiday_banner_anzac_day">Anzac Günü</string>
+    <string name="holiday_spoken_anzac_day">Unutmayalım</string>
     <string name="holiday_banner_assumption">Meryem Ana\'nın Göğe Yükselişi</string>
     <string name="holiday_banner_australia_day">Avustralya Günün kutlu olsun</string>
     <string name="holiday_banner_austria_national_day">Avusturya Millî Günün kutlu olsun</string>
@@ -681,7 +682,8 @@ displayed label localizes.
     <string name="holiday_banner_epiphany">Üç Bilge Adamlar Günün kutlu olsun</string>
     <string name="holiday_banner_fathers_day_jun">Babalar Günün kutlu olsun</string>
     <string name="holiday_banner_fathers_day_sep">Babalar Günün kutlu olsun</string>
-    <string name="holiday_banner_fr_armistice_day">Unutmayalım</string>
+    <string name="holiday_banner_fr_armistice_day">Anma Günü</string>
+    <string name="holiday_spoken_fr_armistice_day">Unutmayalım</string>
     <string name="holiday_banner_german_unity_day">Alman Birliği Günün kutlu olsun</string>
     <string name="holiday_banner_good_friday">Hayırlı Cumalar</string>
     <string name="holiday_banner_halloween">Mutlu Cadılar Bayramı</string>
@@ -695,13 +697,15 @@ displayed label localizes.
     <string name="holiday_banner_korean_hangeul_day">Hangeul Günün kutlu olsun</string>
     <string name="holiday_banner_korean_independence_movement_day">Kore Bağımsızlık Hareketi Günün kutlu olsun</string>
     <string name="holiday_banner_korean_liberation_day">Kore Kurtuluş Günün kutlu olsun</string>
-    <string name="holiday_banner_korean_memorial_day">Kore\'nin şehitleri onuruna</string>
+    <string name="holiday_banner_korean_memorial_day">Kore Anma Günü</string>
+    <string name="holiday_spoken_korean_memorial_day">Kore\'nin şehitleri onuruna</string>
     <string name="holiday_banner_labour_day">İşçi Bayramın kutlu olsun</string>
     <string name="holiday_banner_mlk_day">Dr. King\'i anıyoruz</string>
     <string name="holiday_banner_mothers_day">Anneler Günün kutlu olsun</string>
     <string name="tts_greeting_birthday">Doğum günün kutlu olsun</string>
     <string name="holiday_banner_new_years_day">Mutlu Yıllar</string>
-    <string name="holiday_banner_remembrance_day">Unutmayalım</string>
+    <string name="holiday_banner_remembrance_day">Anma Günü</string>
+    <string name="holiday_spoken_remembrance_day">Unutmayalım</string>
     <string name="holiday_banner_spain_hispanic_day">Día de la Hispanidad kutlu olsun</string>
     <string name="holiday_banner_st_andrews_day">Aziz Andreas Günün kutlu olsun</string>
     <string name="holiday_banner_st_davids_day">Aziz Davut Günün kutlu olsun</string>
@@ -711,10 +715,12 @@ displayed label localizes.
     <string name="holiday_banner_uk_kings_birthday">Kral\'ın Doğum Günü kutlu olsun</string>
     <string name="holiday_banner_uk_mothering_sunday">Anneler Pazar Günün kutlu olsun</string>
     <string name="holiday_banner_us_independence_day">4 Temmuz\'unuz kutlu olsun</string>
-    <string name="holiday_banner_us_memorial_day">Şehitlerimizi anıyoruz</string>
+    <string name="holiday_banner_us_memorial_day">ABD Anma Günü</string>
+    <string name="holiday_spoken_us_memorial_day">Şehitlerimizi anıyoruz</string>
     <string name="holiday_banner_us_presidents_day">Cumhurbaşkanları Günün kutlu olsun</string>
     <string name="holiday_banner_us_thanksgiving">Şükran Günün kutlu olsun</string>
-    <string name="holiday_banner_us_veterans_day">Gazilerimizi onurlandırıyoruz</string>
+    <string name="holiday_banner_us_veterans_day">Gaziler Günü</string>
+    <string name="holiday_spoken_us_veterans_day">Gazilerimizi onurlandırıyoruz</string>
     <string name="holiday_banner_valentines_day">Mutlu Sevgililer Günü</string>
     <string name="holiday_banner_waitangi_day">Waitangi Günün kutlu olsun</string>
 
@@ -1058,13 +1064,16 @@ displayed label localizes.
     <string name="holiday_banner_turkey_republic_day">Mutlu Cumhuriyet Bayramı</string>
     <string name="holiday_banner_turkey_victory_day">Mutlu Zafer Bayramı</string>
     <string name="holiday_banner_turkey_youth_day">Gençlik ve Spor Bayramı kutlu olsun</string>
-    <string name="holiday_banner_uk_remembrance_sunday">Onları unutmayacağız</string>
+    <string name="holiday_banner_uk_remembrance_sunday">Anma Pazarı</string>
+    <string name="holiday_spoken_uk_remembrance_sunday">Onları unutmayacağız</string>
     <string name="holiday_banner_ukraine_constitution_day">Anayasa Günü kutlu olsun</string>
-    <string name="holiday_banner_ukraine_defender_day">Ukrayna savunucularını anıyoruz</string>
+    <string name="holiday_banner_ukraine_defender_day">Ukrayna Savunucusu Günü</string>
+    <string name="holiday_spoken_ukraine_defender_day">Ukrayna savunucularını anıyoruz</string>
     <string name="holiday_banner_ukraine_independence_day">Bağımsızlık Günü kutlu olsun</string>
     <string name="holiday_banner_ukraine_statehood_day">Ukrayna Devlet Günü kutlu olsun</string>
     <string name="holiday_banner_ukraine_unity_day">Birlik Günü kutlu olsun</string>
-    <string name="holiday_banner_ukraine_victory_day">Şehitlerimizi anıyoruz</string>
+    <string name="holiday_banner_ukraine_victory_day">Zafer Günü</string>
+    <string name="holiday_spoken_ukraine_victory_day">Şehitlerimizi anıyoruz</string>
     <string name="holiday_banner_us_election_day">Oy vermeye git</string>
     <string name="holiday_banner_us_labor_day">İşçi Bayramı kutlu olsun</string>
     <string name="holiday_banner_vietnam_national_day">Ulusal Gün kutlu olsun</string>

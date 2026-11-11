@@ -2,6 +2,8 @@ package app.clothescast.ui.today
 
 import android.content.Context
 import app.clothescast.R
+import androidx.annotation.DrawableRes
+import app.clothescast.core.domain.model.HolidayIcon
 import app.clothescast.core.domain.model.HolidayTheme
 import app.clothescast.core.domain.model.bannerTextKeyFor
 import app.clothescast.core.domain.model.flagEmoji
@@ -95,3 +97,9 @@ private fun resolveBannerString(
  */
 internal fun holidayBannerLabel(theme: HolidayTheme, text: String): String =
     if (theme.emoji.isEmpty() || text.startsWith(theme.emoji)) text else "${theme.emoji}  $text"
+
+/** The drawable for a drawn banner symbol ([HolidayTheme.icon]). */
+@DrawableRes
+internal fun HolidayIcon.drawableRes(): Int = when (this) {
+    HolidayIcon.POPPY -> R.drawable.ic_holiday_poppy
+}

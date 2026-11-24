@@ -24,6 +24,21 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
+# The hook's record: when it started, how it ended, and the SDK tools' own
+# output, kept where it outlasts the session's terminal.
+log_dir="${XDG_STATE_HOME:-$HOME/.local/state}/clothescast"
+mkdir -p "$log_dir"
+LOG="$log_dir/session-start.log"
+log() { printf '%s session-start: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" | tee -a "$LOG" >&2; }
+TMPZIP=""
+finish() {
+  status=$?
+  if [ -n "$TMPZIP" ]; then rm -f "$TMPZIP"; fi
+  if [ "$status" -eq 0 ]; then log "ended: Android SDK ready"; else log "ended: failed with status $status (details in $LOG)"; fi
+}
+trap finish EXIT
+log "started"
+
 ANDROID_HOME="${ANDROID_HOME:-/opt/android-sdk}"
 # sdkmanager's LocalRepoLoaderImpl Files.walk()s the SDK root looking for
 # package.xml. If the root resolves to "/" (empty / relative ANDROID_HOME,
@@ -34,7 +49,7 @@ ANDROID_HOME="${ANDROID_HOME:-/opt/android-sdk}"
 case "$ANDROID_HOME" in
   /*) ;;
   *)
-    echo "ANDROID_HOME must be an absolute path, got: '$ANDROID_HOME'" >&2
+    log "ANDROID_HOME must be an absolute path, got: '$ANDROID_HOME'"
     exit 1
     ;;
 esac
@@ -65,22 +80,21 @@ persist_env() {
 if [ -x "$CMDLINE_TOOLS_DIR/bin/sdkmanager" ] \
   && [ -d "$ANDROID_HOME/platforms/android-37.0" ] \
   && [ -d "$ANDROID_HOME/build-tools/36.0.0" ]; then
-  echo "Android SDK already installed at $ANDROID_HOME — skipping install."
+  log "Android SDK already installed at $ANDROID_HOME; skipping install"
   persist_env
   exit 0
 fi
 
-echo "Installing Android SDK to $ANDROID_HOME ..."
+log "installing the Android SDK to $ANDROID_HOME"
 mkdir -p "$ANDROID_HOME/cmdline-tools"
 
 if [ ! -x "$CMDLINE_TOOLS_DIR/bin/sdkmanager" ]; then
   TMPZIP="$(mktemp --suffix=.zip)"
-  trap 'rm -f "$TMPZIP"' EXIT
-  curl -fsSL --retry 3 --retry-delay 2 -o "$TMPZIP" "$CMDLINE_TOOLS_URL"
+  curl -fsSL --retry 3 --retry-delay 2 -o "$TMPZIP" "$CMDLINE_TOOLS_URL" 2>>"$LOG"
   # The zip extracts to `cmdline-tools/`, but sdkmanager expects the layout
   # `cmdline-tools/latest/bin/sdkmanager`, so move it into place.
   TMPDIR="$(mktemp -d)"
-  unzip -q "$TMPZIP" -d "$TMPDIR"
+  unzip -q "$TMPZIP" -d "$TMPDIR" >>"$LOG" 2>&1
   rm -rf "$CMDLINE_TOOLS_DIR"
   mv "$TMPDIR/cmdline-tools" "$CMDLINE_TOOLS_DIR"
   rm -rf "$TMPDIR"
@@ -104,17 +118,18 @@ SDK_ROOT_FLAG="--sdk_root=$ANDROID_HOME"
 # Accept every license prompt non-interactively. `printf | sdkmanager` would
 # trip `set -o pipefail` if sdkmanager closes stdin before consuming every
 # `y\n` (printf gets SIGPIPE, exits 141, pipeline fails — even though
-# sdkmanager itself succeeded). Disable pipefail just for this line and
-# read sdkmanager's exit code directly from PIPESTATUS.
+# sdkmanager itself succeeded). Disable pipefail just for this line, so the
+# pipeline's status is sdkmanager's own.
 set +o pipefail
-printf 'y\n%.0s' $(seq 1 50) | sdkmanager "$SDK_ROOT_FLAG" --licenses >/dev/null
-license_rc=${PIPESTATUS[1]}
+# Under `set -e` a bare failing pipeline would end the hook before the check
+# below could say why, so its status is caught here instead.
+license_rc=0
+printf 'y\n%.0s' $(seq 1 50) | sdkmanager "$SDK_ROOT_FLAG" --licenses >>"$LOG" 2>&1 || license_rc=$?
 set -o pipefail
 if [ "$license_rc" -ne 0 ]; then
-  echo "sdkmanager --licenses failed (exit $license_rc)" >&2
+  log "accepting the SDK licenses failed with status $license_rc"
   exit "$license_rc"
 fi
-sdkmanager "$SDK_ROOT_FLAG" --install "$PLATFORM" "$BUILD_TOOLS" "$PLATFORM_TOOLS" >/dev/null
+sdkmanager "$SDK_ROOT_FLAG" --install "$PLATFORM" "$BUILD_TOOLS" "$PLATFORM_TOOLS" >>"$LOG" 2>&1
 
 persist_env
-echo "Android SDK ready at $ANDROID_HOME."
